@@ -1,3 +1,4 @@
+import { SearchIcon } from '@heroicons/react/solid';
 import React from 'react';
 
 export default function MainLayout({ children }) {
@@ -25,7 +26,12 @@ export default function MainLayout({ children }) {
                         </ul>
                     </nav>
                     <div className="flex flex-auto items-center justify-between gap-3 md:gap-5 px-2">
-                        <input className="flex-none bg-gray-100 rounded p-2 flex-grow shadow-inner border-2 border-gray-100 focus:shadow-none focus:bg-white focus:border-green-500 outline-none" type="search" placeholder="Search a facility/CHU" />
+                        <form className="inline-flex flex-grow gap-1" action="/">
+                            <input name="q" className="flex-none bg-gray-100 rounded p-2 flex-grow shadow-inner border-2 border-gray-100 focus:shadow-none focus:bg-white focus:border-green-500 outline-none" type="search" placeholder="Search a facility/CHU" />
+                            <button className="bg-white border-2 border-green-700 text-green-700 flex items-center justify-center px-4 py-1 rounded">
+                                <SearchIcon className="w-5 h-5"/>
+                            </button>
+                        </form>
                         <a href="/" className="bg-green-700 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
                     </div>
                 </header>

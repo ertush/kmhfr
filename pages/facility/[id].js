@@ -18,7 +18,7 @@ const Facility = ({ facility }) => {
                         <div className="flex flex-row gap-2 text-sm md:text-base">
                             <a className="text-green-700" href="/">Home</a> >
                             <a className="text-green-700" href="/">Facilities</a> >
-                            <span>{facility.official_name}</span>
+                            <span>{facility.official_name} ( #<u>{facility.code}</u> )</span>
                         </div>
                         <div className="col-span-5 flex flex-row items-center justify-between gap-3 md:gap-8 py-2 w-full">
                             <div>
@@ -42,20 +42,20 @@ const Facility = ({ facility }) => {
                     </div>
                     <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
                         <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root" defaultValue="overview">
-                            <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercasez leading-none tab-list font-semibold border-b">
-                                <Tabs.Tab value="overview" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-700 text-lg hover:text-black cursor-default border-b-2 border-transparent tab-item">
+                            <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+                                <Tabs.Tab value="overview" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-700 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     Overview
                                 </Tabs.Tab>
-                                <Tabs.Tab value="services" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-700 text-lg hover:text-black cursor-default border-b-2 border-transparent tab-item">
+                                <Tabs.Tab value="services" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-700 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     Services
                                 </Tabs.Tab>
-                                <Tabs.Tab value="community_units" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-700 text-lg hover:text-black cursor-default border-b-2 border-transparent tab-item">
+                                <Tabs.Tab value="community_units" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-700 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     Facility Units
                                 </Tabs.Tab>
-                                <Tabs.Tab value="infrastructure" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-700 text-lg hover:text-black cursor-default border-b-2 border-transparent tab-item">
+                                <Tabs.Tab value="infrastructure" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-700 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     Infrastructure
                                 </Tabs.Tab>
-                                <Tabs.Tab value="hr_staffing" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-700 text-lg hover:text-black cursor-default border-b-2 border-transparent tab-item">
+                                <Tabs.Tab value="hr_staffing" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-700 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     HR &amp; Staffing
                                 </Tabs.Tab>
                             </Tabs.List>

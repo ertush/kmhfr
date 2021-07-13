@@ -4,7 +4,6 @@ import { DotsHorizontalIcon, PencilIcon } from '@heroicons/react/solid'
 
 const Home = (props) => {
     let facilities = props?.facilities?.results
-    console.log(JSON.stringify(props,null,1))
     return (
         <div className="">
             <Head>
@@ -19,7 +18,7 @@ const Home = (props) => {
                             <a className="text-green-700" href="/">Home</a> >
                             <span href="/">Facilities</span>
                         </div>
-                        <h1 className="text-4xl tracking-tight font-bold leading-3">All facilities</h1>
+                        <h1 className="text-4xl tracking-tight font-bold leading-3">{(props?.query && props.query.length > 0) ? `Facilities matching ${props.query}` : "All facilities"}</h1>
                     </div>
                     <div className="col-span-5 md:col-span-4 flex flex-col gap-4 mt-2">
                         <div className="flex flex-col px-4 w-full">
@@ -29,7 +28,7 @@ const Home = (props) => {
                                     <div className="col-span-8 md:col-span-4 flex flex-col group items-center justify-start text-left">
                                         <h3 className="text-2xl w-full">
                                             <a href={'/facility/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
-                                                {facility.official_name}
+                                                {facility.official_name || facility.official_name || facility.name}
                                             </a>
                                         </h3>
                                         {/* <p className="text-sm text-gray-600 w-full">{facility.nearest_landmark || ' '}{' '} {facility.location_desc || ' '}</p> */}
@@ -73,7 +72,14 @@ const Home = (props) => {
 }
 
 Home.getInitialProps = async (ctx) => {
-    let fcl = await fetch('http://api.kmhfltest.health.go.ke/api/facilities/facilities/?has_edits=true&fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected', {
+    let url = 'http://api.kmhfltest.health.go.ke/api/facilities/facilities/?has_edits=true&fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected'
+    let query = ''
+    if(ctx?.query?.q){
+        query = ctx.query.q
+        url = `http://api.kmhfltest.health.go.ke/api/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status_name&search={"query":{"query_string":{"default_field":"name","query":"${query}"}}}`
+    }
+    console.log(ctx.query)
+    let fcl = await fetch(url, {
         headers: {
             'Authorization': 'Bearer ' + process.env.ACCESS_TOKEN,
             'Accept': 'application/json'
@@ -82,7 +88,7 @@ Home.getInitialProps = async (ctx) => {
     let facilities = await fcl.json()
 
     return {
-        facilities
+        facilities, query
     }
 }
 
