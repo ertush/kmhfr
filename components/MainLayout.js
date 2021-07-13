@@ -3,11 +3,11 @@ import React from 'react';
 export default function MainLayout({ children }) {
     return (
         <div className="flex flex-col items-center justify-start min-h-screen">
-            <div className="w-full border-b border-gray-100 flex items-center justify-center">
+            <div className="w-full border-b border-gray-100 flex items-center justify-center md:sticky md:top-0 bg-white z-10">
                 <header className="flex flex-wrap items-center justify-between gap-4 w-full p-2 max-w-screen-2xl">
                     <nav className="flex flex-auto items-center gap-3 py-3 md:py-0 md:gap-5">
                         <div id="logo" className="px-2 mx:px-3">
-                            <a href="/" className="font-mono text-3xl text-green-900 font-bold">KMHFL</a>
+                            <a href="/" className="font-mono text-3xl text-green-900 font-bold">KMHFL-v2</a>
                         </div>
                         <ul className="flex flex-wrap items-center justify-between gap-3 md:gap-5">
                             <li className="flex-auto">
