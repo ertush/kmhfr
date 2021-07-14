@@ -1,10 +1,12 @@
 import Head from 'next/head'
 import * as Tabs from '@radix-ui/react-tabs';
+import {checkToken} from '../../controllers/auth/auth'
 import MainLayout from '../../components/MainLayout'
 import { LocationMarkerIcon } from '@heroicons/react/solid'
 import { ArrowsExpandIcon } from '@heroicons/react/outline'
 
-const Facility = ({ facility }) => {
+const Facility = (props) => {
+    let facility = props.data
     return (
         <div className="">
             <Head>
@@ -16,28 +18,31 @@ const Facility = ({ facility }) => {
                 <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
                     <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
                         <div className="flex flex-row gap-2 text-sm md:text-base">
-                            <a className="text-green-700" href="/">Home</a> >
-                            <a className="text-green-700" href="/">Facilities</a> >
-                            <span>{facility.official_name} ( #<u>{facility.code}</u> )</span>
+                            <a className="text-green-700" href="/">Home</a> {'>'}
+                            <a className="text-green-700" href="/">Facilities</a> {'>'}
+                            <span className="text-gray-500">{facility.official_name} ( #<i className="text-black">{facility.code}</i> )</span>
                         </div>
-                        <div className="col-span-5 flex flex-row items-center justify-between gap-3 md:gap-8 py-2 w-full">
-                            <div>
+                        <div className="col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gradient-to-br from-green-600 to-green-900 rounded text-white p-4 md:divide-x md:divide-green-600 items-center">
+                            <div className="col-span-6 md:col-span-3">
                                 <h1 className="text-4xl tracking-tight font-bold leading-tight">{facility.official_name}</h1>
                                 <div className="flex gap-2 items-center w-full justify-between">
-                                    <span className="text-green-800 font-bold text-2xl">#{facility.code}</span>
-                                    <p className="text-gray-700 leading-tight">{facility.owner_name}</p>
+                                    <span className="text-green-300 font-bold text-2xl">#{facility.code}</span>
+                                    <p className="text-gray-200 leading-tight">{facility.owner_name}</p>
                                 </div>
                             </div>
-                            <div className="flex flex-wrap gap-3 items-center justify-end">
-                                <div className="flex flex-wrap gap-3">
+                            <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
+                                <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
+                                    {(facility.operational || facility.operation_status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900"}>Operational</span> : ""}
                                     {facility.is_approved ? <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap">Approved</span> : <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap">Not approved</span>}
                                     {facility.has_edits && <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap">Has changes</span>}
                                     {facility.is_complete && <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap">Complete</span>}
                                 </div>
                             </div>
-                            <a href={'/facility/edit' + facility.id} className="bg-white border-2 border-green-700 text-green-800 hover:bg-green-700 focus:bg-green-700 active:bg-green-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white">
-                                Edit
-                            </a>
+                            <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
+                                <a href={'/facility/edit' + facility.id} className="bg-white border-2 border-green-700 text-green-800 hover:bg-green-700 focus:bg-green-700 active:bg-green-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
+                                    Edit
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
@@ -71,7 +76,10 @@ const Facility = ({ facility }) => {
                             <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
                                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                                     <div className="bg-white w-full p-4 rounded">
-                                        <h3 className="text-2xl">Services</h3>
+                                        <h3 className="text-2xl w-full flex flex-wrap justify-between items-center">
+                                            <span>Services</span>
+                                            <a href="/" className="text-base underline text-green-700 hover:text-black focus:text-black active:text-black">Edit services</a>
+                                        </h3>
                                         <ul>
                                             {(facility?.facility_services && facility?.facility_services.length > 0) ? facility?.facility_services.map(service => (
                                                 <li key={service.service_id} className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300">
@@ -202,17 +210,35 @@ const Facility = ({ facility }) => {
 }
 
 Facility.getInitialProps = async (ctx) => {
-    let fcl = await fetch('http://api.kmhfltest.health.go.ke/api/facilities/facilities/' + ctx.query.id + '/', {
-        headers: {
-            'Authorization': 'Bearer ' + process.env.ACCESS_TOKEN,
-            'Accept': 'application/json'
+    return checkToken(ctx.req, ctx.res).then(t => {
+        let token = t.token
+        let url = 'http://api.kmhfltest.health.go.ke/api/facilities/facilities/' + ctx.query.id + '/'
+        return fetch(url, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }
+        }).then(r => r.json())
+            .then(json => {
+                return {
+                    data: json
+                }
+            }).catch(err => {
+                console.log('Error fetching facilities: ', err)
+                return {
+                    error: true,
+                    err: err,
+                    data: [],
+                }
+            })
+    }).catch(err => {
+        console.log('Error checking token: ', err)
+        return {
+            error: true,
+            err: err,
+            data: [],
         }
     })
-    let facility = await fcl.json()
-
-    return {
-        facility
-    }
 }
 
 export default Facility
