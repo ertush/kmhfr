@@ -31,7 +31,7 @@ const getToken = (refresh_token) => {
     })
         // return await rs.json()
         .then(response => {
-            console.log('response: ', response)
+            // console.log('response: ', response)
             return response.json();
         }).then(json => {
             console.log('New token: ', json)
@@ -61,7 +61,11 @@ const checkToken = async (req, res) => {
     //check of cookie has expired
     if (!ct || ct == null || ct == undefined || (ct && JSON.parse(ct).expires > Date.now())) {
         console.log('Token expired. Refreshing...')
-        return getToken().then(tk => {
+        let refresh_token
+        if(ct && JSON.parse(ct).refresh_token){
+            refresh_token = JSON.parse(ct).refresh_token
+        }
+        return getToken(refresh_token).then(tk => {
             if (!tk.error) {
                 console.log('Token refreshed.')
                 let expiry = new Date(new Date().getTime() + (parseInt(tk.expires_in) * 1000))
