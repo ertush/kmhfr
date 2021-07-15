@@ -1,0 +1,284 @@
+[
+	{
+        "name": "NAIROBI",
+        "dsl_id": 23393,
+        "longitude": 36.86818926822119,
+		"latitude": -1.293413470282578
+	},
+	{
+        "name": "MOMBASA",
+        "dsl_id": 23390,
+        "longitude": 39.65062669328582,
+		"latitude": -4.02125063445076
+	},
+	{
+        "name": "KWALE",
+        "dsl_id": 23388,
+        "longitude": 39.19041190047405,
+		"latitude": -4.183149527207357
+	},
+	{
+        "name": "KILIFI",
+        "dsl_id": 23387,
+        "longitude": 39.68667526330434,
+		"latitude": -3.175338285807058
+	},
+	{
+        "name": "TANA RIVER",
+        "dsl_id": 23392,
+        "longitude": 39.41786920294054,
+		"latitude": -1.526366604318505
+	},
+	{
+        "name": "LAMU",
+        "dsl_id": 23389,
+        "longitude": 40.88286068204706,
+		"latitude": -2.078682543636551
+	},
+	{
+        "name": "TAITA TAVETA",
+        "dsl_id": 23391,
+        "longitude": 38.41860200329975,
+		"latitude": -3.434733993698251
+	},
+	{
+        "name": "GARISSA",
+        "dsl_id": 23401,
+        "longitude": 40.19927853782175,
+		"latitude": -0.4889103448312647
+	},
+	{
+        "name": "WAJIR",
+        "dsl_id": 23402,
+        "longitude": 40.03498563964499,
+		"latitude": 1.808137623796048
+	},
+	{
+        "name": "MANDERA",
+        "dsl_id": 23403,
+        "longitude": 40.73881016673408,
+		"latitude": 3.4364694880338
+	},
+	{
+        "name": "MARSABIT",
+        "dsl_id": 23505,
+        "longitude": 37.56953610877085,
+		"latitude": 2.978658786523185
+	},
+	{
+        "name": "ISIOLO",
+        "dsl_id": 23508,
+        "longitude": 38.5421531206016,
+		"latitude": 1.010443077534102
+	},
+	{
+        "name": "MERU",
+        "dsl_id": 23502,
+        "longitude": 37.76403705417331,
+		"latitude": 0.16677924134215
+	},
+	{
+        "name": "THARAKA - NITHI",
+        "dsl_id": 23506,
+        "longitude": 37.87029727091547,
+		"latitude": -0.2070612179107429
+	},
+	{
+        "name": "EMBU",
+        "dsl_id": 23501,
+        "longitude": 37.62650132646137,
+		"latitude": -0.603974377553177
+	},
+	{
+        "name": "KITUI",
+        "dsl_id": 23503,
+        "longitude": 38.40692101584452,
+		"latitude": -1.491038530750832
+	},
+	{
+        "name": "MACHAKOS",
+        "dsl_id": 23504,
+        "longitude": 37.41267603288843,
+		"latitude": -1.279512306560511
+	},
+	{
+        "name": "NYANDARUA",
+        "dsl_id": 23383,
+        "longitude": 36.48286916095076,
+		"latitude": -0.3220778224930802
+	},
+	{
+        "name": "NYERI",
+        "dsl_id": 23382,
+        "longitude": 36.95647813457197,
+		"latitude": -0.3429235893916981
+	},
+	{
+        "name": "KIRINYAGA",
+        "dsl_id": 23385,
+        "longitude": 37.31986810926832,
+		"latitude": -0.5247462962223846
+	},
+	{
+        "name": "MURANG'A",
+        "dsl_id": 23384,
+        "longitude": 37.03272252331782,
+		"latitude": -0.8095905364869086
+	},
+	{
+        "name": "KIAMBU",
+        "dsl_id": 23386,
+        "longitude": 36.82356425792846,
+		"latitude": -1.068706065981901
+	},
+	{
+        "name": "TURKANA",
+        "dsl_id": 23522,
+        "longitude": 35.43575845532078,
+		"latitude": 3.424849195939075
+	},
+	{
+        "name": "WEST POKOT",
+        "dsl_id": 23521,
+        "longitude": 35.2438468091728,
+		"latitude": 1.740106171290394
+	},
+	{
+        "name": "SAMBURU",
+        "dsl_id": 23517,
+        "longitude": 37.11839406700783,
+		"latitude": 1.316854626046029
+	},
+	{
+        "name": "UASIN GISHU",
+        "dsl_id": 23520,
+        "longitude": 35.32201166723006,
+		"latitude": 0.5260858915513561
+	},
+	{
+        "name": "ELEGEYO-MARAKWET",
+        "dsl_id": 23512,
+        "longitude": 35.53656314742176,
+		"latitude": 0.8022188108538623
+	},
+	{
+        "name": "NANDI",
+        "dsl_id": 23516,
+        "longitude": 35.11048766644759,
+		"latitude": 0.1866888868781282
+	},
+	{
+        "name": "BARINGO",
+        "dsl_id": 23514,
+        "longitude": 35.94646535265581,
+		"latitude": 0.6692519803145314
+	},
+	{
+        "name": "LAIKIPIA",
+        "dsl_id": 23513,
+        "longitude": 36.77172785880337,
+		"latitude": 0.3236041225001081
+	},
+	{
+        "name": "NAKURU",
+        "dsl_id": 23509,
+        "longitude": 36.07847909415236,
+		"latitude": -0.4636754317052599
+	},
+	{
+        "name": "NAROK",
+        "dsl_id": 23518,
+        "longitude": 35.57632921389947,
+		"latitude": -1.25479033210549
+	},
+	{
+        "name": "KAJIADO",
+        "dsl_id": 23511,
+        "longitude": 36.90884219300676,
+		"latitude": -2.121383577863184
+	},
+	{
+        "name": "MAKUENI",
+        "dsl_id": 23507,
+        "longitude": 37.78824557245022,
+		"latitude": -2.15768410006835
+	},
+	{
+        "name": "KERICHO",
+        "dsl_id": 23515,
+        "longitude": 35.31407000863221,
+		"latitude": -0.2957329060190368
+	},
+	{
+        "name": "KAKAMEGA",
+        "dsl_id": 23531,
+        "longitude": 34.7445111529534,
+		"latitude": 0.4036834639875713
+	},
+	{
+        "name": "VIHIGA",
+        "dsl_id": 23532,
+        "longitude": 34.72232303607134,
+		"latitude": 0.07626579586786764
+	},
+	{
+        "name": "BUNGOMA",
+        "dsl_id": 23533,
+        "longitude": 34.64046087559938,
+		"latitude": 0.7492852396195192
+	},
+	{
+        "name": "BUSIA",
+        "dsl_id": 23530,
+        "longitude": 34.19363148840087,
+		"latitude": 0.3874436775543338
+	},
+	{
+        "name": "SIAYA",
+        "dsl_id": 23411,
+        "longitude": 34.24764170452364,
+		"latitude": -0.06212988862207691
+	},
+	{
+        "name": "HOMA BAY",
+        "dsl_id": 23406,
+        "longitude": 34.35899686868412,
+		"latitude": -0.5428093941545693
+	},
+	{
+        "name": "MIGORI",
+        "dsl_id": 23409,
+        "longitude": 34.36334530759305,
+		"latitude": -0.9895368437063126
+	},
+	{
+        "name": "KISII",
+        "dsl_id": 23407,
+        "longitude": 34.77472298351621,
+		"latitude": -0.7746037572118151
+	},
+	{
+        "name": "BOMET",
+        "dsl_id": 23510,
+        "longitude": 35.29859758666983,
+		"latitude": -0.7262945834407128
+	},
+	{
+        "name": "NYAMIRA",
+        "dsl_id": 23410,
+        "longitude": 34.9646595611237,
+		"latitude": -0.6427324000921134
+	},
+	{
+        "name": "KISUMU",
+        "dsl_id": 23408,
+        "longitude": 34.83520346598095,
+		"latitude": -0.1694586947639893
+	},
+	{
+        "name": "TRANS NZOIA",
+        "dsl_id": 23519,
+        "longitude": 34.95741997749958,
+		"latitude": 1.050954808619053
+	}
+]

@@ -4,14 +4,23 @@ import { checkToken } from '../../controllers/auth/auth'
 import MainLayout from '../../components/MainLayout'
 import { CheckCircleIcon, InformationCircleIcon, LocationMarkerIcon, LockClosedIcon, XCircleIcon } from '@heroicons/react/solid'
 import { ArrowsExpandIcon } from '@heroicons/react/outline'
+import dynamic from 'next/dynamic'
 
 const Facility = (props) => {
+    const Map = dynamic(
+        () => import('../../components/Map'), // replace '@components/map' with your component's location
+        {
+            loading: () => <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
+            ssr: false
+        } // This line is important. It's what prevents server-side render
+    )
     let facility = props.data
     return (
         <div className="">
             <Head>
                 <title>KMHFL - {facility.official_name}</title>
                 <link rel="icon" href="/favicon.ico" />
+                <link rel="stylesheet" href="/assets/css/leaflet.css"/>
             </Head>
 
             <MainLayout>
@@ -182,7 +191,7 @@ const Facility = (props) => {
                                             </p>
                                         </div>
                                         <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                                            <label className=" text-gray-600">Facility published</label>
+                                            <label className=" text-gray-600">Published</label>
                                             <p className="text-black font-medium text-base flex">
                                                 {facility.is_published ?
                                                     <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
@@ -263,7 +272,7 @@ const Facility = (props) => {
                                     </div>
                                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Contacts:</h3>
-                                        {(facility.facility_contacts.length > 0) && facility.facility_contacts.map(contact => (
+                                        {(facility.facility_contacts && facility.facility_contacts.length > 0) && facility.facility_contacts.map(contact => (
                                             <div key={contact.contact_id} className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                 <label className="col-span-1 text-gray-600 capitalize">{contact.contact_type_name[0].toLocaleUpperCase() + contact.contact_type_name.slice(1).toLocaleLowerCase() || "Contact"}</label>
                                                 <p className="col-span-2 text-black font-medium text-base">{contact.contact || " - "}</p>
@@ -273,7 +282,7 @@ const Facility = (props) => {
                                             <label className="col-span-1 text-gray-600 capitalize">{facility.officer_in_charge.title_name || "Officer in charge"}</label>
                                             <p className="col-span-2 text-black font-medium text-base">{facility.officer_in_charge.name || " - "}</p>
                                         </div>}
-                                        {facility.officer_in_charge &&(facility.officer_in_charge.contacts.length > 0) && facility.officer_in_charge.contacts.map(contact => (
+                                        {facility.officer_in_charge && (facility.officer_in_charge.contacts.length > 0) && facility.officer_in_charge.contacts.map(contact => (
                                             <div key={contact.contact_id} className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                 <label className="col-span-1 text-gray-600 capitalize">In charge {contact.contact_type_name[0].toLocaleUpperCase() + contact.contact_type_name.slice(1).toLocaleLowerCase() || "Contact"}</label>
                                                 <p className="col-span-2 text-black font-medium text-base">{contact.contact || " - "}</p>
@@ -302,7 +311,6 @@ const Facility = (props) => {
                                                         <small className="text-xs text-gray-500">{service.category_name || ''}</small>
                                                     </div>
                                                     <label className="text-sm text-gray-600 flex gap-1 items-center">
-                                                        {/* <input type="checkbox" name={service.service_id + "_active"} /> */}
                                                         <CheckCircleIcon className="h-6 w-6 text-green-500" />
                                                         <span>Active</span>
                                                     </label>
@@ -331,7 +339,6 @@ const Facility = (props) => {
                                                         <small className="text-xs text-gray-500">{unit.regulating_body_name || ''}</small>
                                                     </div>
                                                     <div className="flex flex-row gap-1 items-center">
-                                                        {/* <input type="checkbox" name={unit.id + "_active"} /> */}
                                                         <CheckCircleIcon className="h-6 w-6 text-green-500" />
                                                         <label className="text-sm text-gray-600">Active</label>
                                                     </div>
@@ -391,7 +398,6 @@ const Facility = (props) => {
                                                         <small className="text-xs text-gray-500">{infra.id || ''}</small>
                                                     </div>
                                                     <div className="flex flex-row gap-1 items-center">
-                                                        {/* <input type="checkbox" name={infra.id + "_active"} /> */}
                                                         <CheckCircleIcon className="h-6 w-6 text-green-500" />
                                                         <label className="text-sm text-gray-600">Active</label>
                                                     </div>
@@ -420,7 +426,6 @@ const Facility = (props) => {
                                                         <small className="text-xs text-gray-500">{hr.id || ''}</small>
                                                     </div>
                                                     <div className="flex flex-row gap-1 items-center">
-                                                        {/* <input type="checkbox" name={hr.id + "_active"} /> */}
                                                         <CheckCircleIcon className="h-6 w-6 text-green-500" />
                                                         <label className="text-sm text-gray-600">Active</label>
                                                     </div>
@@ -438,15 +443,15 @@ const Facility = (props) => {
                     </div>
                     <aside className="flex flex-col col-span-5 md:col-span-2 gap-4 mt-5">
                         <h3 className="text-2xl tracking-tight font-semibold leading-5">Map</h3>
-                        <div className="w-full h-96 bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
-                            <span className="absolute top-2 right-2 cursor-pointer">
-                                <ArrowsExpandIcon className="h-5 w-5 text-gray-500" />
-                            </span>
-                            <div>
-                                <LocationMarkerIcon className="h-28 text-gray-400" />
-                                <span className="text-xs">{JSON.stringify(facility?.lat_long, null, 1)}</span>
-                            </div>
-                        </div>
+
+                        {(facility?.lat_long && facility?.lat_long.length > 0) ? <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
+                            <Map operational={facility.operational || facility.operation_status_name} code={facility?.code || "NO_CODE"} lat={facility?.lat_long[0]} long={facility?.lat_long[1]} name={facility.official_name || facility.name || ""} />
+                        </div> :
+                            <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
+                                <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                                    <p>No location data found for this facility.</p>
+                                </div>
+                            </div>}
                         <div className="flex flex-col gap-2 mt-3">
                             <h4 className="text-2xl text-gray-800">Recent activity</h4>
                             <ol className="list-decimal list-outside ml-4 flex flex-row gap-3">
