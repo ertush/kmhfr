@@ -4,7 +4,7 @@ import MapCenters from '../assets/maps/county-centers-coordinates'
 
 const Map = ({ operational, lat, long, name, code }) => {
     return (
-        <MapContainer center={[-0.818389, 37.477222]} zoom={6.499} maxZoom={9.00} scrollWheelZoom={false} touchZoom={false} style={{ height: 650, width: "100%" }}>
+        <MapContainer center={[-0.818389, 37.477222]} zoom={6.499} maxZoom={15.70} scrollWheelZoom={false} touchZoom={false} style={{ height: 650, width: "100%" }}>
             <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'  />
             <GeoJSON data={MapData} key={MapData} style={`color: '#006400'; weight: 5; opacity: 0.65;`} />
             <Marker position={[lat, long]}>

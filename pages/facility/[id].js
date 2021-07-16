@@ -20,7 +20,7 @@ const Facility = (props) => {
             <Head>
                 <title>KMHFL - {facility.official_name}</title>
                 <link rel="icon" href="/favicon.ico" />
-                <link rel="stylesheet" href="/assets/css/leaflet.css"/>
+                <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
 
             <MainLayout>
@@ -289,11 +289,12 @@ const Facility = (props) => {
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="bg-gray-100 w-full p-4 rounded">
+                                    <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
+                                        <summary>All data</summary>
                                         <pre className="language-json leading-normal text-sm whitespace-pre-wrap text-gray-800 overflow-y-auto" style={{ maxHeight: '70vh' }}>
-                                            {JSON.stringify({ ...facility, facility_services: [] }, null, 2)}
+                                            {JSON.stringify({ ...facility, xfacility_services: [] }, null, 2)}
                                         </pre>
-                                    </div>
+                                    </details>
                                 </div>
                             </Tabs.Panel>
                             <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
@@ -309,6 +310,12 @@ const Facility = (props) => {
                                                     <div>
                                                         <p className="text-gray-800 text-base">{service.service_name}</p>
                                                         <small className="text-xs text-gray-500">{service.category_name || ''}</small>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-gray-800 text-base">
+                                                            {service.average_rating || 0}/{service.number_of_ratings || 0}
+                                                        </p>
+                                                        <small className="text-xs text-gray-500">Rating</small>
                                                     </div>
                                                     <label className="text-sm text-gray-600 flex gap-1 items-center">
                                                         <CheckCircleIcon className="h-6 w-6 text-green-500" />
@@ -457,7 +464,7 @@ const Facility = (props) => {
                             <ol className="list-decimal list-outside ml-4 flex flex-row gap-3">
                                 <li className="bg-gray-50 w-full rounded-sm p-2">
                                     {facility?.latest_approval_or_rejection?.comment && <p>{facility?.latest_approval_or_rejection?.comment}</p>}
-                                    <small className="text-gray-500">{facility?.latest_approval_or_rejection?.id}</small>
+                                    {/* <small className="text-gray-500">{facility?.latest_approval_or_rejection?.id}</small> */}
                                 </li>
                             </ol>
                         </div>
@@ -469,6 +476,7 @@ const Facility = (props) => {
 }
 
 Facility.getInitialProps = async (ctx) => {
+    console.log(ctx.req)
     return checkToken(ctx.req, ctx.res).then(t => {
         let token = t.token
         let url = 'http://api.kmhfltest.health.go.ke/api/facilities/facilities/' + ctx.query.id + '/'

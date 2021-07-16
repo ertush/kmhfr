@@ -42,7 +42,7 @@ const getToken = (refresh_token) => {
         })
 }
 
-const checkToken = async (req, res) => {
+const checkToken = async (req, res, isProtected) => {
     const isServer = !!req
     const isBrowser = !req
     let ct
@@ -61,6 +61,11 @@ const checkToken = async (req, res) => {
     //check of cookie has expired
     if (!ct || ct == null || ct == undefined || (ct && JSON.parse(ct).expires > Date.now())) {
         console.log('Token expired. Refreshing...')
+        if(res){//check if protected page too
+            res.writeHead(301, { Location: '/auth/login?was='+req.url })
+            // res.writeHead(301, { Location: '/auth/login' })
+            res.end()
+        }
         let refresh_token
         if(ct && JSON.parse(ct).refresh_token){
             refresh_token = JSON.parse(ct).refresh_token
@@ -86,6 +91,7 @@ const checkToken = async (req, res) => {
                 return tkn;
             } else {
                 console.log('Error refreshing token: ', tk)
+                res.redirect('/auth/login?was='+req.url)
                 return { error: true, ...tk };
             }
         })
