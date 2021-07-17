@@ -5,7 +5,7 @@ const Cookies = require('cookies')
 const cookieCutter = require('cookie-cutter')
 
 const getToken = (req, res, refresh_token, creds) => {
-    console.log('------------getToken: ', creds)
+    // console.log('------------getToken: ', creds)
     const isServer = !!req
     const isBrowser = !req
     const bod = {} //new FormData();
@@ -33,7 +33,7 @@ const getToken = (req, res, refresh_token, creds) => {
     })
         .then(rs=>rs.json())
         .then(response => {
-            console.log('response: ', response)
+            // console.log('response: ', response)
             let tk = response;
             ////
             if (tk && tk.access_token && tk.expires_in && tk.access_token.length > 0) {
@@ -55,7 +55,7 @@ const getToken = (req, res, refresh_token, creds) => {
                 }
                 return tkn;
             } else {
-                console.log('Error refreshing token: ', tk)
+                // console.log('Error refreshing token: ', tk)
                 if (isBrowser) {
                     cookieCutter.set('access_token', '', "{}", { expires: new Date(0) })
                 } else if (isServer) {
@@ -66,7 +66,7 @@ const getToken = (req, res, refresh_token, creds) => {
                 return { error: true, ...tk };
             }
         }).then(json => {
-            console.log('New token: ', json)
+            // console.log('New token: ', json)
             return json;
         }).catch(err => {
             console.log('Error in getToken: ' + err)
@@ -75,7 +75,7 @@ const getToken = (req, res, refresh_token, creds) => {
 }
 
 const checkToken = async (req, res, isProtected, creds) => {
-    console.log('------------checkToken: ', creds)
+    // console.log('------------checkToken: ', creds)
     const isServer = !!req
     const isBrowser = !req
     let ct
@@ -121,13 +121,13 @@ const checkToken = async (req, res, isProtected, creds) => {
 }
 
 const logUserIn = (req, res, creds, was) => {
-    console.log('------------logUserIn: ', creds)
+    // console.log('------------logUserIn: ', creds)
     return getToken(req, res, null, creds).then(tk => {
         if (tk.error) {
             console.log('Error in LogIn: ', tk)
             return { error: true, ...tk };
         } else {
-            console.log('LogIn ok: ', tk)
+            // console.log('LogIn ok: ', tk)
             return tk;
         }
     })
