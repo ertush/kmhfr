@@ -1,8 +1,6 @@
-import { set } from 'cookie-cutter'
 import Head from 'next/head'
-import Router, {useRouter} from 'next/router'
+import {useRouter} from 'next/router'
 import React from 'react'
-import { logIn } from '../../controllers/auth/auth'
 
 const Login = (props) => {
     const router = useRouter()
@@ -11,7 +9,7 @@ const Login = (props) => {
     const [error, setError] = React.useState(props.error)
     const [msg, setMsg] = React.useState(props.msg)
     const [loading, setLoading] = React.useState(false)
-    const goSomewhere = where => router.push(where)
+    const goSomewhere = where => router.push(where) // (where, reload) => reload ? router.reload(where) : router.push(where)
     return (
         <div>
             <Head>
@@ -24,14 +22,14 @@ const Login = (props) => {
                     <a className="text-green-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</a>
                 </div>
                 <form onSubmit={ev => {
-                    ev.preventDefault()
+                    // ev.preventDefault()
                     setLoading(true)
                     setError('')
                     if (
                         (username && username.length > 0) &&
                         (password && password.length > 0)
                     ) {
-                        fetch('/api/login', {
+                        return fetch('/api/login', {
                             headers: {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json'
@@ -49,24 +47,30 @@ const Login = (props) => {
                                     setError(rsp.error)
                                 } else if (rsp?.access_token || rsp?.token) {
                                     setLoading(false)
-                                    setMsg('Log-in successful. Taking you home soon.')
+                                    setMsg('Log-in successful. Reirecting...')
                                     setTimeout(() => {
-                                        goSomewhere(props.was)
-                                    }, 4000);
+                                        goSomewhere('/') // , true)
+                                    }, 2500);
                                 } else {
                                     setError(error)
                                     setLoading(false)
                                 }
+                                return false
                             }).catch(err => {
                                 setLoading(false)
                                 setError(err.message)
+                                return false
                             })
 
                     } else {
                         setLoading(false)
                         setError('Please fill in all fields')
+                        return false
                     }
-                }} method="POST" action="/api/login" className="bg-gradient-to-tl from-blue-500 via-green-500 to-green-800 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-9 ">
+                }} 
+                // method="POST" 
+                action="javascript:void(0);"
+                className="bg-gradient-to-tl from-blue-500 via-green-500 to-green-800 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-9 ">
                     <h1 className="text-center text-3xl font-black text-green-100">Log in</h1>
                     <div className="flex flex-col gap-0 w-full">
                         {error && error.length > 0 && <p className="text-red-900 bg-red-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{error}</p>}
@@ -94,7 +98,6 @@ const Login = (props) => {
                     </div>
                     <div className="flex flex-col gap-4 w-full text-center">
                         <button disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-black focus:bg-black active:bg-black bg-blend-color-dodge " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-black/50")}
-                            type="submit"
                         >{loading ? "Loading..." : "Log in"}</button>
                         <div className="flex justify-between items-center w-full px-2">
                             <a href="/" className="text-base text-green-100 hover:underline focus:underline active:underline">Forgot password?</a>
