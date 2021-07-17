@@ -49,7 +49,7 @@ const Login = (props) => {
                                     setLoading(false)
                                     setMsg('Log-in successful. Reirecting...')
                                     setTimeout(() => {
-                                        goSomewhere('/') // , true)
+                                        goSomewhere(props.was) // , true)
                                     }, 2500);
                                 } else {
                                     setError(error)
