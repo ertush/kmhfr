@@ -5,9 +5,9 @@ const Cookies = require('cookies')
 const cookieCutter = require('cookie-cutter')
 
 const getToken = (req, res, refresh_token, creds) => {
+    console.log('------------getToken: ', creds)
     const isServer = !!req
     const isBrowser = !req
-    console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
     const bod = {} //new FormData();
     if (refresh_token && refresh_token.length > 0) {
         console.log('Refreshing token...')
@@ -31,12 +31,12 @@ const getToken = (req, res, refresh_token, creds) => {
         },
         'body': new URLSearchParams(bod).toString() //bod
     })
-        // return await rs.json()
+        .then(rs=>rs.json())
         .then(response => {
-            // console.log('response: ', response)
-            let tk = response.json();
+            console.log('response: ', response)
+            let tk = response;
             ////
-            if (tk && tk.access_token && tk.expires_in && tk.access_token > 0) {
+            if (tk && tk.access_token && tk.expires_in && tk.access_token.length > 0) {
                 console.log('Token refreshed.')
                 let expiry = new Date(new Date().getTime() + (parseInt(tk.expires_in) * 1000))
                 let tkn = {
@@ -56,11 +56,9 @@ const getToken = (req, res, refresh_token, creds) => {
                 return tkn;
             } else {
                 console.log('Error refreshing token: ', tk)
-                res.redirect('/auth/login?was='+req.url)
+                // res.redirect('/auth/login?was='+req.url+'&h=0')
                 return { error: true, ...tk };
             }
-            ////
-            return tk
         }).then(json => {
             console.log('New token: ', json)
             return json;
@@ -71,6 +69,7 @@ const getToken = (req, res, refresh_token, creds) => {
 }
 
 const checkToken = async (req, res, isProtected, creds) => {
+    console.log('------------checkToken: ', creds)
     const isServer = !!req
     const isBrowser = !req
     let ct
@@ -89,8 +88,8 @@ const checkToken = async (req, res, isProtected, creds) => {
     //check of cookie has expired
     if (!ct || ct == null || ct == undefined || (ct && JSON.parse(ct).expires > Date.now())) {
         console.log('Token expired. Refreshing...')
-        if(res){//check if protected page too
-            res.writeHead(301, { Location: '/auth/login?was='+encodeURIComponent(req.url) })
+        if(req && req.asPath != '/api/login' && req.asPath != '/auth/login'){//check if protected page too
+            res.writeHead(301, { Location: '/auth/login?was='+encodeURIComponent(req.url)+'&h=1' })
             // res.writeHead(301, { Location: '/auth/login' })
             res.end()
         }
@@ -104,7 +103,7 @@ const checkToken = async (req, res, isProtected, creds) => {
                 return tkn;
             } else {
                 console.log('Error refreshing token: ', tk)
-                res.redirect('/auth/login?was='+encodeURIComponent(req.url))
+                // res.redirect('/auth/login?was='+encodeURIComponent(req.url))
                 return { error: true, ...tk };
             }
         })
@@ -115,28 +114,21 @@ const checkToken = async (req, res, isProtected, creds) => {
     }
 }
 
-const logIn = (req, res, creds, was) => {
-    const isServer = !!req
-    const isBrowser = !req
-    console.log('LogIn: ', creds)
-    return checkToken(req, res, false, creds).then(tk => {
-        console.log('Token: ', tk)
+const logUserIn = (req, res, creds, was) => {
+    console.log('------------logUserIn: ', creds)
+    return getToken(req, res, null, creds).then(tk => {
         if (tk.error) {
             console.log('Error in LogIn: ', tk)
-            res.redirect('/auth/login?was='+encodeURIComponent(req.url)+'&err='+JSON.stringify(tk))
             return { error: true, ...tk };
         } else {
             console.log('LogIn ok: ', tk)
-            res.writeHead(301, { Location: decodeURIComponent(was) })
-            // return tk;
+            return tk;
         }
-    }).then(tk => {
-        console.log('New token: ', tk)
-        return tk;
-    }).catch(err => {
+    })
+    .catch(err => {
         console.log('Error in LogIn: ' + err)
         return { error: true, ...err };
     })
 }
 
-module.exports = { checkToken, getToken, logIn }
+module.exports = { checkToken, getToken, logUserIn }
