@@ -56,6 +56,12 @@ const getToken = (req, res, refresh_token, creds) => {
                 return tkn;
             } else {
                 console.log('Error refreshing token: ', tk)
+                if (isBrowser) {
+                    cookieCutter.set('access_token', '', "{}", { expires: new Date(0) })
+                } else if (isServer) {
+                    const cookies = new Cookies(req, res)
+                    cookies.set('access_token', "{}", { expires: new Date(0), maxAge: 0, overwrite: true })
+                }
                 // res.redirect('/auth/login?was='+req.url+'&h=0')
                 return { error: true, ...tk };
             }
