@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { MenuAlt1Icon, SearchIcon } from '@heroicons/react/solid';
 import React from 'react';
 
@@ -16,16 +17,24 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
                             </button>
                             <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 p-4 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none justify-between gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
                                 <li className="flex-wrap">
-                                    <a href="/" className="text-black text-base md:text-lg hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-semibold">Home</a>
+                                    <Link href="/">
+                                        <a className="text-black text-base md:text-lg hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-semibold">Home</a>
+                                    </Link>
                                 </li>
                                 <li className="flex-wrap">
-                                    <a href="/" className="text-gray-700 text-base md:text-lg hover:text-black focus:text-black active:text-black">Facilities</a>
+                                    <Link href="/facilities">
+                                        <a className="text-gray-700 text-base md:text-lg hover:text-black focus:text-black active:text-black">Facilities</a>
+                                    </Link>
                                 </li>
                                 <li className="flex-wrap">
-                                    <a href="/" className="text-gray-700 text-base md:text-lg hover:text-black focus:text-black active:text-black">Community Units</a>
+                                    <Link href="/community-units">
+                                        <a className="text-gray-700 text-base md:text-lg hover:text-black focus:text-black active:text-black">Community Units</a>
+                                    </Link>
                                 </li>
                                 <li className="flex-wrap">
-                                    <a href="/" className="text-gray-700 text-base md:text-lg hover:text-black focus:text-black active:text-black">GIS Maps</a>
+                                    <Link href="/gis">
+                                        <a className="text-gray-700 text-base md:text-lg hover:text-black focus:text-black active:text-black">GIS Maps</a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -45,7 +54,7 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
                 <>
                     {isLoading ? <div className="absolute inset-0 overflow-hidden bg-white opacity-90 z-20 flex items-center justify-center h-full">
                         <h3 className="text-2xl text-gray-800 font-bold">Loading...</h3>
-                    </div> : children }
+                    </div> : children}
                 </>
             </div>
             <footer className="bg-black py-5 items-center justify-center flex flex-wrap gap-3 text-gray-300 text-sm w-full">
