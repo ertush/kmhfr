@@ -52,7 +52,7 @@ const Home = (props) => {
                     </div>
                     <div className="col-span-2 md:col-span-1 border rounded-lg border-gray-300 shadow-sm group hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
                         <Link href="/community-units">
-                            <a className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">Communiity Units</a>
+                            <a className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">Community Units</a>
                         </Link>
                         <p className="text-base">
                             This provides a list of all community health units and the system provided advance search where you can refine your search by using administrative units.

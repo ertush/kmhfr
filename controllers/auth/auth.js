@@ -9,6 +9,26 @@ const getToken = (req, res, refresh_token, creds) => {
     const isServer = !!req
     const isBrowser = !req
     const bod = {} //new FormData();
+    if (isBrowser) {
+        console.log('running checkToken in the BROWSER')
+        ct = cookieCutter.get('access_token')
+        if(typeof ct =="string"){
+            ct = JSON.parse(ct)
+        }
+        if(ct.expiry > Date.now()){
+            return ct
+        }
+    } else if (isServer) {
+        console.log('running checkToken in the SERVER')
+        const cookies = new Cookies(req, res)
+        ct = cookies.get('access_token')
+        if(typeof ct =="string"){
+            ct = JSON.parse(ct)
+        }
+        if(ct.expiry > Date.now()){
+            return ct
+        }
+    }
     if (refresh_token && refresh_token.length > 0) {
         console.log('Refreshing token...')
         bod.grant_type = "refresh_token"
@@ -75,6 +95,7 @@ const getToken = (req, res, refresh_token, creds) => {
 }
 
 const checkToken = async (req, res, isProtected, creds) => {
+    if(!creds || creds==undefined || creds == null) creds == null
     // console.log('------------checkToken: ', creds)
     const isServer = !!req
     const isBrowser = !req

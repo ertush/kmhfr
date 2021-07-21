@@ -274,6 +274,7 @@ Home.getInitialProps = async (ctx) => {
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
+        console.log('running fetchData('+url+')')
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
