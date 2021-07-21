@@ -41,50 +41,50 @@ const Home = (props) => {
                             <span className="text-gray-500">Community Units</span>
                         </div>
                         <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-start justify-start gap-1">{(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Community Units matching "${props?.query?.searchTerm}"` : "All Community Units"}{props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
-                        {/* <small className="font-bold text-sm">{JSON.stringify(drillDown)}</small> */}
+                        {/* <small className="font-bold text-sm">{JSON.stringify(props)}</small> */}
                     </div>
                     <div className="col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none">
                         <div className="flex flex-col justify-center items-center px-1 md:px-4 w-full ">
                             {/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
-                            {cus && cus.length > 0 ? cus.map((facility, index) => (
-                                <div key={facility.id} className="px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full">
+                            {cus && cus.length > 0 ? cus.map((comm_unit, index) => (
+                                <div key={comm_unit.id} className="px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full">
                                     <div className="col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left">
                                         <h3 className="text-2xl w-full">
-                                            <a href={'/cu/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
-                                                <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility.official_name || facility.official_name || facility.name}
+                                            <a href={'/cu/' + comm_unit.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
+                                                <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{comm_unit.official_name || comm_unit.official_name || comm_unit.name}
                                             </a>
                                         </h3>
-                                        {/* <p className="text-sm text-gray-600 w-full">{facility.nearest_landmark || ' '}{' '} {facility.location_desc || ' '}</p> */}
+                                        {/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
                                         <p className="text-sm text-gray-600 w-full flex gap-2 items-center">
-                                            <span className="text-lg text-black font-semibold"># {facility.code ? facility.code : 'NO_CODE' || ' '}</span>
-                                            <span>{facility.owner_name || ' '}</span>
+                                            <span className="text-lg text-black font-semibold"># {comm_unit.code ? comm_unit.code : 'NO_CODE' || ' '}</span>
+                                            <span>{comm_unit.facility_name || ' '}</span>
                                         </p>
                                         <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
                                             <div className="flex flex-col items-start justify-start gap-0 leading-none">
                                                 <label className="text-xs text-gray-500">County:</label>
-                                                <span>{facility.county_name || facility.county || 'N/A'}</span>
+                                                <span>{comm_unit.facility_county || comm_unit.county || 'N/A'}</span>
                                             </div>
                                             <div className="flex flex-col items-start justify-start gap-0 leading-none">
                                                 <label className="text-xs text-gray-500">Sub-county:</label>
-                                                <span>{facility.sub_county_name || facility.sub_county || 'N/A'}</span>
+                                                <span>{comm_unit.facility_subcounty || comm_unit.sub_county || 'N/A'}</span>
                                             </div>
                                             <div className="flex flex-col items-start justify-start gap-0 leading-none">
                                                 <label className="text-xs text-gray-500">Ward:</label>
-                                                <span>{facility.ward_name || 'N/A'}</span>
+                                                <span>{comm_unit.facility_ward || 'N/A'}</span>
                                             </div>
                                             <div className="flex flex-col items-start justify-start gap-0 leading-none">
                                                 <label className="text-xs text-gray-500">Constituency:</label>
-                                                <span>{facility.constituency_name || facility.constituency || 'N/A'}</span>
+                                                <span>{comm_unit.constituency_name || comm_unit.facility_constituency || 'N/A'}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-8 md:col-span-3 flex flex-wrap items-center gap-3 text-lg">
-                                        {(facility.operational || facility.operation_status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
-                                        {!facility.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility.rejected ? "Rejected" : ""}</span>}
-                                        {facility.has_edits ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
+                                        {(comm_unit.operational || comm_unit.operation_status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
+                                        {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>}
+                                        {comm_unit.has_edits ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
                                     </div>
                                     <div className="col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end">
-                                        <a href={'/facility/edit/' + facility.id} className="text-blue-800 hover:underline active:underline focus:underline bg-blue-200 md:bg-transparent px-2 md:px-0 rounded md:rounded-none">
+                                        <a href={'/community-unit/edit/' + comm_unit.id} className="text-blue-800 hover:underline active:underline focus:underline bg-blue-200 md:bg-transparent px-2 md:px-0 rounded md:rounded-none">
                                             Edit
                                         </a>
                                         <a href="/" className="text-blue-800 hover:underline active:underline focus:underline">
@@ -93,16 +93,14 @@ const Home = (props) => {
                                     </div>
                                 </div>
                             )) : (
-                                <div className="w-full flex flex-col items-center justify-start gap-2 p-4">
-                                    <h3 className="text-2xl w-full flex gap-1">
-                                        <span className="text-sm text-gray-600">No community units found</span>
-                                        <a href="/" className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
+                                <div className="w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3">
+                                        <span className="text-base text-gray-700">No community units found</span>
+                                        <a href={props.path || '/'} className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
                                             Refresh.
                                         </a>
-                                    </h3>
                                 </div>
                             )}
-                            <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                            {cus && cus.length>0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <a href={'/?page=' + props?.data?.current_page} className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">
                                         {props?.data?.current_page}
@@ -126,7 +124,7 @@ const Home = (props) => {
                                     </li>
                                 ))} */}
 
-                            </ul>
+                            </ul>}
                         </div>
                     </div>
                     <aside className="flex flex-col col-span-5 md:col-span-1 p-1 md:h-full">
@@ -261,7 +259,8 @@ Home.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        let url = 'http://api.kmhfltest.health.go.ke/api/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level,operation_status_name'
+        // let url = 'http://api.kmhfltest.health.go.ke/api/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,is_approved,rejected,keph_level,operation_status_name'
+        let url = 'http://api.kmhfltest.health.go.ke/api/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency,is_approved,has_edits,is_complete'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q

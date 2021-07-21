@@ -93,16 +93,14 @@ const Home = (props) => {
                                     </div>
                                 </div>
                             )) : (
-                                <div className="w-full flex flex-col items-center justify-start gap-2 p-4">
-                                    <h3 className="text-2xl w-full flex gap-1">
-                                        <span className="text-sm text-gray-600">No facilities found</span>
-                                        <a href="/" className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
+                                <div className="w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3">
+                                        <span className="text-base text-gray-700">No facilities found</span>
+                                        <a href={props.path || '/'} className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
                                             Refresh.
                                         </a>
-                                    </h3>
                                 </div>
                             )}
-                            <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                            {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <a href={'/?page=' + props?.data?.current_page} className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">
                                         {props?.data?.current_page}
@@ -126,7 +124,7 @@ const Home = (props) => {
                                     </li>
                                 ))} */}
 
-                            </ul>
+                            </ul>}
                         </div>
                     </div>
                     <aside className="flex flex-col col-span-5 md:col-span-1 p-1 md:h-full">
@@ -144,7 +142,7 @@ const Home = (props) => {
                                             ev.preventDefault()
                                             return false
                                         }}>
-                                            {
+                                            {filters && Object.keys(filters).length>0 &&
                                                 Object.keys(filters).map(ft => (
                                                     <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                         <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
