@@ -1,6 +1,8 @@
 const FormData = require('form-data');
 const Cookies = require('cookies')
 const cookieCutter = require('cookie-cutter')
+// require('dotenv').config({ path: `${__dirname}/../../.env.local` })
+console.log('process.env ::::: ', process.env.API_URL)
 
 const getToken = (req, res, refresh_token, creds) => {
     const cookies = new Cookies(req, res)
@@ -106,9 +108,9 @@ const checkToken = async (req, res, isProtected, creds) => {
     if (isBrowser && typeof window != "undefined") {
         console.log('running checkToken in the BROWSER')
         ct = cookieCutter.get('access_token')
-        console.log("B checkToken ct == ", ct)
+        // console.log("B checkToken ct == ", ct)
         if (ct && ct != null && ct != undefined && new Date(ct.expires) > Date.now()) {
-            console.log('B Token is valid: ', ct)
+            console.log('B Token is valid')//: ', ct)
             return ct
         } else {
             console.log('Refreshing entire page...')
@@ -120,9 +122,9 @@ const checkToken = async (req, res, isProtected, creds) => {
         if (typeof ct == "string") {
             ct = JSON.parse(ct)
         }
-        console.log("S checkToken ct == ", ct)
+        // console.log("S checkToken ct == ", ct)
         if (ct && ct != null && ct != undefined && new Date(ct.expires) > Date.now()) {
-            console.log('S Token is valid: ', ct)
+            console.log('S Token is valid')//: ', ct)
             return ct
         }
     }
@@ -158,9 +160,6 @@ const checkToken = async (req, res, isProtected, creds) => {
 const logUserIn = (req, res, creds, was) => {
     // console.log('------------logUserIn: ', creds)
     return getToken(req, res, null, creds).then(tk => {
-        console.log('getToken in logUserIn: req:', !!req)
-        console.log('getToken in logUserIn: res:', !!res)
-        console.log('getToken in logUserIn: creds:', creds)
         if (tk.error) {
             console.log('Error in LogIn: ', tk)
             return { error: true, ...tk };
@@ -175,15 +174,18 @@ const logUserIn = (req, res, creds, was) => {
         })
 }
 
-const getUserDetails = token => {
-    let url = process.env.API_URL + '/rest-auth/user/'
+const getUserDetails = async (token, url) => {
+    // let url = process.env.API_URL + '/rest-auth/user/'
+    // let url = 'http://api.kmhfltest.health.go.ke/api' + '/rest-auth/user/'
     if(typeof window != "undefined") {
-        let savedSession = window.sessionStorage.getItem('user')
-        if (savedSession) {
+        let savedSession = JSON.parse(window.sessionStorage.getItem('user'))
+        if (savedSession && savedSession?.id && savedSession?.id.length>0) {
             console.log('Saved session: ', savedSession)
-            return Promise.resolve(JSON.parse(savedSession))
+            // return Promise.resolve(JSON.parse(savedSession))
+            return savedSession
         }
     }
+    console.log('getUserDetails URL: ',url)
     return fetch(url, {
         'method': 'GET',
         'headers': {
@@ -191,7 +193,10 @@ const getUserDetails = token => {
             'cache-control': "no-cache",
             "Authorization": "Bearer " + token
         }
-    }).then(response => {
+    })
+    .then( j=>j.json() )
+    .then(response => {
+        console.log('=================== getUserDetails returned: ' + response)
         if (response.detail || response.error) {
             console.log('Error in getUserDetails: ' + response)
             return {
@@ -199,10 +204,10 @@ const getUserDetails = token => {
             }
         }
         if(typeof window !== "undefined") {
-            console.log('getUserDetails in BROWSER')
+            console.log('getUserDetails returning ', response)
             window.sessionStorage.setItem('user', JSON.stringify(response))
+            return response
         }
-        return response.json()
     }).catch(err => {
         console.log('Error in getUserDetails: ' + err)
         return {

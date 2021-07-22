@@ -94,10 +94,10 @@ const Home = (props) => {
                                 </div>
                             )) : (
                                 <div className="w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3">
-                                        <span className="text-base text-gray-700">No facilities found</span>
-                                        <a href={props.path || '/'} className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
-                                            Refresh.
-                                        </a>
+                                    <span className="text-base text-gray-700">No facilities found</span>
+                                    <a href={props.path || '/'} className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
+                                        Refresh.
+                                    </a>
                                 </div>
                             )}
                             {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
@@ -142,7 +142,7 @@ const Home = (props) => {
                                             ev.preventDefault()
                                             return false
                                         }}>
-                                            {filters && Object.keys(filters).length>0 &&
+                                            {filters && Object.keys(filters).length > 0 &&
                                                 Object.keys(filters).map(ft => (
                                                     <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                         <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
@@ -211,17 +211,20 @@ const Home = (props) => {
                                                 if (Object.keys(drillDown).length > 0) {
                                                     let qry = Object.keys(drillDown).map(function (key) {
                                                         let er = ''
-                                                        if(props.path && !props.path.includes(key+'=')){
+                                                        if (props.path && !props.path.includes(key + '=')) {
                                                             er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
                                                         }
                                                         return er
                                                     }).join('&')
                                                     let op = '?'
-                                                    if(props.path && props.path.includes('?') && props.path.includes('=')){op='&'}
+                                                    if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
                                                     console.log(props.path)
                                                     // setDrillDown({})
-                                                    if(!props.path.includes())
-                                                    router.push(props.path + op + qry)
+                                                    if(typeof window !== 'undefined' && window){
+                                                        window.location.href = props.path + op +qry
+                                                    }else{
+                                                        router.push(props.path + op + qry)
+                                                    }
                                                 }
                                             }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
                                             <div className="w-full flex items-center py-2 justify-center">
@@ -242,9 +245,10 @@ const Home = (props) => {
 }
 
 Home.getInitialProps = async (ctx) => {
+    const API_URL = process.env.API_URL || 'http://api.kmhfltest.health.go.ke/api'
 
     const fetchFilters = token => {
-        let filters_url = process.env.API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+        let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
         return fetch(filters_url, {
             headers: {
@@ -265,7 +269,7 @@ Home.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        let url = process.env.API_URL+'/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level,operation_status_name'
+        let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level,operation_status_name'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
@@ -282,7 +286,7 @@ Home.getInitialProps = async (ctx) => {
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
-        console.log('running fetchData('+url+')')
+        console.log('running fetchData(' + url + ')')
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

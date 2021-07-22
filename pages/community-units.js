@@ -293,8 +293,9 @@ const Home = (props) => {
 Home.getInitialProps = async (ctx) => {
     // console.log("=======================================")
     // console.log(ctx.req)
+    const API_URL = process.env.API_URL || 'http://api.kmhfltest.health.go.ke/api'
     const fetchFilters = token => {
-        let filters_url = process.env.API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+        let filters_url = API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
         return fetch(filters_url, {
             headers: {
@@ -316,8 +317,8 @@ Home.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        // let url = process.env.API_URL+'/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,is_approved,rejected,keph_level,operation_status_name'
-        let url = process.env.API_URL+'/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency,is_approved,has_edits,is_complete'
+        // let url = API_URL+'/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,is_approved,rejected,keph_level,operation_status_name'
+        let url = API_URL+'/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency,is_approved,has_edits,is_complete'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q

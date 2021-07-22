@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { MenuAlt1Icon, SearchIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon, MenuAlt1Icon, SearchIcon } from '@heroicons/react/solid';
 import React, {useState, useEffect} from 'react';
 import { Menu } from '@headlessui/react'
 import { getUserDetails } from '../controllers/auth/auth'
@@ -10,22 +10,35 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
     const activeClasses = "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-2 border-green-600"
     const inactiveClasses = "text-gray-700 hover:text-black focus:text-black active:text-black"
     const currentPath = router.asPath.split('?', 1)[0]
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [user, setUser] = useState(null)
     //check if a session cookie is set
 
     useEffect(() => {
-        
-        const isLoggedIn = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1)
-        let session_token = {}
+        let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
+        setIsLoggedIn(is_user_logged_in)
+        let session_token = null
         if(isLoggedIn){
             session_token = JSON.parse(window.document.cookie.split('access_token=')[1])
         }
         
-        if(typeof window !== 'undefined' && session_token.token){
-            let userDetails = getUserDetails(session_token.token)
-            setUser(userDetails)
+        if(is_user_logged_in && typeof window !== 'undefined' && session_token !== null){
+            // console.log('active session found')
+            getUserDetails(session_token.token, process.env.API_URL + '/rest-auth/user/').then(usr=>{
+                console.log('usr: ',usr)
+                if(usr.error || usr.detail){
+                    setIsLoggedIn(false)
+                    setUser(null)
+                }else{
+                    setIsLoggedIn(true)
+                    setUser(usr)
+                }
+            })
+        }else{
+            console.log('no session. Refreshing...')
+            // router.push('/auth/login')
         }
-        
+
     }, [])
         
     return (
@@ -34,7 +47,7 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
                 <header className="flex flex-wrap items-center justify-between gap-4 w-full p-2 max-w-screen-2xl">
                     <nav className="flex flex-auto px-2 items-center justify-between md:justify-start gap-3 py-3 md:py-0 md:gap-5">
                         <div id="logo" className="mx:px-3">
-                            <a href="/" className="font-mono text-3xl text-black font-bold">KMHFL-v2</a>
+                            <a href="/" className="font-mono text-3xl leading-none tracking-tight text-black font-bold">KMHFL-v3</a>
                         </div>
                         <div className="group p-3">
                             <button className="border-2 border-gray-600 rounded p-1 md:hidden focus:bg-black focus:border-black focus:text-white hover:bg-black hover:border-black hover:text-white active:bg-black active:border-black active:text-white">
@@ -71,10 +84,13 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
                                 <SearchIcon className="w-5 h-5" />
                             </button>
                         </form>
-                        {isLoggedIn ? (
+                        {(isLoggedIn && user && user !== null) ? (
                             <>
                                 <Menu>
-                                    <Menu.Button>{JSON.stringify(session_token.token)}</Menu.Button>
+                                    <Menu.Button as="div" className="flex items-center justify-center gap-1">
+                                        <span className="leading-none p-0">{user.full_name || 'My account'}</span>
+                                        <span className="leading-none p-0"><ChevronDownIcon className="h-4 w-5"/></span>
+                                    </Menu.Button>
                                     <Menu.Items>
                                         <Menu.Item>
                                             {({ active }) => (
