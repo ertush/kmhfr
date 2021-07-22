@@ -15,6 +15,7 @@ export default async function logIn(req, res) {
                 });
             }
         } catch (err) {
+            console.log("logIn API error: ", err)
             res.status(500).json({
                 "error": err.message
             });

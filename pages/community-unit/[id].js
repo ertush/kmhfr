@@ -28,7 +28,7 @@ const Facility = (props) => {
                     <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
                         <div className="flex flex-row gap-2 text-sm md:text-base">
                             <a className="text-green-700" href="/">Home</a> {'>'}
-                            <a className="text-green-700" href="/">Facilities</a> {'>'}
+                            <a className="text-green-700" href="/community-units">Community units</a> {'>'}
                             <span className="text-gray-500">{facility.official_name} ( #<i className="text-black">{facility.code || "NO_CODE"}</i> )</span>
                         </div>
                         <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (facility.is_approved ? "border-green-600" : "border-red-600")}>
@@ -479,7 +479,7 @@ Facility.getInitialProps = async (ctx) => {
     console.log(ctx.req)
     return checkToken(ctx.req, ctx.res).then(t => {
         let token = t.token
-        let url = 'http://api.kmhfltest.health.go.ke/api/facilities/facilities/' + ctx.query.id + '/'
+        let url = process.env.API_URL+'/facilities/facilities/' + ctx.query.id + '/'
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

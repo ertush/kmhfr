@@ -210,10 +210,18 @@ const Home = (props) => {
                                             <button onClick={ev => {
                                                 if (Object.keys(drillDown).length > 0) {
                                                     let qry = Object.keys(drillDown).map(function (key) {
-                                                        return encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
+                                                        let er = ''
+                                                        if(props.path && !props.path.includes(key+'=')){
+                                                            er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
+                                                        }
+                                                        return er
                                                     }).join('&')
+                                                    let op = '?'
+                                                    if(props.path && props.path.includes('?') && props.path.includes('=')){op='&'}
+                                                    console.log(props.path)
                                                     // setDrillDown({})
-                                                    router.push('/' + '?' + qry)
+                                                    if(!props.path.includes())
+                                                    router.push(props.path + op + qry)
                                                 }
                                             }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
                                             <div className="w-full flex items-center py-2 justify-center">
@@ -236,7 +244,7 @@ const Home = (props) => {
 Home.getInitialProps = async (ctx) => {
 
     const fetchFilters = token => {
-        let filters_url = 'http://api.kmhfltest.health.go.ke/api/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+        let filters_url = process.env.API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
         return fetch(filters_url, {
             headers: {
@@ -257,7 +265,7 @@ Home.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        let url = 'http://api.kmhfltest.health.go.ke/api/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level,operation_status_name'
+        let url = process.env.API_URL+'/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level,operation_status_name'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
@@ -284,7 +292,7 @@ Home.getInitialProps = async (ctx) => {
             .then(json => {
                 return fetchFilters(token).then(ft => {
                     return {
-                        data: json, query, filters: { ...ft }
+                        data: json, query, filters: { ...ft }, path: ctx.asPath || '/facilities'
                     }
                 })
             }).catch(err => {
@@ -293,7 +301,8 @@ Home.getInitialProps = async (ctx) => {
                     error: true,
                     err: err,
                     data: [],
-                    query: {}
+                    query: {},
+                    path: ctx.asPath || '/facilities'
                 }
             })
     }
@@ -307,7 +316,8 @@ Home.getInitialProps = async (ctx) => {
             error: true,
             err: err,
             data: [],
-            query: {}
+            query: {},
+            path: ctx.asPath || '/facilities'
         }
     })
 

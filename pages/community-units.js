@@ -50,7 +50,7 @@ const Home = (props) => {
                                 <div key={comm_unit.id} className="px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full">
                                     <div className="col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left">
                                         <h3 className="text-2xl w-full">
-                                            <a href={'/cu/' + comm_unit.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
+                                            <a href={'/community-unit/' + comm_unit.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
                                                 <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{comm_unit.official_name || comm_unit.official_name || comm_unit.name}
                                             </a>
                                         </h3>
@@ -162,58 +162,115 @@ const Home = (props) => {
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
                                                 <label htmlFor="has_edits" className="text-gray-600 capitalize text-sm">Has edits</label>
                                                 <input type="checkbox" defaultChecked={props?.query?.has_edits || false} name="has_edits" id="has_edits" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'has_edits': ev.target.checked })
+                                                    if(ev.target.checked){
+                                                        setDrillDown({ ...drillDown, 'has_edits': ev.target.checked })
+                                                    }else{
+                                                        let r = {...drillDown}
+                                                        delete r.has_edits
+                                                        setDrillDown(r)
+                                                    }
                                                 }} />
                                             </div>
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
                                                 <label htmlFor="is_approved" className="text-gray-600 capitalize text-sm">Approved</label>
                                                 <input type="checkbox" defaultChecked={props?.query?.is_approved || false} name="is_approved" id="is_approved" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'is_approved': ev.target.checked })
+                                                    if(ev.target.checked){
+                                                        setDrillDown({ ...drillDown, 'is_approved': ev.target.checked })
+                                                    }else{
+                                                        let r = {...drillDown}
+                                                        delete r.is_approved
+                                                        setDrillDown(r)
+                                                    }
                                                 }} />
                                             </div>
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
                                                 <label htmlFor="is_complete" className="text-gray-600 capitalize text-sm">Complete</label>
                                                 <input type="checkbox" defaultChecked={props?.query?.is_complete || false} name="is_complete" id="is_complete" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'is_complete': ev.target.checked })
+                                                    if(ev.target.checked){
+                                                        setDrillDown({ ...drillDown, 'is_complete': ev.target.checked })
+                                                    }else{
+                                                        let r = {...drillDown}
+                                                        delete r.is_complete
+                                                        setDrillDown(r)
+                                                    }
                                                 }} />
                                             </div>
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
                                                 <label htmlFor="number_of_beds" className="text-gray-600 capitalize text-sm">Has beds</label>
                                                 <input type="checkbox" defaultChecked={props?.query?.number_of_beds || false} name="number_of_beds" id="number_of_beds" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'number_of_beds': ev.target.checked })
+                                                    if(ev.target.checked){
+                                                        setDrillDown({ ...drillDown, 'number_of_beds': ev.target.checked })
+                                                    }else{
+                                                        let r = {...drillDown}
+                                                        delete r.number_of_beds
+                                                        setDrillDown(r)
+                                                    }
                                                 }} />
                                             </div>
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
                                                 <label htmlFor="number_of_cots" className="text-gray-600 capitalize text-sm">Has cots</label>
                                                 <input type="checkbox" defaultChecked={props?.query?.number_of_cots || false} name="number_of_cots" id="number_of_cots" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'number_of_cots': ev.target.checked })
+                                                    if(ev.target.checked){
+                                                        setDrillDown({ ...drillDown, 'number_of_cots': ev.target.checked })
+                                                    }else{
+                                                        let r = {...drillDown}
+                                                        delete r.number_of_cots
+                                                        setDrillDown(r)
+                                                    }
                                                 }} />
                                             </div>
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
                                                 <label htmlFor="open_whole_day" className="text-gray-600 capitalize text-sm">Open 24 hours</label>
                                                 <input type="checkbox" defaultChecked={props?.query?.open_whole_day || false} name="open_whole_day" id="open_whole_day" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'open_whole_day': ev.target.checked })
+                                                    if(ev.target.checked){
+                                                        setDrillDown({ ...drillDown, 'open_whole_day': ev.target.checked })
+                                                    }else{
+                                                        let r = {...drillDown}
+                                                        delete r.open_whole_day
+                                                        setDrillDown(r)
+                                                    }
                                                 }} />
                                             </div>
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
                                                 <label htmlFor="open_weekends" className="text-gray-600 capitalize text-sm">Open weekends</label>
                                                 <input type="checkbox" defaultChecked={props?.query?.open_weekends || false} name="open_weekends" id="open_weekends" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'open_weekends': ev.target.checked })
+                                                    if(ev.target.checked){
+                                                        setDrillDown({ ...drillDown, 'open_weekends': ev.target.checked })
+                                                    }else{
+                                                        let r = {...drillDown}
+                                                        delete r.open_weekends
+                                                        setDrillDown(r)
+                                                    }
                                                 }} />
                                             </div>
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
                                                 <label htmlFor="open_public_holidays" className="text-gray-600 capitalize text-sm">Open holidays</label>
                                                 <input type="checkbox" defaultChecked={props?.query?.open_public_holidays || false} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'open_public_holidays': ev.target.checked })
+                                                    if(ev.target.checked){
+                                                        setDrillDown({ ...drillDown, 'open_public_holidays': ev.target.checked })
+                                                    }else{
+                                                        let r = {...drillDown}
+                                                        delete r.open_public_holidays
+                                                        setDrillDown(r)
+                                                    }
                                                 }} />
                                             </div>
                                             <button onClick={ev => {
                                                 if (Object.keys(drillDown).length > 0) {
                                                     let qry = Object.keys(drillDown).map(function (key) {
-                                                        return encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
+                                                        let er = ''
+                                                        if(props.path && !props.path.includes(key+'=')){
+                                                            er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
+                                                        }
+                                                        return er
                                                     }).join('&')
+                                                    let op = '?'
+                                                    if(props.path && props.path.includes('?') && props.path.includes('=')){op='&'}
+                                                    console.log(props.path)
                                                     // setDrillDown({})
-                                                    router.push(props.path + '?' + qry)
+                                                    if(qry &&qry.length>0){
+                                                        router.push(props.path + op + qry)
+                                                    }
                                                 }
                                             }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
                                             <div className="w-full flex items-center py-2 justify-center">
@@ -234,10 +291,10 @@ const Home = (props) => {
 }
 
 Home.getInitialProps = async (ctx) => {
-    console.log("=======================================")
-    console.log(ctx.req)
+    // console.log("=======================================")
+    // console.log(ctx.req)
     const fetchFilters = token => {
-        let filters_url = 'http://api.kmhfltest.health.go.ke/api/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+        let filters_url = process.env.API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
         return fetch(filters_url, {
             headers: {
@@ -259,8 +316,8 @@ Home.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        // let url = 'http://api.kmhfltest.health.go.ke/api/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,is_approved,rejected,keph_level,operation_status_name'
-        let url = 'http://api.kmhfltest.health.go.ke/api/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency,is_approved,has_edits,is_complete'
+        // let url = process.env.API_URL+'/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,is_approved,rejected,keph_level,operation_status_name'
+        let url = process.env.API_URL+'/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency,is_approved,has_edits,is_complete'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
@@ -287,7 +344,7 @@ Home.getInitialProps = async (ctx) => {
             .then(json => {
                 return fetchFilters(token).then(ft => {
                     return {
-                        data: json, query, filters: { ...ft }, path: ctx.asPath || '/'
+                        data: json, query, filters: { ...ft }, path: ctx.asPath || '/community-units'
                     }
                 })
             }).catch(err => {
@@ -297,13 +354,12 @@ Home.getInitialProps = async (ctx) => {
                     err: err,
                     data: [],
                     query: {},
-                    path: ctx.asPath || '/'
+                    path: ctx.asPath || '/community-units'
                 }
             })
     }
     return checkToken(ctx.req, ctx.res).then(t => {
         let token = t.token
-
         return fetchData(token).then(t => t)
     }).catch(err => {
         console.log('Error checking token: ', err)
@@ -312,7 +368,7 @@ Home.getInitialProps = async (ctx) => {
             err: err,
             data: [],
             query: {},
-            path: ctx.asPath || '/'
+            path: ctx.asPath || '/community-units'
         }
     })
 

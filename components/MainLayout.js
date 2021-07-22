@@ -1,8 +1,33 @@
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { MenuAlt1Icon, SearchIcon } from '@heroicons/react/solid';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import { Menu } from '@headlessui/react'
+import { getUserDetails } from '../controllers/auth/auth'
 
 export default function MainLayout({ children, isLoading, searchTerm }) {
+    const router = useRouter()
+    const activeClasses = "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-2 border-green-600"
+    const inactiveClasses = "text-gray-700 hover:text-black focus:text-black active:text-black"
+    const currentPath = router.asPath.split('?', 1)[0]
+    const [user, setUser] = useState(null)
+    //check if a session cookie is set
+
+    useEffect(() => {
+        
+        const isLoggedIn = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1)
+        let session_token = {}
+        if(isLoggedIn){
+            session_token = JSON.parse(window.document.cookie.split('access_token=')[1])
+        }
+        
+        if(typeof window !== 'undefined' && session_token.token){
+            let userDetails = getUserDetails(session_token.token)
+            setUser(userDetails)
+        }
+        
+    }, [])
+        
     return (
         <div className="flex flex-col items-center justify-center w-full min-h-screen">
             <div className="w-full border-b border-gray-100 flex items-center justify-center md:sticky md:top-0 bg-white z-10">
@@ -18,22 +43,22 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
                             <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 p-4 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none justify-between gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
                                 <li className="flex-wrap">
                                     <Link href="/">
-                                        <a className="text-black text-base md:text-lg hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-semibold">Home</a>
+                                        <a className={((currentPath == "/") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Home</a>
                                     </Link>
                                 </li>
                                 <li className="flex-wrap">
                                     <Link href="/facilities">
-                                        <a className="text-gray-700 text-base md:text-lg hover:text-black focus:text-black active:text-black">Facilities</a>
+                                        <a className={((currentPath == "/facilities" || currentPath.includes("facility")) ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Facilities</a>
                                     </Link>
                                 </li>
                                 <li className="flex-wrap">
                                     <Link href="/community-units">
-                                        <a className="text-gray-700 text-base md:text-lg hover:text-black focus:text-black active:text-black">Community Units</a>
+                                        <a className={((currentPath == "/community-units" || currentPath.includes("cu")) ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Community Units</a>
                                     </Link>
                                 </li>
                                 <li className="flex-wrap">
                                     <Link href="/gis">
-                                        <a className="text-gray-700 text-base md:text-lg hover:text-black focus:text-black active:text-black">GIS Maps</a>
+                                        <a className={((currentPath == "/gis") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>GIS Maps</a>
                                     </Link>
                                 </li>
                             </ul>
@@ -46,7 +71,38 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
                                 <SearchIcon className="w-5 h-5" />
                             </button>
                         </form>
-                        <a href="/" className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
+                        {isLoggedIn ? (
+                            <>
+                                <Menu>
+                                    <Menu.Button>{JSON.stringify(session_token.token)}</Menu.Button>
+                                    <Menu.Items>
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                                <a
+                                                    className={`${active && 'bg-blue-500'}`}
+                                                    href="/account-settings"
+                                                >
+                                                    Account settings
+                                                </a>
+                                            )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                                <a
+                                                    className={`${active && 'bg-blue-500'}`}
+                                                    href="/account-settings"
+                                                >
+                                                    Documentation
+                                                </a>
+                                            )}
+                                        </Menu.Item>
+                                        <Menu.Item disabled>
+                                            <span className="opacity-75">Invite a friend (coming soon!)</span>
+                                        </Menu.Item>
+                                    </Menu.Items>
+                                </Menu>
+                            </>
+                        ) : <a href="/auth/login" className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>}
                     </div>
                 </header>
             </div>

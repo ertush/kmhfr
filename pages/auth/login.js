@@ -22,7 +22,7 @@ const Login = (props) => {
                     <a className="text-green-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</a>
                 </div>
                 <form onSubmit={ev => {
-                    // ev.preventDefault()
+                    ev.preventDefault()
                     setLoading(true)
                     setError('')
                     if (
@@ -42,15 +42,16 @@ const Login = (props) => {
                         })
                             .then(r => r.json())
                             .then(rsp => {
+                                console.log('rsp: ', rsp)
                                 if (rsp.error) {
                                     setLoading(false)
                                     setError(rsp.error)
                                 } else if (rsp?.access_token || rsp?.token) {
                                     setLoading(false)
-                                    setMsg('Log-in successful. Reirecting...')
+                                    setMsg('Log-in successful. Redirecting...')
                                     setTimeout(() => {
                                         goSomewhere(props.was) // , true)
-                                    }, 2500);
+                                    }, 2000);
                                 } else {
                                     setError(error)
                                     setLoading(false)
@@ -69,7 +70,7 @@ const Login = (props) => {
                     }
                 }} 
                 // method="POST" 
-                action="javascript:void(0);"
+                // action="javascript:void(0);"
                 className="bg-gradient-to-tl from-blue-500 via-green-500 to-green-800 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-9 ">
                     <h1 className="text-center text-3xl font-black text-green-100">Log in</h1>
                     <div className="flex flex-col gap-0 w-full">
