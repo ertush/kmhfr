@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import * as Tabs from '@radix-ui/react-tabs';
 import { checkToken } from '../../controllers/auth/auth'
+import React, { useState, useEffect } from 'react';
 import MainLayout from '../../components/MainLayout'
 import { CheckCircleIcon, InformationCircleIcon, LocationMarkerIcon, LockClosedIcon, XCircleIcon } from '@heroicons/react/solid'
 import { ArrowsExpandIcon } from '@heroicons/react/outline'
@@ -15,6 +16,15 @@ const Facility = (props) => {
         } // This line is important. It's what prevents server-side render
     )
     let facility = props.data
+    const [user, setUser] = useState(null)
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            let usr = window.sessionStorage.getItem('user')
+            if (usr && usr.length > 0) {
+                setUser(JSON.parse(usr))
+            }
+        }
+    }, [])
     return (
         <div className="">
             <Head>
@@ -67,9 +77,9 @@ const Facility = (props) => {
                                 </div>
                             </div>
                             <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
-                                <a href={'/facility/edit' + facility.id} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black-700 active:bg-black-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
+                                {user && user?.id ? <a href={'/facility/edit/' + facility.id} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black-700 active:bg-black-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
                                     Edit
-                                </a>
+                                </a> : <a href="/auth/login">Log in</a>}
                             </div>
                         </div>
                     </div>
@@ -310,7 +320,7 @@ const Facility = (props) => {
                                     <div className="bg-white w-full p-4 rounded">
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                             <span className="font-semibold">Services</span>
-                                            <a href="/" className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a>
+                                            {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""}
                                         </h3>
                                         <ul>
                                             {(facility?.facility_services && facility?.facility_services.length > 0) ? facility?.facility_services.map(service => (
@@ -344,7 +354,7 @@ const Facility = (props) => {
                                     <div className="bg-white w-full p-4 rounded">
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                             <span className="font-semibold">Facility units</span>
-                                            <a href="/" className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a>
+                                            {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#units"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""}
                                         </h3>
                                         <ul>
                                             {(facility?.facility_units && facility?.facility_units.length > 0) ? facility?.facility_units.map(unit => (
@@ -371,7 +381,7 @@ const Facility = (props) => {
                                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left px-1 py-4">
                                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                         <span className="font-semibold">Infrastructure</span>
-                                        <a href="/" className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit infrastructure</a>
+                                        {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#infrastructure"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit infrastructure</a> : ""}
                                     </h3>
                                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Bed capacity:</h3>
@@ -431,7 +441,7 @@ const Facility = (props) => {
                                     <div className="bg-white w-full p-4 rounded">
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                             <span className="font-semibold">Human Resources</span>
-                                            <a href="/" className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a>
+                                            {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#hr"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a> : ""}
                                         </h3>
                                         <ul>
                                             {(facility?.human_resource && facility?.human_resource.length > 0) ? facility?.human_resource.map(hr => (
@@ -484,7 +494,6 @@ const Facility = (props) => {
 }
 
 Facility.getInitialProps = async (ctx) => {
-    console.log(ctx.req)
     return checkToken(ctx.req, ctx.res).then(t => {
         let token = t.token
         let url = process.env.API_URL+'/facilities/facilities/' + ctx.query.id + '/'

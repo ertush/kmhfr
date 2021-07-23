@@ -209,8 +209,8 @@ const getUserDetails = async (token, url) => {
         if(typeof window !== "undefined") {
             // console.log('getUserDetails returning ', response)
             window.sessionStorage.setItem('user', JSON.stringify(response))
-            return response
         }
+        return response
     }).catch(err => {
         console.log('Error in getUserDetails: ' + err)
         return {
@@ -220,4 +220,32 @@ const getUserDetails = async (token, url) => {
 
 }
 
-module.exports = { checkToken, getToken, logUserIn, getUserDetails }
+const getUserContacts = async (token, url) => {
+    return fetch(url, {
+        'method': 'GET',
+        'headers': {
+            "Accept": "application/json",
+            'cache-control': "no-cache",
+            "Authorization": "Bearer " + token
+        }
+    })
+    .then( j=>j.json() )
+    .then(response => {
+        // console.log('=================== getUserContacts returned: ' + response)
+        if (response.detail || response.error) {
+            console.log('Error in getUserContacts: ' + response)
+            return {
+                error: true, message: response.detail || response.error
+            }
+        }
+        return response
+    }).catch(err => {
+        console.log('Error in getUserContacts: ' + err)
+        return {
+            error: true, message: err.message || err
+        }
+    })
+
+}
+
+module.exports = { checkToken, getToken, logUserIn, getUserDetails, getUserContacts }

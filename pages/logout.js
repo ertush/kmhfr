@@ -25,14 +25,20 @@ const Logout = props => {
         }, 1200);
     }, [])
     return (
-        <MainLayout>
-            <div className="w-full flex py-60 overflow-hidden flex-col items-center justify-center">
-                <div className="flex flex-col items-center">
-                    <h1 className="text-2xl text-black">Logout</h1>
-                    <p>You have been logged out.</p>
+        <>
+            <Head>
+                <title>KMHFL - Log out</title>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <MainLayout>
+                <div className="w-full flex py-60 overflow-hidden flex-col items-center justify-center">
+                    <div className="flex flex-col items-center">
+                        <h1 className="text-2xl text-black">Logout</h1>
+                        <p>You have been logged out.</p>
+                    </div>
                 </div>
-            </div>
-        </MainLayout>
+            </MainLayout>
+        </>
     )
 }
 
