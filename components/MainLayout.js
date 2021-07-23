@@ -68,7 +68,7 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
                                 </li>
                                 <li className="flex-wrap">
                                     <Link href="/community-units">
-                                        <a className={((currentPath == "/community-units" || currentPath.includes("cu")) ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Community Units</a>
+                                        <a className={((currentPath == "/community-units" || currentPath.includes("community-unit")) ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Community Units</a>
                                     </Link>
                                 </li>
                                 <li className="flex-wrap">

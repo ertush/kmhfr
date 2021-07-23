@@ -174,8 +174,8 @@ const logUserIn = (req, res, creds, was) => {
 }
 
 const getUserDetails = async (token, url) => {
-    console.log('getUserDetails TOKEN: ',token)
-    console.log('getUserDetails URL: ',url)
+    // console.log('getUserDetails TOKEN: ',token)
+    // console.log('getUserDetails URL: ',url)
     // let url = process.env.API_URL + '/rest-auth/user/'
     // let url = 'http://api.kmhfltest.health.go.ke/api' + '/rest-auth/user/'
     if(typeof window != "undefined") {
@@ -187,7 +187,7 @@ const getUserDetails = async (token, url) => {
             console.log('Saved session: ', savedSession)
             return savedSession
         }
-        console.log('W getUserDetails URL: ',url)
+        // console.log('W getUserDetails URL: ',url)
     }
     return fetch(url, {
         'method': 'GET',
@@ -199,7 +199,7 @@ const getUserDetails = async (token, url) => {
     })
     .then( j=>j.json() )
     .then(response => {
-        console.log('=================== getUserDetails returned: ' + response)
+        // console.log('=================== getUserDetails returned: ' + response)
         if (response.detail || response.error) {
             console.log('Error in getUserDetails: ' + response)
             return {
@@ -207,7 +207,7 @@ const getUserDetails = async (token, url) => {
             }
         }
         if(typeof window !== "undefined") {
-            console.log('getUserDetails returning ', response)
+            // console.log('getUserDetails returning ', response)
             window.sessionStorage.setItem('user', JSON.stringify(response))
             return response
         }
