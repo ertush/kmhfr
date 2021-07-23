@@ -185,7 +185,6 @@ const getUserDetails = async (token, url) => {
         }
         if (savedSession && savedSession?.id && savedSession?.id.length>0) {
             console.log('Saved session: ', savedSession)
-            // return Promise.resolve(JSON.parse(savedSession))
             return savedSession
         }
         console.log('W getUserDetails URL: ',url)

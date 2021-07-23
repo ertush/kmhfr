@@ -11,19 +11,16 @@ const Home = (props) => {
     let cus = props?.data?.results
     let filters = props?.filters
     let [drillDown, setDrillDown] = useState({})
-    const updateFt = nu_vl => {
-        // console.log('updading Filters: ', nu_vl)
-        let srch_trm = nu_vl[Object.keys(nu_vl)[0]]
-        let new_dd = { ...drillDown, ...nu_vl }
-        if (srch_trm != null && srch_trm != undefined && srch_trm != "" && srch_trm && srch_trm.length > 0) {
-            // setDrillDown(new_dd)
-        } else {
-            new_dd = { ...drillDown }
-            delete new_dd[Object.keys(nu_vl)[0]]
-
+    
+    useEffect(() => {
+        if(filters && Object.keys(filters).length>0){
+            Object.keys(filters).map(ft => {
+                if(props?.query[ft] && props?.query[ft] != null && props?.query[ft].length>0){
+                    setDrillDown({...drillDown, [ft]: props?.query[ft]})
+                }
+            })
         }
-        setDrillDown(new_dd)
-    }
+    }, [filters])
 
 
     return (
@@ -40,8 +37,16 @@ const Home = (props) => {
                             <a className="text-green-700" href="/">Home</a> {'>'}
                             <span className="text-gray-500">Community Units</span>
                         </div>
-                        <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-start justify-start gap-1">{(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Community Units matching "${props?.query?.searchTerm}"` : "All Community Units"}{props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
-                        {/* <small className="font-bold text-sm">{JSON.stringify(props)}</small> */}
+                        <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-center justify-start gap-x-2">{(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Community units matching "${props?.query?.searchTerm}"` : "All community units"}
+
+                        <span className="text-lg text-gray-700 font-normal">
+                            {drillDown && Object.keys(drillDown).length>0 && 
+                                `matching (${Object.keys(drillDown).map(k => `${k}: ${filters[k].find(r=>r.id==drillDown[k]).name || k}`).join(', ')})`
+                            }
+                        </span>
+                        
+                        {props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
+                        {/* <small className="font-bold text-sm">{JSON.stringify(props?.query)}</small> */}
                     </div>
                     <div className="col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none">
                         <div className="flex flex-col justify-center items-center px-1 md:px-4 w-full ">
@@ -162,102 +167,7 @@ const Home = (props) => {
                                                         </select>
                                                     </div>
                                                 ))}
-                                            <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
-                                                <label htmlFor="has_edits" className="text-gray-600 capitalize text-sm">Has edits</label>
-                                                <input type="checkbox" defaultChecked={props?.query?.has_edits || false} name="has_edits" id="has_edits" onChange={ev => {
-                                                    if(ev.target.checked){
-                                                        setDrillDown({ ...drillDown, 'has_edits': ev.target.checked })
-                                                    }else{
-                                                        let r = {...drillDown}
-                                                        delete r.has_edits
-                                                        setDrillDown(r)
-                                                    }
-                                                }} />
-                                            </div>
-                                            <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
-                                                <label htmlFor="is_approved" className="text-gray-600 capitalize text-sm">Approved</label>
-                                                <input type="checkbox" defaultChecked={props?.query?.is_approved || false} name="is_approved" id="is_approved" onChange={ev => {
-                                                    if(ev.target.checked){
-                                                        setDrillDown({ ...drillDown, 'is_approved': ev.target.checked })
-                                                    }else{
-                                                        let r = {...drillDown}
-                                                        delete r.is_approved
-                                                        setDrillDown(r)
-                                                    }
-                                                }} />
-                                            </div>
-                                            <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
-                                                <label htmlFor="is_complete" className="text-gray-600 capitalize text-sm">Complete</label>
-                                                <input type="checkbox" defaultChecked={props?.query?.is_complete || false} name="is_complete" id="is_complete" onChange={ev => {
-                                                    if(ev.target.checked){
-                                                        setDrillDown({ ...drillDown, 'is_complete': ev.target.checked })
-                                                    }else{
-                                                        let r = {...drillDown}
-                                                        delete r.is_complete
-                                                        setDrillDown(r)
-                                                    }
-                                                }} />
-                                            </div>
-                                            <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
-                                                <label htmlFor="number_of_beds" className="text-gray-600 capitalize text-sm">Has beds</label>
-                                                <input type="checkbox" defaultChecked={props?.query?.number_of_beds || false} name="number_of_beds" id="number_of_beds" onChange={ev => {
-                                                    if(ev.target.checked){
-                                                        setDrillDown({ ...drillDown, 'number_of_beds': ev.target.checked })
-                                                    }else{
-                                                        let r = {...drillDown}
-                                                        delete r.number_of_beds
-                                                        setDrillDown(r)
-                                                    }
-                                                }} />
-                                            </div>
-                                            <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
-                                                <label htmlFor="number_of_cots" className="text-gray-600 capitalize text-sm">Has cots</label>
-                                                <input type="checkbox" defaultChecked={props?.query?.number_of_cots || false} name="number_of_cots" id="number_of_cots" onChange={ev => {
-                                                    if(ev.target.checked){
-                                                        setDrillDown({ ...drillDown, 'number_of_cots': ev.target.checked })
-                                                    }else{
-                                                        let r = {...drillDown}
-                                                        delete r.number_of_cots
-                                                        setDrillDown(r)
-                                                    }
-                                                }} />
-                                            </div>
-                                            <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
-                                                <label htmlFor="open_whole_day" className="text-gray-600 capitalize text-sm">Open 24 hours</label>
-                                                <input type="checkbox" defaultChecked={props?.query?.open_whole_day || false} name="open_whole_day" id="open_whole_day" onChange={ev => {
-                                                    if(ev.target.checked){
-                                                        setDrillDown({ ...drillDown, 'open_whole_day': ev.target.checked })
-                                                    }else{
-                                                        let r = {...drillDown}
-                                                        delete r.open_whole_day
-                                                        setDrillDown(r)
-                                                    }
-                                                }} />
-                                            </div>
-                                            <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
-                                                <label htmlFor="open_weekends" className="text-gray-600 capitalize text-sm">Open weekends</label>
-                                                <input type="checkbox" defaultChecked={props?.query?.open_weekends || false} name="open_weekends" id="open_weekends" onChange={ev => {
-                                                    if(ev.target.checked){
-                                                        setDrillDown({ ...drillDown, 'open_weekends': ev.target.checked })
-                                                    }else{
-                                                        let r = {...drillDown}
-                                                        delete r.open_weekends
-                                                        setDrillDown(r)
-                                                    }
-                                                }} />
-                                            </div>
-                                            <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
-                                                <label htmlFor="open_public_holidays" className="text-gray-600 capitalize text-sm">Open holidays</label>
-                                                <input type="checkbox" defaultChecked={props?.query?.open_public_holidays || false} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
-                                                    if(ev.target.checked){
-                                                        setDrillDown({ ...drillDown, 'open_public_holidays': ev.target.checked })
-                                                    }else{
-                                                        let r = {...drillDown}
-                                                        delete r.open_public_holidays
-                                                        setDrillDown(r)
-                                                    }
-                                                }} />
-                                            </div>
+                                            
                                             <button onClick={ev => {
                                                 if (Object.keys(drillDown).length > 0) {
                                                     let qry = Object.keys(drillDown).map(function (key) {
@@ -328,7 +238,7 @@ Home.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
-        let other_posssible_filters = ["owner_type", "service", "facility", "facility_county", "service_category", "facility_subcounty", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "open_public_holidays"]
+        let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]

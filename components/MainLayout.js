@@ -28,7 +28,6 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
             console.log('active session found')
             // getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
             getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
-                console.log('usr: ',usr)
                 if(usr.error || usr.detail){
                     setIsLoggedIn(false)
                     setUser(null)

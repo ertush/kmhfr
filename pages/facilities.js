@@ -11,19 +11,16 @@ const Home = (props) => {
     let facilities = props?.data?.results
     let filters = props?.filters
     let [drillDown, setDrillDown] = useState({})
-    const updateFt = nu_vl => {
-        // console.log('updading Filters: ', nu_vl)
-        let srch_trm = nu_vl[Object.keys(nu_vl)[0]]
-        let new_dd = { ...drillDown, ...nu_vl }
-        if (srch_trm != null && srch_trm != undefined && srch_trm != "" && srch_trm && srch_trm.length > 0) {
-            // setDrillDown(new_dd)
-        } else {
-            new_dd = { ...drillDown }
-            delete new_dd[Object.keys(nu_vl)[0]]
-
+    
+    useEffect(() => {
+        if(filters && Object.keys(filters).length>0){
+            Object.keys(filters).map(ft => {
+                if(props?.query[ft] && props?.query[ft] != null && props?.query[ft].length>0){
+                    setDrillDown({...drillDown, [ft]: props?.query[ft]})
+                }
+            })
         }
-        setDrillDown(new_dd)
-    }
+    }, [filters])
 
 
     return (
@@ -40,8 +37,16 @@ const Home = (props) => {
                             <a className="text-green-700" href="/">Home</a> {'>'}
                             <span className="text-gray-500">Facilities</span>
                         </div>
-                        <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-start justify-start gap-1">{(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Facilities matching "${props?.query?.searchTerm}"` : "All facilities"}{props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
-                        {/* <small className="font-bold text-sm">{JSON.stringify(drillDown)}</small> */}
+                        <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-center justify-start gap-x-2">{(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Facilities matching "${props?.query?.searchTerm}"` : "All facilities"}
+
+                        <span className="text-lg text-gray-700 font-normal">
+                            {drillDown && Object.keys(drillDown).length>0 && 
+                                `matching (${Object.keys(drillDown).map(k => `${k}: ${filters[k].find(r=>r.id==drillDown[k]).name || k}`).join(', ')})`
+                            }
+                        </span>
+                        
+                        {props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
+                        {/* <small className="font-bold text-sm">{JSON.stringify(props?.query)}</small> */}
                     </div>
                     <div className="col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none">
                         <div className="flex flex-col justify-center items-center px-1 md:px-4 w-full ">
