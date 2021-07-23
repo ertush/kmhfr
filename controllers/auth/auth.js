@@ -2,7 +2,6 @@ const FormData = require('form-data');
 const Cookies = require('cookies')
 const cookieCutter = require('cookie-cutter')
 // require('dotenv').config({ path: `${__dirname}/../../.env.local` })
-console.log('process.env ::::: ', process.env.API_URL)
 
 const getToken = (req, res, refresh_token, creds) => {
     const cookies = new Cookies(req, res)
@@ -175,17 +174,22 @@ const logUserIn = (req, res, creds, was) => {
 }
 
 const getUserDetails = async (token, url) => {
+    console.log('getUserDetails TOKEN: ',token)
+    console.log('getUserDetails URL: ',url)
     // let url = process.env.API_URL + '/rest-auth/user/'
     // let url = 'http://api.kmhfltest.health.go.ke/api' + '/rest-auth/user/'
     if(typeof window != "undefined") {
-        let savedSession = JSON.parse(window.sessionStorage.getItem('user'))
+        let savedSession = window.sessionStorage.getItem('user')
+        if(savedSession && savedSession.length > 0) {
+            savedSession = JSON.parse(window.sessionStorage.getItem('user'))
+        }
         if (savedSession && savedSession?.id && savedSession?.id.length>0) {
             console.log('Saved session: ', savedSession)
             // return Promise.resolve(JSON.parse(savedSession))
             return savedSession
         }
+        console.log('W getUserDetails URL: ',url)
     }
-    console.log('getUserDetails URL: ',url)
     return fetch(url, {
         'method': 'GET',
         'headers': {

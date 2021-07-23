@@ -79,8 +79,11 @@ const Home = (props) => {
                                         </div>
                                     </div>
                                     <div className="col-span-8 md:col-span-3 flex flex-wrap items-center gap-3 text-lg">
-                                        {(comm_unit.operational || comm_unit.operation_status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
-                                        {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>}
+                                        {(comm_unit.status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 text-black "
+                                        +(comm_unit.status_name.toLocaleLowerCase().includes("non-") ? " bg-red-200" : ((comm_unit.status_name.toLocaleLowerCase().includes("fully") ? " bg-green-200" : " bg-blue-200")))
+                                        
+                                        }>{comm_unit.status_name[0].toLocaleUpperCase()}{comm_unit.status_name.slice(1).toLocaleLowerCase()}</span> : ""}
+                                        {/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
                                         {comm_unit.has_edits ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
                                     </div>
                                     <div className="col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end">
@@ -295,7 +298,8 @@ Home.getInitialProps = async (ctx) => {
     // console.log(ctx.req)
     const API_URL = process.env.API_URL || 'http://api.kmhfltest.health.go.ke/api'
     const fetchFilters = token => {
-        let filters_url = API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+        // let filters_url = API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+        let filters_url = API_URL+'/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county'
 
         return fetch(filters_url, {
             headers: {
@@ -318,13 +322,13 @@ Home.getInitialProps = async (ctx) => {
 
     const fetchData = (token) => {
         // let url = API_URL+'/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,is_approved,rejected,keph_level,operation_status_name'
-        let url = API_URL+'/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency,is_approved,has_edits,is_complete'
+        let url = API_URL+'/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
-        let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
+        let other_posssible_filters = ["owner_type", "service", "facility", "facility_county", "service_category", "facility_subcounty", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "open_public_holidays"]
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
