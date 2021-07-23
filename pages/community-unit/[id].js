@@ -31,7 +31,7 @@ const CommUnit = (props) => {
                             <a className="text-green-700" href="/community-units">Community units</a> {'>'}
                             <span className="text-gray-500">{cu.name} ( #<i className="text-black">{cu.code || "NO_CODE"}</i> )</span>
                         </div>
-                        <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (cu.is_approved ? "border-green-600" : "border-red-600")}>
+                        <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (cu.active ? "border-green-600" : "border-red-600")}>
                             <div className="col-span-6 md:col-span-3">
                                 <h1 className="text-4xl tracking-tight font-bold leading-tight">{cu.name}</h1>
                                 <div className="flex gap-2 items-center w-full justify-between">
@@ -41,17 +41,30 @@ const CommUnit = (props) => {
                             </div>
                             <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
-                                    {/* {(cu.operational || cu.operation_status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"}>
-                                        <CheckCircleIcon className="h-4 w-4" />
-                                        Operational
-                                    </span> : ""}
                                     {cu.is_approved ? <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                                         <CheckCircleIcon className="h-4 w-4" />
-                                        Approved
+                                        CHU Approved
                                     </span> : <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                                         <XCircleIcon className="h-4 w-4" />
                                         Not approved
                                     </span>}
+                                    {cu.is_closed && <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                                        <LockClosedIcon className="h-4 w-4" />
+                                        CHU Closed
+                                    </span>}
+                                    {cu.deleted && <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                                        <XCircleIcon className="h-4 w-4" />
+                                        CHU Deleted
+                                    </span>}
+                                    {cu.active && <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                                        <CheckCircleIcon className="h-4 w-4" />
+                                        CHU Active
+                                    </span>}
+                                    {/* 
+                                    {(cu.operational || cu.operation_status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"}>
+                                        <CheckCircleIcon className="h-4 w-4" />
+                                        Operational
+                                    </span> : ""}
                                     {cu.has_edits && <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                                         <InformationCircleIcon className="h-4 w-4" />
                                         Has changes
@@ -60,10 +73,7 @@ const CommUnit = (props) => {
                                         <CheckCircleIcon className="h-4 w-4" />
                                         Complete
                                     </span>}
-                                    {cu.closed && <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                                        <LockClosedIcon className="h-4 w-4" />
-                                        Closed
-                                    </span>} */}
+                                     */}
                                 </div>
                             </div>
                             <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
@@ -99,22 +109,99 @@ const CommUnit = (props) => {
                                                         {cu.status_name || 'Yes'}
                                                     </span> : (
                                                         cu.status_name.toLocaleLowerCase().includes("semi") ?
-                                                        <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
-                                                            <CheckCircleIcon className="h-4 w-4" />
-                                                            {cu.status_name || 'Yes'}
-                                                        </span> : <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                                                            <XCircleIcon className="h-4 w-4" />
-                                                            {cu.status_name || 'No'}
-                                                        </span>
+                                                            <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                                                                <CheckCircleIcon className="h-4 w-4" />
+                                                                {cu.status_name || 'Yes'}
+                                                            </span> : <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                                                                <XCircleIcon className="h-4 w-4" />
+                                                                {cu.status_name || 'No'}
+                                                            </span>
                                                     )}
                                             </p>
+                                        </div>
+                                        <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                                            <label className=" text-gray-600">CHU approved</label>
+                                            <p className="text-black font-medium text-base flex">
+                                                {cu.is_approved ?
+                                                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                                                        <CheckCircleIcon className="h-4 w-4" />
+                                                        Yes
+                                                    </span> : <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                                                        <XCircleIcon className="h-4 w-4" />
+                                                        No
+                                                    </span>}
+                                            </p>
+                                        </div>
+                                        {cu.deleted && <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                                            <label className=" text-gray-600">CHU deleted</label>
+                                            <p className="text-black font-medium text-base flex">
+                                                {cu.deleted ?
+                                                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-red-900 flex gap-x-1 items-center cursor-default">
+                                                        <XCircleIcon className="h-4 w-4" />
+                                                        Deleted
+                                                    </span> : ""}
+                                            </p>
+                                        </div>}
+                                        <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                                            <label className=" text-gray-600">CHU closed</label>
+                                            <p className="text-black font-medium text-base flex">
+                                                {cu.is_closed ?
+                                                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
+                                                        CHU Closed {cu.closed_date || ""}
+                                                    </span> : <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                                                        Not closed
+                                                    </span>}
+                                            </p>
+                                        </div>
+                                        {cu.is_closed &&
+                                            <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                                                <label className=" text-gray-600">Closure reason</label>
+                                                <p className="text-black font-medium text-base">{cu.closed_date && <>{cu.closed_date}. </>} {cu.closing_reason || ""}</p>
+                                            </div>}
+                                    </div>
+                                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                                        <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Coverage:</h3>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Households monitored</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{cu.households_monitored || " - "}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Number of CHVs</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{cu.number_of_chvs || " - "}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                                        <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Location:</h3>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Linked facility</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{cu.facility_name || " - "}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Ward</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{cu.facility_ward || " - "}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Constituency</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{cu.facility_constituency || " - "}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Sub-county</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{cu.facility_subcounty || " - "}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">County</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{cu.facility_county || " - "}</p>
                                         </div>
                                     </div>
                                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Regulation:</h3>
                                         {cu.date_established && <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">Established</label>
+                                            <label className="col-span-1 text-gray-600">Date established</label>
                                             <p className="col-span-2 text-black font-medium text-base">{new Date(cu.date_established).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }) || " - "}</p>
+                                        </div>}
+                                        {cu.date_operational && <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Date operational</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{new Date(cu.date_operational).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }) || " - "}</p>
                                         </div>}
                                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                             <label className="col-span-1 text-gray-600">Regulated</label>
@@ -158,28 +245,9 @@ const CommUnit = (props) => {
                                         </div>
                                     </div>
                                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                                        <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Location:</h3>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">Town</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{cu.town_name || " - "}</p>
-                                        </div>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">Description</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{cu.location_desc || " - "}</p>
-                                        </div>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">Nearest landmark</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{cu.nearest_landmark || " - "}</p>
-                                        </div>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">Plot number</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{cu.plot_number || " - "}</p>
-                                        </div>
-                                    </div>
-                                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Contacts:</h3>
-                                        {(cu.facility_contacts && cu.facility_contacts.length > 0) && cu.facility_contacts.map(contact => (
-                                            <div key={contact.contact_id} className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                        {(cu.contacts && cu.contacts.length > 0) && cu.contacts.map(contact => (
+                                            <div key={contact.id} className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                 <label className="col-span-1 text-gray-600 capitalize">{contact.contact_type_name[0].toLocaleUpperCase() + contact.contact_type_name.slice(1).toLocaleLowerCase() || "Contact"}</label>
                                                 <p className="col-span-2 text-black font-medium text-base">{contact.contact || " - "}</p>
                                             </div>
@@ -235,27 +303,42 @@ const CommUnit = (props) => {
                                             )}
                                         </ul>
                                     </div>
+
+                                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                                        <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Service rating:</h3>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Average rating</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{cu.avg_rating || 0}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Number of ratings</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{cu.number_of_ratings || 0}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </Tabs.Panel>
-                            
+
                             <Tabs.Panel value="hr_staffing" className="grow-1 py-1 px-4 tab-panel">
                                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                                     <div className="bg-white w-full p-4 rounded">
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-                                            <span className="font-semibold">Human Resources</span>
+                                            <span className="font-semibold">Health Unit workers</span>
                                             <a href="/" className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a>
                                         </h3>
                                         <ul>
                                             {(cu?.health_unit_workers && cu?.health_unit_workers.length > 0) ? cu?.health_unit_workers.map(hr => (
                                                 <li key={hr.id} className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300">
                                                     <div>
-                                                        <p className="text-gray-800 text-base">{hr.hr_name}</p>
-                                                        <small className="text-xs text-gray-500">{hr.id || ''}</small>
+                                                        <p className="text-gray-800 text-base">{hr.name}</p>
+                                                        {hr.is_incharge ? <small className="text-xs text-gray-500">In charge</small> : ""}
                                                     </div>
-                                                    <div className="flex flex-row gap-1 items-center">
+                                                    {hr.active ? <div className="flex flex-row gap-1 items-center">
                                                         <CheckCircleIcon className="h-6 w-6 text-green-500" />
                                                         <label className="text-sm text-gray-600">Active</label>
-                                                    </div>
+                                                    </div> : <div className="flex flex-row gap-1 items-center">
+                                                        <XCircleIcon className="h-6 w-5 text-red-600" />
+                                                        <label className="text-sm text-gray-600">Active</label>
+                                                    </div>}
                                                 </li>
                                             )) : (
                                                 <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
@@ -263,6 +346,12 @@ const CommUnit = (props) => {
                                                 </li>
                                             )}
                                         </ul>
+                                    </div>
+                                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Number of CHVs</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{cu.number_of_chvs || " - "}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </Tabs.Panel>
@@ -299,7 +388,7 @@ CommUnit.getInitialProps = async (ctx) => {
     console.log(ctx.req)
     return checkToken(ctx.req, ctx.res).then(t => {
         let token = t.token
-        let url = process.env.API_URL+'/chul/units/' + ctx.query.id + '/'
+        let url = process.env.API_URL + '/chul/units/' + ctx.query.id + '/'
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

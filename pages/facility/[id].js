@@ -207,8 +207,16 @@ const Facility = (props) => {
                                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Regulation:</h3>
                                         {facility.date_established && <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">Established</label>
+                                            <label className="col-span-1 text-gray-600">Date established</label>
                                             <p className="col-span-2 text-black font-medium text-base">{new Date(facility.date_established).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }) || " - "}</p>
+                                        </div>}
+                                        {facility.date_requested && <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Date requested</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{new Date(facility.date_requested).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }) || " - "}</p>
+                                        </div>}
+                                        {facility.date_approved && <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Date approved</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{new Date(facility.date_approved).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' }) || " - "}</p>
                                         </div>}
                                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                             <label className="col-span-1 text-gray-600">Regulated</label>
