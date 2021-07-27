@@ -158,12 +158,12 @@ const Home = (props) => {
                                                             // updateFt(nf)
                                                         }}>
                                                             <option value="">All</option>
-                                                            {filters[ft].map(ft_opt => (
+                                                            {filters && filters[ft].map(ft_opt => (
                                                                 <option key={ft_opt.id} value={ft_opt.id}>{ft_opt.name}</option>
                                                             ))}
                                                         </select>
                                                     </div>
-                                                ))}
+                                            ))}
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
                                                 <label htmlFor="has_edits" className="text-gray-600 capitalize text-sm">Has edits</label>
                                                 <input type="checkbox" defaultChecked={props?.query?.has_edits || false} name="has_edits" id="has_edits" onChange={ev => {

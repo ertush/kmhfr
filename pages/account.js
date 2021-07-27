@@ -6,14 +6,23 @@ import MainLayout from '../components/MainLayout'
 import { CheckCircleIcon, InformationCircleIcon, LocationMarkerIcon, LockClosedIcon, XCircleIcon } from '@heroicons/react/solid'
 import { ArrowsExpandIcon } from '@heroicons/react/outline'
 import dynamic from 'next/dynamic'
+import { Dialog, Transition } from '@headlessui/react'
 
 const Account = (props) => {
     const [user, setUser] = useState(null)
+    const [showEditBasic, setShowEditBasic] = useState(false)
+    const [showEditContacts, setShowEditContacts] = useState(false)
     const [userContact, setUserContact] = useState(null)
     const [userContactType, setUserContactType] = useState(null)
     const API_URL = process.env.API_URL || 'http://api.kmhfltest.health.go.ke/api'
+    const [basicUserForm, setBasicUserForm] = useState({})
+    const [fname, setFname] = useState("")
+    const [lname, setLname] = useState("")
+    const [onames, setOnames] = useState("")
+    const [email, setEmail] = useState("")
+    const [username, setUsername] = useState("")
     //check if a session cookie is set
-
+    
     useEffect(() => {
         let user_id
         if (typeof window !== 'undefined') {
@@ -22,6 +31,13 @@ const Account = (props) => {
                 let s_r = JSON.parse(usr)
                 user_id = s_r?.id
                 setUser(s_r)
+                if(s_r){
+                    setFname(s_r.first_name)
+                    setLname(s_r.last_name)
+                    setOnames(s_r.other_names)
+                    setEmail(s_r.email)
+                    setUsername(s_r.username)
+                }
             }
         }
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,7 +47,7 @@ const Account = (props) => {
             session_token = JSON.parse(window.document.cookie.split('access_token=')[1])
         }
         if (is_user_logged_in && typeof window !== 'undefined' && session_token !== null && user_id && ("" + user_id).length > 0) {
-            getUserContacts(session_token.token, API_URL + '/common/user_contacts/?user='+user_id).then(cnt => {
+            getUserContacts(session_token.token, API_URL + '/common/user_contacts/?user=' + user_id).then(cnt => {
                 if (cnt.error || cnt.detail) {
                     setUserContact(null)
                 } else {
@@ -103,6 +119,87 @@ const Account = (props) => {
                             </Tabs.List>
                             <Tabs.Panel value="basic" className="grow-1 py-1 px-4 tab-panel">
                                 <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
+                                    <div className="flex flex-row items-center justify-end w-full py-2">
+                                        <button className="bg-transparent border border-green-700 py-1 px-2 text-base rounded bg-white text-green-700 font-semibold hover:bg-green-700 hover:text-white focus:bg-green-700 focus:text-white active:bg-green-700 active:text-white focus:outline-none transform ease-linear transition-colors duration-75" onClick={() => setShowEditBasic(!showEditBasic)}>Edit basic details</button>
+                                        <Dialog className="fixed z-10 inset-0 overflow-y-auto" open={showEditBasic} onClose={() => setShowEditBasic(false)}>
+                                            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+
+                                            <div className="flex items-center justify-center min-h-screen">
+                                                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+
+                                                <div className="bg-white rounded max-w-sm sm:max-w-screen-sm sm:w-full flex flex-col items-center mx-auto z-20 p-3">
+                                                    <div className="w-full flex flex-col gap-2">
+                                                        <Dialog.Title as="h2" className="font-semibold text-black text-2xl">Edit basic details</Dialog.Title>
+                                                        <Dialog.Description as="div" className="flex flex-col items-center justify-start gap-3 w-full">
+                                                            <form className="grid grid-cols-2 gap-3 p-1 w-full" onSubmit={fm=>{
+                                                                fm.preventDefault();
+                                                                console.log(basicUserForm);
+                                                                // if submission successful then
+                                                                setShowEditBasic(false);
+                                                                //else show error within modal
+                                                            }}>
+                                                                <div className="flex flex-col gap-1">
+                                                                    <label className="text-sm">First name</label>
+                                                                    <input type="text" name="first_name" defaultValue={user.first_name || ""}
+                                                                        onChange={ev=>{
+                                                                            if(ev.target.value && ev.target.value.length>0){
+                                                                                setBasicUserForm({...basicUserForm, [ev.target.name]: ev.target.value});
+                                                                            }
+                                                                        }}
+                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2"/>
+                                                                </div>
+                                                                <div className="flex flex-col gap-1">
+                                                                    <label className="text-sm">Last name</label>
+                                                                    <input type="text" name="last_name" defaultValue={user.last_name || ""}
+                                                                        onChange={ev=>{
+                                                                            if(ev.target.value && ev.target.value.length>0){
+                                                                                setBasicUserForm({...basicUserForm, [ev.target.name]: ev.target.value});
+                                                                            }
+                                                                        }}
+                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2"/>
+                                                                </div>
+                                                                <div className="flex flex-col gap-1">
+                                                                    <label className="text-sm">Other names</label>
+                                                                    <input type="text" name="other_names" defaultValue={user.other_names || ""}
+                                                                        onChange={ev=>{
+                                                                            if(ev.target.value && ev.target.value.length>0){
+                                                                                setBasicUserForm({...basicUserForm, [ev.target.name]: ev.target.value});
+                                                                            }
+                                                                        }}
+                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2"/>
+                                                                </div>
+                                                                <div className="flex flex-col gap-1">
+                                                                    <label className="text-sm">Email</label>
+                                                                    <input type="email" name="email" defaultValue={user.email || ""}
+                                                                        onChange={ev=>{
+                                                                            if(ev.target.value && ev.target.value.length>0){
+                                                                                setBasicUserForm({...basicUserForm, [ev.target.name]: ev.target.value});
+                                                                            }
+                                                                        }}
+                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2"/>
+                                                                </div>
+                                                                <div className="flex flex-col gap-1">
+                                                                    <label className="text-sm">Username</label>
+                                                                    <input type="text" name="username" defaultValue={user.username || ""}
+                                                                        onChange={ev=>{
+                                                                            if(ev.target.value && ev.target.value.length>0){
+                                                                                setBasicUserForm({...basicUserForm, [ev.target.name]: ev.target.value});
+                                                                            }
+                                                                        }}
+                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2"/>
+                                                                </div>
+                                                            </form>
+                                                            <div className="flex flex-wrap gap-3 items-center justify-around w-full">
+                                                                <button className="border-none rounded bg-transparent outline-none py-2 px-3 hover:text-red-700 focus:text-red-700 active:text-red-700" onClick={() => setShowEditBasic(false)}>Cancel</button>
+                                                                <button className="text-white rounded bg-black py-2 px-4 hover:bg-green-700 focus:bg-green-700 active:bg-green-700" onClick={() => alert(JSON.stringify(basicUserForm))}>Save changes</button>
+                                                            </div>
+                                                        </Dialog.Description>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </Dialog>
+                                    </div>
                                     <div className="bg-white border border-gray-100 w-full p-3 rounded grid grid-cols-2 gap-3 shadow-sm mt-4">
                                         <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">Status:</h3>
                                         <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
@@ -131,9 +228,9 @@ const Account = (props) => {
                                                     </span>}
                                             </p>
                                         </div>
-                                        {Object.keys(user?.user_groups).map(ug=>(
-                                            user?.user_groups[ug] ? <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                                                <label className=" text-gray-600">{ug[0].toLocaleUpperCase()+ug.split('_').join(' ').slice(1).toLocaleLowerCase() || ' - '}</label>
+                                        {Object.keys(user?.user_groups).map(ug => (
+                                            user?.user_groups[ug] ? <div key={ug} className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                                                <label className=" text-gray-600">{ug[0].toLocaleUpperCase() + ug.split('_').join(' ').slice(1).toLocaleLowerCase() || ' - '}</label>
                                                 <p className="text-black font-medium text-base flex">
                                                     {user && user?.user_groups[ug] ?
                                                         <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
@@ -144,7 +241,7 @@ const Account = (props) => {
                                                             No
                                                         </span>}
                                                 </p>
-                                            </div> : ""
+                                            </div> : <span key={ug}></span>
                                         ))}
                                     </div>
                                     {/* <small>{JSON.stringify(userContact, null, 2)}</small> */}
@@ -154,21 +251,21 @@ const Account = (props) => {
                                             <label className="col-span-1 text-gray-600">County</label>
                                             <p className="col-span-2 text-black font-medium text-base">
                                                 {user.county_name || " - "}
-                                                {user.user_counties.length>0 && <span>, {user.user_counties.join(", ")}</span>}
+                                                {user.user_counties.length > 0 && <span>, {user.user_counties.join(", ")}</span>}
                                             </p>
                                         </div>
                                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                             <label className="col-span-1 text-gray-600">Subcounty</label>
                                             <p className="col-span-2 text-black font-medium text-base">
                                                 {user.sub_county_name || " - "}
-                                                {user.user_sub_counties.length>0 && <span>, {user.user_sub_counties.join(", ")}</span>}
+                                                {user.user_sub_counties.length > 0 && <span>, {user.user_sub_counties.join(", ")}</span>}
                                             </p>
                                         </div>
                                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                             <label className="col-span-1 text-gray-600">Constituency</label>
                                             <p className="col-span-2 text-black font-medium text-base">
                                                 {user.constituency_name || " - "}
-                                                {user.user_constituencies.length>0 && <span>, {user.user_constituencies.join(", ")}</span>}
+                                                {user.user_constituencies.length > 0 && <span>, {user.user_constituencies.join(", ")}</span>}
                                             </p>
                                         </div>
                                     </div>
@@ -195,7 +292,7 @@ const Account = (props) => {
                                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                             <label className="col-span-1 text-gray-600">User groups</label>
                                             <p className="col-span-2 text-black font-medium text-base">
-                                                {Array.from(user?.groups, ug=>ug.name).join(", ") || " - "}
+                                                {Array.from(user?.groups, ug => ug.name).join(", ") || " - "}
                                             </p>
                                         </div>
                                     </div>
@@ -217,7 +314,7 @@ const Account = (props) => {
                                             <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
                                                 <label>Contact type</label>
                                                 <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500">
-                                                    {userContactType && userContactType.map(ctype=>(
+                                                    {userContactType && userContactType.map(ctype => (
                                                         <option value={ctype?.id} key={ctype?.id}>{ctype?.name}</option>
                                                     ))}
                                                 </select>
@@ -269,8 +366,8 @@ const Account = (props) => {
                             </Tabs.Panel>
                         </Tabs.Root>
                     </div>
-                    
-                </div> : <div class="w-full h-screen flex flex-col items-center justify-center">
+
+                </div> : <div className="w-full h-screen flex flex-col items-center justify-center">
                     <div className="bg-yellow-200 border rounded border-yellow-400">
                         <p>No user data found</p>
                     </div>

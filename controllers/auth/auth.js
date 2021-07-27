@@ -178,12 +178,12 @@ const getUserDetails = async (token, url) => {
     // console.log('getUserDetails URL: ',url)
     // let url = process.env.API_URL + '/rest-auth/user/'
     // let url = 'http://api.kmhfltest.health.go.ke/api' + '/rest-auth/user/'
-    if(typeof window != "undefined") {
+    if (typeof window != "undefined") {
         let savedSession = window.sessionStorage.getItem('user')
-        if(savedSession && savedSession.length > 0) {
+        if (savedSession && savedSession.length > 0) {
             savedSession = JSON.parse(window.sessionStorage.getItem('user'))
         }
-        if (savedSession && savedSession?.id && savedSession?.id.length>0) {
+        if (savedSession && savedSession?.id && savedSession?.id.length > 0) {
             console.log('Saved session: ', savedSession)
             return savedSession
         }
@@ -197,26 +197,26 @@ const getUserDetails = async (token, url) => {
             "Authorization": "Bearer " + token
         }
     })
-    .then( j=>j.json() )
-    .then(response => {
-        // console.log('=================== getUserDetails returned: ' + response)
-        if (response.detail || response.error) {
-            console.log('Error in getUserDetails: ' + response)
-            return {
-                error: true, message: response.detail || response.error
+        .then(j => j.json())
+        .then(response => {
+            // console.log('=================== getUserDetails returned: ' + response)
+            if (response.detail || response.error) {
+                console.log('Error in getUserDetails: ' + response)
+                return {
+                    error: true, message: response.detail || response.error
+                }
             }
-        }
-        if(typeof window !== "undefined") {
-            // console.log('getUserDetails returning ', response)
-            window.sessionStorage.setItem('user', JSON.stringify(response))
-        }
-        return response
-    }).catch(err => {
-        console.log('Error in getUserDetails: ' + err)
-        return {
-            error: true, message: err.message || err
-        }
-    })
+            if (typeof window !== "undefined") {
+                // console.log('getUserDetails returning ', response)
+                window.sessionStorage.setItem('user', JSON.stringify(response))
+            }
+            return response
+        }).catch(err => {
+            console.log('Error in getUserDetails: ' + err)
+            return {
+                error: true, message: err.message || err
+            }
+        })
 
 }
 
@@ -229,22 +229,53 @@ const getUserContacts = async (token, url) => {
             "Authorization": "Bearer " + token
         }
     })
-    .then( j=>j.json() )
-    .then(response => {
-        // console.log('=================== getUserContacts returned: ' + response)
-        if (response.detail || response.error) {
-            console.log('Error in getUserContacts: ' + response)
-            return {
-                error: true, message: response.detail || response.error
+        .then(j => j.json())
+        .then(response => {
+            // console.log('=================== getUserContacts returned: ' + response)
+            if (response.detail || response.error) {
+                console.log('Error in getUserContacts: ' + response)
+                return {
+                    error: true, message: response.detail || response.error
+                }
             }
-        }
-        return response
-    }).catch(err => {
-        console.log('Error in getUserContacts: ' + err)
-        return {
-            error: true, message: err.message || err
-        }
-    })
+            return response
+        }).catch(err => {
+            console.log('Error in getUserContacts: ' + err)
+            return {
+                error: true, message: err.message || err
+            }
+        })
+
+}
+
+const saveUser = async (token, url, payload) => {
+    if (token && token.length > 0) {
+        fetch(url, {
+            'method': 'PATCH',
+            'headers': {
+                "Accept": "application/json",
+                'cache-control': "no-cache",
+                "Content-Type": "application/x-www-form-urlencoded", //"multipart/form-data; boundary=---011000010111000001101001",
+                "Authorization": "Bearer " + token
+            },
+            'body': payload
+        }).then(j => j.json())
+            .then(response => {
+                // console.log('=================== saveUser returned: ' + response)
+                if (response.detail || response.error) {
+                    console.log('Error in saveUser: ' + response)
+                    return {
+                        error: true, message: response.detail || response.error
+                    }
+                }
+                return response
+            }).catch(err => {
+                console.log('Error in saveUser: ' + err)
+                return {
+                    error: true, message: err.message || err
+                }
+            })
+    }
 
 }
 

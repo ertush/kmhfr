@@ -15,6 +15,7 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
     const [user, setUser] = useState(null)
     const API_URL = process.env.API_URL || 'http://api.kmhfltest.health.go.ke/api'
     //check if a session cookie is set
+    const path = router.asPath
 
     useEffect(() => {
         let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
@@ -80,7 +81,7 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
                         </div>
                     </nav>
                     <div className="flex flex-wrap items-center justify-end gap-2 md:gap-5 px-2 md:flex-grow order-last sm:order-none flex-grow sm:flex-grow-0z">
-                        <form className="inline-flex flex-row flex-grow gap-x-2" action="/">
+                        <form className="inline-flex flex-row flex-grow gap-x-2" action={path || '/'}>
                             <input name="q" className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" type="search" defaultValue={searchTerm} placeholder="Search a facility/CHU" />
                             <button className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded">
                                 <SearchIcon className="w-5 h-5" />
@@ -90,7 +91,7 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
                     {(isLoggedIn && user && user !== null) ? (
                         <div className="flex flex-wrap items-center gap-3 md:gap-5 px-2 md:flex-grow justify-end">
                             <Menu as="div" className="relative p-2">
-                                <Menu.Button as="div" className="flex items-center justify-center gap-1">
+                                <Menu.Button as="div" className="flex items-center justify-center gap-1 cursor-pointer">
                                     <span className="leading-none p-0 inline sm:hidden"><UserCircleIcon className="h-6 w-6"/></span>
                                     <span className="leading-none p-0 hidden sm:inline">{user.full_name || 'My account'}</span>
                                     <span className="leading-none p-0"><ChevronDownIcon className="h-4 w-5"/></span>
