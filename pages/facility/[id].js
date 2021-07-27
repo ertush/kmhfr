@@ -494,6 +494,19 @@ const Facility = (props) => {
 }
 
 Facility.getInitialProps = async (ctx) => {
+    if(ctx.query.q) {
+        const query = ctx.query.q
+        if(typeof window !== 'undefined' && query.length > 2) {
+            window.location.href = `/facilities?q=${query}`
+        }else{
+            if (ctx.res) {
+                ctx.res.writeHead(301, {
+                  Location: '/facilities?q='+query
+                });
+                ctx.res.end();
+              }
+        }
+    }
     return checkToken(ctx.req, ctx.res).then(t => {
         let token = t.token
         let url = process.env.API_URL+'/facilities/facilities/' + ctx.query.id + '/'
