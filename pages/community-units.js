@@ -103,9 +103,11 @@ const Home = (props) => {
                             )) : (
                                 <div className="w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3">
                                         <span className="text-base text-gray-700">No community units found</span>
-                                        <a href={props.path || '/'} className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
-                                            Refresh.
-                                        </a>
+                                        <Link  href={props.path || '/'}>
+                                            <a className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
+                                                Refresh.
+                                            </a>
+                                        </Link>
                                 </div>
                             )}
                             {cus && cus.length>0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">

@@ -11,12 +11,12 @@ const Home = (props) => {
     let facilities = props?.data?.results
     let filters = props?.filters
     let [drillDown, setDrillDown] = useState({})
-    
+
     useEffect(() => {
-        if(filters && Object.keys(filters).length>0){
+        if (filters && Object.keys(filters).length > 0) {
             Object.keys(filters).map(ft => {
-                if(props?.query[ft] && props?.query[ft] != null && props?.query[ft].length>0){
-                    setDrillDown({...drillDown, [ft]: props?.query[ft]})
+                if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                    setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
                 }
             })
         }
@@ -39,13 +39,13 @@ const Home = (props) => {
                         </div>
                         <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-center justify-start gap-x-2">{(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Facilities matching "${props?.query?.searchTerm}"` : "All facilities"}
 
-                        <span className="text-lg text-gray-700 font-normal">
-                            {drillDown && Object.keys(drillDown).length>0 && 
-                                `matching (${Object.keys(drillDown).map(k => `${k}: ${filters[k].find(r=>r.id==drillDown[k]).name || k}`).join(', ')})`
-                            }
-                        </span>
-                        
-                        {props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
+                            <span className="text-lg text-gray-700 font-normal">
+                                {drillDown && Object.keys(drillDown).length > 0 &&
+                                    `matching (${Object.keys(drillDown).map(k => `${k}: ${filters[k].find(r => r.id == drillDown[k]).name || k}`).join(', ')})`
+                                }
+                            </span>
+
+                            {props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
                         {/* <small className="font-bold text-sm">{JSON.stringify(props?.query)}</small> */}
                     </div>
                     <div className="col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none">
@@ -100,9 +100,11 @@ const Home = (props) => {
                             )) : (
                                 <div className="w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3">
                                     <span className="text-base text-gray-700">No facilities found</span>
-                                    <a href={props.path || '/'} className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
-                                        Refresh.
-                                    </a>
+                                    <Link href={props.path || '/'}>
+                                        <a className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
+                                            Refresh.
+                                        </a>
+                                    </Link>
                                 </div>
                             )}
                             {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
@@ -163,7 +165,7 @@ const Home = (props) => {
                                                             ))}
                                                         </select>
                                                     </div>
-                                            ))}
+                                                ))}
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 mb-3">
                                                 <label htmlFor="has_edits" className="text-gray-600 capitalize text-sm">Has edits</label>
                                                 <input type="checkbox" defaultChecked={props?.query?.has_edits || false} name="has_edits" id="has_edits" onChange={ev => {
@@ -225,9 +227,9 @@ const Home = (props) => {
                                                     if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
                                                     console.log(props.path)
                                                     // setDrillDown({})
-                                                    if(typeof window !== 'undefined' && window){
-                                                        window.location.href = props.path + op +qry
-                                                    }else{
+                                                    if (typeof window !== 'undefined' && window) {
+                                                        window.location.href = props.path + op + qry
+                                                    } else {
                                                         router.push(props.path + op + qry)
                                                     }
                                                 }
@@ -278,7 +280,7 @@ Home.getInitialProps = async (ctx) => {
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
-            url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
+            url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
         let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
         other_posssible_filters.map(flt => {
