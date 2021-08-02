@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import MainLayout from '../components/MainLayout'
 import { DotsHorizontalIcon, PencilIcon } from '@heroicons/react/solid'
 import { checkToken } from '../controllers/auth/auth'
