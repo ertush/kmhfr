@@ -107,13 +107,13 @@ const Home = (props) => {
                             )}
                             {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
-                                    <a href={'/?page=' + props?.data?.current_page} className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">
+                                    <a href={'/facilities?page=' + props?.data?.current_page} className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">
                                         {props?.data?.current_page}
                                     </a>
                                 </li>
                                 {props?.data?.near_pages && props?.data?.near_pages.map(page => (
                                     <li key={page} className="text-base text-gray-600">
-                                        <a href={'/?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
+                                        <a href={'/facilities?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
                                             {page}
                                         </a>
                                     </li>
