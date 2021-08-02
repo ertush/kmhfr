@@ -433,8 +433,8 @@ const Account = (props) => {
     )
 }
 
-Account.getInitialProps = async (ctx) => {
-    return {}
+// Account.getInitialProps = async (ctx) => {
+    // return {}
     // return checkToken(ctx.req, ctx.res).then(t => {
     //     let token = t.token
     //     let basics_url = process.env.API_URL+'/rest-auth/user/'
@@ -449,6 +449,6 @@ Account.getInitialProps = async (ctx) => {
     //         data: [],
     //     }
     // })
-}
+// }
 
 export default Account
