@@ -247,7 +247,7 @@ const Account = (props) => {
                                                             No
                                                         </span>}
                                                 </p>
-                                            </div> : <span key={ug}></span>
+                                            </div> : ""
                                         ))}
                                     </div>
                                     {/* <small>{JSON.stringify(userContact, null, 2)}</small> */}
