@@ -3,7 +3,7 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { checkToken, getUserContacts } from '../controllers/auth/auth'
 import React, { useState, useEffect } from 'react';
 import MainLayout from '../components/MainLayout'
-import { CheckCircleIcon, InformationCircleIcon, LocationMarkerIcon, LockClosedIcon, XCircleIcon } from '@heroicons/react/solid'
+import { CheckCircleIcon, InformationCircleIcon, LocationMarkerIcon, LockClosedIcon, XCircleIcon, XIcon } from '@heroicons/react/solid'
 import { ArrowsExpandIcon } from '@heroicons/react/outline'
 import dynamic from 'next/dynamic'
 import { Dialog, Transition } from '@headlessui/react'
@@ -16,13 +16,14 @@ const Account = (props) => {
     const [userContactType, setUserContactType] = useState(null)
     const API_URL = process.env.API_URL || 'http://api.kmhfltest.health.go.ke/api'
     const [basicUserForm, setBasicUserForm] = useState({})
+    const [contactDetailsForm, setContactDetailsForm] = useState({})
     const [fname, setFname] = useState("")
     const [lname, setLname] = useState("")
     const [onames, setOnames] = useState("")
     const [email, setEmail] = useState("")
     const [username, setUsername] = useState("")
     //check if a session cookie is set
-    
+
     useEffect(() => {
         let user_id
         if (typeof window !== 'undefined') {
@@ -31,7 +32,7 @@ const Account = (props) => {
                 let s_r = JSON.parse(usr)
                 user_id = s_r?.id
                 setUser(s_r)
-                if(s_r){
+                if (s_r) {
                     setFname(s_r.first_name)
                     setLname(s_r.last_name)
                     setOnames(s_r.other_names)
@@ -120,77 +121,82 @@ const Account = (props) => {
                             <Tabs.Panel value="basic" className="grow-1 py-1 px-4 tab-panel">
                                 <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
                                     <div className="flex flex-row items-center justify-end w-full py-2">
-                                        <button className="bg-transparent border border-green-700 py-1 px-2 text-base rounded bg-white text-green-700 font-semibold hover:bg-green-700 hover:text-white focus:bg-green-700 focus:text-white active:bg-green-700 active:text-white focus:outline-none transform ease-linear transition-colors duration-75" onClick={() => setShowEditBasic(!showEditBasic)}>Edit basic details</button>
+                                        <div className="py-2 w-full flex flex-row items-center justify-between">
+                                            <h3 className="text-2xl flex flex-wrap justify-between items-center leading-tight tracking-tight">
+                                                <span className="font-semibold">Basic details</span>
+                                            </h3>
+                                            <button className="bg-transparent border border-green-700 py-1 px-2 text-base rounded bg-white text-green-700 font-semibold hover:bg-green-700 hover:text-white focus:bg-green-700 focus:text-white active:bg-green-700 active:text-white focus:outline-none transform ease-linear transition-colors duration-75" onClick={() => setShowEditBasic(!showEditBasic)}>Edit basic details</button>
+                                        </div>
                                         <Dialog className="fixed z-10 inset-0 overflow-y-auto" open={showEditBasic} onClose={() => setShowEditBasic(false)}>
                                             <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
 
                                             <div className="flex items-center justify-center min-h-screen">
                                                 <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
 
-                                                <div className="bg-white rounded max-w-sm sm:max-w-screen-sm sm:w-full flex flex-col items-center mx-auto z-20 p-3">
+                                                <div className="bg-white rounded max-w-sm sm:max-w-screen-sm sm:w-full flex flex-col items-center mx-auto z-20 p-8">
                                                     <div className="w-full flex flex-col gap-2">
                                                         <Dialog.Title as="h2" className="font-semibold text-black text-2xl">Edit basic details</Dialog.Title>
                                                         <Dialog.Description as="div" className="flex flex-col items-center justify-start gap-3 w-full">
-                                                            <form className="grid grid-cols-2 gap-3 p-1 w-full" onSubmit={fm=>{
+                                                            <form className="grid grid-cols-2 gap-3 p-2 w-full" onSubmit={fm => {
                                                                 fm.preventDefault();
                                                                 console.log(basicUserForm);
                                                                 // if submission successful then
                                                                 setShowEditBasic(false);
                                                                 //else show error within modal
                                                             }}>
-                                                                <div className="flex flex-col gap-1">
+                                                                <div className="flex flex-col gap-2">
                                                                     <label className="text-sm">First name</label>
                                                                     <input type="text" name="first_name" defaultValue={user.first_name || ""}
-                                                                        onChange={ev=>{
-                                                                            if(ev.target.value && ev.target.value.length>0){
-                                                                                setBasicUserForm({...basicUserForm, [ev.target.name]: ev.target.value});
+                                                                        onChange={ev => {
+                                                                            if (ev.target.value && ev.target.value.length > 0) {
+                                                                                setBasicUserForm({ ...basicUserForm, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }}
-                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2"/>
+                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
                                                                 </div>
-                                                                <div className="flex flex-col gap-1">
+                                                                <div className="flex flex-col gap-2">
                                                                     <label className="text-sm">Last name</label>
                                                                     <input type="text" name="last_name" defaultValue={user.last_name || ""}
-                                                                        onChange={ev=>{
-                                                                            if(ev.target.value && ev.target.value.length>0){
-                                                                                setBasicUserForm({...basicUserForm, [ev.target.name]: ev.target.value});
+                                                                        onChange={ev => {
+                                                                            if (ev.target.value && ev.target.value.length > 0) {
+                                                                                setBasicUserForm({ ...basicUserForm, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }}
-                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2"/>
+                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
                                                                 </div>
-                                                                <div className="flex flex-col gap-1">
+                                                                <div className="flex flex-col gap-2">
                                                                     <label className="text-sm">Other names</label>
                                                                     <input type="text" name="other_names" defaultValue={user.other_names || ""}
-                                                                        onChange={ev=>{
-                                                                            if(ev.target.value && ev.target.value.length>0){
-                                                                                setBasicUserForm({...basicUserForm, [ev.target.name]: ev.target.value});
+                                                                        onChange={ev => {
+                                                                            if (ev.target.value && ev.target.value.length > 0) {
+                                                                                setBasicUserForm({ ...basicUserForm, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }}
-                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2"/>
+                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
                                                                 </div>
-                                                                <div className="flex flex-col gap-1">
+                                                                <div className="flex flex-col gap-2">
                                                                     <label className="text-sm">Email</label>
                                                                     <input type="email" name="email" defaultValue={user.email || ""}
-                                                                        onChange={ev=>{
-                                                                            if(ev.target.value && ev.target.value.length>0){
-                                                                                setBasicUserForm({...basicUserForm, [ev.target.name]: ev.target.value});
+                                                                        onChange={ev => {
+                                                                            if (ev.target.value && ev.target.value.length > 0) {
+                                                                                setBasicUserForm({ ...basicUserForm, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }}
-                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2"/>
+                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
                                                                 </div>
-                                                                <div className="flex flex-col gap-1">
+                                                                <div className="flex flex-col gap-2">
                                                                     <label className="text-sm">Username</label>
                                                                     <input type="text" name="username" defaultValue={user.username || ""}
-                                                                        onChange={ev=>{
-                                                                            if(ev.target.value && ev.target.value.length>0){
-                                                                                setBasicUserForm({...basicUserForm, [ev.target.name]: ev.target.value});
+                                                                        onChange={ev => {
+                                                                            if (ev.target.value && ev.target.value.length > 0) {
+                                                                                setBasicUserForm({ ...basicUserForm, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }}
-                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2"/>
+                                                                        className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
                                                                 </div>
                                                             </form>
                                                             <div className="flex flex-wrap gap-3 items-center justify-around w-full">
-                                                                <button className="border-none rounded bg-transparent outline-none py-2 px-3 hover:text-red-700 focus:text-red-700 active:text-red-700" onClick={() => setShowEditBasic(false)}>Cancel</button>
+                                                                <button className="border-none rounded bg-transparent outline-none py-2 px-3 hover:text-red-700 focus:text-red-700 active:text-red-700" onClick={() => {setShowEditBasic(false); setBasicUserForm({}); }}>Cancel</button>
                                                                 <button className="text-white rounded bg-black py-2 px-4 hover:bg-green-700 focus:bg-green-700 active:bg-green-700" onClick={() => alert(JSON.stringify(basicUserForm))}>Save changes</button>
                                                             </div>
                                                         </Dialog.Description>
@@ -306,32 +312,81 @@ const Account = (props) => {
                             </Tabs.Panel>
                             <Tabs.Panel value="contacts" className="grow-1 py-1 px-4 tab-panel">
                                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                                    <div className="bg-white w-full p-4 rounded flex flex-col gap-2">
-                                        <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-                                            <span className="font-semibold">My contacts</span>
-                                        </h3>
-                                        <form className="flex flex-col gap-2 w-full border p-3 rounded">
-                                            <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
-                                                <label>Contact type</label>
-                                                <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500">
-                                                    {userContactType && userContactType.map(ctype => (
-                                                        <option value={ctype?.id} key={ctype?.id}>{ctype?.name}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
-                                                <label>Contact details</label>
-                                                <input type="text" className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" name="contact_details" />
-                                            </div>
-                                            <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
-                                                <input type="submit" value="Save new contact" className="bg-black text-white rounded py-2 px-4 text-base font-medium hover:text-green-300" />
-                                            </div>
-                                        </form>
-                                        <h3 className="text-xl w-full underline">Current contacts</h3>
+                                    <div className="bg-white w-full p-4 rounded flex flex-col gap-y-2">
+                                        {/* ---- EDIT CONTACTS ---- */}
+                                        <div className="w-ful flex flex-row items-center justify-between">
+                                            <h3 className="text-2xl flex flex-wrap justify-between items-center leading-tight tracking-tight">
+                                                <span className="font-semibold">My contacts</span>
+                                            </h3>
+                                            <button className="bg-transparent border border-green-700 py-1 px-2 text-base rounded bg-white text-green-700 font-semibold hover:bg-green-700 hover:text-white focus:bg-green-700 focus:text-white active:bg-green-700 active:text-white focus:outline-none transform ease-linear transition-colors duration-75" onClick={() => setShowEditContacts(!showEditContacts)}>Add new contact</button>
+                                        </div>
+                                        <div className="flex flex-row items-center justify-end w-full py-2">
+                                            <Dialog className="fixed z-10 inset-0 overflow-y-auto" open={showEditContacts} onClose={() => setShowEditContacts(false)}>
+                                                <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+
+                                                <div className="flex items-center justify-center min-h-screen">
+                                                    <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+
+                                                    <div className="bg-white rounded max-w-sm sm:max-w-screen-sm sm:w-full flex flex-col items-center mx-auto z-20 p-8">
+                                                        <div className="w-full flex flex-col gap-2">
+                                                            <Dialog.Title as="h2" className="font-semibold text-black text-2xl">Add new contact</Dialog.Title>
+                                                            <Dialog.Description as="div" className="flex flex-col items-center justify-start gap-3 w-full">
+
+                                                                <form className="flex flex-col gap-2 w-full p-1" onSubmit={fm => {
+                                                                    fm.preventDefault();
+                                                                    console.log(contactDetailsForm);
+                                                                    // if submission successful then
+                                                                    setShowEditContacts(false);
+                                                                    //else show error within modal
+                                                                }}>
+                                                                    <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
+                                                                        <label>Contact type</label>
+                                                                        <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" name="contact_type"
+                                                                        onChange={ev => {
+                                                                            if (ev.target.value && ev.target.value.length > 0) {
+                                                                                setContactDetailsForm({ ...contactDetailsForm, [ev.target.name]: ev.target.value });
+                                                                            }
+                                                                        }}>
+                                                                            {userContactType && userContactType.map(ctype => (
+                                                                                <option value={ctype?.id} key={ctype?.id}>{ctype?.name}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+                                                                    <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
+                                                                        <label>Contact details</label>
+                                                                        <input type="text" className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" name="contact_details" onChange={ev => {
+                                                                            if (ev.target.value && ev.target.value.length > 0) {
+                                                                                setContactDetailsForm({ ...contactDetailsForm, [ev.target.name]: ev.target.value });
+                                                                            }
+                                                                        }} />
+                                                                    </div>
+                                                                    {/* <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
+                                                                        <input type="submit" value="Save new contact" className="bg-black text-white rounded py-2 px-4 text-base font-medium hover:text-green-300" />
+                                                                    </div> */}
+                                                                </form>
+
+                                                                <div className="flex flex-wrap gap-3 items-center justify-around w-full">
+                                                                    <button className="border-none rounded bg-transparent outline-none py-2 px-3 hover:text-red-700 focus:text-red-700 active:text-red-700" onClick={() => {setShowEditContacts(false); setContactDetailsForm({}); }}>Cancel</button>
+                                                                    <button className="text-white rounded bg-black py-2 px-4 hover:bg-green-700 focus:bg-green-700 active:bg-green-700" onClick={() => alert(JSON.stringify(contactDetailsForm))}>Add Contact</button>
+                                                                </div>
+                                                            </Dialog.Description>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </Dialog>
+                                        </div>
+                                        {/* ---- EDIT CONTACTS ---- */}
                                         {(userContact && userContact.length > 0) && userContact.map(contact => (
                                             <div key={contact.id} className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                 <label className="col-span-1 text-gray-600 capitalize">{contact.contact_type_text[0].toLocaleUpperCase() + contact.contact_type_text.slice(1).toLocaleLowerCase() || "Contact"}</label>
-                                                <p className="col-span-2 text-black font-medium text-base">{contact.contact_text || " - "}</p>
+                                                <p className="col-span-2 text-black font-medium text-base flex items-center justify-between gap-x-1">
+                                                    <span>{contact.contact_text || " - "}</span>
+                                                    <button className="text-gray-600 focus:text-red-600 hover:text-red-600 bg-transparent flex flex-row items-center justify-between gap-x-1 group outline-none focus:ring-1 focus:ring-red-500 leading-none rounded">
+                                                        <XIcon className="h-4 w-4"/>
+                                                        <span className="group-focus:underline group-hover:underline">Remove</span>
+                                                    </button>
+                                                </p>
                                             </div>
                                         ))}
                                     </div>
@@ -343,6 +398,7 @@ const Account = (props) => {
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                             <span className="font-semibold">Change your password</span>
                                         </h3>
+                                        <br className="my-1"/>
                                         <h6>The password must be at least 8 characters and contain both letters and numbers</h6>
                                         <form className="flex flex-col gap-2 w-full border p-3 rounded">
                                             <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
