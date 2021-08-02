@@ -14,7 +14,7 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
     const currentPath = router.asPath.split('?', 1)[0]
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [user, setUser] = useState(null)
-    const API_URL = process.env.API_URL || 'http://api.kmhfltest.health.go.ke/api'
+    const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
     const [showLogin, setShowLogin] = useState(false)
     const toggleLoginCallBack = useCallback(
         () => setTimeout(() => {

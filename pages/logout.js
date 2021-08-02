@@ -45,7 +45,7 @@ const Logout = props => {
 
 Logout.getInitialProps = async () => {
     const cookieCutter = require('cookie-cutter')
-    const API_URL = process.env.API_URL || 'http://api.kmhfltest.health.go.ke/api'
+    const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
     return fetch(API_URL + '/rest-auth/logout/', {
         method: 'POST',
         headers: {
