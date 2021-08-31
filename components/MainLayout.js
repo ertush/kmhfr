@@ -19,7 +19,7 @@ export default function MainLayout({ children, isLoading, searchTerm }) {
     const toggleLoginCallBack = useCallback(
         () => setTimeout(() => {
             setShowLogin(true)
-        }, 200),
+        }, 0),
         [],
     )
 

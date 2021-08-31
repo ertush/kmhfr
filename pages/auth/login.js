@@ -71,7 +71,8 @@ const Login = (props) => {
                 }} 
                 // method="POST" 
                 // action="javascript:void(0);"
-                className="bg-gradient-to-tl from-blue-500 via-green-500 to-green-800 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-9 ">
+                className="bg-gray-500 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-9 ">
+                {/* className="bg-gradient-to-tl from-blue-500 via-green-500 to-green-800 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-9 "> */}
                     <h1 className="text-center text-3xl font-black text-green-100">Log in</h1>
                     <div className="flex flex-col gap-0 w-full">
                         {error && error.length > 0 && <p className="text-red-900 bg-red-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{error}</p>}
