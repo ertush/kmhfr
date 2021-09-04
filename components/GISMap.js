@@ -12,16 +12,17 @@ const GISMap = ({ data }) => {
                     <GeoJSON data={MapData} key={MapData} style={`color: '#006400'; weight: 5; opacity: 0.65;`} />
                     {data.map((facility, i) => {
                         if (facility && facility?.lat_long && facility?.lat_long.length > 0) {
+                            facility.op_stat = facility?.operation_status_name || facility?.status_name
                             return (
                                 <Marker position={[facility.lat_long[0], facility.lat_long[1]]} key={facility.id} >
                                     <Popup>
                                         <div className="flex flex-col items-center">
-                                            <a href={`/facility/${facility.id}`} className="text-base uppercase font-semibold text-blue-700 hover:text-black focus:text-black active:text-black">
+                                            <a href={`/${facility?.facility != undefined && facility?.name.includes('unit') && facility?.facility_name != null ? 'community-unit' : 'facility'}/${facility.id}`} className="text-base uppercase font-semibold text-blue-700 hover:text-black focus:text-black active:text-black">
                                                 <span>{facility.official_name || facility.name}</span>
                                             </a>
                                             <div className="text-base flex gap-2 w-full justify-between border-t py-2 items-center">
                                                 <h4 className="text-base font-bold text-black flex gap-1"><small className="text-gray-400 text-sm">#</small>{facility?.code || "No code"}</h4>
-                                                <span className={"text-sm font-medium drop-shadow-sm rounded leading-none p-1 px-3" + (facility?.operation_status_name.toLowerCase() == "operational" ? "text-black bg-green-300" : "text-gray-900 bg-gray-200")}>{" " + facility?.operation_status_name.toString() + " "}</span>
+                                                <span className={"text-sm font-medium drop-shadow-sm rounded leading-none p-1 px-3" + (facility?.op_stat.toLowerCase() == "operational" || facility?.op_stat.toLowerCase().includes('non-') ? "text-black bg-green-300" : "text-gray-900 bg-gray-200")}>{" " + facility?.op_stat.toString() + " "}</span>
                                             </div>
                                         </div>
                                     </Popup>

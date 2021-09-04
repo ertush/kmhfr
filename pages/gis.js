@@ -17,13 +17,14 @@ const Gis = (props) => {
         } // This line is important. It's what prevents server-side render
     )
 
+    // console.log('props:::: ', props)
     const router = useRouter()
-    console.log('props::: ',Object.keys(props))
     let facilities = props?.data?.results
     let filters = props?.filters
     let fltrs = filters
     let [drillDown, setDrillDown] = useState({})
-    if(filters){
+    const [isItUnits, setIsItUnits] = useState(props?.isUnits)
+    if (filters) {
         filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
         filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
         filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
@@ -71,14 +72,25 @@ const Gis = (props) => {
                                     <XCircleIcon className="text-red-500 h-4 w-4 text-5xl" />
                                     <span>Error</span>
                                 </h1>
-                                <p className="text-red-800 text-lg">{props?.err.toString()}</p>
+                                <p className="text-red-800 text-lg">{JSON.stringify(props?.err)}</p>
                             </div>
                         </div>
                     ) : (
                         <div className="w-full grid grid-cols-5 gap-5 px-1 md:px-4 p-4 my-4 mx-auto bg-gray-100 min-h-screen">
                             <aside className="col-span-5 md:col-span-1 p-2 md:p-4 flex flex-col gap-4 items-center justify-start bg-white rounded-lg shadow">
                                 {/* ---- */}
-                                <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root flex-grow" defaultValue="facilities">
+                                <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root flex-grow" defaultValue="facilities" onValueChange={ev => {
+                                    let link2push = `/gis`
+                                    if (ev === "facilities") {
+                                        link2push = `?units=0`
+                                    } else if (ev === "cunits") {
+                                        link2push = `?units=1`
+                                    }
+                                    if (props?.query?.searchTerm && props?.query?.searchTerm != null && props?.query?.searchTerm != "" && props?.query?.searchTerm != undefined) {
+                                        link2push += `&searchTerm=${props?.query?.searchTerm}`
+                                    }
+                                    router.push(link2push)
+                                }}>
                                     <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
                                         <Tabs.Tab value="facilities" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                             Facilities
@@ -89,9 +101,10 @@ const Gis = (props) => {
                                     </Tabs.List>
                                     <Tabs.Panel value="facilities" className="grow-1 py-1 px-4 tab-panel">
                                         <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                                            <div className="bg-white w-full p-2 rounded">
+                                            <div className="bg-white w-full p-3 rounded">
                                                 {props?.data && props?.data?.results && <h4 className="text-xl tracking-tight font-bold leading-3">{props?.data?.results?.length} facilities found.</h4>}
                                             </div>
+                                            <hr className="my-2" />
                                             {/* 000000000 */}
                                             <details className="rounded bg-transparent py-1 flex flex-col w-full md:stickyz" open>
                                                 <summary className="flex cursor-pointer w-full bg-white p-0">
@@ -248,6 +261,7 @@ const Gis = (props) => {
                                                                     router.push({
                                                                         pathname: '/gis',
                                                                         query: {
+                                                                            'units': '0',
                                                                             ...props?.query,
                                                                             ...drillDown
                                                                         }
@@ -286,15 +300,72 @@ const Gis = (props) => {
                                     </Tabs.Panel>
                                     <Tabs.Panel value="cunits" className="grow-1 py-1 px-4 tab-panel">
                                         <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                                            <div className="bg-white w-full p-4 rounded">
+                                            <div className="bg-white w-full p-2 rounded">
+                                                <div className="bg-white w-full py-2 rounded">
+                                                    {props?.data && props?.data?.results && <h4 className="text-xl tracking-tight font-bold leading-3">{props?.data?.results?.length} community units found.</h4>}
+                                                </div>
+                                                <hr className="my-2" />
+                                                <details className="rounded bg-transparent py-1 gap-y-2 flex flex-col w-full md:stickyz" open>
+                                                    <summary className="flex cursor-pointer w-full bg-white p-0">
+                                                        <h5 className="text-xl font-semibold">Filters</h5>
+                                                    </summary>
+                                                    {/* ------- */}
+                                                    <div className="flex flex-col gap-1 p-1">
+                                                        {filters && filters?.error ?
+                                                            (<div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                                                <p>No filters.</p>
+                                                            </div>)
+                                                            : (
+                                                                <form action="/" onSubmit={ev => {
+                                                                    ev.preventDefault()
+                                                                    return false
+                                                                }}>
+                                                                    {filters && Object.keys(filters).length > 0 &&
+                                                                        Object.keys(filters).map(ft => (
+                                                                            <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                                <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
+                                                                                <select name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-2 rounded bg-gray-100" onChange={sl => {
+                                                                                    let nf = {}
+                                                                                    nf[ft] = sl.target.value
+                                                                                    setDrillDown({ ...drillDown, ...nf })
+                                                                                    // updateFt(nf)
+                                                                                }}>
+                                                                                    <option value="">All</option>
+                                                                                    {filters[ft].map(ft_opt => (
+                                                                                        <option key={ft_opt.id} value={ft_opt.id}>{ft_opt.name}</option>
+                                                                                    ))}
+                                                                                </select>
+                                                                            </div>
+                                                                        ))}
 
+                                                                    <button onClick={ev => {
+                                                                        router.push({
+                                                                            pathname: '/gis',
+                                                                            query: {
+                                                                                'units': '1',
+                                                                                ...props?.query,
+                                                                                ...drillDown
+                                                                            }
+                                                                        })
+                                                                    }} className="bg-black border-2 border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg rounded w-full whitespace-nowrap text-center uppercase">Apply Filters</button>
+                                                                    <div className="w-full flex items-center py-2 justify-center">
+                                                                        <button className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline" onClick={ev => {
+                                                                            router.push('/gis?units=1')
+                                                                        }}>Clear filters</button>
+                                                                    </div>
+                                                                </form>
+                                                            )
+                                                        }
+                                                    </div>
+                                                    {/* ------- */}
+                                                </details>
                                             </div>
                                         </div>
                                     </Tabs.Panel>
                                 </Tabs.Root>
                                 {/* ---- */}
                             </aside>
-                            <div className="col-span-5 md:col-span-4 flex flex-col gap-4 items-center justify-center bg-green-100 rounded-lg shadow-lg border border-gray-300">
+                            <div className="col-span-5 md:col-span-4 flex flex-col gap-4 items-center justify-center bg-green-100 rounded-lg shadow-lg border border-gray-300" style={{ minHeight: '650px' }}>
                                 <Map data={props?.data?.results || []} />
                             </div>
                         </div>
@@ -308,11 +379,15 @@ const Gis = (props) => {
 Gis.getInitialProps = async (ctx) => {
     const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
     let host = ctx.req ? ctx.req.headers.host : window.location.hostname
-    
+    let yesItIsUnits = ctx?.query && (ctx?.query?.units === 'true' || ctx?.query?.units === '1') || false
+
     let all_facilities = []
 
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+        if (ctx?.query && ctx?.query?.units && (ctx?.query?.units === 'true' || ctx?.query?.units === '1')) {
+            filters_url = API_URL + '/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county'
+        }
 
         return fetch(filters_url, {
             headers: {
@@ -327,7 +402,8 @@ Gis.getInitialProps = async (ctx) => {
                 return {
                     error: true,
                     err: err,
-                    filters: []
+                    filters: [],
+                    isUnits: yesItIsUnits
                 }
             })
     }
@@ -349,7 +425,7 @@ Gis.getInitialProps = async (ctx) => {
                 return getMorePagedData(data.next, token)
             } else {
                 return {
-                    data: { "results": all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/facilities'
+                    data: { "results": all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/facilities', isUnits: yesItIsUnits
                 }
             }
         })
@@ -358,11 +434,15 @@ Gis.getInitialProps = async (ctx) => {
     const fetchData = (token) => {
         let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,operation_status_name,name,is_complete,approved_national_level,has_edits,approved,rejected,keph_level,lat_long&page_size=600'
         let query = { 'searchTerm': '' }
+        let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
+        if (ctx?.query && ctx?.query?.units && (ctx?.query?.units === 'true' || ctx?.query?.units === '1')) {
+            url = API_URL + '/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency,lat_long&page_size=600';
+            other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
+        }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
-        let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
@@ -383,13 +463,12 @@ Gis.getInitialProps = async (ctx) => {
             .then(json => {
                 return fetchFilters(token).then(ft => {
                     ///////
-                    console.log('fetchFilters has EXECUTEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD')
-                    console.log('JSON:::: ', Object.keys(json))
+                    // console.log('JSON:::: ', Object.keys(json))
                     all_facilities.push(...json.results)
                     if (json.next) {
-                        if (host.includes('localhost')) {
+                        if (!host.includes('productiondomainname')) { // limiting to 600 for now globally
                             return {
-                                data: { "results": all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/facilities'
+                                data: { "results": all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/facilities', isUnits: yesItIsUnits
                             }
                         }
                         return getMorePagedData(json.next, token).then(data => {
@@ -397,7 +476,7 @@ Gis.getInitialProps = async (ctx) => {
                             return data
                         })
                     } else {
-                        return { data: { results: all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/facilities' }
+                        return { data: { results: all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/facilities', isUnits: yesItIsUnits }
                     }
                     ///////
                 })
@@ -408,7 +487,8 @@ Gis.getInitialProps = async (ctx) => {
                     err: err,
                     data: [],
                     query: {},
-                    path: ctx.asPath || '/facilities'
+                    path: ctx.asPath || '/facilities',
+                    isUnits: yesItIsUnits
                 }
             })
     }
@@ -423,7 +503,8 @@ Gis.getInitialProps = async (ctx) => {
             err: err,
             data: [],
             query: {},
-            path: ctx.asPath || '/facilities'
+            path: ctx.asPath || '/facilities',
+            isUnits: yesItIsUnits
         }
     })
 
