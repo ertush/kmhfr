@@ -56,7 +56,7 @@ const Home = (props) => {
                             <a className="text-green-700" href="/">Home</a> {'>'}
                             <span className="text-gray-500">Facilities</span>
                         </div>
-                        <details className="bg-gray-100 p-3 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify({ ...filters, owner_type: "", county: [], sub_countyz: [], service: [], service_category: [], constituency: [], ward: [], facility_type: [] }, null, 2)}</pre></details>
+                        {/* <details className="bg-gray-100 p-3 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify({ ...filters, owner_type: "", county: [], sub_countyz: [], service: [], service_category: [], constituency: [], ward: [], facility_type: [] }, null, 2)}</pre></details> */}
                         <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-center justify-start gap-x-2">{(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Facilities matching "${props?.query?.searchTerm}"` : "All facilities"}
                             <span className="text-lg text-gray-700 font-normal">
                                 {drillDown && Object.keys(drillDown).length > 0 &&
@@ -66,7 +66,7 @@ const Home = (props) => {
                                 }
                             </span>
                             {props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
-                        <small className="font-bold text-sm">{JSON.stringify(props?.query)}</small>
+                        {/* <small className="font-bold text-sm">{JSON.stringify(props?.query)}</small> */}
                     </div>
                     <div className="col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none">
                         <div className="flex flex-col justify-center items-center px-1 md:px-4 w-full ">
@@ -328,7 +328,7 @@ const Home = (props) => {
                                             }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
                                             <div className="w-full flex items-center py-2 justify-center">
                                                 <button className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline" onClick={ev => {
-                                                    router.push('/')
+                                                    router.push('/facilities')
                                                 }}>Clear filters</button>
                                             </div>
                                         </form>
@@ -368,7 +368,7 @@ Home.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level,operation_status_name'
+        let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q

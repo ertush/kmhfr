@@ -17,9 +17,15 @@ const Login = (props) => {
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
-            <div className="w-full h-screen overflow-hidden bg-gradient-to-br from-green-100 via-yellow-50 to-green-200 flex flex-col gap-2 items-center justify-center p-3 md:p-0">
-                <div className="w-full flex max-w-screen-sm">
-                    <a className="text-green-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</a>
+            <div className="w-full h-screen overflow-hidden bg-blue-50 flex flex-col gap-2 items-center justify-center p-3 md:p-0">
+                <div className="w-full flex flex-col max-w-screen-sm items-center justify-between px-2">
+                    <div className="text-center text-4xl w-full font-black text-gray-800 flex justify-center gap-x-2 items-center">
+                        <img src="/MOH.png" className="h-16" alt="KMHFL 3"/>
+                        <span>KMHFL-v3</span>
+                    </div>
+                    <div className="flex items-center justify-start w-full py-3">
+                        <a className="text-green-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</a>
+                    </div>
                 </div>
                 <form onSubmit={ev => {
                     ev.preventDefault()
@@ -71,9 +77,9 @@ const Login = (props) => {
                 }} 
                 // method="POST" 
                 // action="javascript:void(0);"
-                className="bg-gray-500 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-9 ">
+                className="bg-gray-700 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 ">
                 {/* className="bg-gradient-to-tl from-blue-500 via-green-500 to-green-800 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-9 "> */}
-                    <h1 className="text-center text-3xl font-black text-green-100">Log in</h1>
+                    <h3 className="text-center leading-tight text-2xl font-semibold text-gray-100">Log in</h3>
                     <div className="flex flex-col gap-0 w-full">
                         {error && error.length > 0 && <p className="text-red-900 bg-red-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{error}</p>}
                         {msg && msg.length > 0 && <p className="text-blue-900 bg-blue-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{msg}</p>}
@@ -99,12 +105,12 @@ const Login = (props) => {
                             className="text-gray-900 bg-gray-50 border border-gray-300 py-3 px-3 w-full flex items-center leading-none rounded" placeholder="*********" />
                     </div>
                     <div className="flex flex-col gap-4 w-full text-center">
-                        <button disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-black focus:bg-black active:bg-black bg-blend-color-dodge " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-black/50")}
+                        <button disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-green-600 focus:bg-green-600 active:bg-green-600 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-green-500")}
                         >{loading ? "Loading..." : "Log in"}</button>
-                        <div className="flex justify-between items-center w-full px-2">
-                            <a href="/" className="text-base text-green-100 hover:underline focus:underline active:underline">Forgot password?</a>
-                            <a href="/" className="text-base  text-green-100 hover:underline focus:underline active:underline">Request account</a>
-                        </div>
+                        {/* <div className="flex justify-between items-center w-full px-2">
+                            <a href="/" className="text-base text-green-300 hover:underline focus:underline active:underline">Forgot password?</a>
+                            <a href="/" className="text-base  text-green-300 hover:underline focus:underline active:underline">Request account</a>
+                        </div> */}
                     </div>
                 </form>
             </div>

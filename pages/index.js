@@ -67,6 +67,14 @@ const Home = (props) => {
                         </p>
                     </div>
                     <div className="col-span-2 md:col-span-1 border rounded-lg border-gray-300 shadow-sm group hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
+                        <Link href="/reports">
+                            <a className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">Reports</a>
+                        </Link>
+                        <p className="text-base">
+                            A collection of reports on facilities and community health units in Kenya. You can view and export data from KMHFL in the reports section.
+                        </p>
+                    </div>
+                    <div className="col-span-2 md:col-span-1 border rounded-lg border-gray-300 shadow-sm group hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
                         <a href="https://mfl-api-docs.readthedocs.io/en/latest/" className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">KMHFL API</a>
                         <p className="text-base">
                             This provides a RESTful API for developers to use. The documentation is available at <br /> <a className="text-blue-800 hover:underline focus:underline active:underline" href="https://mfl-api-docs.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">https://mfl-api-docs.readthedocs.io/en/latest</a>
