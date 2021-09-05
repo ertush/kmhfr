@@ -12,12 +12,12 @@ const Home = (props) => {
     let cus = props?.data?.results
     let filters = props?.filters
     let [drillDown, setDrillDown] = useState({})
-    
+
     useEffect(() => {
-        if(filters && Object.keys(filters).length>0){
+        if (filters && Object.keys(filters).length > 0) {
             Object.keys(filters).map(ft => {
-                if(props?.query[ft] && props?.query[ft] != null && props?.query[ft].length>0){
-                    setDrillDown({...drillDown, [ft]: props?.query[ft]})
+                if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                    setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
                 }
             })
         }
@@ -40,13 +40,13 @@ const Home = (props) => {
                         </div>
                         <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-center justify-start gap-x-2">{(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Community units matching "${props?.query?.searchTerm}"` : "All community units"}
 
-                        <span className="text-lg text-gray-700 font-normal">
-                            {drillDown && Object.keys(drillDown).length>0 && 
-                                `matching (${Object.keys(drillDown).map(k => `${k}: ${filters[k].find(r=>r.id==drillDown[k]).name || k}`).join(', ')})`
-                            }
-                        </span>
-                        
-                        {props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
+                            <span className="text-lg text-gray-700 font-normal">
+                                {drillDown && Object.keys(drillDown).length > 0 &&
+                                    `matching (${Object.keys(drillDown).map(k => `${k}: ${filters[k].find(r => r.id == drillDown[k]).name || k}`).join(', ')})`
+                                }
+                            </span>
+
+                            {props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
                         {/* <small className="font-bold text-sm">{JSON.stringify(props?.query)}</small> */}
                     </div>
                     <div className="col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none">
@@ -86,8 +86,8 @@ const Home = (props) => {
                                     </div>
                                     <div className="col-span-8 md:col-span-3 flex flex-wrap items-center gap-3 text-lg">
                                         {(comm_unit.status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 text-black "
-                                        +(comm_unit.status_name.toLocaleLowerCase().includes("non-") ? " bg-red-200" : ((comm_unit.status_name.toLocaleLowerCase().includes("fully") ? " bg-green-200" : " bg-blue-200")))
-                                        
+                                            + (comm_unit.status_name.toLocaleLowerCase().includes("non-") ? " bg-red-200" : ((comm_unit.status_name.toLocaleLowerCase().includes("fully") ? " bg-green-200" : " bg-blue-200")))
+
                                         }>{comm_unit.status_name[0].toLocaleUpperCase()}{comm_unit.status_name.slice(1).toLocaleLowerCase()}</span> : ""}
                                         {/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
                                         {comm_unit.has_edits ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
@@ -103,15 +103,15 @@ const Home = (props) => {
                                 </div>
                             )) : (
                                 <div className="w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3">
-                                        <span className="text-base text-gray-700">No community units found</span>
-                                        <Link  href={props.path || '/'}>
-                                            <a className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
-                                                Refresh.
-                                            </a>
-                                        </Link>
+                                    <span className="text-base text-gray-700">No community units found</span>
+                                    <Link href={props.path || '/'}>
+                                        <a className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
+                                            Refresh.
+                                        </a>
+                                    </Link>
                                 </div>
                             )}
-                            {cus && cus.length>0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                            {cus && cus.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <a href={'/community-units?page=' + props?.data?.current_page} className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">
                                         {props?.data?.current_page}
@@ -153,7 +153,7 @@ const Home = (props) => {
                                             ev.preventDefault()
                                             return false
                                         }}>
-                                            {filters && Object.keys(filters).length>0 &&
+                                            {filters && Object.keys(filters).length > 0 &&
                                                 Object.keys(filters).map(ft => (
                                                     <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                         <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
@@ -170,21 +170,21 @@ const Home = (props) => {
                                                         </select>
                                                     </div>
                                                 ))}
-                                            
+
                                             <button onClick={ev => {
                                                 if (Object.keys(drillDown).length > 0) {
                                                     let qry = Object.keys(drillDown).map(function (key) {
                                                         let er = ''
-                                                        if(props.path && !props.path.includes(key+'=')){
+                                                        if (props.path && !props.path.includes(key + '=')) {
                                                             er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
                                                         }
                                                         return er
                                                     }).join('&')
                                                     let op = '?'
-                                                    if(props.path && props.path.includes('?') && props.path.includes('=')){op='&'}
+                                                    if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
                                                     console.log(props.path)
                                                     // setDrillDown({})
-                                                    if(qry &&qry.length>0){
+                                                    if (qry && qry.length > 0) {
                                                         router.push(props.path + op + qry)
                                                     }
                                                 }
@@ -212,7 +212,7 @@ Home.getInitialProps = async (ctx) => {
     const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
     const fetchFilters = token => {
         // let filters_url = API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
-        let filters_url = API_URL+'/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county'
+        let filters_url = API_URL + '/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county'
 
         return fetch(filters_url, {
             headers: {
@@ -235,7 +235,7 @@ Home.getInitialProps = async (ctx) => {
 
     const fetchData = (token) => {
         // let url = API_URL+'/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,is_approved,rejected,keph_level,operation_status_name'
-        let url = API_URL+'/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency'
+        let url = API_URL + '/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
@@ -248,11 +248,11 @@ Home.getInitialProps = async (ctx) => {
                 url += "&" + flt + "=" + ctx?.query[flt]
             }
         })
-        
+
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
-        console.log('running fetchData('+url+')')
+        console.log('running fetchData(' + url + ')')
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -277,17 +277,30 @@ Home.getInitialProps = async (ctx) => {
             })
     }
     return checkToken(ctx.req, ctx.res).then(t => {
-        let token = t.token
-        return fetchData(token).then(t => t)
+        if (t.error) {
+            throw new Error('Error checking token')
+        } else {
+            let token = t.token
+            return fetchData(token).then(t => t)
+        }
     }).catch(err => {
         console.log('Error checking token: ', err)
-        return {
-            error: true,
-            err: err,
-            data: [],
-            query: {},
-            path: ctx.asPath || '/community-units'
+        if (typeof window !== 'undefined' && window) {
+            if (ctx?.asPath) {
+                window.location.href = ctx?.asPath
+            } else {
+                window.location.href = '/community-units'
+            }
         }
+        setTimeout(() => {
+            return {
+                error: true,
+                err: err,
+                data: [],
+                query: {},
+                path: ctx.asPath || '/community-units'
+            }
+        }, 1000);
     })
 
 }

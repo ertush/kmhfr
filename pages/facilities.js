@@ -197,7 +197,7 @@ const Home = (props) => {
                                                 <span className="flex items-center gap-x-1">
                                                     <input type="radio" value={false} defaultChecked={props?.query?.has_edits === "false"} name="has_edits" id="has_edits" onChange={ev => {
                                                         setDrillDown({ ...drillDown, 'has_edits': false })
-                                                    }} /> 
+                                                    }} />
                                                     <small className="text-gray-700">No</small>
                                                 </span>
                                             </div>
@@ -212,7 +212,7 @@ const Home = (props) => {
                                                 <span className="flex items-center gap-x-1">
                                                     <input type="radio" value={false} defaultChecked={props?.query?.is_approved === "false"} name="is_approved" id="is_approved" onChange={ev => {
                                                         setDrillDown({ ...drillDown, 'is_approved': false })
-                                                    }} /> 
+                                                    }} />
                                                     <small className="text-gray-700">No</small>
                                                 </span>
                                             </div>
@@ -227,7 +227,7 @@ const Home = (props) => {
                                                 <span className="flex items-center gap-x-1">
                                                     <input type="radio" value={false} defaultChecked={props?.query?.is_complete === "false"} name="is_complete" id="is_complete" onChange={ev => {
                                                         setDrillDown({ ...drillDown, 'is_complete': false })
-                                                    }} /> 
+                                                    }} />
                                                     <small className="text-gray-700">No</small>
                                                 </span>
                                             </div>
@@ -242,7 +242,7 @@ const Home = (props) => {
                                                 <span className="flex items-center gap-x-1">
                                                     <input type="radio" value={false} defaultChecked={props?.query?.number_of_beds === "false"} name="number_of_beds" id="number_of_beds" onChange={ev => {
                                                         setDrillDown({ ...drillDown, 'number_of_beds': false })
-                                                    }} /> 
+                                                    }} />
                                                     <small className="text-gray-700">No</small>
                                                 </span>
                                             </div>
@@ -257,7 +257,7 @@ const Home = (props) => {
                                                 <span className="flex items-center gap-x-1">
                                                     <input type="radio" value={false} defaultChecked={props?.query?.number_of_cots === "false"} name="number_of_cots" id="number_of_cots" onChange={ev => {
                                                         setDrillDown({ ...drillDown, 'number_of_cots': false })
-                                                    }} /> 
+                                                    }} />
                                                     <small className="text-gray-700">No</small>
                                                 </span>
                                             </div>
@@ -272,7 +272,7 @@ const Home = (props) => {
                                                 <span className="flex items-center gap-x-1">
                                                     <input type="radio" value={false} defaultChecked={props?.query?.open_whole_day === "false"} name="open_whole_day" id="open_whole_day" onChange={ev => {
                                                         setDrillDown({ ...drillDown, 'open_whole_day': false })
-                                                    }} /> 
+                                                    }} />
                                                     <small className="text-gray-700">No</small>
                                                 </span>
                                             </div>
@@ -287,7 +287,7 @@ const Home = (props) => {
                                                 <span className="flex items-center gap-x-1">
                                                     <input type="radio" value={false} defaultChecked={props?.query?.open_weekends === "false"} name="open_weekends" id="open_weekends" onChange={ev => {
                                                         setDrillDown({ ...drillDown, 'open_weekends': false })
-                                                    }} /> 
+                                                    }} />
                                                     <small className="text-gray-700">No</small>
                                                 </span>
                                             </div>
@@ -302,7 +302,7 @@ const Home = (props) => {
                                                 <span className="flex items-center gap-x-1">
                                                     <input type="radio" value={false} defaultChecked={props?.query?.open_public_holidays === "false"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
                                                         setDrillDown({ ...drillDown, 'open_public_holidays': false })
-                                                    }} /> 
+                                                    }} />
                                                     <small className="text-gray-700">No</small>
                                                 </span>
                                             </div>
@@ -410,18 +410,30 @@ Home.getInitialProps = async (ctx) => {
             })
     }
     return checkToken(ctx.req, ctx.res).then(t => {
-        let token = t.token
-
-        return fetchData(token).then(t => t)
+        if (t.error) {
+            throw new Error('Error checking token')
+        } else {
+            let token = t.token
+            return fetchData(token).then(t => t)
+        }
     }).catch(err => {
         console.log('Error checking token: ', err)
-        return {
-            error: true,
-            err: err,
-            data: [],
-            query: {},
-            path: ctx.asPath || '/facilities'
+        if (typeof window !== 'undefined' && window) {
+            if (ctx?.asPath) {
+                window.location.href = ctx?.asPath
+            } else {
+                window.location.href = '/facilities'
+            }
         }
+        setTimeout(() => {
+            return {
+                error: true,
+                err: err,
+                data: [],
+                query: {},
+                path: ctx.asPath || '/facilities'
+            }
+        }, 1000);
     })
 
 }

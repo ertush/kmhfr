@@ -93,11 +93,11 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                                         <a className={((currentPath == "/gis") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>GIS</a>
                                     </Link>
                                 </li>
-                                <li className="flex-wrap">
+                                {/* <li className="flex-wrap">
                                     <Link href="/reports">
                                         <a className={((currentPath == "/reports") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Reports</a>
                                     </Link>
-                                </li>
+                                </li> */}
                             </ul>
                         </div>
                     </nav>

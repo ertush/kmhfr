@@ -493,19 +493,31 @@ Gis.getInitialProps = async (ctx) => {
             })
     }
     return checkToken(ctx.req, ctx.res).then(t => {
-        let token = t.token
-
-        return fetchData(token).then(t => t)
+        if(t.error){
+            throw new Error('Error checking token')
+        }else{
+            let token = t.token
+            return fetchData(token).then(t => t)
+        }
     }).catch(err => {
         console.log('Error checking token: ', err)
-        return {
-            error: true,
-            err: err,
-            data: [],
-            query: {},
-            path: ctx.asPath || '/facilities',
-            isUnits: yesItIsUnits
+        if (typeof window !== 'undefined' && window) {
+            if(ctx?.asPath){
+                window.location.href = ctx?.asPath
+            }else{
+                window.location.href = '/gis'
+            }
         }
+        setTimeout(() => {
+            return {
+                error: true,
+                err: err,
+                data: [],
+                query: {},
+                path: ctx.asPath || '/facilities',
+                isUnits: yesItIsUnits
+            }
+        }, 100);
     })
 
 }

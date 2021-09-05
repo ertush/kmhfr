@@ -275,7 +275,7 @@ const CommUnit = (props) => {
                                             <span className="font-semibold">Services</span>
                                             <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
                                             </div>
-                                            {user && user?.id ? <a href={"/community-unit/edit/"+cu.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> :""}
+                                            {/* {user && user?.id ? <a href={"/community-unit/edit/"+cu.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> :""} */}
                                         </h3>
                                         <ul>
                                             {(cu?.services && cu?.services.length > 0) ? cu?.services.map(service => (
@@ -322,7 +322,7 @@ const CommUnit = (props) => {
                                     <div className="bg-white w-full p-4 rounded">
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                             <span className="font-semibold">Health Unit workers</span>
-                                            {user && user?.id ? <a href={"/community-unit/edit/"+cu.id+"#hr"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a> : ""}
+                                            {/* {user && user?.id ? <a href={"/community-unit/edit/"+cu.id+"#hr"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a> : ""} */}
                                         </h3>
                                         <ul>
                                             {(cu?.health_unit_workers && cu?.health_unit_workers.length > 0) ? cu?.health_unit_workers.map(hr => (
@@ -384,42 +384,53 @@ const CommUnit = (props) => {
 }
 
 CommUnit.getInitialProps = async (ctx) => {
-    if(ctx.query.q) {
+    if (ctx.query.q) {
         const query = ctx.query.q
-        if(typeof window !== 'undefined' && query.length > 2) {
+        if (typeof window !== 'undefined' && query.length > 2) {
             window.location.href = `/community-units?q=${query}`
-        }else{
+        } else {
             if (ctx.res) {
                 ctx.res.writeHead(301, {
-                  Location: '/community-units?q='+query
+                    Location: '/community-units?q=' + query
                 });
                 ctx.res.end();
-              }
+            }
         }
     }
     return checkToken(ctx.req, ctx.res).then(t => {
-        let token = t.token
-        let url = process.env.API_URL + '/chul/units/' + ctx.query.id + '/'
-        return fetch(url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                return {
-                    data: json
+        if (t.error) {
+            throw new Error('Error checking token')
+        } else {
+            let token = t.token
+            let url = process.env.API_URL + '/chul/units/' + ctx.query.id + '/'
+            return fetch(url, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
                 }
-            }).catch(err => {
-                console.log('Error fetching facilities: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    data: [],
-                }
-            })
+            }).then(r => r.json())
+                .then(json => {
+                    return {
+                        data: json
+                    }
+                }).catch(err => {
+                    console.log('Error fetching facilities: ', err)
+                    return {
+                        error: true,
+                        err: err,
+                        data: [],
+                    }
+                })
+        }
     }).catch(err => {
         console.log('Error checking token: ', err)
+        if (typeof window !== 'undefined' && window) {
+            if (ctx?.asPath) {
+                window.location.href = ctx?.asPath
+            } else {
+                window.location.href = '/community-units'
+            }
+        }
         return {
             error: true,
             err: err,

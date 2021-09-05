@@ -320,7 +320,7 @@ const Facility = (props) => {
                                     <div className="bg-white w-full p-4 rounded">
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                             <span className="font-semibold">Services</span>
-                                            {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""}
+                                            {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
                                         </h3>
                                         <ul>
                                             {(facility?.facility_services && facility?.facility_services.length > 0) ? facility?.facility_services.map(service => (
@@ -354,7 +354,7 @@ const Facility = (props) => {
                                     <div className="bg-white w-full p-4 rounded">
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                             <span className="font-semibold">Facility units</span>
-                                            {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#units"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""}
+                                            {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#units"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}
                                         </h3>
                                         <ul>
                                             {(facility?.facility_units && facility?.facility_units.length > 0) ? facility?.facility_units.map(unit => (
@@ -381,7 +381,7 @@ const Facility = (props) => {
                                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left px-1 py-4">
                                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                         <span className="font-semibold">Infrastructure</span>
-                                        {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#infrastructure"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit infrastructure</a> : ""}
+                                        {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#infrastructure"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit infrastructure</a> : ""} */}
                                     </h3>
                                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Bed capacity:</h3>
@@ -441,7 +441,7 @@ const Facility = (props) => {
                                     <div className="bg-white w-full p-4 rounded">
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                             <span className="font-semibold">Human Resources</span>
-                                            {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#hr"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a> : ""}
+                                            {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#hr"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a> : ""} */}
                                         </h3>
                                         <ul>
                                             {(facility?.human_resource && facility?.human_resource.length > 0) ? facility?.human_resource.map(hr => (
@@ -494,47 +494,60 @@ const Facility = (props) => {
 }
 
 Facility.getInitialProps = async (ctx) => {
-    if(ctx.query.q) {
+    if (ctx.query.q) {
         const query = ctx.query.q
-        if(typeof window !== 'undefined' && query.length > 2) {
+        if (typeof window !== 'undefined' && query.length > 2) {
             window.location.href = `/facilities?q=${query}`
-        }else{
+        } else {
             if (ctx.res) {
                 ctx.res.writeHead(301, {
-                  Location: '/facilities?q='+query
+                    Location: '/facilities?q=' + query
                 });
                 ctx.res.end();
-              }
+            }
         }
     }
     return checkToken(ctx.req, ctx.res).then(t => {
-        let token = t.token
-        let url = process.env.API_URL+'/facilities/facilities/' + ctx.query.id + '/'
-        return fetch(url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                return {
-                    data: json
+        if (t.error) {
+            throw new Error('Error checking token')
+        } else {
+            let token = t.token
+            let url = process.env.API_URL + '/facilities/facilities/' + ctx.query.id + '/'
+            return fetch(url, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
                 }
-            }).catch(err => {
-                console.log('Error fetching facilities: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    data: [],
-                }
-            })
+            }).then(r => r.json())
+                .then(json => {
+                    return {
+                        data: json
+                    }
+                }).catch(err => {
+                    console.log('Error fetching facilities: ', err)
+                    return {
+                        error: true,
+                        err: err,
+                        data: [],
+                    }
+                })
+        }
     }).catch(err => {
         console.log('Error checking token: ', err)
-        return {
-            error: true,
-            err: err,
-            data: [],
+        if (typeof window !== 'undefined' && window) {
+            if (ctx?.asPath) {
+                window.location.href = ctx?.asPath
+            } else {
+                window.location.href = '/facilities'
+            }
         }
+        setTimeout(() => {
+            return {
+                error: true,
+                err: err,
+                data: [],
+            }
+        }, 1000);
     })
 }
 
