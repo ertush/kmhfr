@@ -370,9 +370,19 @@ const Gis = (props) => {
                             </div>
                         </div>
                     )}
+                    {/* (((((( Floating div at bottom right of page */}
+                    <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/60 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                        <h5 className="text-sm font-bold">
+                            <span className="text-gray-600 uppercase">Limited results</span>
+                        </h5>
+                        <p className="text-sm text-gray-800">
+                            For testing reasons, the results are limited to the first 600 results.
+                        </p>
+                    </div>
+                    {/* ))))))) */}
                 </>
-            </MainLayout>
-        </div>
+            </MainLayout >
+        </div >
     )
 }
 
@@ -493,18 +503,18 @@ Gis.getInitialProps = async (ctx) => {
             })
     }
     return checkToken(ctx.req, ctx.res).then(t => {
-        if(t.error){
+        if (t.error) {
             throw new Error('Error checking token')
-        }else{
+        } else {
             let token = t.token
             return fetchData(token).then(t => t)
         }
     }).catch(err => {
         console.log('Error checking token: ', err)
         if (typeof window !== 'undefined' && window) {
-            if(ctx?.asPath){
+            if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
-            }else{
+            } else {
                 window.location.href = '/gis'
             }
         }
