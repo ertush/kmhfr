@@ -9,13 +9,15 @@ import dynamic from 'next/dynamic'
 import * as Tabs from '@radix-ui/react-tabs';
 
 const Gis = (props) => {
-    const Map = dynamic(
+    const Mapp = dynamic(
         () => import('../components/GISMap'), // replace '@components/map' with your component's location
         {
             loading: () => <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
             ssr: false
         } // This line is important. It's what prevents server-side render
     )
+
+    const Map = React.memo(Mapp)
 
     // console.log('props:::: ', props)
     const router = useRouter()
@@ -376,7 +378,7 @@ const Gis = (props) => {
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>
                         <p className="text-sm text-gray-800">
-                            For testing reasons, the results are limited to the first 600 results.
+                            For testing reasons, the facilities/CUs are limited to the first 600 results.
                         </p>
                     </div>
                     {/* ))))))) */}

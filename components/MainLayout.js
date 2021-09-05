@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { ChevronDownIcon, MenuAlt1Icon, SearchIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon, ExternalLinkIcon, MenuAlt1Icon, SearchIcon } from '@heroicons/react/solid';
 import { UserCircleIcon } from '@heroicons/react/outline';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Menu } from '@headlessui/react'
@@ -118,7 +118,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                                     <span className="leading-none p-0"><ChevronDownIcon className="h-4 w-5" /></span>
                                 </Menu.Button>
                                 <Menu.Items as="ul" className="list-none flex flex-col items-center justify-start gap-2 p-3 absolute mt-3 bg-black right-0 text-white w-40 rounded">
-                                    <Menu.Item as="li" className="flex items-center w-full gap-1">
+                                    {/* <Menu.Item as="li" className="flex items-center w-full gap-1">
                                         {({ active }) => (
                                             <a
                                                 className={`w-full hover:text-green-400 font-medium ${active && 'text-green-400'}`}
@@ -127,8 +127,28 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                                                 My account
                                             </a>
                                         )}
+                                    </Menu.Item> */}
+                                    <Menu.Item as="li" className="flex items-center w-full gap-1">
+                                        {({ active }) => (
+                                            <a
+                                                className={`w-full hover:text-green-400 font-medium flex items-center ${active && 'text-green-400'}`}
+                                                href="https://kmhfltest.health.go.ke/" target="_blank"
+                                            >
+                                                KMHFL test <ExternalLinkIcon className="h-4 w-4 ml-2" />
+                                            </a>
+                                        )}
                                     </Menu.Item>
                                     <Menu.Item as="li" className="flex items-center w-full gap-1">
+                                        {({ active }) => (
+                                            <a
+                                                className={`w-full hover:text-green-400 font-medium flex items-center ${active && 'text-green-400'}`}
+                                                href="https://kmhfl.health.go.ke/" target="_blank"
+                                            >
+                                                KMHFL live <ExternalLinkIcon className="h-4 w-4 ml-2" />
+                                            </a>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item as="li" className="flex items-center w-full gap-1 mt-2 border-t border-gray-600 py-2">
                                         {({ active }) => (
                                             <a
                                                 className={`w-full hover:text-green-400 font-medium ${active && 'text-green-400'}`}
