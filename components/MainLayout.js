@@ -63,7 +63,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                     <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-3 py-1 md:py-0 md:gap-5">
                         <div id="logo" className="mx:px-3">
                             <a href="/" className="leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative">
-                                <img src="/MOH.png" alt="KMHFL3" className="h-16"/>
+                                <img src="/MOH.png" alt="KMHFL3" className="h-16" />
                                 <span className="font-mono text-3xl">KMHFL</span>
                                 <span className="text-sm bg-yellow-300 rounded-sm shadow uppercase border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-4">V3 Alpha</span>
                             </a>
@@ -74,8 +74,9 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                             </button>
                             <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 p-2 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none justify-between gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
                                 <li className="flex-wrap">
-                                    <Link href="/">
-                                        <a className={((currentPath == "/" || currentPath == "/dashboard") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Home</a>
+                                    <Link href={isLoggedIn ? "/dashboard" : "/"}>
+                                        <a className={((currentPath == "/" || currentPath == "/dashboard") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>{isLoggedIn ?
+                                            "Dashboard" : "Home"}</a>
                                     </Link>
                                 </li>
                                 <li className="flex-wrap">
@@ -165,7 +166,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                     {showLogin ? (!isLoggedIn || !user || user === null) && (<a href="/auth/login" className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>) : <LoadingAnimation size="6" />}
                 </header>
             </div>
-            <div className={"min-h-screen w-full flex flex-col items-center "+(isFullWidth ? "" : "max-w-screen-2xl")}>
+            <div className={"min-h-screen w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl")}>
                 <>
                     {isLoading ? <div className="absolute inset-0 overflow-hidden bg-white opacity-90 z-20 flex items-center justify-center h-full">
                         <h3 className="text-2xl text-gray-800 font-bold">Loading...</h3>

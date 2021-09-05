@@ -8,7 +8,6 @@ import { useRouter } from 'next/router'
 
 const Home = (props) => {
     const router = useRouter()
-    console.log('props:::: ', props)
 
     useEffect(() => {
         let mtd = true
@@ -95,36 +94,38 @@ const Home = (props) => {
 
 Home.getInitialProps = async (ctx) => {
 
-    return checkToken(ctx.req, ctx.res).then(t => {
-        if (t.error) {
-            if (typeof window !== 'undefined' && window) {
-                if (ctx?.asPath) {
-                    window.location.href = ctx?.asPath
-                } else {
-                    window.location.href = '/'
-                }
-            }
-            throw new Error('Error checking token')
-        } else {
-            if (typeof window !== 'undefined' && window) {
-                window.location.href = '/dashboard'
-            }
-            let token = t.token
-            return {loggedIn: true, token: token}
-        }
-    }).catch(err => {
-        console.log('Error checking token: ', err)
-        if (typeof window !== 'undefined' && window) {
-            if (ctx?.asPath) {
-                window.location.href = ctx?.asPath
-            } else {
-                window.location.href = '/'
-            }
-        }
-        setTimeout(() => {
-            return {loggedIn: false, token: null}
-        }, 1000);
-    })
+    return {loggedIn: false, token: null}
+
+    // return checkToken(ctx.req, ctx.res).then(t => {
+    //     if (t.error) {
+    //         if (typeof window !== 'undefined' && window) {
+    //             if (ctx?.asPath) {
+    //                 window.location.href = ctx?.asPath
+    //             } else {
+    //                 window.location.href = '/'
+    //             }
+    //         }
+    //         throw new Error('Error checking token')
+    //     } else {
+    //         if (typeof window !== 'undefined' && window) {
+    //             window.location.href = '/dashboard'
+    //         }
+    //         let token = t.token
+    //         return {loggedIn: true, token: token}
+    //     }
+    // }).catch(err => {
+    //     console.log('Error checking token: ', err)
+    //     if (typeof window !== 'undefined' && window) {
+    //         if (ctx?.asPath) {
+    //             window.location.href = ctx?.asPath
+    //         } else {
+    //             window.location.href = '/'
+    //         }
+    //     }
+    //     setTimeout(() => {
+    //         return {loggedIn: false, token: null}
+    //     }, 1000);
+    // })
 
 }
 

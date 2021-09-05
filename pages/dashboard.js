@@ -60,7 +60,7 @@ const Dash = (props) => {
                     <div className="col-span-6 flex flex-col gap-3 md:gap-5 px-2">
                         <div className="flex flex-row gap-2 text-sm md:text-base py-3">
                             <a className="text-green-700" href="/">Home</a> {'>'}
-                            <span className="text-gray-500">Overview Dashboard</span>
+                            <span className="text-gray-500">Dashboard</span>
                         </div>
                         <div className="flex flex-wrap gap-1 text-sm md:text-base py-3 items-center justify-between">
                             <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-center justify-start gap-x-1">Overview</h1>
