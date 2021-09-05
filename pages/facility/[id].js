@@ -77,9 +77,9 @@ const Facility = (props) => {
                                 </div>
                             </div>
                             <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
-                                {user && user?.id ? <a href={'/facility/edit/' + facility.id} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black-700 active:bg-black-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
+                                {/* {user && user?.id ? <a href={'/facility/edit/' + facility.id} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black-700 active:bg-black-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
                                     Edit
-                                </a> : <a href="/auth/login">Log in</a>}
+                                </a> : <a href="/auth/login">Log in</a>} */}
                             </div>
                         </div>
                     </div>
@@ -289,6 +289,37 @@ const Facility = (props) => {
                                         </div>
                                     </div>
                                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                                        <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Bed capacity:</h3>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Beds</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_beds}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Cots</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_cots}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Emergency casualty beds</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_emergency_casualty_beds}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">ICU beds</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_icu_beds}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">HDU beds</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_hdu_beds}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">General theatres</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_general_theatres}</p>
+                                        </div>
+                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                            <label className="col-span-1 text-gray-600">Maternity theatres</label>
+                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_maternity_theatres}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Contacts:</h3>
                                         {(facility.facility_contacts && facility.facility_contacts.length > 0) && facility.facility_contacts.map(contact => (
                                             <div key={contact.contact_id} className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -307,12 +338,12 @@ const Facility = (props) => {
                                             </div>
                                         ))}
                                     </div>
-                                    <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
+                                    {/* <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
                                         <summary>All data</summary>
                                         <pre className="language-json leading-normal text-sm whitespace-pre-wrap text-gray-800 overflow-y-auto normal-case" style={{ maxHeight: '70vh' }}>
                                             {JSON.stringify({ ...facility }, null, 2).split('{').join('\n').split('"').join('').split(',').join('\n').split('_').join(' ')}
                                         </pre>
-                                    </details>
+                                    </details> */}
                                 </div>
                             </Tabs.Panel>
                             <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
@@ -383,48 +414,17 @@ const Facility = (props) => {
                                         <span className="font-semibold">Infrastructure</span>
                                         {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#infrastructure"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit infrastructure</a> : ""} */}
                                     </h3>
-                                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                                        <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Bed capacity:</h3>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">Beds</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_beds}</p>
-                                        </div>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">Cots</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_cots}</p>
-                                        </div>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">Emergency casualty beds</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_emergency_casualty_beds}</p>
-                                        </div>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">ICU beds</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_icu_beds}</p>
-                                        </div>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">HDU beds</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_hdu_beds}</p>
-                                        </div>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">General theatres</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_general_theatres}</p>
-                                        </div>
-                                        <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                            <label className="col-span-1 text-gray-600">Maternity theatres</label>
-                                            <p className="col-span-2 text-black font-medium text-base">{facility.number_of_maternity_theatres}</p>
-                                        </div>
-                                    </div>
-                                    <div className="bg-white w-full p-4 rounded">
+                                    <div className="bg-white w-full p-4 rounded flex flex-col">
                                         <ul>
-                                            {(facility?.infrastructure && facility?.infrastructure.length > 0) ? facility?.infrastructure.map(infra => (
+                                            {(facility?.facility_infrastructure && facility?.facility_infrastructure.length > 0) ? facility?.facility_infrastructure.map(infra => (
                                                 <li key={infra.id} className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300">
                                                     <div>
-                                                        <p className="text-gray-800 text-base">{infra.infra_name}</p>
-                                                        <small className="text-xs text-gray-500">{infra.id || ''}</small>
+                                                        <p className="text-gray-800 text-base">{infra.infrastructure_name}</p>
+                                                        {/* <small className="text-xs text-gray-500">{infra.id || ''}</small> */}
                                                     </div>
                                                     <div className="flex flex-row gap-1 items-center">
-                                                        <CheckCircleIcon className="h-6 w-6 text-green-500" />
-                                                        <label className="text-sm text-gray-600">Active</label>
+                                                        {/* <CheckCircleIcon className="h-4 w-4 text-green-500" /> */}
+                                                        <label className="text-lg text-gray-800 font-semibold">{infra.count || 0}</label>
                                                     </div>
                                                 </li>
                                             )) : (
@@ -444,15 +444,15 @@ const Facility = (props) => {
                                             {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#hr"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a> : ""} */}
                                         </h3>
                                         <ul>
-                                            {(facility?.human_resource && facility?.human_resource.length > 0) ? facility?.human_resource.map(hr => (
+                                            {(facility?.facility_specialists && facility?.facility_specialists.length > 0) ? facility?.facility_specialists.map(hr => (
                                                 <li key={hr.id} className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300">
                                                     <div>
-                                                        <p className="text-gray-800 text-base">{hr.hr_name}</p>
-                                                        <small className="text-xs text-gray-500">{hr.id || ''}</small>
+                                                        <p className="text-gray-800 text-base">{hr.speciality_name}</p>
+                                                        {/* <small className="text-xs text-gray-500">{hr.id || ''}</small> */}
                                                     </div>
                                                     <div className="flex flex-row gap-1 items-center">
-                                                        <CheckCircleIcon className="h-6 w-6 text-green-500" />
-                                                        <label className="text-sm text-gray-600">Active</label>
+                                                        {/* <CheckCircleIcon className="h-4 w-4 text-green-500" /> */}
+                                                        <label className="text-lg text-gray-800">{hr.count || 0}</label>
                                                     </div>
                                                 </li>
                                             )) : (

@@ -77,9 +77,9 @@ const CommUnit = (props) => {
                                 </div>
                             </div>
                             <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
-                                {user && user?.id ? <a href={'/community-unit/edit/' + cu.id} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black-700 active:bg-black-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
+                                {/* {user && user?.id ? <a href={'/community-unit/edit/' + cu.id} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black-700 active:bg-black-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
                                     Edit
-                                </a> : <a href="/auth/login">Log in</a>}
+                                </a> : <a href="/auth/login">Log in</a>} */}
                             </div>
                         </div>
                     </div>
@@ -260,12 +260,12 @@ const CommUnit = (props) => {
                                             </div>
                                         ))}
                                     </div>
-                                    <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
+                                    {/* <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
                                         <summary>All data</summary>
                                         <pre className="language-json leading-normal text-sm whitespace-pre-wrap text-gray-800 overflow-y-auto" style={{ maxHeight: '70vh' }}>
                                             {JSON.stringify({ ...cu }, null, 2)}
                                         </pre>
-                                    </details>
+                                    </details> */}
                                 </div>
                             </Tabs.Panel>
                             <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
