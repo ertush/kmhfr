@@ -217,7 +217,7 @@ const Dash = (props) => {
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>
                         <p className="text-sm text-gray-800">
-                            For testing reasons, downloads are limited at the moment.
+                            For testing reasons, results are limited at the moment.
                         </p>
                     </div>
                     {/* ))))))) */}
