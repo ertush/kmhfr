@@ -121,7 +121,7 @@ const Dash = (props) => {
                                     <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.rejected_chus || 0}</td>
                                 </tr>
                                 <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">New CHUs pending_approval</td>
+                                    <td className="table-cell text-left text-gray-900 p-2">New CHUs pending approval</td>
                                     <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.recently_created_chus || 0}</td>
                                 </tr>
                                 <tr>
