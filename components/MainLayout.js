@@ -75,7 +75,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                             <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 p-2 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none justify-between gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
                                 <li className="flex-wrap">
                                     <Link href="/">
-                                        <a className={((currentPath == "/") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Home</a>
+                                        <a className={((currentPath == "/" || currentPath == "/dashboard") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Home</a>
                                     </Link>
                                 </li>
                                 <li className="flex-wrap">
