@@ -8,23 +8,23 @@ import { useRouter } from 'next/router'
 
 const Home = (props) => {
     const router = useRouter()
-    // console.log(props)
-    let facilities = props?.data?.results
-    let filters = props?.filters
-    let [drillDown, setDrillDown] = useState({})
-    const updateFt = nu_vl => {
-        // console.log('updading Filters: ', nu_vl)
-        let srch_trm = nu_vl[Object.keys(nu_vl)[0]]
-        let new_dd = { ...drillDown, ...nu_vl }
-        if (srch_trm != null && srch_trm != undefined && srch_trm != "" && srch_trm && srch_trm.length > 0) {
-            // setDrillDown(new_dd)
-        } else {
-            new_dd = { ...drillDown }
-            delete new_dd[Object.keys(nu_vl)[0]]
+    console.log('props:::: ', props)
 
+    useEffect(() => {
+        let mtd = true
+        if (mtd) {
+            if(props?.loggedIn){
+                console.log('You are logged in')
+                router.push('/dashboard')
+            } else {
+                console.log('You are not logged in')
+                // router.push('/login')
+            }
         }
-        setDrillDown(new_dd)
-    }
+        return () => {
+            mtd = false
+        }
+    }, [])
 
 
     return (
@@ -90,6 +90,42 @@ const Home = (props) => {
             </MainLayout>
         </div>
     )
+}
+
+
+Home.getInitialProps = async (ctx) => {
+
+    return checkToken(ctx.req, ctx.res).then(t => {
+        if (t.error) {
+            if (typeof window !== 'undefined' && window) {
+                if (ctx?.asPath) {
+                    window.location.href = ctx?.asPath
+                } else {
+                    window.location.href = '/'
+                }
+            }
+            throw new Error('Error checking token')
+        } else {
+            if (typeof window !== 'undefined' && window) {
+                window.location.href = '/dashboard'
+            }
+            let token = t.token
+            return {loggedIn: true, token: token}
+        }
+    }).catch(err => {
+        console.log('Error checking token: ', err)
+        if (typeof window !== 'undefined' && window) {
+            if (ctx?.asPath) {
+                window.location.href = ctx?.asPath
+            } else {
+                window.location.href = '/'
+            }
+        }
+        setTimeout(() => {
+            return {loggedIn: false, token: null}
+        }, 1000);
+    })
+
 }
 
 export default Home

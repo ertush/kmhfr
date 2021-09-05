@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../components/MainLayout'
-import { CheckCircleIcon, InformationCircleIcon, LocationMarkerIcon, LockClosedIcon, XCircleIcon } from '@heroicons/react/solid'
+import { ChevronDownIcon, DownloadIcon, XCircleIcon } from '@heroicons/react/solid'
 import { checkToken } from '../controllers/auth/auth'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -60,7 +60,7 @@ const Gis = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - Facilities</title>
+                <title>KMHFL - GIS Explorer</title>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
@@ -77,7 +77,20 @@ const Gis = (props) => {
                                 <p className="text-red-800 text-lg">{JSON.stringify(props?.err)}</p>
                             </div>
                         </div>
-                    ) : (
+                    ) : (<>
+                        <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 justify-between items-center w-full">
+                            <div className="flex flex-row gap-2 text-sm md:text-base py-2 px-3">
+                                <a className="text-green-700" href="/">Home</a> {'>'}
+                                <span className="text-gray-500">GIS Explorer</span>
+                            </div>
+                            {/* <div className="flex flex-row gap-2 text-sm md:text-base py-2 px-3">
+                                <button className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
+                                    <DownloadIcon className="w-5 h-5 mr-1" />
+                                    <span>Export</span>
+                                </button>
+                            </div> */}
+
+                        </div>
                         <div className="w-full grid grid-cols-5 gap-5 px-1 md:px-4 p-4 my-4 mx-auto bg-gray-100 min-h-screen">
                             <aside className="col-span-5 md:col-span-1 p-2 md:p-4 flex flex-col gap-4 items-center justify-start bg-white rounded-lg shadow">
                                 {/* ---- */}
@@ -371,9 +384,10 @@ const Gis = (props) => {
                                 <Map data={props?.data?.results || []} />
                             </div>
                         </div>
+                    </>
                     )}
                     {/* (((((( Floating div at bottom right of page */}
-                    <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/60 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    <div className="fixed bottom-4 right-5 z-10 w-96 h-auto bg-yellow-50/60 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

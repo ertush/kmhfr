@@ -9,7 +9,7 @@ const GISMap = ({ data }) => {
             <>
                 <MapContainer center={[-0.818389, 37.477222]} zoom={6.899} maxZoom={15.70} scrollWheelZoom={false} touchZoom={false} style={{ height: '100%', width: "100%", position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
                     <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' url='http://{s}.tile.osm.org/{z}/{x}/{y}.png' />
-                    <GeoJSON data={MapData} key={MapData} style={`color: '#006400'; weight: 5; opacity: 0.65;`} />
+                    <GeoJSON data={MapData} key={MapData} />
                     {data.map((facility, i) => {
                         if (facility && facility?.lat_long && facility?.lat_long.length > 0) {
                             facility.op_stat = facility?.operation_status_name || facility?.status_name
