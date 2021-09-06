@@ -34,7 +34,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
         // setIsLoggedIn(is_user_logged_in)
         let session_token = null
         if (is_user_logged_in) {
-            session_token = JSON.parse(window.document.cookie.split('access_token=')[1])
+            session_token = JSON.parse(window.document.cookie.split('access_token=')[1].split(';')[0])
         }
 
         if (is_user_logged_in && typeof window !== 'undefined' && session_token !== null) {
