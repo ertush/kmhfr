@@ -7,10 +7,12 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/outline'
+import Select from 'react-select'
 
 const Home = (props) => {
     const router = useRouter()
-    console.log('props:::', Object.keys(props))
+    // console.log('props:::', Object.keys(props))
+    // console.log('props:::', props)
     let facilities = props?.data?.results
     let filters = props?.filters
     let fltrs = filters
@@ -32,6 +34,7 @@ const Home = (props) => {
     delete fltrs.open_weekends
     delete fltrs.open_public_holidays
 
+    let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
     useEffect(() => {
         if (filters && Object.keys(filters).length > 0) {
 
@@ -58,17 +61,22 @@ const Home = (props) => {
                             <a className="text-green-700" href="/">Home</a> {'>'}
                             <span className="text-gray-500">Facilities</span>
                         </div>
-                        {/* <details className="bg-gray-100 p-3 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify({ ...filters, owner_type: "", county: [], sub_countyz: [], service: [], service_category: [], constituency: [], ward: [], facility_type: [] }, null, 2)}</pre></details> */}
+                        {/* <details className="bg-gray-100 p-3 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details> */}
+
+                        {/* <details className="bg-gray-100 p-3 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify({ ...filters, owner_type: "", county: [], sub_county: [], service: [], service_category: [], constituency: [], keph_level:[], ward: [], facility_type: [] }, null, 2)}</pre></details> */}
+
                         <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
-                            <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-center justify-start gap-x-2">{(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Facilities matching "${props?.query?.searchTerm}"` : "All facilities"}
-                                <span className="text-lg text-gray-700 font-normal">
+                            <div className="flex flex-col items-start justify-start gap-y-1">
+                                <h1 className="text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2">
+                                    {(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Facilities matching '${props?.query?.searchTerm}'` : "All facilities"}
+                                </h1>
+                                <h5 className="text-lg font-medium text-gray-800">
                                     {drillDown && Object.keys(drillDown).length > 0 &&
-                                        `matching (${Object.keys(drillDown).map(k => `${k}: ${
-                                            // filters[k].find(r => r.id == drillDown[k]).name || 
-                                            k}`).join(', ')})`
+                                        `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') || k.split('_').join(' ') : k.split('_').join(' ')})`)?.join(' & ')}`
                                     }
-                                </span>
-                                {props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
+                                    {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
+                                </h5>
+                            </div>
                             {/* ((((((( dropdown options to download data */}
                             {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative">
                                 <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
@@ -186,15 +194,15 @@ const Home = (props) => {
                             )}
                             {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
-                                    <a href={'/facilities?page=' + props?.data?.current_page} className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">
-                                        {props?.data?.current_page}
-                                    </a>
+                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
+                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
+                                    </Link>
                                 </li>
-                                {props?.data?.near_pages && props?.data?.near_pages.map(page => (
+                                {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
                                     <li key={page} className="text-base text-gray-600">
-                                        <a href={'/facilities?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
-                                            {page}
-                                        </a>
+                                        <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
+                                            <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
+                                        </Link>
                                     </li>
                                 ))}
                                 <li className="text-sm text-gray-400 flex">
@@ -230,17 +238,28 @@ const Home = (props) => {
                                                 Object.keys(fltrs).map(ft => (
                                                     <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                         <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                        <select name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-2 rounded bg-gray-100" onChange={sl => {
-                                                            let nf = {}
-                                                            nf[ft] = sl.target.value
-                                                            setDrillDown({ ...drillDown, ...nf })
-                                                            // updateFt(nf)
-                                                        }}>
-                                                            <option value="">All</option>
-                                                            {filters && filters[ft].map(ft_opt => (
-                                                                <option key={ft_opt.id} value={ft_opt.id}>{ft_opt.name}</option>
-                                                            ))}
-                                                        </select>
+                                                        <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                            options={
+                                                                Array.from(filters[ft] || [],
+                                                                    fltopt => {
+                                                                        return {
+                                                                            value: fltopt.id, label: fltopt.name
+                                                                        }
+                                                                    })
+                                                            }
+                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                            onChange={sl => {
+                                                                let nf = {}
+                                                                if (sl.length > 0) {
+                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                } else {
+                                                                    delete nf[ft]
+                                                                    let rr = drilldown.filter(d => d.key !== ft)
+                                                                    setDrilldown(rr)
+                                                                }
+                                                                console.log(nf)
+                                                                setDrillDown({ ...drillDown, ...nf })
+                                                            }} />
                                                     </div>
                                                 ))}
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 gap-x-3 mb-3">
@@ -376,10 +395,12 @@ const Home = (props) => {
                                                     if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
                                                     console.log(props.path)
                                                     // setDrillDown({})
-                                                    if (typeof window !== 'undefined' && window) {
-                                                        window.location.href = props.path + op + qry
-                                                    } else {
+                                                    if (router || typeof window == 'undefined') {
                                                         router.push(props.path + op + qry)
+                                                    } else {
+                                                        if (typeof window !== 'undefined' && window) {
+                                                            window.location.href = props.path + op + qry
+                                                        }
                                                     }
                                                 }
                                             }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
@@ -405,8 +426,8 @@ const Home = (props) => {
                     </div>
                     {/* ))))))) */}
                 </div>
-            </MainLayout>
-        </div>
+            </MainLayout >
+        </div >
     )
 }
 
@@ -445,7 +466,7 @@ Home.getInitialProps = async (ctx) => {
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
-                url += "&" + flt + "=" + ctx?.query[flt]
+                url = url.replace('facilities/facilities', 'facilities/material') + "&" + flt + "=" + ctx?.query[flt]
             }
         })
         // let current_url = url + '&page_size=25000' //change the limit on prod
