@@ -135,6 +135,8 @@ const checkToken = async (req, res, isProtected, creds) => {
             res.writeHead(301, { Location: '/auth/login?was=' + encodeURIComponent(req.url) + '&h=1' })
             res.end()
             return { error: true, message: 'Token expired. Refreshing...' }
+        }else if(!req || typeof window != "undefined"){
+            window.location.href = '/auth/login?h=1'
         }
         let refresh_token
         if (ct && ct != undefined && JSON.parse(ct).refresh_token != undefined) {
