@@ -17,6 +17,7 @@ const Home = (props) => {
     let filters = props?.filters
     let fltrs = filters
     let [drillDown, setDrillDown] = useState({})
+    let [currentQuickFilter, setCurrentQuickFilter] = useState('all')
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
     filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
@@ -35,18 +36,94 @@ const Home = (props) => {
     delete fltrs.open_public_holidays
 
     let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
+    let quickFilters = [
+        {
+            name: 'All',
+            id: 'all',
+            filters: Object.keys(filters),
+        },
+        {
+            name: 'Approved',
+            id: 'approved',
+            filters: [
+                { id: "is_approved", value: true },
+            ],
+        },
+        {
+            name: 'New pending validation',
+            id: 'new_pending_validation',
+            filters: [
+                { id: "has_edits", value: true },
+                { id: "is_approved", value: false },
+            ],
+        },
+        {
+            name: 'Updated pending validation',
+            id: 'updated_pending_validation',
+            filters: [
+                { id: "has_edits", value: true },
+                { id: "is_approved", value: true },
+            ],
+        },
+        {
+            name: 'Pending approval',
+            id: 'pending_approval',
+            filters: [
+                { id: "is_approved", value: false },
+            ],
+        },
+        {
+            name: 'KHIS-synched',
+            id: 'khis_synched',
+            filters: [
+                { id: "is_approved", value: true },
+                { id: "is_complete", value: true },
+            ],
+        },
+        {
+            name: 'Incomplete',
+            id: 'incomplete',
+            filters: [
+                { id: "is_complete", value: false },
+            ]
+        },
+    ]
+
+    const applyQuickFilter = (filter, dd) => {
+        let qf = quickFilters.find(qf => qf.id === filter)
+        quickFilters.forEach(q_f => {
+            q_f.filters.map(sf => {
+                if (dd[sf.id]) {
+                    delete dd[sf.id]
+                }
+            })
+        })
+        let nu_qf = {}
+        qf.filters.forEach(f => {
+            nu_qf[f.id] = f.value
+        })
+        setDrillDown({ ...dd, ...{ ...nu_qf } })
+        // }
+    }
     useEffect(() => {
         let qry = props?.query
         delete qry.searchTerm
-        setDrillDown({...drillDown, ...qry})
-        // if (filters && Object.keys(filters).length > 0) {
-        //     Object.keys(filters).map(ft => {
-        //         if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-        //             setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-        //         }
-        //     })
-        // }
-    }, [filters])
+        setDrillDown({ ...drillDown, ...qry })
+    }, [])
+
+    useEffect(() => {
+        let routerObj = {}
+        if (currentQuickFilter === 'all') {
+            routerObj.pathname = '/facilities'
+        }
+        if(Object.keys(drillDown).length > 0){
+            routerObj.pathname = '/facilities'
+            routerObj.query = { ...drillDown }
+        }
+        console.log('drillDown:::', routerObj)
+        router.push(routerObj)
+    }, [currentQuickFilter])
+    // }, [drillDown])
 
 
     return (
@@ -59,11 +136,30 @@ const Home = (props) => {
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
                 <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
-                        <div className="flex flex-row gap-2 text-sm md:text-base py-3">
-                            <a className="text-green-700" href="/">Home</a> {'>'}
-                            <span className="text-gray-500">Facilities</span>
+                        <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                                <a className="text-green-700" href="/">Home</a> {'>'}
+                                <span className="text-gray-500">Facilities</span>
+                            </div>
+                            <div className="flex flex-wrap items-center justify-end gap-x-3 text-sm md:text-base py-3">
+                                {quickFilters.map((qf, i) => {
+                                    return (
+                                        <button
+                                            key={qf.id}
+                                            style={{ paddingTop: '2px', paddingBottom: '2px' }}
+                                            className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium text-sm ${currentQuickFilter == qf.id ? "bg-green-800 border-green-800 text-green-50" : "text-gray-800 border-gray-300"}`}
+                                            onClick={evt => {
+                                                setCurrentQuickFilter(qf.id)
+                                                applyQuickFilter(qf.id, drillDown)
+                                                // router.push(`/facilities?${qf.id}=true`)
+                                            }}>
+                                            {qf.name}
+                                        </button>
+                                    )
+                                })}
+                            </div>
                         </div>
-                        {/* <details className="bg-gray-100 p-1 rounded"><summary>drilldown:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details> */}
+                        {/* <details open className="bg-gray-100 p-1 rounded"><summary>drilldown:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details> */}
 
                         {/* <details className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify({ ...filters, owner_type: "", county: [], sub_county: [], service: [], service_category: [], constituency: [], keph_level:[], ward: [], facility_type: [] }, null, 2)}</pre></details> */}
 
@@ -240,7 +336,7 @@ const Home = (props) => {
                                                 Object.keys(fltrs).map(ft => (
                                                     <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                         <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                        <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                        <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
                                                             options={
                                                                 Array.from(filters[ft] || [],
                                                                     fltopt => {
@@ -252,14 +348,15 @@ const Home = (props) => {
                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                             onChange={sl => {
                                                                 let nf = {}
-                                                                if (sl.length > 0) {
+                                                                if (Array.isArray(sl)) {
                                                                     nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                    nf[ft] = sl.value
                                                                 } else {
                                                                     delete nf[ft]
-                                                                    let rr = drilldown.filter(d => d.key !== ft)
-                                                                    setDrilldown(rr)
+                                                                    // let rr = drillDown.filter(d => d.key !== ft)
+                                                                    // setDrilldown(rr)
                                                                 }
-                                                                console.log(nf)
                                                                 setDrillDown({ ...drillDown, ...nf })
                                                             }} />
                                                     </div>
@@ -468,7 +565,7 @@ Home.getInitialProps = async (ctx) => {
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
-                url = url.replace('facilities/facilities', 'facilities/material') + "&" + flt + "=" + ctx?.query[flt]
+                url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
             }
         })
         // let current_url = url + '&page_size=25000' //change the limit on prod

@@ -267,7 +267,7 @@ const Home = (props) => {
                                                                     nf[ft] = sl.value
                                                                 } else {
                                                                     delete nf[ft]
-                                                                    // let rr = drilldown.filter(d => d.key !== ft)
+                                                                    // let rr = drillDown.filter(d => d.key !== ft)
                                                                     // setDrilldown(rr)
                                                                 }
                                                                 console.log(nf)
