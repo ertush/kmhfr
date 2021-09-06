@@ -49,12 +49,12 @@ const Home = (props) => {
                             <a className="text-green-700" href="/">Home</a> {'>'}
                             <span className="text-gray-500">Community Units</span>
                         </div>
-                        <details open className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">
+                        {/* <details open className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">
                             {JSON.stringify( 
                                 {...filters, ...{county:[],sub_county:[], ward: [], constituency: []}},
                                 null, 2
                             ) }
-                        </pre></details>
+                        </pre></details> */}
                         {/* <details open className="bg-gray-100 p-1 rounded"><summary>Drilldown:</summary> <pre className="whitespace-pre-wrap">
                             {JSON.stringify(drillDown, null, 2)}
                         </pre></details> */}
