@@ -7,22 +7,31 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/outline'
+import Select from 'react-select'
 
 const Home = (props) => {
     const router = useRouter()
-    // console.log(props)
+    // console.log('props::: ',props)
     let cus = props?.data?.results
     let filters = props?.filters
     let [drillDown, setDrillDown] = useState({})
 
+    let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
     useEffect(() => {
+        let qry = props?.query
+        delete qry.searchTerm
+        setDrillDown({ ...drillDown, ...qry })
         if (filters && Object.keys(filters).length > 0) {
-            Object.keys(filters).map(ft => {
-                if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-                    setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-                }
-            })
+            filters['status'] =  filters['chu_status']
+            delete filters['chu_status']
         }
+        // if (filters && Object.keys(filters).length > 0) {
+        //     Object.keys(filters).map(ft => {
+        //         if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+        //             setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+        //         }
+        //     })
+        // }
     }, [filters])
 
 
@@ -40,26 +49,39 @@ const Home = (props) => {
                             <a className="text-green-700" href="/">Home</a> {'>'}
                             <span className="text-gray-500">Community Units</span>
                         </div>
+                        <details open className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">
+                            {JSON.stringify( 
+                                {...filters, ...{county:[],sub_county:[], ward: [], constituency: []}},
+                                null, 2
+                            ) }
+                        </pre></details>
+                        {/* <details open className="bg-gray-100 p-1 rounded"><summary>Drilldown:</summary> <pre className="whitespace-pre-wrap">
+                            {JSON.stringify(drillDown, null, 2)}
+                        </pre></details> */}
+
                         <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
-                            <h1 className="text-4xl tracking-tight font-bold flex flex-wrap items-center justify-start gap-x-2">{(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Community units matching "${props?.query?.searchTerm}"` : "All community units"}
-
-                                <span className="text-lg text-gray-700 font-normal">
+                            <div className="flex flex-col items-start justify-start gap-y-1">
+                                <h1 className="text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2">
+                                    {(props?.query?.searchTerm && props?.query?.searchTerm.length > 0) ? `Community units matching '${props?.query?.searchTerm}'` : "All community units"}
+                                </h1>
+                                <h5 className="text-lg font-medium text-gray-800">
                                     {drillDown && Object.keys(drillDown).length > 0 &&
-                                        `matching (${Object.keys(drillDown).map(k => `${k}: ${filters[k].find(r => r.id == drillDown[k]).name || k}`).join(', ')})`
+                                        `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') : 'v'+k.split('_').join(' ')})`)?.join(' & ')}`
                                     }
-                                </span>
+                                    {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
+                                </h5>
+                            </div>
 
-                                {props?.data && props?.data?.results && props?.data?.results.length > 0 && <small className="text-gray-500 text-base">( {props?.data?.results.length} )</small>}</h1>
                             {/* <small className="font-bold text-sm">{JSON.stringify(props?.query)}</small> */}
                             {/* ((((((( dropdown options to download data */}
-                                {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative">
-                                    <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
-                                        <DownloadIcon className="w-5 h-5 mr-1" />
-                                        <span>Export</span>
-                                        <ChevronDownIcon className="w-4 h-4 ml-2" />
-                                    </Menu.Button>
-                                    <Menu.Items as="ul" className="absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full">
-                                        {/* <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
+                            {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative">
+                                <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
+                                    <DownloadIcon className="w-5 h-5 mr-1" />
+                                    <span>Export</span>
+                                    <ChevronDownIcon className="w-4 h-4 ml-2" />
+                                </Menu.Button>
+                                <Menu.Items as="ul" className="absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full">
+                                    {/* <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
                                             {({ active }) => (
                                                 <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
                                                     let dl_url = props?.current_url
@@ -73,37 +95,37 @@ const Home = (props) => {
                                                 </button>
                                             )}
                                         </Menu.Item> */}
-                                        <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
-                                            {({ active }) => (
-                                                <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
-                                                    let dl_url = props?.current_url
-                                                    if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
-                                                    console.log('Downloading CSV. ' + dl_url || '')
-                                                    // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                    window.location.href = dl_url
-                                                }}>
-                                                    <DownloadIcon className="w-4 h-4 mr-1" />
-                                                    <span>CSV</span>
-                                                </button>
-                                            )}
-                                        </Menu.Item>
-                                        <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
-                                            {({ active }) => (
-                                                <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
-                                                    let dl_url = props?.current_url
-                                                    if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
-                                                    console.log('Downloading Excel. ' + dl_url || '')
-                                                    // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                    window.location.href = dl_url
-                                                }}>
-                                                    <DownloadIcon className="w-4 h-4 mr-1" />
-                                                    <span>Excel</span>
-                                                </button>
-                                            )}
-                                        </Menu.Item>
-                                    </Menu.Items>
-                                </Menu>}
-                                {/* ))))))) dropdown options to download data */}
+                                    <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
+                                        {({ active }) => (
+                                            <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
+                                                let dl_url = props?.current_url
+                                                if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
+                                                console.log('Downloading CSV. ' + dl_url || '')
+                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                window.location.href = dl_url
+                                            }}>
+                                                <DownloadIcon className="w-4 h-4 mr-1" />
+                                                <span>CSV</span>
+                                            </button>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
+                                        {({ active }) => (
+                                            <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
+                                                let dl_url = props?.current_url
+                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
+                                                console.log('Downloading Excel. ' + dl_url || '')
+                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                window.location.href = dl_url
+                                            }}>
+                                                <DownloadIcon className="w-4 h-4 mr-1" />
+                                                <span>Excel</span>
+                                            </button>
+                                        )}
+                                    </Menu.Item>
+                                </Menu.Items>
+                            </Menu>}
+                            {/* ))))))) dropdown options to download data */}
                         </div>
                     </div>
                     <div className="col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none">
@@ -214,6 +236,7 @@ const Home = (props) => {
                                                 Object.keys(filters).map(ft => (
                                                     <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                         <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
+                                                        {/* 
                                                         <select name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-2 rounded bg-gray-100" onChange={sl => {
                                                             let nf = {}
                                                             nf[ft] = sl.target.value
@@ -225,6 +248,31 @@ const Home = (props) => {
                                                                 <option key={ft_opt.id} value={ft_opt.id}>{ft_opt.name}</option>
                                                             ))}
                                                         </select>
+                                                         */}
+                                                        <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                            options={
+                                                                Array.from(filters[ft] || [],
+                                                                    fltopt => {
+                                                                        return {
+                                                                            value: fltopt.id, label: fltopt.name
+                                                                        }
+                                                                    })
+                                                            }
+                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                            onChange={sl => {
+                                                                let nf = {}
+                                                                if (Array.isArray(sl)) {
+                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                } else if(sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                    nf[ft] = sl.value
+                                                                } else {
+                                                                    delete nf[ft]
+                                                                    // let rr = drilldown.filter(d => d.key !== ft)
+                                                                    // setDrilldown(rr)
+                                                                }
+                                                                console.log(nf)
+                                                                setDrillDown({ ...drillDown, ...nf })
+                                                            }} />
                                                     </div>
                                                 ))}
 
@@ -258,7 +306,7 @@ const Home = (props) => {
                         </details>
                     </aside>
                     {/* (((((( Floating div at bottom right of page */}
-                        <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>
@@ -308,11 +356,11 @@ Home.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
-        let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
+        let other_posssible_filters = ["county", "constituency", "ward", "status", "sub_county"]
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
-                url += "&" + flt + "=" + ctx?.query[flt]
+                url = url + "&" + flt.replace('chu_','') + "=" + ctx?.query[flt]
             }
         })
         // let current_url = url + '&page_size=25000' //change the limit on prod

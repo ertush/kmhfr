@@ -36,14 +36,16 @@ const Home = (props) => {
 
     let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
     useEffect(() => {
-        if (filters && Object.keys(filters).length > 0) {
-
-            Object.keys(filters).map(ft => {
-                if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-                    setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-                }
-            })
-        }
+        let qry = props?.query
+        delete qry.searchTerm
+        setDrillDown({...drillDown, ...qry})
+        // if (filters && Object.keys(filters).length > 0) {
+        //     Object.keys(filters).map(ft => {
+        //         if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+        //             setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+        //         }
+        //     })
+        // }
     }, [filters])
 
 
@@ -61,9 +63,9 @@ const Home = (props) => {
                             <a className="text-green-700" href="/">Home</a> {'>'}
                             <span className="text-gray-500">Facilities</span>
                         </div>
-                        {/* <details className="bg-gray-100 p-3 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details> */}
+                        {/* <details className="bg-gray-100 p-1 rounded"><summary>drilldown:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details> */}
 
-                        {/* <details className="bg-gray-100 p-3 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify({ ...filters, owner_type: "", county: [], sub_county: [], service: [], service_category: [], constituency: [], keph_level:[], ward: [], facility_type: [] }, null, 2)}</pre></details> */}
+                        {/* <details className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify({ ...filters, owner_type: "", county: [], sub_county: [], service: [], service_category: [], constituency: [], keph_level:[], ward: [], facility_type: [] }, null, 2)}</pre></details> */}
 
                         <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
                             <div className="flex flex-col items-start justify-start gap-y-1">
