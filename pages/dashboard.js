@@ -12,7 +12,7 @@ import BarChart from '../components/BarChart'
 const Dash = (props) => {
     const router = useRouter()
     console.log('props:::', Object.keys(props))
-    console.log('props.data:::', Object.keys(props?.data))
+    // console.log('props.data:::', Object.keys(props?.data))
     let facilities = props?.data?.results
     let filters = props?.filters
     let fltrs = filters

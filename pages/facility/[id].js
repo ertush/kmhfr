@@ -504,6 +504,7 @@ Facility.getInitialProps = async (ctx) => {
                     Location: '/facilities?q=' + query
                 });
                 ctx.res.end();
+                return {};
             }
         }
     }

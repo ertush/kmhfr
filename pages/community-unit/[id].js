@@ -394,6 +394,7 @@ CommUnit.getInitialProps = async (ctx) => {
                     Location: '/community-units?q=' + query
                 });
                 ctx.res.end();
+                return {}
             }
         }
     }

@@ -131,9 +131,10 @@ const checkToken = async (req, res, isProtected, creds) => {
     if (!ct || ct == null || ct == undefined || (ct && JSON.parse(ct).expires > Date.now())) {
         console.log('Token expired. Refreshing...')
         if (req && req.asPath != '/api/login' && req.asPath != '/auth/login') {//check if protected page too
+            // res.writeHead(301, { Location: '/auth/login?was=' + req.asPath + '&h=1' })
             res.writeHead(301, { Location: '/auth/login?was=' + encodeURIComponent(req.url) + '&h=1' })
-            // res.writeHead(301, { Location: '/auth/login' })
             res.end()
+            return { error: true, message: 'Token expired. Refreshing...' }
         }
         let refresh_token
         if (ct && ct != undefined && JSON.parse(ct).refresh_token != undefined) {
