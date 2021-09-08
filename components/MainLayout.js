@@ -7,6 +7,20 @@ import { Menu } from '@headlessui/react'
 import { getUserDetails } from '../controllers/auth/auth'
 import LoadingAnimation from './LoadingAnimation';
 
+const DelayedLoginButton = () => {
+    const [delayed, setDelayed] = useState(false)
+    useEffect(() => {
+        let mtd = true
+        if(mtd){ setTimeout(() => { setDelayed(true) }, 1000) }
+        return () => { mtd = false }
+    }, [])
+    if(delayed){
+        return <a href="/auth/login" className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
+    }else{
+        return <div className="p-3 w-16"> <LoadingAnimation size={6}/> </div>
+    }
+}
+
 export default function MainLayout({ children, isLoading, searchTerm, isFullWidth }) {
     const router = useRouter()
     const activeClasses = "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-2 border-green-600"
@@ -15,23 +29,13 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [user, setUser] = useState(null)
     const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
-    const [showLogin, setShowLogin] = useState(false)
-    const toggleLoginCallBack = useCallback(
-        () => setTimeout(() => {
-            setShowLogin(true)
-        }, 0),
-        [],
-    )
-
-    useEffect(() => {
-        toggleLoginCallBack()
-    }, [])
+    
     //check if a session cookie is set
     const path = router.asPath
 
     useEffect(() => {
         let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
-        // setIsLoggedIn(is_user_logged_in)
+        setIsLoggedIn(is_user_logged_in)
         let session_token = null
         if (is_user_logged_in) {
             session_token = JSON.parse(window.document.cookie.split('access_token=')[1].split(';')[0])
@@ -110,7 +114,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                             </button>
                         </form>
                     </div>
-                    {(isLoggedIn && user && user !== null) && (
+                    {(isLoggedIn && user) ? (
                         <div className="flex flex-wrap items-center gap-3 md:gap-5 px-2 md:flex-grow justify-end">
                             <Menu as="div" className="relative p-2">
                                 <Menu.Button as="div" className="flex items-center justify-center gap-1 cursor-pointer">
@@ -162,8 +166,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                                 </Menu.Items>
                             </Menu>
                         </div>
-                    )}
-                    {showLogin ? (!isLoggedIn || !user || user === null) && (<a href="/auth/login" className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>) : <LoadingAnimation size="6" />}
+                    ) : <DelayedLoginButton />}
                 </header>
             </div>
             <div className={"min-h-screen w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl")}>
