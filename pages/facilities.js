@@ -135,7 +135,7 @@ const Home = (props) => {
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
                 <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
-                        <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
                                 <span className="text-gray-500">Facilities</span>
