@@ -108,8 +108,8 @@ const Gis = (props) => {
                             </div> */}
                         </div>
                         {/* <details open className="bg-gray-100 p-1 rounded"><summary>drilldown:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details> */}
-                        <div className="w-full grid grid-cols-5 gap-5 px-1 md:px-4 p-4 mx-auto bg-gray-100 min-h-screen">
-                            <aside className="col-span-5 md:col-span-1 p-2 md:p-4 flex flex-col gap-4 items-center justify-start bg-white rounded-lg shadow">
+                        <div className="w-full grid grid-cols-6 gap-5 px-1 md:px-4 p-4 mx-auto bg-gray-100 min-h-screen">
+                            <aside className="col-span-6 md:col-span-2 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start bg-white rounded-lg shadow">
                                 {/* ---- */}
                                 <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root flex-grow" defaultValue={isItUnits ? "cunits" : "facilities"} onValueChange={ev => {
                                     let link2push = `/gis`
@@ -123,18 +123,18 @@ const Gis = (props) => {
                                     }
                                     router.push(link2push)
                                 }}>
-                                    <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
-                                        <Tabs.Tab value="facilities" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
+                                    <Tabs.List className="list-none flex flex-wrap gap-x-2 px-1 uppercase leading-none tab-list font-semibold border-b items-center">
+                                        <Tabs.Tab value="facilities" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-xs sm:text-sm md:text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                             Facilities
                                         </Tabs.Tab>
-                                        <Tabs.Tab value="cunits" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
+                                        <Tabs.Tab value="cunits" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-xs sm:text-sm md:text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                             Community Units
                                         </Tabs.Tab>
                                     </Tabs.List>
-                                    <Tabs.Panel value="facilities" className="grow-1 py-1 px-4 tab-panel">
+                                    <Tabs.Panel value="facilities" className="grow-1 py-1 px-2 tab-panel">
                                         <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                                             <div className="bg-white w-full p-3 rounded">
-                                                {props?.data && props?.data?.results && <h4 className="text-xl tracking-tight font-bold leading-3">{props?.data?.results?.length} facilities found.</h4>}
+                                                {props?.data && props?.data?.results && <h4 className="text-base md:text-xl tracking-tight font-bold leading-tight">{props?.data?.results?.length} facilities found.</h4>}
                                             </div>
                                             <hr className="my-2" />
                                             {/* 000000000 */}
@@ -331,11 +331,11 @@ const Gis = (props) => {
                                             {/* 000000000 */}
                                         </div>
                                     </Tabs.Panel>
-                                    <Tabs.Panel value="cunits" className="grow-1 py-1 px-4 tab-panel">
+                                    <Tabs.Panel value="cunits" className="grow-1 py-1 px-1 sm:px-2 lg:px-2 tab-panel">
                                         <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                                             <div className="bg-white w-full p-2 rounded">
                                                 <div className="bg-white w-full py-2 rounded">
-                                                    {props?.data && props?.data?.results && <h4 className="text-xl tracking-tight font-bold leading-3">{props?.data?.results?.length} community units found.</h4>}
+                                                    {props?.data && props?.data?.results && <h4 className="text-base md:text-xl tracking-tight font-bold leading-tight">{props?.data?.results?.length} community units found.</h4>}
                                                 </div>
                                                 <hr className="my-2" />
                                                 <details className="rounded bg-transparent py-1 gap-y-2 flex flex-col w-full md:stickyz" open>
@@ -343,7 +343,7 @@ const Gis = (props) => {
                                                         <h5 className="text-xl font-semibold">Filters</h5>
                                                     </summary>
                                                     {/* ------- */}
-                                                    <div className="flex flex-col gap-1 p-1">
+                                                    <div className="flex flex-col md:gap-1">
                                                         {filters && filters?.error ?
                                                             (<div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                                                 <p>No filters.</p>
@@ -417,7 +417,7 @@ const Gis = (props) => {
                                 </Tabs.Root>
                                 {/* ---- */}
                             </aside>
-                            <div className="col-span-5 md:col-span-4 flex flex-col gap-4 items-center justify-center bg-green-100 rounded-lg shadow-lg border border-gray-300" style={{ minHeight: '650px' }}>
+                            <div className="col-span-6 md:col-span-4 lg:col-span-4 xl:col-span-5 flex flex-col gap-4 items-center justify-center bg-green-100 rounded-lg shadow-lg border border-gray-300" style={{ minHeight: '650px' }}>
                                 <Map data={props?.data?.results || []} />
                             </div>
                         </div>

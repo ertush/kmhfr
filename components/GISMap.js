@@ -30,9 +30,9 @@ const GISMap = ({ data }) => {
         layer.on(
             {
                 click: (e) => {
-                    layer.setStyle({
-                        color: '#000'
-                    })
+                    // layer.setStyle({
+                    //     color: '#000'
+                    // })
                 },
             }
         )
