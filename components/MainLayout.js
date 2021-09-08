@@ -21,7 +21,7 @@ const DelayedLoginButton = () => {
     }
 }
 
-export default function MainLayout({ children, isLoading, searchTerm, isFullWidth }) {
+export default function MainLayout({ children, isLoading, searchTerm, isFullWidth, classes }) {
     const router = useRouter()
     const activeClasses = "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-2 border-green-600"
     const inactiveClasses = "text-gray-700 hover:text-black focus:text-black active:text-black"
@@ -169,7 +169,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                     ) : <DelayedLoginButton />}
                 </header>
             </div>
-            <div className={"min-h-screen w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl")}>
+            <div className={"min-h-screen w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes&&classes.length>0 ? classes.join(" ") : "")}>
                 <>
                     {isLoading ? <div className="absolute inset-0 overflow-hidden bg-white opacity-90 z-20 flex items-center justify-center h-full">
                         <h3 className="text-2xl text-gray-800 font-bold">Loading...</h3>

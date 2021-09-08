@@ -103,7 +103,6 @@ const Home = (props) => {
             nu_qf[f.id] = f.value
         })
         setDrillDown({ ...dd, ...{ ...nu_qf } })
-        // }
     }
     useEffect(() => {
         let qry = props?.query

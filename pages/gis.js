@@ -7,21 +7,11 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import * as Tabs from '@radix-ui/react-tabs';
+import Select from 'react-select'
 
 const Gis = (props) => {
-    const Mapp = dynamic(
-        () => import('../components/GISMap'), // replace '@components/map' with your component's location
-        {
-            loading: () => <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
-            ssr: false
-        } // This line is important. It's what prevents server-side render
-    )
-
-    const Map = React.memo(Mapp)
-
     // console.log('props:::: ', props)
     const router = useRouter()
-    let facilities = props?.data?.results
     let filters = props?.filters
     let fltrs = filters
     let [drillDown, setDrillDown] = useState({})
@@ -45,16 +35,43 @@ const Gis = (props) => {
         delete fltrs.open_public_holidays
     }
 
-    useEffect(() => {
-        if (filters && Object.keys(filters).length > 0) {
+    const Mapp = dynamic(
+        () => import('../components/GISMap'), // replace '@components/map' with your component's location
+        {
+            loading: () => <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
+            ssr: false
+        } // This line is important. It's what prevents server-side render
+    )
 
-            Object.keys(filters).map(ft => {
-                if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-                    setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-                }
-            })
+    const Map = React.memo(Mapp)
+
+    // --------------------------------------------------
+    let f_multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
+    let c_multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
+    // --------------------------------------------------
+
+    useEffect(() => {
+        if (props?.isUnits) {
+            let qry = props?.query
+            delete qry.searchTerm
+            setDrillDown({ ...drillDown, ...qry })
+            if (filters && Object.keys(filters).length > 0) {
+                filters['status'] = filters['chu_status']
+                delete filters['chu_status']
+            }
+        } else {
+            if (filters && Object.keys(filters).length > 0) {
+
+                Object.keys(filters).map(ft => {
+                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+                    }
+                })
+            }
         }
+
     }, [filters])
+
 
 
     return (
@@ -65,7 +82,7 @@ const Gis = (props) => {
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
 
-            <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm} isFullWidth>
+            <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm} isFullWidth classes={["bg-gray-100"]}>
                 <>
                     {props?.error ? (
                         <div className="w-full flex flex-col gap-5 px-1 md:px-4 p-4 my-4 mx-auto bg-gray-100 min-h-screen items-center">
@@ -78,7 +95,7 @@ const Gis = (props) => {
                             </div>
                         </div>
                     ) : (<>
-                        <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 justify-between items-center w-full">
+                        <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 pt-2 justify-between items-center w-full bg-gray-100">
                             <div className="flex flex-row gap-2 text-sm md:text-base py-2 px-3">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
                                 <span className="text-gray-500">GIS Explorer</span>
@@ -89,12 +106,12 @@ const Gis = (props) => {
                                     <span>Export</span>
                                 </button>
                             </div> */}
-
                         </div>
-                        <div className="w-full grid grid-cols-5 gap-5 px-1 md:px-4 p-4 my-4 mx-auto bg-gray-100 min-h-screen">
+                        {/* <details open className="bg-gray-100 p-1 rounded"><summary>drilldown:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details> */}
+                        <div className="w-full grid grid-cols-5 gap-5 px-1 md:px-4 p-4 mx-auto bg-gray-100 min-h-screen">
                             <aside className="col-span-5 md:col-span-1 p-2 md:p-4 flex flex-col gap-4 items-center justify-start bg-white rounded-lg shadow">
                                 {/* ---- */}
-                                <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root flex-grow" defaultValue="facilities" onValueChange={ev => {
+                                <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root flex-grow" defaultValue={isItUnits ? "cunits" : "facilities"} onValueChange={ev => {
                                     let link2push = `/gis`
                                     if (ev === "facilities") {
                                         link2push = `?units=0`
@@ -139,17 +156,36 @@ const Gis = (props) => {
                                                                     Object.keys(fltrs).map(ft => (
                                                                         <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                                             <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                                            <select name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-2 rounded bg-gray-100" onChange={sl => {
-                                                                                let nf = {}
-                                                                                nf[ft] = sl.target.value
-                                                                                setDrillDown({ ...drillDown, ...nf })
-                                                                                // updateFt(nf)
-                                                                            }}>
-                                                                                <option value="">All</option>
-                                                                                {filters && filters[ft].map(ft_opt => (
-                                                                                    <option key={ft_opt.id} value={ft_opt.id}>{ft_opt.name}</option>
-                                                                                ))}
-                                                                            </select>
+                                                                            <Select isMulti={f_multiFilters.includes(ft)} name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                                                options={
+                                                                                    Array.from(filters[ft] || [],
+                                                                                        fltopt => {
+                                                                                            return {
+                                                                                                value: fltopt.id, label: fltopt.name
+                                                                                            }
+                                                                                        })
+                                                                                }
+                                                                                placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                onChange={sl => {
+                                                                                    let nf = {}
+                                                                                    let dd = drillDown
+                                                                                    if (Array.isArray(sl)) {
+                                                                                        if (sl.length > 0) {
+                                                                                            nf[ft] = sl.map(s => s.value)
+                                                                                        } else {
+                                                                                            delete dd[ft]
+                                                                                            setDrillDown(dd)
+                                                                                        }
+                                                                                        nf[ft] = Array.from(sl, l_ => l_.value).join(',')
+                                                                                        setDrillDown({ ...drillDown, ...nf })
+                                                                                    } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                        nf[ft] = sl.value
+                                                                                        setDrillDown({ ...drillDown, ...nf })
+                                                                                    } else {
+                                                                                        delete dd[ft]
+                                                                                        setDrillDown(dd)
+                                                                                    }
+                                                                                }} />
                                                                         </div>
                                                                     ))}
                                                                 <div className="w-full flex flex-row items-center px-2 justify-between gap-1 gap-x-3 mb-3">
@@ -277,28 +313,10 @@ const Gis = (props) => {
                                                                         pathname: '/gis',
                                                                         query: {
                                                                             'units': '0',
-                                                                            ...props?.query,
+                                                                            // ...props?.query,
                                                                             ...drillDown
                                                                         }
                                                                     })
-                                                                    // if (Object.keys(drillDown).length > 0) {
-                                                                    //     let qry = Object.keys(drillDown).map(function (key) {
-                                                                    //         let er = ''
-                                                                    //         if (props.path && !props.path.includes(key + '=')) {
-                                                                    //             er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
-                                                                    //         }
-                                                                    //         return er
-                                                                    //     }).join('&')
-                                                                    //     let op = '?'
-                                                                    //     if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                                    //     console.log(props.path)
-                                                                    //     // setDrillDown({})
-                                                                    //     if (typeof window !== 'undefined' && window) {
-                                                                    //         window.location.href = props.path + op + qry
-                                                                    //     } else {
-                                                                    //         router.push(props.path + op + qry)
-                                                                    //     }
-                                                                    // }
                                                                 }} className="bg-black border-2 border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg rounded w-full whitespace-nowrap text-center uppercase">Apply Filters</button>
                                                                 <div className="w-full flex items-center py-2 justify-center">
                                                                     <button className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline" onClick={ev => {
@@ -339,17 +357,36 @@ const Gis = (props) => {
                                                                         Object.keys(filters).map(ft => (
                                                                             <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                                                <select name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-2 rounded bg-gray-100" onChange={sl => {
-                                                                                    let nf = {}
-                                                                                    nf[ft] = sl.target.value
-                                                                                    setDrillDown({ ...drillDown, ...nf })
-                                                                                    // updateFt(nf)
-                                                                                }}>
-                                                                                    <option value="">All</option>
-                                                                                    {filters[ft].map(ft_opt => (
-                                                                                        <option key={ft_opt.id} value={ft_opt.id}>{ft_opt.name}</option>
-                                                                                    ))}
-                                                                                </select>
+                                                                                <Select isMulti={c_multiFilters.includes(ft)} name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                                                    options={
+                                                                                        Array.from(filters[ft] || [],
+                                                                                            fltopt => {
+                                                                                                return {
+                                                                                                    value: fltopt.id, label: fltopt.name
+                                                                                                }
+                                                                                            })
+                                                                                    }
+                                                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                    onChange={sl => {
+                                                                                        let nf = {}
+                                                                                        let dd = drillDown
+                                                                                        if (Array.isArray(sl)) {
+                                                                                            if (sl.length > 0) {
+                                                                                                nf[ft] = sl.map(s => s.value)
+                                                                                            } else {
+                                                                                                delete dd[ft]
+                                                                                                setDrillDown(dd)
+                                                                                            }
+                                                                                            nf[ft] = Array.from(sl, l_ => l_.value).join(',')
+                                                                                            setDrillDown({ ...drillDown, ...nf })
+                                                                                        } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                            nf[ft] = sl.value
+                                                                                            setDrillDown({ ...drillDown, ...nf })
+                                                                                        } else {
+                                                                                            delete dd[ft]
+                                                                                            setDrillDown(dd)
+                                                                                        }
+                                                                                    }} />
                                                                             </div>
                                                                         ))}
 
@@ -358,7 +395,7 @@ const Gis = (props) => {
                                                                             pathname: '/gis',
                                                                             query: {
                                                                                 'units': '1',
-                                                                                ...props?.query,
+                                                                                // ...props?.query,
                                                                                 ...drillDown
                                                                             }
                                                                         })
@@ -549,3 +586,6 @@ Gis.getInitialProps = async (ctx) => {
 }
 
 export default Gis
+
+
+//     http://localhost:8061/api/gis/drilldown/facility/?format=json returns [ 'name', 'lat', 'lng', 'county', 'constituency', 'ward', ]
