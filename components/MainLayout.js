@@ -62,52 +62,52 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
 
     return (
         <div className="flex flex-col items-center justify-center w-full min-h-screen">
-            <div className="w-full border-b border-gray-50 flex items-center justify-center md:sticky md:top-0 bg-white z-30">
-                <header className="flex flex-wrap items-center justify-between gap-4 w-full p-2 max-w-screen-2xl">
-                    <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-3 py-1 md:py-0 md:gap-5">
-                        <div id="logo" className="mx:px-3">
+            <div className="w-full border-b border-gray-50 drop-shadow flex items-center justify-center lg:sticky lg:top-0 bg-white z-30">
+                <header className="flex flex-wrap items-center justify-between gap-x-4 w-full p-1 max-w-screen-2xl">
+                    <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-0 md:gap-5">
+                        <div id="logo" className="mx:px-3 pb-1">
                             <a href="/" className="leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative">
-                                <img src="/MOH.png" alt="KMHFL3" className="h-16" />
-                                <span className="font-mono text-3xl">KMHFL</span>
+                                <img src="/MOH.png" alt="KMHFL3" className="h-14" />
+                                <span className="font-mono text-3xl leading-none">KMHFL</span>
                                 <span className="text-sm bg-yellow-300 rounded-sm shadow uppercase border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-4">V3 Alpha</span>
                             </a>
                         </div>
-                        <div className="group p-3">
+                        <div className="group px-3 py-2">
                             <button className="border-2 border-gray-600 rounded p-1 md:hidden focus:bg-black focus:border-black focus:text-white hover:bg-black hover:border-black hover:text-white active:bg-black active:border-black active:text-white">
                                 <MenuAlt1Icon className="w-6" />
                             </button>
-                            <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 p-2 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none justify-between gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
-                                <li className="flex-wrap">
+                            <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 px-2 py-1 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none justify-between gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
+                                <li className="flex-wrap font-semibold">
                                     <Link href={isLoggedIn ? "/dashboard" : "/"}>
                                         <a className={((currentPath == "/" || currentPath == "/dashboard") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>{isLoggedIn ?
                                             "Dashboard" : "Home"}</a>
                                     </Link>
                                 </li>
-                                <li className="flex-wrap">
+                                <li className="flex-wrap font-semibold">
                                     <Link href="/facilities">
                                         <a className={((currentPath == "/facilities" || currentPath.includes("facility")) ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Facilities</a>
                                     </Link>
                                 </li>
-                                <li className="flex-wrap">
+                                <li className="flex-wrap font-semibold">
                                     <Link href="/community-units">
                                         <a className={((currentPath == "/community-units" || currentPath.includes("community-unit")) ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Community Units</a>
                                     </Link>
                                 </li>
-                                <li className="flex-wrap">
+                                <li className="flex-wrap font-semibold">
                                     <Link href="/gis">
                                         <a className={((currentPath == "/gis") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>GIS</a>
                                     </Link>
                                 </li>
-                                {/* <li className="flex-wrap">
+                                <li className="flex-wrap font-semibold">
                                     <Link href="/reports">
                                         <a className={((currentPath == "/reports") ? activeClasses : inactiveClasses) + " text-base md:text-lg"}>Reports</a>
                                     </Link>
-                                </li> */}
+                                </li>
                             </ul>
                         </div>
                     </nav>
                     <div className="flex flex-wrap items-center justify-end gap-2 md:gap-5 px-2 md:flex-grow order-last sm:order-none flex-grow sm:flex-grow-0z">
-                        <form className="inline-flex flex-row flex-grow gap-x-2" action={path || '/'}>
+                        <form className="inline-flex flex-row flex-grow gap-x-2 py-2 lg:py-0" action={path || '/'}>
                             <input name="q" className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" type="search" defaultValue={searchTerm} placeholder="Search a facility/CHU" />
                             <button className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded">
                                 <SearchIcon className="w-5 h-5" />

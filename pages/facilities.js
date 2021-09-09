@@ -140,13 +140,13 @@ const Home = (props) => {
                                 <a className="text-green-700" href="/">Home</a> {'>'}
                                 <span className="text-gray-500">Facilities</span>
                             </div>
-                            <div className="flex flex-wrap items-center justify-end gap-x-3 text-sm md:text-base py-3">
+                            <div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3">
                                 {quickFilters.map((qf, i) => {
                                     return (
                                         <button
                                             key={qf.id}
                                             style={{ paddingTop: '2px', paddingBottom: '2px' }}
-                                            className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium text-sm ${currentQuickFilter == qf.id ? "bg-green-800 border-green-800 text-green-50" : "text-gray-800 border-gray-300"}`}
+                                            className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium hover:border-green-400 focus:ring-1 focus:ring-blue-500 text-sm ${currentQuickFilter == qf.id ? "bg-green-800 border-green-800 text-green-50" : "text-gray-800 border-gray-300"}`}
                                             onClick={evt => {
                                                 setCurrentQuickFilter(qf.id)
                                                 applyQuickFilter(qf.id, drillDown)
@@ -237,12 +237,12 @@ const Home = (props) => {
                                 <div key={facility.id} className="px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full">
                                     <div className="col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left">
                                         <h3 className="text-2xl w-full">
-                                            <a href={'/facility/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
+                                            <a href={'/facility/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
                                                 <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility.official_name || facility.official_name || facility.name}
                                             </a>
                                         </h3>
                                         {/* <p className="text-sm text-gray-600 w-full">{facility.nearest_landmark || ' '}{' '} {facility.location_desc || ' '}</p> */}
-                                        <p className="text-sm text-gray-600 w-full flex gap-2 items-center">
+                                        <p className="text-sm text-gray-600 w-full flex gap-y-2 gap-x-5 items-center">
                                             <span className="text-lg text-black font-semibold"># {facility.code ? facility.code : 'NO_CODE' || ' '}</span>
                                             <span>{facility.owner_name || ' '}</span>
                                         </p>
@@ -266,9 +266,9 @@ const Home = (props) => {
                                         </div>
                                     </div>
                                     <div className="col-span-8 md:col-span-4 flex flex-wrap items-center gap-3 text-lg">
-                                        {(facility.operational || facility.operation_status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
-                                        {!facility.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility.rejected ? "Rejected" : ""}</span>}
-                                        {facility.has_edits ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
+                                        {(facility.operational || facility.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
+                                        {!facility.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility.approved ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility.rejected ? "Rejected" : ""}</span>}
+                                        {facility.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
                                     </div>
                                     <div className="col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end">
                                         {/* <a href={'/facility/edit/' + facility.id} className="text-blue-800 hover:underline active:underline focus:underline bg-blue-200 md:bg-transparent px-2 md:px-0 rounded md:rounded-none">
