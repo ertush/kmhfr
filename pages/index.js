@@ -14,7 +14,7 @@ const Home = (props) => {
         if (mtd) {
             if(props?.loggedIn){
                 console.log('You are logged in')
-                router.push('/dashboard')
+                // router.push('/dashboard')
             } else {
                 console.log('You are not logged in')
                 // router.push('/login')

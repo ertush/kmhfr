@@ -31,7 +31,15 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
     
     //check if a session cookie is set
-    const path = router.asPath
+    let path = router.asPath
+    if( path.includes('facilities') || path.includes('facility') ){
+        path = '/facilities'
+    }else if( path.includes('community') ){
+        path = '/community-units'
+    }else{
+        path = '/facilities'
+    }
+    // console.log('path::: ', path)
 
     useEffect(() => {
         let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
@@ -107,9 +115,9 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                         </div>
                     </nav>
                     <div className="flex flex-wrap items-center justify-end gap-2 md:gap-5 px-2 md:flex-grow order-last sm:order-none flex-grow sm:flex-grow-0z">
-                        <form className="inline-flex flex-row flex-grow gap-x-2 py-2 lg:py-0" action={path || '/'}>
+                        <form className="inline-flex flex-row flex-grow gap-x-2 py-2 lg:py-0" action={path || '/facilities'}>
                             <input name="q" className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" type="search" defaultValue={searchTerm} placeholder="Search a facility/CHU" />
-                            <button className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded">
+                            <button type="submit" className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded">
                                 <SearchIcon className="w-5 h-5" />
                             </button>
                         </form>

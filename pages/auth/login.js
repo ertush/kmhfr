@@ -48,7 +48,7 @@ const Login = (props) => {
                         })
                             .then(r => r.json())
                             .then(rsp => {
-                                console.log('rsp: ', rsp)
+                                // console.log('rsp: ', rsp)
                                 if (rsp.error) {
                                     setLoading(false)
                                     setError(rsp.error)
