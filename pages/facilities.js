@@ -17,7 +17,8 @@ const Home = (props) => {
     let filters = props?.filters
     let fltrs = filters
     let [drillDown, setDrillDown] = useState({})
-    let [currentQuickFilter, setCurrentQuickFilter] = useState('all')
+    let qf = props?.query?.qf || 'all'
+    let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
     filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
@@ -137,6 +138,7 @@ const Home = (props) => {
     useEffect(() => {
         let qry = props?.query
         delete qry.searchTerm
+        delete qry.qf
         setDrillDown({ ...drillDown, ...qry })
     }, [currentQuickFilter])
     // }, [drillDown])
@@ -166,7 +168,7 @@ const Home = (props) => {
                                             className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium hover:border-green-400 focus:ring-1 focus:ring-blue-500 text-sm ${currentQuickFilter == qf.id ? "bg-green-800 border-green-800 text-green-50" : "text-gray-800 border-gray-300"}`}
                                             onClick={evt => {
                                                 setCurrentQuickFilter(qf.id)
-                                                let robj = {pathname: '/facilities', query: {}}
+                                                let robj = {pathname: '/facilities', query: {qf: qf.id}}
                                                 if(qf.id === 'all'){
                                                     router.push(robj)
                                                     return
@@ -186,7 +188,7 @@ const Home = (props) => {
                                 })}
                             </div>
                         </div>
-                        {/* <details open className="bg-gray-100 p-1 rounded"><summary>drilldown:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details> */}
+                        <details open className="bg-gray-100 p-1 rounded"><summary>drilldown:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details>
 
                         {/* <details className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify({ ...filters, owner_type: "", county: [], sub_county: [], service: [], service_category: [], constituency: [], keph_level:[], ward: [], facility_type: [] }, null, 2)}</pre></details> */}
 
@@ -576,6 +578,9 @@ Home.getInitialProps = async (ctx) => {
     const fetchData = (token) => {
         let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
         let query = { 'searchTerm': '' }
+        if (ctx?.query?.qf) {
+            query.qf = ctx.query.qf
+        }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
