@@ -187,11 +187,11 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
             <footer className="bg-black py-5 items-center justify-center flex flex-wrap gap-y-3 gap-x-4 text-gray-300 text-sm w-full">
                 <p>Work in progress.</p>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a href="https://health.go.ke" target="_blank" rel="noreferrer noopener">Ministry of Health</a>
+                <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://health.go.ke" target="_blank" rel="noreferrer noopener">Ministry of Health</a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a href="https://healthit.uonbi.ac.ke" target="_blank" rel="noreferrer noopener">USAID HealthIT</a>
+                <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://healthit.uonbi.ac.ke" target="_blank" rel="noreferrer noopener">USAID HealthIT</a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a href="http://kmhfl.health.go.ke" target="_blank" rel="noreferrer noopener">KMHFL v2</a>
+                <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://kmhfl.health.go.ke" target="_blank" rel="noreferrer noopener">KMHFL v2</a>
             </footer>
         </div>
     );
