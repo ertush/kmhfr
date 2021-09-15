@@ -188,7 +188,7 @@ const Home = (props) => {
                                 })}
                             </div>
                         </div>
-                        <details open className="bg-gray-100 p-1 rounded"><summary>drilldown:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details>
+                        {/* <details open className="bg-gray-100 p-1 rounded"><summary>drilldown:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details> */}
 
                         {/* <details className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify({ ...filters, owner_type: "", county: [], sub_county: [], service: [], service_category: [], constituency: [], keph_level:[], ward: [], facility_type: [] }, null, 2)}</pre></details> */}
 

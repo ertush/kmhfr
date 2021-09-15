@@ -11,13 +11,13 @@ const DelayedLoginButton = () => {
     const [delayed, setDelayed] = useState(false)
     useEffect(() => {
         let mtd = true
-        if(mtd){ setTimeout(() => { setDelayed(true) }, 1000) }
+        if (mtd) { setTimeout(() => { setDelayed(true) }, 1000) }
         return () => { mtd = false }
     }, [])
-    if(delayed){
+    if (delayed) {
         return <a href="/auth/login" className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
-    }else{
-        return <div className="p-3 w-16"> <LoadingAnimation size={6}/> </div>
+    } else {
+        return <div className="p-3 w-16"> <LoadingAnimation size={6} /> </div>
     }
 }
 
@@ -29,14 +29,14 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [user, setUser] = useState(null)
     const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
-    
+
     //check if a session cookie is set
     let path = router.asPath
-    if( path.includes('facilities') || path.includes('facility') ){
+    if (path.includes('facilities') || path.includes('facility')) {
         path = '/facilities'
-    }else if( path.includes('community') ){
+    } else if (path.includes('community')) {
         path = '/community-units'
-    }else{
+    } else {
         path = '/facilities'
     }
     // console.log('path::: ', path)
@@ -177,15 +177,21 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                     ) : <DelayedLoginButton />}
                 </header>
             </div>
-            <div className={"min-h-screen w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes&&classes.length>0 ? classes.join(" ") : "")}>
+            <div className={"min-h-screen w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
                 <>
                     {isLoading ? <div className="absolute inset-0 overflow-hidden bg-white opacity-90 z-20 flex items-center justify-center h-full">
                         <h3 className="text-2xl text-gray-800 font-bold">Loading...</h3>
                     </div> : children}
                 </>
             </div>
-            <footer className="bg-black py-5 items-center justify-center flex flex-wrap gap-3 text-gray-300 text-sm w-full">
+            <footer className="bg-black py-5 items-center justify-center flex flex-wrap gap-y-3 gap-x-4 text-gray-300 text-sm w-full">
                 <p>Work in progress.</p>
+                <span className="text-lg text-gray-400">&middot;</span>
+                <a href="https://health.go.ke" target="_blank" rel="noreferrer noopener">Ministry of Health</a>
+                <span className="text-lg text-gray-400">&middot;</span>
+                <a href="https://healthit.uonbi.ac.ke" target="_blank" rel="noreferrer noopener">USAID HealthIT</a>
+                <span className="text-lg text-gray-400">&middot;</span>
+                <a href="http://kmhfl.health.go.ke" target="_blank" rel="noreferrer noopener">KMHFL v2</a>
             </footer>
         </div>
     );
