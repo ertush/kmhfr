@@ -96,14 +96,14 @@ const Home = (props) => {
             name: 'Rejected',
             id: 'rejected',
             filters: [
-                { id: "rejected_national", value: false },
+                { id: "rejected_national", value: true },
             ]
         },
         {
             name: 'Closed',
             id: 'closed',
             filters: [
-                { id: "closed", value: false },
+                { id: "closed", value: true },
             ]
         },
     ]
