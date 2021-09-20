@@ -89,7 +89,21 @@ const Home = (props) => {
             name: 'Incomplete',
             id: 'incomplete',
             filters: [
-                { id: "is_complete", value: false },
+                { id: "incomplete", value: true },
+            ]
+        },
+        {
+            name: 'Rejected',
+            id: 'rejected',
+            filters: [
+                { id: "rejected_national", value: false },
+            ]
+        },
+        {
+            name: 'Closed',
+            id: 'closed',
+            filters: [
+                { id: "closed", value: false },
             ]
         },
     ]
