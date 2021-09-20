@@ -54,8 +54,8 @@ const Home = (props) => {
             name: 'New pending validation',
             id: 'new_pending_validation',
             filters: [
-                { id: "has_edits", value: true },
-                { id: "is_approved", value: false },
+                { id: "has_edits", value: false },
+                { id: "pending_approval", value: false },
             ],
         },
         {
@@ -63,22 +63,26 @@ const Home = (props) => {
             id: 'updated_pending_validation',
             filters: [
                 { id: "has_edits", value: true },
-                { id: "is_approved", value: true },
+                { id: "pending_approval", value: true },
             ],
         },
         {
             name: 'Pending approval',
             id: 'pending_approval',
             filters: [
-                { id: "is_approved", value: false },
+                { id: "to_publish", value: true },
             ],
         },
         {
             name: 'KHIS-synched',
             id: 'khis_synched',
             filters: [
-                { id: "is_approved", value: true },
-                { id: "is_complete", value: true },
+                { id: "approved", value: true },
+                { id: "approved_national_level", value: true },
+                { id: "rejected", value: false },
+                { id: "reporting_in_dhis", value: true },
+                { id: "admitting_maternity_general", value: true },
+                { id: "admitting_maternity_only", value: true },
             ],
         },
         {

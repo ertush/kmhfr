@@ -15,14 +15,52 @@ const Home = (props) => {
     let cus = props?.data?.results
     let filters = props?.filters
     let [drillDown, setDrillDown] = useState({})
-
+    let qf = props?.query?.qf || 'all'
+    let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
     let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
+    let quickFilters = [
+        {
+            name: 'All',
+            id: 'all',
+            filters: Object.keys(filters),
+        },
+        {
+            name: 'Approved',
+            id: 'approved',
+            filters: [
+                { id: "is_approved", value: true },
+            ],
+        },
+        {
+            name: 'New pending approval',
+            id: 'new_pending_approval',
+            filters: [
+                { id: "has_edits", value: false },
+                { id: "pending_approval", value: true },
+            ],
+        },
+        {
+            name: 'Updated pending approval',
+            id: 'updated_pending_approval',
+            filters: [
+                { id: "has_edits", value: true },
+                { id: "pending_approval", value: true },
+            ],
+        },
+        {
+            name: 'Rejected',
+            id: 'rejected',
+            filters: [
+                { id: "is_rejected", value: true },
+            ],
+        }
+    ]
     useEffect(() => {
         let qry = props?.query
         delete qry.searchTerm
         setDrillDown({ ...drillDown, ...qry })
         if (filters && Object.keys(filters).length > 0) {
-            filters['status'] =  filters['chu_status']
+            filters['status'] = filters['chu_status']
             delete filters['chu_status']
         }
         // if (filters && Object.keys(filters).length > 0) {
@@ -45,9 +83,39 @@ const Home = (props) => {
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
                 <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
-                        <div className="flex flex-row gap-2 text-sm md:text-base py-3">
-                            <a className="text-green-700" href="/">Home</a> {'>'}
-                            <span className="text-gray-500">Community Units</span>
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
+                            <div className="flex flex-row gap-2 text-sm md:text-base py-3">
+                                <a className="text-green-700" href="/">Home</a> {'>'}
+                                <span className="text-gray-500">Community Units</span>
+                            </div>
+                            <div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3">
+                                {quickFilters.map((qf, i) => {
+                                    return (
+                                        <button
+                                            key={qf.id}
+                                            style={{ paddingTop: '2px', paddingBottom: '2px' }}
+                                            className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium hover:border-green-400 focus:ring-1 focus:ring-blue-500 text-sm ${currentQuickFilter == qf.id ? "bg-green-800 border-green-800 text-green-50" : "text-gray-800 border-gray-300"}`}
+                                            onClick={evt => {
+                                                setCurrentQuickFilter(qf.id)
+                                                let robj = { pathname: '/facilities', query: { qf: qf.id } }
+                                                if (qf.id === 'all') {
+                                                    router.push(robj)
+                                                    return
+                                                }
+                                                quickFilters.forEach(q_f => {
+                                                    if (q_f.id === qf.id) {
+                                                        q_f.filters.map(sf => {
+                                                            robj.query[sf.id] = sf.value
+                                                        })
+                                                    }
+                                                })
+                                                router.push(robj)
+                                            }}>
+                                            {qf.name}
+                                        </button>
+                                    )
+                                })}
+                            </div>
                         </div>
                         {/* <details open className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">
                             {JSON.stringify( 
@@ -66,7 +134,7 @@ const Home = (props) => {
                                 </h1>
                                 <h5 className="text-lg font-medium text-gray-800">
                                     {drillDown && Object.keys(drillDown).length > 0 &&
-                                        `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') : 'v'+k.split('_').join(' ')})`)?.join(' & ')}`
+                                        `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') : 'v' + k.split('_').join(' ')})`)?.join(' & ')}`
                                     }
                                     {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
                                 </h5>
@@ -164,8 +232,8 @@ const Home = (props) => {
                                         </div>
                                     </div>
                                     <div className="col-span-8 md:col-span-3 flex flex-wrap items-center gap-3 text-lg">
-                                        {(comm_unit.status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 text-black "
-                                            + (comm_unit.status_name.toLocaleLowerCase().includes("non-") ? " bg-red-200" : ((comm_unit.status_name.toLocaleLowerCase().includes("fully") ? " bg-green-200" : " bg-blue-200")))
+                                        {(comm_unit.status_name) ? <span className={"leading-none border whitespace-nowrap shadow-xs text-sm rounded py-1 px-2 text-black "
+                                            + (comm_unit.status_name.toLocaleLowerCase().includes("non-") ? " bg-red-200 border-red-300/60" : ((comm_unit.status_name.toLocaleLowerCase().includes("fully") ? " bg-green-200 border-green-300/60" : " bg-yellow-200 border-yellow-300/60")))
 
                                         }>{comm_unit.status_name[0].toLocaleUpperCase()}{comm_unit.status_name.slice(1).toLocaleLowerCase()}</span> : ""}
                                         {/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
@@ -263,7 +331,7 @@ const Home = (props) => {
                                                                 let nf = {}
                                                                 if (Array.isArray(sl)) {
                                                                     nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                } else if(sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
                                                                     nf[ft] = sl.value
                                                                 } else {
                                                                     delete nf[ft]
@@ -360,7 +428,7 @@ Home.getInitialProps = async (ctx) => {
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
-                url = url + "&" + flt.replace('chu_','') + "=" + ctx?.query[flt]
+                url = url + "&" + flt.replace('chu_', '') + "=" + ctx?.query[flt]
             }
         })
         // let current_url = url + '&page_size=25000' //change the limit on prod
