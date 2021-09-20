@@ -97,7 +97,7 @@ const Home = (props) => {
                                             className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium hover:border-green-400 focus:ring-1 focus:ring-blue-500 text-sm ${currentQuickFilter == qf.id ? "bg-green-800 border-green-800 text-green-50" : "text-gray-800 border-gray-300"}`}
                                             onClick={evt => {
                                                 setCurrentQuickFilter(qf.id)
-                                                let robj = { pathname: '/facilities', query: { qf: qf.id } }
+                                                let robj = { pathname: '/community-units', query: { qf: qf.id } }
                                                 if (qf.id === 'all') {
                                                     router.push(robj)
                                                     return
