@@ -56,7 +56,7 @@ const GISMap = ({ data }) => {
                                             </a>
                                             <div className="text-base flex gap-2 w-full justify-between border-t py-2 items-center">
                                                 <h4 className="text-base font-bold text-black flex gap-1"><small className="text-gray-400 text-sm">#</small>{facility?.code || "No code"}</h4>
-                                                <span className={"text-sm font-medium drop-shadow-sm rounded leading-none p-1 px-3" + (facility?.op_stat.toLowerCase() == "operational" || facility?.op_stat.toLowerCase().includes('non-') ? "text-black bg-green-300" : "text-gray-900 bg-gray-200")}>{" " + facility?.op_stat.toString() + " "}</span>
+                                                <span className={"text-sm font-medium drop-shadow-sm rounded leading-none p-1 px-3" + (facility?.op_stat.toLowerCase() == "operational" || facility?.op_stat.toLowerCase().includes('non-') ? "text-blue-900 bg-blue-300/70" : "text-gray-900 bg-gray-200")}>{" " + facility?.op_stat.toString() + " "}</span>
                                             </div>
                                         </div>
                                     </Popup>
