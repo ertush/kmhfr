@@ -23,6 +23,16 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+  #nprogress {
+    height: 100vh;
+  }
+  #nprogress .bar {
+    height: 5px !important;
+  }
+  #nprogress .spinner-icon{
+    width: 25px;
+    height: 25px;
+  }
 
   /* Overlay when loading */
   /* #nprogress:after {
