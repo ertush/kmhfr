@@ -28,7 +28,7 @@ const CommUnit = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - {cu.official_name}</title>
+                <title>KMHFL - {cu?.name || cu?.official_name}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
@@ -106,15 +106,15 @@ const CommUnit = (props) => {
                                                 {cu.status_name.toLocaleLowerCase().includes("fully-") ?
                                                     <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                                                         <CheckCircleIcon className="h-4 w-4" />
-                                                        {cu.status_name || 'Yes'}
+                                                        {cu?.status_name || 'Yes'}
                                                     </span> : (
-                                                        cu.status_name.toLocaleLowerCase().includes("semi") ?
+                                                        cu?.status_name.toLocaleLowerCase().includes("semi") ?
                                                             <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                                                                 <CheckCircleIcon className="h-4 w-4" />
-                                                                {cu.status_name || 'Yes'}
+                                                                {cu?.status_name || 'Yes'}
                                                             </span> : <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                                                                 <XCircleIcon className="h-4 w-4" />
-                                                                {cu.status_name || 'No'}
+                                                                {cu?.status_name || 'No'}
                                                             </span>
                                                     )}
                                             </p>
@@ -260,12 +260,12 @@ const CommUnit = (props) => {
                                             </div>
                                         ))}
                                     </div>
-                                    {/* <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
+                                    <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
                                         <summary>All data</summary>
                                         <pre className="language-json leading-normal text-sm whitespace-pre-wrap text-gray-800 overflow-y-auto" style={{ maxHeight: '70vh' }}>
                                             {JSON.stringify({ ...cu }, null, 2)}
                                         </pre>
-                                    </details> */}
+                                    </details>
                                 </div>
                             </Tabs.Panel>
                             <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">

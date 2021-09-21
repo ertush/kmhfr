@@ -488,7 +488,7 @@ Gis.getInitialProps = async (ctx) => {
                 return getMorePagedData(data.next, token)
             } else {
                 return {
-                    data: { "results": all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/facilities', isUnits: yesItIsUnits
+                    data: { "results": all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/gis', isUnits: yesItIsUnits
                 }
             }
         })
@@ -529,9 +529,9 @@ Gis.getInitialProps = async (ctx) => {
                     // console.log('JSON:::: ', Object.keys(json))
                     all_facilities.push(...json.results)
                     if (json.next) {
-                        if (!host.includes('productiondomainname')) { // limiting to 600 for now globally
+                        if (!host.includes('productiondomainname')) { // limiting to 600 for now globally. Replace with prod domain name when going live to delimit
                             return {
-                                data: { "results": all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/facilities', isUnits: yesItIsUnits
+                                data: { "results": all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/gis', isUnits: yesItIsUnits
                             }
                         }
                         return getMorePagedData(json.next, token).then(data => {
@@ -539,7 +539,7 @@ Gis.getInitialProps = async (ctx) => {
                             return data
                         })
                     } else {
-                        return { data: { results: all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/facilities', isUnits: yesItIsUnits }
+                        return { data: { results: all_facilities }, query, filters: { ...ft }, path: ctx.asPath || '/gis', isUnits: yesItIsUnits }
                     }
                     ///////
                 })
@@ -550,8 +550,8 @@ Gis.getInitialProps = async (ctx) => {
                     err: err,
                     data: [],
                     query: {},
-                    path: ctx.asPath || '/facilities',
-                    isUnits: yesItIsUnits
+                    path: ctx.asPath || '/gis',
+                    current_url: ''
                 }
             })
     }
@@ -577,7 +577,8 @@ Gis.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/facilities',
+                path: ctx.asPath || '/gis',
+                current_url: '',
                 isUnits: yesItIsUnits
             }
         }, 100);

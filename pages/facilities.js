@@ -108,25 +108,6 @@ const Home = (props) => {
         },
     ]
 
-    const applyQuickFilter = (filter, dd) => {
-        console.log('applyQuickFilter:::', filter)
-        let qf = quickFilters.find(qf => qf.id === filter)
-        quickFilters.forEach(q_f => {
-            q_f.filters.map(sf => {
-                if (dd[sf.id]) {
-                    delete dd[sf.id]
-                }
-            })
-        })
-        let nu_qf = {}
-        qf.filters.forEach(f => {
-            nu_qf[f.id] = f.value
-        })
-        console.log('nu_qf:::', nu_qf)
-        setDrillDown({ ...dd, ...{ ...nu_qf } })
-        applyFilter(nu_qf)
-    }
-
     const applyFilter = (qf) => {
         let routerObj = {}
         if (currentQuickFilter === 'all') {
