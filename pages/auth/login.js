@@ -19,7 +19,7 @@ const Login = (props) => {
             </Head>
             <div className="w-full h-screen overflow-hidden bg-blue-50 flex flex-col gap-2 items-center justify-center p-3 md:p-0">
                 <div className="w-full flex flex-col max-w-screen-sm items-center justify-between px-2">
-                    <div className="text-center text-4xl w-full font-black text-gray-800 flex justify-center gap-x-2 items-center">
+                    <div className="text-center text-5xl w-full font-black text-gray-700 flex justify-center gap-x-2 items-center">
                         <img src="/MOH.png" className="h-16" alt="KMHFL 3"/>
                         <span>KMHFL-v3</span>
                     </div>
@@ -77,15 +77,15 @@ const Login = (props) => {
                 }} 
                 // method="POST" 
                 // action="javascript:void(0);"
-                className="bg-gray-700 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 ">
+                className="bg-white w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 ">
                 {/* className="bg-gradient-to-tl from-blue-500 via-green-500 to-green-800 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-9 "> */}
-                    <h3 className="text-center leading-tight text-2xl font-semibold text-gray-100">Log in</h3>
+                    <h3 className="text-center leading-tight text-xl font-bold tracking-wide text-gray-800 uppercase">Log in</h3>
                     <div className="flex flex-col gap-0 w-full">
                         {error && error.length > 0 && <p className="text-red-900 bg-red-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{error}</p>}
                         {msg && msg.length > 0 && <p className="text-blue-900 bg-blue-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{msg}</p>}
                     </div>
                     <div className="flex flex-col gap-0 w-full">
-                        <label className="text-gray-100">Username</label>
+                        <label className="text-gray-800">Username</label>
                         <input type="email"
                             value={username}
                             onChange={ev => {
@@ -95,7 +95,7 @@ const Login = (props) => {
                             className="text-gray-900 bg-gray-50 border border-gray-300 py-3 px-3 w-full flex items-center leading-none rounded" placeholder="you@geemail.com" />
                     </div>
                     <div className="flex flex-col gap-0 w-full">
-                        <label className="text-gray-100">Password</label>
+                        <label className="text-gray-800">Password</label>
                         <input type="password"
                             value={password}
                             onChange={ev => {
@@ -105,12 +105,12 @@ const Login = (props) => {
                             className="text-gray-900 bg-gray-50 border border-gray-300 py-3 px-3 w-full flex items-center leading-none rounded" placeholder="*********" />
                     </div>
                     <div className="flex flex-col gap-4 w-full text-center">
-                        <button disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-green-600 focus:bg-green-600 active:bg-green-600 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-green-500")}
+                        <button disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-green-800 focus:bg-green-600 active:bg-green-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-green-700")}
                         >{loading ? "Loading..." : "Log in"}</button>
-                        {/* <div className="flex justify-between items-center w-full px-2">
-                            <a href="/" className="text-base text-green-300 hover:underline focus:underline active:underline">Forgot password?</a>
-                            <a href="/" className="text-base  text-green-300 hover:underline focus:underline active:underline">Request account</a>
-                        </div> */}
+                        <div className="flex justify-end items-center w-full px-2">
+                            <a href="http://admin.kmhfltest.health.go.ke/#/reset_pwd" target="_blank" rel="noreferrer noopener" className="text-base text-gray-700 hover:text-green-700 focus:text-green-700 active:text-green-700 hover:underline focus:underline active:underline">Forgot password?</a>
+                            {/* <a href="/" className="text-base  text-green-300 hover:underline focus:underline active:underline">Request account</a> */}
+                        </div>
                     </div>
                 </form>
             </div>
