@@ -25,8 +25,8 @@
   }
 
   /* Overlay when loading */
-  #nprogress:after {
-    /* content: url("./images/loading.svg"); */
+  /* #nprogress:after {
+    -- content: url("./images/loading.svg"); --
     content: 'Loading...';
     color: white;
     background-color: palegreen;
@@ -46,4 +46,4 @@
     background: rgba(0,0,0,0.6);
     z-index: 180;
     overflow: hidden;
-  }
+  } */
