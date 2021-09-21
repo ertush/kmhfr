@@ -70,7 +70,8 @@ const Gis = (props) => {
             }
         }
 
-    }, [filters])
+    }, [])
+    // }, [filters])
 
 
 
