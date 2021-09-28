@@ -11,10 +11,14 @@ const DelayedLoginButton = () => {
     const [delayed, setDelayed] = useState(false)
     useEffect(() => {
         let mtd = true
-        if (mtd) { setTimeout(() => { setDelayed(true) }, 1000) }
+        setTimeout(() => {
+            if (mtd === true) {
+                setDelayed(true)
+            }
+        }, 1000)
         return () => { mtd = false }
     }, [])
-    if (delayed) {
+    if (delayed === true) {
         return <a href="/auth/login" className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
     } else {
         return <div className="p-3 w-16"> <LoadingAnimation size={6} /> </div>
@@ -42,29 +46,33 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     // console.log('path::: ', path)
 
     useEffect(() => {
-        let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
-        setIsLoggedIn(is_user_logged_in)
-        let session_token = null
-        if (is_user_logged_in) {
-            session_token = JSON.parse(window.document.cookie.split('access_token=')[1].split(';')[0])
-        }
+        let mtd = true
+        if (mtd) {
+            let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
+            setIsLoggedIn(is_user_logged_in)
+            let session_token = null
+            if (is_user_logged_in) {
+                session_token = JSON.parse(window.document.cookie.split('access_token=')[1].split(';')[0])
+            }
 
-        if (is_user_logged_in && typeof window !== 'undefined' && session_token !== null) {
-            console.log('active session found')
-            // getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
-            getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr => {
-                if (usr.error || usr.detail) {
-                    setIsLoggedIn(false)
-                    setUser(null)
-                } else {
-                    setIsLoggedIn(true)
-                    setUser(usr)
-                }
-            })
-        } else {
-            console.log('no session. Refreshing...')
-            // router.push('/auth/login')
+            if (is_user_logged_in && typeof window !== 'undefined' && session_token !== null) {
+                console.log('active session found')
+                // getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
+                getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr => {
+                    if (usr.error || usr.detail) {
+                        setIsLoggedIn(false)
+                        setUser(null)
+                    } else {
+                        setIsLoggedIn(true)
+                        setUser(usr)
+                    }
+                })
+            } else {
+                console.log('no session. Refreshing...')
+                // router.push('/auth/login')
+            }
         }
+        return () => { mtd = false }
     }, [])
 
 
@@ -116,7 +124,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                     </nav>
                     <div className="flex flex-wrap items-center justify-end gap-2 md:gap-5 px-2 md:flex-grow order-last sm:order-none flex-grow sm:flex-grow-0z">
                         <form className="inline-flex flex-row flex-grow gap-x-2 py-2 lg:py-0" action={path || '/facilities'}>
-                            <input name="q" className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" type="search" defaultValue={searchTerm} placeholder="Search a facility/CHU" />
+                            <input name="q" id="search-input" className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" type="search" defaultValue={searchTerm} placeholder="Search a facility/CHU" />
                             <button type="submit" className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded">
                                 <SearchIcon className="w-5 h-5" />
                             </button>

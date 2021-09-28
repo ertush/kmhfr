@@ -290,6 +290,7 @@ Dash.getInitialProps = async (ctx) => {
             })
     }
     return checkToken(ctx.req, ctx.res).then(t => {
+        console.log('Token: ', t)
         if (t.error) {
             throw new Error('Error checking token')
         } else {
