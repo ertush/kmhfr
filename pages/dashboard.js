@@ -409,12 +409,12 @@ export default Dash
 
 /*
 
-http://api.kmhfltest.health.go.ke/api/facilities/dashboard/
+https://api.kmhfltest.health.go.ke/api/facilities/dashboard/
 
-http://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_month=true
+https://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_month=true
 
-http://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_week=true
+https://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_week=true
 
-http://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_three_months=true
+https://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_three_months=true
 
 */
