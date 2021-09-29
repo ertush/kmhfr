@@ -8,43 +8,36 @@ import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/outline'
 import BarChart from '../components/BarChart'
+import Select from 'react-select'
 
 const Dash = (props) => {
     const router = useRouter()
+    // console.log('props:::', props)
     // console.log('props:::', Object.keys(props))
     // console.log('props.data:::', Object.keys(props?.data))
-    let facilities = props?.data?.results
+
     let filters = props?.filters
-    let fltrs = filters
     let [drillDown, setDrillDown] = useState({})
-    if (filters) {
-        filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
-        filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
-        filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
-        filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
-        filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
-        filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
-        filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
-        filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
-        delete fltrs.has_edits
-        delete fltrs.is_approved
-        delete fltrs.is_complete
-        delete fltrs.number_of_beds
-        delete fltrs.number_of_cots
-        delete fltrs.open_whole_day
-        delete fltrs.open_weekends
-        delete fltrs.open_public_holidays
-    }
+    const [user, setUser] = useState(null)
 
     useEffect(() => {
-        if (filters && Object.keys(filters).length > 0) {
-
-            Object.keys(filters).map(ft => {
-                if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-                    setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+        let mtd = true
+        if (mtd) {
+            if (filters && Object.keys(filters).length > 0) {
+                Object.keys(filters).map(ft => {
+                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+                    }
+                })
+            }
+            if (typeof window !== 'undefined') {
+                let usr = window.sessionStorage.getItem('user')
+                if (usr && usr.length > 0) {
+                    setUser(JSON.parse(usr))
                 }
-            })
+            }
         }
+        return () => { mtd = false }
     }, [filters])
 
 
@@ -62,10 +55,83 @@ const Dash = (props) => {
                             <a className="text-green-700" href="/">Home</a> {'>'}
                             <span className="text-gray-500">Dashboard</span>
                         </div>
-                        <div className="flex flex-wrap gap-1 text-sm md:text-base py-3 items-center justify-between">
-                            <h1 className="text-4xl tracking-tight font-bold leading-3 flex items-center justify-start gap-x-1">Overview</h1>
+                        <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">
+                            <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
+                                <span>Overview</span>
+                                {drillDown && drillDown?.county && 
+                                    <small className="text-blue-900 text-base font-semibold ml-1">
+                                        {filters && filters?.county && filters?.county.find(ft=>ft.id == drillDown?.county)?.name != undefined ? filters.county.find(ft=>ft.id == drillDown?.county)?.name+" County" : "National Summary" || ""}
+                                    </small>
+                                }
+                            </h1>
+                            <div className="flex-grow flex items-center justify-end w-full md:w-auto">
+                                {/* --- */}
+                                {user && user?.is_national && <div className="w-full flex flex-col items-end justify-end mb-3">
+                                    {filters && Object.keys(filters).length > 0 &&
+                                        Object.keys(filters).map(ft => (
+                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
+                                                <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
+                                                <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                                    options={
+                                                        (() => {
+                                                            let opts = [{ value: "national", label: "National summary" }, ...Array.from(filters[ft] || [],
+                                                                fltopt => {
+                                                                    if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                        return {
+                                                                            value: fltopt.id, label: fltopt.name + ' county'
+                                                                        }
+                                                                    }
+                                                                })]
+                                                            return opts
+                                                        })()
+                                                    }
+                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                    onChange={sl => {
+                                                        let nf = {}
+                                                        if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                            nf[ft] = sl.value
+                                                        } else {
+                                                            delete nf[ft]
+                                                            // let rr = drillDown.filter(d => d.key !== ft)
+                                                            // setDrilldown(rr)
+                                                        }
+                                                        setDrillDown({ ...drillDown, ...nf })
+                                                        let value = sl.value
+                                                        if (value === 'national') {
+                                                            router.push('/dashboard')
+                                                        } else {
+                                                            router.push('/dashboard?county=' + value)
+                                                        }
+                                                    }} />
+                                            </div>
+                                        ))}
+                                    {/* ~~~F L T R S~~~ */}
+                                </div>}
+                                {/* --- */}
+                            </div>
                         </div>
                     </div>
+
+                    {/* <div className="w-full col-span-6 flex flex-col items-start justify-start gap-1 bg-gray-50 shadow border border-gray-300/70">
+                        <details className="py-1 px-2 text-gray-400 cursor-default rounded w-full">
+                            <summary>props</summary>
+                            <pre className="language-json leading-normal text-xs whitespace-pre-wrap text-gray-800 overflow-y-auto normal-case" style={{ maxHeight: '40vh' }}>
+                                {JSON.stringify(props, null, 2)}
+                            </pre>
+                        </details>
+                    <details className="py-1 px-2 text-gray-400 cursor-default rounded w-full">
+                            <summary>drillDown</summary>
+                            <pre className="language-json leading-normal text-xs whitespace-pre-wrap text-gray-800 overflow-y-auto normal-case" style={{ maxHeight: '40vh' }}>
+                                {JSON.stringify(drillDown, null, 2)}
+                            </pre>
+                        </details>
+                        <details className="py-1 px-2 text-gray-400 cursor-default rounded w-full">
+                            <summary>filters</summary>
+                            <pre className="language-json leading-normal text-xs whitespace-pre-wrap text-gray-800 overflow-y-auto normal-case" style={{ maxHeight: '40vh' }}>
+                                {JSON.stringify(filters, null, 2)}
+                            </pre>
+                        </details>
+                    </div> */}
 
                     {/* Facilities summary 1/3 - FILTERABLE */}
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
@@ -227,26 +293,28 @@ const Dash = (props) => {
     )
 }
 
+
 Dash.getInitialProps = async (ctx) => {
     const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
 
     const fetchFilters = token => {
-        let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
-
+        // let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Csub_county'
+        let filters_url = API_URL + '/common/filtering_summaries/?fields=county'
         return fetch(filters_url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json'
             }
         }).then(r => r.json())
-            .then(json => {
-                return json
+            .then(jzon => {
+                return jzon
             }).catch(err => {
                 console.log('Error fetching filters: ', err)
                 return {
                     error: true,
                     err: err,
-                    filters: []
+                    filters: [],
+                    api_url: API_URL
                 }
             })
     }
@@ -258,12 +326,16 @@ Dash.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
-        let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
+        let other_posssible_filters = ["county"]
 
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
-                url += "&" + flt + "=" + ctx?.query[flt]
+                if(url.includes('?')){
+                    url += `&${flt}=${ctx?.query[flt]}`
+                }else{
+                    url += `?${flt}=${ctx?.query[flt]}`
+                }
             }
         })
         console.log('running fetchData(' + url + ')')
@@ -273,24 +345,33 @@ Dash.getInitialProps = async (ctx) => {
                 'Accept': 'application/json'
             }
         }).then(r => r.json())
+            // .then(json => {
+            //     return {
+            //         data: json, query, path: ctx.asPath || '/dashboard', current_url: url, api_url: process.env.API_URL
+            //     }
+            // })
             .then(json => {
-                return {
-                    data: json, query, path: ctx.asPath || '/dashboard', current_url: url
-                }
-            }).catch(err => {
+                return fetchFilters(token).then(ft => {
+                    return {
+                        data: json, query, filters: { ...ft }, path: ctx.asPath || '/dashboard', current_url: url, api_url: API_URL
+                    }
+                })
+            })
+            .catch(err => {
                 console.log('Error fetching facilities: ', err)
                 return {
                     error: true,
                     err: err,
                     data: [],
                     query: {},
+                    filters: {},
                     path: ctx.asPath || '/dashboard',
-                    current_url: ''
+                    current_url: '',
+                    api_url: API_URL
                 }
             })
     }
     return checkToken(ctx.req, ctx.res).then(t => {
-        console.log('Token: ', t)
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -313,7 +394,8 @@ Dash.getInitialProps = async (ctx) => {
                 data: [],
                 query: {},
                 path: ctx.asPath || '/dashboard',
-                current_url: ''
+                current_url: '',
+                api_url: API_URL
             }
         }, 1000);
     })

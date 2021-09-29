@@ -92,7 +92,7 @@ const getToken = (req, res, refresh_token, creds) => {
             // console.log('New token: ', json)
             return json;
         }).catch(err => {
-            console.log('Error in getToken: ' + err)
+            console.log('Error in getToken: ', err)
             return { error: true, ...err };
         })
 }
@@ -171,7 +171,7 @@ const logUserIn = (req, res, creds, was) => {
         }
     })
         .catch(err => {
-            console.log('Error in LogIn: ' + err)
+            console.log('Error in LogIn: ', err)
             return { error: true, ...err };
         })
 }
@@ -202,9 +202,9 @@ const getUserDetails = async (token, url) => {
     })
         .then(j => j.json())
         .then(response => {
-            // console.log('=================== getUserDetails returned: ' + response)
+            // console.log('=================== getUserDetails returned: ', response)
             if (response.detail || response.error) {
-                console.log('Error in getUserDetails: ' + response)
+                console.log('Error in getUserDetails: ', response)
                 return {
                     error: true, message: response.detail || response.error
                 }
@@ -215,7 +215,7 @@ const getUserDetails = async (token, url) => {
             }
             return response
         }).catch(err => {
-            console.log('Error in getUserDetails: ' + err)
+            console.log('Error in getUserDetails: ', err)
             return {
                 error: true, message: err.message || err
             }
@@ -234,16 +234,16 @@ const getUserContacts = async (token, url) => {
     })
         .then(j => j.json())
         .then(response => {
-            // console.log('=================== getUserContacts returned: ' + response)
+            // console.log('=================== getUserContacts returned: ', response)
             if (response.detail || response.error) {
-                console.log('Error in getUserContacts: ' + response)
+                console.log('Error in getUserContacts: ', response)
                 return {
                     error: true, message: response.detail || response.error
                 }
             }
             return response
         }).catch(err => {
-            console.log('Error in getUserContacts: ' + err)
+            console.log('Error in getUserContacts: ', err)
             return {
                 error: true, message: err.message || err
             }
@@ -264,16 +264,16 @@ const saveUser = async (token, url, payload) => {
             'body': payload
         }).then(j => j.json())
             .then(response => {
-                // console.log('=================== saveUser returned: ' + response)
+                // console.log('=================== saveUser returned: ', response)
                 if (response.detail || response.error) {
-                    console.log('Error in saveUser: ' + response)
+                    console.log('Error in saveUser: ', response)
                     return {
                         error: true, message: response.detail || response.error
                     }
                 }
                 return response
             }).catch(err => {
-                console.log('Error in saveUser: ' + err)
+                console.log('Error in saveUser: ', err)
                 return {
                     error: true, message: err.message || err
                 }
