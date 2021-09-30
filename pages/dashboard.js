@@ -58,9 +58,9 @@ const Dash = (props) => {
                         <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">
                             <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
                                 <span>Overview</span>
-                                {drillDown && drillDown?.county && 
+                                {drillDown && drillDown?.county &&
                                     <small className="text-blue-900 text-base font-semibold ml-1">
-                                        {filters && filters?.county && filters?.county.find(ft=>ft.id == drillDown?.county)?.name != undefined ? filters.county.find(ft=>ft.id == drillDown?.county)?.name+" County" : "National Summary" || ""}
+                                        {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name != undefined ? filters.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""}
                                     </small>
                                 }
                             </h1>
@@ -74,15 +74,27 @@ const Dash = (props) => {
                                                 <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                     options={
                                                         (() => {
-                                                            let opts = [{ value: "national", label: "National summary" }, ...Array.from(filters[ft] || [],
-                                                                fltopt => {
-                                                                    if (fltopt.id != null && fltopt.id.length > 0) {
-                                                                        return {
-                                                                            value: fltopt.id, label: fltopt.name + ' county'
+                                                            if (user && user?.is_national) {
+                                                                let opts = [{ value: "national", label: "National summary" }, ...Array.from(filters[ft] || [],
+                                                                    fltopt => {
+                                                                        if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                            return {
+                                                                                value: fltopt.id, label: fltopt.name + ' county'
+                                                                            }
                                                                         }
-                                                                    }
-                                                                })]
-                                                            return opts
+                                                                    })]
+                                                                return opts
+                                                            } else {
+                                                                let opts = [...Array.from(filters[ft] || [],
+                                                                    fltopt => {
+                                                                        if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                            return {
+                                                                                value: fltopt.id, label: fltopt.name + ' county'
+                                                                            }
+                                                                        }
+                                                                    })]
+                                                                return opts
+                                                            }
                                                         })()
                                                     }
                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -230,13 +242,13 @@ const Dash = (props) => {
                     {/* Facilities & CHUs by county (bar) 1/1 */}
                     <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
-                        <BarChart 
-                            title="Facilities & CHUs by county" 
-                            categories={Array.from(props?.data?.county_summary, cs => cs.name) || []} 
-                            tooltipsuffix="#" 
-                            xaxistitle="County" 
+                        <BarChart
+                            title="Facilities & CHUs by county"
+                            categories={Array.from(props?.data?.county_summary, cs => cs.name) || []}
+                            tooltipsuffix="#"
+                            xaxistitle="County"
                             yaxistitle="Number"
-                            data={( ()=>{
+                            data={(() => {
                                 let data = [];
                                 data.push({
                                     name: 'Facilities',
@@ -252,27 +264,27 @@ const Dash = (props) => {
                     {/* Facility owners & categories - national summary - FILTERABLE (bar) 1/2 */}
                     <div className="col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility owners</h4>
-                        <BarChart 
-                            title="Facility owners" 
-                            categories={Array.from(props?.data?.owner_types, ot => ot.name) || []} 
-                            tooltipsuffix="#" 
-                            xaxistitle="Owner" 
+                        <BarChart
+                            title="Facility owners"
+                            categories={Array.from(props?.data?.owner_types, ot => ot.name) || []}
+                            tooltipsuffix="#"
+                            xaxistitle="Owner"
                             yaxistitle="Number"
-                            data={( ()=>{
-                                return [{name:"Owner",data:Array.from(props?.data?.owner_types, ot => parseFloat(ot.count)) || []}];
+                            data={(() => {
+                                return [{ name: "Owner", data: Array.from(props?.data?.owner_types, ot => parseFloat(ot.count)) || [] }];
                             })() || []} />
                     </div>
                     {/* Facility types - national summary - FILTERABLE (bar) 1/2 */}
                     <div className="col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility types</h4>
-                        <BarChart 
-                            title="Facility types" 
-                            categories={Array.from(props?.data?.types_summary, ts => ts.name) || []} 
-                            tooltipsuffix="#" 
-                            xaxistitle="Type" 
+                        <BarChart
+                            title="Facility types"
+                            categories={Array.from(props?.data?.types_summary, ts => ts.name) || []}
+                            tooltipsuffix="#"
+                            xaxistitle="Type"
                             yaxistitle="Number"
-                            data={( ()=>{
-                                return [{name:"Type",data:Array.from(props?.data?.types_summary, ts => parseFloat(ts.count)) || []}];
+                            data={(() => {
+                                return [{ name: "Type", data: Array.from(props?.data?.types_summary, ts => parseFloat(ts.count)) || [] }];
                             })() || []} />
                     </div>
 
@@ -331,9 +343,9 @@ Dash.getInitialProps = async (ctx) => {
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
-                if(url.includes('?')){
+                if (url.includes('?')) {
                     url += `&${flt}=${ctx?.query[flt]}`
-                }else{
+                } else {
                     url += `?${flt}=${ctx?.query[flt]}`
                 }
             }
