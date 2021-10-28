@@ -12,6 +12,8 @@
     "@heroicons/react": "^1.0.2",
     "@radix-ui/react-radio-group": "^0.0.19",
     "@radix-ui/react-tabs": "0.0.5",
+    "ag-grid-community": "^26.1.0",
+    "ag-grid-react": "^26.1.0",
     "cookie-cutter": "^0.2.0",
     "cookies": "^0.8.0",
     "dotenv": "^10.0.0",
