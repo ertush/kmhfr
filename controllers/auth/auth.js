@@ -10,6 +10,7 @@ const getToken = (req, res, refresh_token, creds) => {
     const isServer = !!req
     const isBrowser = !req
     const bod = {} //new FormData();
+    let ct
     if (isBrowser) {
         console.log('running getToken in the BROWSER')
         ct = cookieCutter.get('access_token')

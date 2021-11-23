@@ -81,7 +81,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
 
     return (
         <div className="flex flex-col items-center justify-center w-full min-h-screen">
-            <div className="w-full border-b border-gray-50 drop-shadow flex items-center justify-center lg:sticky lg:top-0 bg-white z-30">
+            <div className="w-full border-b border-gray-100 shadow-sm flex items-center justify-center lg:sticky lg:top-0 bg-white z-30">
                 <header className="flex flex-wrap items-center justify-between gap-x-4 w-full p-1 max-w-screen-2xl">
                     <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-0 md:gap-5">
                         <div id="logo" className="mx:px-3 pb-1">

@@ -9,14 +9,18 @@ import { Menu } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
 
-import {AgGridColumn, AgGridReact} from 'ag-grid-react';
+import { AgGridColumn, AgGridReact } from 'ag-grid-react';
+// import 'ag-grid-enterprise';
+import { Grid, GridOptions } from '@ag-grid-community/core';
+import { LicenseManager } from '@ag-grid-enterprise/core';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+LicenseManager.setLicenseKey("test");
 
 const Reports = (props) => {
-    console.log('propkeys:::', Object.keys(props))
-    console.log('props:::', props)
+    // console.log('propkeys:::', Object.keys(props))
+    // console.log('props:::', props)
     const { data, query, path, current_url } = props
     const router = useRouter()
     let filters = []
@@ -107,42 +111,106 @@ const Reports = (props) => {
             ]
         },
     ]
-    let v = ["code", "name", "officialname", "registration_number", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county", "sub_county_name", "ward_name", "operation_status_name", "admission_status_name", "open_whole_day", "open_public_holidays", "open_weekends", "open_late_night", "service_names", "approved", "is_public_visible", "created", "closed", "is_published", "lat", "long",]
+    let headers_og = [
+        "code", "name", "officialname", "registration_number", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county", "sub_county_name", "ward_name", "operation_status_name", "admission_status_name", "open_whole_day", "open_public_holidays", "open_weekends", "open_late_night", "service_names", "approved", "is_public_visible", "created", "closed", "is_published", "lat", "long",
+    ]
+    let headers = [
+        "code", "officialname", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county_name", "ward_name", "operation_status_name", "admission_status_name", "open_whole_day", "open_public_holidays", "open_weekends", "open_late_night", "service_names", "approved", "created", "closed",
+    ]
 
-    let linelist = Array.from(props.data.results, r=>{
-        let d = {}
-        v.forEach(k=>{
-            d[k] = r[k]
+    let scoped_filters = [
+        { "name": "keph_level_name", "options": [] },
+        { "name": "facility_type_name", "options": [] },
+        { "name": "facility_type_category", "options": [] },
+        { "name": "owner_name", "options": [] },
+        { "name": "owner_type_name", "options": [] },
+        { "name": "regulatory_body_name", "options": [] },
+        { "name": "county_name", "options": [] },
+        { "name": "constituency_name", "options": [] },
+        { "name": "sub_county_name", "options": [] },
+        { "name": "ward_name", "options": [] },
+        { "name": "operation_status_name", "options": [] },
+        { "name": "admission_status_name", "options": [] },
+        { "name": "open_whole_day", "options": [] },
+        { "name": "open_public_holidays", "options": [] },
+        { "name": "open_weekends", "options": [] },
+        { "name": "open_late_night", "options": [] },
+        { "name": "service_names", "options": [] },
+        { "name": "approved", "options": [] },
+        { "name": "is_public_visible", "options": [] },
+        { "name": "closed", "options": [] },
+        { "name": "is_published", "options": [] },
+    ]
+
+    if (props.data.results.length > 0) {
+        scoped_filters.forEach(filter => {
+            let options = []
+            props.data.results.forEach(r_ => {
+                if (!options.includes(r_[filter.name]) && r_[filter.name] !== null && r_[filter.name] !== undefined) {
+                    options.push(r_[filter.name])
+                }
+            })
+            filter.options = options
         })
-        return d
-    })
+    }
+    // console.log('scoped_filters: ',scoped_filters)
 
-    const rowData = [
-        {make: "Toyota", model: "Celica", price: 35000},
-        {make: "Ford", model: "Mondeo", price: 32000},
-        {make: "Porsche", model: "Boxter", price: 72000}
-    ];
+    const [gridApi, setGridApi] = useState(null);
+    const [gridColumnApi, setGridColumnApi] = useState(null);
+    const [linelist, setlinelist] = useState(null);
 
+    const onGridReady = (params) => {
+        setGridApi(params.api);
+        setGridColumnApi(params.columnApi);
+
+        // const updateData = (data) => params.api.setlinelist(data);
+
+        const lnlst = Array.from(props.data.results, row => {
+            let dtpnt = {}
+            headers.forEach(col => {
+                dtpnt[col] = row[col]
+            })
+            return dtpnt
+        })
+        setlinelist(lnlst)
+        // updateData(lnlst)
+    };
+
+    useEffect(() => {
+        let mtd = true; 
+        if(mtd){
+            let lnlst = Array.from(props.data.results, row => {
+                let dtpnt = {}
+                headers.forEach(col => {
+                    dtpnt[col] = row[col]
+                })
+                return dtpnt
+            })
+            setlinelist(lnlst)
+        }
+        return () => {
+            mtd = false;
+        }
+    }, [props.data.results])
     return (
         <div className="">
             <Head>
                 <title>KMHFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-
             <MainLayout isLoading={false} isFullWidth={true}>
-                <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
-                    <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
-                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                <div className="w-full grid grid-cols-7 gap-4 p-1 md:px-4 my-2">
+                    <div className="col-span-7 flex flex-col gap-x-1 px-4">
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
+                            <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
                                 <span className="text-gray-500">Facilities</span>
                             </div>
-                            <div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3">
+                            <div className="flexz flex-wrap items-center justify-evenly gap-x-3 gap-y-0 text-sm md:text-base py-1 hidden">
                                 {quickFilters.map((qf, i) => {
                                     return (
                                         <button
-                                            key={qf.id}
+                                            key={qf.id + "_" + i}
                                             style={{ paddingTop: '2px', paddingBottom: '2px' }}
                                             className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium hover:border-green-400 focus:ring-1 focus:ring-blue-500 text-sm ${currentQuickFilter == qf.id ? "bg-green-800 border-green-800 text-green-50" : "text-gray-800 border-gray-300"}`}
                                             onClick={evt => {
@@ -168,40 +236,26 @@ const Reports = (props) => {
                             </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
-                            <div className="flex flex-col items-start justify-start gap-y-1">
-                                <h1 className="text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2">
+                        <div className="flex flex-wrap gap-2 text-sm md:text-base items-center justify-between">
+                            <div className="flex flex-col items-start justify-start">
+                                <h1 className="text-3xl tracking-tight font-bold leading-none flex items-center justify-start gap-x-2">
                                     Dynamic Reports
                                 </h1>
                                 <h5 className="text-lg font-medium text-gray-800">
                                     {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('ndefined') &&
                                         `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') || k.split('_').join(' ') : k.split('_').join(' ')})`)?.join(' & ')}`
                                     }
-                                    {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
+                                    {/* {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>} */}
                                 </h5>
                             </div>
                             {/* ((((((( dropdown options to download data */}
-                            {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative">
+                            {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative hidden">
                                 <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                     <DownloadIcon className="w-5 h-5 mr-1" />
                                     <span>Export</span>
                                     <ChevronDownIcon className="w-4 h-4 ml-2" />
                                 </Menu.Button>
                                 <Menu.Items as="ul" className="absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full">
-                                    {/* <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
-                                        {({ active }) => (
-                                            <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=pdf' } else { dl_url += '?format=pdf' }
-                                                console.log('Downloading PDF. ' + dl_url || '')
-                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                window.location.href = dl_url
-                                            }}>
-                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>PDF</span>
-                                            </button>
-                                        )}
-                                    </Menu.Item> */}
                                     <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
                                         {({ active }) => (
                                             <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
@@ -239,26 +293,10 @@ const Reports = (props) => {
 
 
 
-                    <main className="col-span-5 md:col-span-5 flex flex-col items-center gap-4 order-last md:order-none">
-                        <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full ">
-                            {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
-                            <div className="ag-theme-alpine" style={{height: 500, width: '100%'}}>
-                                <AgGridReact
-                                    exp
-                                    rowData={linelist}>
-                                    {v.map((v_, i) => (
-                                        <AgGridColumn filter={true} sortable={true} key={v_} field={v_}></AgGridColumn>
-                                    ) )}
-                                </AgGridReact>
-                            </div>
-                        </div>
-                    </main>
 
-
-
-                    <aside className="flex flex-col col-span-5 md:col-span-1 p-1 md:h-full">
-                        <details className="rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z" open>
-                            <summary className="flex cursor-pointer w-full bg-white p-2">
+                    <aside className="flex flex-col col-span-7 md:col-span-1 p-1 md:h-full hidden">
+                        <details className="rounded bg-transparent py-1 text-basez flex flex-col w-full md:stickyz md:top-2z" open>
+                            <summary className="flex cursor-pointer w-full bg-white px-2">
                                 <h3 className="text-2xl tracking-tight font-bold leading-3">Filters</h3>
                             </summary>
                             <div className="flex flex-col gap-2 p-2">
@@ -271,20 +309,22 @@ const Reports = (props) => {
                                             ev.preventDefault()
                                             return false
                                         }}>
-                                            {filters && Object.keys(filters).length > 0 &&
-                                                Object.keys(fltrs).map(ft => (
-                                                    <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                        <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                        <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                            {scoped_filters && Object.keys(scoped_filters).length > 0 &&
+                                                // Object.keys(scoped_filters).map(ft => (
+                                                scoped_filters.map((ft, ky) => (
+                                                    <div key={ft + "_" + ky} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                        <label htmlFor={ft} className="text-gray-600 capitalize text-xs">{ft.name.split('_').join(' ')}</label>
+                                                        <Select isMulti={multiFilters.includes(ft.name)} name={ft.name} defaultValue={drillDown[ft.name] || ""} zid={ft.name} className="w-full p-px rounded bg-gray-50 text-sm"
                                                             options={
-                                                                Array.from(filters[ft] || [],
-                                                                    fltopt => {
-                                                                        return {
-                                                                            value: fltopt.id, label: fltopt.name
-                                                                        }
-                                                                    })
+                                                                ft.options.map(v => ({ value: v, label: v }))
+                                                                // Array.from(filters[ft] || [],
+                                                                //     fltopt => {
+                                                                //         return {
+                                                                //             value: fltopt.id, label: fltopt.name
+                                                                //         }
+                                                                //     })
                                                             }
-                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                            placeholder={ft.name.split('_').join(' ')[0].toUpperCase() + ft.name.split('_').join(' ').slice(1)}
                                                             onChange={sl => {
                                                                 let nf = {}
                                                                 if (Array.isArray(sl)) {
@@ -301,21 +341,7 @@ const Reports = (props) => {
                                                     </div>
                                                 ))}
 
-                                            <div className="w-full flex flex-row items-center px-2 justify-between gap-1 gap-x-3 mb-3">
-                                                <label htmlFor="open_public_holidays" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
-                                                <span className="flex items-center gap-x-1">
-                                                    <input type="radio" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
-                                                        setDrillDown({ ...drillDown, 'open_public_holidays': true })
-                                                    }} />
-                                                    <small className="text-gray-700">Yes</small>
-                                                </span>
-                                                <span className="flex items-center gap-x-1">
-                                                    <input type="radio" value={false} defaultChecked={props?.query?.open_public_holidays === "false"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
-                                                        setDrillDown({ ...drillDown, 'open_public_holidays': false })
-                                                    }} />
-                                                    <small className="text-gray-700">No</small>
-                                                </span>
-                                            </div>
+
                                             <button onClick={ev => {
                                                 if (Object.keys(drillDown).length > 0) {
                                                     let qry = Object.keys(drillDown).map(function (key) {
@@ -352,6 +378,51 @@ const Reports = (props) => {
 
 
 
+
+
+                    <main className="col-span-7 md:col-span-7 flex flex-col items-center gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+                        <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full ">
+                            {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
+                            <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
+                                <AgGridReact
+                                    // floatingFilter={true}
+                                    sideBar={true} //{'filters'}
+                                    defaultColDef={{
+                                        enableValue: true,
+                                        enableRowGroup: true,
+                                        enablePivot: true,
+                                        sortable: true,
+                                        filter: true,
+                                    }}
+                                    enableCellTextSelection={true}
+                                    // onGridReady={onGridReady}
+                                    rowData={linelist}>
+                                    {headers.map((v_, i) => {
+                                        if(v_.length > 3){
+                                            return (
+                                                <AgGridColumn
+                                                    pinned={i < 2}
+                                                    filter={true}
+                                                    // floatingFilter={true}
+                                                    sortable={true}
+                                                    key={v_ + "_" + i}
+                                                    field={v_}
+                                                    pivot={true}
+                                                >
+                                                </AgGridColumn>
+                                            )
+                                        }
+                                    })}
+                                </AgGridReact>
+                                
+                                
+                            </div>
+                        </div>
+                    </main>
+
+
+
+
                     {/* (((((( Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
@@ -372,11 +443,11 @@ Reports.getInitialProps = async (ctx) => {
     const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
 
     const fetchData = (token) => {
-        let url = API_URL + `/facilities/material/?format=json&access_token=${token}&fields=id,code,name,official_name,regulatory_status_name,updated,facility_type_name,owner_name,county,sub_county_name,rejected,ward_name,keph_level,keph_level_name,constituency_name,is_complete,in_complete_details,approved,is_approved,approved_national_level`
+        let url = API_URL + `/facilities/material/?format=json&access_token=${token}&fields=id,code,name,official_name,regulatory_status_name,updated,facility_type_name,owner_name,county,sub_county_name,rejected,ward_name,keph_level,keph_level_name,constituency_name,is_complete,in_complete_details,approved,is_approved,approved_national_level&page_size=1000`
         let query = { 'searchTerm': '' }
 
         // let current_url = url + '&page_size=100000' //change the limit on prod
-        let current_url = url + '&page_size=100'
+        let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
