@@ -14,7 +14,7 @@ import { Grid, GridOptions } from '@ag-grid-community/core';
 import { LicenseManager, EnterpriseCoreModule } from '@ag-grid-enterprise/core';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 
 const Reports = (props) => {
     // require('ag-grid-enterprise')
@@ -250,43 +250,6 @@ const Reports = (props) => {
                                 
                             </div>
                             {/* ((((((( dropdown options to download data */}
-                            {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative hidden">
-                                <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
-                                    <DownloadIcon className="w-5 h-5 mr-1" />
-                                    <span>Export</span>
-                                    <ChevronDownIcon className="w-4 h-4 ml-2" />
-                                </Menu.Button>
-                                <Menu.Items as="ul" className="absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full">
-                                    <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
-                                        {({ active }) => (
-                                            <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
-                                                console.log('Downloading CSV. ' + dl_url || '')
-                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                window.location.href = dl_url
-                                            }}>
-                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>CSV</span>
-                                            </button>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
-                                        {({ active }) => (
-                                            <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
-                                                console.log('Downloading Excel. ' + dl_url || '')
-                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                window.location.href = dl_url
-                                            }}>
-                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>Excel</span>
-                                            </button>
-                                        )}
-                                    </Menu.Item>
-                                </Menu.Items>
-                            </Menu>}
                             <div>
                                 <button className={"flex items-center justify-start rounded bg-green-600 text-center hover:bg-green-900 focus:bg-black text-white font-semibold active:bg-black py-2 px-4 uppercase text-base w-full"} onClick={() => {
                                     gridApi.exportDataAsCsv();
@@ -392,7 +355,7 @@ const Reports = (props) => {
                     <main className="col-span-7 md:col-span-7 flex flex-col items-center gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full ">
                             {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
-                            <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
+                            <div className="ag-theme-balham" style={{ minHeight: '100vh', width: '100%' }}>
                                 <AgGridReact
                                     // floatingFilter={true}
                                     sideBar={true} //{'filters'}
@@ -460,7 +423,7 @@ const Reports = (props) => {
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>
                         <p className="text-sm text-gray-800">
-                            For testing reasons, downloads are limited to the first 100 results.
+                            For testing reasons, downloads are limited to the first 1000 results.
                         </p>
                     </div>
                     {/* ))))))) */}
