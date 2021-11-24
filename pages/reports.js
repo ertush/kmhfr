@@ -14,7 +14,7 @@ import { Grid, GridOptions } from '@ag-grid-community/core';
 import { LicenseManager, EnterpriseCoreModule } from '@ag-grid-enterprise/core';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 const Reports = (props) => {
     // require('ag-grid-enterprise')
@@ -355,7 +355,7 @@ const Reports = (props) => {
                     <main className="col-span-7 md:col-span-7 flex flex-col items-center gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full ">
                             {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
-                            <div className="ag-theme-balham" style={{ minHeight: '100vh', width: '100%' }}>
+                            <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
                                 <AgGridReact
                                     // floatingFilter={true}
                                     sideBar={true} //{'filters'}
