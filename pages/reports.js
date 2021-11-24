@@ -10,15 +10,15 @@ import { ChevronDownIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
 
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
-// import 'ag-grid-enterprise';
 import { Grid, GridOptions } from '@ag-grid-community/core';
-import { LicenseManager } from '@ag-grid-enterprise/core';
+import { LicenseManager, EnterpriseCoreModule } from '@ag-grid-enterprise/core';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-LicenseManager.setLicenseKey("test");
 
 const Reports = (props) => {
+    // require('ag-grid-enterprise')
+    LicenseManager.setLicenseKey("test");
     // console.log('propkeys:::', Object.keys(props))
     // console.log('props:::', props)
     const { data, query, path, current_url } = props
@@ -115,7 +115,7 @@ const Reports = (props) => {
         "code", "name", "officialname", "registration_number", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county", "sub_county_name", "ward_name", "operation_status_name", "admission_status_name", "open_whole_day", "open_public_holidays", "open_weekends", "open_late_night", "service_names", "approved", "is_public_visible", "created", "closed", "is_published", "lat", "long",
     ]
     let headers = [
-        "code", "officialname", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county_name", "ward_name", "operation_status_name", "admission_status_name", "open_whole_day", "open_public_holidays", "open_weekends", "open_late_night", "service_names", "approved", "created", "closed",
+        "code", "officialname", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county_name", "ward_name", "admission_status_name", "service_names", "created", "closed",
     ]
 
     let scoped_filters = [
@@ -163,7 +163,7 @@ const Reports = (props) => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
-        // const updateData = (data) => params.api.setlinelist(data);
+        const updateData = (data) => params.api.setRowData(data);
 
         const lnlst = Array.from(props.data.results, row => {
             let dtpnt = {}
@@ -173,25 +173,25 @@ const Reports = (props) => {
             return dtpnt
         })
         setlinelist(lnlst)
-        // updateData(lnlst)
+        updateData(lnlst)
     };
 
-    useEffect(() => {
-        let mtd = true; 
-        if(mtd){
-            let lnlst = Array.from(props.data.results, row => {
-                let dtpnt = {}
-                headers.forEach(col => {
-                    dtpnt[col] = row[col]
-                })
-                return dtpnt
-            })
-            setlinelist(lnlst)
-        }
-        return () => {
-            mtd = false;
-        }
-    }, [props.data.results])
+    // useEffect(() => {
+    //     let mtd = true; 
+    //     if(mtd){
+    //         let lnlst = Array.from(props.data.results, row => {
+    //             let dtpnt = {}
+    //             headers.forEach(col => {
+    //                 dtpnt[col] = row[col]
+    //             })
+    //             return dtpnt
+    //         })
+    //         setlinelist(lnlst)
+    //     }
+    //     return () => {
+    //         mtd = false;
+    //     }
+    // }, [props.data.results])
     return (
         <div className="">
             <Head>
@@ -247,6 +247,7 @@ const Reports = (props) => {
                                     }
                                     {/* {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>} */}
                                 </h5>
+                                
                             </div>
                             {/* ((((((( dropdown options to download data */}
                             {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative hidden">
@@ -286,6 +287,14 @@ const Reports = (props) => {
                                     </Menu.Item>
                                 </Menu.Items>
                             </Menu>}
+                            <div>
+                                <button className={"flex items-center justify-start rounded bg-green-600 text-center hover:bg-green-900 focus:bg-black text-white font-semibold active:bg-black py-2 px-4 uppercase text-base w-full"} onClick={() => {
+                                    gridApi.exportDataAsCsv();
+                                }}>
+                                    <DownloadIcon className="w-4 h-4 mr-1" />
+                                    <span>Download Report</span>
+                                </button>
+                            </div>
                             {/* ))))))) dropdown options to download data */}
 
                         </div>
@@ -314,7 +323,7 @@ const Reports = (props) => {
                                                 scoped_filters.map((ft, ky) => (
                                                     <div key={ft + "_" + ky} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                         <label htmlFor={ft} className="text-gray-600 capitalize text-xs">{ft.name.split('_').join(' ')}</label>
-                                                        <Select isMulti={multiFilters.includes(ft.name)} name={ft.name} defaultValue={drillDown[ft.name] || ""} zid={ft.name} className="w-full p-px rounded bg-gray-50 text-sm"
+                                                        <Select isMulti={multiFilters.includes(ft.name)} name={ft.name} defaultValue={drillDown[ft.name] || ""} id={ft.name}instanceId={ft.name} className="w-full p-px rounded bg-gray-50 text-sm"
                                                             options={
                                                                 ft.options.map(v => ({ value: v, label: v }))
                                                                 // Array.from(filters[ft] || [],
@@ -395,19 +404,41 @@ const Reports = (props) => {
                                         filter: true,
                                     }}
                                     enableCellTextSelection={true}
-                                    // onGridReady={onGridReady}
+                                    onGridReady={onGridReady}
                                     rowData={linelist}>
+                                        {/* <AgGridColumn field="code" headerName="MFL Code" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" pinned sortable={true} filter={true} />
+                                        <AgGridColumn field="officialname" pinned headerName="Official Name" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="operation_status_name" pinned headerName="Operation Status" headerClass="uppercase" filtertype="list" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="approved" headerName="Approved?" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="keph_level_name" headerName="KEPS Level" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="county_name" headerName="County" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="sub_county_name" headerName="Sub-county" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="constituency_name" headerName="Constituency" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="ward_name" headerName="Ward" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="facility_type_name" headerName="Type" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="facility_type_category" headerName="Category" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="owner_name" headerName="Owner" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="owner_type_name" headerName="Owner Type" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="regulatory_body_name" headerName="Regulatory Body" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="beds" headerName="Beds" sortable={true} filter={true} />
+                                        <AgGridColumn field="cots" headerName="Cots" sortable={true} filter={true} />
+                                        <AgGridColumn field="admission_status_name" headerName="Admission Status" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="service_names" headerName="Services" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="created" headerName="Date Created" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
+                                        <AgGridColumn field="closed" headerName="Closed?" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} /> */}
                                     {headers.map((v_, i) => {
                                         if(v_.length > 3){
                                             return (
                                                 <AgGridColumn
-                                                    pinned={i < 2}
+                                                    pinned={i < 3}
                                                     filter={true}
-                                                    // floatingFilter={true}
+                                                    headerClass="uppercase"
+                                                    cellClass="p-0 text-sm leading-none capitalize"
                                                     sortable={true}
+                                                    filter={true}
                                                     key={v_ + "_" + i}
                                                     field={v_}
-                                                    pivot={true}
+                                                    headerName={v_.replaceAll("_category","").replaceAll("_name","").split("_").join(" ")}
                                                 >
                                                 </AgGridColumn>
                                             )
