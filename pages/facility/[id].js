@@ -92,14 +92,14 @@ const Facility = (props) => {
                                 <Tabs.Tab value="services" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     Services
                                 </Tabs.Tab>
-                                <Tabs.Tab value="community_units" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
-                                    Facility Units
-                                </Tabs.Tab>
                                 <Tabs.Tab value="infrastructure" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     Infrastructure
                                 </Tabs.Tab>
                                 <Tabs.Tab value="hr_staffing" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     HR &amp; Staffing
+                                </Tabs.Tab>
+                                <Tabs.Tab value="community_units" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
+                                    Facility Units
                                 </Tabs.Tab>
                             </Tabs.List>
                             <Tabs.Panel value="overview" className="grow-1 py-1 px-4 tab-panel">
@@ -380,34 +380,6 @@ const Facility = (props) => {
                                     </div>
                                 </div>
                             </Tabs.Panel>
-                            <Tabs.Panel value="community_units" className="grow-1 py-1 px-4 tab-panel">
-                                <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                                    <div className="bg-white w-full p-4 rounded">
-                                        <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-                                            <span className="font-semibold">Facility units</span>
-                                            {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#units"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}
-                                        </h3>
-                                        <ul>
-                                            {(facility?.facility_units && facility?.facility_units.length > 0) ? facility?.facility_units.map(unit => (
-                                                <li key={unit.id} className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300">
-                                                    <div>
-                                                        <p className="text-gray-800 text-base">{unit.unit_name}</p>
-                                                        <small className="text-xs text-gray-500">{unit.regulating_body_name || ''}</small>
-                                                    </div>
-                                                    <div className="flex flex-row gap-1 items-center">
-                                                        <CheckCircleIcon className="h-6 w-6 text-green-500" />
-                                                        <label className="text-sm text-gray-600">Active</label>
-                                                    </div>
-                                                </li>
-                                            )) : (
-                                                <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-                                                    <p>No units in this facility.</p>
-                                                </li>
-                                            )}
-                                        </ul>
-                                    </div>
-                                </div>
-                            </Tabs.Panel>
                             <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
                                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left px-1 py-4">
                                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
@@ -458,6 +430,34 @@ const Facility = (props) => {
                                             )) : (
                                                 <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                                                     <p>No HR data listed for this facility.</p>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </Tabs.Panel>
+                            <Tabs.Panel value="community_units" className="grow-1 py-1 px-4 tab-panel">
+                                <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
+                                    <div className="bg-white w-full p-4 rounded">
+                                        <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
+                                            <span className="font-semibold">Facility units</span>
+                                            {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#units"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}
+                                        </h3>
+                                        <ul>
+                                            {(facility?.facility_units && facility?.facility_units.length > 0) ? facility?.facility_units.map(unit => (
+                                                <li key={unit.id} className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300">
+                                                    <div>
+                                                        <p className="text-gray-800 text-base">{unit.unit_name}</p>
+                                                        <small className="text-xs text-gray-500">{unit.regulating_body_name || ''}</small>
+                                                    </div>
+                                                    <div className="flex flex-row gap-1 items-center">
+                                                        <CheckCircleIcon className="h-6 w-6 text-green-500" />
+                                                        <label className="text-sm text-gray-600">Active</label>
+                                                    </div>
+                                                </li>
+                                            )) : (
+                                                <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                                                    <p>No units in this facility.</p>
                                                 </li>
                                             )}
                                         </ul>
