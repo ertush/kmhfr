@@ -2,6 +2,10 @@
 
 This is the frontend application for KMHFL with new features (GIS, Dynamic Reports). Phase 1 is to have it as a read-only data consumption app. Phase 2 and beyond is to add CRUD features.
 
+## Tech stack
+- Next.js
+- Tailwind CSS
+
 ## API
 
 Currently, this uses the test API available through [api.kmhfltest.health.go.ke](https://api.kmhfltest.health.go.ke). 
