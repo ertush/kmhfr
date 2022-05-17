@@ -3,10 +3,12 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect } from "react";
 import MainLayout from "../../components/MainLayout";
-import { approveRejectCHU } from "../../controllers/approveReject";
+import { approveRejectCHU, rejectCHU } from "../../controllers/reject";
+import { ChevronDownIcon } from "@heroicons/react/solid";
 
 import {
   CheckCircleIcon,
+  ChevronRightIcon,
   InformationCircleIcon,
   LocationMarkerIcon,
   LockClosedIcon,
@@ -28,14 +30,21 @@ const CommUnit = (props) => {
     } // This line is important. It's what prevents server-side render
   );
   let cu = props.data;
+
   const [user, setUser] = useState(null);
+  const [isCHUDetails, setIsCHUDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       let usr = window.sessionStorage.getItem("user");
       if (usr && usr.length > 0) {
         setUser(JSON.parse(usr));
       }
+    }
+    return () => {
+        setIsCHUDetails(true)
+        setIsApproveReject(false)
     }
   }, []);
   return (
@@ -143,7 +152,7 @@ const CommUnit = (props) => {
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
                   <button
                     onClick={() =>
-                      approveRejectCHU("", cu.is_approved, setIsApproveReject)
+                      approveRejectCHU(cu.is_approved, setIsApproveReject)
                     }
                     className="p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
                   >
@@ -204,14 +213,14 @@ const CommUnit = (props) => {
                         </label>
                         <p className="text-black font-medium text-base flex">
                           {cu.status_name
-                            .toLocaleLowerCase()
+                            ?.toLocaleLowerCase()
                             .includes("fully-") ? (
                             <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                               <CheckCircleIcon className="h-4 w-4" />
                               {cu?.status_name || "Yes"}
                             </span>
-                          ) : cu?.status_name
-                              .toLocaleLowerCase()
+                          ) : cu.status_name
+                              ?.toLocaleLowerCase()
                               .includes("semi") ? (
                             <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                               <CheckCircleIcon className="h-4 w-4" />
@@ -653,8 +662,8 @@ const CommUnit = (props) => {
               </h3>
               {/* CHU details */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                  <label className=" text-gray-600">Functionality status</label>
+                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
+                <label className="col-span-1 text-gray-600">Functionality status</label>
                   <p className="text-black font-medium text-base flex">
                     {cu.status_name.toLocaleLowerCase().includes("fully-") ? (
                       <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
@@ -675,7 +684,7 @@ const CommUnit = (props) => {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                   <label className="col-span-1 text-gray-600">
                     Linked facility
                   </label>
@@ -684,7 +693,7 @@ const CommUnit = (props) => {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                   <label className="col-span-1 text-gray-600">
                     Households monitored
                   </label>
@@ -692,7 +701,7 @@ const CommUnit = (props) => {
                     {cu.households_monitored || " - "}
                   </p>
                 </div>
-                <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                   <label className="col-span-1 text-gray-600">
                     Number of CHVs
                   </label>
@@ -702,7 +711,7 @@ const CommUnit = (props) => {
                 </div>
 
                 {cu.date_established && (
-                  <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                  <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                     <label className="col-span-1 text-gray-600">
                       Date established
                     </label>
@@ -715,7 +724,7 @@ const CommUnit = (props) => {
                   </div>
                 )}
                 {cu.date_operational && (
-                  <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
                     <label className="col-span-1 text-gray-600">
                       Date operational
                     </label>
@@ -729,10 +738,84 @@ const CommUnit = (props) => {
                 )}
               </div>
               {/* CHU details hidden section */}
+              <div className="grid grid-cols-2 w-full md:w-11/12 h-8 leading-none items-center">
+                <button className="flex bg-green-500 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto rounded-md" onClick={() => {
+                    if(isCHUDetails){
+                        setIsCHUDetails(false)
+                    }else{
+                        setIsCHUDetails(true) 
+                    }
+                }}>
+                    View More Community Health Unit Details
+                    {
+                        isCHUDetails ? (
+                            <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
+                        ):(
+                            <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" /> 
+                        )
+                    }
+                </button>
+              </div>
+
+              
+                {
+                    !isCHUDetails && (
+                        <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+                      
+                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                          <label className="col-span-1 text-gray-600">Ward</label>
+                          <p className="col-span-2 text-black font-medium text-base">
+                            {cu.facility_ward || " - "}
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                          <label className="col-span-1 text-gray-600">
+                            Constituency
+                          </label>
+                          <p className="col-span-2 text-black font-medium text-base">
+                            {cu.facility_constituency || " - "}
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                          <label className="col-span-1 text-gray-600">
+                            Sub-county
+                          </label>
+                          <p className="col-span-2 text-black font-medium text-base">
+                            {cu.facility_subcounty || " - "}
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                          <label className="col-span-1 text-gray-600">
+                            County
+                          </label>
+                          <p className="col-span-2 text-black font-medium text-base">
+                            {cu.facility_county || " - "}
+                          </p>
+                        </div>
+                      </div>
+                    )
+                }
+              
 
               {/* CHU Approval Comment */}
 
+              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+                <label htmlFor="approval-comment" className="col-span-1 text-gray-900 font-semibold leading-16 text-medium"> Approval comment: </label>
+                <p className="text-gray-400 text-medium text-left leading-16" name="approval-comment">some approval comments</p>
+              </div>
+
+ 
               {/* CHU Rejection Commment */}
+              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+                <h3 className="text-gray-900 font-semibold leading-16 text-medium">Reject this Community Unit</h3>
+                <form className="space-y-3" onSubmit={e => rejectCHU(e, cu, cu.isApproveReject, e.target.value)}>
+                    <label htmlFor="comment-text-area"></label>
+                    <textarea cols="70" rows="auto" className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2" placeholder="Enter a comment for rejecting community health unit">
+
+                    </textarea>
+                    <button type="submit" className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold" >Reject Community Health Unit</button>
+                </form>
+              </div>
             </div>
           )}
 

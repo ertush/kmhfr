@@ -14,7 +14,7 @@ const Account = (props) => {
     const [showEditContacts, setShowEditContacts] = useState(false)
     const [userContact, setUserContact] = useState(null)
     const [userContactType, setUserContactType] = useState(null)
-    const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
+    const API_URL = process.env.API_URL || 'http://localhost:8000/api'
     const [basicUserForm, setBasicUserForm] = useState({})
     const [contactDetailsForm, setContactDetailsForm] = useState({})
     const [fname, setFname] = useState("")

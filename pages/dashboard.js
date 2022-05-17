@@ -307,11 +307,12 @@ const Dash = (props) => {
 
 
 Dash.getInitialProps = async (ctx) => {
-    const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
+    const API_URL = process.env.API_URL || 'http://localhost:8000/api'
 
     const fetchFilters = token => {
         // let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Csub_county'
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county'
+        console.log({API_URL})
         return fetch(filters_url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

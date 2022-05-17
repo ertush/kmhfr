@@ -105,7 +105,7 @@ const Login = (props) => {
                             className="text-gray-900 bg-gray-50 border border-gray-300 py-3 px-3 w-full flex items-center leading-none rounded" placeholder="*********" />
                     </div>
                     <div className="flex flex-col gap-4 w-full text-center">
-                        <button disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-green-800 focus:bg-green-600 active:bg-green-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-green-700")}
+                        <button type="submit" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-green-800 focus:bg-green-600 active:bg-green-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-green-700")}
                         >{loading ? "Loading..." : "Log in"}</button>
                         <div className="flex justify-end items-center w-full px-2">
                             <a href="http://admin.kmhfltest.health.go.ke/#/reset_pwd" target="_blank" rel="noreferrer noopener" className="text-base text-gray-700 hover:text-green-700 focus:text-green-700 active:text-green-700 hover:underline focus:underline active:underline">Forgot password?</a>

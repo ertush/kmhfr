@@ -6,6 +6,7 @@ export default async function logIn(req, res) {
     if (req.method === "POST" && req.body.username && req.body.password) {
         const { username, password, was } = req.body;
         try {
+            console.log({was})
             let lui = await logUserIn(req, res, { "username": username, "password": password }, was);
             if (lui && lui.token) {
                 res.json(lui);

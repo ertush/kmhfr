@@ -392,7 +392,7 @@ const Home = (props) => {
 Home.getInitialProps = async (ctx) => {
     // console.log("=======================================")
     // console.log(ctx.req)
-    const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
+    const API_URL = process.env.API_URL || 'http://localhost:8000/api'
     const fetchFilters = token => {
         // let filters_url = API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county'
