@@ -180,14 +180,6 @@ const logUserIn = (req, res, creds, was) => {
 }
 
 const getUserDetails = async (token, url) => {
-<<<<<<< HEAD
-    console.log({url})
-    // console.log('getUserDetails TOKEN: ',token)
-    // console.log('getUserDetails URL: ',url)
-    // let url = process.env.API_URL + '/rest-auth/user/'
-    // let url = 'https://api.kmhfltest.health.go.ke/api' + '/rest-auth/user/'
-=======
->>>>>>> a384825142249647feedbad7e4573c14c33531c6
     if (typeof window != "undefined") {
         let savedSession = window.sessionStorage.getItem('user')
         if (savedSession && savedSession.length > 0) {

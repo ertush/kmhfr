@@ -910,9 +910,6 @@ CommUnit.getInitialProps = async (ctx) => {
         if (ctx?.asPath) {
           window.location.href = ctx?.asPath;
         } else {
-<<<<<<< HEAD
-          window.location.href = "/community-units";
-=======
             let token = t.token
             let url = process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + ctx.query.id + '/'
             return fetch(url, {
@@ -933,7 +930,6 @@ CommUnit.getInitialProps = async (ctx) => {
                         data: [],
                     }
                 })
->>>>>>> a384825142249647feedbad7e4573c14c33531c6
         }
       }
       return {

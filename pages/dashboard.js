@@ -307,16 +307,11 @@ const Dash = (props) => {
 
 
 Dash.getInitialProps = async (ctx) => {
-<<<<<<< HEAD
-    const API_URL = process.env.API_URL || 'http://localhost:8000/api'
-=======
     const API_URL = process.env.NEXT_PUBLIC_API_URL
->>>>>>> a384825142249647feedbad7e4573c14c33531c6
 
     const fetchFilters = token => {
         // let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Csub_county'
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county'
-        console.log({API_URL})
         return fetch(filters_url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

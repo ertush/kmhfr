@@ -14,11 +14,7 @@ const Account = (props) => {
     const [showEditContacts, setShowEditContacts] = useState(false)
     const [userContact, setUserContact] = useState(null)
     const [userContactType, setUserContactType] = useState(null)
-<<<<<<< HEAD
-    const API_URL = process.env.API_URL || 'http://localhost:8000/api'
-=======
     const API_URL = process.env.NEXT_PUBLIC_API_URL
->>>>>>> a384825142249647feedbad7e4573c14c33531c6
     const [basicUserForm, setBasicUserForm] = useState({})
     const [contactDetailsForm, setContactDetailsForm] = useState({})
     const [fname, setFname] = useState("")
