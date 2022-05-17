@@ -14,7 +14,11 @@ const Account = (props) => {
     const [showEditContacts, setShowEditContacts] = useState(false)
     const [userContact, setUserContact] = useState(null)
     const [userContactType, setUserContactType] = useState(null)
+<<<<<<< HEAD
     const API_URL = process.env.API_URL || 'http://localhost:8000/api'
+=======
+    const API_URL = process.env.NEXT_PUBLIC_API_URL
+>>>>>>> a384825142249647feedbad7e4573c14c33531c6
     const [basicUserForm, setBasicUserForm] = useState({})
     const [contactDetailsForm, setContactDetailsForm] = useState({})
     const [fname, setFname] = useState("")
@@ -437,8 +441,8 @@ const Account = (props) => {
     // return {}
     // return checkToken(ctx.req, ctx.res).then(t => {
     //     let token = t.token
-    //     let basics_url = process.env.API_URL+'/rest-auth/user/'
-    //     let contacts_url = process.env.API_URL+'/common/user_contacts/?user='
+    //     let basics_url = process.env.NEXT_PUBLIC_API_URL+'/rest-auth/user/'
+    //     let contacts_url = process.env.NEXT_PUBLIC_API_URL+'/common/user_contacts/?user='
     //     const basics = getBasics().then(b=>b)
     //     const basics = getContacts().then(c=>c)
     // }).catch(err => {

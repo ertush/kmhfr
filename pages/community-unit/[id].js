@@ -910,7 +910,30 @@ CommUnit.getInitialProps = async (ctx) => {
         if (ctx?.asPath) {
           window.location.href = ctx?.asPath;
         } else {
+<<<<<<< HEAD
           window.location.href = "/community-units";
+=======
+            let token = t.token
+            let url = process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + ctx.query.id + '/'
+            return fetch(url, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
+                }
+            }).then(r => r.json())
+                .then(json => {
+                    return {
+                        data: json
+                    }
+                }).catch(err => {
+                    console.log('Error fetching facilities: ', err)
+                    return {
+                        error: true,
+                        err: err,
+                        data: [],
+                    }
+                })
+>>>>>>> a384825142249647feedbad7e4573c14c33531c6
         }
       }
       return {

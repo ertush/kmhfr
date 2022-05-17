@@ -33,10 +33,14 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     const currentPath = router.asPath.split('?', 1)[0]
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [user, setUser] = useState(null)
+<<<<<<< HEAD
 
     let API_URL = process.env.API_URL || 'http://localhost:8000/api'
 
     console.log("from MainLayout.js", {API_URL})
+=======
+    let API_URL = process.env.NEXT_PUBLIC_API_URL
+>>>>>>> a384825142249647feedbad7e4573c14c33531c6
     if(typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
         API_URL = 'http://localhost:8000/api'
     }

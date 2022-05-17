@@ -513,7 +513,7 @@ Facility.getInitialProps = async (ctx) => {
             throw new Error('Error checking token')
         } else {
             let token = t.token
-            let url = process.env.API_URL + '/facilities/facilities/' + ctx.query.id + '/'
+            let url = process.env.NEXT_PUBLIC_API_URL + '/facilities/facilities/' + ctx.query.id + '/'
             return fetch(url, {
                 headers: {
                     'Authorization': 'Bearer ' + token,
