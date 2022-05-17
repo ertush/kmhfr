@@ -434,7 +434,7 @@ const Reports = (props) => {
 }
 
 Reports.getInitialProps = async (ctx) => {
-    const API_URL = process.env.API_URL || 'https://api.kmhfltest.health.go.ke/api'
+    const API_URL = process.env.NEXT_PUBLIC_API_URL
 
     const fetchData = (token) => {
         let url = API_URL + `/facilities/material/?format=json&access_token=${token}&fields=id,code,name,official_name,regulatory_status_name,updated,facility_type_name,owner_name,county,sub_county_name,rejected,ward_name,keph_level,keph_level_name,constituency_name,is_complete,in_complete_details,approved,is_approved,approved_national_level&page_size=1000`

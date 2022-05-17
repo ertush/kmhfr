@@ -59,7 +59,6 @@ const getToken = (req, res, refresh_token, creds) => {
     })
         .then(rs => rs.json())
         .then(response => {
-            // console.log('response: ', response)
             let tk = response;
             ////
             if (tk && tk.access_token && tk.expires_in && tk.access_token.length > 0) {
@@ -178,10 +177,6 @@ const logUserIn = (req, res, creds, was) => {
 }
 
 const getUserDetails = async (token, url) => {
-    // console.log('getUserDetails TOKEN: ',token)
-    // console.log('getUserDetails URL: ',url)
-    // let url = process.env.API_URL + '/rest-auth/user/'
-    // let url = 'https://api.kmhfltest.health.go.ke/api' + '/rest-auth/user/'
     if (typeof window != "undefined") {
         let savedSession = window.sessionStorage.getItem('user')
         if (savedSession && savedSession.length > 0) {

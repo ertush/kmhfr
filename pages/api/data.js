@@ -2,7 +2,7 @@
 
 import { getUserDetails, logUserIn, checkToken } from "../../controllers/auth/auth";
 
-const API_URL = process.env.API_URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 const fetchData = (token, url_fragment) => {
     let url = API_URL + url_fragment
