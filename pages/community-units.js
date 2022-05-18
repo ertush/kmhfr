@@ -417,6 +417,7 @@ Home.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
+        console.log(`TOKEN >>>>>>>>>>>>>>>>>>>>>${token}`)
         // let url = API_URL+'/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,is_approved,rejected,keph_level,operation_status_name'
         let url = API_URL + '/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency'
         let query = { 'searchTerm': '' }

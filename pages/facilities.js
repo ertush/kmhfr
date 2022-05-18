@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../components/MainLayout'
-import { DotsHorizontalIcon, DownloadIcon, PencilIcon } from '@heroicons/react/solid'
+import { DotsHorizontalIcon, DownloadIcon, PencilIcon, PlusIcon } from '@heroicons/react/solid'
 import { checkToken } from '../controllers/auth/auth'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -108,6 +108,20 @@ const Home = (props) => {
         },
     ]
 
+    const toPascalCase = (str) => {
+        const pascalCaseArr = []
+        if (str !== undefined || str !== '' || str !== null) {
+        const words = str?.split(' ')
+        
+
+        words?.forEach(word => {
+            pascalCaseArr.push(`${word[0]?.toUpperCase()}${word?.slice(1,word?.length)}`)
+        })
+        }
+
+        return pascalCaseArr.join(' ')
+    }
+
     const applyFilter = (qf) => {
         let routerObj = {}
         if (currentQuickFilter === 'all') {
@@ -136,6 +150,7 @@ const Home = (props) => {
     }
     useEffect(() => {
         let qry = props?.query
+        console.log({props})
         delete qry.searchTerm
         delete qry.qf
         setDrillDown({ ...drillDown, ...qry })
@@ -167,7 +182,8 @@ const Home = (props) => {
                                             className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium hover:border-green-400 focus:ring-1 focus:ring-blue-500 text-sm ${currentQuickFilter == qf.id ? "bg-green-800 border-green-800 text-green-50" : "text-gray-800 border-gray-300"}`}
                                             onClick={evt => {
                                                 setCurrentQuickFilter(qf.id)
-                                                let robj = {pathname: '/facilities', query: {qf: qf.id}}
+                                                let robj = {pathname: '/facilities', query: {qf: qf.id}, qf: qf.id}
+                                                console.log({robj})
                                                 if(qf.id === 'all'){
                                                     router.push(robj)
                                                     return
@@ -194,7 +210,8 @@ const Home = (props) => {
                         <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
                             <div className="flex flex-col items-start justify-start gap-y-1">
                                 <h1 className="text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2">
-                                    {(props?.query?.searchTerm && !props?.query?.searchTerm.includes('ndefined') && props?.query?.searchTerm.length > 0) ? `Facilities matching '${props?.query?.searchTerm}'` : "All facilities"}
+                                    {/* {(props?.query?.searchTerm && !props?.query?.searchTerm.includes('undefined') && props?.query?.searchTerm.length > 0) ? `Facilities matching '${props?.query?.searchTerm}'` : `${props?.query?.searchTerm}`} */}
+                                    { !props?.path.includes('all') ? `${toPascalCase(props?.path?.split('=')[1]?.split('&')[0]?.split('_')?.join(' '))} Facilities` : 'All Facilities' }
                                 </h1>
                                 <h5 className="text-lg font-medium text-gray-800">
                                     {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('ndefined') &&
@@ -205,11 +222,24 @@ const Home = (props) => {
                             </div>
                             {/* ((((((( dropdown options to download data */}
                             {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative">
-                                <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
-                                    <DownloadIcon className="w-5 h-5 mr-1" />
-                                    <span>Export</span>
-                                    <ChevronDownIcon className="w-4 h-4 ml-2" />
-                                </Menu.Button>
+                                {/* Button group */}
+                                <div className='flex items-center space-x-6 w-auto'>
+                                    {/* Add Faility Button */}
+                                    <Menu.Item as="li"  className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
+                                        <a  href="/add_facility" className='flex items-center justify-center'>
+                                            <span>Add Facility</span>
+                                            <PlusIcon className="w-4 h-4 ml-2" />
+                                        </a>
+                                    </Menu.Item>
+
+                                     {/* Export Button */}
+                                     <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
+                                        <DownloadIcon className="w-5 h-5 mr-1" />
+                                        <span>Export</span>
+                                        <ChevronDownIcon className="w-4 h-4 ml-2" />
+                                    </Menu.Button>
+                                </div>
+                            
                                 <Menu.Items as="ul" className="absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full">
                                     {/* <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
                                         {({ active }) => (
@@ -551,7 +581,8 @@ const Home = (props) => {
 }
 
 Home.getInitialProps = async (ctx) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL
+    const API_URL = process.env.NEXT_PUBLIC_API_URL 
+   
 
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
@@ -575,6 +606,8 @@ Home.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
+
+    
         let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
@@ -596,7 +629,7 @@ Home.getInitialProps = async (ctx) => {
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
-        console.log('running fetchData(' + url + ')')
+        // console.log('running fetchData(' + url + ')')
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -621,6 +654,7 @@ Home.getInitialProps = async (ctx) => {
                 }
             })
     }
+
     return checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
             throw new Error('Error checking token')

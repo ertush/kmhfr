@@ -59,7 +59,7 @@ export default function HeaderLayout({
   const currentPath = router.asPath.split("?", 1)[0];
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  let API_URL = process.env.API_URL || "http://localhost:8000/api";
+  let API_URL = process.env.NEXT_PUBLIC_API_URL; // || "http://localhost:8000/api";
   if (
     typeof window !== "undefined" &&
     window.location.hostname === "127.0.0.1"
