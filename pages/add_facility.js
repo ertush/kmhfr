@@ -6,6 +6,8 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Select from 'react-select'
+import { fabClasses } from '@mui/material';
+import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon } from '@heroicons/react/solid';
 
 
 function AddFacility(props) {
@@ -174,7 +176,7 @@ function AddFacility(props) {
                                                                 }
                                                             ]
                                                         } 
-                                                        placeholder="Select owner"
+                                                        placeholder="Select owner.."
                                                         onChange={
                                                             () => console.log('changed')
                                                         }
@@ -205,7 +207,7 @@ function AddFacility(props) {
                                                                 }
                                                             ]
                                                         } 
-                                                        placeholder="Select owner"
+                                                        placeholder="Select an owner.."
                                                         onChange={
                                                             () => console.log('changed')
                                                         }
@@ -236,7 +238,7 @@ function AddFacility(props) {
                                                                 }
                                                             ]
                                                         } 
-                                                        placeholder="Select owner"
+                                                        placeholder="Select a KEPH Level.."
                                                         onChange={
                                                             () => console.log('changed')
                                                         }
@@ -321,7 +323,7 @@ function AddFacility(props) {
                                                         </span>
                                                     </div>
 
-                                                    {/* KEPH Level */}
+                                                    {/* Facility Admissions */}
                                                     <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                         <label htmlFor="facility_admission" className="text-gray-600 capitalize text-sm">Facility admissions<span className='text-medium leading-12 font-semibold'> *</span></label>
                                                         <Select options={
@@ -344,7 +346,7 @@ function AddFacility(props) {
                                                                 }
                                                             ]
                                                         } 
-                                                        placeholder="Select owner"
+                                                        placeholder="Select an admission status.."
                                                         onChange={
                                                             () => console.log('changed')
                                                         }
@@ -354,22 +356,259 @@ function AddFacility(props) {
 
                                                      {/* Is NHIF accredited */}
                                                      <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                                        <label htmlFor="nhif_accedited" className="text-gray-700 capitalize text-sm flex-grow"> *Does this facility have NHIF accreditation?   </label>
+                                                        <label htmlFor="nhif_accredited" className="text-gray-700 capitalize text-sm flex-grow"> *Does this facility have NHIF accreditation?   </label>
                                                         <span className="flex items-center gap-x-1">
-                                                            <input type="radio" value={true} defaultChecked={true} name="facility_accredited" id="has_edits" onChange={ev => {
+                                                            <input type="radio" value={true} defaultChecked={true} name="facility_accredited" id="yes_accredited" onChange={ev => {
                                                                 console.log({ev})
                                                             }} />
                                                             <small className="text-gray-700">Yes</small>
                                                         </span>
                                                         <span className="flex items-center gap-x-1">
-                                                            <input type="radio" value={false} defaultChecked={false} name="has_edits" id="has_edits" onChange={ev => {
+                                                            <input type="radio" value={false} defaultChecked={false} name="has_edits" id="no_accredited" onChange={ev => {
                                                                 console.log({ev})
                                                             }} />
                                                             <small className="text-gray-700">No</small>
                                                         </span>
                                                     </div>
 
+                                                    {/* Armed Forces Facilities */}
 
+                                                    <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto" >
+                                                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Armed Forces Facilities</h4>
+                                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                            <input type="checkbox" value={false} defaultChecked={false} name="facility_accredited" id="is_armed_forces" onChange={ev => {
+                                                                    console.log({ev})
+                                                                }} />
+                                                            <label htmlFor="is_armed_forces" className="text-gray-700 capitalize text-sm flex-grow"> Is this an Armed Force facility? </label>    
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Hours/Days of Operation */}
+
+                                                    <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto" >
+                                                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Hours/Days of Operation</h4>
+                                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                            <input type="checkbox" value={false} defaultChecked={false} name="facility_accredited" id="open_24hrs" onChange={ev => {
+                                                                    console.log({ev})
+                                                                }} />
+                                                            <label htmlFor="open_24hrs" className="text-gray-700 capitalize text-sm flex-grow"> Open 24 hours</label>    
+                                                        </div>
+
+                                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                            <input type="checkbox" value={false} defaultChecked={false} name="facility_accredited" id="open_latenight" onChange={ev => {
+                                                                    console.log({ev})
+                                                                }} />
+                                                            <label htmlFor="open_latenight" className="text-gray-700 capitalize text-sm flex-grow"> Open Late Night</label>    
+                                                        </div>
+
+                                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                            <input type="checkbox" value={false} defaultChecked={false} name="facility_accredited" id="open_pubholidays" onChange={ev => {
+                                                                    console.log({ev})
+                                                                }} />
+                                                            <label htmlFor="open_pubholidays" className="text-gray-700 capitalize text-sm flex-grow"> Open on public holidays</label>    
+                                                        </div>
+
+                                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                            <input type="checkbox" value={false} defaultChecked={false} name="facility_accredited" id="open_weekends" onChange={ev => {
+                                                                    console.log({ev})
+                                                                }} />
+                                                            <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow"> Open during weekends</label>    
+                                                        </div>
+
+                                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                            <input type="checkbox" value={false} defaultChecked={false} name="facility_accredited" id="open_8_5" onChange={ev => {
+                                                                    console.log({ev})
+                                                                }} />
+                                                            <label htmlFor="open_8_5" className="text-gray-700 capitalize text-sm flex-grow"> Open from 8am to 5pm</label>    
+                                                        </div>
+                                                    </div>
+
+
+                                                    {/* Location Details */}
+                                                    <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto" >
+                                                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Location Details</h4>
+                                                        <div className="grid grid-cols-4 place-content-start gap-3 w-full">
+                                                                {/* County  */}
+                                                                <div className="col-start-1 col-span-1">
+                                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                        <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">County<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                        <Select options={
+                                                                            [
+                                                                                {
+                                                                                    value:'Private Practice',
+                                                                                    label: 'Private Practice'
+                                                                                },
+                                                                                {
+                                                                                    value:'Non-Governmental Organizations',
+                                                                                    label: 'Non-Governmental Organizations'
+                                                                                },
+                                                                                {
+                                                                                    value:'Ministry of Health',
+                                                                                    label: 'Ministry of Health'
+                                                                                },
+                                                                                {
+                                                                                    value:'Faith Based Organization',
+                                                                                    label: 'Faith Based Organization'
+                                                                                }
+                                                                            ]
+                                                                        } 
+                                                                        placeholder="Select County"
+                                                                        onChange={
+                                                                            () => console.log('changed')
+                                                                        }
+                                                                        name="keph_level" 
+                                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Sub-county */}
+                                                                <div className="col-start-2 col-span-1">
+                                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                        <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">Sub-county<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                        <Select options={
+                                                                            [
+                                                                                {
+                                                                                    value:'Private Practice',
+                                                                                    label: 'Private Practice'
+                                                                                },
+                                                                                {
+                                                                                    value:'Non-Governmental Organizations',
+                                                                                    label: 'Non-Governmental Organizations'
+                                                                                },
+                                                                                {
+                                                                                    value:'Ministry of Health',
+                                                                                    label: 'Ministry of Health'
+                                                                                },
+                                                                                {
+                                                                                    value:'Faith Based Organization',
+                                                                                    label: 'Faith Based Organization'
+                                                                                }
+                                                                            ]
+                                                                        } 
+                                                                        placeholder="Select Sub County"
+                                                                        onChange={
+                                                                            () => console.log('changed')
+                                                                        }
+                                                                        name="keph_level" 
+                                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Constituency */}
+                                                                <div className="col-start-3 col-span-1">
+                                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                        <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">Constituency<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                        <Select options={
+                                                                            [
+                                                                                {
+                                                                                    value:'Private Practice',
+                                                                                    label: 'Private Practice'
+                                                                                },
+                                                                                {
+                                                                                    value:'Non-Governmental Organizations',
+                                                                                    label: 'Non-Governmental Organizations'
+                                                                                },
+                                                                                {
+                                                                                    value:'Ministry of Health',
+                                                                                    label: 'Ministry of Health'
+                                                                                },
+                                                                                {
+                                                                                    value:'Faith Based Organization',
+                                                                                    label: 'Faith Based Organization'
+                                                                                }
+                                                                            ]
+                                                                        } 
+                                                                        placeholder="Select Constituency"
+                                                                        onChange={
+                                                                            () => console.log('changed')
+                                                                        }
+                                                                        name="keph_level" 
+                                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Ward */}
+                                                                <div className="col-start-4 col-span-1">
+                                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                        <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">Ward<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                        <Select options={
+                                                                            [
+                                                                                {
+                                                                                    value:'Private Practice',
+                                                                                    label: 'Private Practice'
+                                                                                },
+                                                                                {
+                                                                                    value:'Non-Governmental Organizations',
+                                                                                    label: 'Non-Governmental Organizations'
+                                                                                },
+                                                                                {
+                                                                                    value:'Ministry of Health',
+                                                                                    label: 'Ministry of Health'
+                                                                                },
+                                                                                {
+                                                                                    value:'Faith Based Organization',
+                                                                                    label: 'Faith Based Organization'
+                                                                                }
+                                                                            ]
+                                                                        } 
+                                                                        placeholder="Select Ward"
+                                                                        onChange={
+                                                                            () => console.log('changed')
+                                                                        }
+                                                                        name="keph_level" 
+                                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                                    </div>
+                                                                </div>
+
+                                                              
+                                                        </div>
+
+                                                          {/* Nearest Town/Shopping Center */}
+                                                          <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                    <label htmlFor="nearest_town" className="text-gray-600 capitalize text-sm">Nearest Town/Shopping Center<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                    <input type="text" name="nearest_town" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                                </div>
+
+                                                                 {/* Plot Number */}
+                                                                 <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                    <label htmlFor="plot_number" className="text-gray-600 capitalize text-sm">Plot number<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                    <input type="text" name="plot_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                                </div>
+
+                                                                 {/* Nearest landmark */}
+                                                                 <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                    <label htmlFor="nearest_landmark" className="text-gray-600 capitalize text-sm">Nearest landmark<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                    <input type="text" name="nearest_landmark" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                                </div>
+
+                                                                 {/* Location Description */}
+                                                                 <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                    <label htmlFor="location_description" className="text-gray-600 capitalize text-sm">location description<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                    <input type="text" name="location_description" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                                </div>
+
+                                                    </div>
+
+                                                    {/* check file upload */}
+                                                    <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto">
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                            <label htmlFor="checklist_file" className="text-gray-600 capitalize text-sm">checklist file upload<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                            <input type="file" name="checklist_file" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                        </div>
+
+                                                    </div>
+
+                                                    {/* Cancel & Geolocation */}
+                                                    <div className='flex justify-between items-center w-full'>
+                                                            <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                                                                <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                                                                <span className='text-medium font-semibold text-black '>Cancel</span>
+                                                            </button>
+                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+                                                                <span className='text-medium font-semibold text-white'>Geolocation</span>
+                                                                <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
+                                                            </button>
+                                                    </div>
                                                 </form>
                                             );
                                         case 1:
