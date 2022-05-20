@@ -3,8 +3,8 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { checkToken } from '../../controllers/auth/auth'
 import React, { useState, useEffect } from 'react';
 import MainLayout from '../../components/MainLayout'
-import { CheckCircleIcon, InformationCircleIcon, LocationMarkerIcon, LockClosedIcon, XCircleIcon } from '@heroicons/react/solid'
-import { ArrowsExpandIcon } from '@heroicons/react/outline'
+import { CheckCircleIcon, InformationCircleIcon, LockClosedIcon, XCircleIcon } from '@heroicons/react/solid'
+
 import dynamic from 'next/dynamic'
 
 const Facility = (props) => {

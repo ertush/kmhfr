@@ -1,19 +1,21 @@
 
 import { useState, useEffect } from 'react'
 import MainLayout from '../components/MainLayout'
-import { ReactDOM } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Select from 'react-select'
-import { fabClasses } from '@mui/material';
+import { checkToken } from '../controllers/auth/auth'
 import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon } from '@heroicons/react/solid';
+
 
 
 
 function AddFacility(props) {
 
+
+    let facility = props.data
     const steps = [
         'Basic Details',
         'Geolocation',
@@ -33,7 +35,7 @@ function AddFacility(props) {
         console.log({formIdState})
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
-            window.sessionStorage.setItem('formId', 0);
+            window.sessionStorage.setItem('formId', 1); //0
         }
         
         setFormId(window.sessionStorage.getItem('formId'));
@@ -53,8 +55,8 @@ function AddFacility(props) {
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <a className="text-green-700" href="/">Home</a> {'>'}
-                                <a className="text-green-700" href="/facilities">Facilities</a> {'>'}
+                                <a className="text-indigo-700" href="/">Home</a> {'>'}
+                                <a className="text-indigo-700" href="/facilities">Facilities</a> {'>'}
                                 <span className="text-gray-500">Add Facility</span>
                             </div>
                             <div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3">
@@ -655,7 +657,7 @@ function AddFacility(props) {
                                                                     <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
                                                                     <span className='text-medium font-semibold text-black '>Cancel</span>
                                                                 </button>
-                                                                <button type="submit" className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+                                                                <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
                                                                     <span className='text-medium font-semibold text-white'>Geolocation</span>
                                                                     <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
                                                                 </button>
@@ -683,20 +685,59 @@ function AddFacility(props) {
 
                                             return (
                                                 <>  
-                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Geolocation</h4>
+                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Geolocation Details</h4>
                                                     <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleGeolocationSubmit}>
                                                     
-                                                    
-                                                      <div className='flex justify-between items-center w-full'>
-                                                                <button onClick={handleGeolocationPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-                                                                    <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-                                                                    <span className='text-medium font-semibold text-black '>Previous</span>
-                                                                </button>
-                                                                <button type="submit" className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
-                                                                    <span className='text-medium font-semibold text-white'>Facility Contacts</span>
-                                                                    <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
-                                                                </button>
+                                                    {/* Collection Date */}
+                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                        <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">Collection date:<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                        <input required type="date" name="collection_date" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    </div>
+
+                                                    {/* Lon/Lat */}
+                                                    <div className='grid grid-cols-2 gap-4 place-content-start w-full'>
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1">
+                                                            <label htmlFor="longitude" className="text-gray-600 capitalize text-sm">Longitude<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                            <input required type="number" name="longitude" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                         </div>
+
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2">
+                                                            <label htmlFor="latitude" className="text-gray-600 capitalize text-sm">Latitude<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                            <input required type="number" name="latitude" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                        </div>  
+                                                    </div>
+
+                                                    {/* Map View */}
+                                                    <div className='w-full h-min-48'>
+                                                        {
+                                                        (facility?.lat_long && facility?.lat_long.length > 0) ? 
+                                                            (
+                                                            <div className="w-full bg-gray-200  rounded flex flex-col items-center justify-center relative">
+                                                                <Map operational={facility.operational || facility.operation_status_name} code={facility?.code || "NO_CODE"} lat={facility?.lat_long[0]} long={facility?.lat_long[1]} name={facility.official_name || facility.name || ""} />
+                                                            </div>
+                                                            ) :
+                                                                (
+                                                                
+                                                                    <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                                                                        <p>No location data found for this facility.</p>
+                                                                    </div>
+                                                                
+                                                                  )
+                                                            }
+                                                    </div>
+
+
+                                                    {/* Next/Previous Form  */}
+                                                    <div className='flex justify-between items-center w-full'>
+                                                            <button onClick={handleGeolocationPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                                                                <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                                                                <span className='text-medium font-semibold text-black '>Basic Details</span>
+                                                            </button>
+                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+                                                                <span className='text-medium font-semibold text-white'>Facility Contacts</span>
+                                                                <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
+                                                            </button>
+                                                    </div>
                                                     </form>
                                                 </>
                                                
@@ -728,9 +769,9 @@ function AddFacility(props) {
                                                         <div className='flex justify-between items-center w-full'>
                                                                 <button onClick={handleFacilityContactsPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                     <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-                                                                    <span className='text-medium font-semibold text-black '>Previous</span>
+                                                                    <span className='text-medium font-semibold text-black '>Geolocation</span>
                                                                 </button>
-                                                                <button type="submit" className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+                                                                <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
                                                                     <span className='text-medium font-semibold text-white'>Regulation</span>
                                                                     <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
                                                                 </button>
@@ -763,9 +804,9 @@ function AddFacility(props) {
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleRegulationPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-                                                                <span className='text-medium font-semibold text-black '>Previous</span>
+                                                                <span className='text-medium font-semibold text-black '>Facility Contacts</span>
                                                             </button>
-                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
                                                                 <span className='text-medium font-semibold text-white'> Services</span>
                                                                 <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
                                                             </button>
@@ -798,9 +839,9 @@ function AddFacility(props) {
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleServicePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-                                                                <span className='text-medium font-semibold text-black '>Previous</span>
+                                                                <span className='text-medium font-semibold text-black '>Regulation</span>
                                                             </button>
-                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
                                                                 <span className='text-medium font-semibold text-white'>Infrastructure</span>
                                                                 <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
                                                             </button>
@@ -833,9 +874,9 @@ function AddFacility(props) {
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleInfrastructurePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-                                                                <span className='text-medium font-semibold text-black '>Previous</span>
+                                                                <span className='text-medium font-semibold text-black '>Services</span>
                                                             </button>
-                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
                                                                 <span className='text-medium font-semibold text-white'>Human Resources</span>
                                                                 <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
                                                             </button>
@@ -867,11 +908,11 @@ function AddFacility(props) {
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleResourcesPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-                                                                <span className='text-medium font-semibold text-black '>Previous</span>
+                                                                <span className='text-medium font-semibold text-black '>Infrastructure</span>
                                                             </button>
-                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
-                                                                <span className='text-medium font-semibold text-white'>Submit</span>
-                                                                <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
+                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+                                                                <span className='text-medium font-semibold text-white'>Save</span>
+                
                                                             </button>
                                                         </div>
                                                     </form>
@@ -893,9 +934,6 @@ function AddFacility(props) {
                                   })()
                                 }
 
-                            
-                                
-                                
                              
                             </div>
                         </div>
@@ -925,11 +963,47 @@ function AddFacility(props) {
 
 AddFacility.getInitialProps = async (ctx) => {
 
-    return new Promise ((resolve, reject) => {
-        
-        return ctx ? resolve({query:{
-            searchTerm: ''
-        }}) : reject({err:'Unable to parse ctx'})
+    return checkToken(ctx.req, ctx.res).then(t => {
+        if (t.error) {
+            throw new Error('Error checking token')
+        } else {
+            let token = t.token
+            let url = process.env.NEXT_PUBLIC_API_URL + '/facilities/facilities/' + ctx.query.id + '/'
+            return fetch(url, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
+                }
+            }).then(r => r.json())
+                .then(json => {
+                    return {
+                        data: json
+                    }
+                }).catch(err => {
+                    console.log('Error fetching facilities: ', err)
+                    return {
+                        error: true,
+                        err: err,
+                        data: [],
+                    }
+                })
+        }
+    }).catch(err => {
+        console.log('Error checking token: ', err)
+        if (typeof window !== 'undefined' && window) {
+            if (ctx?.asPath) {
+                window.location.href = ctx?.asPath
+            } else {
+                window.location.href = '/facilities'
+            }
+        }
+        setTimeout(() => {
+            return {
+                error: true,
+                err: err,
+                data: [],
+            }
+        }, 1000);
     })
 
 }
