@@ -1,5 +1,6 @@
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+// import * as React from 'react'
 import MainLayout from '../components/MainLayout'
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
@@ -7,8 +8,10 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Select from 'react-select'
 import { checkToken } from '../controllers/auth/auth'
-import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon } from '@heroicons/react/solid';
-
+import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon, PlusIcon } from '@heroicons/react/solid';
+import  FacilityContact from '../components/FacilityContact' 
+import reactDom from 'react-dom';
+// import reactDom from 'react-dom';
 
 
 
@@ -27,15 +30,18 @@ function AddFacility(props) {
       ];
 
     const [formId, setFormId] = useState(0)
+    const facilityContactRef = useRef(null)
+   
 
 
     useEffect(() => {
+
         const formIdState = window.sessionStorage.getItem('formId');
 
-        console.log({formIdState})
+        // console.log({formIdState})
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
-            window.sessionStorage.setItem('formId', 1); //0
+            window.sessionStorage.setItem('formId', 2); //0
         }
         
         setFormId(window.sessionStorage.getItem('formId'));
@@ -187,13 +193,13 @@ function AddFacility(props) {
                                                         <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
                                                             <label htmlFor="facility_accredited" className="text-gray-700 capitalize text-sm flex-grow">*Is the facility accredited Lab ISO 15189? </label>
                                                             <span className="flex items-center gap-x-1">
-                                                                <input type="radio" value={true} defaultChecked={true} name="facility_accredited" id="has_edits" onChange={ev => {
+                                                                <input type="radio" value={true} defaultChecked={true} name="facility_accredited" id="facility_accredited_yes" onChange={ev => {
                                                                 
                                                                 }} />
                                                                 <small className="text-gray-700">Yes</small>
                                                             </span>
                                                             <span className="flex items-center gap-x-1">
-                                                                <input type="radio" value={false} defaultChecked={false} name="has_edits" id="has_edits" onChange={ev => {
+                                                                <input type="radio" value={false} defaultChecked={false} name="facility_accredited" id="facility_accredited_no" onChange={ev => {
                                                                     
                                                                 }} />
                                                                 <small className="text-gray-700">No</small>
@@ -358,15 +364,15 @@ function AddFacility(props) {
 
                                                         {/* Is Reporting DHIS2 */}
                                                         <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                                            <label htmlFor="reporting_dhis" className="text-gray-700 capitalize text-sm flex-grow">*Should this facility have reporting in DHIS2?  </label>
+                                                            <label htmlFor="facility_reporting" className="text-gray-700 capitalize text-sm flex-grow">*Should this facility have reporting in DHIS2?  </label>
                                                             <span className="flex items-center gap-x-1">
-                                                                <input type="radio" value={true} defaultChecked={true} name="facility_accredited" id="has_edits" onChange={ev => {
+                                                                <input type="radio" value={true} defaultChecked={true} name="facility_reporting" id="facility_reporting_yes" onChange={ev => {
                                                                     // console.log({ev})
                                                                 }} />
                                                                 <small className="text-gray-700">Yes</small>
                                                             </span>
                                                             <span className="flex items-center gap-x-1">
-                                                                <input type="radio" value={false} defaultChecked={false} name="has_edits" id="has_edits" onChange={ev => {
+                                                                <input type="radio" value={false} defaultChecked={false} name="facility_reporting" id="facility_reporting_no" onChange={ev => {
                                                                     // console.log({ev})
                                                                 }} />
                                                                 <small className="text-gray-700">No</small>
@@ -409,13 +415,13 @@ function AddFacility(props) {
                                                         <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
                                                             <label htmlFor="nhif_accredited" className="text-gray-700 capitalize text-sm flex-grow"> *Does this facility have NHIF accreditation?   </label>
                                                             <span className="flex items-center gap-x-1">
-                                                                <input type="radio" value={true} defaultChecked={true} name="facility_accredited" id="yes_accredited" onChange={ev => {
+                                                                <input type="radio" value={true} defaultChecked={true} name="nhif_accredited" id="nhif_accredited_yes" onChange={ev => {
                                                                     // console.log({ev})
                                                                 }} />
                                                                 <small className="text-gray-700">Yes</small>
                                                             </span>
                                                             <span className="flex items-center gap-x-1">
-                                                                <input type="radio" value={false} defaultChecked={false} name="has_edits" id="no_accredited" onChange={ev => {
+                                                                <input type="radio" value={false} defaultChecked={false} name="nhif_accredited" id="nhif_accredited_no" onChange={ev => {
                                                                     // console.log({ev})
                                                                 }} />
                                                                 <small className="text-gray-700">No</small>
@@ -698,12 +704,12 @@ function AddFacility(props) {
                                                     <div className='grid grid-cols-2 gap-4 place-content-start w-full'>
                                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1">
                                                             <label htmlFor="longitude" className="text-gray-600 capitalize text-sm">Longitude<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                            <input required type="number" name="longitude" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                            <input required type="decimal" name="longitude" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                         </div>
 
                                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2">
                                                             <label htmlFor="latitude" className="text-gray-600 capitalize text-sm">Latitude<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                            <input required type="number" name="latitude" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                            <input required type="decimal" name="latitude" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                         </div>  
                                                     </div>
 
@@ -761,11 +767,70 @@ function AddFacility(props) {
                                                 
                                                 setFormId(window.sessionStorage.getItem('formId'))
                                             }
+
+                                            const handleAddContact = (event) => {
+                                                event.preventDefault()
+
+                                               
+                                            const divContainer = facilityContactRef.current
+
+                                            // const contactType = document.createElement('select')
+                                            // const contactOptions = [
+                                            //     document.createElement('option').setAttribute('value', 'Select Contact Type'),
+                                            //     document.createElement('option').setAttribute('value', 'POSTAL'),
+                                            //     document.createElement('option').setAttribute('value', 'FAX'),
+                                            //     document.createElement('option').setAttribute('value', 'LANDLINE'),
+                                            //     document.createElement('option').setAttribute('value', 'MOBILE'),
+                                            //     document.createElement('option').setAttribute('value', 'EMAIL')
+                                            // ]
+
+                                            // contactOptions.forEach(elem => {
+                                            //     contactType.appendChild(elem)    
+                                            // })
+
+                                            // reactDom.createElement(Element)
+
+                                            const dropDown = document.createElement('select')
+
+                                            dropDown.outerHTML = `
+                                            <div class=" css-yk16xz-control"><div class=" css-g1d714-ValueContainer"><div class=" css-1wa3eu0-placeholder">Select Contact Type</div><div class="css-b8ldur-Input"><div class="" style="display: inline-block;"><input autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-12-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" style="box-sizing: content-box; width: 2px; background: rgba(0, 0, 0, 0) none repeat scroll 0px center; border: 0px none; font-size: inherit; opacity: 1; outline: currentcolor none 0px; padding: 0px; color: inherit;" value=""><div style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 16px; font-family: Karla, sans-serif; font-weight: 400; font-style: normal; letter-spacing: normal; text-transform: none;"></div></div></div></div><div class=" css-1hb7zxy-IndicatorsContainer"><span class=" css-1okebmr-indicatorSeparator"></span><div class=" css-tlfecz-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-tj5bde-Svg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div>
+                                            `
+
+                                            divContainer.appendChild(dropDown.getRootNode())
+                                            divContainer.appendChild(divContainer.childNodes[4].cloneNode(true))
+
+                                          
+
+                                            }
+
                                             return (
                                                 <>  
-                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Contacts</h4>
+                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Contact</h4>
                                                     <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleFacilityContactsSubmit}>
-                                                    
+                                                        
+                                                        {/* Contacts */}
+
+                                                        <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityContactRef}>
+                                                            {/* Contact Headers */}
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Contact Type</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Contact Details</h3>
+                                                            <hr className='col-span-2'/>
+                                                          
+                                                            <FacilityContact />
+
+                                                        </div>
+
+                                                      
+                                            
+                                                        <div className='w-full flex justify-end items-center'>
+                                                            <button onClick={handleAddContact} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                                <PlusIcon className='w-4 h-4 text-white'/>
+                                                                <p className='text-medium font-semibold text-white'>Add</p>
+                                                            </button>
+                                                        </div>
+
+                                                       
+       
                                                         <div className='flex justify-between items-center w-full'>
                                                                 <button onClick={handleFacilityContactsPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                     <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
