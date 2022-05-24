@@ -35,7 +35,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     const [user, setUser] = useState(null)
     let API_URL = process.env.NEXT_PUBLIC_API_URL
     if(typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
-        API_URL = 'http://localhost:8061/api'
+        API_URL = 'http://localhost:8000/api'
     }
 
     //check if a session cookie is set

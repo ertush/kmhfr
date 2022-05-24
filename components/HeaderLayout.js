@@ -59,12 +59,12 @@ export default function HeaderLayout({
   const currentPath = router.asPath.split("?", 1)[0];
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  let API_URL = process.env.API_URL || "https://api.kmhfltest.health.go.ke/api";
+  let API_URL = process.env.NEXT_PUBLIC_API_URL; // || "http://localhost:8000/api";
   if (
     typeof window !== "undefined" &&
     window.location.hostname === "127.0.0.1"
   ) {
-    API_URL = "http://localhost:8061/api";
+    API_URL = "http://localhost:8000/api";
   }
 
   //check if a session cookie is set
@@ -90,7 +90,7 @@ export default function HeaderLayout({
       if (is_user_logged_in) {
         session_token = JSON.parse(
           window.document.cookie.split("access_token=")[1].split(";")[0]
-        );
+        );  
       }
 
       if (
@@ -100,8 +100,10 @@ export default function HeaderLayout({
       ) {
         console.log("active session found");
         // getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
+          console.log({session_token: session_token.token, url: `${API_URL}/rest-auth/user`})
         getUserDetails(session_token.token, API_URL + "/rest-auth/user/").then(
           (usr) => {
+            console.log({usr})
             if (usr.error || usr.detail) {
               setIsLoggedIn(false);
               setUser(null);

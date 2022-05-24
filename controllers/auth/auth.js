@@ -47,6 +47,8 @@ const getToken = (req, res, refresh_token, creds) => {
     }
     bod.client_id = process.env.CLIENT_ID
     bod.client_secret = process.env.CLIENT_SECRET
+
+    console.log({token_url: process.env.TOKEN_URL})
     return fetch(process.env.TOKEN_URL, {
         'method': 'POST',
         'headers': {
@@ -160,6 +162,7 @@ const checkToken = async (req, res, isProtected, creds) => {
 }
 
 const logUserIn = (req, res, creds, was) => {
+    console.log({creds})
     // console.log('------------logUserIn: ', creds)
     return getToken(req, res, null, creds).then(tk => {
         if (tk.error) {
@@ -188,6 +191,7 @@ const getUserDetails = async (token, url) => {
         }
         // console.log('W getUserDetails URL: ',url)
     }
+
     return fetch(url, {
         'method': 'GET',
         'headers': {
