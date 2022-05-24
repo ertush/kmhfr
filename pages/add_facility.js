@@ -11,6 +11,7 @@ import { checkToken } from '../controllers/auth/auth'
 import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon, PlusIcon } from '@heroicons/react/solid';
 import  FacilityContact from '../components/FacilityContact' 
 import reactDom from 'react-dom';
+import { XCircleIcon } from '@heroicons/react/outline';
 // import reactDom from 'react-dom';
 
 
@@ -110,8 +111,6 @@ function AddFacility(props) {
                                                 setFormId(window.sessionStorage.getItem('formId'))
                                                 
 
-                                                // console.log({formData})
-                                                // alert("submitted")
                                             }
                                             // Basic Details form
                                             return (
@@ -883,7 +882,7 @@ function AddFacility(props) {
                                                               <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                                 <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Job Title<span className='text-medium leading-12 font-semibold'> *</span> </label>
                                                                 <input required type="text" name="job_title" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                                            </div>
+                                                              </div>
 
                                                             {/* Facility Officer Contact Type / Contact Details */}
 
@@ -942,9 +941,108 @@ function AddFacility(props) {
                                             }
                                             return (
                                                 <>  
-                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Regulation</h4>
+                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
                                                     <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleRegulationSubmit}>
+
+                                                        {/* Regulatory Body */}
+
+                                                          {/* Job Title */}
+                                                          <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
+                                                                <input required type="text" name="regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                          </div>
+
+                                                          {/* Regulation Status */} 
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                            <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">License Number</label>
+                                                            <input type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                        </div>
+
+                                                          {/* Registration Number */} 
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                            <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Registration Number</label>
+                                                            <input type="text" name="reg_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                        </div>
+
+                                                        {/* check file upload */}
+                                                        <div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
+                                                            <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                <label htmlFor="checklist_file" className="text-gray-600 capitalize text-sm">Upload license document</label>
+                                                                <input required type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Facility Departments Regulation  */}
+
+                                                        <h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
+                                                        <div className='grid grid-cols-4 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityContactRef}>
+                                                        {/* Contact Headers */}
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Name</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Regulatory Body</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>License Number</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Reg. Number</h3>
+                                
+                                                            <hr className='col-span-4'/>
+
+                                                            
+                                                            {/* Name */}
+                                                            <Select options={
+                                                                                [
+                                                                                    {
+                                                                                        value:'Private Practice',
+                                                                                        label: 'Private Practice'
+                                                                                    },
+                                                                                    {
+                                                                                        value:'Non-Governmental Organizations',
+                                                                                        label: 'Non-Governmental Organizations'
+                                                                                    },
+                                                                                    {
+                                                                                        value:'Ministry of Health',
+                                                                                        label: 'Ministry of Health'
+                                                                                    },
+                                                                                    {
+                                                                                        value:'Faith Based Organization',
+                                                                                        label: 'Faith Based Organization'
+                                                                                    }
+                                                                                ]
+                                                                            } 
+                                                                            required
+                                                                            placeholder="Select Ward"
+                                                                            onChange={
+                                                                                () => console.log('changed')
+                                                                            }
+                                                                            name="facility_dept_name" 
+                                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                            
+                                                            {/* Regulatory Body */}
+                                                            <input type="text" name="regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+
+                                                            {/* License No. */}
+                                                            <input type="number" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                    
+                                                            <div className='col-start-4 flex items-center space-x-2 w-full'>
+                                                                {/* Reg No. */}
+                                                                <input type="number" name="reg_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                            
+                                                                {/* Delete Btn */}
+
+                                                                <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+                                                            </div>
+                                                          
+                                                            
+                                                        </div>
+
                                                     
+                                                        {/* Add btn */}
+                                                        <div className='w-full flex justify-end items-center mt-2'>
+                                                            <button onClick={handleAddContact} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                                <PlusIcon className='w-4 h-4 text-white'/>
+                                                                <p className='text-medium font-semibold text-white'>Add</p>
+                                                            </button>
+                                                        </div>
+                                                    
+
+                                                        {/* Prev / Next */}
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleRegulationPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
