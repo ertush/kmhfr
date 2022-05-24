@@ -770,34 +770,67 @@ function AddFacility(props) {
 
                                             const handleAddContact = (event) => {
                                                 event.preventDefault()
+                                                
+                                                const divContainer = facilityContactRef.current
 
-                                               
-                                            const divContainer = facilityContactRef.current
+                                                const dropDown = document.createElement('select')
+                                                
 
-                                            // const contactType = document.createElement('select')
-                                            // const contactOptions = [
-                                            //     document.createElement('option').setAttribute('value', 'Select Contact Type'),
-                                            //     document.createElement('option').setAttribute('value', 'POSTAL'),
-                                            //     document.createElement('option').setAttribute('value', 'FAX'),
-                                            //     document.createElement('option').setAttribute('value', 'LANDLINE'),
-                                            //     document.createElement('option').setAttribute('value', 'MOBILE'),
-                                            //     document.createElement('option').setAttribute('value', 'EMAIL')
-                                            // ]
+                                                dropDown.setAttribute('style', `
+                                                width:100%; 
+                                                border: 1px solid hsl(0, 0%, 80%); 
+                                                border-radius: 4px; 
+                                                padding: 2px; 
+                                                background-color: hsl(0, 0%, 100%); 
+                                                display: grid; 
+                                                min-height: 38px;
+                                                `)
 
-                                            // contactOptions.forEach(elem => {
-                                            //     contactType.appendChild(elem)    
-                                            // })
+                                                dropDown.setAttribute('placeholder', 'Select Contact Type')
 
-                                            // reactDom.createElement(Element)
+                                                dropDown.setAttribute('name', 'dropdown_contact_types')
 
-                                            const dropDown = document.createElement('select')
+                                                const option1 = document.createElement('option')
+                                                option1.innerText = 'Select Contact Type'
+                                                option1.value = 'Select Contact Type'
+                                                
 
-                                            dropDown.outerHTML = `
-                                            <div class=" css-yk16xz-control"><div class=" css-g1d714-ValueContainer"><div class=" css-1wa3eu0-placeholder">Select Contact Type</div><div class="css-b8ldur-Input"><div class="" style="display: inline-block;"><input autocapitalize="none" autocomplete="off" autocorrect="off" id="react-select-12-input" spellcheck="false" tabindex="0" type="text" aria-autocomplete="list" style="box-sizing: content-box; width: 2px; background: rgba(0, 0, 0, 0) none repeat scroll 0px center; border: 0px none; font-size: inherit; opacity: 1; outline: currentcolor none 0px; padding: 0px; color: inherit;" value=""><div style="position: absolute; top: 0px; left: 0px; visibility: hidden; height: 0px; overflow: scroll; white-space: pre; font-size: 16px; font-family: Karla, sans-serif; font-weight: 400; font-style: normal; letter-spacing: normal; text-transform: none;"></div></div></div></div><div class=" css-1hb7zxy-IndicatorsContainer"><span class=" css-1okebmr-indicatorSeparator"></span><div class=" css-tlfecz-indicatorContainer" aria-hidden="true"><svg height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false" class="css-tj5bde-Svg"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg></div></div></div>
-                                            `
+                                                const option2 = document.createElement('option')
+                                                option2.innerText = 'POSTAL'
+                                                option2.value = 'POSTAL'
+                                            
 
-                                            divContainer.appendChild(dropDown.getRootNode())
-                                            divContainer.appendChild(divContainer.childNodes[4].cloneNode(true))
+                                                const option3 = document.createElement('option')
+                                                option3.innerText = 'FAX'
+                                                option3.value = 'FAX'
+                                                
+
+                                                const option4 = document.createElement('option')
+                                                option4.innerText = 'LANDLINE'
+                                                option4.value = 'LANDLINE'
+
+                                                const option5 = document.createElement('option')
+                                                option5.innerText = 'MOBILE'
+                                                option5.value = 'MOBILE'
+
+                                                const option6 = document.createElement('option')
+                                                option6.innerText = 'EMAIL'
+                                                option6.value = 'EMAIL'
+                                                
+
+                                                dropDown.appendChild(option1.getRootNode())
+                                                dropDown.appendChild(option2.getRootNode())
+                                                dropDown.appendChild(option3.getRootNode())
+                                                dropDown.appendChild(option4.getRootNode())
+                                                dropDown.appendChild(option5.getRootNode())
+                                                dropDown.appendChild(option6.getRootNode())
+                                                
+
+                                                divContainer.appendChild(dropDown.getRootNode())
+                                                const input = divContainer.childNodes[4].cloneNode(true)
+                                                input.setAttribute('name', 'contact_details_others')
+
+                                                divContainer.appendChild(input)
 
                                           
 
@@ -816,8 +849,9 @@ function AddFacility(props) {
                                                             <h3 className='text-medium font-semibold text-blue-900'>Contact Details</h3>
                                                             <hr className='col-span-2'/>
                                                           
+                                                            {/* Contact Type / Contact Details */}
                                                             <FacilityContact />
-
+                                    
                                                         </div>
 
                                                       
@@ -829,7 +863,52 @@ function AddFacility(props) {
                                                             </button>
                                                         </div>
 
-                                                       
+                                                        {/* Facility Officer In-charge Details */}
+
+                                                        <h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Officer In-Charge Details</h5>
+                                                        <div className='flex flex-col items-start justify-start gap-1 w-full rounded h-auto'>
+                                                              {/*  Name  */}
+                                                            <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Name<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                <input required type="text" name="name" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                            </div>
+
+                                                             {/*  Registration Number */}
+                                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Registration Number/License Number </label>
+                                                                <input  type="text" name="reg_num" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                            </div>
+
+                                                              {/* Job Title */}
+                                                              <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Job Title<span className='text-medium leading-12 font-semibold'> *</span> </label>
+                                                                <input required type="text" name="job_title" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                            </div>
+
+                                                            {/* Facility Officer Contact Type / Contact Details */}
+
+                                                            <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityContactRef}>
+                                                            {/* Contact Headers */}
+                                                                <h3 className='text-medium font-semibold text-blue-900'>Contact Type</h3>
+                                                                <h3 className='text-medium font-semibold text-blue-900'>Contact Details</h3>
+                                                                <hr className='col-span-2'/>
+                                                            
+                                                                {/* Contact Type / Contact Details */}
+                                                                <FacilityContact />
+                                        
+                                                            </div>
+
+                                                        
+                                                
+                                                            <div className='w-full flex justify-end items-center mt-2'>
+                                                                <button onClick={handleAddContact} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                                    <PlusIcon className='w-4 h-4 text-white'/>
+                                                                    <p className='text-medium font-semibold text-white'>Add</p>
+                                                                </button>
+                                                            </div>
+
+                                                        </div>
+
        
                                                         <div className='flex justify-between items-center w-full'>
                                                                 <button onClick={handleFacilityContactsPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
