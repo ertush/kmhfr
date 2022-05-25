@@ -17,7 +17,7 @@ const EditFacility = (props) => {
     )
     let facility = props.data
     const [user, setUser] = useState(null)
-    
+
     useEffect(() => {
         if (typeof window !== 'undefined') {
             let usr = window.sessionStorage.getItem('user')
@@ -89,7 +89,7 @@ const EditFacility = (props) => {
                             return (
                                                 <>
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Basic Details</h4>
-                                                    <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleBasicDetailsSubmit}>
+                                                    <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={}>
                                                         {/* Facility Official Name */}
                                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                             <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Facility Official Name<span className='text-medium leading-12 font-semibold'> *</span></label>
