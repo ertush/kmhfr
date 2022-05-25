@@ -70,10 +70,12 @@ const Facility = (props) => {
                                         <InformationCircleIcon className="h-4 w-4" />
                                         Has changes
                                     </span>}
-                                    {facility.is_complete && <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                                    {!facility.is_complete ? (<span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1"> 
                                         <CheckCircleIcon className="h-4 w-4" />
-                                        Complete
-                                    </span>}
+                                        Complete </span>) : (<span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1"> 
+                                        <CheckCircleIcon className="h-4 w-4" />
+                                        Incomplete </span>)
+                                    }
                                     {facility.closed && <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                                         <LockClosedIcon className="h-4 w-4" />
                                         Closed
