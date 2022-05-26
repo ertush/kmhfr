@@ -72,7 +72,7 @@ const Facility = (props) => {
                                     </span>}
                                     {!facility.is_complete ? (<span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1"> 
                                         <CheckCircleIcon className="h-4 w-4" />
-                                        Complete </span>) : (<span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1"> 
+                                        Completed </span>) : (<span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1"> 
                                         <CheckCircleIcon className="h-4 w-4" />
                                         Incomplete </span>)
                                     }
@@ -97,14 +97,18 @@ const Facility = (props) => {
                             {/* Approve/Reject, Edit Buttons */}
                             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
-                                    <button
+                                <a  href="/facility/validate" className="p-2 text-center rounded-md font-semibold text-base text-white bg-red-500">
+                                            <span>Validate/Reject</span>
+                                            {/* <PlusIcon className="w-4 h-4 ml-2" /> */}
+                                        </a>
+                                    {/* <button href='/facility/validate'
                                         onClick={() =>
                                             approveRejectFacility(facility.is_approved, setIsApproveReject)
                                         }
-                                        className="p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+                                        className="p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
                                     >
                                         Validate/Reject
-                                    </button>
+                                    </button> */}
                                     <button
                                         onClick={() => window.alert("Print")
                                         }
