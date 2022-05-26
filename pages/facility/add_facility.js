@@ -45,7 +45,7 @@ function AddFacility(props) {
         // console.log({formIdState})
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
-            window.sessionStorage.setItem('formId', 2); //0
+            window.sessionStorage.setItem('formId', 0); //0
         }
         
         setFormId(window.sessionStorage.getItem('formId'));
