@@ -226,7 +226,10 @@ const Home = (props) => {
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Add Faility Button */}
                                     <Menu.Item as="button"  className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
+                                    
+
                                         <a  href="/facility/add_facility" className='flex items-center justify-center'>
+
                                             <span>Add Facility</span>
                                             <PlusIcon className="w-4 h-4 ml-2" />
                                         </a>
