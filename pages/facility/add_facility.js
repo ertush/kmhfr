@@ -45,10 +45,20 @@ function AddFacility(props) {
         // console.log({formIdState})
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
-            window.sessionStorage.setItem('formId', 2); //0
+            window.sessionStorage.setItem('formId', 4); //0
         }
         
         setFormId(window.sessionStorage.getItem('formId'));
+
+        // Check if dropdown and input exist. If remove from DOM
+
+        const dropDowns = document.getElementsByName('dropdown_contact_types')
+        const inputs = document.getElementsByName('contact_details_others')
+
+        if(dropDowns.length > 0) dropDowns.forEach(dropDown => dropDown.remove())
+
+        if(inputs.length > 0) inputs.forEach(input => input.remove())
+        
 
         return () => {
             if(window.sessionStorage.getItem('formId') == '7'){
@@ -694,7 +704,7 @@ function AddFacility(props) {
                                             return (
                                                 <>  
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Geolocation Details</h4>
-                                                    <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleGeolocationSubmit}>
+                                                    <form  name="geolocation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleGeolocationSubmit}>
                                                     
                                                     {/* Collection Date */}
                                                     <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -761,8 +771,8 @@ function AddFacility(props) {
                                                 const dropDowns = document.getElementsByName('dropdown_contact_types')
                                                 const inputs = document.getElementsByName('contact_details_others')
 
-                                                console.log({dropDowns: dropDowns.length})
-
+                                                console.log(event.target)
+                        
                                                 if (dropDowns.length > 0){
                                                     dropDowns.forEach(dropDown => {
                                                         dropDown.remove()
@@ -926,7 +936,7 @@ function AddFacility(props) {
                                             return (
                                                 <>  
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Contact</h4>
-                                                    <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleFacilityContactsSubmit}>
+                                                    <form className='flex flex-col w-full items-start justify-start gap-3' name="facility_contacts_form" onSubmit={handleFacilityContactsSubmit}>
                                                         
                                                         {/* Contacts */}
 
@@ -1144,7 +1154,7 @@ function AddFacility(props) {
                                             return (
                                                 <>  
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-                                                    <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleRegulationSubmit}>
+                                                    <form name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleRegulationSubmit}>
 
                                                         {/* Regulatory Body */}
 
@@ -1447,7 +1457,7 @@ function AddFacility(props) {
                                             return (
                                                 <>  
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
-                                                    <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleServiceSubmit}>
+                                                    <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleServiceSubmit}>
                                                         
                                                         <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityServiceRef}>
                                                             {/* Service Name */}
@@ -1610,7 +1620,7 @@ function AddFacility(props) {
                                             return (
                                                 <>  
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastructure</h4>
-                                                    <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleInfrastractuerSubmit}>
+                                                    <form name="facility_infrastructure_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleInfrastractuerSubmit}>
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleInfrastructurePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
@@ -1644,7 +1654,7 @@ function AddFacility(props) {
                                             return (
                                                 <>  
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human Resources</h4>
-                                                    <form className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleResourcesSubmit}>
+                                                    <form name="facility_hr_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleResourcesSubmit}>
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleResourcesPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
