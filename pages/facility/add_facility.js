@@ -53,12 +53,14 @@ function AddFacility(props) {
 
         // Check if dropdown and input exist. If remove from DOM
 
-        const dropDowns = document.getElementsByName('dropdown_contact_types')
-        const inputs = document.getElementsByName('contact_details_others')
+        const contactDropDowns = document.getElementsByName('dropdown_contact_types')
+        const contactInputs = document.getElementsByName('contact_details_others')
 
-        if(dropDowns.length > 0) dropDowns.forEach(dropDown => dropDown.remove())
+        // const infrastructureDropDowns = document.getElementsByName('dropdown_infrastructure_name')
+        // const infrastructureDropDownsYesNo = document.getElementsByName('dropdown_infrastructure_types')
 
-        if(inputs.length > 0) inputs.forEach(input => input.remove())
+        if(contactDropDowns.length > 0) dropDowns.forEach(dropDown => dropDown.remove())
+        if(contactInputs.length > 0) inputs.forEach(input => input.remove())
         
 
         return () => {
@@ -1524,11 +1526,11 @@ function AddFacility(props) {
 
                                                 dropDownInfrastractuer.setAttribute('placeholder', 'Select Service')
 
-                                                dropDownInfrastractuer.setAttribute('name', 'dropdown_service_name')
+                                                dropDownInfrastractuer.setAttribute('name', 'dropdown_infrastructure_name')
 
                                                
                                                 const option0 = document.createElement('option')
-                                                option0.innerText = 'Select Infrastracture'
+                                                option0.innerText = 'Select Infrastracture Type'
                                                 option0.value = 'Select Infrastracture'
 
 
@@ -1576,7 +1578,7 @@ function AddFacility(props) {
 
                                                 dropDownYesNo.setAttribute('placeholder', 'Select Service Option')
 
-                                                dropDownYesNo.setAttribute('name', 'dropdown_service_option')
+                                                dropDownYesNo.setAttribute('name', 'dropdown_infrastructure_option')
 
                                                 const optionDefault = document.createElement('option')
                                                 optionDefault.innerText = 'Select Infrastructure Option'
@@ -1604,7 +1606,7 @@ function AddFacility(props) {
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastructure</h4>
                                                     <form name="facility_infrastructure_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleInfrastructureSubmit}>
                                                         
-                                                    <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityInfrastructureRef}>
+                                                        <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityInfrastructureRef}>
                                                             {/* Infrastructure Name */}
                                                             <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Name</h3>
                                                             <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Option</h3>
@@ -1711,6 +1713,81 @@ function AddFacility(props) {
                                                 <>  
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human Resources</h4>
                                                     <form name="facility_hr_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleResourcesSubmit}>
+                                                        
+                                                        
+                                                    <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityInfrastructureRef}>
+                                                            {/* Infrastructure Name */}
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Name</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Option</h3>
+                                                            <hr className='col-span-2'/>
+                                                        
+                                                            {/* Service Name */}
+                                                            <Select options={
+                                                                            [
+                                                                                {
+                                                                                    value:'Wireless Mobile',
+                                                                                    label: 'Wireless Mobile'
+                                                                                },
+                                                                                {
+                                                                                    value:'Piped Water',
+                                                                                    label: 'Piped Water'
+                                                                                },
+                                                                                {
+                                                                                    value:'Main Grid',
+                                                                                    label: 'Main Grid'
+                                                                                },
+                                                                                {
+                                                                                    value:'Laptops',
+                                                                                    label: 'Laptops'
+                                                                                },
+                                                                                {
+                                                                                    value:'Incinerator',
+                                                                                    label: 'Incinerator'
+                                                                                }
+                                                                                
+                                                                        
+                                                                            ]
+                                                                        } 
+                                                                        required
+                                                                        placeholder="Select Infrastructure Type"
+                                                                        onChange={
+                                                                            () => console.log('changed')
+                                                                        }
+                                                                        name="service_name" 
+                                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+
+                                                                        {/* Service Option */}
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value:'Yes',
+                                                                                    label:'Yes'
+                                                                                },
+                                                                                {
+                                                                                    value:'No',
+                                                                                    label:'No'
+                                                                                }
+                
+                                                                            ]}
+                                                                            required
+                                                                            placeholder="Select Contact Type"
+                                                                            onChange={
+                                                                                () => console.log('changed')
+                                                                            }
+                                                                            name="service_option" 
+                                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> 
+
+                                                                            {/* Append other dropdowns */}
+                                                                        
+                
+                                                        </div>
+                                                        <div className='w-full flex justify-end items-center mt-2'>
+                                                            <button onClick={handleAddInfrastractuer} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                                <PlusIcon className='w-4 h-4 text-white'/>
+                                                                <p className='text-medium font-semibold text-white'>Add</p>
+                                                            </button>
+                                                        </div>
+                                                        
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleResourcesPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
