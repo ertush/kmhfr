@@ -39,9 +39,7 @@ const Dash = (props) => {
         }
         return () => { mtd = false }
     }, [filters])
-   console.log(props?.data)
-//    {props?.data?.owner_types.map((p)=>console.log(p.name))}
-
+console.log(props?.data);
     return (
         <div className="">
             <Head>
@@ -374,13 +372,10 @@ Dash.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        let url = API_URL + '/facilities/dashboard/?field=*'
-
-        // url += `&search={"query":{"query_string":{"field":"keph_level"}}}`
+        let url = API_URL + '/facilities/dashboard/'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
-            console.log({ctx:ctx.query.q});
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
         let other_posssible_filters = ["county"]
