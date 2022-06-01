@@ -398,7 +398,6 @@ const Reports = (props) => {
                                                     headerClass="uppercase"
                                                     cellClass="p-0 text-sm leading-none capitalize"
                                                     sortable={true}
-                                                    filter={true}
                                                     key={v_ + "_" + i}
                                                     field={v_}
                                                     headerName={v_.replaceAll("_category","").replaceAll("_name","").split("_").join(" ")}
