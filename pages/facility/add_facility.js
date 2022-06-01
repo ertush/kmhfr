@@ -35,6 +35,7 @@ function AddFacility(props) {
     const facilityContact2Ref = useRef(null)
     const facilityServiceRef = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
+    const facilityInfrastructureRef = useRef(null)
    
 
 
@@ -52,12 +53,14 @@ function AddFacility(props) {
 
         // Check if dropdown and input exist. If remove from DOM
 
-        const dropDowns = document.getElementsByName('dropdown_contact_types')
-        const inputs = document.getElementsByName('contact_details_others')
+        const contactDropDowns = document.getElementsByName('dropdown_contact_types')
+        const contactInputs = document.getElementsByName('contact_details_others')
 
-        if(dropDowns.length > 0) dropDowns.forEach(dropDown => dropDown.remove())
+        // const infrastructureDropDowns = document.getElementsByName('dropdown_infrastructure_name')
+        // const infrastructureDropDownsYesNo = document.getElementsByName('dropdown_infrastructure_types')
 
-        if(inputs.length > 0) inputs.forEach(input => input.remove())
+        if(contactDropDowns.length > 0) dropDowns.forEach(dropDown => dropDown.remove())
+        if(contactInputs.length > 0) inputs.forEach(input => input.remove())
         
 
         return () => {
@@ -1309,107 +1312,44 @@ function AddFacility(props) {
                                                 dropDownServices.setAttribute('placeholder', 'Select Service')
 
                                                 dropDownServices.setAttribute('name', 'dropdown_service_name')
-
-                                               
-
+                                                
+                                             
+                                                
                                                 const option0 = document.createElement('option')
-                                                option0.innerText = 'Select Service'
-                                                option0.value = 'Select Service'
+                                                option0.innerText = 'Outpatient'
+                                                option0.value = 'Outpatient'
 
                                                 const option1 = document.createElement('option')
-                                                option1.innerText = 'Tuberculosis Treatment'
-                                                option1.value = 'Tuberculosis Treatment'
+                                                option1.innerText = 'Natural'
+                                                option1.value = 'Natural'
                                                 
 
                                                 const option2 = document.createElement('option')
-                                                option2.innerText = 'TT toxoid for Pregnant Women'
-                                                option2.value = 'TT toxoid for Pregnant Women'
+                                                option2.innerText = 'Long Term'
+                                                option2.value = 'Long Term'
                                             
 
                                                 const option3 = document.createElement('option')
-                                                option3.innerText = 'Smear Microscopy'
-                                                option3.value = 'Smear Microscopy'
+                                                option3.innerText = 'Focused Antenatal Care'
+                                                option3.value = 'Focused Antenatal Care'
                                                 
 
                                                 const option4 = document.createElement('option')
-                                                option4.innerText = 'Short Term'
-                                                option4.value = 'Short Term'
+                                                option4.innerText = 'Condom Distribution & STI Prevention'
+                                                option4.value = 'Condom Distribution & STI Prevention'
 
                                                 const option5 = document.createElement('option')
-                                                option5.innerText = 'Screening using VIA/VILI'
-                                                option5.value = 'Screening using VIA/VILI'
+                                                option5.innerText = 'Basic IMCI-management of acute Infections'
+                                                option5.value = 'Basic IMCI-management of acute Infections'
 
-                                                const option6 = document.createElement('option')
-                                                option6.innerText = 'Elimination of Mother to Child transmission of HIV'
-                                                option6.value = 'Elimination of Mother to Child transmission of HIV'
                                                 
-                                                const option7 = document.createElement('option')
-                                                option7.innerText = 'Postnatal care services'
-                                                option7.value = 'Postnatal care services'
-
-                                                const option8 = document.createElement('option')
-                                                option8.innerText = 'Long Term'
-                                                option8.value = 'Long Term'
-
-                                                const option9 = document.createElement('option')
-                                                option9.innerText = 'Integrated Management of Childhood Illnesses'
-                                                option9.value = 'Integrated Management of Childhood Illnesses'
-
-                                                const option10 = document.createElement('option')
-                                                option10.innerText = 'Integrated Child Immunization'
-                                                option10.value = 'Integrated Child Immunization'
-
-                                                const option11 = document.createElement('option')
-                                                option11.innerText = 'Infection Prevention and control to mitigate HIV infection in the work place'
-                                                option11.value = 'Infection Prevention and control to mitigate HIV infection in the work place'
-
-                                                const option12 = document.createElement('option')
-                                                option12.innerText = 'Hospital - Retail services'
-                                                option12.value = 'Hospital - Retail services'
-
-                                                const option13 = document.createElement('option')
-                                                option13.innerText = 'HIV Testing Services'
-                                                option13.value = 'HIV Testing Services'
-
-                                                const option14 = document.createElement('option')
-                                                option14.innerText = 'Focused Antenatal Care'
-                                                option14.value = 'Focused Antenatal Care'
-
-                                                const option15 = document.createElement('option')
-                                                option15.innerText = 'Drug Resistant Tuberculosis Treatment'
-                                                option15.value = 'Drug Resistant Tuberculosis Treatment'
-
-                                                const option16 = document.createElement('option')
-                                                option16.innerText = 'Condom Distribution & STI Prevention'
-                                                option16.value = 'Condom Distribution & STI Prevention'
-
-                                                const option17 = document.createElement('option')
-                                                option17.innerText = 'Breast'
-                                                option17.value = 'Breast'
-
-                                                const option18 = document.createElement('option')
-                                                option18.innerText = 'Basic Mental Health Services'
-                                                option18.value = 'Basic Mental Health Services'
-
                                                 dropDownServices.appendChild(option0.getRootNode())
                                                 dropDownServices.appendChild(option1.getRootNode())
                                                 dropDownServices.appendChild(option2.getRootNode())
                                                 dropDownServices.appendChild(option3.getRootNode())
                                                 dropDownServices.appendChild(option4.getRootNode())
                                                 dropDownServices.appendChild(option5.getRootNode())
-                                                dropDownServices.appendChild(option6.getRootNode())
-                                                dropDownServices.appendChild(option7.getRootNode())
-                                                dropDownServices.appendChild(option8.getRootNode())
-                                                dropDownServices.appendChild(option9.getRootNode())
-                                                dropDownServices.appendChild(option10.getRootNode())
-                                                dropDownServices.appendChild(option11.getRootNode())
-                                                dropDownServices.appendChild(option12.getRootNode())
-                                                dropDownServices.appendChild(option13.getRootNode())
-                                                dropDownServices.appendChild(option14.getRootNode())
-                                                dropDownServices.appendChild(option15.getRootNode())
-                                                dropDownServices.appendChild(option16.getRootNode())
-                                                dropDownServices.appendChild(option17.getRootNode())
-                                                dropDownServices.appendChild(option18.getRootNode())
+                                                
 
 
                                                 divContainer.appendChild(dropDownServices.getRootNode())
@@ -1469,79 +1409,30 @@ function AddFacility(props) {
                                                             <Select options={
                                                                             [
                                                                                 {
-                                                                                    value:'Tuberculosis Treatment',
-                                                                                    label: 'Tuberculosis Treatment'
+                                                                                    value:'Outpatient',
+                                                                                    label: 'Outpatient'
                                                                                 },
                                                                                 {
-                                                                                    value:'TT toxoid for Pregnant Women',
-                                                                                    label: 'TT toxoid for Pregnant Women'
-                                                                                },
-                                                                                {
-                                                                                    value:'Smear Microscopy',
-                                                                                    label: 'Smear Microscopy'
-                                                                                },
-                                                                                {
-                                                                                    value:'Short Term',
-                                                                                    label: 'Short Term'
-                                                                                },
-                                                                                {
-                                                                                    value:'Screening using VIA/VILI',
-                                                                                    label: 'Screening using VIA/VILI'
-                                                                                },
-                                                                                {
-                                                                                    value:'Elimination of Mother to Child transmission of HIV',
-                                                                                    label: 'Elimination of Mother to Child transmission of HIV'
-                                                                                },
-                                                                                {
-                                                                                    value:'Postnatal care services',
-                                                                                    label: 'Postnatal care services'
+                                                                                    value:'Natural',
+                                                                                    label: 'Natural'
                                                                                 },
                                                                                 {
                                                                                     value:'Long Term',
                                                                                     label: 'Long Term'
                                                                                 },
                                                                                 {
-                                                                                    value:'Integrated Management of Childhood Illnesses',
-                                                                                    label: 'Integrated Management of Childhood Illnesses'
-                                                                                },
-                                                                                {
-                                                                                    value:' Integrated Child Immunization',
-                                                                                    label: 'Integrated Child Immunization'
-                                                                                },
-                                                                                {
-                                                                                    value: 'Infection Prevention and control to mitigate HIV infection in the work place',
-                                                                                    label: 'Infection Prevention and control to mitigate HIV infection in the work place'
-                                                                                },
-                                                                                {
-                                                                                    value: 'Hospital - Retail services',
-                                                                                    label: 'Hospital - Retail services'
-                                                                                },
-                                                                                {
-                                                                                    value:'HIV Testing Services ',
-                                                                                    label:'HIV Testing Services '
-                                                                                },
-                                                                                {
                                                                                     value:'Focused Antenatal Care',
-                                                                                    label:'Focused Antenatal Care'
+                                                                                    label: 'Focused Antenatal Care'
                                                                                 },
                                                                                 {
-                                                                                    value:'Drug Resistant Tuberculosis Treatment ',
-                                                                                    label:'Drug Resistant Tuberculosis Treatment '
+                                                                                    value:'Condom Distribution & STI Prvention',
+                                                                                    label: 'Condom Distribution & STI Prvention'
                                                                                 },
                                                                                 {
-                                                                                    value:'Condom Distribution & STI Prevention',
-                                                                                    label:'Condom Distribution & STI Prevention'
-                                                                                },
-                                                                                {
-                                                                                    value:'Breast',
-                                                                                    label:'Breast'
-                                                                                },
-                                                                                {
-                                                                                    value:'Basic Mental Health Services',
-                                                                                    label:'Basic Mental Health Services'
+                                                                                    value:'Basic IMCI-management of acute Infections',
+                                                                                    label: 'Basic IMCI-management of acute Infections'
                                                                                 }
-
-
+                                                                                
 
                                                                             ]
                                                                         } 
@@ -1576,7 +1467,6 @@ function AddFacility(props) {
 
                                                                             {/* Append other dropdowns */}
                                                                         
-                
                                                         </div>
                                                         <div className='w-full flex justify-end items-center mt-2'>
                                                             <button onClick={handleAddService} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
@@ -1601,7 +1491,7 @@ function AddFacility(props) {
                                             )
                                         case 5:
                                             // Infrastructure form
-                                            const handleInfrastractuerSubmit = (event) => {
+                                            const handleInfrastructureSubmit = (event) => {
                                                 event.preventDefault()
 
                                                 window.sessionStorage.setItem('formId', 6)
@@ -1616,11 +1506,179 @@ function AddFacility(props) {
                                                 
                                                 setFormId(window.sessionStorage.getItem('formId'))
                                             }
+
+                                            const handleAddInfrastractuer = (event) => {
+                                                event.preventDefault()
+                                                const divContainer = facilityInfrastructureRef.current
+
+                                                const dropDownInfrastractuer = document.createElement('select')
+                                                
+
+                                                dropDownInfrastractuer.setAttribute('style', `
+                                                width:100%; 
+                                                border: 1px solid hsl(0, 0%, 80%); 
+                                                border-radius: 4px; 
+                                                padding: 2px; 
+                                                background-color: hsl(0, 0%, 100%); 
+                                                display: grid; 
+                                                min-height: 38px;
+                                                `)
+
+                                                dropDownInfrastractuer.setAttribute('placeholder', 'Select Service')
+
+                                                dropDownInfrastractuer.setAttribute('name', 'dropdown_infrastructure_name')
+
+                                               
+                                                const option0 = document.createElement('option')
+                                                option0.innerText = 'Select Infrastracture Type'
+                                                option0.value = 'Select Infrastracture'
+
+
+                                                const option1 = document.createElement('option')
+                                                option1.innerText = 'Wireless Mobile'
+                                                option1.value = 'Wireless Mobile'
+
+                                                const option2 = document.createElement('option')
+                                                option2.innerText = 'Piped Water'
+                                                option2.value = 'Piped Water'
+
+                                                const option3= document.createElement('option')
+                                                option3.innerText = 'Main Grid'
+                                                option3.value = 'Main Grid'
+
+                                                const option4 = document.createElement('option')
+                                                option4.innerText = 'Laptops'
+                                                option4.value = 'Laptops'
+
+                                                const option5 = document.createElement('option')
+                                                option5.innerText = 'Incinerator'
+                                                option5.value = 'Incinerator'
+
+
+                                                dropDownInfrastractuer.appendChild(option0.getRootNode())
+                                                dropDownInfrastractuer.appendChild(option1.getRootNode())
+                                                dropDownInfrastractuer.appendChild(option2.getRootNode())
+                                                dropDownInfrastractuer.appendChild(option3.getRootNode())
+                                                dropDownInfrastractuer.appendChild(option4.getRootNode())
+
+                                                divContainer.appendChild(dropDownInfrastractuer.getRootNode())
+
+                                                const dropDownYesNo = document.createElement('select')
+                                                
+
+                                                dropDownYesNo.setAttribute('style', `
+                                                width:100%; 
+                                                border: 1px solid hsl(0, 0%, 80%); 
+                                                border-radius: 4px; 
+                                                padding: 2px; 
+                                                background-color: hsl(0, 0%, 100%); 
+                                                display: grid; 
+                                                min-height: 38px;
+                                                `)
+
+                                                dropDownYesNo.setAttribute('placeholder', 'Select Service Option')
+
+                                                dropDownYesNo.setAttribute('name', 'dropdown_infrastructure_option')
+
+                                                const optionDefault = document.createElement('option')
+                                                optionDefault.innerText = 'Select Infrastructure Option'
+                                                optionDefault.value = 'Select Infrastructure Option'
+
+                                                const optionYes = document.createElement('option')
+                                                optionYes.innerText = 'Yes'
+                                                optionYes.value = 'Yes'
+                                                
+                                                const optionNo = document.createElement('option')
+                                                optionNo.innerText = 'No'
+                                                optionNo.value = 'No'
+
+                                                dropDownYesNo.appendChild(optionDefault.getRootNode())
+                                                dropDownYesNo.appendChild(optionYes.getRootNode())
+                                                dropDownYesNo.appendChild(optionNo.getRootNode())
+
+                                                divContainer.appendChild(dropDownYesNo.getRootNode())
+
+                                                
+                                            }
                                             
                                             return (
                                                 <>  
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastructure</h4>
-                                                    <form name="facility_infrastructure_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleInfrastractuerSubmit}>
+                                                    <form name="facility_infrastructure_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleInfrastructureSubmit}>
+                                                        
+                                                        <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityInfrastructureRef}>
+                                                            {/* Infrastructure Name */}
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Name</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Option</h3>
+                                                            <hr className='col-span-2'/>
+                                                        
+                                                            {/* Service Name */}
+                                                            <Select options={
+                                                                            [
+                                                                                {
+                                                                                    value:'Wireless Mobile',
+                                                                                    label: 'Wireless Mobile'
+                                                                                },
+                                                                                {
+                                                                                    value:'Piped Water',
+                                                                                    label: 'Piped Water'
+                                                                                },
+                                                                                {
+                                                                                    value:'Main Grid',
+                                                                                    label: 'Main Grid'
+                                                                                },
+                                                                                {
+                                                                                    value:'Laptops',
+                                                                                    label: 'Laptops'
+                                                                                },
+                                                                                {
+                                                                                    value:'Incinerator',
+                                                                                    label: 'Incinerator'
+                                                                                }
+                                                                                
+                                                                        
+                                                                            ]
+                                                                        } 
+                                                                        required
+                                                                        placeholder="Select Infrastructure Type"
+                                                                        onChange={
+                                                                            () => console.log('changed')
+                                                                        }
+                                                                        name="service_name" 
+                                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+
+                                                                        {/* Service Option */}
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value:'Yes',
+                                                                                    label:'Yes'
+                                                                                },
+                                                                                {
+                                                                                    value:'No',
+                                                                                    label:'No'
+                                                                                }
+                
+                                                                            ]}
+                                                                            required
+                                                                            placeholder="Select Contact Type"
+                                                                            onChange={
+                                                                                () => console.log('changed')
+                                                                            }
+                                                                            name="service_option" 
+                                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> 
+
+                                                                            {/* Append other dropdowns */}
+                                                                        
+                
+                                                        </div>
+                                                        <div className='w-full flex justify-end items-center mt-2'>
+                                                            <button onClick={handleAddInfrastractuer} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                                <PlusIcon className='w-4 h-4 text-white'/>
+                                                                <p className='text-medium font-semibold text-white'>Add</p>
+                                                            </button>
+                                                        </div>
+
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleInfrastructurePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
@@ -1655,6 +1713,81 @@ function AddFacility(props) {
                                                 <>  
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human Resources</h4>
                                                     <form name="facility_hr_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleResourcesSubmit}>
+                                                        
+                                                        
+                                                    <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityInfrastructureRef}>
+                                                            {/* Infrastructure Name */}
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Name</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Option</h3>
+                                                            <hr className='col-span-2'/>
+                                                        
+                                                            {/* Service Name */}
+                                                            <Select options={
+                                                                            [
+                                                                                {
+                                                                                    value:'Wireless Mobile',
+                                                                                    label: 'Wireless Mobile'
+                                                                                },
+                                                                                {
+                                                                                    value:'Piped Water',
+                                                                                    label: 'Piped Water'
+                                                                                },
+                                                                                {
+                                                                                    value:'Main Grid',
+                                                                                    label: 'Main Grid'
+                                                                                },
+                                                                                {
+                                                                                    value:'Laptops',
+                                                                                    label: 'Laptops'
+                                                                                },
+                                                                                {
+                                                                                    value:'Incinerator',
+                                                                                    label: 'Incinerator'
+                                                                                }
+                                                                                
+                                                                        
+                                                                            ]
+                                                                        } 
+                                                                        required
+                                                                        placeholder="Select Infrastructure Type"
+                                                                        onChange={
+                                                                            () => console.log('changed')
+                                                                        }
+                                                                        name="service_name" 
+                                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+
+                                                                        {/* Service Option */}
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value:'Yes',
+                                                                                    label:'Yes'
+                                                                                },
+                                                                                {
+                                                                                    value:'No',
+                                                                                    label:'No'
+                                                                                }
+                
+                                                                            ]}
+                                                                            required
+                                                                            placeholder="Select Contact Type"
+                                                                            onChange={
+                                                                                () => console.log('changed')
+                                                                            }
+                                                                            name="service_option" 
+                                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> 
+
+                                                                            {/* Append other dropdowns */}
+                                                                        
+                
+                                                        </div>
+                                                        <div className='w-full flex justify-end items-center mt-2'>
+                                                            <button onClick={handleAddInfrastractuer} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                                <PlusIcon className='w-4 h-4 text-white'/>
+                                                                <p className='text-medium font-semibold text-white'>Add</p>
+                                                            </button>
+                                                        </div>
+                                                        
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleResourcesPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
