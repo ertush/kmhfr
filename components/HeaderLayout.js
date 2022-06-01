@@ -207,7 +207,7 @@ export default function HeaderLayout({
                     className="flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <span className={
-                      (currentPath == "/reports"
+                      (currentPath == "/reports/static_reports" || currentPath == "/reports/dynamic_reports" 
                       ? activeClasses
                       : inactiveClasses) + " text-base md:text-lg font-semibold leading-none p-0 hidden sm:inline"
                       }>
