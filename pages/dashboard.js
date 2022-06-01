@@ -39,7 +39,8 @@ const Dash = (props) => {
         }
         return () => { mtd = false }
     }, [filters])
-
+   console.log(props?.data)
+//    {props?.data?.owner_types.map((p)=>console.log(p.name))}
 
     return (
         <div className="">
@@ -144,6 +145,47 @@ const Dash = (props) => {
                             </pre>
                         </details>
                     </div> */}
+
+                    {/* Facilities summary 1/3 - FILTERABLE */}
+                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility owners </h4>
+                        <table className="w-full text-sm md:text-base p-2">
+                            <thead className="border-b border-gray-300">
+                                <tr>
+                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-lg">
+                                {props?.data?.owner_types.map((ot)=>(
+                                    <tr>
+                                     <><td className="table-cell text-left text-gray-900 p-2">{ot.name}</td>
+                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ot.count || 0}</td></>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Types </h4>
+                        <table className="w-full text-sm md:text-base p-2">
+                            <thead className="border-b border-gray-300">
+                                <tr>
+                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-lg">
+                                {props?.data?.types_summary.map((ts)=>(
+                                    <tr>
+                                     <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
                     {/* Facilities summary 1/3 - FILTERABLE */}
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
@@ -332,10 +374,13 @@ Dash.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        let url = API_URL + '/facilities/dashboard/'
+        let url = API_URL + '/facilities/dashboard/?field=*'
+
+        // url += `&search={"query":{"query_string":{"field":"keph_level"}}}`
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
+            console.log({ctx:ctx.query.q});
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
         let other_posssible_filters = ["county"]
