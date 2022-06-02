@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
+import moment from 'moment'
 
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 import { Grid, GridOptions } from '@ag-grid-community/core';
@@ -158,6 +159,9 @@ const Reports = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [linelist, setlinelist] = useState(null);
+    const [linelist2, setlinelist2] = useState(null);
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');
 
     const onGridReady = (params) => {
         setGridApi(params.api);
@@ -173,8 +177,20 @@ const Reports = (props) => {
             return dtpnt
         })
         setlinelist(lnlst)
-        updateData(lnlst)
+        setlinelist2(lnlst)
+        updateData(lnlst)  
     };
+   
+    useEffect(()=>{
+      if( fromDate!=='' && toDate!==''){
+          const results = linelist2?.filter(data=>new Date(moment(data.created).format('YYYY/MM/DD')).getTime() >= new Date(moment(fromDate).format('YYYY/MM/DD')).getTime() && new Date(moment(data.created).format('YYYY/MM/DD')).getTime() <= new Date(moment(toDate).format('YYYY/MM/DD')).getTime()).map((r)=>{return r})
+          setlinelist(results)
+      }else{
+
+          setlinelist(linelist2)
+      }
+      
+    }, [linelist, fromDate, toDate])
 
     // useEffect(() => {
     //     let mtd = true; 
@@ -237,7 +253,7 @@ const Reports = (props) => {
                         </div>
 
                         <div className="flex flex-wrap gap-2 text-sm md:text-base items-center justify-between">
-                            <div className="flex flex-col items-start justify-start">
+                            <div className="flex items-start justify-start">
                                 <h1 className="text-3xl tracking-tight font-bold leading-none flex items-center justify-start gap-x-2">
                                     Dynamic Reports
                                 </h1>
@@ -250,13 +266,26 @@ const Reports = (props) => {
                                 
                             </div>
                             {/* ((((((( dropdown options to download data */}
-                            <div>
+                            <div className='flex items-start justify-start gap-1 mb-3 col-md-6'>
+                            <div  className="col-md-2" >
+                                <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">From date:<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                <input required type="date" name="from_date" onChange={(e)=>setFromDate(e.target.value)} value={fromDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                            </div>
+                            <div  className="col-md-2" >
+                                <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                <input required type="date" name="to_date" onChange={(e)=>setToDate(e.target.value)} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                            </div>
+                            <div  className="col-md-2" >
+                                <label></label>
                                 <button className={"flex items-center justify-start rounded bg-green-600 text-center hover:bg-green-900 focus:bg-black text-white font-semibold active:bg-black py-2 px-4 uppercase text-base w-full"} onClick={() => {
                                     gridApi.exportDataAsCsv();
+                                    setFromDate(''); 
+                                    setToDate('')
                                 }}>
                                     <DownloadIcon className="w-4 h-4 mr-1" />
                                     <span>Download Report</span>
                                 </button>
+                                </div>
                             </div>
                             {/* ))))))) dropdown options to download data */}
 
@@ -398,7 +427,6 @@ const Reports = (props) => {
                                                     headerClass="uppercase"
                                                     cellClass="p-0 text-sm leading-none capitalize"
                                                     sortable={true}
-                                                    filter={true}
                                                     key={v_ + "_" + i}
                                                     field={v_}
                                                     headerName={v_.replaceAll("_category","").replaceAll("_name","").split("_").join(" ")}
@@ -437,11 +465,11 @@ Reports.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
     const fetchData = (token) => {
-        let url = API_URL + `/facilities/material/?format=json&access_token=${token}&fields=id,code,name,official_name,regulatory_status_name,updated,facility_type_name,owner_name,county,sub_county_name,rejected,ward_name,keph_level,keph_level_name,constituency_name,is_complete,in_complete_details,approved,is_approved,approved_national_level&page_size=1000`
+        let url = API_URL + `/facilities/material/?format=json&access_token=${token}&fields=id,code,name,official_name,regulatory_status_name,updated,facility_type_name,owner_name,county,sub_county_name,rejected,ward_name,keph_level,keph_level_name,constituency_name,is_complete,in_complete_details,approved,is_approved,approved_national_level,created&page_size=1000`
         let query = { 'searchTerm': '' }
 
         // let current_url = url + '&page_size=100000' //change the limit on prod
-        let current_url = url + '&page_size=100000'
+        let current_url = url + '&page_size=1000'
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }

@@ -39,9 +39,7 @@ const Dash = (props) => {
         }
         return () => { mtd = false }
     }, [filters])
-   console.log(props?.data)
-//    {props?.data?.owner_types.map((p)=>console.log(p.name))}
-
+console.log(props?.data);
     return (
         <div className="">
             <Head>
@@ -157,8 +155,8 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                                {props?.data?.owner_types.map((ot)=>(
-                                    <tr>
+                                {props?.data?.owner_types.map((ot,i)=>(
+                                    <tr key={i}>
                                      <><td className="table-cell text-left text-gray-900 p-2">{ot.name}</td>
                                         <td className="table-cell text-right font-semibold text-gray-900 p-2">{ot.count || 0}</td></>
                                     </tr>
@@ -177,8 +175,8 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                                {props?.data?.types_summary.map((ts)=>(
-                                    <tr>
+                                {props?.data?.types_summary.map((ts,i)=>(
+                                    <tr key={i}>
                                      <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
                                         <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
                                     </tr>
@@ -374,13 +372,10 @@ Dash.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        let url = API_URL + '/facilities/dashboard/?field=*'
-
-        // url += `&search={"query":{"query_string":{"field":"keph_level"}}}`
+        let url = API_URL + '/facilities/dashboard/'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
-            console.log({ctx:ctx.query.q});
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
         let other_posssible_filters = ["county"]

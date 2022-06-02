@@ -27,6 +27,7 @@
     "highcharts-react-official": "^3.0.0",
     "leaflet": "^1.7.1",
     "leaflet-geosearch": "^3.3.2",
+    "moment": "^2.29.3",
     "next": "latest",
     "next-cookies": "^2.0.3",
     "nprogress": "^0.2.0",
