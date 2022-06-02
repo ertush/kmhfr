@@ -5,8 +5,7 @@ import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
 import React, { useState, useRef } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-// import { Menu } from '@headlessui/react'
-// import { ChevronDownIcon } from '@heroicons/react/outline'
+
 import Select from 'react-select'
 
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
@@ -62,79 +61,6 @@ const DynamicReports = (props) => {
    
 
 
-    // let quickFilters = [
-    //     {
-    //         name: 'All',
-    //         id: 'all',
-    //         filters: Object.keys(filters),
-    //     },
-    //     {
-    //         name: 'Approved',
-    //         id: 'approved',
-    //         filters: [
-    //             { id: "is_approved", value: true },
-    //         ],
-    //     },
-    //     {
-    //         name: 'New pending validation',
-    //         id: 'new_pending_validation',
-    //         filters: [
-    //             { id: "has_edits", value: false },
-    //             { id: "pending_approval", value: false },
-    //         ],
-    //     },
-    //     {
-    //         name: 'Updated pending validation',
-    //         id: 'updated_pending_validation',
-    //         filters: [
-    //             { id: "has_edits", value: true },
-    //             { id: "pending_approval", value: true },
-    //         ],
-    //     },
-    //     {
-    //         name: 'Pending approval',
-    //         id: 'pending_approval',
-    //         filters: [
-    //             { id: "to_publish", value: true },
-    //         ],
-    //     },
-    //     {
-    //         name: 'KHIS-synched',
-    //         id: 'khis_synched',
-    //         filters: [
-    //             { id: "approved", value: true },
-    //             { id: "approved_national_level", value: true },
-    //             { id: "rejected", value: false },
-    //             { id: "reporting_in_dhis", value: true },
-    //             { id: "admitting_maternity_general", value: true },
-    //             { id: "admitting_maternity_only", value: true },
-    //         ],
-    //     },
-    //     {
-    //         name: 'Incomplete',
-    //         id: 'incomplete',
-    //         filters: [
-    //             { id: "incomplete", value: true },
-    //         ]
-    //     },
-    //     {
-    //         name: 'Rejected',
-    //         id: 'rejected',
-    //         filters: [
-    //             { id: "rejected_national", value: true },
-    //         ]
-    //     },
-    //     {
-    //         name: 'Closed',
-    //         id: 'closed',
-    //         filters: [
-    //             { id: "closed", value: true },
-    //         ]
-    //     },
-    // ]
-    // let headers_og = [
-    //     "code", "name", "officialname", "registration_number", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county", "sub_county_name", "ward_name", "operation_status_name", "admission_status_name", "open_whole_day", "open_public_holidays", "open_weekends", "open_late_night", "service_names", "approved", "is_public_visible", "created", "closed", "is_published", "lat", "long",
-    // ]
     let headers = [
         "code", "officialname", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county_name", "ward_name", "admission_status_name", "service_names", "created", "closed",
     ]
@@ -197,24 +123,7 @@ const DynamicReports = (props) => {
         updateData(lnlst)
     };
 
- 
 
-    // useEffect(() => {
-    //     let mtd = true; 
-    //     if(mtd){
-    //         let lnlst = Array.from(props.data.results, row => {
-    //             let dtpnt = {}
-    //             headers.forEach(col => {
-    //                 dtpnt[col] = row[col]
-    //             })
-    //             return dtpnt
-    //         })
-    //         setlinelist(lnlst)
-    //     }
-    //     return () => {
-    //         mtd = false;
-    //     }
-    // }, [props.data.results])
 
 
     return (
@@ -232,34 +141,7 @@ const DynamicReports = (props) => {
                                 <span className="text-gray-500">Reports</span> {'>'}
                                 <span className="text-gray-500">Dynamic Reports</span>
                             </div>
-                            {/* <div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-0 text-sm md:text-base py-1 hidden">
-                                {quickFilters.map((qf, i) => {
-                                    return (
-                                        <button
-                                            key={qf.id + "_" + i}
-                                            style={{ paddingTop: '2px', paddingBottom: '2px' }}
-                                            className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium hover:border-green-400 focus:ring-1 focus:ring-blue-500 text-sm ${currentQuickFilter == qf.id ? "bg-green-800 border-green-800 text-green-50" : "text-gray-800 border-gray-300"}`}
-                                            onClick={evt => {
-                                                setCurrentQuickFilter(qf.id)
-                                                let robj = { pathname: '/facilities', query: { qf: qf.id } }
-                                                if (qf.id === 'all') {
-                                                    router.push(robj)
-                                                    return
-                                                }
-                                                quickFilters.forEach(q_f => {
-                                                    if (q_f.id === qf.id) {
-                                                        q_f.filters.map(sf => {
-                                                            robj.query[sf.id] = sf.value
-                                                        })
-                                                    }
-                                                })
-                                                router.push(robj)
-                                            }}>
-                                            {qf.name}
-                                        </button>
-                                    )
-                                })}
-                            </div> */}
+                           
                         </div>
 
                         <div className="flex flex-wrap gap-2 text-sm md:text-base items-center justify-between">
@@ -314,8 +196,7 @@ const DynamicReports = (props) => {
                                                                                 nf[ft] = sl.value
                                                                             } else {
                                                                                 delete nf[ft]
-                                                                                // let rr = drillDown.filter(d => d.key !== ft)
-                                                                                // setDrilldown(rr)
+                                                                                
                                                                             }
                                                                             setDrillDown({ ...drillDown, ...nf })
                                                                         }} />
@@ -437,7 +318,7 @@ const DynamicReports = (props) => {
                                     {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('ndefined') &&
                                         `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') || k.split('_').join(' ') : k.split('_').join(' ')})`)?.join(' & ')}`
                                     }
-                                    {/* {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>} */}
+                                    
                                 </h5>
                                 
                             </div>
@@ -473,19 +354,14 @@ const DynamicReports = (props) => {
                                             return false
                                         }}>
                                             {scoped_filters && Object.keys(scoped_filters).length > 0 &&
-                                                // Object.keys(scoped_filters).map(ft => (
+                                                
                                                 scoped_filters.map((ft, ky) => (
                                                     <div key={ft + "_" + ky} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                         <label htmlFor={ft} className="text-gray-600 capitalize text-xs">{ft.name.split('_').join(' ')}</label>
                                                         <Select isMulti={multiFilters.includes(ft.name)} name={ft.name} defaultValue={drillDown[ft.name] || ""} id={ft.name}instanceId={ft.name} className="w-full p-px rounded bg-gray-50 text-sm"
                                                             options={
                                                                 ft.options.map(v => ({ value: v, label: v }))
-                                                                // Array.from(filters[ft] || [],
-                                                                //     fltopt => {
-                                                                //         return {
-                                                                //             value: fltopt.id, label: fltopt.name
-                                                                //         }
-                                                                //     })
+                                                            
                                                             }
                                                             placeholder={ft.name.split('_').join(' ')[0].toUpperCase() + ft.name.split('_').join(' ').slice(1)}
                                                             onChange={sl => {
@@ -496,8 +372,7 @@ const DynamicReports = (props) => {
                                                                     nf[ft] = sl.value
                                                                 } else {
                                                                     delete nf[ft]
-                                                                    // let rr = drillDown.filter(d => d.key !== ft)
-                                                                    // setDrilldown(rr)
+                                                                  
                                                                 }
                                                                 setDrillDown({ ...drillDown, ...nf })
                                                             }} />
@@ -529,12 +404,12 @@ const DynamicReports = (props) => {
                                             }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
                                             <div className="w-full flex items-center py-2 justify-center">
                                                 <button className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline" onClick={ev => {
-                                                    router.push('/facilities')
+                                                    router.push('/reports/dynamic_reports')
                                                 }}>Clear filters</button>
                                             </div>
                                         </form>
                                     )
-                                }
+                                }   
                             </div>
                         </details>
                     </aside>
@@ -560,26 +435,7 @@ const DynamicReports = (props) => {
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
                                     rowData={linelist}>
-                                        {/* <AgGridColumn field="code" headerName="MFL Code" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" pinned sortable={true} filter={true} />
-                                        <AgGridColumn field="officialname" pinned headerName="Official Name" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="operation_status_name" pinned headerName="Operation Status" headerClass="uppercase" filtertype="list" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="approved" headerName="Approved?" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="keph_level_name" headerName="KEPS Level" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="county_name" headerName="County" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="sub_county_name" headerName="Sub-county" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="constituency_name" headerName="Constituency" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="ward_name" headerName="Ward" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="facility_type_name" headerName="Type" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="facility_type_category" headerName="Category" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="owner_name" headerName="Owner" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="owner_type_name" headerName="Owner Type" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="regulatory_body_name" headerName="Regulatory Body" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="beds" headerName="Beds" sortable={true} filter={true} />
-                                        <AgGridColumn field="cots" headerName="Cots" sortable={true} filter={true} />
-                                        <AgGridColumn field="admission_status_name" headerName="Admission Status" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="service_names" headerName="Services" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="created" headerName="Date Created" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="closed" headerName="Closed?" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} /> */}
+                                        
                                     {headers.map((v_, i) => {
                                         if(v_.length > 3){
                                             return (

@@ -148,6 +148,8 @@ const Home = (props) => {
             return
         }
     }
+
+    
     useEffect(() => {
         let qry = props?.query
         console.log({props})
