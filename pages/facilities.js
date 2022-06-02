@@ -11,8 +11,7 @@ import Select from 'react-select'
 
 const Home = (props) => {
     const router = useRouter()
-    // console.log('props:::', Object.keys(props))
-    // console.log('props:::', props)
+   
     let facilities = props?.data?.results
     let filters = props?.filters
     let fltrs = filters
@@ -148,8 +147,6 @@ const Home = (props) => {
             return
         }
     }
-
-    
     useEffect(() => {
         let qry = props?.query
         console.log({props})

@@ -19,8 +19,6 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import reactDom from 'react-dom'
-
 
 
 
@@ -33,6 +31,8 @@ const DynamicReports = (props) => {
  
     let filters = props?.filters
     let fltrs = filters
+
+    const formRef = useRef(null)
 
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -51,7 +51,7 @@ const DynamicReports = (props) => {
     delete fltrs.open_weekends
     delete fltrs.open_public_holidays
 
-    const filterAccordianRef = useRef(null)
+    
   
 
     let qf = props?.query?.qf || 'all'
@@ -89,7 +89,7 @@ const DynamicReports = (props) => {
         { "name": "is_published", "options": [] },
     ]
 
-    if (props.data.results.length > 0) {
+    if (props?.data?.results?.length > 0) {
         scoped_filters.forEach(filter => {
             let options = []
             props.data.results.forEach(r_ => {
@@ -112,7 +112,7 @@ const DynamicReports = (props) => {
 
         const updateData = (data) => params.api.setRowData(data);
 
-        const lnlst = Array.from(props.data.results, row => {
+        const lnlst = Array.from(props?.data?.results, row => {
             let dtpnt = {}
             headers.forEach(col => {
                 dtpnt[col] = row[col]
@@ -157,7 +157,7 @@ const DynamicReports = (props) => {
                                             <p>No filters.</p>
                                         </div>)
                                         : (
-                                            <Accordion sx={{my:3, width:'100%'}} ref={filterAccordianRef}>
+                                            <Accordion sx={{my:3, width:'100%'}}>
                                                         <AccordionSummary
                                                             expandIcon={<ExpandMoreIcon />}
                                                             aria-controls="panel1a-content"
@@ -169,7 +169,7 @@ const DynamicReports = (props) => {
                                                                <p> Filter Reports By...</p></h2>
                                                         </AccordionSummary>
                                                         <AccordionDetails>
-                                            <form action="/" className="grid grid-cols-7 gap-2 w-full m-1" onSubmit={ev => {
+                                            <form action="/" className="grid grid-cols-7 gap-2 w-full m-1" ref={formRef} onSubmit={ev => {
                                                 ev.preventDefault()
                                                 return false
                                             }}>
@@ -183,7 +183,8 @@ const DynamicReports = (props) => {
                                                                             Array.from(filters[ft] || [],
                                                                                 fltopt => {
                                                                                     return {
-                                                                                        value: fltopt.id, label: fltopt.name
+                                                                                        value: fltopt.id, 
+                                                                                        label: fltopt.name
                                                                                     }
                                                                                 })
                                                                         }
@@ -300,7 +301,21 @@ const DynamicReports = (props) => {
      
                                                 
                                                 <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
-                                                        router.push('/facilities')
+                                                       ev.preventDefault()
+                                                       const fields = formRef.current;
+
+                                                       console.log({fields})
+
+                                                       for (let i = 0; i < fields.length; i++ ){
+                                                           if (fields[i].nodeName == "INPUT")
+                                                                fields[i].value = ''
+                                                       }    
+
+                                                    //    fields.current.forEach(field => {
+                                                           
+                                                    //    })
+                                                    //    router.push('/facilities')
+                                                                                                    
                                                     }}>Clear filters</button>
                                                 </div>
                                                 
@@ -404,7 +419,9 @@ const DynamicReports = (props) => {
                                             }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
                                             <div className="w-full flex items-center py-2 justify-center">
                                                 <button className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline" onClick={ev => {
-                                                    router.push('/reports/dynamic_reports')
+                                                    // router.push('/reports/dynamic_reports')
+                                                    const fields = formRef.current.children
+                                                    console.log({fields})
                                                 }}>Clear filters</button>
                                             </div>
                                         </form>
@@ -504,7 +521,6 @@ DynamicReports.getInitialProps = async (ctx) => {
 
     const fetchData = (token) => {
 
-    
         let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
@@ -526,7 +542,7 @@ DynamicReports.getInitialProps = async (ctx) => {
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
-        // console.log('running fetchData(' + url + ')')
+        console.log('running fetchData(' + url + ')')
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

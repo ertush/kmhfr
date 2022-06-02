@@ -3,10 +3,18 @@ import Head from 'next/head'
 import MainLayout from '../../components/MainLayout'
 import { List, ListItem, ListItemText } from '@mui/material'
 import { DownloadIcon } from '@heroicons/react/solid'
+import { checkToken } from '../../controllers/auth/auth'
+import { useEffect } from 'react'
 
 
 
 const StaticReports = (props) => {
+
+  useEffect(() => {
+    console.log({data: props?.data})
+  }, [])
+
+
   return (
     <div className="">
             <Head>
@@ -53,8 +61,112 @@ const StaticReports = (props) => {
   )
 }
 
-// StaticReports.getInitialProps = async (ctx) => {
+StaticReports.getInitialProps = async (ctx) => {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-// }
+  const fetchFilters = token => {
+      // let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Csub_county'
+      let filters_url = API_URL + '/common/filtering_summaries/?fields=county'
+      return fetch(filters_url, {
+          headers: {
+              'Authorization': 'Bearer ' + token,
+              'Accept': 'application/json'
+          }
+      }).then(r => r.json())
+          .then(jzon => {
+              return jzon
+          }).catch(err => {
+              console.log('Error fetching filters: ', err)
+              return {
+                  error: true,
+                  err: err,
+                  filters: [],
+                  api_url: API_URL
+              }
+          })
+  }
+
+  const fetchData = (token) => {
+      let url = API_URL + '/reports/static_reports'
+      let query = { 'searchTerm': '' }
+      if (ctx?.query?.q) {
+          query.searchTerm = ctx.query.q
+          url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
+      }
+      let other_posssible_filters = ["county"]
+
+      other_posssible_filters.map(flt => {
+          if (ctx?.query[flt]) {
+              query[flt] = ctx?.query[flt]
+              if (url.includes('?')) {
+                  url += `&${flt}=${ctx?.query[flt]}`
+              } else {
+                  url += `?${flt}=${ctx?.query[flt]}`
+              }
+          }
+      })
+      console.log('running fetchData(' + url + ')')
+
+      return fetch(url, {
+          headers: {
+              'Authorization': 'Bearer ' + token,
+              'Accept': 'application/json'
+          }
+      }).then(r => r.json())
+          .then(json => {
+              return {
+                  data: json, query, path: ctx.asPath || '/reports/static_reports', current_url: url, api_url: process.env.NEXT_PUBLIC_API_URL
+              }
+          })
+          .then(json => {
+              return fetchFilters(token).then(ft => {
+                  return {
+                      data: json, query, filters: { ...ft }, path: ctx.asPath || '/dashboard', current_url: url, api_url: API_URL
+                  }
+              })
+          })
+          .catch(err => {
+              console.log('Error fetching dynamic reports: ', err)
+              return {
+                  error: true,
+                  err: err,
+                  data: [],
+                  query: {},
+                  filters: {},
+                  path: ctx.asPath || '/reports/static_reports',
+                  current_url: '',
+                  api_url: API_URL
+              }
+          })
+  }
+  return checkToken(ctx.req, ctx.res).then(t => {
+      if (t.error) {
+          throw new Error('Error checking token')
+      } else {
+          let token = t.token
+          return fetchData(token).then(t => t)
+      }
+  }).catch(err => {
+      console.log('Error checking token: ', err)
+      if (typeof window !== 'undefined' && window) {
+          if (ctx?.asPath) {
+              window.location.href = ctx?.asPath
+          } else {
+              window.location.href = '/reports/static_reports'
+          }
+      }
+      setTimeout(() => {
+          return {
+              error: true,
+              err: err,
+              data: [],
+              query: {},
+              path: ctx.asPath || '/reports/static_reports',
+              current_url: '',
+              api_url: API_URL
+          }
+      }, 1000);
+  })
+}
 
 export default StaticReports
