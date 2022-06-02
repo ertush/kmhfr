@@ -1,119 +1,140 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import MainLayout from '../components/MainLayout'
-import { DotsHorizontalIcon, DownloadIcon, PencilIcon } from '@heroicons/react/solid'
-import React, { useState, useEffect } from 'react'
-import { checkToken } from '../controllers/auth/auth'
+import MainLayout from '../../components/MainLayout'
+import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
+import React, { useState, useRef } from 'react'
+import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { Menu } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/outline'
+// import { Menu } from '@headlessui/react'
+// import { ChevronDownIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
 
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
-import { Grid, GridOptions } from '@ag-grid-community/core';
+// import { Grid, GridOptions } from '@ag-grid-community/core';
 import { LicenseManager, EnterpriseCoreModule } from '@ag-grid-enterprise/core';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
-const Reports = (props) => {
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import reactDom from 'react-dom'
+
+
+
+
+const DynamicReports = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
-    // console.log('propkeys:::', Object.keys(props))
-    // console.log('props:::', props)
-    const { data, query, path, current_url } = props
+ 
+    // const { data, query, path, current_url } = props
     const router = useRouter()
-    let filters = []
-    let fltrs = {}
-    Object.keys(props.data.results[0]).forEach(key => {
-        if (key !== 'id' && key !== 'created_at' && key !== 'updated_at') {
-            filters.push({
-                name: key,
-                value: key
-            })
-            fltrs[key] = {
-                name: key.split('_').join(' '),
-                id: key
-            }
-        }
-    })
+ 
+    let filters = props?.filters
+    let fltrs = filters
+
+    filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
+    filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
+    filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
+    filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
+    filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
+    filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
+    filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
+    filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
+    delete fltrs.has_edits
+    delete fltrs.is_approved
+    delete fltrs.is_complete
+    delete fltrs.number_of_beds
+    delete fltrs.number_of_cots
+    delete fltrs.open_whole_day
+    delete fltrs.open_weekends
+    delete fltrs.open_public_holidays
+
+    const filterAccordianRef = useRef(null)
+  
+
     let qf = props?.query?.qf || 'all'
-    let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
+    // let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
     let [drillDown, setDrillDown] = useState({})
     let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
-    let quickFilters = [
-        {
-            name: 'All',
-            id: 'all',
-            filters: Object.keys(filters),
-        },
-        {
-            name: 'Approved',
-            id: 'approved',
-            filters: [
-                { id: "is_approved", value: true },
-            ],
-        },
-        {
-            name: 'New pending validation',
-            id: 'new_pending_validation',
-            filters: [
-                { id: "has_edits", value: false },
-                { id: "pending_approval", value: false },
-            ],
-        },
-        {
-            name: 'Updated pending validation',
-            id: 'updated_pending_validation',
-            filters: [
-                { id: "has_edits", value: true },
-                { id: "pending_approval", value: true },
-            ],
-        },
-        {
-            name: 'Pending approval',
-            id: 'pending_approval',
-            filters: [
-                { id: "to_publish", value: true },
-            ],
-        },
-        {
-            name: 'KHIS-synched',
-            id: 'khis_synched',
-            filters: [
-                { id: "approved", value: true },
-                { id: "approved_national_level", value: true },
-                { id: "rejected", value: false },
-                { id: "reporting_in_dhis", value: true },
-                { id: "admitting_maternity_general", value: true },
-                { id: "admitting_maternity_only", value: true },
-            ],
-        },
-        {
-            name: 'Incomplete',
-            id: 'incomplete',
-            filters: [
-                { id: "incomplete", value: true },
-            ]
-        },
-        {
-            name: 'Rejected',
-            id: 'rejected',
-            filters: [
-                { id: "rejected_national", value: true },
-            ]
-        },
-        {
-            name: 'Closed',
-            id: 'closed',
-            filters: [
-                { id: "closed", value: true },
-            ]
-        },
-    ]
-    let headers_og = [
-        "code", "name", "officialname", "registration_number", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county", "sub_county_name", "ward_name", "operation_status_name", "admission_status_name", "open_whole_day", "open_public_holidays", "open_weekends", "open_late_night", "service_names", "approved", "is_public_visible", "created", "closed", "is_published", "lat", "long",
-    ]
+   
+
+
+    // let quickFilters = [
+    //     {
+    //         name: 'All',
+    //         id: 'all',
+    //         filters: Object.keys(filters),
+    //     },
+    //     {
+    //         name: 'Approved',
+    //         id: 'approved',
+    //         filters: [
+    //             { id: "is_approved", value: true },
+    //         ],
+    //     },
+    //     {
+    //         name: 'New pending validation',
+    //         id: 'new_pending_validation',
+    //         filters: [
+    //             { id: "has_edits", value: false },
+    //             { id: "pending_approval", value: false },
+    //         ],
+    //     },
+    //     {
+    //         name: 'Updated pending validation',
+    //         id: 'updated_pending_validation',
+    //         filters: [
+    //             { id: "has_edits", value: true },
+    //             { id: "pending_approval", value: true },
+    //         ],
+    //     },
+    //     {
+    //         name: 'Pending approval',
+    //         id: 'pending_approval',
+    //         filters: [
+    //             { id: "to_publish", value: true },
+    //         ],
+    //     },
+    //     {
+    //         name: 'KHIS-synched',
+    //         id: 'khis_synched',
+    //         filters: [
+    //             { id: "approved", value: true },
+    //             { id: "approved_national_level", value: true },
+    //             { id: "rejected", value: false },
+    //             { id: "reporting_in_dhis", value: true },
+    //             { id: "admitting_maternity_general", value: true },
+    //             { id: "admitting_maternity_only", value: true },
+    //         ],
+    //     },
+    //     {
+    //         name: 'Incomplete',
+    //         id: 'incomplete',
+    //         filters: [
+    //             { id: "incomplete", value: true },
+    //         ]
+    //     },
+    //     {
+    //         name: 'Rejected',
+    //         id: 'rejected',
+    //         filters: [
+    //             { id: "rejected_national", value: true },
+    //         ]
+    //     },
+    //     {
+    //         name: 'Closed',
+    //         id: 'closed',
+    //         filters: [
+    //             { id: "closed", value: true },
+    //         ]
+    //     },
+    // ]
+    // let headers_og = [
+    //     "code", "name", "officialname", "registration_number", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county", "sub_county_name", "ward_name", "operation_status_name", "admission_status_name", "open_whole_day", "open_public_holidays", "open_weekends", "open_late_night", "service_names", "approved", "is_public_visible", "created", "closed", "is_published", "lat", "long",
+    // ]
     let headers = [
         "code", "officialname", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county_name", "ward_name", "admission_status_name", "service_names", "created", "closed",
     ]
@@ -176,6 +197,8 @@ const Reports = (props) => {
         updateData(lnlst)
     };
 
+ 
+
     // useEffect(() => {
     //     let mtd = true; 
     //     if(mtd){
@@ -192,6 +215,8 @@ const Reports = (props) => {
     //         mtd = false;
     //     }
     // }, [props.data.results])
+
+
     return (
         <div className="">
             <Head>
@@ -204,9 +229,10 @@ const Reports = (props) => {
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
-                                <span className="text-gray-500">Facilities</span>
+                                <span className="text-gray-500">Reports</span> {'>'}
+                                <span className="text-gray-500">Dynamic Reports</span>
                             </div>
-                            <div className="flexz flex-wrap items-center justify-evenly gap-x-3 gap-y-0 text-sm md:text-base py-1 hidden">
+                            {/* <div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-0 text-sm md:text-base py-1 hidden">
                                 {quickFilters.map((qf, i) => {
                                     return (
                                         <button
@@ -233,14 +259,180 @@ const Reports = (props) => {
                                         </button>
                                     )
                                 })}
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="flex flex-wrap gap-2 text-sm md:text-base items-center justify-between">
-                            <div className="flex flex-col items-start justify-start">
+                            <div className="flex flex-col items-start justify-start w-full">
                                 <h1 className="text-3xl tracking-tight font-bold leading-none flex items-center justify-start gap-x-2">
                                     Dynamic Reports
                                 </h1>
+
+                                
+                                    <div className="flex flex-row items-center justify-start w-full gap-2">
+                                    {filters && filters?.error ?
+                                        (<div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                            <p>No filters.</p>
+                                        </div>)
+                                        : (
+                                            <Accordion sx={{my:3, width:'100%'}} ref={filterAccordianRef}>
+                                                        <AccordionSummary
+                                                            expandIcon={<ExpandMoreIcon />}
+                                                            aria-controls="panel1a-content"
+                                                            id="panel1a-header"
+                                                            >
+                                                            
+                                                            <h2 className='my-2 font-semibold text-xl text-black flex items-center space-x-2'>
+                                                            <FilterIcon className='w-6 h-6 text-black'/>
+                                                               <p> Filter Reports By...</p></h2>
+                                                        </AccordionSummary>
+                                                        <AccordionDetails>
+                                            <form action="/" className="grid grid-cols-7 gap-2 w-full m-1" onSubmit={ev => {
+                                                ev.preventDefault()
+                                                return false
+                                            }}>
+                                                 
+                                                                {filters && Object.keys(filters).length > 0 &&
+                                                            Object.keys(fltrs).map(ft => (
+                                                                <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                    <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
+                                                                    <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                                        options={
+                                                                            Array.from(filters[ft] || [],
+                                                                                fltopt => {
+                                                                                    return {
+                                                                                        value: fltopt.id, label: fltopt.name
+                                                                                    }
+                                                                                })
+                                                                        }
+                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                        onChange={sl => {
+                                                                            let nf = {}
+                                                                            if (Array.isArray(sl)) {
+                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                            } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                nf[ft] = sl.value
+                                                                            } else {
+                                                                                delete nf[ft]
+                                                                                // let rr = drillDown.filter(d => d.key !== ft)
+                                                                                // setDrilldown(rr)
+                                                                            }
+                                                                            setDrillDown({ ...drillDown, ...nf })
+                                                                        }} />
+                                                                </div>
+                                                            ))}
+                                                  
+                                                
+                                                 <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has edits</label>
+                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
+                                                            setDrillDown({ ...drillDown, 'has_edits': true })
+                                                        }} />
+                                                
+                                                </div>
+
+                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Approved</label>
+                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="approved" onChange={ev => {
+                                                            setDrillDown({ ...drillDown, 'has_edits': true })
+                                                        }} />
+                                                
+                                                </div>
+
+                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Complete</label>
+                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="complete" onChange={ev => {
+                                                            setDrillDown({ ...drillDown, 'has_edits': true })
+                                                        }} />
+                                                
+                                                </div>
+
+                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has beds</label>
+                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_beds" onChange={ev => {
+                                                            setDrillDown({ ...drillDown, 'has_edits': true })
+                                                        }} />
+                                                
+                                                </div>
+
+                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has cots</label>
+                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_cots" onChange={ev => {
+                                                            setDrillDown({ ...drillDown, 'has_edits': true })
+                                                        }} />
+                                                
+                                                </div>
+
+                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open 24 hours</label>
+                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_24_hrs" onChange={ev => {
+                                                            setDrillDown({ ...drillDown, 'has_edits': true })
+                                                        }} />
+                                                
+                                                </div>
+
+                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open weekends</label>
+                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_weekends" onChange={ev => {
+                                                            setDrillDown({ ...drillDown, 'has_edits': true })
+                                                        }} />
+                                                
+                                                </div>
+
+                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
+                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_holidays" onChange={ev => {
+                                                            setDrillDown({ ...drillDown, 'has_edits': true })
+                                                        }} />
+                                                
+                                                </div>
+
+
+
+                                                <div className='row-start-9 col-start-1 flex items-center space-x-3'>
+                                                <button onClick={ev => {
+                                                    if (Object.keys(drillDown).length > 0) {
+                                                        let qry = Object.keys(drillDown).map(function (key) {
+                                                            let er = ''
+                                                            if (props.path && !props.path.includes(key + '=')) {
+                                                                er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
+                                                            }
+                                                            return er
+                                                        }).join('&')
+                                                        let op = '?'
+                                                        if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
+                                                        console.log(props.path)
+                                                        // setDrillDown({})
+                                                        if (router || typeof window == 'undefined') {
+                                                            router.push(props.path + op + qry)
+                                                        } else {
+                                                            if (typeof window !== 'undefined' && window) {
+                                                                window.location.href = props.path + op + qry
+                                                            }
+                                                        }
+                                                    }
+
+                                                   
+
+                                                }}
+                                                className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">Filter</button>
+     
+                                                
+                                                <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
+                                                        router.push('/facilities')
+                                                    }}>Clear filters</button>
+                                                </div>
+                                                
+                                            </form>
+                                            </AccordionDetails>
+                                                    </Accordion>  
+                                        )
+                                    }
+                                    </div>
+                                
+
+
+                                
                                 <h5 className="text-lg font-medium text-gray-800">
                                     {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('ndefined') &&
                                         `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') || k.split('_').join(' ') : k.split('_').join(' ')})`)?.join(' & ')}`
@@ -262,7 +454,6 @@ const Reports = (props) => {
 
                         </div>
                     </div>
-
 
 
 
@@ -398,7 +589,6 @@ const Reports = (props) => {
                                                     headerClass="uppercase"
                                                     cellClass="p-0 text-sm leading-none capitalize"
                                                     sortable={true}
-                                                    filter={true}
                                                     key={v_ + "_" + i}
                                                     field={v_}
                                                     headerName={v_.replaceAll("_category","").replaceAll("_name","").split("_").join(" ")}
@@ -431,22 +621,56 @@ const Reports = (props) => {
             </MainLayout >
         </div>
     )
-}
+}   
 
-Reports.getInitialProps = async (ctx) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL
+DynamicReports.getInitialProps = async (ctx) => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL 
+    const fetchFilters = token => {
+        let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+
+        return fetch(filters_url, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }
+        }).then(r => r.json())
+            .then(json => {
+                return json
+            }).catch(err => {
+                console.log('Error fetching filters: ', err)
+                return {
+                    error: true,
+                    err: err,
+                    filters: []
+                }
+            })
+    }
 
     const fetchData = (token) => {
-        let url = API_URL + `/facilities/material/?format=json&access_token=${token}&fields=id,code,name,official_name,regulatory_status_name,updated,facility_type_name,owner_name,county,sub_county_name,rejected,ward_name,keph_level,keph_level_name,constituency_name,is_complete,in_complete_details,approved,is_approved,approved_national_level&page_size=1000`
-        let query = { 'searchTerm': '' }
 
-        // let current_url = url + '&page_size=100000' //change the limit on prod
-        let current_url = url + '&page_size=100000'
+    
+        let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
+        let query = { 'searchTerm': '' }
+        if (ctx?.query?.qf) {
+            query.qf = ctx.query.qf
+        }
+        if (ctx?.query?.q) {
+            query.searchTerm = ctx.query.q
+            url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
+        }
+        let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
+        other_posssible_filters.map(flt => {
+            if (ctx?.query[flt]) {
+                query[flt] = ctx?.query[flt]
+                url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
+            }
+        })
+        // let current_url = url + '&page_size=25000' //change the limit on prod
+        let current_url = url + '&page_size=100'
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
-
-        console.log('running fetchData(' + url + ')')
+        // console.log('running fetchData(' + url + ')')
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -454,9 +678,11 @@ Reports.getInitialProps = async (ctx) => {
             }
         }).then(r => r.json())
             .then(json => {
-                return {
-                    data: json, query, path: ctx.asPath || '/reports', current_url: current_url
-                }
+                return fetchFilters(token).then(ft => {
+                    return {
+                        data: json, query, filters: { ...ft }, path: ctx.asPath || '/facilities', current_url: current_url
+                    }
+                })
             }).catch(err => {
                 console.log('Error fetching facilities: ', err)
                 return {
@@ -464,7 +690,7 @@ Reports.getInitialProps = async (ctx) => {
                     err: err,
                     data: [],
                     query: {},
-                    path: ctx.asPath || '/reports',
+                    path: ctx.asPath || '/facilities',
                     current_url: ''
                 }
             })
@@ -483,7 +709,7 @@ Reports.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/reports'
+                window.location.href = '/facilities'
             }
         }
         setTimeout(() => {
@@ -492,7 +718,7 @@ Reports.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/reports',
+                path: ctx.asPath || '/facilities',
                 current_url: ''
             }
         }, 1000);
@@ -500,4 +726,4 @@ Reports.getInitialProps = async (ctx) => {
 
 }
 
-export default Reports
+export default DynamicReports
