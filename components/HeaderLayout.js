@@ -11,6 +11,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
 const DelayedLoginButton = () => {
   const [delayed, setDelayed] = useState(false);
@@ -196,19 +199,58 @@ export default function HeaderLayout({
                 </a>
               </Link>
             </li>
-            <li className="flex-wrap font-semibold">
-              <Link href="/reports">
-                <a
-                  className={
-                    (currentPath == "/reports"
+            {/* <li className="flex-wrap font-semibold"> */}
+              
+              <Menu as="div" className="relative ">
+                  <Menu.Button
+                    as="div"
+                    className="flex items-center justify-center gap-1 cursor-pointer"
+                  >
+                    <span className={
+                      (currentPath == "/reports/static_reports" || currentPath == "/reports/dynamic_reports" 
                       ? activeClasses
-                      : inactiveClasses) + " text-base md:text-lg"
-                  }
-                >
-                  Reports
-                </a>
-              </Link>
-            </li>
+                      : inactiveClasses) + " text-base md:text-lg font-semibold leading-none p-0 hidden sm:inline"
+                      }>
+                      Reports
+                    </span>
+                    <span className="leading-none p-0">
+                      <ChevronDownIcon className="h-4 w-5" />
+                    </span>
+                  </Menu.Button>
+                  <Menu.Items
+                    as="ul"
+                    className="list-none flex flex-col items-center bg-white outline-none shadow-md font-semibold justify-start gap-2 p-3 absolute mt-3 text-gray-800 right-0 w-40 rounded"
+                  >
+                  <Menu.Item as="li" className="flex items-center w-full gap-1">
+                    {({ active }) => (
+                      <Link
+                        className={`w-full hover:text-gray-400  font-medium flex items-center ${
+                          active && "text-green-400"
+                        }`}
+                        href="/reports/dynamic_reports"
+                        target="_blank"
+                      >
+                        Dynamic Reports 
+                      </Link>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item as="li" className="flex items-center w-full gap-1">
+                    {({ active }) => (
+                      <Link
+                        className={`w-full hover:text-gray-400  font-medium flex items-center ${
+                          active && "text-green-400"
+                        }`}
+                        href="/reports/static_reports"
+                        target="_blank"
+                      >
+                        Static Reports  
+                      </Link>
+                    )}
+                  </Menu.Item>
+              
+            </Menu.Items>
+          </Menu>
+            {/* </li> */}
           </ul>
         </div>
       </nav>
