@@ -155,8 +155,8 @@ console.log(props?.data);
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                                {props?.data?.owner_types.map((ot)=>(
-                                    <tr>
+                                {props?.data?.owner_types.map((ot,i)=>(
+                                    <tr key={i}>
                                      <><td className="table-cell text-left text-gray-900 p-2">{ot.name}</td>
                                         <td className="table-cell text-right font-semibold text-gray-900 p-2">{ot.count || 0}</td></>
                                     </tr>
@@ -175,8 +175,8 @@ console.log(props?.data);
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                                {props?.data?.types_summary.map((ts)=>(
-                                    <tr>
+                                {props?.data?.types_summary.map((ts,i)=>(
+                                    <tr key={i}>
                                      <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
                                         <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
                                     </tr>
