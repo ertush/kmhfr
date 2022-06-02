@@ -279,7 +279,7 @@ const DynamicReports = (props) => {
                         </div>
 
                         <div className="flex flex-wrap gap-2 text-sm md:text-base items-center justify-between">
-                            <div className="flex items-start justify-start">
+                            <div className="flex flex-col items-start justify-start w-full">
                                 <h1 className="text-3xl tracking-tight font-bold leading-none flex items-center justify-start gap-x-2">
                                     Dynamic Reports
                                 </h1>
