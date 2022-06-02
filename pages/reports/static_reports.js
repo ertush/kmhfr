@@ -1,17 +1,39 @@
 import React from 'react'
 import Head from 'next/head'
 import MainLayout from '../../components/MainLayout'
+import Select from 'react-select'
 import { List, ListItem, ListItemText } from '@mui/material'
 import { DownloadIcon } from '@heroicons/react/solid'
 import { checkToken } from '../../controllers/auth/auth'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
 
 
 const StaticReports = (props) => {
+    const router = useRouter()
+    let filters = props?.filters
+    let [drillDown, setDrillDown] = useState({})
+    const [user, setUser] = useState(null)
 
   useEffect(() => {
-    console.log({data: props?.data})
+    let mtd = true
+        if (mtd) {
+            if (filters && Object.keys(filters).length > 0) {
+                Object.keys(filters).map(ft => {
+                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+                    }
+                })
+            }
+            if (typeof window !== 'undefined') {
+                let usr = window.sessionStorage.getItem('user')
+                if (usr && usr.length > 0) {
+                    setUser(JSON.parse(usr))
+                }
+            }
+        }
+        return () => { mtd = false }
   }, [])
 
 
@@ -42,6 +64,63 @@ const StaticReports = (props) => {
                               <DownloadIcon className='w-8 h-8 text-green-800' />
                         </ListItem>
                     </List>
+                    <div className="flex-grow flex items-center justify-end w-full md:w-auto">
+                                {/* --- */}
+                                {user && user?.is_national && <div className="w-full flex flex-col items-end justify-end mb-3">
+                                    {filters && Object.keys(filters).length > 0 &&
+                                        Object.keys(filters).map(ft => (
+                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
+                                                <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
+                                                <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                                    options={
+                                                        (() => {
+                                                            if (user && user?.is_national) {
+                                                                let opts = [{ value: "national", label: "National summary" }, ...Array.from(filters[ft] || [],
+                                                                    fltopt => {
+                                                                        if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                            return {
+                                                                                value: fltopt.id, label: fltopt.name + ' county'
+                                                                            }
+                                                                        }
+                                                                    })]
+                                                                return opts
+                                                            } else {
+                                                                let opts = [...Array.from(filters[ft] || [],
+                                                                    fltopt => {
+                                                                        if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                            return {
+                                                                                value: fltopt.id, label: fltopt.name + ' county'
+                                                                            }
+                                                                        }
+                                                                    })]
+                                                                return opts
+                                                            }
+                                                        })()
+                                                    }
+                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                    onChange={sl => {
+                                                        let nf = {}
+                                                        if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                            nf[ft] = sl.value
+                                                        } else {
+                                                            delete nf[ft]
+                                                            // let rr = drillDown.filter(d => d.key !== ft)
+                                                            // setDrilldown(rr)
+                                                        }
+                                                        setDrillDown({ ...drillDown, ...nf })
+                                                        let value = sl.value
+                                                        if (value === 'national') {
+                                                            router.push('/reports/static_reports')
+                                                        } else {
+                                                            router.push('/reports/static_reports?county=' + value)
+                                                        }
+                                                    }} />
+                                            </div>
+                                        ))}
+                                    {/* ~~~F L T R S~~~ */}
+                                </div>}
+                                {/* --- */}
+                            </div>
                     </div>
                    
                   
@@ -63,6 +142,7 @@ const StaticReports = (props) => {
 
 StaticReports.getInitialProps = async (ctx) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL
+  console.log("############################## ----------------- "+API_URL);
 
   const fetchFilters = token => {
       // let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Csub_county'
@@ -87,7 +167,8 @@ StaticReports.getInitialProps = async (ctx) => {
   }
 
   const fetchData = (token) => {
-      let url = API_URL + '/reports/static_reports'
+      let url = API_URL + '/facilities/reports/static_reports'
+
       let query = { 'searchTerm': '' }
       if (ctx?.query?.q) {
           query.searchTerm = ctx.query.q
@@ -105,7 +186,7 @@ StaticReports.getInitialProps = async (ctx) => {
               }
           }
       })
-      console.log('running fetchData(' + url + ')')
+      console.log('running fetchData(' + API_URL + ')')
 
       return fetch(url, {
           headers: {
@@ -115,7 +196,9 @@ StaticReports.getInitialProps = async (ctx) => {
       }).then(r => r.json())
           .then(json => {
               return {
-                  data: json, query, path: ctx.asPath || '/reports/static_reports', current_url: url, api_url: process.env.NEXT_PUBLIC_API_URL
+                  data: json, query, path: ctx.asPath,
+                //   || '/reports/static_reports',
+                   current_url: url, api_url: process.env.NEXT_PUBLIC_API_URL
               }
           })
           .then(json => {
@@ -133,7 +216,8 @@ StaticReports.getInitialProps = async (ctx) => {
                   data: [],
                   query: {},
                   filters: {},
-                  path: ctx.asPath || '/reports/static_reports',
+                  path: ctx.asPath,
+                //    || '/reports/static_reports',
                   current_url: '',
                   api_url: API_URL
               }
@@ -151,9 +235,10 @@ StaticReports.getInitialProps = async (ctx) => {
       if (typeof window !== 'undefined' && window) {
           if (ctx?.asPath) {
               window.location.href = ctx?.asPath
-          } else {
-              window.location.href = '/reports/static_reports'
-          }
+          } 
+        //   else {
+        //       window.location.href = '/reports/static_reports'
+        //   }
       }
       setTimeout(() => {
           return {
@@ -161,7 +246,8 @@ StaticReports.getInitialProps = async (ctx) => {
               err: err,
               data: [],
               query: {},
-              path: ctx.asPath || '/reports/static_reports',
+              path: ctx.asPath ,
+            //   || '/reports/static_reports',
               current_url: '',
               api_url: API_URL
           }
