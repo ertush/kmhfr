@@ -285,177 +285,174 @@ const DynamicReports = (props) => {
                                 </h1>
 
                                 
-                                    <div className="flex flex-row items-center justify-start w-full gap-2">
-                                    {filters && filters?.error ?
-                                        (<div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                                            <p>No filters.</p>
-                                        </div>)
-                                        : (
-                                            <Accordion sx={{my:3, width:'100%'}} ref={filterAccordianRef}>
-                                                        <AccordionSummary
-                                                            expandIcon={<ExpandMoreIcon />}
-                                                            aria-controls="panel1a-content"
-                                                            id="panel1a-header"
-                                                            >
-                                                            
-                                                            <h2 className='my-2 font-semibold text-xl text-black flex items-center space-x-2'>
-                                                            <FilterIcon className='w-6 h-6 text-black'/>
-                                                               <p> Filter Reports By...</p></h2>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                            <form action="/" className="grid grid-cols-7 gap-2 w-full m-1" onSubmit={ev => {
-                                                ev.preventDefault()
-                                                return false
-                                            }}>
-                                                 
-                                                                {filters && Object.keys(filters).length > 0 &&
-                                                            Object.keys(fltrs).map(ft => (
-                                                                <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                                    <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                                    <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
-                                                                        options={
-                                                                            Array.from(filters[ft] || [],
-                                                                                fltopt => {
-                                                                                    return {
-                                                                                        value: fltopt.id, label: fltopt.name
-                                                                                    }
-                                                                                })
-                                                                        }
-                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                        onChange={sl => {
-                                                                            let nf = {}
-                                                                            if (Array.isArray(sl)) {
-                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                            } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                                nf[ft] = sl.value
+                                    <div>
+                                        {filters && filters?.error ?
+                                            (<div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                                <p>No filters.</p>
+                                            </div>)
+                                            : (
+                                                <Accordion sx={{my:3, width:'100%'}} ref={filterAccordianRef}>
+                                                            <AccordionSummary
+                                                                expandIcon={<ExpandMoreIcon />}
+                                                                aria-controls="panel1a-content"
+                                                                id="panel1a-header"
+                                                                >
+                                                                
+                                                                <h2 className='my-2 font-semibold text-xl text-black flex items-center space-x-2'>
+                                                                <FilterIcon className='w-6 h-6 text-black'/>
+                                                                <p> Filter Reports By...</p></h2>
+                                                            </AccordionSummary>
+                                                            <AccordionDetails>
+                                                                <form action="/" className="grid grid-cols-7 gap-2 w-full m-1" onSubmit={ev => {
+                                                                    ev.preventDefault()
+                                                                    return false
+                                                                }}>
+                                                                    
+                                                                                    {filters && Object.keys(filters).length > 0 &&
+                                                                                Object.keys(fltrs).map(ft => (
+                                                                                    <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                                        <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
+                                                                                        <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                                                            options={
+                                                                                                Array.from(filters[ft] || [],
+                                                                                                    fltopt => {
+                                                                                                        return {
+                                                                                                            value: fltopt.id, label: fltopt.name
+                                                                                                        }
+                                                                                                    })
+                                                                                            }
+                                                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                            onChange={sl => {
+                                                                                                let nf = {}
+                                                                                                if (Array.isArray(sl)) {
+                                                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                                } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                    nf[ft] = sl.value
+                                                                                                } else {
+                                                                                                    delete nf[ft]
+                                                                                                    // let rr = drillDown.filter(d => d.key !== ft)
+                                                                                                    // setDrilldown(rr)
+                                                                                                }
+                                                                                                setDrillDown({ ...drillDown, ...nf })
+                                                                                            }} />
+                                                                                    </div>
+                                                                                ))}
+                                                                    
+                                                                    <div  className="col-md-2" >
+                                                                        <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">From date:<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                        <input required type="date" name="from_date" onChange={(e)=>setFromDate(e.target.value)} value={fromDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                                    </div>
+                                                                    <div  className="col-md-2" >
+                                                                        <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                                        <input required type="date" name="to_date" onChange={(e)=>setToDate(e.target.value)} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                                    </div>
+                                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has edits</label>
+                                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                            }} />
+                                                                    
+                                                                    </div>
+
+                                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Approved</label>
+                                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="approved" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                            }} />
+                                                                    
+                                                                    </div>
+
+                                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Complete</label>
+                                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="complete" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                            }} />
+                                                                    
+                                                                    </div>
+
+                                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has beds</label>
+                                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_beds" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                            }} />
+                                                                    
+                                                                    </div>
+
+                                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has cots</label>
+                                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_cots" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                            }} />
+                                                                    
+                                                                    </div>
+
+                                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open 24 hours</label>
+                                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_24_hrs" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                            }} />
+                                                                    
+                                                                    </div>
+
+                                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open weekends</label>
+                                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_weekends" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                            }} />
+                                                                    
+                                                                    </div>
+
+                                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
+                                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_holidays" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                            }} />
+                                                                    
+                                                                    </div>
+                                                                    
+
+
+                                                                    <div className='row-start-9 col-start-1 flex items-center space-x-3'>
+                                                                    <button onClick={ev => {
+                                                                        if (Object.keys(drillDown).length > 0) {
+                                                                            let qry = Object.keys(drillDown).map(function (key) {
+                                                                                let er = ''
+                                                                                if (props.path && !props.path.includes(key + '=')) {
+                                                                                    er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
+                                                                                }
+                                                                                return er
+                                                                            }).join('&')
+                                                                            let op = '?'
+                                                                            if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
+                                                                            console.log(props.path)
+                                                                            // setDrillDown({})
+                                                                            if (router || typeof window == 'undefined') {
+                                                                                router.push(props.path + op + qry)
                                                                             } else {
-                                                                                delete nf[ft]
-                                                                                // let rr = drillDown.filter(d => d.key !== ft)
-                                                                                // setDrilldown(rr)
+                                                                                if (typeof window !== 'undefined' && window) {
+                                                                                    window.location.href = props.path + op + qry
+                                                                                }
                                                                             }
-                                                                            setDrillDown({ ...drillDown, ...nf })
-                                                                        }} />
-                                                                </div>
-                                                            ))}
-                                                  
-                                                <div  className="col-md-2" >
-                                                    <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">From date:<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                    <input required type="date" name="from_date" onChange={(e)=>setFromDate(e.target.value)} value={fromDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                                </div>
-                                                <div  className="col-md-2" >
-                                                    <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                    <input required type="date" name="to_date" onChange={(e)=>setToDate(e.target.value)} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                                </div>
-                                                 <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has edits</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                </div>
+                                                                        }
 
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Approved</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="approved" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                </div>
+                                                                    
 
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Complete</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="complete" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                </div>
-
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has beds</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_beds" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                </div>
-
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has cots</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_cots" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                </div>
-
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open 24 hours</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_24_hrs" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                </div>
-
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open weekends</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_weekends" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                </div>
-
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_holidays" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                </div>
-                                                
-
-
-                                                <div className='row-start-9 col-start-1 flex items-center space-x-3'>
-                                                <button onClick={ev => {
-                                                    if (Object.keys(drillDown).length > 0) {
-                                                        let qry = Object.keys(drillDown).map(function (key) {
-                                                            let er = ''
-                                                            if (props.path && !props.path.includes(key + '=')) {
-                                                                er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
-                                                            }
-                                                            return er
-                                                        }).join('&')
-                                                        let op = '?'
-                                                        if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                        console.log(props.path)
-                                                        // setDrillDown({})
-                                                        if (router || typeof window == 'undefined') {
-                                                            router.push(props.path + op + qry)
-                                                        } else {
-                                                            if (typeof window !== 'undefined' && window) {
-                                                                window.location.href = props.path + op + qry
-                                                            }
-                                                        }
-                                                    }
-
-                                                   
-
-                                                }}
-                                                className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">Filter</button>
-     
-                                                
-                                                <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
-                                                        router.push('/facilities')
-                                                    }}>Clear filters</button>
-                                                </div>
-                                                
-                                            </form>
-                                            </AccordionDetails>
-                                                    </Accordion>  
-                                        )
-                                    }
+                                                                    }}
+                                                                    className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">Filter</button>
+                        
+                                                                    
+                                                                    <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
+                                                                            router.push('/facilities')
+                                                                        }}>Clear filters</button>
+                                                                    </div>
+                                                                    
+                                                                </form>
+                                                        </AccordionDetails>
+                                                </Accordion>  
+                                            )
+                                        }
                                     </div>
-                                
 
-
-                                
                                 <h5 className="text-lg font-medium text-gray-800">
                                     {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('ndefined') &&
                                         `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') || k.split('_').join(' ') : k.split('_').join(' ')})`)?.join(' & ')}`
