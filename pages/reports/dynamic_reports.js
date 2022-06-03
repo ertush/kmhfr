@@ -199,9 +199,10 @@ const DynamicReports = (props) => {
 
 
                                                                                 const handleServiceCategoryChange = async (ev) => {
-                                                                                  
+
+
                                                                                     try{
-                                                                                        const data = await fetch('/api/service_category/?category=97c6193f-2c84-47ac-9fc9-1938c195cad6')
+                                                                                        const data = await fetch(`/api/services/?category=${ev.value}`)
                                                                                        data.json().then(r => {
                                                                                        const options = []
                                                                                        r.results.forEach(({name}) => {
@@ -214,7 +215,7 @@ const DynamicReports = (props) => {
                                                                                        console.log({options});
 
                                                                                        setServiceOptions(options)
-                                                                                       setIsServiceOptionUpdate(true)
+                                                                                       setIsServiceOptionUpdate(!isServiceOptionsUpdate)
                                                                                     })
                                                                                     }
                                                                                     catch(e) {
@@ -231,17 +232,16 @@ const DynamicReports = (props) => {
                                                                                          id='service_category'
                                                                                          name='service_category'
                                                                                         className="w-full p-1 rounded bg-gray-50"
-                                                                                        options={[
-                                                                                            {
-                                                                                                name: 'test-name',
-                                                                                                label: 'test-label'
-                                                                                            },
-                                                                                            {
-                                                                                                name: 'test-name-class',
-                                                                                                label: 'test-label-class'
-                                                                                            }
-                                                                                    ]}
-                                                                                        placeholder='empty select'
+                                                                                        options={ 
+                                                                                            Array.from(filters[ft] || [],
+                                                                                            fltopt => {
+                                                                                                return {
+                                                                                                    value: fltopt.id, 
+                                                                                                    label: fltopt.name
+                                                                                                }
+                                                                                            })
+                                                                                        }
+                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                         onChange={handleServiceCategoryChange}
                                                                                     />
                                                                                 
@@ -255,7 +255,7 @@ const DynamicReports = (props) => {
                                                                                         name='service'
                                                                                         className="w-full p-1 rounded bg-gray-50 col-start-1"
                                                                                         options={serviceOptions}
-                                                                                        placeholder='empty select'
+                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                       
                                                                                     />
                                                                                 )
