@@ -197,49 +197,12 @@ const DynamicReports = (props) => {
                                                                         
                                                                             case 'service_category':
 
-                                                                            
-
-                                                                                // const filterByServiceCategory = token => {
-                                                                                        
-                                                                                //     let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/services/category=97c6193f-2c84-47ac-9fc9-1938c195cad6`
-                                                                                    
-                                                                                //     console.log({token})
-                                                                                //     return fetch(url, {
-                                                                                //         headers: {
-                                                                                //             'Authorization': 'Bearer ' + token,
-                                                                                //             'Accept': 'application/json',
-                                                                                            
-                                                                                //         }
-                                                                                //     }).then(r => r.json())
-                                                                                //     .then(jzon => {
-                                                                                //         return jzon
-                                                                                //     }).catch(err => {
-                                                                                //         console.log('Error fetching filters: ', err)
-                                                                                //         return {
-                                                                                //             error: true,
-                                                                                //             err: err,
-                                                                                //             filters: [],
-                                                                                //             api_url:process.env.NEXT_PUBLIC_API_URL
-                                                                                //         }
-                                                                                //     })
-                                                                                // }
 
                                                                                 const handleServiceCategoryChange = async (ev) => {
-                                                                                    // console.log({services: servicesRef.current})
-
-                                                                                    // try{
-                                                                                    //     const r = await filterByServiceCategory(props?.token)
-                                                                                    //     console.log({r})
-                                                                                    // }
-                                                                                    // catch(e) {
-                                                                                    //     console.error(e.message)
-                                                                                    // }
-                                                                                    
-
+                                                                                  
                                                                                     try{
                                                                                         const data = await fetch('/api/service_category/?category=97c6193f-2c84-47ac-9fc9-1938c195cad6')
                                                                                        data.json().then(r => {
-                                                                                        console.log({r})
                                                                                        const options = []
                                                                                        r.results.forEach(({name}) => {
                                                                                             options.push({
@@ -258,9 +221,7 @@ const DynamicReports = (props) => {
                                                                                         console.log(e.message)
                                                                                     }
                                                                                    
-                                                                                    
-                                                                                   
-
+    
                                                                                 }
                                                                                
                                                                                 return (
