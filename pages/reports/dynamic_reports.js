@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 
@@ -19,6 +19,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { WindowSharp } from '@mui/icons-material'
 
 
 
@@ -33,6 +34,12 @@ const DynamicReports = (props) => {
     let fltrs = filters
 
     const formRef = useRef(null)
+    // const servicesRef = useRef(null)
+
+    const [isServiceOptionsUpdate, setIsServiceOptionUpdate] = useState(false)
+    const [serviceOptions, setServiceOptions] = useState([])
+
+    // console.log({fltrs, filters})
 
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -51,7 +58,6 @@ const DynamicReports = (props) => {
     delete fltrs.open_weekends
     delete fltrs.open_public_holidays
 
-    
   
 
     let qf = props?.query?.qf || 'all'
@@ -123,6 +129,10 @@ const DynamicReports = (props) => {
         updateData(lnlst)
     };
 
+    useEffect(() => {
+      
+
+    }, [isServiceOptionsUpdate])
 
 
 
@@ -175,32 +185,152 @@ const DynamicReports = (props) => {
                                             }}>
                                                  
                                                                 {filters && Object.keys(filters).length > 0 &&
-                                                            Object.keys(fltrs).map(ft => (
+                                                            Object.keys(fltrs).sort().map(ft => (
                                                                 <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                                     <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                                    <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
-                                                                        options={
-                                                                            Array.from(filters[ft] || [],
-                                                                                fltopt => {
-                                                                                    return {
-                                                                                        value: fltopt.id, 
-                                                                                        label: fltopt.name
+
+                                                                    {
+
+                                                                      (() => {
+                                                                        // let serviceOptions = [];
+                                                                        switch(ft) {
+                                                                        
+                                                                            case 'service_category':
+
+                                                                            
+
+                                                                                // const filterByServiceCategory = token => {
+                                                                                        
+                                                                                //     let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/services/category=97c6193f-2c84-47ac-9fc9-1938c195cad6`
+                                                                                    
+                                                                                //     console.log({token})
+                                                                                //     return fetch(url, {
+                                                                                //         headers: {
+                                                                                //             'Authorization': 'Bearer ' + token,
+                                                                                //             'Accept': 'application/json',
+                                                                                            
+                                                                                //         }
+                                                                                //     }).then(r => r.json())
+                                                                                //     .then(jzon => {
+                                                                                //         return jzon
+                                                                                //     }).catch(err => {
+                                                                                //         console.log('Error fetching filters: ', err)
+                                                                                //         return {
+                                                                                //             error: true,
+                                                                                //             err: err,
+                                                                                //             filters: [],
+                                                                                //             api_url:process.env.NEXT_PUBLIC_API_URL
+                                                                                //         }
+                                                                                //     })
+                                                                                // }
+
+                                                                                const handleServiceCategoryChange = async (ev) => {
+                                                                                    // console.log({services: servicesRef.current})
+
+                                                                                    // try{
+                                                                                    //     const r = await filterByServiceCategory(props?.token)
+                                                                                    //     console.log({r})
+                                                                                    // }
+                                                                                    // catch(e) {
+                                                                                    //     console.error(e.message)
+                                                                                    // }
+                                                                                    
+
+                                                                                    try{
+                                                                                        const data = await fetch('/api/service_category/?category=97c6193f-2c84-47ac-9fc9-1938c195cad6')
+                                                                                       data.json().then(r => {
+                                                                                        console.log({r})
+                                                                                       const options = []
+                                                                                       r.results.forEach(({name}) => {
+                                                                                            options.push({
+                                                                                                name: name,
+                                                                                                label: name
+                                                                                            })  
+                                                                                       } )  
+
+                                                                                       console.log({options});
+
+                                                                                       setServiceOptions(options)
+                                                                                       setIsServiceOptionUpdate(true)
+                                                                                    })
                                                                                     }
-                                                                                })
-                                                                        }
-                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                        onChange={sl => {
-                                                                            let nf = {}
-                                                                            if (Array.isArray(sl)) {
-                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                            } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                                nf[ft] = sl.value
-                                                                            } else {
-                                                                                delete nf[ft]
+                                                                                    catch(e) {
+                                                                                        console.log(e.message)
+                                                                                    }
+                                                                                   
+                                                                                    
+                                                                                   
+
+                                                                                }
+                                                                               
+                                                                                return (
+                                                                                    
+                                                                                   
+                                                                                    <Select 
+                                                                                         id='service_category'
+                                                                                         name='service_category'
+                                                                                        className="w-full p-1 rounded bg-gray-50"
+                                                                                        options={[
+                                                                                            {
+                                                                                                name: 'test-name',
+                                                                                                label: 'test-label'
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'test-name-class',
+                                                                                                label: 'test-label-class'
+                                                                                            }
+                                                                                    ]}
+                                                                                        placeholder='empty select'
+                                                                                        onChange={handleServiceCategoryChange}
+                                                                                    />
                                                                                 
+                                                                                )
+                                                                            
+                                                                            case 'service':
+
+                                                                                return (
+                                                                                        <Select 
+                                                                                        id='service'
+                                                                                        name='service'
+                                                                                        className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                        options={serviceOptions}
+                                                                                        placeholder='empty select'
+                                                                                      
+                                                                                    />
+                                                                                )
+    
+                                                                            default:
+    
+                                                                               return( <Select 
+                                                                                    
+                                                                                    isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                                                    options={
+                                                                                        Array.from(filters[ft] || [],
+                                                                                            fltopt => {
+                                                                                                return {
+                                                                                                    value: fltopt.id, 
+                                                                                                    label: fltopt.name
+                                                                                                }
+                                                                                            })
+                                                                                    }
+                                                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                    onChange={sl => {
+                                                                                        console.log({ev:sl});
+                                                                                        let nf = {}
+                                                                                        if (Array.isArray(sl)) {
+                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                        } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                            nf[ft] = sl.value
+                                                                                        } else {
+                                                                                            delete nf[ft]
+                                                                                            
+                                                                                        }
+                                                                                        setDrillDown({ ...drillDown, ...nf })
+                                                                                    }} />)
                                                                             }
-                                                                            setDrillDown({ ...drillDown, ...nf })
-                                                                        }} />
+                                                                      })(ft)
+                                                                      
+                                                                    }
                                                                 </div>
                                                             ))}
                                                   
@@ -298,8 +428,6 @@ const DynamicReports = (props) => {
 
                                                 }}
                                                 className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">Filter</button>
-     
-                                                
                                                 <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
                                                        ev.preventDefault()
                                                        const fields = formRef.current;
@@ -314,7 +442,7 @@ const DynamicReports = (props) => {
                                                     //    fields.current.forEach(field => {
                                                            
                                                     //    })
-                                                    //    router.push('/facilities')
+                                                    //    router.push('/reports/dynamic_reports')
                                                                                                     
                                                     }}>Clear filters</button>
                                                 </div>
@@ -552,7 +680,7 @@ DynamicReports.getInitialProps = async (ctx) => {
             .then(json => {
                 return fetchFilters(token).then(ft => {
                     return {
-                        data: json, query, filters: { ...ft }, path: ctx.asPath || '/facilities', current_url: current_url
+                        data: json, query, token, filters: { ...ft }, path: ctx.asPath || '/reports/dynamic_reports', current_url: current_url 
                     }
                 })
             }).catch(err => {
@@ -562,7 +690,7 @@ DynamicReports.getInitialProps = async (ctx) => {
                     err: err,
                     data: [],
                     query: {},
-                    path: ctx.asPath || '/facilities',
+                    path: ctx.asPath || '/reports/dynamic_reports',
                     current_url: ''
                 }
             })
@@ -581,7 +709,7 @@ DynamicReports.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/facilities'
+                window.location.href = '/reports/dynamic_reports'
             }
         }
         setTimeout(() => {
@@ -590,7 +718,7 @@ DynamicReports.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/facilities',
+                path: ctx.asPath || '/reports/dynamic_reports',
                 current_url: ''
             }
         }, 1000);

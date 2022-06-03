@@ -61,7 +61,7 @@ const StaticReports = (props) => {
   )
 }
 
-StaticReports.getInitialProps = async (ctx) => {
+StaticReports.getInitialProps = async (ctx) => {    
   const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   const fetchFilters = token => {
