@@ -584,27 +584,7 @@ const DynamicReports = (props) => {
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
                                     rowData={linelist}>
-                                        {/* <AgGridColumn field="code" headerName="MFL Code" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" pinned sortable={true} filter={true} />
-                                        <AgGridColumn field="officialname" pinned headerName="Official Name" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="operation_status_name" pinned headerName="Operation Status" headerClass="uppercase" filtertype="list" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="approved" headerName="Approved?" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="keph_level_name" headerName="KEPS Level" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="county_name" headerName="County" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="sub_county_name" headerName="Sub-county" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="constituency_name" headerName="Constituency" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="ward_name" headerName="Ward" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="facility_type_name" headerName="Type" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="facility_type_category" headerName="Category" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="owner_name" headerName="Owner" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="owner_type_name" headerName="Owner Type" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="regulatory_body_name" headerName="Regulatory Body" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="beds" headerName="Beds" sortable={true} filter={true} />
-                                        <AgGridColumn field="cots" headerName="Cots" sortable={true} filter={true} />
-                                        <AgGridColumn field="admission_status_name" headerName="Admission Status" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="service_names" headerName="Services" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="created" headerName="Date Created" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} />
-                                        <AgGridColumn field="closed" headerName="Closed?" headerClass="uppercase" cellClass="p-0 text-sm leading-none capitalize" sortable={true} filter={true} /> */}
-                                    {headers.map((v_, i) => {
+                                        {headers.map((v_, i) => {
                                         if(v_.length > 3){
                                             return (
                                                 <AgGridColumn
