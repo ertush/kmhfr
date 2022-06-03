@@ -201,7 +201,7 @@ const Dash = (props) => {
                                                                     fltopt => {
                                                                         if (fltopt.id != null && fltopt.id.length > 0) {
                                                                             return {
-                                                                                value: fltopt.id, label: fltopt.name + ' county'
+                                                                                value: fltopt.id, label: fltopt.name + ' subcounty'
                                                                             }
                                                                         }
                                                                     })]
