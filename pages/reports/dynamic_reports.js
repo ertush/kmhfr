@@ -36,8 +36,20 @@ const DynamicReports = (props) => {
     const formRef = useRef(null)
     // const servicesRef = useRef(null)
 
+   
+
     const [isServiceOptionsUpdate, setIsServiceOptionUpdate] = useState(false)
     const [serviceOptions, setServiceOptions] = useState([])
+
+
+    const [isSubCountyOptionsUpdate, setIsSubCountyOptionsUpdate] = useState(false)
+    const [subCountyOptions, setSubCountyOptions] = useState([])
+
+    const [isConstituencyOptionsUpdate, setIsConstituencyOptionsUpdate] = useState(false)
+    const [constituencyOptions, setConstituencyOptions] = useState([])
+
+
+
 
     // console.log({fltrs, filters})
 
@@ -112,6 +124,7 @@ const DynamicReports = (props) => {
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [linelist, setlinelist] = useState(null);
 
+
     const onGridReady = (params) => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
@@ -131,8 +144,9 @@ const DynamicReports = (props) => {
 
     useEffect(() => {
       
+        console.log({fltrs, keys: Object.keys(fltrs)})
 
-    }, [isServiceOptionsUpdate])
+    }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate])
 
 
 
@@ -185,7 +199,36 @@ const DynamicReports = (props) => {
                                             }}>
                                                  
                                                                 {filters && Object.keys(filters).length > 0 &&
-                                                            Object.keys(fltrs).sort().map(ft => (
+                                                            (() => {
+                                                             let sorted = Object.keys(fltrs).sort()  
+
+                                                            //  Indexed to be swapped
+
+                                                             let i_0 = sorted[0];
+                                                             let i_1 = sorted[1];
+                                                             let i_9 = sorted[9];
+                                                             let i_7 = sorted[7];
+                                                             let i_8 = sorted[8];
+
+                                                            //  swap 1
+                                                             sorted.splice(0, 1, i_1);
+                                                             sorted.splice(1, 1, i_9);
+                                                             sorted.splice(2, 1, i_0);
+
+                                                            sorted.splice(9, 1)
+
+
+                                                            // // swap 2
+                                                            sorted.splice(7, 1, i_8);
+                                                            sorted.splice(8, 1, i_7);
+
+
+                                                            console.log({sorted})
+
+                                                            return sorted
+
+
+                                                            })(fltrs).map(ft => (
                                                                 <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                                     <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
 
@@ -200,7 +243,7 @@ const DynamicReports = (props) => {
 
                                                                                 const handleServiceCategoryChange = async (ev) => {
 
-
+                                                                                    
                                                                                     try{
                                                                                         const data = await fetch(`/api/services/?category=${ev.value}`)
                                                                                        data.json().then(r => {
@@ -226,11 +269,9 @@ const DynamicReports = (props) => {
                                                                                 }
                                                                                
                                                                                 return (
-                                                                                    
-                                                                                   
                                                                                     <Select 
-                                                                                         id='service_category'
-                                                                                         name='service_category'
+                                                                                        id='service_category'
+                                                                                        name='service_category'
                                                                                         className="w-full p-1 rounded bg-gray-50"
                                                                                         options={ 
                                                                                             Array.from(filters[ft] || [],
@@ -247,6 +288,8 @@ const DynamicReports = (props) => {
                                                                                 
                                                                                 )
                                                                             
+                                                                           
+                                                                            
                                                                             case 'service':
 
                                                                                 return (
@@ -259,6 +302,115 @@ const DynamicReports = (props) => {
                                                                                       
                                                                                     />
                                                                                 )
+
+                                                                            case 'county':
+                                                                                const handleCountyCategoryChange = async (ev) => {
+
+                                                                                    try{ 
+                                                                                        const dataSubCounties = await fetch(`/api/subcounty/?county=${ev.value}`)
+                                                                                        dataSubCounties.json().then(r => {
+                                                                                            const optionsSubCounty = []
+
+
+                                                                                            r.results.forEach(({name}) => {
+                                                                                                optionsSubCounty.push({
+                                                                                                    name: name,
+                                                                                                    label: name
+                                                                                                })  
+                                                                                            } )
+                                                                                        
+                                                                                      
+
+                                                                                       
+                                                                                 
+
+                                                                                        // sub county    
+
+                                                                                       setSubCountyOptions(optionsSubCounty)
+                                                                                       setIsSubCountyOptionsUpdate(!isSubCountyOptionsUpdate)
+
+                                                                                    })
+
+                                                                                     
+
+                                                                                    
+                                                                                    }
+                                                                                    catch(e) {
+                                                                                        console.error(e.message)
+                                                                                    }
+
+                                                                                    try {
+                                                                                        const dataConstituencies = await fetch(`/api/constituency/?county=${ev.value}`)
+                                                                                        dataConstituencies.json().then(r => {
+                                                                                        const optionsConstituency = []
+
+                                                                                        r.results.forEach(({name}) => {
+                                                                                            optionsConstituency.push({
+                                                                                                name: name,
+                                                                                                label: name
+                                                                                            })  
+                                                                                            } )  
+
+                                                                                  
+
+                                                                                        // set constituencies
+
+                                                                                        setConstituencyOptions(optionsConstituency)
+                                                                                        setIsConstituencyOptionsUpdate(!isConstituencyOptionsUpdate)
+
+                                                                                    })
+
+                                                                                    }
+                                                                                    catch(e) {
+                                                                                        console.error(e.message)
+                                                                                    }
+                                                                                }
+
+
+                                                                                return (
+                                                                                    <Select 
+                                                                                    id='county'
+                                                                                    name='county'
+                                                                                    className="w-full p-1 rounded bg-gray-50"
+                                                                                    options={ 
+                                                                                        Array.from(filters[ft] || [],
+                                                                                        fltopt => {
+                                                                                            return {
+                                                                                                value: fltopt.id, 
+                                                                                                label: fltopt.name
+                                                                                            }
+                                                                                        })
+                                                                                    }
+                                                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                    onChange={handleCountyCategoryChange}
+                                                                                    
+                                                                                    />
+                                                                                )
+
+                                                                            case 'sub_county':
+
+                                                                                return (
+                                                                                    <Select 
+                                                                                    id='sub_county'
+                                                                                    name='sub_county'
+                                                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                    options={subCountyOptions}
+                                                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                  
+                                                                                />
+                                                                                )
+
+                                                                            case 'constituency':
+                                                                                    return (
+                                                                                        <Select 
+                                                                                        id='constituency'
+                                                                                        name='constituency'
+                                                                                        className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                        options={constituencyOptions}
+                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                      
+                                                                                        />
+                                                                                    )
     
                                                                             default:
     
