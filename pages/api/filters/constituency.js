@@ -1,18 +1,13 @@
-import {checkToken } from "../../controllers/auth/auth";
+import { checkToken } from "../../../controllers/auth/auth";
 
 
-export default async function filterReport(req, res) {
+export default async function getConstituencies(req, res) {
 
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
         const fetchData = (token) => {
-
-            const filterQuery = req.query.filter_query;
-
-            console.log({filterQuery})
-
-            let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${filterQuery}`
+            let url = `${process.env.NEXT_PUBLIC_API_URL}/common/constituencies/?county=${req.query.county}`
          
             return fetch(url, {
                 headers: {

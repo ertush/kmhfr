@@ -215,7 +215,7 @@ const DynamicReports = (props) => {
                                                         const filterQuery = `${op}${qry}&fields=${fields}`
 
                                                         try{
-                                                            const data = await fetch(`/api/filter/?filter_query=${filterQuery}`)
+                                                            const data = await fetch(`/api/filters/filter/?filter_query=${filterQuery}`)
                                                            data.json().then(r => {
                                                                 console.log({r})
 
@@ -279,7 +279,7 @@ const DynamicReports = (props) => {
 
                                                                                     
                                                                                     try{
-                                                                                        const data = await fetch(`/api/services/?category=${ev.value}`)
+                                                                                        const data = await fetch(`/api/filters/services/?category=${ev.value}`)
                                                                                        data.json().then(r => {
                                                                                        const options = []
                                                                                        r.results.forEach(({id, name}) => {
@@ -370,7 +370,7 @@ const DynamicReports = (props) => {
                                                                                 const handleCountyCategoryChange = async (ev) => {
 
                                                                                     try{ 
-                                                                                        const dataSubCounties = await fetch(`/api/subcounty/?county=${ev.value}`)
+                                                                                        const dataSubCounties = await fetch(`/api/filters/subcounty/?county=${ev.value}`)
                                                                                         dataSubCounties.json().then(r => {
                                                                                             const optionsSubCounty = []
 
@@ -397,7 +397,7 @@ const DynamicReports = (props) => {
                                                                                     }
 
                                                                                     try {
-                                                                                        const dataConstituencies = await fetch(`/api/constituency/?county=${ev.value}`)
+                                                                                        const dataConstituencies = await fetch(`/api/filters/constituency/?county=${ev.value}`)
                                                                                         dataConstituencies.json().then(r => {
                                                                                         const optionsConstituency = []
 
@@ -493,7 +493,7 @@ const DynamicReports = (props) => {
                                                                                 const handleConstituencyChange = async (ev) => {
 
                                                                                     try{ 
-                                                                                        const dataConstituencies = await fetch(`/api/ward/?constituency=${ev.value}`)
+                                                                                        const dataConstituencies = await fetch(`/api/filters/ward/?constituency=${ev.value}`)
                                                                                         dataConstituencies.json().then(r => {
                                                                                             const optionsWard = []
                                                                                             console.log({r})
