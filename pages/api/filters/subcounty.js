@@ -1,13 +1,13 @@
-import { checkToken } from "../../controllers/auth/auth";
+import { checkToken } from "../../../controllers/auth/auth";
 
 
-export default async function getConstituencies(req, res) {
+export default async function getSubCounties(req, res) {
 
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
         const fetchData = (token) => {
-            let url = `${process.env.NEXT_PUBLIC_API_URL}/common/constituencies/?county=${req.query.county}`
+            let url = `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?county=${req.query.county}`
          
             return fetch(url, {
                 headers: {
