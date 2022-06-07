@@ -48,6 +48,9 @@ const DynamicReports = (props) => {
     const [isConstituencyOptionsUpdate, setIsConstituencyOptionsUpdate] = useState(false)
     const [constituencyOptions, setConstituencyOptions] = useState([])
 
+    const [isWardOptionsUpdate, setIsWardOptionsUpdate] = useState(false)
+    const [wardOptions, setWardOptions] = useState([])
+
 
 
 
@@ -80,7 +83,7 @@ const DynamicReports = (props) => {
 
 
     let headers = [
-        "code", "officialname", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_category", "owner_name", "owner_type_name", "regulatory_body_name", "beds", "cots", "county_name", "constituency_name", "sub_county_name", "ward_name", "admission_status_name", "service_names", "created", "closed",
+        "code", "official_name", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_parent", "owner_name", "owner_type_name", "regulatory_body_name", "number_of_beds", "number_of_cots", "county_name", "constituency_name", "sub_county_name", "ward_name", "admission_status", "facility_services", "created", "closed",
     ]
 
     let scoped_filters = [
@@ -143,10 +146,9 @@ const DynamicReports = (props) => {
     };
 
     useEffect(() => {
-      
-        console.log({fltrs, keys: Object.keys(fltrs)})
+  
 
-    }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate])
+    }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate, isConstituencyOptionsUpdate, isWardOptionsUpdate, linelist])
 
 
 
@@ -193,40 +195,72 @@ const DynamicReports = (props) => {
                                                                <p> Filter Reports By...</p></h2>
                                                         </AccordionSummary>
                                                         <AccordionDetails>
-                                            <form action="/" className="grid grid-cols-7 gap-2 w-full m-1" ref={formRef} onSubmit={ev => {
+                                            <form action="/reports/dynamic_reports" className="grid grid-cols-7 gap-2 w-full m-1" ref={formRef} onSubmit={async (ev) => {
                                                 ev.preventDefault()
-                                                return false
+                                                const fields = 'code,official_name,operation_status,approved,keph_level,facility_type_name,facility_type_parent,owner,owner_type,regulation_body,number_of_beds,number_of_cots,county,constituency,sub_county,ward,admission_status,facility_services,created,closed'
+                                                if (Object.keys(drillDown).length > 0) {
+                                                    let qry = Object.keys(drillDown).map(function (key) {
+                                                        let er = ''
+                                                        if (props.path && !props.path.includes(key + '=')) {
+                                                            er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
+                                                        }
+                                                        return er
+                                                    }).join('&')
+                                                    let op = '?'
+                                                    if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
+                                                   
+                                                    // setDrillDown({})
+                                                    if (router || typeof window == 'undefined') {
+                                                  
+                                                        const filterQuery = `${op}${qry}&fields=${fields}`
+
+                                                        try{
+                                                            const data = await fetch(`/api/filter/?filter_query=${filterQuery}`)
+                                                           data.json().then(r => {
+                                                                console.log({r})
+
+                                                                const _lnlst = Array.from(r?.results, row => {
+                                                                    let dtpnt = {}
+                                                                    headers.forEach(col => {
+                                                                        if(col == 'facility_services'){
+                                                                            if(row[col].length > 0){
+                                                                                row[col].forEach(service => {dtpnt[col] = service.service_name})
+                                                                            }
+                                                                           
+                                                                        }
+                                                                        else{
+                                                                            dtpnt[col] = row[col]
+                                                                        }
+                                                                        
+                                                                    })
+                                                                    return dtpnt
+                                                                })
+
+                                                                setlinelist(_lnlst)
+                                                           })
+                                                        }
+                                                        catch(e) {
+                                                            console.error(e.message)
+                                                        }
+
+                                                        // router.push(props.path + op + qry)
+                                                    } else {
+                                                        if (typeof window !== 'undefined' && window) {
+                                                            window.location.href = props.path + op + qry
+                                                        }
+                                                    }
+                                                }
+
+                                                
                                             }}>
                                                  
                                                                 {filters && Object.keys(filters).length > 0 &&
                                                             (() => {
-                                                             let sorted = Object.keys(fltrs).sort()  
+                                                             const sorted = Object.keys(fltrs).sort()  
 
-                                                            //  Indexed to be swapped
+                                                             const sortOrder = [1, 9, 0, 10, 2, 3, 4, 5, 6, 8 , 7]
 
-                                                             let i_0 = sorted[0];
-                                                             let i_1 = sorted[1];
-                                                             let i_9 = sorted[9];
-                                                             let i_7 = sorted[7];
-                                                             let i_8 = sorted[8];
-
-                                                            //  swap 1
-                                                             sorted.splice(0, 1, i_1);
-                                                             sorted.splice(1, 1, i_9);
-                                                             sorted.splice(2, 1, i_0);
-
-                                                            sorted.splice(9, 1)
-
-
-                                                            // // swap 2
-                                                            sorted.splice(7, 1, i_8);
-                                                            sorted.splice(8, 1, i_7);
-
-
-                                                            console.log({sorted})
-
-                                                            return sorted
-
+                                                            return sortOrder.map((v, i) => sorted.indexOf(sorted[i]) === v ? sorted[i] : sorted[v] )
 
                                                             })(fltrs).map(ft => (
                                                                 <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -248,9 +282,9 @@ const DynamicReports = (props) => {
                                                                                         const data = await fetch(`/api/services/?category=${ev.value}`)
                                                                                        data.json().then(r => {
                                                                                        const options = []
-                                                                                       r.results.forEach(({name}) => {
+                                                                                       r.results.forEach(({id, name}) => {
                                                                                             options.push({
-                                                                                                name: name,
+                                                                                                value: id,
                                                                                                 label: name
                                                                                             })  
                                                                                        } )  
@@ -260,19 +294,32 @@ const DynamicReports = (props) => {
                                                                                        setServiceOptions(options)
                                                                                        setIsServiceOptionUpdate(!isServiceOptionsUpdate)
                                                                                     })
+
+                                                                                    let nf = {}
+                                                                                    if (Array.isArray(ev)) {
+                                                                                        nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                    } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                        nf[ft] = ev.value
+                                                                                    } else {
+                                                                                        delete nf[ft]
+                                                                                        
+                                                                                    }
+                                                                                    setDrillDown({ ...drillDown, ...nf })
                                                                                     }
                                                                                     catch(e) {
                                                                                         console.log(e.message)
                                                                                     }
+                                                                                   
                                                                                    
     
                                                                                 }
                                                                                
                                                                                 return (
                                                                                     <Select 
-                                                                                        id='service_category'
-                                                                                        name='service_category'
+                                                                                        id={ft}
+                                                                                        name={ft}
                                                                                         className="w-full p-1 rounded bg-gray-50"
+                                                                        
                                                                                         options={ 
                                                                                             Array.from(filters[ft] || [],
                                                                                             fltopt => {
@@ -292,13 +339,29 @@ const DynamicReports = (props) => {
                                                                             
                                                                             case 'service':
 
+                                                                               
+
                                                                                 return (
                                                                                         <Select 
-                                                                                        id='service'
-                                                                                        name='service'
+                                                                                        id={ft}
+                                                                                        name={ft}
+                                                                                       
                                                                                         className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                       
                                                                                         options={serviceOptions}
                                                                                         placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                        onChange={sl => {
+                                                                                            let nf = {}
+                                                                                            if (Array.isArray(sl)) {
+                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                            } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                nf[ft] = sl.value
+                                                                                            } else {
+                                                                                                delete nf[ft]
+                                                                                                
+                                                                                            }
+                                                                                            setDrillDown({ ...drillDown, ...nf })
+                                                                                        }}
                                                                                       
                                                                                     />
                                                                                 )
@@ -312,17 +375,13 @@ const DynamicReports = (props) => {
                                                                                             const optionsSubCounty = []
 
 
-                                                                                            r.results.forEach(({name}) => {
+                                                                                            r.results.forEach(({id, name}) => {
                                                                                                 optionsSubCounty.push({
-                                                                                                    name: name,
+                                                                                                    value: id,
                                                                                                     label: name
                                                                                                 })  
                                                                                             } )
                                                                                         
-                                                                                      
-
-                                                                                       
-                                                                                 
 
                                                                                         // sub county    
 
@@ -331,9 +390,7 @@ const DynamicReports = (props) => {
 
                                                                                     })
 
-                                                                                     
-
-                                                                                    
+    
                                                                                     }
                                                                                     catch(e) {
                                                                                         console.error(e.message)
@@ -344,15 +401,14 @@ const DynamicReports = (props) => {
                                                                                         dataConstituencies.json().then(r => {
                                                                                         const optionsConstituency = []
 
-                                                                                        r.results.forEach(({name}) => {
+                                                                                        r.results.forEach(({id, name}) => {
                                                                                             optionsConstituency.push({
-                                                                                                name: name,
+                                                                                                value: id,
                                                                                                 label: name
                                                                                             })  
                                                                                             } )  
 
                                                                                   
-
                                                                                         // set constituencies
 
                                                                                         setConstituencyOptions(optionsConstituency)
@@ -360,18 +416,32 @@ const DynamicReports = (props) => {
 
                                                                                     })
 
+                                                                                    let nf = {}
+                                                                                    if (Array.isArray(ev)) {
+                                                                                        nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                    } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                        nf[ft] = ev.value
+                                                                                    } else {
+                                                                                        delete nf[ft]
+                                                                                        
+                                                                                    }
+                                                                                    setDrillDown({ ...drillDown, ...nf })
+
                                                                                     }
                                                                                     catch(e) {
                                                                                         console.error(e.message)
                                                                                     }
+                                                                                   
                                                                                 }
 
 
                                                                                 return (
                                                                                     <Select 
-                                                                                    id='county'
-                                                                                    name='county'
+                                                                                    id={ft}
+                                                                                    name={ft}
+                                                                                    
                                                                                     className="w-full p-1 rounded bg-gray-50"
+                                                                               
                                                                                     options={ 
                                                                                         Array.from(filters[ft] || [],
                                                                                         fltopt => {
@@ -388,29 +458,122 @@ const DynamicReports = (props) => {
                                                                                 )
 
                                                                             case 'sub_county':
+                                                                               
 
                                                                                 return (
                                                                                     <Select 
-                                                                                    id='sub_county'
-                                                                                    name='sub_county'
+                                                                                    id={ft}
+                                                                                    name={ft}
+                                                                                   
                                                                                     className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                  
                                                                                     options={subCountyOptions}
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                    onChange={ev => {
+                                                                                       
+                                                                                        if(subCountyOptions !== []){
+                                                                                            let nf = {}
+                                                                                            if (Array.isArray(ev)) {
+                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                            } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                                nf[ft] = ev.value
+                                                                                            } else {
+                                                                                                delete nf[ft]
+                                                                                                
+                                                                                            }
+                                                                                            setDrillDown({ ...drillDown, ...nf })
+                                                                                        }
+                                                                                    }
+                                                                                    }
                                                                                   
                                                                                 />
                                                                                 )
 
                                                                             case 'constituency':
+                                                                                const handleConstituencyChange = async (ev) => {
+
+                                                                                    try{ 
+                                                                                        const dataConstituencies = await fetch(`/api/ward/?constituency=${ev.value}`)
+                                                                                        dataConstituencies.json().then(r => {
+                                                                                            const optionsWard = []
+                                                                                            console.log({r})
+
+
+                                                                                            r.results.forEach(({id, name}) => {
+                                                                                                optionsWard.push({
+                                                                                                    value: id,
+                                                                                                    label: name
+                                                                                                })  
+                                                                                            } )
+                                                                                        
+
+                                                                                        // sub county    
+
+                                                                                       setWardOptions(optionsWard)
+                                                                                       setIsWardOptionsUpdate(!isWardOptionsUpdate)
+
+                                                                                       let nf = {}
+                                                                                       if (Array.isArray(ev)) {
+                                                                                           nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                       } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                           nf[ft] = ev.value
+                                                                                       } else {
+                                                                                           delete nf[ft]
+                                                                                           
+                                                                                       }
+                                                                                       setDrillDown({ ...drillDown, ...nf })
+
+                                                                                    })
+
+    
+                                                                                    }
+                                                                                    catch(e) {
+                                                                                        console.error(e.message)
+                                                                                    }
+
+                                                                                }
+                                                                               
                                                                                     return (
                                                                                         <Select 
-                                                                                        id='constituency'
-                                                                                        name='constituency'
+                                                                                        id={ft}
+                                                                                        name={ft}
+                                                                                       
                                                                                         className="w-full p-1 rounded bg-gray-50 col-start-1"
                                                                                         options={constituencyOptions}
+                                                                                       
                                                                                         placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                        onChange={handleConstituencyChange}
                                                                                       
                                                                                         />
                                                                                     )
+                                                                            
+                                                                                case 'ward':
+                                                                                        
+                                                                               
+                                                                                        return (
+                                                                                            <Select 
+                                                                                            id={ft}
+                                                                                            name={ft}
+                                                                                           
+                                                                                            className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                            options={wardOptions}
+                                                                                           
+                                                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                            onChange={sl => {
+                                                                                                let nf = {}
+                                                                                                if (Array.isArray(sl)) {
+                                                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                                } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                    nf[ft] = sl.value
+                                                                                                } else {
+                                                                                                    delete nf[ft]
+                                                                                                    
+                                                                                                }
+                                                                                                setDrillDown({ ...drillDown, ...nf })
+                                                                                            }}
+                                                                                          
+                                                                                            />
+                                                                                        )
     
                                                                             default:
     
@@ -428,7 +591,7 @@ const DynamicReports = (props) => {
                                                                                     }
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                     onChange={sl => {
-                                                                                        console.log({ev:sl});
+                                                                                        
                                                                                         let nf = {}
                                                                                         if (Array.isArray(sl)) {
                                                                                             nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
@@ -515,32 +678,11 @@ const DynamicReports = (props) => {
 
 
                                                 <div className='row-start-9 col-start-1 flex items-center space-x-3'>
-                                                <button onClick={ev => {
-                                                    if (Object.keys(drillDown).length > 0) {
-                                                        let qry = Object.keys(drillDown).map(function (key) {
-                                                            let er = ''
-                                                            if (props.path && !props.path.includes(key + '=')) {
-                                                                er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
-                                                            }
-                                                            return er
-                                                        }).join('&')
-                                                        let op = '?'
-                                                        if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                        console.log(props.path)
-                                                        // setDrillDown({})
-                                                        if (router || typeof window == 'undefined') {
-                                                            router.push(props.path + op + qry)
-                                                        } else {
-                                                            if (typeof window !== 'undefined' && window) {
-                                                                window.location.href = props.path + op + qry
-                                                            }
-                                                        }
-                                                    }
-
+                                       
+                                                    <button 
+                                                    type='submit'
                                                    
-
-                                                }}
-                                                className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">Filter</button>
+                                                    className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">Filter</button>
                                                 <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
                                                        ev.preventDefault()
                                                        const fields = formRef.current;
@@ -571,7 +713,7 @@ const DynamicReports = (props) => {
 
                                 
                                 <h5 className="text-lg font-medium text-gray-800">
-                                    {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('ndefined') &&
+                                    {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('undefined') &&
                                         `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') || k.split('_').join(' ') : k.split('_').join(' ')})`)?.join(' & ')}`
                                     }
                                     
@@ -674,8 +816,6 @@ const DynamicReports = (props) => {
 
 
 
-
-
                     <main className="col-span-7 md:col-span-7 flex flex-col items-center gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full ">
                             {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
@@ -705,7 +845,7 @@ const DynamicReports = (props) => {
                                                     sortable={true}
                                                     key={v_ + "_" + i}
                                                     field={v_}
-                                                    headerName={v_.replaceAll("_category","").replaceAll("_name","").split("_").join(" ")}
+                                                    headerName={v_.replaceAll("_category","").replaceAll("_name","").replaceAll("official", " official name").split("_").join(" ")}
                                                 >
                                                 </AgGridColumn>
                                             )

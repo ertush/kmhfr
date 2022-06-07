@@ -1,24 +1,18 @@
-import {checkToken } from "../../controllers/auth/auth";
+import { checkToken } from "../../controllers/auth/auth";
 
 
-export default async function filterReport(req, res) {
+export default async function getWards(req, res) {
 
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
         const fetchData = (token) => {
-
-            const filterQuery = req.query.filter_query;
-
-            console.log({filterQuery})
-
-            let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${filterQuery}`
+            let url = `${process.env.NEXT_PUBLIC_API_URL}/common/wards/?constituency=${req.query.constituency}`
          
             return fetch(url, {
                 headers: {
                     'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json',
-                    
                 }
             }).then(r => r.json())
             .then(jzon => {
