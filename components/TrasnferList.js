@@ -77,6 +77,7 @@ export default function TransferList({categories}) {
   const accordion = (data) => {
 
     const {category, sub_category} = data
+    console.log({left})
 
       return (
         <Accordion sx={{flex:100}}>

@@ -49,6 +49,7 @@ const Dash = (props) => {
             </Head>
 
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+               
                 <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4">
                     <div className="col-span-6 flex flex-col gap-3 md:gap-5 px-2">
                         <div className="flex flex-row gap-2 text-sm md:text-base py-3">

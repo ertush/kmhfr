@@ -224,22 +224,22 @@ const Home = (props) => {
                                 {/* Button group */}
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Add Faility Button */}
-                                    <Menu.Item as="button"  className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
-                                        <a  href="/facility/add_facility" className='flex items-center justify-center'>
+                                    <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
+                                        <button  onClick={() => {router.push('/facility/add_facility')}} className='flex items-center justify-center'>
                                             <span>Add Facility</span>
                                             <PlusIcon className="w-4 h-4 ml-2" />
-                                        </a>
+                                        </button>
                                     </Menu.Item>
 
                                      {/* Export Button */}
-                                     <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
+                                     <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <DownloadIcon className="w-5 h-5 mr-1" />
                                         <span>Export</span>
                                         <ChevronDownIcon className="w-4 h-4 ml-2" />
                                     </Menu.Button>
                                 </div>
                             
-                                <Menu.Items as="ul" className="absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full">
+                                <Menu.Items as="ul" className="absolute top-10 right-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-1/2">
                                     {/* <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
                                         {({ active }) => (
                                             <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
