@@ -26,6 +26,10 @@ function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
+function getCtgs(a, b) {
+  return a.filter(({name}) => name == b);
+}
+
 function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
@@ -35,7 +39,7 @@ export default function TransferList({categories}) {
   // console.log({categories})
 
   const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))(categories) : []));
+  const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
   const [right, setRight] = React.useState([]);
 
   let leftChecked = intersection(checked, left);
@@ -44,7 +48,6 @@ export default function TransferList({categories}) {
   useEffect(() => {
      leftChecked = intersection(checked, left);
      rightChecked = intersection(checked, right);
-
     //  console.log({leftChecked, rightChecked, left, right, checked})
   }, [])
 
@@ -61,7 +64,6 @@ export default function TransferList({categories}) {
     }
 
     setChecked(newChecked);
-
     // leftChecked = [ ...checked]
 
 
@@ -92,8 +94,10 @@ export default function TransferList({categories}) {
 
   const accordion = (data) => {
 
-      // const {name, subCategories} = data
-      
+      const [_data] = data
+
+      const {name, subCategories} = _data
+ 
       return (
         <Accordion sx={{flex:100}}>
         <AccordionSummary
@@ -101,13 +105,13 @@ export default function TransferList({categories}) {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography>{data}</Typography>
+          <Typography>{name}</Typography>
         </AccordionSummary>
         <AccordionDetails>
             <ListItem  key={1} component="div">
               <div className='flex-col items-start justify-start'>
                     {
-                      <ListItemText  primary={`${data}`} sx={{borderBottom: '1px solid grey'}} />
+                      subCategories.map((subctg, i) => <ListItemText id={i} primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />)
                     }
               </div>
 
@@ -161,7 +165,9 @@ export default function TransferList({categories}) {
               </ListItemIcon>
               {/* <ListItemText id={labelId} primary={`List item ${value + 1}`} /> */}
               
-              {accordion(_data)}
+
+              {accordion(getCtgs(categories, _data))}
+
             </ListItem>
           );
         })}
