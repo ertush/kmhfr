@@ -21,6 +21,8 @@ const Dash = (props) => {
     let [drillDown, setDrillDown] = useState({})
     const [user, setUser] = useState(null)
     const [subcounty, setSubcounty] = useState([])
+    const [wards, setWard] = useState([])
+
     let sessToken =props?.tok
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -53,8 +55,9 @@ const Dash = (props) => {
         return () => { mtd = false }
     }, [filters, subcounty])
 
-    console.log(filters);
-    console.log(subcounty);
+    // console.log(filters);
+    // console.log(subcounty);
+    // console.log(props?.data)
 
     const fetchSubCounties = (county)=>{
 
@@ -67,6 +70,29 @@ const Dash = (props) => {
         }).then(r => r.json())
             .then(jzon => {
                 setSubcounty({subcounty: jzon.results})
+                return jzon
+            }).catch(err => {
+                console.log('Error fetching subcounties: ', err)
+                return {
+                    error: true,
+                    err: err,
+                    filters: [],
+                    api_url: API_URL
+                }
+            })
+    }
+
+    const fetchWards = (sub_county)=>{
+
+        let ward_url = API_URL + `/common/wards/?sub_county=${sub_county}&fields=id,name`
+        return fetch(ward_url, {
+            headers: {
+                'Authorization': 'Bearer ' + sessToken,
+                'Accept': 'application/json'
+            }
+        }).then(r => r.json())
+            .then(jzon => {
+                setWard({ward: jzon.results})
                 return jzon
             }).catch(err => {
                 console.log('Error fetching subcounties: ', err)
@@ -229,7 +255,7 @@ const Dash = (props) => {
                                                             // let rr = drillDown.filter(d => d.key !== ft)
                                                             // setDrilldown(rr)
                                                         }
-                                                        // fetchSubCounties(sl.value)
+                                                        fetchWards(sl.value)
                                                         setDrillDown({ ...drillDown, ...nf })
                                                         let value = sl.value
                                                         if (value === 'national') {
@@ -242,6 +268,59 @@ const Dash = (props) => {
                                             </div>
                                         ))}
                                         {/* subcounties */}
+
+                                        {wards && Object.keys(wards).length > 0 &&
+                                        Object.keys(wards).map(ft => (
+                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
+                                                <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
+                                                <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                                    options={
+                                                        (() => {
+                                                            if (user && user?.is_national) {
+                                                                let opts = [{ value: "national", label: "National summary" }, ...Array.from(wards[ft] || [],
+                                                                    fltopt => {
+                                                                        if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                            return {
+                                                                                value: fltopt.id, label: fltopt.name + ' wards'
+                                                                            }
+                                                                        }
+                                                                    })]
+                                                                return opts
+                                                            } else {
+                                                                let opts = [...Array.from(wards[ft] || [],
+                                                                    fltopt => {
+                                                                        if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                            return {
+                                                                                value: fltopt.id, label: fltopt.name + ' wards'
+                                                                            }
+                                                                        }
+                                                                    })]
+                                                                return opts
+                                                            }
+                                                        })()
+                                                    }
+                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                    onChange={sl => {
+                                                        let nf = {}
+                                                        if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                            nf[ft] = sl.value
+                                                        } else {
+                                                            delete nf[ft]
+                                                            // let rr = drillDown.filter(d => d.key !== ft)
+                                                            // setDrilldown(rr)
+                                                        }
+                                                        setDrillDown({ ...drillDown, ...nf })
+                                                        let value = sl.value
+                                                        if (value === 'national') {
+                                                            router.push('/dashboard')
+                                                        } else {
+                                                            router.push('/dashboard?wards=' + value)
+                                                        }
+                                                    }} />
+
+                                            </div>
+                                        ))}
+                                        {/* wards */}    
                                 </div>}
                                 {/* --- */}
                             </div>

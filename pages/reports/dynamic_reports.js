@@ -133,17 +133,16 @@ const DynamicReports = (props) => {
         setlinelist2(lnlst)
         updateData(lnlst)  
     };
-   
+//    console.log(props?.data);
     useEffect(()=>{
-      if( fromDate!=='' && toDate!==''){
+      if( fromDate !=='' && toDate !==''){
           const results = linelist2?.filter(data=>new Date(moment(data.created).format('YYYY/MM/DD')).getTime() >= new Date(moment(fromDate).format('YYYY/MM/DD')).getTime() && new Date(moment(data.created).format('YYYY/MM/DD')).getTime() <= new Date(moment(toDate).format('YYYY/MM/DD')).getTime()).map((r)=>{return r})
           setlinelist(results)
       }else{
-
           setlinelist(linelist2)
       }
       
-    }, [linelist, fromDate, toDate])
+    }, [fromDate, toDate])
 
     useEffect(() => {
       
@@ -239,7 +238,6 @@ const DynamicReports = (props) => {
                                                                                 }
                                                                                
                                                                                 return (
-                                                                                    
                                                                                    
                                                                                     <Select 
                                                                                          id='service_category'
@@ -309,8 +307,15 @@ const DynamicReports = (props) => {
                                                                 </div>
                                                             ))}
                                                   
-                                                
-                                                 <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                <div  className="col-md-2" >
+                                                    <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">From date:<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                    <input required type="date" name="from_date" onChange={(e)=>setFromDate(e.target.value)} value={fromDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                </div>
+                                                <div  className="col-md-2" >
+                                                    <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                    <input required type="date" name="to_date" onChange={(e)=>setToDate(e.target.value)} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                </div>
+                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                         <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has edits</label>
                                                         <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
                                                             setDrillDown({ ...drillDown, 'has_edits': true })
@@ -626,11 +631,11 @@ DynamicReports.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        let url = API_URL + `/facilities/material/?format=json&access_token=${token}&fields=id,code,name,official_name,regulatory_status_name,updated,facility_type_name,owner_name,county,sub_county_name,rejected,ward_name,keph_level,keph_level_name,constituency_name,is_complete,in_complete_details,approved,is_approved,approved_national_level,created&page_size=1000`
+        let url = API_URL + `/facilities/material/?format=json&access_token=${token}&fields=id,code,name,official_name,regulatory_status_name,updated,facility_type_name,owner_name,county,sub_county_name,rejected,ward_name,keph_level,keph_level_name,constituency_name,is_complete,in_complete_details,approved,is_approved,approved_national_level,created&page_size=100`
         let query = { 'searchTerm': '' }
 
         // let current_url = url + '&page_size=100000' //change the limit on prod
-        let current_url = url + '&page_size=1000'
+        let current_url = url + '&page_size=100'
 
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
