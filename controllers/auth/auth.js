@@ -134,6 +134,7 @@ const checkToken = async (req, res, isProtected, creds) => {
         console.log('Token expired. Refreshing...')
         if (req && req.asPath != '/api/login' && req.asPath != '/auth/login') {//check if protected page too
             // res.writeHead(301, { Location: '/auth/login?was=' + req.asPath + '&h=1' })
+            console.log('page not protected')
             res.writeHead(301, { Location: '/auth/login?was=' + encodeURIComponent(req.url) + '&h=1' })
             res.end()
             return { error: true, message: 'Token expired. Refreshing...' }

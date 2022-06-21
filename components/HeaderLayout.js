@@ -11,9 +11,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+// import List from '@mui/material/List';
+// import ListItem from '@mui/material/ListItem';
+// import ListItemText from '@mui/material/ListItemText';
 
 const DelayedLoginButton = () => {
   const [delayed, setDelayed] = useState(false);
@@ -103,10 +103,10 @@ export default function HeaderLayout({
       ) {
         console.log("active session found");
         // getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
-          console.log({session_token: session_token.token, url: `${API_URL}/rest-auth/user`})
+          // console.log({session_token: session_token.token, url: `${API_URL}/rest-auth/user`})
         getUserDetails(session_token.token, API_URL + "/rest-auth/user/").then(
           (usr) => {
-            console.log({usr})
+            // console.log({usr})
             if (usr.error || usr.detail) {
               setIsLoggedIn(false);
               setUser(null);

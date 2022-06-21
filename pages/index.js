@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../components/MainLayout'
-import { DotsHorizontalIcon, PencilIcon } from '@heroicons/react/solid'
-import { checkToken } from '../controllers/auth/auth'
+// import { DotsHorizontalIcon, PencilIcon } from '@heroicons/react/solid'
+// import { checkToken } from '../controllers/auth/auth'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 

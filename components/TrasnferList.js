@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react'
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -13,6 +14,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+// import { useEffect } from 'react';
 
 // import ListItemButton from '@mui/material/ListItemButton';
 import TextField from '@mui/material/TextField';
@@ -24,23 +26,35 @@ function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
+function getCtgs(a, b) {
+  return a.filter(({name}) => name == b);
+}
+
 function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
 export default function TransferList({categories}) {
 
-  console.log({categories})
+  // console.log({categories})
 
   const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState((categories && []));
+  const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
   const [right, setRight] = React.useState([]);
 
-  const leftChecked = intersection(checked, left);
-  const rightChecked = intersection(checked, right);
+  let leftChecked = intersection(checked, left);
+  let rightChecked = intersection(checked, right);
+
+  useEffect(() => {
+     leftChecked = intersection(checked, left);
+     rightChecked = intersection(checked, right);
+    //  console.log({leftChecked, rightChecked, left, right, checked})
+  }, [])
 
   const handleToggle = (value) => () => {
+  
     const currentIndex = checked.indexOf(value);
+    // console.log({currentIndex})
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
@@ -50,7 +64,11 @@ export default function TransferList({categories}) {
     }
 
     setChecked(newChecked);
+    // leftChecked = [ ...checked]
+
+
   };
+
 
   const handleAllRight = () => {
     setRight(right.concat(left));
@@ -59,7 +77,7 @@ export default function TransferList({categories}) {
 
   const handleCheckedRight = () => {
     setRight(right.concat(leftChecked));
-    setLeft(not(left, leftChecked));accordion
+    setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
@@ -76,8 +94,10 @@ export default function TransferList({categories}) {
 
   const accordion = (data) => {
 
-    const {category, sub_category} = data
+      const [_data] = data
 
+      const {name, subCategories} = _data
+ 
       return (
         <Accordion sx={{flex:100}}>
         <AccordionSummary
@@ -85,12 +105,16 @@ export default function TransferList({categories}) {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography>{category}</Typography>
+          <Typography>{name}</Typography>
         </AccordionSummary>
         <AccordionDetails>
-            <ListItem  key={1} component="div"  sx={{flexDirection:'row', alignItems:'center', justifyContent:'space-evenly'}}>
-             
-                    <ListItemText primary={`${sub_category}`} />
+            <ListItem  key={1} component="div">
+              <div className='flex-col items-start justify-start'>
+                    {
+                      subCategories.map((subctg, i) => <ListItemText id={i} primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />)
+                    }
+              </div>
+
                     {/* <div className='space-x-2 flex items-center'>
                         <Checkbox
                         checked={true}  
@@ -104,8 +128,7 @@ export default function TransferList({categories}) {
                             Yes
                         </label>    
                     </div> */}
-                    
-                
+                                 
             </ListItem>
         </AccordionDetails>
       </Accordion>  
@@ -116,20 +139,23 @@ export default function TransferList({categories}) {
     <Paper sx={{ width: 520, height: 300, overflow: 'auto', padding:1 }}>
         
       <List dense component="div" role="list">
-        {items.map((value) => {
-          const labelId = `transfer-list-item-${value}-label`;
+        {items.map((_data, i) => {
+
+          // let {name, subCategories} = _data
+          // console.log(value)
+          const labelId = `transfer-list-item-${_data}-label`;
 
           return (
             <ListItem
-              key={value}
+              key={i}
               role="listitem"
               button
-              onClick={handleToggle(value)}
+              onClick={handleToggle(_data)}
               sx={{my:2}}
             >
               <ListItemIcon>
                 <Checkbox
-                  checked={checked.indexOf(value) !== -1}
+                  checked={checked.indexOf(_data) !== -1}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{
@@ -139,7 +165,9 @@ export default function TransferList({categories}) {
               </ListItemIcon>
               {/* <ListItemText id={labelId} primary={`List item ${value + 1}`} /> */}
               
-              {accordion(value)}
+
+              {accordion(getCtgs(categories, _data))}
+
             </ListItem>
           );
         })}
@@ -157,11 +185,11 @@ export default function TransferList({categories}) {
         <Autocomplete
                 disablePortal
                 id="combo-box-demo"
-                options={left}
+                options={left.map(({name}) => name)}
                 sx={{ width: '100%'}}
                 renderInput={(params) => <TextField {...params} label="" />}
             />   
-            {customList(left)}
+            {customList(left)}  
         </Grid>
       
           </Grid>

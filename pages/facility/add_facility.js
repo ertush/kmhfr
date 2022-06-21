@@ -173,7 +173,7 @@ function AddFacility(props) {
     const [formId, setFormId] = useState(0)
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
-    const facilityServiceRef = useRef(null)
+    // const facilityServiceRef = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
     const facilityInfrastructureRef = useRef(null)
    
@@ -1444,7 +1444,10 @@ function AddFacility(props) {
                                                         <div className='flex items-center w-full h-auto min-h-[300px]'>
                                                            
                                                         {/* serviceCategories.map(ctg => ctg.name) */}
-                                                                <TransferList categories={serviceCategories.map(ctg => ctg.name)} />
+                                                                <TransferList categories={
+                                                                    serviceCategories.map((data) => data)
+                                                                } 
+                                                                />
 
                                                         </div>
                                                         
