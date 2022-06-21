@@ -1445,7 +1445,7 @@ function AddFacility(props) {
                                                            
                                                         {/* serviceCategories.map(ctg => ctg.name) */}
                                                                 <TransferList categories={
-                                                                    serviceCategories.map(({name}) => name)
+                                                                    serviceCategories.map((data) => data)
                                                                 } 
                                                                 />
 

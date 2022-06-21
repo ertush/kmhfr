@@ -19,8 +19,8 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { WindowSharp } from '@mui/icons-material'
-import LoadingAnimation from '../../components/LoadingAnimation'
+// import { WindowSharp } from '@mui/icons-material'
+// import LoadingAnimation from '../../components/LoadingAnimation'
 
 
 
@@ -232,7 +232,7 @@ const DynamicReports = (props) => {
                                                         try{
                                                             const data = await fetch(`/api/filters/filter/?filter_query=${filterQuery}`)
                                                            data.json().then(r => {
-                                                                    
+
                                                                 const _lnlst = Array.from(r?.results, row => {
                                                                     let dtpnt = {}
                                                                     headers.forEach(col => {
@@ -515,9 +515,7 @@ const DynamicReports = (props) => {
                                                                                         const dataConstituencies = await fetch(`/api/filters/ward/?constituency=${ev.value}`)
                                                                                         dataConstituencies.json().then(r => {
                                                                                             const optionsWard = []
-                                                                                            console.log({r})
-
-
+                                                                                         
                                                                                             r.results.forEach(({id, name}) => {
                                                                                                 optionsWard.push({
                                                                                                     value: id,
@@ -716,14 +714,8 @@ const DynamicReports = (props) => {
                                                     </button>
                                                 <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
                                                        ev.preventDefault()
-                                                       const fields = formRef.current;
-
-                                                       console.log({fields})
-
-                                                       for (let i = 0; i < fields.length; i++ ){
-                                                           if (fields[i].nodeName == "INPUT")
-                                                                fields[i].value = ''
-                                                       }    
+                                                    //    router.push('/reports/dynamic_reports')
+                                                       router.reload()
 
                                                     //    fields.current.forEach(field => {
                                                            
@@ -858,9 +850,6 @@ const DynamicReports = (props) => {
                                     // floatingFilter={true}
                                     sideBar={true} //{'filters'}
                                     defaultColDef={{
-                                        enableValue: true,
-                                        enableRowGroup: true,
-                                        enablePivot: true,
                                         sortable: true,
                                         filter: true,
                                     }}

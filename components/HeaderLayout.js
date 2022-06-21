@@ -103,10 +103,10 @@ export default function HeaderLayout({
       ) {
         console.log("active session found");
         // getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
-          console.log({session_token: session_token.token, url: `${API_URL}/rest-auth/user`})
+          // console.log({session_token: session_token.token, url: `${API_URL}/rest-auth/user`})
         getUserDetails(session_token.token, API_URL + "/rest-auth/user/").then(
           (usr) => {
-            console.log({usr})
+            // console.log({usr})
             if (usr.error || usr.detail) {
               setIsLoggedIn(false);
               setUser(null);
