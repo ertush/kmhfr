@@ -36,3 +36,5 @@ yarn-error.log*
 yarn.lock
 yarn.lock
 .env.dev
+.env.local.dev
+.env.remote.dev
