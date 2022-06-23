@@ -3,12 +3,13 @@ import Head from 'next/head'
 import MainLayout from '../components/MainLayout'
 // import { DotsHorizontalIcon, DownloadIcon, PencilIcon } from '@heroicons/react/solid'
 import { checkToken } from '../controllers/auth/auth'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useRouter } from 'next/router'
 // import { Menu } from '@headlessui/react'
 // import { ChevronDownIcon } from '@heroicons/react/outline'
 import BarChart from '../components/BarChart'
 import Select from 'react-select'
+import Download from '../components/Download'
 
 const Dash = (props) => {
     const router = useRouter()
@@ -19,12 +20,24 @@ const Dash = (props) => {
     let filters = props?.filters
     let [drillDown, setDrillDown] = useState({})
     const [user, setUser] = useState(null)
+    const [subcounty, setSubcounty] = useState([])
+    let sessToken =props?.tok
+    const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+    const {owner_link, types_link, summary_link, chu_link, keph_link} = useRef()
 
     useEffect(() => {
         let mtd = true
         if (mtd) {
             if (filters && Object.keys(filters).length > 0) {
                 Object.keys(filters).map(ft => {
+                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+                    }
+                })
+            }
+            if (subcounty && Object.keys(subcounty).length > 0) {
+                Object.keys(subcounty).map(ft => {
                     if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
                         setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
                     }
@@ -38,9 +51,60 @@ const Dash = (props) => {
             }
         }
         return () => { mtd = false }
-    }, [filters])
+    }, [filters, subcounty])
 
+    console.log(filters);
+    console.log(subcounty);
 
+    const fetchSubCounties = (county)=>{
+
+        let subcounties_url = API_URL + `/common/sub_counties/?county=${county}&fields=id,name`
+        return fetch(subcounties_url, {
+            headers: {
+                'Authorization': 'Bearer ' + sessToken,
+                'Accept': 'application/json'
+            }
+        }).then(r => r.json())
+            .then(jzon => {
+                setSubcounty({subcounty: jzon.results})
+                return jzon
+            }).catch(err => {
+                console.log('Error fetching subcounties: ', err)
+                return {
+                    error: true,
+                    err: err,
+                    filters: [],
+                    api_url: API_URL
+                }
+            })
+    }
+    const totalSummary =[
+        {name:'Total Facilities', count: `${props?.data.total_facilities || 0}` }, 
+        {name:'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
+        {name:'Total rejected facilities', count: `${props?.data.rejected_facilities_count || 0}` },
+        {name:'Total closed facilities', count: `${props?.data.closed_facilities_count || 0}` },
+        {name:'Total pending updates', count: `${props?.data.pending_updates || 0}` } ]
+
+    const chuSummary =[
+        {name:'Total community health units', count: `${props?.data?.total_chus || 0}`},
+        {name:'Total CHUs rejected', count: `${props?.data?.rejected_chus || 0}`},
+        {name:'New CHUs pending approval', count: `${props?.data?.recently_created_chus || 0}`},
+        {name:'Updated CHUs pending approval', count: `${props?.data?.chus_pending_approval || 0}`},]   
+         
+    const recentChanges =[
+        {name: 'New facilities added', count: `${props?.data?.recently_created || 0}`},
+        {name: 'Facilities updated', count: `${props?.data?.recently_updated || 0}`},
+        {name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}`},
+        {name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}`}
+    ]     
+
+    const csvHeaders = useMemo(
+        () => [
+          { key: 'metric', label: 'Metric' },
+          { key: 'value', label: 'Value' },
+        ],
+        [],
+    );
     return (
         <div className="">
             <Head>
@@ -62,6 +126,11 @@ const Dash = (props) => {
                                 {drillDown && drillDown?.county &&
                                     <small className="text-blue-900 text-base font-semibold ml-1">
                                         {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name != undefined ? filters.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""}
+                                    </small>
+                                }
+                                {drillDown && drillDown?.subcounty &&
+                                    <small className="text-blue-900 text-base font-semibold ml-1">
+                                    {subcounty && subcounty?.subcounty && subcounty?.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name != undefined ? subcounty.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name + " SubCounty" : "National Summary" || ""}
                                     </small>
                                 }
                             </h1>
@@ -108,6 +177,7 @@ const Dash = (props) => {
                                                             // let rr = drillDown.filter(d => d.key !== ft)
                                                             // setDrilldown(rr)
                                                         }
+                                                        fetchSubCounties(sl.value)
                                                         setDrillDown({ ...drillDown, ...nf })
                                                         let value = sl.value
                                                         if (value === 'national') {
@@ -119,36 +189,69 @@ const Dash = (props) => {
                                             </div>
                                         ))}
                                     {/* ~~~F L T R S~~~ */}
+
+                                    {subcounty && Object.keys(subcounty).length > 0 &&
+                                        Object.keys(subcounty).map(ft => (
+                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
+                                                <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
+                                                <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                                    options={
+                                                        (() => {
+                                                            if (user && user?.is_national) {
+                                                                let opts = [{ value: "national", label: "National summary" }, ...Array.from(subcounty[ft] || [],
+                                                                    fltopt => {
+                                                                        if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                            return {
+                                                                                value: fltopt.id, label: fltopt.name + ' subcounty'
+                                                                            }
+                                                                        }
+                                                                    })]
+                                                                return opts
+                                                            } else {
+                                                                let opts = [...Array.from(subcounty[ft] || [],
+                                                                    fltopt => {
+                                                                        if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                            return {
+                                                                                value: fltopt.id, label: fltopt.name + ' subcounty'
+                                                                            }
+                                                                        }
+                                                                    })]
+                                                                return opts
+                                                            }
+                                                        })()
+                                                    }
+                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                    onChange={sl => {
+                                                        let nf = {}
+                                                        if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                            nf[ft] = sl.value
+                                                        } else {
+                                                            delete nf[ft]
+                                                            // let rr = drillDown.filter(d => d.key !== ft)
+                                                            // setDrilldown(rr)
+                                                        }
+                                                        // fetchSubCounties(sl.value)
+                                                        setDrillDown({ ...drillDown, ...nf })
+                                                        let value = sl.value
+                                                        if (value === 'national') {
+                                                            router.push('/dashboard')
+                                                        } else {
+                                                            router.push('/dashboard?subcounty=' + value)
+                                                        }
+                                                    }} />
+
+                                            </div>
+                                        ))}
+                                        {/* subcounties */}
                                 </div>}
                                 {/* --- */}
                             </div>
                         </div>
                     </div>
 
-                    {/* <div className="w-full col-span-6 flex flex-col items-start justify-start gap-1 bg-gray-50 shadow border border-gray-300/70">
-                        <details className="py-1 px-2 text-gray-400 cursor-default rounded w-full">
-                            <summary>props</summary>
-                            <pre className="language-json leading-normal text-xs whitespace-pre-wrap text-gray-800 overflow-y-auto normal-case" style={{ maxHeight: '40vh' }}>
-                                {JSON.stringify(props, null, 2)}
-                            </pre>
-                        </details>
-                    <details className="py-1 px-2 text-gray-400 cursor-default rounded w-full">
-                            <summary>drillDown</summary>
-                            <pre className="language-json leading-normal text-xs whitespace-pre-wrap text-gray-800 overflow-y-auto normal-case" style={{ maxHeight: '40vh' }}>
-                                {JSON.stringify(drillDown, null, 2)}
-                            </pre>
-                        </details>
-                        <details className="py-1 px-2 text-gray-400 cursor-default rounded w-full">
-                            <summary>filters</summary>
-                            <pre className="language-json leading-normal text-xs whitespace-pre-wrap text-gray-800 overflow-y-auto normal-case" style={{ maxHeight: '40vh' }}>
-                                {JSON.stringify(filters, null, 2)}
-                            </pre>
-                        </details>
-                    </div> */}
-
-                    {/* Facilities summary 1/3 - FILTERABLE */}
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facilities summary</h4>
+                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility owners </h4> 
+                        <Download csvHeaders={csvHeaders} filename={'Facility_owners'} data={props?.data?.owner_types?.map((ot)=>{return {metric: ot.name, value:ot.count}})} csvLink={owner_link}/>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -157,32 +260,62 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
+                                {props?.data?.owner_types?.map((ot,i)=>(
+                                    <tr key={i}>
+                                     <><td className="table-cell text-left text-gray-900 p-2">{ot.name}</td>
+                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ot.count || 0}</td></>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Types </h4>
+                        <Download csvHeaders={csvHeaders} filename={'Facility_types'} data={props?.data?.types_summary?.map((ot)=>{return {metric: ot.name, value:ot.count}})} csvLink={types_link}/>
+                        <table className="w-full text-sm md:text-base p-2">
+                            <thead className="border-b border-gray-300">
                                 <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">Total facilities</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.total_facilities || 0}</td>
+                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
                                 </tr>
+                            </thead>
+                            <tbody className="text-lg">
+                                {props?.data?.types_summary?.map((ts,i)=>(
+                                    <tr key={i}>
+                                     <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Facilities summary 1/3 - FILTERABLE */}
+                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facilities summary</h4>
+                        <Download csvHeaders={csvHeaders} filename={'Facility_summary'} data={totalSummary.map((ts)=>{return {metric: ts.name, value:ts.count}})} csvLink={summary_link}/>
+                        <table className="w-full text-sm md:text-base p-2">
+                            <thead className="border-b border-gray-300">
                                 <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">Total approved</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.approved_facilities || 0}</td>
+                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
                                 </tr>
-                                <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">Total rejected</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.rejected_facilities_count || 0}</td>
-                                </tr>
-                                <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">Total closed</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.closed_facilities_count || 0}</td>
-                                </tr>
-                                <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">Total pending approval</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.pending_updates || 0}</td>
-                                </tr>
+                            </thead>
+                            <tbody className="text-lg">
+                                {totalSummary.map((ts,i)=>(
+                                        <tr key={i}>
+                                        <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count}</td></>
+                                        </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
                     {/* CUs summary - FILTERABLE 1/3 */}
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Community Units summary</h4>
+                        <Download csvHeaders={csvHeaders} filename={'community_units_summary'} data={chuSummary.map((ts)=>{return {metric: ts.name, value:ts.count}})} csvLink={chu_link}/>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -191,28 +324,19 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                                <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">Total community health units</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.total_chus || 0}</td>
-                                </tr>
-                                <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">Total CHUs rejected</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.rejected_chus || 0}</td>
-                                </tr>
-                                <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">New CHUs pending approval</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.recently_created_chus || 0}</td>
-                                </tr>
-                                <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">Updated CHUs pending approval</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.chus_pending_approval || 0}</td>
-                                </tr>
+                                {chuSummary.map((ts,i)=>(
+                                        <tr key={i}>
+                                        <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count}</td></>
+                                        </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
                     {/* Recent changes 1/3 - FILTERABLE */}
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Recent changes</h4>
+                        <Download csvHeaders={csvHeaders} filename={'recent_changes'} data={recentChanges.map((ts)=>{return {metric: ts.name, value:ts.count}})} csvLink={chu_link}/>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -221,22 +345,33 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
+                               {recentChanges.map((ts,i)=>(
+                                        <tr key={i}>
+                                        <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count}</td></>
+                                        </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility KEPH Level </h4>
+                        <Download csvHeaders={csvHeaders} filename={'facility_keph_level'} data={props?.data?.keph_level?.map((ts)=>{return {metric: ts.name, value:ts.count}})} csvLink={keph_link}/>
+                        <table className="w-full text-sm md:text-base p-2">
+                            <thead className="border-b border-gray-300">
                                 <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">New facilities added</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.recently_created || 0}</td>
+                                    <th className="text-left text-gray-800 p-2 text-sm uppercase">Metric</th>
+                                    <th className="text-right text-gray-800 p-2 text-sm uppercase">Value</th>
                                 </tr>
-                                <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">Facilities updated</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.recently_updated || 0}</td>
-                                </tr>
-                                <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">New CHUs added</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.recently_created_chus || 0}</td>
-                                </tr>
-                                <tr>
-                                    <td className="table-cell text-left text-gray-900 p-2">CHUs updated</td>
-                                    <td className="table-cell text-right font-semibold text-gray-900 p-2">{props?.data?.recently_updated_chus || 0}</td>
-                                </tr>
+                            </thead>
+                            <tbody className="text-lg">
+                                {props?.data?.keph_level?.map((kl,i)=>(
+                                    <tr key={i}>
+                                     <><td className="table-cell text-left text-gray-900 p-2">{kl.name}</td>
+                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{kl.count || 0}</td></>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
@@ -366,7 +501,7 @@ Dash.getInitialProps = async (ctx) => {
             .then(json => {
                 return fetchFilters(token).then(ft => {
                     return {
-                        data: json, query, filters: { ...ft }, path: ctx.asPath || '/dashboard', current_url: url, api_url: API_URL
+                        data: json, query, filters: { ...ft }, path: ctx.asPath, tok: token || '/dashboard', current_url: url, api_url: API_URL
                     }
                 })
             })
