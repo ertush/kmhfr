@@ -49,7 +49,7 @@ export default function TransferList({categories}) {
      leftChecked = intersection(checked, left);
      rightChecked = intersection(checked, right);
     //  console.log({leftChecked, rightChecked, left, right, checked})
-  }, [])
+  }, [left])
 
   const handleToggle = (value) => () => {
   
@@ -180,15 +180,27 @@ export default function TransferList({categories}) {
     <Grid container spacing={2} justifyContent="evenly" alignItems="center"  sx={{flex: 100}}>
       <Grid item> 
       <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Categories</h5>
-        <Grid container direction="column"  justifyContent="start" alignItems="start" gap={2}>
+        <Grid container direction="column" justifyContent="start" alignItems="start" gap={2}>
             {/* Auto Complete */}   
-        <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={left.map(({name}) => name)}
-                sx={{ width: '100%'}}
-                renderInput={(params) => <TextField {...params} label="" />}
-            />   
+          {/* <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={left.map((name) => name)}
+                  sx={{ width: '100%'}}
+                  renderInput={(params) => <TextField {...params} label="" />}
+                  onChange={
+                    (ev) => {
+                      // ev.preventDefault()
+                      if(ev.target.value) {
+                        setLeft(() => {
+                          return categories.filter(({name}) => { 
+                            console.log({name})
+                          return (name === ev.target.value)})[0]
+                        })
+                      }
+                    }
+                  }
+              />    */}
             {customList(left)}  
         </Grid>
       
@@ -239,7 +251,7 @@ export default function TransferList({categories}) {
       </Grid>
       <Grid item>
           <Grid container direction="column"  justifyContent="start" alignItems="start">
-          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900 mb-20">Selected Services</h5>
+          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Selected Services</h5>
             {customList(right)}
           </Grid>
           </Grid>
