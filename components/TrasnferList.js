@@ -111,7 +111,7 @@ export default function TransferList({categories}) {
             <ListItem  key={1} component="div">
               <div className='flex-col items-start justify-start'>
                     {
-                      subCategories.map((subctg, i) => <ListItemText id={i} primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />)
+                      subCategories.map((subctg, i) => <ListItemText key={i} primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />)
                     }
               </div>
 
