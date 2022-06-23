@@ -5,6 +5,7 @@ import {
 	DotsHorizontalIcon,
 	PencilIcon,
 	DownloadIcon,
+	PlusIcon,
 } from '@heroicons/react/solid';
 import { checkToken } from '../controllers/auth/auth';
 import React, { useState, useEffect } from 'react';
@@ -146,6 +147,8 @@ const Home = (props) => {
                             {JSON.stringify(drillDown, null, 2)}
                         </pre></details> */}
 
+						{/* Community Unit counter with the label */}
+
 						<div className='flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between'>
 							<div className='flex flex-col items-start justify-start gap-y-1'>
 								<h1 className='text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2'>
@@ -193,16 +196,36 @@ const Home = (props) => {
 							{/* ((((((( dropdown options to download data */}
 							{props?.current_url && props?.current_url.length > 5 && (
 								<Menu as='div' className='relative'>
-									<Menu.Button
-										as='button'
-										className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
-										<DownloadIcon className='w-5 h-5 mr-1' />
-										<span>Export</span>
-										<ChevronDownIcon className='w-4 h-4 ml-2' />
-									</Menu.Button>
+									{/* Button group */}
+									<div className='flex items-center space-x-6 w-auto'>
+										{/* Facility Button */}
+										<Menu.Item
+											as='div'
+											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
+											<button
+												onClick={() => {
+													router.push('/community/add_community_unit');
+												}}
+												className='flex items-center justify-center'>
+												<span>Add Community Unit</span>
+												<PlusIcon className='w-4 h-4 ml-2' />
+											</button>
+										</Menu.Item>
+
+										{/* Export Button */}
+
+										<Menu.Button
+											as='button'
+											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
+											<DownloadIcon className='w-5 h-5 mr-1' />
+											<span>Export</span>
+											<ChevronDownIcon className='w-4 h-4 ml-2' />
+										</Menu.Button>
+									</div>
 									<Menu.Items
 										as='ul'
-										className='absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full'>
+										className='absolute top-10 right-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-1/2'>
+										{/* PDF Menu Item */}
 										{/* <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
                                             {({ active }) => (
                                                 <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
@@ -217,6 +240,8 @@ const Home = (props) => {
                                                 </button>
                                             )}
                                         </Menu.Item> */}
+
+										{/* CSV Menu Item */}
 										<Menu.Item
 											as='li'
 											className='p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200'>
@@ -242,6 +267,8 @@ const Home = (props) => {
 												</button>
 											)}
 										</Menu.Item>
+
+										{/* Excel Menu Item */}
 										<Menu.Item
 											as='li'
 											className='p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200'>
@@ -283,8 +310,8 @@ const Home = (props) => {
 									<div
 										key={comm_unit.id}
 										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full'>
-                                        <div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
-                                            {/* CU Title */}
+										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
+											{/* CU Title */}
 											<h3 className='text-2xl w-full'>
 												<a
 													href={'/community-unit/' + comm_unit.id}
@@ -297,8 +324,8 @@ const Home = (props) => {
 														comm_unit.name}
 												</a>
 											</h3>
-                                            {/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
-                                            
+											{/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
+
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 												<span className='text-lg text-black font-semibold'>
 													# {comm_unit.code ? comm_unit.code : 'NO_CODE' || ' '}
@@ -431,9 +458,9 @@ const Home = (props) => {
 								</ul>
 							)}
 						</div>
-                    </div>
-                    
-                    {/* Filters */}
+					</div>
+
+					{/* Filters */}
 					<aside className='flex flex-col col-span-5 md:col-span-1 p-1 md:h-full'>
 						<details
 							className='rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z'

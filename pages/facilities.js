@@ -223,8 +223,7 @@ const Home = (props) => {
                             {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative">
                                 {/* Button group */}
                                 <div className='flex items-center space-x-6 w-auto'>
-                                    {/* Add Faility Button */}
-
+                                    {/* Facility Button */}
                                     <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facility/add_facility')}} className='flex items-center justify-center'>
 
