@@ -18,14 +18,16 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 
-// Package imports
-import Select from 'react-select';
+// Heroicons imports
 import {
 	ChevronDoubleRightIcon,
 	ChevronDoubleLeftIcon,
 	PlusIcon,
 } from '@heroicons/react/solid';
 import { XCircleIcon } from '@heroicons/react/outline';
+
+// Package imports
+import Select from 'react-select';
 
 function AddFacility(props) {
 	let facility = props.data;

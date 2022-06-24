@@ -16,13 +16,25 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 
+// Heroicons imports
+import {
+	ChevronDoubleRightIcon,
+	ChevronDoubleLeftIcon,
+	PlusIcon,
+} from '@heroicons/react/solid';
+
 // Package imports
+import Select from 'react-select';
 
 function AddCommUnit(props) {
 	let comm_unit = props.data;
 
 	// Define registration steps
-	const steps = ['Basic Details', 'CHEWS', 'Services'];
+	const steps = [
+		'Basic Details',
+		'CHEWS: Community Health Extension Workers',
+		'Services',
+	];
 
 	// Define serviceCategories
 	const serviceCategories = [
@@ -138,7 +150,21 @@ function AddCommUnit(props) {
 	// Define useEffect
 	useEffect(() => {
 		const formIdState = window.sessionStorage.getItem('formId');
+
+		if (formIdState == undefined || formIdState == null || formIdState == '') {
+			window.sessionStorage.setItem('formId', 1);
+		}
+		console.log(formId);
+
+		setFormId(window.sessionStorage.getItem('formId'));
+
+		return () => {
+			if (window.sessionStorage.getItem('formId') == '3') {
+				window.sessionStorage.setItem('formId', 0);
+			}
+		};
 	}, [formId]);
+	console.log(formId);
 
 	return (
 		<div className=''>
@@ -187,7 +213,430 @@ function AddCommUnit(props) {
 						<div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
 							<div
 								className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50'
-								style={{ minHeight: '250px' }}></div>
+								style={{ minHeight: '250px' }}>
+								{/* Form-changing switch statement */}
+								{(() => {
+									switch (parseInt(formId)) {
+										// Basic Details Case
+										case 0:
+											const handleBasicDetailsSubmit = (event) => {
+												event.preventDefault();
+
+												// An empty object of the form data
+												const formData = {};
+
+												// Loop through all the form elements and add them to the object
+												const elements = [...event.target];
+
+												elements.forEach(({ name, value }) => {
+													formData[name] = value;
+												});
+												console.log(formData);
+
+												// Set the formId to the next step
+												window.sessionStorage.setItem('formId', '1');
+
+												// Redirect to the next page
+												setFormId(window.sessionStorage.getItem('formId'));
+											};
+											// Basic Details Form
+											return (
+												<>
+													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														Community Health Unit Basic Details
+													</h4>
+													{/* Actual form */}
+													<form
+														className='flex flex-col w-full items-start justify-start gap-3'
+														onSubmit={handleBasicDetailsSubmit}>
+														{/* CHU name */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<label
+																htmlFor='comm_unit_name'
+																className='text-gray-600 capitalize text-sm'>
+																Community Health Unit Name
+																<span className='text-medium leading-12 font-semibold'>
+																	{' '}
+																	*
+																</span>
+															</label>
+															<input
+																required
+																type='text'
+																name='comm_unit_name'
+																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+															/>
+														</div>
+
+														{/* CHU linked facility */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<label
+																htmlFor='comm_unit_facility'
+																className='text-gray-600 capitalize text-sm'>
+																Community Health Unit Linked Facility
+																<span className='text-medium leading-12 font-semibold'>
+																	{' '}
+																	*
+																</span>
+															</label>
+															<input
+																required
+																type='text'
+																name='comm_unit_facility'
+																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+															/>
+														</div>
+
+														{/* CHU Status */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<label
+																htmlFor='comm_unit_status'
+																className='text-gray-600 capitalize text-sm'>
+																Operation Status{' '}
+																<span className='text-medium leading-12 font-semibold'>
+																	{' '}
+																	*
+																</span>
+															</label>
+															<Select
+																options={[
+																	{
+																		value: 'closed',
+																		label: 'Closed',
+																	},
+																	{
+																		value: 'non-functional',
+																		label: 'Non-functional',
+																	},
+																	{
+																		value: 'semi-functional',
+																		label: 'Semi-functional',
+																	},
+																	{
+																		value: 'fully-functional',
+																		label: 'Fully-functional',
+																	},
+																]}
+																required
+																placeholder='Select an operation status ...'
+																onChange={() => console.log('changed')}
+																name='comm_unit_status'
+																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+															/>
+														</div>
+
+														{/* Date Established and Date Operational */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<div className='grid grid-cols-2 place-content-start gap-3 w-full'>
+																{/* Date Established  */}
+																<div className='col-start-1 col-span-1'>
+																	<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+																		<label
+																			htmlFor='date_established'
+																			className='text-gray-600 capitalize text-sm'>
+																			Date Established
+																			<span className='text-medium leading-12 font-semibold'>
+																				{' '}
+																				*
+																			</span>
+																		</label>
+																		<input
+																			required
+																			type='date'
+																			name='date_established'
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																		/>
+																	</div>
+																</div>
+
+																{/* Date Operational  */}
+																<div className='col-span-1'>
+																	<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+																		<label
+																			htmlFor='date_operational'
+																			className='text-gray-600 capitalize text-sm'>
+																			Date Operational
+																			<span className='text-medium leading-12 font-semibold'>
+																				{' '}
+																				*
+																			</span>
+																		</label>
+																		<input
+																			required
+																			type='date'
+																			name='date_operational'
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																		/>
+																	</div>
+																</div>
+															</div>
+														</div>
+
+														{/* Number of Monitored Households */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<label
+																htmlFor='no_monitored_households'
+																className='text-gray-600 capitalize text-sm'>
+																Number of monitored households
+																<span className='text-medium leading-12 font-semibold'>
+																	{' '}
+																	*
+																</span>
+															</label>
+															<input
+																required
+																type='number'
+																name='no_monitored_households'
+																placeholder='Number of households served by the unit'
+																min={0}
+																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+															/>
+														</div>
+
+														{/* Number of CHVs */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<label
+																htmlFor='no_chvs'
+																className='text-gray-600 capitalize text-sm'>
+																Number of CHVs
+																<span className='text-medium leading-12 font-semibold'>
+																	{' '}
+																	*
+																</span>
+															</label>
+															<input
+																required
+																type='number'
+																name='no_chvs'
+																placeholder='Number of Community Health Volunteers in the unit'
+																min={0}
+																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+															/>
+														</div>
+
+														{/* Location */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<div className='grid grid-cols-4 place-content-start gap-3 w-full'>
+																{/* County  */}
+																<div className='col-start-1 col-span-1'>
+																	<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+																		<label
+																			htmlFor='keph_level'
+																			className='text-gray-600 capitalize text-sm'>
+																			County
+																			<span className='text-medium leading-12 font-semibold'>
+																				{' '}
+																				*
+																			</span>
+																		</label>
+																		<Select
+																			options={[
+																				{
+																					value: 'Private Practice',
+																					label: 'Private Practice',
+																				},
+																				{
+																					value:
+																						'Non-Governmental Organizations',
+																					label:
+																						'Non-Governmental Organizations',
+																				},
+																				{
+																					value: 'Ministry of Health',
+																					label: 'Ministry of Health',
+																				},
+																				{
+																					value: 'Faith Based Organization',
+																					label: 'Faith Based Organization',
+																				},
+																			]}
+																			required
+																			placeholder='Select County'
+																			onChange={() => console.log('changed')}
+																			name='keph_level'
+																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		/>
+																	</div>
+																</div>
+
+																{/* Sub-county */}
+																<div className='col-start-2 col-span-1'>
+																	<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+																		<label
+																			htmlFor='keph_level'
+																			className='text-gray-600 capitalize text-sm'>
+																			Sub-county
+																			<span className='text-medium leading-12 font-semibold'>
+																				{' '}
+																				*
+																			</span>
+																		</label>
+																		<Select
+																			options={[
+																				{
+																					value: 'Private Practice',
+																					label: 'Private Practice',
+																				},
+																				{
+																					value:
+																						'Non-Governmental Organizations',
+																					label:
+																						'Non-Governmental Organizations',
+																				},
+																				{
+																					value: 'Ministry of Health',
+																					label: 'Ministry of Health',
+																				},
+																				{
+																					value: 'Faith Based Organization',
+																					label: 'Faith Based Organization',
+																				},
+																			]}
+																			required
+																			placeholder='Select Sub County'
+																			onChange={() => console.log('changed')}
+																			name='keph_level'
+																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		/>
+																	</div>
+																</div>
+
+																{/* Constituency */}
+																<div className='col-start-3 col-span-1'>
+																	<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+																		<label
+																			htmlFor='keph_level'
+																			className='text-gray-600 capitalize text-sm'>
+																			Constituency
+																			<span className='text-medium leading-12 font-semibold'>
+																				{' '}
+																				*
+																			</span>
+																		</label>
+																		<Select
+																			options={[
+																				{
+																					value: 'Private Practice',
+																					label: 'Private Practice',
+																				},
+																				{
+																					value:
+																						'Non-Governmental Organizations',
+																					label:
+																						'Non-Governmental Organizations',
+																				},
+																				{
+																					value: 'Ministry of Health',
+																					label: 'Ministry of Health',
+																				},
+																				{
+																					value: 'Faith Based Organization',
+																					label: 'Faith Based Organization',
+																				},
+																			]}
+																			required
+																			placeholder='Select Constituency'
+																			onChange={() => console.log('changed')}
+																			name='keph_level'
+																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		/>
+																	</div>
+																</div>
+
+																{/* Ward */}
+																<div className='col-start-4 col-span-1'>
+																	<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+																		<label
+																			htmlFor='keph_level'
+																			className='text-gray-600 capitalize text-sm'>
+																			Ward
+																			<span className='text-medium leading-12 font-semibold'>
+																				{' '}
+																				*
+																			</span>
+																		</label>
+																		<Select
+																			options={[
+																				{
+																					value: 'Private Practice',
+																					label: 'Private Practice',
+																				},
+																				{
+																					value:
+																						'Non-Governmental Organizations',
+																					label:
+																						'Non-Governmental Organizations',
+																				},
+																				{
+																					value: 'Ministry of Health',
+																					label: 'Ministry of Health',
+																				},
+																				{
+																					value: 'Faith Based Organization',
+																					label: 'Faith Based Organization',
+																				},
+																			]}
+																			required
+																			placeholder='Select Ward'
+																			onChange={() => console.log('changed')}
+																			name='keph_level'
+																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		/>
+																	</div>
+																</div>
+															</div>
+														</div>
+
+														{/* Area of Coverage */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<label
+																htmlFor='area_of_coverage'
+																className='text-gray-600 capitalize text-sm'>
+																Area of coverage
+																<span className='text-medium leading-12 font-semibold'>
+																	{' '}
+																	*
+																</span>
+															</label>
+															<input
+																required
+																type='number'
+																name='area_of_coverage'
+                                                                placeholder='Description of the area of coverage'
+                                                                min={0}
+																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+															/>
+														</div>
+
+														{/* Cancel and CHEWs */}
+														<div className='flex justify-between items-center w-full'>
+															<button className='flex items-center justify-start space-x-2 p-1 bg-red-500 rounded px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 text-white' />
+																<span className='text-medium font-semibold text-white '>
+																	Cancel
+																</span>
+															</button>
+															<button
+																type='submit'
+																className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+																<span className='text-medium font-semibold text-white'>
+																	CHEWs
+																</span>
+																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+															</button>
+														</div>
+													</form>
+												</>
+											);
+										// CHEWs Case
+										case 1:
+											return <></>;
+										// Services Case
+										case 2:
+											return <></>;
+									}
+								})()}
+							</div>
 						</div>
 					</div>
 
