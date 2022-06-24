@@ -12,7 +12,6 @@ import TransferList from '../../components/TrasnferList';
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
 
-
 // MUI imports
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
@@ -197,14 +196,18 @@ function AddFacility(props) {
 	}, [formId]);
 
 	return (
-        <div className=''>
-            {/* Head */}
-            <Head>
-                <title>KMHFL - Add Facility</title>
+		<div className=''>
+			{/* Head */}
+			<Head>
+				<title>KMHFL - Add Facility</title>
 				<link rel='icon' href='/favicon.ico' />
             </Head>
+            
+            {/* Main Layout */}
 			<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-				<div className='w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4'>
+                <div className='w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4'>
+                    
+                    {/* Breadcrumbs */}
 					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-4'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 							<div className='flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3'>
@@ -220,7 +223,9 @@ function AddFacility(props) {
 							</div>
 							<div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'></div>
 						</div>
-					</div>
+                    </div>
+
+					{/* Stepper and Form */}
 					<div className='col-span-5 md:col-span-4 flex flex-col items-center border rounded pt-8 pb-4 gap-4 mt-2 order-last md:order-none'>
 						{/* Stepper Header */}
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
@@ -2476,6 +2481,7 @@ function AddFacility(props) {
 						</div>
 					</div>
 
+					{/* Aside */}
 					<aside className='flex flex-col col-span-5 md:col-span-1 p-1 md:h-full'>
 						<details
 							className='rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z'

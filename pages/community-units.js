@@ -204,7 +204,7 @@ const Home = (props) => {
 											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<button
 												onClick={() => {
-													router.push('/community/add_community_unit');
+													router.push('/community-unit/add_community_unit');
 												}}
 												className='flex items-center justify-center'>
 												<span>Add Community Unit</span>
