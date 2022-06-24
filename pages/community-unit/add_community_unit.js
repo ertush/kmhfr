@@ -593,17 +593,13 @@ function AddCommUnit(props) {
 																htmlFor='area_of_coverage'
 																className='text-gray-600 capitalize text-sm'>
 																Area of coverage
-																<span className='text-medium leading-12 font-semibold'>
-																	{' '}
-																	*
-																</span>
 															</label>
 															<input
 																required
 																type='number'
 																name='area_of_coverage'
-                                                                placeholder='Description of the area of coverage'
-                                                                min={0}
+																placeholder='Description of the area of coverage'
+																min={0}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -630,7 +626,117 @@ function AddCommUnit(props) {
 											);
 										// CHEWs Case
 										case 1:
-											return <></>;
+											// Handle CHEWs Case
+											const handleCHEWSubmit = (event) => {
+												event.preventDefault();
+
+												window.sessionStorage.setItem('formId', 1);
+
+												setFormId(window.sessionStorage.getItem('formId'));
+											};
+
+											const handleCHEWPrevious = (event) => {
+												event.preventDefault();
+
+												window.sessionStorage.setItem('formId', 0);
+
+												setFormId(window.sessionStorage.getItem('formId'));
+											};
+											return (
+												<>
+													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														CHEWs: Community Health Extension Workers
+													</h4>
+													<form
+														name='chews_form'
+														className='flex flex-col w-full items-start justify-start gap-3'
+														onSubmit={handleCHEWSubmit}>
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															{/* Form labels */}
+															<div className='grid grid-cols-3 place-content-start gap-3 w-full'>
+																{/* First Name */}
+																<div className='col-start-1 col-span-1'>
+																	<label
+																		htmlFor='fname'
+																		className='block text-sm font-medium text-gray-700'>
+																		First Name
+																	</label>
+																</div>
+																{/* Second Name */}
+																<div className='col-start-2 col-span-1'>
+																	<label
+																		htmlFor='sname'
+																		className='block text-sm font-medium text-gray-700'>
+																		Second Name
+																	</label>
+																</div>
+																{/* In charge */}
+																<div className='col-start-3 col-span-1'>
+																	<label
+																		htmlFor='incharge'
+																		className='block text-sm font-medium text-gray-700'>
+																		In Charge
+																	</label>
+																</div>
+															</div>
+
+															{/* Form input */}
+															<div className='grid grid-cols-3 place-content-start gap-3 w-full'>
+																{/* First Name */}
+																<div className='col-start-1 col-span-1'>
+																	<input
+																		required
+																		type='text'
+																		name='fname'
+																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																	/>
+																</div>
+																{/* Second Name */}
+																<div className='col-start-2 col-span-1'>
+																	<input
+																		required
+																		type='text'
+																		name='sname'
+																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																	/>
+																</div>
+																{/* In charge */}
+																<div className='col-start-3 col-span-1'>
+																	<div className='flex items-center'>
+																		<input
+																			name='incharge'
+																			type='checkbox'
+																			className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
+																		/>
+																	</div>
+                                                                </div>
+                                                                
+                                                                {/* Add delete button */}
+															</div>
+														</div>
+
+														{/* Basic Details and Services */}
+														<div className='flex justify-between items-center w-full'>
+															<button
+																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'
+																onClick={handleCHEWPrevious}>
+																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
+																<span className='text-medium font-semibold text-black '>
+																	Basic Details
+																</span>
+															</button>
+															<button
+																type='submit'
+																className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+																<span className='text-medium font-semibold text-white'>
+																	Services
+																</span>
+																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+															</button>
+														</div>
+													</form>
+												</>
+											);
 										// Services Case
 										case 2:
 											return <></>;
