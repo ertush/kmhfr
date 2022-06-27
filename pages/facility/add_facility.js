@@ -17,8 +17,12 @@ import TransferList from '../../components/TrasnferList';
 
 function AddFacility(props) {
 
-
     let facility = props.data
+
+    const nameOptionRef = useRef(null)
+    const serviceOptionRef = useRef(null)
+    const optionRefBody = useRef(null)
+
     const steps = [
         'Basic Details',
         'Geolocation',
@@ -176,7 +180,8 @@ function AddFacility(props) {
     // const facilityServiceRef = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
     const facilityInfrastructureRef = useRef(null)
-   
+    // Services State
+    const [services, setServices] = useState([])
 
 
     useEffect(() => {
@@ -212,7 +217,7 @@ function AddFacility(props) {
             }
             
         }
-    }, [formId])
+    }, [formId, services])
       
 
   return (
@@ -1417,6 +1422,7 @@ function AddFacility(props) {
                                                 </>
                                             );
                                         case 4:
+
                                             // Services form
                                             const handleServiceSubmit = (event) => {
                                                 event.preventDefault()
@@ -1444,12 +1450,35 @@ function AddFacility(props) {
                                                         <div className='flex items-center w-full h-auto min-h-[300px]'>
                                                            
                                                         {/* serviceCategories.map(ctg => ctg.name) */}
-                                                                <TransferList categories={
-                                                                    serviceCategories.map((data) => data)
-                                                                } 
-                                                                />
+                                                        <TransferList 
+                                                        categories={
+                                                            serviceCategories.map((data) => data)
+                                                        } 
+                                                        setServices={setServices}
+                                                        />
 
                                                         </div>
+                                                         {/* Service Category Table */}
+                                                         <table className='w-full  h-auto '>
+                                                            <thead className='w-full'>
+                                                                <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
+                                                                    <td className='text-lg font-semibold text-indigo-900 '>Name</td>
+                                                                    <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody ref={optionRefBody}>
+                                                                {
+                                                                    services.map((service, i) => (
+                                                                        <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                                            <td ref={nameOptionRef}>{service}</td>
+                                                                            <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                                        </tr>
+                                                                    ))
+                                                                }
+                                                             
+                                                             
+                                                            </tbody>
+                                                        </table>
                                                         
                                                         <div className='flex justify-between items-center w-full'>
                                                             <button onClick={handleServicePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>

@@ -133,6 +133,7 @@ const DynamicReports = (props) => {
 
 
     const onGridReady = (params) => {
+        console.log({api: params.api});
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
@@ -942,11 +943,12 @@ DynamicReports.getInitialProps = async (ctx) => {
             }
         })
         // let current_url = url + '&page_size=25000' //change the limit on prod
-        let current_url = url + '&page_size=100'
+        let current_url = url + '&page_size=50'
         if (ctx?.query?.page) {
+            console.log({page:ctx.query.page})
             url = `${url}&page=${ctx.query.page}`
         }
-        console.log('running fetchData(' + url + ')')
+        // console.log('running fetchData(' + url + ')')
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

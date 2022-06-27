@@ -33,8 +33,6 @@ yarn-error.log*
 # vercel
 .vercel
 .env
-yarn.lock
-yarn.lock
 .env.dev
 .env.local.dev
 .env.remote.dev

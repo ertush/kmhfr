@@ -3,12 +3,14 @@ import { CSVLink } from 'react-csv';
 const Download =(props)=>{
             return (
 
-                <a><CSVLink
+                <a>
+                    <CSVLink
                     headers={props?.csvHeaders}
                     filename={`${props?.filename}`+'_'+new Date().toLocaleDateString()+'.csv'}
-                    data={props?.data}
+                    data={props?.data || []}
                     ref={props?.csvLink}
-                    target='_blank'>Download</CSVLink></a>
+                    target='_blank'>Download</CSVLink>
+                </a>
             
             )
 }
