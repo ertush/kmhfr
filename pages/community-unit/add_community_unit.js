@@ -185,7 +185,7 @@ function AddCommUnit(props) {
 									Home
 								</a>{' '}
 								{'>'}
-								<a className='text-indigo-700' href='/community-units.js'>
+								<a className='text-indigo-700' href='/community-units'>
 									Community Units
 								</a>{' '}
 								{'>'}
