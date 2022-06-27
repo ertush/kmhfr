@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useMemo } from 'react'
+import { useMemo, Suspense } from 'react'
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -33,7 +33,7 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferList({categories, setServices}) {
+export default function TransferList({categories, setServices, children}) {
 
   // console.log({categories})
 
@@ -130,7 +130,7 @@ useMemo(() => {
  
       return (
        
-        <Accordion sx={{flex:100}}>
+        <Accordion sx={{flex:100, backgroundColor:'#f1f1f1', boxShadow:'none'}} >
           
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -141,52 +141,64 @@ useMemo(() => {
         </AccordionSummary>
         <AccordionDetails>
             <ListItem  key={1} component="div">
+
+            {
+              !children &&
               <div className='flex-col items-start justify-start'>
+              {
+                subCategories.map((subctg, i) => (
+                  
+                  <div key={i} className='flex items-center space-x-2'>
                     {
-                      subCategories.map((subctg, i) => (
-                        
-                        <div key={i} className='flex items-center space-x-2'>
-                          {
-                            !isRight ?
-            
-                            <>
-                              <Checkbox
-                                checked={checkBoxChecked.indexOf(subctg) !== -1}
-                                tabIndex={-1}
-                                disableRipple
-                                onChange={handleCheckBoxToggle(subctg)}
-                                inputProps={{
-                                  'aria-labelledby': 'options',
-                                }}
-                                />
-                                <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
-                            </>
-                         :
-                         
-                            <>
-                              {
-                                (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
-                                <Checkbox
-                                checked={checkAll ? true : checkBoxChecked.indexOf(subctg) !== -1}
-                                tabIndex={-1}
-                                disableRipple
-                                onChange={handleCheckBoxToggle(subctg)}
-                                inputProps={{
-                                  'aria-labelledby': 'options',
-                                }}
-                              />
-                              }
-                              {
-                                (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
-                                <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
-                              }
-                            </>
-                           }
-                            </div>
-                          
-                      ))
+                      !isRight ?
+      
+                      <>
+                        <Checkbox
+                          checked={checkBoxChecked.indexOf(subctg) !== -1}
+                          tabIndex={-1}
+                          disableRipple
+                          onChange={handleCheckBoxToggle(subctg)}
+                          inputProps={{
+                            'aria-labelledby': 'options',
+                          }}
+                          />
+                          <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
+                      </>
+                  :
+                  
+                      <>
+                        {
+                          (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                          <Checkbox
+                          checked={checkAll ? true : checkBoxChecked.indexOf(subctg) !== -1}
+                          tabIndex={-1}
+                          disableRipple
+                          onChange={handleCheckBoxToggle(subctg)}
+                          inputProps={{
+                            'aria-labelledby': 'options',
+                          }}
+                        />
+                        }
+                        {
+                          (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                          <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
+                        }
+                      </>
                     }
-              </div>
+                      </div>
+                    
+                ))
+              }
+             </div>
+            }
+
+            {
+              children &&
+              <>
+               {children}
+              </>
+            }
+              
                        
             </ListItem>
         </AccordionDetails>
@@ -217,7 +229,24 @@ useMemo(() => {
              
                 <Checkbox
 
-                  checked={checked.indexOf(_data) !== -1}
+                  checked={
+                    checked.indexOf(_data) !== -1
+                    /*(() => {
+                      
+                      const foundCtgs = Array.from(checkBoxChecked, subCtg => {
+                        return categories.filter(_subCtg => {for(let i = 0 ; i < _subCtg.subCategories.length; i++) if(_subCtg.subCategories[i] === subCtg) return _subCtg.subCategories[i] === subCtg})[0] || [] 
+                      }) 
+
+                      // console.log({foundCtgs})
+
+                      const _eval = Array.from(foundCtgs, ctg => {
+                        if(ctg === _data) return true
+                      }) || []
+
+                      console.log(_eval, _data)
+
+                    return _eval.length > 0 ? true : checked.indexOf(_data) !== -1
+                  })()*/} 
                   tabIndex={-1}
                   disableRipple
                   onChange={handleToggle(_data)}
@@ -241,30 +270,11 @@ useMemo(() => {
   );
 
   return (
-    <Grid container spacing={2} justifyContent="evenly" alignItems="center"  sx={{flex: 100}}>
+    <Grid container spacing={2} justifyContent="evenly" alignItems="center"  sx={{flex: 100, boxShadow:'none', backgroundColor:'#f9fafb'}}>
       <Grid item> 
       <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Categories</h5>
-        <Grid container direction="column" justifyContent="start" alignItems="start" gap={2}>
-          {/* Auto Complete */}   
-          {/* <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={left.map((name) => name)}
-                  sx={{ width: '100%'}}
-                  renderInput={(params) => <TextField {...params} label="" />}
-                  onChange={
-                    (ev) => {
-                      // ev.preventDefault()
-                      if(ev.target.value) {
-                        setLeft(() => {
-                          return categories.filter(({name}) => { 
-                            console.log({name})
-                          return (name === ev.target.value)})[0]
-                        })
-                      }
-                    }
-                  }
-              />    */}
+        <Grid container direction="column" justifyContent="start" alignItems="start" gap={2} >
+         
             {customList(left, false)}  
         </Grid>
       

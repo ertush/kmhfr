@@ -33,6 +33,15 @@ function AddFacility(props) {
         'Human resources'
       ];
 
+    const infrastractureCategories = [
+        {
+            name:'',
+            subCategories:[
+
+            ]        
+        }
+    ]
+
     const serviceCategories = [
         {
             name:'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
@@ -1439,6 +1448,7 @@ function AddFacility(props) {
                                                 
                                                 setFormId(window.sessionStorage.getItem('formId'))
                                             }
+                                            
 
                                             
                                             return (
@@ -1454,12 +1464,13 @@ function AddFacility(props) {
                                                         categories={
                                                             serviceCategories.map((data) => data)
                                                         } 
+                                                        
                                                         setServices={setServices}
                                                         />
 
                                                         </div>
                                                          {/* Service Category Table */}
-                                                         <table className='w-full  h-auto '>
+                                                         <table className='w-full  h-auto my-4'>
                                                             <thead className='w-full'>
                                                                 <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
                                                                     <td className='text-lg font-semibold text-indigo-900 '>Name</td>
@@ -1511,190 +1522,66 @@ function AddFacility(props) {
                                                 setFormId(window.sessionStorage.getItem('formId'))
                                             }
 
-                                            const handleAddInfrastractuer = (event) => {
-                                                event.preventDefault()
-                                                const divContainer = facilityInfrastructureRef.current
-
-                                                const dropDownInfrastractuer = document.createElement('select')
-                                                
-
-                                                dropDownInfrastractuer.setAttribute('style', `
-                                                width:100%; 
-                                                border: 1px solid hsl(0, 0%, 80%); 
-                                                border-radius: 4px; 
-                                                padding: 2px; 
-                                                background-color: hsl(0, 0%, 100%); 
-                                                display: grid; 
-                                                min-height: 38px;
-                                                `)
-
-                                                dropDownInfrastractuer.setAttribute('placeholder', 'Select Service')
-
-                                                dropDownInfrastractuer.setAttribute('name', 'dropdown_infrastructure_name')
-
-                                               
-                                                const option0 = document.createElement('option')
-                                                option0.innerText = 'Select Infrastracture Type'
-                                                option0.value = 'Select Infrastracture'
-
-
-                                                const option1 = document.createElement('option')
-                                                option1.innerText = 'Wireless Mobile'
-                                                option1.value = 'Wireless Mobile'
-
-                                                const option2 = document.createElement('option')
-                                                option2.innerText = 'Piped Water'
-                                                option2.value = 'Piped Water'
-
-                                                const option3= document.createElement('option')
-                                                option3.innerText = 'Main Grid'
-                                                option3.value = 'Main Grid'
-
-                                                const option4 = document.createElement('option')
-                                                option4.innerText = 'Laptops'
-                                                option4.value = 'Laptops'
-
-                                                const option5 = document.createElement('option')
-                                                option5.innerText = 'Incinerator'
-                                                option5.value = 'Incinerator'
-
-
-                                                dropDownInfrastractuer.appendChild(option0.getRootNode())
-                                                dropDownInfrastractuer.appendChild(option1.getRootNode())
-                                                dropDownInfrastractuer.appendChild(option2.getRootNode())
-                                                dropDownInfrastractuer.appendChild(option3.getRootNode())
-                                                dropDownInfrastractuer.appendChild(option4.getRootNode())
-
-                                                divContainer.appendChild(dropDownInfrastractuer.getRootNode())
-
-                                                const dropDownYesNo = document.createElement('select')
-                                                
-
-                                                dropDownYesNo.setAttribute('style', `
-                                                width:100%; 
-                                                border: 1px solid hsl(0, 0%, 80%); 
-                                                border-radius: 4px; 
-                                                padding: 2px; 
-                                                background-color: hsl(0, 0%, 100%); 
-                                                display: grid; 
-                                                min-height: 38px;
-                                                `)
-
-                                                dropDownYesNo.setAttribute('placeholder', 'Select Service Option')
-
-                                                dropDownYesNo.setAttribute('name', 'dropdown_infrastructure_option')
-
-                                                const optionDefault = document.createElement('option')
-                                                optionDefault.innerText = 'Select Infrastructure Option'
-                                                optionDefault.value = 'Select Infrastructure Option'
-
-                                                const optionYes = document.createElement('option')
-                                                optionYes.innerText = 'Yes'
-                                                optionYes.value = 'Yes'
-                                                
-                                                const optionNo = document.createElement('option')
-                                                optionNo.innerText = 'No'
-                                                optionNo.value = 'No'
-
-                                                dropDownYesNo.appendChild(optionDefault.getRootNode())
-                                                dropDownYesNo.appendChild(optionYes.getRootNode())
-                                                dropDownYesNo.appendChild(optionNo.getRootNode())
-
-                                                divContainer.appendChild(dropDownYesNo.getRootNode())
-
-                                                
-                                            }
+                                            
                                             
                                             return (
                                                 <>  
-                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastructure</h4>
-                                                    <form name="facility_infrastructure_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleInfrastructureSubmit}>
-                                                        
-                                                        <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityInfrastructureRef}>
-                                                            {/* Infrastructure Name */}
-                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Name</h3>
-                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Option</h3>
-                                                            <hr className='col-span-2'/>
-                                                        
-                                                            {/* Service Name */}
-                                                            <Select options={
-                                                                            [
-                                                                                {
-                                                                                    value:'Wireless Mobile',
-                                                                                    label: 'Wireless Mobile'
-                                                                                },
-                                                                                {
-                                                                                    value:'Piped Water',
-                                                                                    label: 'Piped Water'
-                                                                                },
-                                                                                {
-                                                                                    value:'Main Grid',
-                                                                                    label: 'Main Grid'
-                                                                                },
-                                                                                {
-                                                                                    value:'Laptops',
-                                                                                    label: 'Laptops'
-                                                                                },
-                                                                                {
-                                                                                    value:'Incinerator',
-                                                                                    label: 'Incinerator'
-                                                                                }
-                                                                                
-                                                                        
-                                                                            ]
-                                                                        } 
-                                                                        required
-                                                                        placeholder="Select Infrastructure Type"
-                                                                        onChange={
-                                                                            () => console.log('changed')
-                                                                        }
-                                                                        name="service_name" 
-                                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
+                                                <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleInfrastructureSubmit}>
+                                                    
+                                                    {/* Transfer list Container */}
+                                                    <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                                       
+                                                    {/* serviceCategories.map(ctg => ctg.name) */}
+                                                    <TransferList 
+                                                    categories={
+                                                        serviceCategories.map((data) => data)
+                                                    } 
+                                                    children={
+                                                        <h3 className='text-base font-semibold'>
+                                                            child Node
+                                                        </h3>
+                                                    }
+                                                    setServices={setServices}
+                                                    />
 
-                                                                        {/* Service Option */}
-                                                                        <Select
-                                                                            options={[
-                                                                                {
-                                                                                    value:'Yes',
-                                                                                    label:'Yes'
-                                                                                },
-                                                                                {
-                                                                                    value:'No',
-                                                                                    label:'No'
-                                                                                }
-                
-                                                                            ]}
-                                                                            required
-                                                                            placeholder="Select Contact Type"
-                                                                            onChange={
-                                                                                () => console.log('changed')
-                                                                            }
-                                                                            name="service_option" 
-                                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> 
-
-                                                                            {/* Append other dropdowns */}
-                                                                        
-                
-                                                        </div>
-                                                        <div className='w-full flex justify-end items-center mt-2'>
-                                                            <button onClick={handleAddInfrastractuer} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
-                                                                <PlusIcon className='w-4 h-4 text-white'/>
-                                                                <p className='text-medium font-semibold text-white'>Add</p>
-                                                            </button>
-                                                        </div>
-
-                                                        <div className='flex justify-between items-center w-full'>
-                                                            <button onClick={handleInfrastructurePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-                                                                <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-                                                                <span className='text-medium font-semibold text-black '>Services</span>
-                                                            </button>
-                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-                                                                <span className='text-medium font-semibold text-white'>Human Resources</span>
-                                                                <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </>
+                                                    </div>
+                                                     {/* Service Category Table */}
+                                                     <table className='w-full  h-auto my-4'>
+                                                        <thead className='w-full'>
+                                                            <tr className='grid grid-cols-4 place-content-end border-b-4 border-gray-300'>
+                                                                <td className='text-lg font-semibold text-indigo-900 '>Name</td>
+                                                                <td className='text-lg font-semibold text-indigo-900 ml-12'>Category</td>
+                                                                <td className='text-lg font-semibold text-indigo-900 '>Present</td>
+                                                                <td className='text-lg font-semibold text-indigo-900 ml-12'>Number</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody ref={optionRefBody}>
+                                                            {
+                                                                services.map((service, i) => (
+                                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                                        <td ref={nameOptionRef}>{service}</td>
+                                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                                    </tr>
+                                                                ))
+                                                            }
+                                                         
+                                                         
+                                                        </tbody>
+                                                    </table>
+                                                    
+                                                    <div className='flex justify-between items-center w-full'>
+                                                        <button onClick={handleInfrastructurePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                                                            <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                                                            <span className='text-medium font-semibold text-black '>Categories</span>
+                                                        </button>
+                                                        <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+                                                            <span className='text-medium font-semibold text-white'>Infrastructure</span>
+                                                            <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </>
                                             )
                                         case 6:
                                             // Human resources form
