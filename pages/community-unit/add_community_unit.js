@@ -6,6 +6,7 @@ import Head from 'next/head';
 
 // Component imports
 import MainLayout from '../../components/MainLayout';
+import TransferList from '../../components/TrasnferList';
 
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
@@ -630,7 +631,7 @@ function AddCommUnit(props) {
 											const handleCHEWSubmit = (event) => {
 												event.preventDefault();
 
-												window.sessionStorage.setItem('formId', 1);
+												window.sessionStorage.setItem('formId', 2);
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -638,7 +639,7 @@ function AddCommUnit(props) {
 											const handleCHEWPrevious = (event) => {
 												event.preventDefault();
 
-												window.sessionStorage.setItem('formId', 0);
+												window.sessionStorage.setItem('formId', 1);
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -678,10 +679,19 @@ function AddCommUnit(props) {
 																		In Charge
 																	</label>
 																</div>
+
+																{/* Delete CHEW */}
+																<div className='col-start-4 col-span-1'>
+																	<label
+																		htmlFor='delete'
+																		className='block text-sm font-medium text-gray-700'>
+																		Delete
+																	</label>
+																</div>
 															</div>
 
 															{/* Form input */}
-															<div className='grid grid-cols-3 place-content-start gap-3 w-full'>
+															<div className='grid grid-cols-4 place-content-start gap-3 w-full'>
 																{/* First Name */}
 																<div className='col-start-1 col-span-1'>
 																	<input
@@ -702,16 +712,28 @@ function AddCommUnit(props) {
 																</div>
 																{/* In charge */}
 																<div className='col-start-3 col-span-1'>
-																	<div className='flex items-center'>
+																	<div className='flex items-center py-3'>
 																		<input
 																			name='incharge'
 																			type='checkbox'
 																			className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
 																		/>
 																	</div>
-                                                                </div>
-                                                                
-                                                                {/* Add delete button */}
+																</div>
+
+																{/* Delete CHEW */}
+																<div className='col-start-4 col-span-1'>
+																	<div className='flex items-center'>
+																		{/* insert red button for deleting */}
+																		<button
+																			name='delete'
+																			type='button'
+																			className='bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-4 border border-red-500 hover:border-transparent rounded'
+																			onClick={() => {}}>
+																			Delete
+																		</button>
+																	</div>
+																</div>
 															</div>
 														</div>
 
@@ -739,7 +761,62 @@ function AddCommUnit(props) {
 											);
 										// Services Case
 										case 2:
-											return <></>;
+											// Handle Service Form Submit
+											const handleServiceSubmit = (event) => {
+												event.preventDefault();
+
+												window.sessionStorage.setItem('formId', 3);
+
+												setFormId(window.sessionStorage.getItem('formId'));
+											};
+
+											const handleServicesPrevious = (event) => {
+												event.preventDefault();
+
+												window.sessionStorage.setItem('formId', 1);
+												setFormId(window.sessionStorage.getItem('formId'));
+											};
+											return (
+												<>
+													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														Services Offered
+													</h4>
+
+													<form
+														name='chu_services_form'
+														className='flex flex-col w-full items-start justify-start gap-3'
+														onSubmit={handleServiceSubmit}>
+														{/* Transfer list Container */}
+														<div className='flex items-center w-full h-auto min-h-[300px]'>
+															{/* serviceCategories.map(ctg => ctg.name) */}
+															<TransferList
+																categories={serviceCategories.map(
+																	(data) => data
+																)}
+															/>
+														</div>
+
+														<div className='flex justify-between items-center w-full'>
+															<button
+																onClick={handleServicesPrevious}
+																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
+																<span className='text-medium font-semibold text-black '>
+																	CHEWs
+																</span>
+															</button>
+															<button
+																type='submit'
+																className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+																<span className='text-medium font-semibold text-white'>
+																	Save
+																</span>
+																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+															</button>
+														</div>
+													</form>
+												</>
+											);
 									}
 								})()}
 							</div>
