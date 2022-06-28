@@ -40,7 +40,7 @@ const StaticReports = (props) => {
   return (
     <div className="">
             <Head>
-                <title>KMHFL - Facilities</title>
+                <title>KMHFL - Static Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
