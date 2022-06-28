@@ -152,7 +152,7 @@ const CommUnit = (props) => {
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
                   <button
                     onClick={() =>
-                      approveRejectCHU(cu.is_approved, setIsApproveReject)
+                      approveRejectCHU(cu.is_approved, setIsApproveReject,cu.id)
                     }
                     className="p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
                   >
