@@ -33,7 +33,7 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferList({categories, setServices, children}) {
+export default function TransferList({categories, setServices, children, selectedHeading}) {
 
   // console.log({categories})
 
@@ -120,7 +120,7 @@ useMemo(() => {
     setServices([]);
   };
 
-
+  Checkbox
 
   const accordion = (data, isRight) => {
 
@@ -325,7 +325,7 @@ useMemo(() => {
       </Grid>
       <Grid item>
           <Grid container direction="column"  justifyContent="start" alignItems="start">
-          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Selected Services</h5>
+          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">{selectedHeading}</h5>
             {customList(right, true)}
           </Grid>
           </Grid>

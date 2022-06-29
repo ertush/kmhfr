@@ -12,6 +12,7 @@ import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon, PlusIcon } from '@heroic
 import  FacilityContact from '../../components/FacilityContact' 
 import { XCircleIcon } from '@heroicons/react/outline';
 import TransferList from '../../components/TrasnferList';
+import { Checkbox } from '@mui/material';
 
 
 
@@ -35,11 +36,96 @@ function AddFacility(props) {
 
     const infrastractureCategories = [
         {
-            name:'',
+            name:'COLD CHAIN',
             subCategories:[
-
+                'Cold room',
+                'Cool boxes',
+                'Freezers',
+                'Fridges'
             ]        
-        }
+        },
+        {
+            name:'COMMUNICATIONS',
+            subCategories:[
+                'Land Line',
+                'Radio Call',
+                'Teleconfererncing Facility',
+                'TV Screen',
+                'Video Conferencing Facility',
+                'Video Conferencing Sapce',
+                'wireless Mobile'
+            ]
+        },
+        {
+            name:'ICT INFRASTRUCTURE',
+            subCategories:[
+                'LAN',
+                'Laptops',
+                'Printers',
+                'Routers',
+                'Scanners',
+                'Servers',
+                'WAN (Internet connectivity)',
+                'Wi-Fi'
+            ]
+        },
+        {
+            name:'MEDICAL EQUIPMENT',
+            subCategories:[
+                'Boiler',
+                'Cold chain vaccine carriers',
+                'CT Scan Machines',
+                'Dialysis machines',
+                'MRI Machines',
+                'Oxygen Plant',
+                'Ventilators',
+                'X-Ray Machines',
+
+            ]
+        },
+        {
+            name:'MEDICAL WASTE MANAGEMENT',
+            subCategories:[
+                'Dump without burning',
+                'Incinerator',
+                'Open burning',
+                'Remove offsite',
+                'Sewer system',
+            ]
+        },
+        {
+            name:'POWER SOURCE',
+            subCategories:[
+                'Battery  Backups',
+                'Bio-Gas',
+                'Gas',
+                 'Generator',
+                 'Main Grid',
+                 'Solar'
+            ]
+        },
+        {
+            name:'ROADS',
+            subCategories:[
+                'Earthen Road',
+                'Graded (Murrum)',
+                'Gravel',
+                'Tarmac'
+            ]
+        },
+        {
+            name:'WATER SOURCE',
+            subCategories:[
+                'Bore Hole',
+                'Donkey Cart / Vendor',
+                'Piped Water',
+                'Protected Wells / Springs',
+                ' River /Dam /Lake',
+                'Roof Harvested Water'                
+            ]
+        },
+        
+        
     ]
 
     const serviceCategories = [
@@ -1464,7 +1550,7 @@ function AddFacility(props) {
                                                         categories={
                                                             serviceCategories.map((data) => data)
                                                         } 
-                                                        
+                                                        selectedHeading={'Services'}
                                                         setServices={setServices}
                                                         />
 
@@ -1522,6 +1608,39 @@ function AddFacility(props) {
                                                 setFormId(window.sessionStorage.getItem('formId'))
                                             }
 
+                                            const renderInfrastructureCategory = (category, id) => {
+                                                return (
+                                                    <div key={id} className='flex flex-col justify-center items-center w-full flex-1 border-2'>
+                                                        {
+                                                        infrastractureCategories.filter(infrastructure => infrastructure.name === category)[0].subCategories.map((subctg, i) => {
+                                                            return (
+                                                                <div className='grid grid-cols-3 w-full place-content-center' key={i}>
+                                                                    <p className='text-md font-semibold mt-5'>{subctg}</p>
+                                                                    <div className='flex items-center col-start-2 space-y-2'>
+                                                                        <label htmlFor="confirm-infrastructure" className="text-gray-600 capitalize mt-2 text-sm">Yes</label>
+                                                                        <Checkbox
+                                                                            checked={false}
+                                                                            id={'confirm-infrastructure'}
+                                                                            tabIndex={-1}   
+                                                                            sx={{marginTop:'1px'}}
+                                                                            disableRipple
+                                                                            onChange={() => {}}
+                                                                            inputProps={{
+                                                                                'aria-labelledby': 'options',
+                                                                            }}
+                                                                            />
+                                                                         
+                                                                    </div>
+                                                                    <input required type="number" name="longitude" className="col-start-3 flex-none w-auto mt-4 h-8 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                                </div>
+                                                                
+                                                            )
+                                                        })
+                                                        }   
+                                                    </div>
+                                                )
+                                            }
+
                                             
                                             
                                             return (
@@ -1532,17 +1651,28 @@ function AddFacility(props) {
                                                     {/* Transfer list Container */}
                                                     <div className='flex items-center w-full h-auto min-h-[300px]'>
                                                        
-                                                    {/* serviceCategories.map(ctg => ctg.name) */}
+                                                    {/* Transfer List*/}
                                                     <TransferList 
                                                     categories={
-                                                        serviceCategories.map((data) => data)
+                                                        infrastractureCategories.map((data) => data)
                                                     } 
                                                     children={
-                                                        <h3 className='text-base font-semibold'>
-                                                            child Node
-                                                        </h3>
+                                                        <div className='flex flex-col w-full'>
+                                                            {/* Categories */}
+                                                            {infrastractureCategories.map(({name}, i) => {
+                                                                switch(name){
+                                                                    case 'COLD CHAIN':
+                                                                        return renderInfrastructureCategory(name, i)
+                                                                    case 'COMMUNICATIONS':
+                                                                        return renderInfrastructureCategory(name, i)
+                                                                    case 'ICT INFRASTRUCTURE':
+                                                                        return renderInfrastructureCategory(name, i)
+                                                                }
+                                                            })}
+                                                        </div>
                                                     }
                                                     setServices={setServices}
+                                                    selectedHeading={'Infrastructure'}
                                                     />
 
                                                     </div>
@@ -1550,10 +1680,10 @@ function AddFacility(props) {
                                                      <table className='w-full  h-auto my-4'>
                                                         <thead className='w-full'>
                                                             <tr className='grid grid-cols-4 place-content-end border-b-4 border-gray-300'>
-                                                                <td className='text-lg font-semibold text-indigo-900 '>Name</td>
-                                                                <td className='text-lg font-semibold text-indigo-900 ml-12'>Category</td>
-                                                                <td className='text-lg font-semibold text-indigo-900 '>Present</td>
-                                                                <td className='text-lg font-semibold text-indigo-900 ml-12'>Number</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Name</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Category</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Present</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Number</td>
                                                             </tr>
                                                         </thead>
                                                         <tbody ref={optionRefBody}>
