@@ -106,7 +106,6 @@ const Dash = (props) => {
                 }
             })
     }
-
     const totalSummary =[
         {name:'Total Facilities', count: `${props?.data.total_facilities || 0}` }, 
         {name:'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },

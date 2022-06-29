@@ -48,6 +48,7 @@ export default function TransferList({categories, setServices, children, selecte
 
 
 useMemo(() => {
+     
      leftChecked = intersection(checked, left);
      rightChecked = intersection(checked, right);
   

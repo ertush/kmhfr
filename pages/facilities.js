@@ -2,12 +2,16 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../components/MainLayout'
 import { DotsHorizontalIcon, DownloadIcon, PencilIcon, PlusIcon } from '@heroicons/react/solid'
+
 import { checkToken } from '../controllers/auth/auth'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
+
+import NativePickers from '../components/date-picker'
+
 
 const Home = (props) => {
     const router = useRouter()
@@ -157,6 +161,18 @@ const Home = (props) => {
     // }, [drillDown])
 
 
+
+
+    const [fromDate, setFromDate] = React.useState(new Date());
+    const [toDate, setToDate] = React.useState(new Date());
+
+    const handleDates=(from, to) => {
+        setFromDate(from);
+        setToDate(to);
+    
+     }
+
+
     return (
         <div className="">
             <Head>
@@ -223,8 +239,7 @@ const Home = (props) => {
                             {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative">
                                 {/* Button group */}
                                 <div className='flex items-center space-x-6 w-auto'>
-                                    {/* Add Faility Button */}
-
+                                    {/* Facility Button */}
                                     <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facility/add_facility')}} className='flex items-center justify-center'>
 
@@ -412,6 +427,14 @@ const Home = (props) => {
                                                             }} />
                                                     </div>
                                                 ))}
+                                            {/* From and To Date Picker Components */}
+
+                                            <NativePickers onSelected={
+                                                handleDates
+                                            }></NativePickers>
+                                            
+
+                                            {/* Yes/No Dialog */}
                                             <div className="w-full flex flex-row items-center px-2 justify-between gap-1 gap-x-3 mb-3">
                                                 <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has edits</label>
                                                 <span className="flex items-center gap-x-1">
