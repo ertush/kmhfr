@@ -5,9 +5,9 @@ import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
+import { CheckBox } from '@mui/icons-material'
 
 import Select from 'react-select'
-import moment from 'moment'
 
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 // import { Grid, GridOptions } from '@ag-grid-community/core';
@@ -137,6 +137,7 @@ const DynamicReports = (props) => {
 
 
     const onGridReady = (params) => {
+        console.log({api: params.api});
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
@@ -150,20 +151,18 @@ const DynamicReports = (props) => {
             return dtpnt
         })
         setlinelist(lnlst)
-        setlinelist2(lnlst)
-        updateData(lnlst)  
+        updateData(lnlst)
     };
-//    console.log(props?.data);
-    useEffect(()=>{
-      if( fromDate !=='' && toDate !==''){
-          const results = linelist2?.filter(data=>new Date(moment(data.created).format('YYYY/MM/DD')).getTime() >= new Date(moment(fromDate).format('YYYY/MM/DD')).getTime() && new Date(moment(data.created).format('YYYY/MM/DD')).getTime() <= new Date(moment(toDate).format('YYYY/MM/DD')).getTime()).map((r)=>{return r})
-          setlinelist(results)
-      }else{
-          setlinelist(linelist2)
-      }
-      
-    }, [fromDate, toDate])
 
+    useEffect(()=>{
+        if( fromDate !=='' && toDate !==''){
+            const results = linelist2?.filter(data=>new Date(moment(data.created).format('YYYY/MM/DD')).getTime() >= new Date(moment(fromDate).format('YYYY/MM/DD')).getTime() && new Date(moment(data.created).format('YYYY/MM/DD')).getTime() <= new Date(moment(toDate).format('YYYY/MM/DD')).getTime()).map((r)=>{return r})
+            setlinelist(results)
+        }else{
+            setlinelist(linelist2)
+        }
+        
+      }, [fromDate, toDate])
 
     const handleAccordionExpand = (ev) => {
         if(isAccordionExpanded){
@@ -204,6 +203,8 @@ const DynamicReports = (props) => {
                                 <h1 className="text-3xl tracking-tight font-bold leading-none flex items-center justify-start gap-x-2">
                                     Dynamic Reports
                                 </h1>
+
+                                
                                     <div className="flex flex-row items-center justify-start w-full gap-2">
                                     {filters && filters?.error ?
                                         (<div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
@@ -750,9 +751,11 @@ const DynamicReports = (props) => {
                                                     </Accordion>  
                                         )
                                     }
-
                                     </div>
+                                
 
+
+                                
                                 <h5 className="text-lg font-medium text-gray-800">
                                     {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('undefined') &&
                                         `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') || k.split('_').join(' ') : k.split('_').join(' ')})`)?.join(' & ')}`
@@ -762,18 +765,14 @@ const DynamicReports = (props) => {
                                 
                             </div>
                             {/* ((((((( dropdown options to download data */}
-
                             <div>
                                 <button className={"flex items-center justify-start rounded bg-green-600 text-center hover:bg-green-900 focus:bg-black text-white font-semibold active:bg-black py-2 px-4 uppercase text-base w-full"} onClick={() => {
                                     gridApi.exportDataAsCsv();
-                                    setFromDate(''); 
-                                    setToDate('')
                                 }}>
                                     <DownloadIcon className="w-4 h-4 mr-1" />
                                     <span>Download Report</span>
                                 </button>
                             </div>
-                            
                             {/* ))))))) dropdown options to download data */}
 
                         </div>
@@ -880,7 +879,6 @@ const DynamicReports = (props) => {
                                     rowData={linelist}>
                                         
                                     {headers.map((v_, i) => {
-
                                         if(v_.length > 3){
                                             return (
                                                 <AgGridColumn
@@ -947,12 +945,9 @@ DynamicReports.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
-        let url = API_URL + `/facilities/material/?format=json&access_token=${token}&fields=id,code,name,official_name,regulatory_status_name,updated,facility_type_name,owner_name,county,sub_county_name,rejected,ward_name,keph_level,keph_level_name,constituency_name,is_complete,in_complete_details,approved,is_approved,approved_national_level,created&page_size=100`
+
+        let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
         let query = { 'searchTerm': '' }
-
-        // let current_url = url + '&page_size=100000' //change the limit on prod
-        let current_url = url + '&page_size=100'
-
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
         }
@@ -968,10 +963,12 @@ DynamicReports.getInitialProps = async (ctx) => {
             }
         })
         // let current_url = url + '&page_size=25000' //change the limit on prod
+        let current_url = url + '&page_size=50'
         if (ctx?.query?.page) {
+            console.log({page:ctx.query.page})
             url = `${url}&page=${ctx.query.page}`
         }
-        console.log('running fetchData(' + url + ')')
+        // console.log('running fetchData(' + url + ')')
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

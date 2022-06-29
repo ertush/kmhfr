@@ -25,206 +25,325 @@ import {
 	PlusIcon,
 } from '@heroicons/react/solid';
 import { XCircleIcon } from '@heroicons/react/outline';
+import Checkbox from '@mui/material/Checkbox';
 
 // Package imports
 import Select from 'react-select';
 
 function AddFacility(props) {
-	let facility = props.data;
-	const steps = [
-		'Basic Details',
-		'Geolocation',
-		'Facility Contacts',
-		'Regulation',
-		'Services',
-		'Infrastructure',
-		'Human resources',
-	];
 
-	const serviceCategories = [
-		{
-			name: 'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
-			subCategories: [
-				'Accident and Emergency casualty Services',
-				'General Emergency Services',
-			],
-		},
-		{
-			name: 'AMBULATORY SERVICES',
-			subCategories: ['Ambulatory Services'],
-		},
-		{
-			name: 'ANTENATAL CARE',
-			subCategories: ['Focused Antenatal Care'],
-		},
-		{
-			name: 'BLOOD TRANSFUSION SERVICES',
-			subCategories: [
-				'Blood Bank',
-				'Facility offering Blood Transfusion Service',
-				'Satellite Blood Transfusion service',
-			],
-		},
-		{
-			name: 'CANCER SCREENING',
-			subCategories: [
-				'Breast',
-				'Coloreactal',
-				'Pap smear',
-				'Prostrate',
-				'Screening using VIA/VILI',
-			],
-		},
-		{
-			name: 'CURATIVE SERVICES',
-			subCategories: ['Inpatient', 'Outpatient'],
-		},
-		{
-			name: 'DELTED HDU',
-			subCategories: ['High dependency Services'],
-		},
-		{
-			name: 'EMERGENCY PREPAREDNESS',
-			subCategories: [
-				'Basic Emergency Preparedness',
-				'Comprehensive Emergency Preparedness',
-			],
-		},
-		{
-			name: 'FAMILY PLANNING',
-			subCategories: ['Long Term', 'Natural', 'Permanent'],
-		},
-		{
-			name: 'FORENSIC SERVICES',
-			subCategories: ['Long Term', 'Natural', 'Permanent'],
-		},
-		{
-			name: 'HIV TREATMENT',
-			subCategories: ['HIV treatment and care'],
-		},
-		{
-			name: 'HIV/AIDS Prevention,Care and Treatment Services',
-			subCategories: [
-				'Condom Distribution & STI Prevention',
-				'Elimination of Mother to Child transmission of HIV',
-				'HEI - HIV exposed infants',
-				'HIV preventive Package',
-				'HIV risk reduction for Key populations',
-				'HIV risk reduction services for prioity populations and geographies',
-				'HIV Testing Services',
-				'Infection Prevention and control to mitigate HIV infection in the work place',
-				'Management of Sexually Transmitted Illness (STI)',
-				'Nutrition assessment ,counselling and support ( The NACS process) for PLHIVs',
-				'Post-Exposure Prophylaxis (PEP)',
-			],
-		},
-		{
-			name: 'HOSPICE SERVICE',
-			subCategories: [],
-		},
-		{
-			name: 'IMMUNISATION',
-			subCategories: [],
-		},
-		{
-			name: 'INTEGRATED MANAGEMENT OF CHILDHOOD ILLNESS',
-			subCategories: [],
-		},
-		{
-			name: 'LABORATORY SERVICES',
-			subCategories: [],
-		},
-		{
-			name: 'LEPROSY DIAGNOSIS',
-			subCategories: [],
-		},
-		{
-			name: 'LEPROSY TREATMENT',
-			subCategories: [],
-		},
-		{
-			name: 'MATERNITY SERVICES',
-			subCategories: [],
-		},
-	];
+    let facility = props.data
 
-	const [formId, setFormId] = useState(0);
-	const facilityContactRef = useRef(null);
-	const facilityContact2Ref = useRef(null);
-	// const facilityServiceRef = useRef(null)
-	const facilityRegulatoryBodyRef = useRef(null);
-	const facilityInfrastructureRef = useRef(null);
+    const nameOptionRef = useRef(null)
+    const serviceOptionRef = useRef(null)
+    const optionRefBody = useRef(null)
 
-	useEffect(() => {
-		const formIdState = window.sessionStorage.getItem('formId');
+    const steps = [
+        'Basic Details',
+        'Geolocation',
+        'Facility Contacts',
+        'Regulation',
+        'Services',
+        'Infrastructure',
+        'Human resources'
+      ];
 
-		// console.log({formIdState})
+    const infrastractureCategories = [
+        {
+            name:'COLD CHAIN',
+            subCategories:[
+                'Cold room',
+                'Cool boxes',
+                'Freezers',
+                'Fridges'
+            ]        
+        },
+        {
+            name:'COMMUNICATIONS',
+            subCategories:[
+                'Land Line',
+                'Radio Call',
+                'Teleconfererncing Facility',
+                'TV Screen',
+                'Video Conferencing Facility',
+                'Video Conferencing Sapce',
+                'wireless Mobile'
+            ]
+        },
+        {
+            name:'ICT INFRASTRUCTURE',
+            subCategories:[
+                'LAN',
+                'Laptops',
+                'Printers',
+                'Routers',
+                'Scanners',
+                'Servers',
+                'WAN (Internet connectivity)',
+                'Wi-Fi'
+            ]
+        },
+        {
+            name:'MEDICAL EQUIPMENT',
+            subCategories:[
+                'Boiler',
+                'Cold chain vaccine carriers',
+                'CT Scan Machines',
+                'Dialysis machines',
+                'MRI Machines',
+                'Oxygen Plant',
+                'Ventilators',
+                'X-Ray Machines',
 
-		if (formIdState == undefined || formIdState == null || formIdState == '') {
-			window.sessionStorage.setItem('formId', 4); //0
-		}
+            ]
+        },
+        {
+            name:'MEDICAL WASTE MANAGEMENT',
+            subCategories:[
+                'Dump without burning',
+                'Incinerator',
+                'Open burning',
+                'Remove offsite',
+                'Sewer system',
+            ]
+        },
+        {
+            name:'POWER SOURCE',
+            subCategories:[
+                'Battery  Backups',
+                'Bio-Gas',
+                'Gas',
+                 'Generator',
+                 'Main Grid',
+                 'Solar'
+            ]
+        },
+        {
+            name:'ROADS',
+            subCategories:[
+                'Earthen Road',
+                'Graded (Murrum)',
+                'Gravel',
+                'Tarmac'
+            ]
+        },
+        {
+            name:'WATER SOURCE',
+            subCategories:[
+                'Bore Hole',
+                'Donkey Cart / Vendor',
+                'Piped Water',
+                'Protected Wells / Springs',
+                ' River /Dam /Lake',
+                'Roof Harvested Water'                
+            ]
+        },
+        
+        
+    ]
 
-		setFormId(window.sessionStorage.getItem('formId'));
+    const serviceCategories = [
+        {
+            name:'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
+            subCategories:[
+                'Accident and Emergency casualty Services',
+                'General Emergency Services'
+            ]
+        },
+        {
+            name:'AMBULATORY SERVICES',
+            subCategories:[
+                'Ambulatory Services'
+            ]
+        },
+        {
+            name:'ANTENATAL CARE',
+            subCategories:[
+                'Focused Antenatal Care'
+            ]
+        },
+        {
+            name:'BLOOD TRANSFUSION SERVICES',
+            subCategories:[
+                'Blood Bank',
+                'Facility offering Blood Transfusion Service',
+                'Satellite Blood Transfusion service'
+            ]
+        },
+        {
+            name:'CANCER SCREENING',
+            subCategories:[
+                'Breast',
+                'Coloreactal',
+                'Pap smear',
+                'Prostrate',
+                'Screening using VIA/VILI'
+            ]
+        },
+        {
+            name:'CURATIVE SERVICES',
+            subCategories:[
+                'Inpatient',
+                'Outpatient'
+                
+            ]
+        },
+        {
+            name:'DELTED HDU',
+            subCategories:[
+                'High dependency Services',
+                
+            ]
+        },
+        {
+            name:'EMERGENCY PREPAREDNESS',
+            subCategories:[
+                'Basic Emergency Preparedness',
+                'Comprehensive Emergency Preparedness'
+            ]
+        },
+        {
+            name:'FAMILY PLANNING',
+            subCategories:[
+                'Long Term',
+                'Natural',
+                'Permanent'
+            ]
 
-		// Check if dropdown and input exist. If remove from DOM
+        },
+        {
+            name:'FORENSIC SERVICES',
+            subCategories:[
+                'Long Term',
+                'Natural',
+                'Permanent'
+            ]
 
-		const contactDropDowns = document.getElementsByName(
-			'dropdown_contact_types'
-		);
-		const contactInputs = document.getElementsByName('contact_details_others');
+        },
+        {
+            name: 'HIV TREATMENT',
+            subCategories:[
+                'HIV treatment and care'
+            ]
 
-		const infrastructureDropDowns = document.getElementsByName(
-			'dropdown_infrastructure_name'
-		);
-		const infrastructureDropDownsYesNo = document.getElementsByName(
-			'dropdown_infrastructure_types'
-		);
-
-		if (contactDropDowns.length > 0)
-			contactDropDowns.forEach((dropDown) => dropDown.remove());
-		if (contactInputs.length > 0)
-			contactInputs.forEach((input) => input.remove());
-
-		if (infrastructureDropDowns.length > 0)
-			infrastructureDropDowns.forEach((dropDown) => dropDown.remove());
-		if (infrastructureDropDownsYesNo.length > 0)
-			infrastructureDropDownsYesNo.forEach((input) => input.remove());
-
-		return () => {
-			if (window.sessionStorage.getItem('formId') == '7') {
-				window.sessionStorage.setItem('formId', 0);
-			}
-		};
-	}, [formId]);
-
-	return (
-		<div className=''>
-			{/* Head */}
-			<Head>
-				<title>KMHFL - Add Facility</title>
-				<link rel='icon' href='/favicon.ico' />
-            </Head>
+        },
+        {
+            name: 'HIV/AIDS Prevention,Care and Treatment Services',
+            subCategories:[
+                'Condom Distribution & STI Prevention',
+                'Elimination of Mother to Child transmission of HIV',
+                'HEI - HIV exposed infants',
+                'HIV preventive Package',
+                'HIV risk reduction for Key populations',
+                'HIV risk reduction services for prioity populations and geographies',
+                'HIV Testing Services',
+                'Infection Prevention and control to mitigate HIV infection in the work place',
+                'Management of Sexually Transmitted Illness (STI)',
+                'Nutrition assessment ,counselling and support ( The NACS process) for PLHIVs',
+                'Post-Exposure Prophylaxis (PEP)'
+            ]
+        },
+        {
+            name: 'HOSPICE SERVICE',
+            subCategories:[
+            ]
+        },
+        {
             
-            {/* Main Layout */}
-			<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                <div className='w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4'>
-                    
-                    {/* Breadcrumbs */}
-					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-4'>
-						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
-							<div className='flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3'>
-								<a className='text-indigo-700' href='/'>
-									Home
-								</a>{' '}
-								{'>'}
-								<a className='text-indigo-700' href='/facilities'>
-									Facilities
-								</a>{' '}
-								{'>'}
-								<span className='text-gray-500'>Add Facility</span>
-							</div>
-							<div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'></div>
-						</div>
+            name: 'IMMUNISATION',
+            subCategories:[
+            ]   
+        },
+        {
+            name: 'INTEGRATED MANAGEMENT OF CHILDHOOD ILLNESS',
+            subCategories:[
+            ]
+        },
+        {
+            name: 'LABORATORY SERVICES',
+            subCategories:[
+            ]
+        },
+        {
+            name: 'LEPROSY DIAGNOSIS',
+            subCategories:[
+            ]
+        },
+        {
+            name: 'LEPROSY TREATMENT',
+            subCategories:[
+            ]
+        },
+        {
+            name: 'MATERNITY SERVICES',
+            subCategories:[
+            ]
+        }
+           
+    ]
+
+
+    const [formId, setFormId] = useState(0)
+    const facilityContactRef = useRef(null)
+    const facilityContact2Ref = useRef(null)
+    // const facilityServiceRef = useRef(null)
+    const facilityRegulatoryBodyRef = useRef(null)
+    const facilityInfrastructureRef = useRef(null)
+    // Services State
+    const [services, setServices] = useState([])
+
+
+    useEffect(() => {
+
+        const formIdState = window.sessionStorage.getItem('formId');
+
+        // console.log({formIdState})
+
+        if(formIdState == undefined || formIdState == null || formIdState == '') {
+            window.sessionStorage.setItem('formId', 4); //0
+        }
+        
+        setFormId(window.sessionStorage.getItem('formId'));
+
+        // Check if dropdown and input exist. If remove from DOM
+
+        const contactDropDowns = document.getElementsByName('dropdown_contact_types')
+        const contactInputs = document.getElementsByName('contact_details_others')
+
+        const infrastructureDropDowns = document.getElementsByName('dropdown_infrastructure_name')
+        const infrastructureDropDownsYesNo = document.getElementsByName('dropdown_infrastructure_types')
+
+        if(contactDropDowns.length > 0) contactDropDowns.forEach(dropDown => dropDown.remove())
+        if(contactInputs.length > 0) contactInputs.forEach(input => input.remove())
+     
+        if(infrastructureDropDowns.length > 0) infrastructureDropDowns.forEach(dropDown => dropDown.remove())
+        if(infrastructureDropDownsYesNo.length > 0) infrastructureDropDownsYesNo.forEach(input => input.remove())
+        
+
+        return () => {
+            if(window.sessionStorage.getItem('formId') == '7'){
+                window.sessionStorage.setItem('formId', 0)
+            }
+            
+        }
+    }, [formId, services])
+      
+
+  return (
+    <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+        <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
+                    <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
+                            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                                <a className="text-indigo-700" href="/">Home</a> {'>'}
+                                <a className="text-indigo-700" href="/facilities">Facilities</a> {'>'}
+                                <span className="text-gray-500">Add Facility</span>
+                            </div>
+                            <div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3">
+                            
+                            </div>
+                        </div>
+                  
                     </div>
 
 					{/* Stepper and Form */}
@@ -1843,667 +1962,490 @@ function AddFacility(props) {
                                                 width:auto;
                                                 height:auto;
 
-                                                `
-												);
-
-												divContainer.appendChild(dropDownRgBody.getRootNode());
-												divContainer.appendChild(inputRgBody);
-												divContainer.appendChild(inputLicenseNo);
-												divContainer.appendChild(inputRegNo);
-												divContainer.appendChild(delBtn.getRootNode());
-											};
-
-											return (
-												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-														Facility Regulation
-													</h4>
-													<form
-														name='facility_regulation_form'
-														className='flex flex-col w-full items-start justify-start gap-3'
-														onSubmit={handleRegulationSubmit}>
-														{/* Regulatory Body */}
-
-														{/* Job Title */}
-														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-															<label
-																htmlFor='facility_official_name'
-																className='text-gray-600 capitalize text-sm'>
-																Regulatory Body
-																<span className='text-medium leading-12 font-semibold'>
-																	{' '}
-																	*
-																</span>{' '}
-															</label>
-															<input
-																required
-																type='text'
-																name='regulatory_body'
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-															/>
-														</div>
-
-														{/* Regulation Status */}
-														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-															<label
-																htmlFor='facility_official_name'
-																className='text-gray-600 capitalize text-sm'>
-																License Number
-															</label>
-															<input
-																type='text'
-																name='license_number'
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-															/>
-														</div>
-
-														{/* Registration Number */}
-														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-															<label
-																htmlFor='facility_official_name'
-																className='text-gray-600 capitalize text-sm'>
-																Registration Number
-															</label>
-															<input
-																type='text'
-																name='reg_number'
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-															/>
-														</div>
-
-														{/* check file upload */}
-														<div className=' w-full flex flex-col items-start justify-start p-3 rounded h-auto'>
-															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-																<label
-																	htmlFor='checklist_file'
-																	className='text-gray-600 capitalize text-sm'>
-																	Upload license document
-																</label>
-																<input
-																	required
-																	type='file'
-																	name='license_document'
-																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																/>
-															</div>
-														</div>
-
-														{/* Facility Departments Regulation  */}
-
-														<h5 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-															Facility Departments Regulation
-														</h5>
-														<div
-															className='grid grid-cols-4 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
-															ref={facilityRegulatoryBodyRef}>
-															{/* Contact Headers */}
-															<h3 className='text-medium font-semibold text-blue-900'>
-																Name
-															</h3>
-															<h3 className='text-medium font-semibold text-blue-900'>
-																Regulatory Body
-															</h3>
-															<h3 className='text-medium font-semibold text-blue-900'>
-																License Number
-															</h3>
-															<h3 className='text-medium font-semibold text-blue-900'>
-																Reg. Number
-															</h3>
-
-															<hr className='col-span-4' />
-
-															{/* Name */}
-															<Select
-																options={[
-																	{
-																		value: 'Private Practice',
-																		label: 'Private Practice',
-																	},
-																	{
-																		value: 'Non-Governmental Organizations',
-																		label: 'Non-Governmental Organizations',
-																	},
-																	{
-																		value: 'Ministry of Health',
-																		label: 'Ministry of Health',
-																	},
-																	{
-																		value: 'Faith Based Organization',
-																		label: 'Faith Based Organization',
-																	},
-																]}
-																required
-																placeholder='Select Ward'
-																onChange={() => console.log('changed')}
-																name='facility_dept_name'
-																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-															/>
-
-															{/* Regulatory Body */}
-															<input
-																type='text'
-																name='regulatory_body'
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-															/>
-
-															{/* License No. */}
-															<input
-																type='number'
-																name='license_number'
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-															/>
-
-															<div className='col-start-4 flex items-center space-x-2 w-full'>
-																{/* Reg No. */}
-																<input
-																	type='number'
-																	name='reg_number'
-																	className='flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																/>
-
-																{/* Delete Btn */}
-
-																<button
-																	onClick={(event) => {
-																		event.preventDefault();
-																	}}>
-																	<XCircleIcon className='w-7 h-7 text-red-400' />
-																</button>
-															</div>
-
-															{/* add other fields */}
-														</div>
-
-														{/* Add btn */}
-														<div className='w-full flex justify-end items-center mt-2'>
-															<button
-																onClick={handleAddRegulatoryBody}
-																className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
-																<PlusIcon className='w-4 h-4 text-white' />
-																<p className='text-medium font-semibold text-white'>
-																	Add
-																</p>
-															</button>
-														</div>
-
-														{/* Prev / Next */}
-														<div className='flex justify-between items-center w-full'>
-															<button
-																onClick={handleRegulationPrevious}
-																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																<span className='text-medium font-semibold text-black '>
-																	Facility Contacts
-																</span>
-															</button>
-															<button
-																type='submit'
-																className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>
-																	{' '}
-																	Services
-																</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-															</button>
-														</div>
-													</form>
-												</>
-											);
-										case 4:
-											// Services form
-											const handleServiceSubmit = (event) => {
-												event.preventDefault();
-
-												window.sessionStorage.setItem('formId', 5);
-
-												setFormId(window.sessionStorage.getItem('formId'));
-											};
-
-											const handleServicePrevious = (event) => {
-												event.preventDefault();
-												window.sessionStorage.setItem('formId', 3);
-
-												setFormId(window.sessionStorage.getItem('formId'));
-											};
-
-											return (
-												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-														Services
-													</h4>
-													<form
-														name='facility_services_form'
-														className='flex flex-col w-full items-start justify-start gap-3'
-														onSubmit={handleServiceSubmit}>
-														{/* Transfer list Container */}
-														<div className='flex items-center w-full h-auto min-h-[300px]'>
-															{/* serviceCategories.map(ctg => ctg.name) */}
-															<TransferList
-																categories={serviceCategories.map(
-																	(data) => data
-																)}
-															/>
-														</div>
-
-														<div className='flex justify-between items-center w-full'>
-															<button
-																onClick={handleServicePrevious}
-																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																<span className='text-medium font-semibold text-black '>
-																	Regulation
-																</span>
-															</button>
-															<button
-																type='submit'
-																className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>
-																	Infrastructure
-																</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-															</button>
-														</div>
-													</form>
-												</>
-											);
-										case 5:
-											// Infrastructure form
-											const handleInfrastructureSubmit = (event) => {
-												event.preventDefault();
-
-												window.sessionStorage.setItem('formId', 6);
-
-												setFormId(window.sessionStorage.getItem('formId'));
-											};
-
-											const handleInfrastructurePrevious = (event) => {
-												event.preventDefault();
-												window.sessionStorage.setItem('formId', 4);
-
-												setFormId(window.sessionStorage.getItem('formId'));
-											};
-
-											const handleAddInfrastractuer = (event) => {
-												event.preventDefault();
-												const divContainer = facilityInfrastructureRef.current;
-
-												const dropDownInfrastractuer =
-													document.createElement('select');
-
-												dropDownInfrastractuer.setAttribute(
-													'style',
-													`
-                                                width:100%; 
-                                                border: 1px solid hsl(0, 0%, 80%); 
-                                                border-radius: 4px; 
-                                                padding: 2px; 
-                                                background-color: hsl(0, 0%, 100%); 
-                                                display: grid; 
-                                                min-height: 38px;
-                                                `
-												);
-
-												dropDownInfrastractuer.setAttribute(
-													'placeholder',
-													'Select Service'
-												);
-
-												dropDownInfrastractuer.setAttribute(
-													'name',
-													'dropdown_infrastructure_name'
-												);
-
-												const option0 = document.createElement('option');
-												option0.innerText = 'Select Infrastracture Type';
-												option0.value = 'Select Infrastracture';
-
-												const option1 = document.createElement('option');
-												option1.innerText = 'Wireless Mobile';
-												option1.value = 'Wireless Mobile';
-
-												const option2 = document.createElement('option');
-												option2.innerText = 'Piped Water';
-												option2.value = 'Piped Water';
-
-												const option3 = document.createElement('option');
-												option3.innerText = 'Main Grid';
-												option3.value = 'Main Grid';
-
-												const option4 = document.createElement('option');
-												option4.innerText = 'Laptops';
-												option4.value = 'Laptops';
-
-												const option5 = document.createElement('option');
-												option5.innerText = 'Incinerator';
-												option5.value = 'Incinerator';
-
-												dropDownInfrastractuer.appendChild(
-													option0.getRootNode()
-												);
-												dropDownInfrastractuer.appendChild(
-													option1.getRootNode()
-												);
-												dropDownInfrastractuer.appendChild(
-													option2.getRootNode()
-												);
-												dropDownInfrastractuer.appendChild(
-													option3.getRootNode()
-												);
-												dropDownInfrastractuer.appendChild(
-													option4.getRootNode()
-												);
-
-												divContainer.appendChild(
-													dropDownInfrastractuer.getRootNode()
-												);
-
-												const dropDownYesNo = document.createElement('select');
-
-												dropDownYesNo.setAttribute(
-													'style',
-													`
-                                                width:100%; 
-                                                border: 1px solid hsl(0, 0%, 80%); 
-                                                border-radius: 4px; 
-                                                padding: 2px; 
-                                                background-color: hsl(0, 0%, 100%); 
-                                                display: grid; 
-                                                min-height: 38px;
-                                                `
-												);
-
-												dropDownYesNo.setAttribute(
-													'placeholder',
-													'Select Service Option'
-												);
-
-												dropDownYesNo.setAttribute(
-													'name',
-													'dropdown_infrastructure_option'
-												);
-
-												const optionDefault = document.createElement('option');
-												optionDefault.innerText =
-													'Select Infrastructure Option';
-												optionDefault.value = 'Select Infrastructure Option';
-
-												const optionYes = document.createElement('option');
-												optionYes.innerText = 'Yes';
-												optionYes.value = 'Yes';
-
-												const optionNo = document.createElement('option');
-												optionNo.innerText = 'No';
-												optionNo.value = 'No';
-
-												dropDownYesNo.appendChild(optionDefault.getRootNode());
-												dropDownYesNo.appendChild(optionYes.getRootNode());
-												dropDownYesNo.appendChild(optionNo.getRootNode());
-
-												divContainer.appendChild(dropDownYesNo.getRootNode());
-											};
-
-											return (
-												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-														Infrastructure
-													</h4>
-													<form
-														name='facility_infrastructure_form'
-														className='flex flex-col w-full items-start justify-start gap-3'
-														onSubmit={handleInfrastructureSubmit}>
-														<div
-															className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
-															ref={facilityInfrastructureRef}>
-															{/* Infrastructure Name */}
-															<h3 className='text-medium font-semibold text-blue-900'>
-																Infrastructure Name
-															</h3>
-															<h3 className='text-medium font-semibold text-blue-900'>
-																Infrastructure Option
-															</h3>
-															<hr className='col-span-2' />
-
-															{/* Service Name */}
-															<Select
-																options={[
-																	{
-																		value: 'Wireless Mobile',
-																		label: 'Wireless Mobile',
-																	},
-																	{
-																		value: 'Piped Water',
-																		label: 'Piped Water',
-																	},
-																	{
-																		value: 'Main Grid',
-																		label: 'Main Grid',
-																	},
-																	{
-																		value: 'Laptops',
-																		label: 'Laptops',
-																	},
-																	{
-																		value: 'Incinerator',
-																		label: 'Incinerator',
-																	},
-																]}
-																required
-																placeholder='Select Infrastructure Type'
-																onChange={() => console.log('changed')}
-																name='service_name'
-																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-															/>
-
-															{/* Service Option */}
-															<Select
-																options={[
-																	{
-																		value: 'Yes',
-																		label: 'Yes',
-																	},
-																	{
-																		value: 'No',
-																		label: 'No',
-																	},
-																]}
-																required
-																placeholder='Select Contact Type'
-																onChange={() => console.log('changed')}
-																name='service_option'
-																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-															/>
-
-															{/* Append other dropdowns */}
-														</div>
-														<div className='w-full flex justify-end items-center mt-2'>
-															<button
-																onClick={handleAddInfrastractuer}
-																className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
-																<PlusIcon className='w-4 h-4 text-white' />
-																<p className='text-medium font-semibold text-white'>
-																	Add
-																</p>
-															</button>
-														</div>
-
-														<div className='flex justify-between items-center w-full'>
-															<button
-																onClick={handleInfrastructurePrevious}
-																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																<span className='text-medium font-semibold text-black '>
-																	Services
-																</span>
-															</button>
-															<button
-																type='submit'
-																className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>
-																	Human Resources
-																</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-															</button>
-														</div>
-													</form>
-												</>
-											);
-										case 6:
-											// Human resources form
-											const handleResourcesSubmit = (event) => {
-												event.preventDefault();
-
-												window.sessionStorage.setItem('formId', 7);
-
-												setFormId(window.sessionStorage.getItem('formId'));
-											};
-
-											const handleResourcesPrevious = (event) => {
-												event.preventDefault();
-												window.sessionStorage.setItem('formId', 5);
-
-												setFormId(window.sessionStorage.getItem('formId'));
-											};
-											return (
-												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-														Human Resources
-													</h4>
-													<form
-														name='facility_hr_form'
-														className='flex flex-col w-full items-start justify-start gap-3'
-														onSubmit={handleResourcesSubmit}>
-														<div
-															className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
-															ref={facilityInfrastructureRef}>
-															{/* Infrastructure Name */}
-															<h3 className='text-medium font-semibold text-blue-900'>
-																Infrastructure Name
-															</h3>
-															<h3 className='text-medium font-semibold text-blue-900'>
-																Infrastructure Option
-															</h3>
-															<hr className='col-span-2' />
-
-															{/* Service Name */}
-															<Select
-																options={[
-																	{
-																		value: 'Wireless Mobile',
-																		label: 'Wireless Mobile',
-																	},
-																	{
-																		value: 'Piped Water',
-																		label: 'Piped Water',
-																	},
-																	{
-																		value: 'Main Grid',
-																		label: 'Main Grid',
-																	},
-																	{
-																		value: 'Laptops',
-																		label: 'Laptops',
-																	},
-																	{
-																		value: 'Incinerator',
-																		label: 'Incinerator',
-																	},
-																]}
-																required
-																placeholder='Select Infrastructure Type'
-																onChange={() => console.log('changed')}
-																name='service_name'
-																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-															/>
-
-															{/* Service Option */}
-															<Select
-																options={[
-																	{
-																		value: 'Yes',
-																		label: 'Yes',
-																	},
-																	{
-																		value: 'No',
-																		label: 'No',
-																	},
-																]}
-																required
-																placeholder='Select Contact Type'
-																onChange={() => console.log('changed')}
-																name='service_option'
-																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-															/>
-
-															{/* Append other dropdowns */}
-														</div>
-														<div className='w-full flex justify-end items-center mt-2'>
-															<button
-																onClick={handleAddInfrastractuer}
-																className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
-																<PlusIcon className='w-4 h-4 text-white' />
-																<p className='text-medium font-semibold text-white'>
-																	Add
-																</p>
-															</button>
-														</div>
-
-														<div className='flex justify-between items-center w-full'>
-															<button
-																onClick={handleResourcesPrevious}
-																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																<span className='text-medium font-semibold text-black '>
-																	Infrastructure
-																</span>
-															</button>
-															<button
-																type='submit'
-																className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>
-																	Save
-																</span>
-															</button>
-														</div>
-													</form>
-												</>
-											);
-										default:
-											//
-											return (
-												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-														Facility Basic Details
-													</h4>
-													<form></form>
-												</>
-											);
-									}
-								})()}
-							</div>
-						</div>
-					</div>
-
-					{/* Aside */}
-					<aside className='flex flex-col col-span-5 md:col-span-1 p-1 md:h-full'>
-						<details
-							className='rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z'
-							open></details>
-					</aside>
-					{/* (((((( Floating div at bottom right of page */}
-					<div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
-						<h5 className='text-sm font-bold'>
-							<span className='text-gray-600 uppercase'>Limited results</span>
-						</h5>
-						<p className='text-sm text-gray-800'>
-							For testing reasons, downloads are limited to the first 100
-							results.
-						</p>
-					</div>
-					{/* ))))))) */}
-				</div>
-			</MainLayout>
-		</div>
-	);
+                                                `)
+
+                                                
+                                                divContainer.appendChild(dropDownRgBody.getRootNode())
+                                                divContainer.appendChild(inputRgBody)
+                                                divContainer.appendChild(inputLicenseNo)
+                                                divContainer.appendChild(inputRegNo)
+                                                divContainer.appendChild(delBtn.getRootNode())
+
+
+
+                                            }
+
+
+
+                                            
+
+
+                                            return (
+                                                <>  
+                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
+                                                    <form name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleRegulationSubmit}>
+
+                                                        {/* Regulatory Body */}
+
+                                                          {/* Job Title */}
+                                                          <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
+                                                                <input required type="text" name="regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                          </div>
+
+                                                          {/* Regulation Status */} 
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                            <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">License Number</label>
+                                                            <input type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                        </div>
+
+                                                          {/* Registration Number */} 
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                            <label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Registration Number</label>
+                                                            <input type="text" name="reg_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                        </div>
+
+                                                        {/* check file upload */}
+                                                        <div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
+                                                            <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                <label htmlFor="checklist_file" className="text-gray-600 capitalize text-sm">Upload license document</label>
+                                                                <input required type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Facility Departments Regulation  */}
+
+                                                        <h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
+                                                        <div className='grid grid-cols-4 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityRegulatoryBodyRef}>
+                                                        {/* Contact Headers */}
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Name</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Regulatory Body</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>License Number</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Reg. Number</h3>
+                                
+                                                            <hr className='col-span-4'/>
+
+                                                            
+                                                            {/* Name */}
+                                                            <Select options={
+                                                                                [
+                                                                                    {
+                                                                                        value:'Private Practice',
+                                                                                        label: 'Private Practice'
+                                                                                    },
+                                                                                    {
+                                                                                        value:'Non-Governmental Organizations',
+                                                                                        label: 'Non-Governmental Organizations'
+                                                                                    },
+                                                                                    {
+                                                                                        value:'Ministry of Health',
+                                                                                        label: 'Ministry of Health'
+                                                                                    },
+                                                                                    {
+                                                                                        value:'Faith Based Organization',
+                                                                                        label: 'Faith Based Organization'
+                                                                                    }
+                                                                                ]
+                                                                            } 
+                                                                            required
+                                                                            placeholder="Select Ward"
+                                                                            onChange={
+                                                                                () => console.log('changed')
+                                                                            }
+                                                                            name="facility_dept_name" 
+                                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                            
+                                                            {/* Regulatory Body */}
+                                                            <input type="text" name="regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+
+                                                            {/* License No. */}
+                                                            <input type="number" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                    
+                                                            <div className='col-start-4 flex items-center space-x-2 w-full'>
+                                                                {/* Reg No. */}
+                                                                <input type="number" name="reg_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                            
+                                                                {/* Delete Btn */}
+
+                                                                <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+                                                            </div>
+
+                                                            {/* add other fields */}
+                                                          
+                                                            
+                                                        </div>
+
+                                                    
+                                                        {/* Add btn */}
+                                                        <div className='w-full flex justify-end items-center mt-2'>
+                                                            <button onClick={handleAddRegulatoryBody} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                                <PlusIcon className='w-4 h-4 text-white'/>
+                                                                <p className='text-medium font-semibold text-white'>Add</p>
+                                                            </button>
+                                                        </div>
+                                                    
+
+                                                        {/* Prev / Next */}
+                                                        <div className='flex justify-between items-center w-full'>
+                                                            <button onClick={handleRegulationPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                                                                <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                                                                <span className='text-medium font-semibold text-black '>Facility Contacts</span>
+                                                            </button>
+                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+                                                                <span className='text-medium font-semibold text-white'> Services</span>
+                                                                <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </>
+                                            );
+                                        case 4:
+
+                                            // Services form
+                                            const handleServiceSubmit = (event) => {
+                                                event.preventDefault()
+
+                                                window.sessionStorage.setItem('formId', 5)
+                                                
+                                                setFormId(window.sessionStorage.getItem('formId'))
+
+                                            }
+
+                                            const handleServicePrevious = (event) => {
+                                                event.preventDefault()
+                                                window.sessionStorage.setItem('formId', 3)
+                                                
+                                                setFormId(window.sessionStorage.getItem('formId'))
+                                            }
+                                            
+
+                                            
+                                            return (
+                                                <>  
+                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
+                                                    <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleServiceSubmit}>
+                                                        
+                                                        {/* Transfer list Container */}
+                                                        <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                                           
+                                                        {/* serviceCategories.map(ctg => ctg.name) */}
+                                                        <TransferList 
+                                                        categories={
+                                                            serviceCategories.map((data) => data)
+                                                        } 
+                                                        selectedHeading={'Services'}
+                                                        setServices={setServices}
+                                                        />
+
+                                                        </div>
+                                                         {/* Service Category Table */}
+                                                         <table className='w-full  h-auto my-4'>
+                                                            <thead className='w-full'>
+                                                                <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
+                                                                    <td className='text-lg font-semibold text-indigo-900 '>Name</td>
+                                                                    <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody ref={optionRefBody}>
+                                                                {
+                                                                    services.map((service, i) => (
+                                                                        <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                                            <td ref={nameOptionRef}>{service}</td>
+                                                                            <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                                        </tr>
+                                                                    ))
+                                                                }
+                                                             
+                                                             
+                                                            </tbody>
+                                                        </table>
+                                                        
+                                                        <div className='flex justify-between items-center w-full'>
+                                                            <button onClick={handleServicePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                                                                <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                                                                <span className='text-medium font-semibold text-black '>Regulation</span>
+                                                            </button>
+                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+                                                                <span className='text-medium font-semibold text-white'>Infrastructure</span>
+                                                                <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </>
+                                            )
+                                        case 5:
+                                            // Infrastructure form
+                                            const handleInfrastructureSubmit = (event) => {
+                                                event.preventDefault()
+
+                                                window.sessionStorage.setItem('formId', 6)
+                                                
+                                                setFormId(window.sessionStorage.getItem('formId'))
+
+                                            }
+
+                                            const handleInfrastructurePrevious = (event) => {
+                                                event.preventDefault()
+                                                window.sessionStorage.setItem('formId', 4)
+                                                
+                                                setFormId(window.sessionStorage.getItem('formId'))
+                                            }
+
+                                            const renderInfrastructureCategory = (category, id) => {
+                                                return (
+                                                    <div key={id} className='flex flex-col justify-center items-center w-full flex-1 border-2'>
+                                                        {
+                                                        infrastractureCategories.filter(infrastructure => infrastructure.name === category)[0].subCategories.map((subctg, i) => {
+                                                            return (
+                                                                <div className='grid grid-cols-3 w-full place-content-center' key={i}>
+                                                                    <p className='text-md font-semibold mt-5'>{subctg}</p>
+                                                                    <div className='flex items-center col-start-2 space-y-2'>
+                                                                        <label htmlFor="confirm-infrastructure" className="text-gray-600 capitalize mt-2 text-sm">Yes</label>
+                                                                        <Checkbox
+                                                                            checked={false}
+                                                                            id={'confirm-infrastructure'}
+                                                                            tabIndex={-1}   
+                                                                            sx={{marginTop:'1px'}}
+                                                                            disableRipple
+                                                                            onChange={() => {}}
+                                                                            inputProps={{
+                                                                                'aria-labelledby': 'options',
+                                                                            }}
+                                                                            />
+                                                                         
+                                                                    </div>
+                                                                    <input required type="number" name="longitude" className="col-start-3 flex-none w-auto mt-4 h-8 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                                </div>
+                                                                
+                                                            )
+                                                        })
+                                                        }   
+                                                    </div>
+                                                )
+                                            }
+
+                                            
+                                            
+                                            return (
+                                                <>  
+                                                <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
+                                                <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleInfrastructureSubmit}>
+                                                    
+                                                    {/* Transfer list Container */}
+                                                    <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                                       
+                                                    {/* Transfer List*/}
+                                                    <TransferList 
+                                                    categories={
+                                                        infrastractureCategories.map((data) => data)
+                                                    } 
+                                                    children={
+                                                        <div className='flex flex-col w-full'>
+                                                            {/* Categories */}
+                                                            {infrastractureCategories.map(({name}, i) => {
+                                                                switch(name){
+                                                                    case 'COLD CHAIN':
+                                                                        return renderInfrastructureCategory(name, i)
+                                                                    case 'COMMUNICATIONS':
+                                                                        return renderInfrastructureCategory(name, i)
+                                                                    case 'ICT INFRASTRUCTURE':
+                                                                        return renderInfrastructureCategory(name, i)
+                                                                }
+                                                            })}
+                                                        </div>
+                                                    }
+                                                    setServices={setServices}
+                                                    selectedHeading={'Infrastructure'}
+                                                    />
+
+                                                    </div>
+                                                     {/* Service Category Table */}
+                                                     <table className='w-full  h-auto my-4'>
+                                                        <thead className='w-full'>
+                                                            <tr className='grid grid-cols-4 place-content-end border-b-4 border-gray-300'>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Name</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Category</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Present</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Number</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody ref={optionRefBody}>
+                                                            {
+                                                                services.map((service, i) => (
+                                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                                        <td ref={nameOptionRef}>{service}</td>
+                                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                                    </tr>
+                                                                ))
+                                                            }
+                                                         
+                                                         
+                                                        </tbody>
+                                                    </table>
+                                                    
+                                                    <div className='flex justify-between items-center w-full'>
+                                                        <button onClick={handleInfrastructurePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                                                            <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                                                            <span className='text-medium font-semibold text-black '>Categories</span>
+                                                        </button>
+                                                        <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+                                                            <span className='text-medium font-semibold text-white'>Infrastructure</span>
+                                                            <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </>
+                                            )
+                                        case 6:
+                                            // Human resources form
+                                            const handleResourcesSubmit = (event) => {
+                                                event.preventDefault()
+
+                                                window.sessionStorage.setItem('formId', 7)
+                                                
+                                                setFormId(window.sessionStorage.getItem('formId'))
+
+                                            }
+
+                                            const handleResourcesPrevious = (event) => {
+                                                event.preventDefault()
+                                                window.sessionStorage.setItem('formId', 5)
+                                                
+                                                setFormId(window.sessionStorage.getItem('formId'))
+                                            }
+                                            return (
+                                                <>  
+                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human Resources</h4>
+                                                    <form name="facility_hr_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleResourcesSubmit}>
+                                                        
+                                                        
+                                                    <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityInfrastructureRef}>
+                                                            {/* Infrastructure Name */}
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Name</h3>
+                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Option</h3>
+                                                            <hr className='col-span-2'/>
+                                                        
+                                                            {/* Service Name */}
+                                                            <Select options={
+                                                                            [
+                                                                                {
+                                                                                    value:'Wireless Mobile',
+                                                                                    label: 'Wireless Mobile'
+                                                                                },
+                                                                                {
+                                                                                    value:'Piped Water',
+                                                                                    label: 'Piped Water'
+                                                                                },
+                                                                                {
+                                                                                    value:'Main Grid',
+                                                                                    label: 'Main Grid'
+                                                                                },
+                                                                                {
+                                                                                    value:'Laptops',
+                                                                                    label: 'Laptops'
+                                                                                },
+                                                                                {
+                                                                                    value:'Incinerator',
+                                                                                    label: 'Incinerator'
+                                                                                }
+                                                                                
+                                                                        
+                                                                            ]
+                                                                        } 
+                                                                        required
+                                                                        placeholder="Select Infrastructure Type"
+                                                                        onChange={
+                                                                            () => console.log('changed')
+                                                                        }
+                                                                        name="service_name" 
+                                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+
+                                                                        {/* Service Option */}
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value:'Yes',
+                                                                                    label:'Yes'
+                                                                                },
+                                                                                {
+                                                                                    value:'No',
+                                                                                    label:'No'
+                                                                                }
+                
+                                                                            ]}
+                                                                            required
+                                                                            placeholder="Select Contact Type"
+                                                                            onChange={
+                                                                                () => console.log('changed')
+                                                                            }
+                                                                            name="service_option" 
+                                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> 
+
+                                                                            {/* Append other dropdowns */}
+                                                                        
+                
+                                                        </div>
+                                                        <div className='w-full flex justify-end items-center mt-2'>
+                                                            <button onClick={handleAddInfrastractuer} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                                <PlusIcon className='w-4 h-4 text-white'/>
+                                                                <p className='text-medium font-semibold text-white'>Add</p>
+                                                            </button>
+                                                        </div>
+                                                        
+                                                        <div className='flex justify-between items-center w-full'>
+                                                            <button onClick={handleResourcesPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                                                                <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                                                                <span className='text-medium font-semibold text-black '>Infrastructure</span>
+                                                            </button>
+                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+                                                                <span className='text-medium font-semibold text-white'>Save</span>
+                
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </>
+                                            )
+                                        default:
+                                            // 
+                                            return (
+                                                <>  
+                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Basic Details</h4>
+                                                    <form>
+                                                    
+                                                    </form>
+                                                </>
+                                            )
+                                    
+                                    
+                                    }
+                                  })()
+                                }
+
+                             
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                    
+                    <aside className="flex flex-col col-span-5 md:col-span-1 p-1 md:h-full">
+                        <details className="rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z" open>
+                          
+                        </details>
+                    </aside>
+                    {/* (((((( Floating div at bottom right of page */}
+                    <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                        <h5 className="text-sm font-bold">
+                            <span className="text-gray-600 uppercase">Limited results</span>
+                        </h5>
+                        <p className="text-sm text-gray-800">
+                            For testing reasons, downloads are limited to the first 100 results.
+                        </p>
+                    </div>
+                    {/* ))))))) */}
+                </div>
+    </MainLayout>
+  )
 }
 
 AddFacility.getInitialProps = async (ctx) => {

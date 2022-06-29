@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect } from 'react'
+import { useMemo, Suspense } from 'react'
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -14,11 +14,10 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import { useEffect } from 'react';
 
 // import ListItemButton from '@mui/material/ListItemButton';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+// import TextField from '@mui/material/TextField';
+// import Autocomplete from '@mui/material/Autocomplete';
 
 
 
@@ -34,27 +33,31 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferList({categories}) {
+export default function TransferList({categories, setServices, children, selectedHeading}) {
 
   // console.log({categories})
 
   const [checked, setChecked] = React.useState([]);
+  const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
   const [right, setRight] = React.useState([]);
+  const [checkAll, setCheckAll] = React.useState(false);
 
   let leftChecked = intersection(checked, left);
   let rightChecked = intersection(checked, right);
 
-  useEffect(() => {
+
+useMemo(() => {
+     
      leftChecked = intersection(checked, left);
      rightChecked = intersection(checked, right);
-    //  console.log({leftChecked, rightChecked, left, right, checked})
-  }, [])
+  
+  }, [left])
 
   const handleToggle = (value) => () => {
   
     const currentIndex = checked.indexOf(value);
-    // console.log({currentIndex})
+   
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
@@ -64,21 +67,45 @@ export default function TransferList({categories}) {
     }
 
     setChecked(newChecked);
-    // leftChecked = [ ...checked]
-
+    
 
   };
+
+  const handleCheckBoxToggle =  (value) => () => {
+    const currentIndex = checkBoxChecked.indexOf(value);
+   
+    const newChecked = [...checkBoxChecked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setCheckBoxChecked(newChecked);
+
+  }
 
 
   const handleAllRight = () => {
     setRight(right.concat(left));
     setLeft([]);
+    setCheckAll(true);
+
+    // set Services
+    setServices((ctgs => {
+     return ctgs.map(({subCategories}) => subCategories)
+    })(categories));
+ 
   };
 
   const handleCheckedRight = () => {
     setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
+    // set Services
+    setServices(checkBoxChecked)
+    // console.log({checkBoxChecked});
   };
 
   const handleCheckedLeft = () => {
@@ -90,16 +117,22 @@ export default function TransferList({categories}) {
   const handleAllLeft = () => {
     setLeft(left.concat(right));
     setRight([]);
+
+    setServices([]);
   };
 
-  const accordion = (data) => {
+  Checkbox
+
+  const accordion = (data, isRight) => {
 
       const [_data] = data
 
       const {name, subCategories} = _data
  
       return (
-        <Accordion sx={{flex:100}}>
+       
+        <Accordion sx={{flex:100, backgroundColor:'#f1f1f1', boxShadow:'none'}} >
+          
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -109,40 +142,81 @@ export default function TransferList({categories}) {
         </AccordionSummary>
         <AccordionDetails>
             <ListItem  key={1} component="div">
-              <div className='flex-col items-start justify-start'>
-                    {
-                      subCategories.map((subctg, i) => <ListItemText id={i} primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />)
-                    }
-              </div>
 
-                    {/* <div className='space-x-2 flex items-center'>
+            {
+              !children &&
+              <div className='flex-col items-start justify-start'>
+              {
+                subCategories.map((subctg, i) => (
+                  
+                  <div key={i} className='flex items-center space-x-2'>
+                    {
+                      !isRight ?
+      
+                      <>
                         <Checkbox
-                        checked={true}  
-                        tabIndex={-1}
-                        disableRipple
-                        id='yes_checkbox'
-                        inputProps={{
-                            'aria-labelledby': 'check-1',
-                        }} />
-                        <label htmlFor='yes_checkbox'>
-                            Yes
-                        </label>    
-                    </div> */}
-                                 
+                          checked={checkBoxChecked.indexOf(subctg) !== -1}
+                          tabIndex={-1}
+                          disableRipple
+                          onChange={handleCheckBoxToggle(subctg)}
+                          inputProps={{
+                            'aria-labelledby': 'options',
+                          }}
+                          />
+                          <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
+                      </>
+                  :
+                  
+                      <>
+                        {
+                          (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                          <Checkbox
+                          checked={checkAll ? true : checkBoxChecked.indexOf(subctg) !== -1}
+                          tabIndex={-1}
+                          disableRipple
+                          onChange={handleCheckBoxToggle(subctg)}
+                          inputProps={{
+                            'aria-labelledby': 'options',
+                          }}
+                        />
+                        }
+                        {
+                          (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                          <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
+                        }
+                      </>
+                    }
+                      </div>
+                    
+                ))
+              }
+             </div>
+            }
+
+            {
+              children &&
+              <>
+               {children}
+              </>
+            }
+              
+                       
             </ListItem>
         </AccordionDetails>
-      </Accordion>  
+  
+      </Accordion> 
+        
+                  
       )
   }
 
-  const customList = (items) => (
+  const customList = (items, isRight) => (
     <Paper sx={{ width: 520, height: 300, overflow: 'auto', padding:1 }}>
         
       <List dense component="div" role="list">
         {items.map((_data, i) => {
 
-          // let {name, subCategories} = _data
-          // console.log(value)
+          
           const labelId = `transfer-list-item-${_data}-label`;
 
           return (
@@ -150,23 +224,43 @@ export default function TransferList({categories}) {
               key={i}
               role="listitem"
               button
-              onClick={handleToggle(_data)}
               sx={{my:2}}
             >
               <ListItemIcon>
+             
                 <Checkbox
-                  checked={checked.indexOf(_data) !== -1}
+
+                  checked={
+                    checked.indexOf(_data) !== -1
+                    /*(() => {
+                      
+                      const foundCtgs = Array.from(checkBoxChecked, subCtg => {
+                        return categories.filter(_subCtg => {for(let i = 0 ; i < _subCtg.subCategories.length; i++) if(_subCtg.subCategories[i] === subCtg) return _subCtg.subCategories[i] === subCtg})[0] || [] 
+                      }) 
+
+                      // console.log({foundCtgs})
+
+                      const _eval = Array.from(foundCtgs, ctg => {
+                        if(ctg === _data) return true
+                      }) || []
+
+                      console.log(_eval, _data)
+
+                    return _eval.length > 0 ? true : checked.indexOf(_data) !== -1
+                  })()*/} 
                   tabIndex={-1}
                   disableRipple
+                  onChange={handleToggle(_data)}
                   inputProps={{
                     'aria-labelledby': labelId,
                   }}
                 />
+              
               </ListItemIcon>
-              {/* <ListItemText id={labelId} primary={`List item ${value + 1}`} /> */}
+             
               
 
-              {accordion(getCtgs(categories, _data))}
+              {accordion(getCtgs(categories, _data), isRight)}
 
             </ListItem>
           );
@@ -177,19 +271,12 @@ export default function TransferList({categories}) {
   );
 
   return (
-    <Grid container spacing={2} justifyContent="evenly" alignItems="center"  sx={{flex: 100}}>
+    <Grid container spacing={2} justifyContent="evenly" alignItems="center"  sx={{flex: 100, boxShadow:'none', backgroundColor:'#f9fafb'}}>
       <Grid item> 
       <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Categories</h5>
-        <Grid container direction="column"  justifyContent="start" alignItems="start" gap={2}>
-            {/* Auto Complete */}   
-        <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={left.map(({name}) => name)}
-                sx={{ width: '100%'}}
-                renderInput={(params) => <TextField {...params} label="" />}
-            />   
-            {customList(left)}  
+        <Grid container direction="column" justifyContent="start" alignItems="start" gap={2} >
+         
+            {customList(left, false)}  
         </Grid>
       
           </Grid>
@@ -239,8 +326,8 @@ export default function TransferList({categories}) {
       </Grid>
       <Grid item>
           <Grid container direction="column"  justifyContent="start" alignItems="start">
-          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900 mb-20">Selected Services</h5>
-            {customList(right)}
+          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">{selectedHeading}</h5>
+            {customList(right, true)}
           </Grid>
           </Grid>
     </Grid>

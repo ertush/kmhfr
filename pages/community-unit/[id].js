@@ -180,18 +180,21 @@ const CommUnit = (props) => {
               >
                 <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
                   <Tabs.Tab
+                    id={1}
                     value="overview"
                     className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
                     Overview
                   </Tabs.Tab>
                   <Tabs.Tab
+                   id={2}
                     value="services"
                     className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
                     Services
                   </Tabs.Tab>
                   <Tabs.Tab
+                   id={3}
                     value="hr_staffing"
                     className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >

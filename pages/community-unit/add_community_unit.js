@@ -793,6 +793,7 @@ function AddCommUnit(props) {
 																categories={serviceCategories.map(
 																	(data) => data
 																)}
+																setServices={() => null}
 															/>
 														</div>
 

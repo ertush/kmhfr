@@ -29,6 +29,8 @@ const Dash = (props) => {
     const {owner_link, types_link, summary_link, chu_link, keph_link} = useRef()
 
     useEffect(() => {
+
+        // console.log({data: props?.data})
         let mtd = true
         if (mtd) {
             if (filters && Object.keys(filters).length > 0) {
@@ -131,6 +133,7 @@ const Dash = (props) => {
         ],
         [],
     );
+
     return (
         <div className="">
             <Head>
@@ -149,20 +152,22 @@ const Dash = (props) => {
                         <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">
                             <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
                                 <span>Overview</span>
-                                {drillDown && drillDown?.county &&
-                                    <small className="text-blue-900 text-base font-semibold ml-1">
-                                        {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name != undefined ? filters.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""}
-                                    </small>
-                                }
-                                {drillDown && drillDown?.subcounty &&
-                                    <small className="text-blue-900 text-base font-semibold ml-1">
-                                    {subcounty && subcounty?.subcounty && subcounty?.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name != undefined ? subcounty.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name + " SubCounty" : "National Summary" || ""}
-                                    </small>
-                                }
+                                <div className='flex items-center space-x-3 mt-3'>
+                                    {drillDown && drillDown?.county &&
+                                        <small className="text-blue-900 text-base font-semibold ml-1">
+                                            {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name != undefined ? filters.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""}
+                                        </small>
+                                    }
+                                    {drillDown && drillDown?.subcounty &&
+                                        <small className="text-blue-900 text-base font-semibold ml-1">
+                                        {subcounty && subcounty?.subcounty && subcounty?.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name != undefined ? subcounty.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name + " SubCounty" : "National Summary" || ""}
+                                        </small>
+                                    }
+                                </div>
                             </h1>
                             <div className="flex-grow flex items-center justify-end w-full md:w-auto">
                                 {/* --- */}
-                                {user && user?.is_national && <div className="w-full flex flex-col items-end justify-end mb-3">
+                                {user && user?.is_national && <div className="w-full flex flex items-center justify-end space-x-3 mb-3">
                                     {filters && Object.keys(filters).length > 0 &&
                                         Object.keys(filters).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
@@ -565,7 +570,8 @@ Dash.getInitialProps = async (ctx) => {
                 }
             }
         })
-        console.log('running fetchData(' + url + ')')
+        // console.log(`running: fetchData(${url}), token: ${token}`)       
+
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -578,6 +584,7 @@ Dash.getInitialProps = async (ctx) => {
             //     }
             // })
             .then(json => {
+                console.log({json});
                 return fetchFilters(token).then(ft => {
                     return {
                         data: json, query, filters: { ...ft }, path: ctx.asPath, tok: token || '/dashboard', current_url: url, api_url: API_URL

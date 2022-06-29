@@ -25,7 +25,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env.local
+.env.local.dev
+.env.remote.dev
 .env.development.local
 .env.test.local
 .env.production.local
@@ -34,7 +35,6 @@ yarn-error.log*
 # vercel
 .vercel
 .env
-
-# package manager
-package-lock.json
-yarn.lock
+.env.dev
+.env.local.dev
+.env.remote.dev
