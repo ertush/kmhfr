@@ -25,6 +25,7 @@ import {
 	PlusIcon,
 } from '@heroicons/react/solid';
 import { XCircleIcon } from '@heroicons/react/outline';
+import Checkbox from '@mui/material/Checkbox';
 
 // Package imports
 import Select from 'react-select';
