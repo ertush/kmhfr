@@ -17,13 +17,6 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import Select from 'react-select'
-import { checkToken } from '../../controllers/auth/auth'
-import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon, PlusIcon } from '@heroicons/react/solid';
-import  FacilityContact from '../../components/FacilityContact' 
-import { XCircleIcon } from '@heroicons/react/outline';
-import TransferList from '../../components/TrasnferList';
-import { Checkbox } from '@mui/material';
 
 // Heroicons imports
 import {
