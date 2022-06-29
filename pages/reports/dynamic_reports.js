@@ -131,6 +131,9 @@ const DynamicReports = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [linelist, setlinelist] = useState(null);
+    const [linelist2, setlinelist2] = useState(null);
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');
 
 
     const onGridReady = (params) => {
@@ -151,6 +154,15 @@ const DynamicReports = (props) => {
         updateData(lnlst)
     };
 
+    useEffect(()=>{
+        if( fromDate !=='' && toDate !==''){
+            const results = linelist2?.filter(data=>new Date(moment(data.created).format('YYYY/MM/DD')).getTime() >= new Date(moment(fromDate).format('YYYY/MM/DD')).getTime() && new Date(moment(data.created).format('YYYY/MM/DD')).getTime() <= new Date(moment(toDate).format('YYYY/MM/DD')).getTime()).map((r)=>{return r})
+            setlinelist(results)
+        }else{
+            setlinelist(linelist2)
+        }
+        
+      }, [fromDate, toDate])
 
     const handleAccordionExpand = (ev) => {
         if(isAccordionExpanded){
