@@ -18,6 +18,7 @@ import { ArrowsExpandIcon } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
 
 const CommUnit = (props) => {
+  console.log(props);
   const Map = dynamic(
     () => import("../../components/Map"), // replace '@components/map' with your component's location
     {
@@ -127,7 +128,7 @@ const CommUnit = (props) => {
                       CHU Active
                     </span>
                   )}
-                  {cu.has_edits && (
+                  {cu.has_fffedits && (
                     <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
@@ -152,14 +153,16 @@ const CommUnit = (props) => {
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
                   <button
                     onClick={() =>
-                      approveRejectCHU(cu.is_approved, setIsApproveReject,cu.id)
+                      approveRejectCHU(cu.is_approved, setIsApproveReject, props.data)
                     }
-                    className="p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+                    className={cu.is_approved ? "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500" : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
                   >
-                    Approve/Reject
+                    {/* Dynamic Button Rendering */}
+                    {cu.is_approved ? "Reject" : "Approve"}
+                    
                   </button>
                   <button
-                    onClick={() => window.alert("Print")}
+                    onClick={() => console.log(cu.name)}
                     className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
                   >
                     Print
@@ -921,7 +924,8 @@ CommUnit.getInitialProps = async (ctx) => {
                     'Accept': 'application/json'
                 }
             }).then(r => r.json())
-                .then(json => {
+              .then(json => {
+                console.log(json)
                     return {
                         data: json
                     }

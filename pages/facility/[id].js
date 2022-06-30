@@ -8,6 +8,7 @@ import { CheckCircleIcon, InformationCircleIcon, LockClosedIcon, XCircleIcon, Pe
 import dynamic from 'next/dynamic'
 
 const Facility = (props) => {
+
     const Map = dynamic(
         () => import('../../components/Map'), // replace '@components/map' with your component's location
         {
@@ -114,7 +115,7 @@ const Facility = (props) => {
                                         Validate/Reject
                                     </button> */}
                                     <button
-                                        onClick={() => window.alert("Print")
+                                        onClick={() => console.log(props.data)
                                         }
                                         className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
                                     >
