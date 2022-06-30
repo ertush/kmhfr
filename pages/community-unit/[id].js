@@ -18,7 +18,6 @@ import { ArrowsExpandIcon } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
 
 const CommUnit = (props) => {
-  console.log(props);
   const Map = dynamic(
     () => import("../../components/Map"), // replace '@components/map' with your component's location
     {
@@ -44,9 +43,9 @@ const CommUnit = (props) => {
       }
     }
     return () => {
-        setIsCHUDetails(true)
-        setIsApproveReject(false)
-    }
+      setIsCHUDetails(true);
+      setIsApproveReject(false);
+    };
   }, []);
   return (
     <div className="">
@@ -153,13 +152,20 @@ const CommUnit = (props) => {
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
                   <button
                     onClick={() =>
-                      approveRejectCHU(cu.is_approved, setIsApproveReject, props.data)
+                      approveRejectCHU(
+                        cu.is_approved,
+                        setIsApproveReject,
+                        props.data.id
+                      )
                     }
-                    className={cu.is_approved ? "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500" : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
+                    className={
+                      cu.is_approved
+                        ? "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
+                        : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+                    }
                   >
                     {/* Dynamic Button Rendering */}
                     {cu.is_approved ? "Reject" : "Approve"}
-                    
                   </button>
                   <button
                     onClick={() => console.log(cu.name)}
@@ -669,7 +675,9 @@ const CommUnit = (props) => {
               {/* CHU details */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                 <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                <label className="col-span-1 text-gray-600">Functionality status</label>
+                  <label className="col-span-1 text-gray-600">
+                    Functionality status
+                  </label>
                   <p className="text-black font-medium text-base flex">
                     {cu.status_name.toLocaleLowerCase().includes("fully-") ? (
                       <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
@@ -745,81 +753,100 @@ const CommUnit = (props) => {
               </div>
               {/* CHU details hidden section */}
               <div className="grid grid-cols-2 w-full md:w-11/12 h-8 leading-none items-center">
-                <button className="flex bg-green-500 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto rounded-md" onClick={() => {
-                    if(isCHUDetails){
-                        setIsCHUDetails(false)
-                    }else{
-                        setIsCHUDetails(true) 
+                <button
+                  className="flex bg-green-500 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto rounded-md"
+                  onClick={() => {
+                    if (isCHUDetails) {
+                      setIsCHUDetails(false);
+                    } else {
+                      setIsCHUDetails(true);
                     }
-                }}>
-                    View More Community Health Unit Details
-                    {
-                        isCHUDetails ? (
-                            <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
-                        ):(
-                            <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" /> 
-                        )
-                    }
+                  }}
+                >
+                  View More Community Health Unit Details
+                  {isCHUDetails ? (
+                    <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
+                  ) : (
+                    <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" />
+                  )}
                 </button>
               </div>
 
-              
-                {
-                    !isCHUDetails && (
-                        <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                      
-                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                          <label className="col-span-1 text-gray-600">Ward</label>
-                          <p className="col-span-2 text-black font-medium text-base">
-                            {cu.facility_ward || " - "}
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                          <label className="col-span-1 text-gray-600">
-                            Constituency
-                          </label>
-                          <p className="col-span-2 text-black font-medium text-base">
-                            {cu.facility_constituency || " - "}
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                          <label className="col-span-1 text-gray-600">
-                            Sub-county
-                          </label>
-                          <p className="col-span-2 text-black font-medium text-base">
-                            {cu.facility_subcounty || " - "}
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                          <label className="col-span-1 text-gray-600">
-                            County
-                          </label>
-                          <p className="col-span-2 text-black font-medium text-base">
-                            {cu.facility_county || " - "}
-                          </p>
-                        </div>
-                      </div>
-                    )
-                }
-              
+              {!isCHUDetails && (
+                <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                    <label className="col-span-1 text-gray-600">Ward</label>
+                    <p className="col-span-2 text-black font-medium text-base">
+                      {cu.facility_ward || " - "}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                    <label className="col-span-1 text-gray-600">
+                      Constituency
+                    </label>
+                    <p className="col-span-2 text-black font-medium text-base">
+                      {cu.facility_constituency || " - "}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                    <label className="col-span-1 text-gray-600">
+                      Sub-county
+                    </label>
+                    <p className="col-span-2 text-black font-medium text-base">
+                      {cu.facility_subcounty || " - "}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                    <label className="col-span-1 text-gray-600">County</label>
+                    <p className="col-span-2 text-black font-medium text-base">
+                      {cu.facility_county || " - "}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* CHU Approval Comment */}
 
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <label htmlFor="approval-comment" className="col-span-1 text-gray-900 font-semibold leading-16 text-medium"> Approval comment: </label>
-                <p className="text-gray-400 text-medium text-left leading-16" name="approval-comment">some approval comments</p>
+                <label
+                  htmlFor="approval-comment"
+                  className="col-span-1 text-gray-900 font-semibold leading-16 text-medium"
+                >
+                  {" "}
+                  Approval comment:{" "}
+                </label>
+                <p
+                  className="text-gray-400 text-medium text-left leading-16"
+                  name="approval-comment"
+                >
+                  some approval comments
+                </p>
               </div>
 
- 
               {/* CHU Rejection Commment */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <h3 className="text-gray-900 font-semibold leading-16 text-medium">Reject this Community Unit</h3>
-                <form className="space-y-3" onSubmit={e => rejectCHU(e, cu, cu.isApproveReject, e.target.value)}>
-                    <label htmlFor="comment-text-area"></label>
-                    <textarea cols="70" rows="auto" className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2" placeholder="Enter a comment for rejecting community health unit">
-
-                    </textarea>
-                    <button type="submit" className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold" >Reject Community Health Unit</button>
+                <h3 className="text-gray-900 font-semibold leading-16 text-medium">
+                  Reject this Community Unit
+                </h3>
+                <form
+                  className="space-y-3"
+                  onSubmit={(e) =>
+                    rejectCHU(e, cu, cu.isApproveReject, e.target.value)
+                  }
+                >
+                  <label htmlFor="comment-text-area"></label>
+                  <textarea
+                    cols="70"
+                    rows="auto"
+                    className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
+                    placeholder="Enter a comment for rejecting community health unit"
+                  ></textarea>
+                  <button
+                    type="submit"
+                    className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
+                  >
+                    Reject Community Health Unit
+                  </button>
                 </form>
               </div>
             </div>
@@ -869,6 +896,7 @@ const CommUnit = (props) => {
 CommUnit.getInitialProps = async (ctx) => {
   if (ctx.query.q) {
     const query = ctx.query.q;
+
     if (typeof window !== "undefined" && query.length > 2) {
       window.location.href = `/community-units?q=${query}`;
     } else {
@@ -887,7 +915,9 @@ CommUnit.getInitialProps = async (ctx) => {
         throw new Error("Error checking token");
       } else {
         let token = t.token;
-        let url = process.env.API_URL + "/chul/units/" + ctx.query.id + "/";
+        let url =
+          process.env.NEXT_PUBLIC_API_URL + "/chul/units/" + ctx.query.id + "/";
+
         return fetch(url, {
           headers: {
             Authorization: "Bearer " + token,
@@ -916,29 +946,37 @@ CommUnit.getInitialProps = async (ctx) => {
         if (ctx?.asPath) {
           window.location.href = ctx?.asPath;
         } else {
-            let token = t.token
-            let url = process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + ctx.query.id + '/'
-            return fetch(url, {
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Accept': 'application/json'
-                }
-            }).then(r => r.json())
-              .then(json => {
-                console.log(json)
-                    return {
-                        data: json
-                    }
-                }).catch(err => {
-                    console.log('Error fetching facilities: ', err)
-                    return {
-                        error: true,
-                        err: err,
-                        data: [],
-                    }
-                })
+          let token = t.token;
+          let url =
+            process.env.NEXT_PUBLIC_API_URL +
+            "/chul/units/" +
+            ctx.query.id +
+            "/";
+          return fetch(url, {
+            headers: {
+              Authorization: "Bearer " + token,
+              Accept: "application/json",
+            },
+          })
+            .then((r) => r.json())
+            .then((json) => {
+              console.log(json);
+              return {
+                data: json,
+              };
+            })
+            .catch((err) => {
+              console.log("Error fetching facilities: ", err);
+              return {
+                error: true,
+                err: err,
+                data: [],
+              };
+            });
         }
       }
+      console.log("My Error:" + err);
+
       return {
         error: true,
         err: err,
