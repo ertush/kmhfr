@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useMemo, Suspense } from 'react'
+import { useMemo } from 'react'
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -15,9 +15,6 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-// import ListItemButton from '@mui/material/ListItemButton';
-// import TextField from '@mui/material/TextField';
-// import Autocomplete from '@mui/material/Autocomplete';
 
 
 
@@ -33,9 +30,9 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferList({categories, setServices, children, selectedHeading}) {
+export default function TrasnferListServices({categories, setServices}) {
 
-  // console.log({categories})
+ 
 
   const [checked, setChecked] = React.useState([]);
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
@@ -92,7 +89,6 @@ useMemo(() => {
     setLeft([]);
     setCheckAll(true);
 
-    // set Services
     setServices((ctgs => {
      return ctgs.map(({subCategories}) => subCategories)
     })(categories));
@@ -103,9 +99,9 @@ useMemo(() => {
     setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
-    // set Services
+   
     setServices(checkBoxChecked)
-    // console.log({checkBoxChecked});
+   
   };
 
   const handleCheckedLeft = () => {
@@ -143,8 +139,6 @@ useMemo(() => {
         <AccordionDetails>
             <ListItem  key={1} component="div">
 
-            {
-              !children &&
               <div className='flex-col items-start justify-start'>
               {
                 subCategories.map((subctg, i) => (
@@ -191,15 +185,7 @@ useMemo(() => {
                 ))
               }
              </div>
-            }
-
-            {
-              children &&
-              <>
-               {children}
-              </>
-            }
-              
+           
                        
             </ListItem>
         </AccordionDetails>
@@ -326,7 +312,7 @@ useMemo(() => {
       </Grid>
       <Grid item>
           <Grid container direction="column"  justifyContent="start" alignItems="start">
-          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">{selectedHeading}</h5>
+          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h5>
             {customList(right, true)}
           </Grid>
           </Grid>
