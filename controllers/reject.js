@@ -11,7 +11,7 @@ const approveRejectCHU = async (isApproved, setState, id) => {
       .then((token) => {
         console.log({ token });
         fetch(url, {
-          method: "GET",
+          method: "PATCH",
           headers: {
             Accept: "application/json",
 
@@ -43,3 +43,6 @@ const rejectCHU = (e, ctx, state, comment) => {
 };
 
 export { approveRejectCHU, rejectCHU };
+
+
+

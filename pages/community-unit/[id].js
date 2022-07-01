@@ -210,6 +210,9 @@ const CommUnit = (props) => {
                     HR &amp; Staffing
                   </Tabs.Tab>
                 </Tabs.List>
+                {/*End of the vertical tabs  */}
+
+                
                 <Tabs.Panel
                   value="overview"
                   className="grow-1 py-1 px-4 tab-panel"
@@ -667,6 +670,8 @@ const CommUnit = (props) => {
               </Tabs.Root>
             </div>
           ) : (
+
+          
             // Approval Rejection Section
             <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4 mx-3">
               <h3 className="text-2xl tracking-tight font-semibold leading-5">
@@ -833,7 +838,7 @@ const CommUnit = (props) => {
                   onSubmit={(e) =>
                     rejectCHU(e, cu, cu.isApproveReject, e.target.value)
                   }
-                >
+                >   
                   <label htmlFor="comment-text-area"></label>
                   <textarea
                     cols="70"
@@ -851,6 +856,7 @@ const CommUnit = (props) => {
               </div>
             </div>
           )}
+          {/* End of approval or reject validation */}
 
           {/* Aside / Right Side  */}
           <aside className="flex flex-col col-span-5 md:col-span-2 gap-4 mt-5">
