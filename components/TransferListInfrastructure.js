@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useMemo, Suspense } from 'react'
+import { useMemo } from 'react'
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -15,9 +15,6 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-// import ListItemButton from '@mui/material/ListItemButton';
-// import TextField from '@mui/material/TextField';
-// import Autocomplete from '@mui/material/Autocomplete';
 
 
 
@@ -33,12 +30,13 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferList({categories, setServices, children, selectedHeading}) {
+export default function TrasnferListInfrastructure({categories, setInfrastructure, setInfrastructureCount}) {
 
-  // console.log({categories})
+
 
   const [checked, setChecked] = React.useState([]);
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
+  const [inputVal, setInputVal] = React.useState([])
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
   const [right, setRight] = React.useState([]);
   const [checkAll, setCheckAll] = React.useState(false);
@@ -53,6 +51,8 @@ useMemo(() => {
      rightChecked = intersection(checked, right);
   
   }, [left])
+
+  const getUnique = a => a.filter((item, i, ar) => ar.indexOf(item) === i)
 
   const handleToggle = (value) => () => {
   
@@ -86,14 +86,38 @@ useMemo(() => {
 
   }
 
+  const handleInputChange = (value) => (ev) => {
+    const currentIndex = inputVal.indexOf(value);
+   
+    const newChecked = [...inputVal];
+
+    if (currentIndex === -1) {
+      newChecked.push({name: value, val: ev.target.value});
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    const uniqueCheckedValues = (() => {
+        const names = getUnique(newChecked.map(({name}) => name))
+        const vals = getUnique(newChecked.map(({val}) => val))
+
+        return Array.from(newChecked, (v, i) => {   
+            return {name: names[i], val: vals[i]}
+        })
+    })()
+
+    setInputVal(uniqueCheckedValues);
+
+  }
+
+
 
   const handleAllRight = () => {
     setRight(right.concat(left));
     setLeft([]);
     setCheckAll(true);
 
-    // set Services
-    setServices((ctgs => {
+    setInfrastructure((ctgs => {
      return ctgs.map(({subCategories}) => subCategories)
     })(categories));
  
@@ -103,9 +127,12 @@ useMemo(() => {
     setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
-    // set Services
-    setServices(checkBoxChecked)
-    // console.log({checkBoxChecked});
+   
+    setInfrastructure(checkBoxChecked)
+    setInfrastructureCount(inputVal)
+
+    // console.log({inputVal})
+   
   };
 
   const handleCheckedLeft = () => {
@@ -118,10 +145,10 @@ useMemo(() => {
     setLeft(left.concat(right));
     setRight([]);
 
-    setServices([]);
+    setInfrastructure([]);
   };
 
-  Checkbox
+  
 
   const accordion = (data, isRight) => {
 
@@ -143,8 +170,6 @@ useMemo(() => {
         <AccordionDetails>
             <ListItem  key={1} component="div">
 
-            {
-              !children &&
               <div className='flex-col items-start justify-start'>
               {
                 subCategories.map((subctg, i) => (
@@ -153,24 +178,39 @@ useMemo(() => {
                     {
                       !isRight ?
       
-                      <>
-                        <Checkbox
-                          checked={checkBoxChecked.indexOf(subctg) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          onChange={handleCheckBoxToggle(subctg)}
-                          inputProps={{
-                            'aria-labelledby': 'options',
-                          }}
-                          />
-                          <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
-                      </>
+                      <div key={i} className='w-full grid grid-cols-3 gap-x-2 place-content-center border-b-2 border-gray-300'>
+                            <label htmlFor='infrastructure_exist_cnt' className='self-center'>{subctg}</label>
+                            <div  id='infrastructure_exist_cnt' className='flex items-center space-x-1 h-auto'>
+                                <label htmlFor='infrastructure_exist'>Yes</label>
+
+                                <Checkbox
+                                    id={'infrastructure_exist'}
+                                    checked={checkBoxChecked.indexOf(subctg) !== -1}
+                                    tabIndex={-1}
+                                    disableRipple
+                                    onChange={handleCheckBoxToggle(subctg)}
+                                    inputProps={{
+                                        'aria-labelledby': 'options',
+                                    }}
+                            />
+                            </div> 
+                                <input
+                                    required
+                                    id={`${subctg}-${i}`}
+                                    onChange={handleInputChange(subctg)}
+                                    type='number'
+                                    name='facility_official_name'
+                                    className='flex-none w-full h-8 self-center bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                />
+    
+                      </div>
                   :
                   
                       <>
                         {
                           (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
                           <Checkbox
+                          key={i}
                           checked={checkAll ? true : checkBoxChecked.indexOf(subctg) !== -1}
                           tabIndex={-1}
                           disableRipple
@@ -182,7 +222,7 @@ useMemo(() => {
                         }
                         {
                           (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
-                          <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
+                          <ListItemText  primary={`${subctg} (0)`} sx={{borderBottom: '1px solid grey'}} />
                         }
                       </>
                     }
@@ -191,15 +231,7 @@ useMemo(() => {
                 ))
               }
              </div>
-            }
-
-            {
-              children &&
-              <>
-               {children}
-              </>
-            }
-              
+           
                        
             </ListItem>
         </AccordionDetails>
@@ -326,7 +358,7 @@ useMemo(() => {
       </Grid>
       <Grid item>
           <Grid container direction="column"  justifyContent="start" alignItems="start">
-          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">{selectedHeading}</h5>
+          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h5>
             {customList(right, true)}
           </Grid>
           </Grid>
