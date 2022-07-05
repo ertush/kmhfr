@@ -30,7 +30,7 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TrasnferListInfrastructure({categories, setInfrastructure}) {
+export default function TrasnferListInfrastructure({categories, setInfrastructure, setInfrastructureCount}) {
 
 
 
@@ -101,7 +101,7 @@ useMemo(() => {
         const names = getUnique(newChecked.map(({name}) => name))
         const vals = getUnique(newChecked.map(({val}) => val))
 
-        return Array.from(newChecked, (v, i) => {
+        return Array.from(newChecked, (v, i) => {   
             return {name: names[i], val: vals[i]}
         })
     })()
@@ -129,8 +129,9 @@ useMemo(() => {
     setChecked(not(checked, leftChecked));
    
     setInfrastructure(checkBoxChecked)
+    setInfrastructureCount(inputVal)
 
-    console.log({inputVal})
+    // console.log({inputVal})
    
   };
 

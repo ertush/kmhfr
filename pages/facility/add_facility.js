@@ -301,6 +301,7 @@ function AddFacility(props) {
     // Services State
     const [services, setServices] = useState([])
     const [infrastructure, setInfrastructure] = useState([])
+	const [infrastructureCount, setInfrastructureCount] = useState([])
     
 
     useEffect(() => {
@@ -2249,6 +2250,7 @@ function AddFacility(props) {
                                                             infrastractureCategories.map((data) => data)
                                                         } 
                                                         setInfrastructure={setInfrastructure}
+														setInfrastructureCount={setInfrastructureCount}
                                                         />
 
                                                     </div>
@@ -2266,10 +2268,10 @@ function AddFacility(props) {
                                                             {
                                                                 infrastructure.map((_infrastructure, i) => (
                                                                     <tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                                        <td ref={infrastructureRef} className='text-lg font-semibold text-indigo-900'>{_infrastructure}</td>
-                                                                        <td ref={categoryRef} className='text-lg font-semibold text-indigo-900'>{}</td>
-                                                                        <td ref={presentRef} className='text-lg font-semibold text-indigo-900'>{}</td>
-                                                                        <td ref={numberRef} className='text-lg font-semibold text-indigo-900'>{}</td>
+                                                                        <td ref={infrastructureRef} className='text-lg text-indigo-900'>{_infrastructure}</td>
+                                                                        <td ref={categoryRef} className='text-lg text-indigo-900'>{infrastractureCategories.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+                                                                        <td ref={presentRef} className='text-lg font-semibold text-indigo-900'>Yes</td>
+                                                                        <td ref={numberRef} className='text-lg  text-indigo-900'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val}</td>
                                                                     </tr>
                                                                 ))
                                                             }
