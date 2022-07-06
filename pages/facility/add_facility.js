@@ -7,7 +7,7 @@ import Head from 'next/head';
 // Component imports
 import MainLayout from '../../components/MainLayout';
 import FacilityContact from '../../components/FacilityContact';
-import TransferList from '../../components/TrasnferList';
+import TrasnferListServices from '../../components/TrasnferListServices';
 
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
@@ -29,6 +29,7 @@ import Checkbox from '@mui/material/Checkbox';
 
 // Package imports
 import Select from 'react-select';
+import TrasnferListInfrastructure from '../../components/TransferListInfrastructure';
 
 function AddFacility(props) {
 
@@ -37,6 +38,12 @@ function AddFacility(props) {
     const nameOptionRef = useRef(null)
     const serviceOptionRef = useRef(null)
     const optionRefBody = useRef(null)
+
+    const infrastructureRef = useRef(null)
+    const infrastructureBodyRef = useRef(null)
+    const categoryRef = useRef(null)
+    const presentRef = useRef(null)
+    const numberRef = useRef(null)
 
     const steps = [
         'Basic Details',
@@ -289,9 +296,13 @@ function AddFacility(props) {
     // const facilityServiceRef = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
     const facilityInfrastructureRef = useRef(null)
+
+
     // Services State
     const [services, setServices] = useState([])
-
+    const [infrastructure, setInfrastructure] = useState([])
+	const [infrastructureCount, setInfrastructureCount] = useState([])
+    
 
     useEffect(() => {
 
@@ -2108,6 +2119,7 @@ function AddFacility(props) {
                                                 window.sessionStorage.setItem('formId', 5)
                                                 
                                                 setFormId(window.sessionStorage.getItem('formId'))
+                                                setServices([])
 
                                             }
 
@@ -2118,7 +2130,6 @@ function AddFacility(props) {
                                                 setFormId(window.sessionStorage.getItem('formId'))
                                             }
                                             
-
                                             
                                             return (
                                                 <>  
@@ -2128,12 +2139,11 @@ function AddFacility(props) {
                                                         {/* Transfer list Container */}
                                                         <div className='flex items-center w-full h-auto min-h-[300px]'>
                                                            
-                                                        {/* serviceCategories.map(ctg => ctg.name) */}
-                                                        <TransferList 
+                                                    
+                                                        <TrasnferListServices 
                                                         categories={
                                                             serviceCategories.map((data) => data)
                                                         } 
-                                                        selectedHeading={'Services'}
                                                         setServices={setServices}
                                                         />
 
@@ -2191,38 +2201,38 @@ function AddFacility(props) {
                                                 setFormId(window.sessionStorage.getItem('formId'))
                                             }
 
-                                            const renderInfrastructureCategory = (category, id) => {
-                                                return (
-                                                    <div key={id} className='flex flex-col justify-center items-center w-full flex-1 border-2'>
-                                                        {
-                                                        infrastractureCategories.filter(infrastructure => infrastructure.name === category)[0].subCategories.map((subctg, i) => {
-                                                            return (
-                                                                <div className='grid grid-cols-3 w-full place-content-center' key={i}>
-                                                                    <p className='text-md font-semibold mt-5'>{subctg}</p>
-                                                                    <div className='flex items-center col-start-2 space-y-2'>
-                                                                        <label htmlFor="confirm-infrastructure" className="text-gray-600 capitalize mt-2 text-sm">Yes</label>
-                                                                        <Checkbox
-                                                                            checked={false}
-                                                                            id={'confirm-infrastructure'}
-                                                                            tabIndex={-1}   
-                                                                            sx={{marginTop:'1px'}}
-                                                                            disableRipple
-                                                                            onChange={() => {}}
-                                                                            inputProps={{
-                                                                                'aria-labelledby': 'options',
-                                                                            }}
-                                                                            />
+                                            // const renderInfrastructureCategory = (category, id) => {
+                                            //     return (
+                                            //         <div key={id} className='flex flex-col justify-center items-center w-full flex-1 border-2'>
+                                            //             {
+                                            //             infrastractureCategories.filter(infrastructure => infrastructure.name === category)[0].subCategories.map((subctg, i) => {
+                                            //                 return (
+                                            //                     <div className='grid grid-cols-3 w-full place-content-center' key={i}>
+                                            //                         <p className='text-md font-semibold mt-5'>{subctg}</p>
+                                            //                         <div className='flex items-center col-start-2 space-y-2'>
+                                            //                             <label htmlFor="confirm-infrastructure" className="text-gray-600 capitalize mt-2 text-sm">Yes</label>
+                                            //                             <Checkbox
+                                            //                                 checked={false}
+                                            //                                 id={'confirm-infrastructure'}
+                                            //                                 tabIndex={-1}   
+                                            //                                 sx={{marginTop:'1px'}}
+                                            //                                 disableRipple
+                                            //                                 onChange={() => {}}
+                                            //                                 inputProps={{
+                                            //                                     'aria-labelledby': 'options',
+                                            //                                 }}
+                                            //                                 />
                                                                          
-                                                                    </div>
-                                                                    <input required type="number" name="longitude" className="col-start-3 flex-none w-auto mt-4 h-8 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                                                </div>
+                                            //                         </div>
+                                            //                         <input required type="number" name="longitude" className="col-start-3 flex-none w-auto mt-4 h-8 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            //                     </div>
                                                                 
-                                                            )
-                                                        })
-                                                        }   
-                                                    </div>
-                                                )
-                                            }
+                                            //                 )
+                                            //             })
+                                            //             }   
+                                            //         </div>
+                                            //     )
+                                            // }
 
                                             
                                             
@@ -2235,28 +2245,13 @@ function AddFacility(props) {
                                                     <div className='flex items-center w-full h-auto min-h-[300px]'>
                                                        
                                                     {/* Transfer List*/}
-                                                    <TransferList 
-                                                    categories={
-                                                        infrastractureCategories.map((data) => data)
-                                                    } 
-                                                    children={
-                                                        <div className='flex flex-col w-full'>
-                                                            {/* Categories */}
-                                                            {infrastractureCategories.map(({name}, i) => {
-                                                                switch(name){
-                                                                    case 'COLD CHAIN':
-                                                                        return renderInfrastructureCategory(name, i)
-                                                                    case 'COMMUNICATIONS':
-                                                                        return renderInfrastructureCategory(name, i)
-                                                                    case 'ICT INFRASTRUCTURE':
-                                                                        return renderInfrastructureCategory(name, i)
-                                                                }
-                                                            })}
-                                                        </div>
-                                                    }
-                                                    setServices={setServices}
-                                                    selectedHeading={'Infrastructure'}
-                                                    />
+                                                    <TrasnferListInfrastructure 
+                                                        categories={
+                                                            infrastractureCategories.map((data) => data)
+                                                        } 
+                                                        setInfrastructure={setInfrastructure}
+														setInfrastructureCount={setInfrastructureCount}
+                                                        />
 
                                                     </div>
                                                      {/* Service Category Table */}
@@ -2269,12 +2264,14 @@ function AddFacility(props) {
                                                                 <td className='text-lg font-semibold text-indigo-900'>Number</td>
                                                             </tr>
                                                         </thead>
-                                                        <tbody ref={optionRefBody}>
+                                                        <tbody ref={infrastructureBodyRef}>
                                                             {
-                                                                services.map((service, i) => (
-                                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-                                                                        <td ref={nameOptionRef}>{service}</td>
-                                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                                infrastructure.map((_infrastructure, i) => (
+                                                                    <tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
+                                                                        <td ref={infrastructureRef} className='text-lg text-indigo-900'>{_infrastructure}</td>
+                                                                        <td ref={categoryRef} className='text-lg text-indigo-900'>{infrastractureCategories.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+                                                                        <td ref={presentRef} className='text-lg font-semibold text-indigo-900'>Yes</td>
+                                                                        <td ref={numberRef} className='text-lg  text-indigo-900'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val}</td>
                                                                     </tr>
                                                                 ))
                                                             }
@@ -2286,10 +2283,10 @@ function AddFacility(props) {
                                                     <div className='flex justify-between items-center w-full'>
                                                         <button onClick={handleInfrastructurePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                                             <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-                                                            <span className='text-medium font-semibold text-black '>Categories</span>
+                                                            <span className='text-medium font-semibold text-black '>Services</span>
                                                         </button>
                                                         <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-                                                            <span className='text-medium font-semibold text-white'>Infrastructure</span>
+                                                            <span className='text-medium font-semibold text-white'>Human resources</span>
                                                             <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
                                                         </button>
                                                     </div>
@@ -2386,7 +2383,7 @@ function AddFacility(props) {
                 
                                                         </div>
                                                         <div className='w-full flex justify-end items-center mt-2'>
-                                                            <button onClick={handleAddInfrastractuer} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                            <button onClick={() => null} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
                                                                 <PlusIcon className='w-4 h-4 text-white'/>
                                                                 <p className='text-medium font-semibold text-white'>Add</p>
                                                             </button>

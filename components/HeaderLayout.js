@@ -128,6 +128,7 @@ export default function HeaderLayout({
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-x-4 w-full p-1 max-w-screen-2xl">
+      <title>KMHFL 3</title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-0 md:gap-5">
         <div id="logo" className="mx:px-3 pb-1">
           <a
