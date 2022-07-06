@@ -8,6 +8,7 @@ import { CheckCircleIcon, InformationCircleIcon, LockClosedIcon, XCircleIcon, Pe
 import { ChevronDownIcon } from "@heroicons/react/solid";
 
 import dynamic from 'next/dynamic'
+import router from 'next/router';
 
 const Facility = (props) => {
 
@@ -62,10 +63,10 @@ const Facility = (props) => {
                             </div>
                             <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
-                                    {<span className="p-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center bg-blue-500 text-white-900 gap-x-1">
+                                    {/* {<span className="p-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center bg-blue-500 text-white-900 gap-x-1">
                                         <PencilAltIcon className="h-4 w-4" />
                                         <a href={'/edit_facility/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 "> Edit Facility </a>
-                                    </span>}
+                                    </span>} */}
                                     {(facility.operational || facility.operation_status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"}>
                                         <CheckCircleIcon className="h-4 w-4" />
                                         Operational
@@ -141,7 +142,7 @@ const Facility = (props) => {
                                         Print
                                     </button>
                                     <button
-                                        onClick={() => window.alert("Edit")}
+                                        onClick={() => router.push(`edit_facility/${facility.id}`)}
                                         className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                                     >
                                         Edit
