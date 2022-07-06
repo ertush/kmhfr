@@ -1,11 +1,11 @@
-const approveRejectFacility = (isApproved, setState) => {
-    console.log("pppppppppppppppppp ------------>>>> "+isApproved);
+const approveRejectFacility = (rejected, setState) => {
+    console.log("pppppppppppppppppp ------------>>>> "+rejected);
 
-    if (isApproved == null) {
-        setState(true)
+    if (rejected) {
+        setState(false)
 
     } else {
-        setState(false)
+        setState(true)
 
     }
 
