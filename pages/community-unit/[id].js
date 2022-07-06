@@ -1,22 +1,33 @@
-import Head from "next/head";
-import * as Tabs from "@radix-ui/react-tabs";
-import { checkToken } from "../../controllers/auth/auth";
+// React imports
 import React, { useState, useEffect } from "react";
-import MainLayout from "../../components/MainLayout";
-import { approveRejectCHU, rejectCHU } from "../../controllers/reject";
-import { ChevronDownIcon } from "@heroicons/react/solid";
 
-import
-  {
-    CheckCircleIcon,
-    ChevronRightIcon,
-    InformationCircleIcon,
-    LocationMarkerIcon,
-    LockClosedIcon,
-    XCircleIcon,
-  } from "@heroicons/react/solid";
-import { ArrowsExpandIcon } from "@heroicons/react/outline";
+// Next imports
+import Head from "next/head";
 import dynamic from "next/dynamic";
+import Link from "next/link";
+
+// Components imports
+import MainLayout from "../../components/MainLayout";
+
+// Controller imports
+import { approveRejectCHU, rejectCHU } from "../../controllers/reject";
+import { checkToken } from "../../controllers/auth/auth";
+
+// Heroicons imports
+import { ArrowsExpandIcon } from "@heroicons/react/outline";
+
+// Package imports
+import * as Tabs from "@radix-ui/react-tabs";
+import { ChevronDownIcon } from "@heroicons/react/solid";
+import
+{
+  CheckCircleIcon,
+  ChevronRightIcon,
+  InformationCircleIcon,
+  LocationMarkerIcon,
+  LockClosedIcon,
+  XCircleIcon,
+} from "@heroicons/react/solid";
 
 const CommUnit = (props) =>
 {
@@ -28,8 +39,8 @@ const CommUnit = (props) =>
           Loading&hellip;
         </div>
       ),
-      ssr: false,
-    } // This line is important. It's what prevents server-side render
+      ssr: false, // This line is important. It's what prevents server-side render
+    }
   );
   let cu = props.data;
 
@@ -64,6 +75,8 @@ const CommUnit = (props) =>
       <MainLayout>
         <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
           <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
+
+            {/* Breadcrumb */}
             <div className="flex flex-row gap-2 text-sm md:text-base">
               <a className="text-green-700" href="/">
                 Home
@@ -78,6 +91,8 @@ const CommUnit = (props) =>
                 <i className="text-black">{cu.code || "NO_CODE"}</i> )
               </span>
             </div>
+
+            {/* Header snippet */}
             <div
               className={
                 "col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
@@ -156,6 +171,8 @@ const CommUnit = (props) =>
               {/* Approve/Reject, Edit Buttons */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
+
+                  {/* Reject Button */}
                   <button
                     onClick={() =>
                       approveRejectCHU(
@@ -173,18 +190,21 @@ const CommUnit = (props) =>
                     {/* Dynamic Button Rendering */}
                     {cu.is_approved ? "Reject" : "Approve"}
                   </button>
+
+                  {/* Print Button */}
                   <button
                     onClick={() => console.log(cu.name)}
                     className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
                   >
                     Print
                   </button>
-                  <button
-                    onClick={() => window.alert("Edit")}
-                    className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                  >
-                    Edit
-                  </button>
+
+                  {/* Edit Button */}
+                  <Link href={`/community-unit/edit/${ cu.id }`}>
+                    <a className="p-2 text-center rounded-md font-semibold text-base text-white bg-blue-500">
+                      Edit
+                    </a>
+                  </Link>
                 </div>
               </div>
 
