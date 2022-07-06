@@ -1,16 +1,16 @@
 import Head from 'next/head'
 import * as Tabs from '@radix-ui/react-tabs';
-import { checkToken } from '../../controllers/auth/auth'
+import { checkToken } from '../../../controllers/auth/auth'
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select'
-import MainLayout from '../../components/MainLayout'
+import MainLayout from '../../../components/MainLayout'
 import { CheckCircleIcon, InformationCircleIcon, LockClosedIcon, XCircleIcon } from '@heroicons/react/solid'
 
 import dynamic from 'next/dynamic'
 
 const EditFacility = (props) => {
     const Map = dynamic(
-        () => import('../../components/Map'), // replace '@components/map' with your component's location
+        () => import('../../../components/Map'), // replace '@components/map' with your component's location
         {
             loading: () => <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
             ssr: false
