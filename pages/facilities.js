@@ -240,7 +240,7 @@ const Home = (props) => {
                                 {/* Button group */}
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Facility Button */}
-                                    <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
+     c                               <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facility/add_facility')}} className='flex items-center justify-center'>
 
                                             <span>Add Facility</span>
