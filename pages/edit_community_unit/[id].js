@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 // Components imports
 import MainLayout from '../../components/MainLayout';
-import TransferList from '../../components/TrasnferList';
+import TrasnferListServices from '../../components/TrasnferListServices';
 
 // Controller imports
 import { approveRejectCHU, rejectCHU } from '../../controllers/reject';
@@ -821,7 +821,7 @@ const CommUnit = (props) =>
                           {/* Transfer list Container */}
                           <div className='flex items-center w-full h-auto min-h-[200px]'>
                             {/* serviceCategories.map(ctg => ctg.name) */}
-                            <TransferList
+                            <TrasnferListServices
                               categories={serviceCategories.map(
                                 (data) => data
                               )}

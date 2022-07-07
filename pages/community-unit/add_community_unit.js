@@ -657,11 +657,8 @@ function AddCommUnit(props)
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 0);
-<<<<<<< HEAD
-=======
 
 												console.log({formId})
->>>>>>> 06fdcb486018919eacf043946df677ffab41f612
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -734,13 +731,8 @@ function AddCommUnit(props)
 																	/>
 																</div>
 																{/* In charge */}
-<<<<<<< HEAD
-																<div className='col-start-3 col-span-1'>
-																	<div className='flex items-start py-3'>
-=======
 																<div className='col-span-1'>
 																	<div className='flex items-center py-3'>
->>>>>>> 06fdcb486018919eacf043946df677ffab41f612
 																		<input
 																			name='incharge'
 																			type='checkbox'
@@ -750,13 +742,8 @@ function AddCommUnit(props)
 																</div>
 
 																{/* Delete CHEW */}
-<<<<<<< HEAD
-																<div className='col-start-4 col-span-1'>
-																	<div className='flex items-start'>
-=======
 																<div className='col-span-1'>
 																	<div className='flex items-center'>
->>>>>>> 06fdcb486018919eacf043946df677ffab41f612
 																		{/* insert red button for deleting */}
 																		<button
 																			name='delete'
