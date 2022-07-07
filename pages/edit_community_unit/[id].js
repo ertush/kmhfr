@@ -192,6 +192,8 @@ const CommUnit = (props) =>
               </Tabs.List>
 
               {/* Panel List */}
+
+              {/* Basic Details Panel */}
               <Tabs.Panel value='basic_details' className='grow-1 py-3 px-4 tab-panel'>
                 <>
                   <form className='flex flex-col w-full items-start justify-start gap-3'>
@@ -546,6 +548,121 @@ const CommUnit = (props) =>
                   </form>
                 </>
               </Tabs.Panel>
+
+              {/* Chews Panel */}
+              <Tabs.Panel value='chews' className='grow-1 py-3 px-4 tab-panel'>
+                <>
+                  <form className='flex flex-col w-full items-start justify-start gap-3'>
+                    {/* Form labels */}
+                    <div className='grid grid-cols-3 place-content-start gap-3 w-full'>
+                      {/* First Name */}
+                      <div className='col-start-1 col-span-1'>
+                        <label
+                          htmlFor='fname'
+                          className='block text-sm font-medium text-gray-700'>
+                          First Name
+                        </label>
+                      </div>
+                      {/* Second Name */}
+                      <div className='col-start-2 col-span-1'>
+                        <label
+                          htmlFor='sname'
+                          className='block text-sm font-medium text-gray-700'>
+                          Second Name
+                        </label>
+                      </div>
+                      {/* In charge */}
+                      <div className='col-start-3 col-span-1'>
+                        <label
+                          htmlFor='incharge'
+                          className='block text-sm font-medium text-gray-700'>
+                          In Charge
+                        </label>
+                      </div>
+
+                      {/* Delete CHEW */}
+                      <div className='col-start-4 col-span-1'>
+                        <label
+                          htmlFor='delete'
+                          className='block text-sm font-medium text-gray-700'>
+                          Delete
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Form Data */}
+                    <div className='grid grid-cols-3 place-content-start gap-3 w-full'>
+                      {
+                        cu.health_unit_workers &&
+                        cu.health_unit_workers.length > 0 &&
+                        cu.health_unit_workers.map((worker) => (
+                          <>
+                            {/* First Name */}
+                            <div className='col-start-1 col-span-1'>
+                              <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                <input
+                                  type='text'
+                                  name='fname'
+                                  value={worker.first_name}
+                                  onChange={handleChange}
+                                  className='flex-none w-75 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                />
+                              </div>
+                            </div>
+
+                            {/* Second Name */}
+                            <div className='col-start-2 col-span-1'>
+                              <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                <input
+                                  type='text'
+                                  name='sname'
+                                  value={worker.last_name}
+                                  onChange={handleChange}
+                                  className='flex-none w-75 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                />
+                              </div>
+                            </div>
+
+                            {/* In charge */}
+                            <div className='col-start-3 col-span-1'>
+                              <div className='flex items-start py-3'>
+                                <input
+                                  name='incharge'
+                                  // check if the worker is incharge then checked else unchecked
+                                  {...(worker.is_incharge === true
+                                    ? { checked: true }
+                                    : { checked: false })}
+                                  onChange={handleChange}
+                                  type='checkbox'
+                                  className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
+                                />
+                              </div>
+                            </div>
+
+                            {/* Delete CHEW */}
+                            <div className='col-start-4 col-span-1'>
+                              <div className='flex items-start'>
+                                {/* insert red button for deleting */}
+                                <button
+                                  name='delete'
+                                  type='button'
+                                  className='bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-4 border border-red-500 hover:border-transparent rounded'
+                                  onClick={() => { }}>
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          </>
+                        ))
+                      }
+                    </div>
+
+
+                  </form>
+                </>
+              </Tabs.Panel>
+
+
 
             </Tabs.Root>
 

@@ -709,7 +709,7 @@ function AddCommUnit(props)
 															</div>
 
 															{/* Form input */}
-															<div className='grid grid-cols-4 place-content-start gap-3 w-full'>
+															<div className='grid grid-cols-3 place-content-start gap-3 w-full'>
 																{/* First Name */}
 																<div className='col-start-1 col-span-1'>
 																	<input
@@ -730,7 +730,7 @@ function AddCommUnit(props)
 																</div>
 																{/* In charge */}
 																<div className='col-start-3 col-span-1'>
-																	<div className='flex items-center py-3'>
+																	<div className='flex items-start py-3'>
 																		<input
 																			name='incharge'
 																			type='checkbox'
@@ -741,7 +741,7 @@ function AddCommUnit(props)
 
 																{/* Delete CHEW */}
 																<div className='col-start-4 col-span-1'>
-																	<div className='flex items-center'>
+																	<div className='flex items-start'>
 																		{/* insert red button for deleting */}
 																		<button
 																			name='delete'
