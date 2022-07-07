@@ -200,7 +200,7 @@ const CommUnit = (props) =>
                   </button>
 
                   {/* Edit Button */}
-                  <Link href={`/edit_community_unit/${ cu.id }`}>
+                  <Link href={`/community-unit/edit/${ cu.id }`}>
                     <a className="p-2 text-center rounded-md font-semibold text-base text-white bg-blue-500">
                       Edit
                     </a>
@@ -977,7 +977,7 @@ CommUnit.getInitialProps = async (ctx) =>
               data: [],
             };
           });
-      } copy
+      }
     })
     .catch((err) =>
     {
