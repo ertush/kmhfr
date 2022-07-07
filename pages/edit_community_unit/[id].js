@@ -8,6 +8,7 @@ import Link from 'next/link';
 
 // Components imports
 import MainLayout from '../../components/MainLayout';
+import TransferList from '../../components/TrasnferList';
 
 // Controller imports
 import { approveRejectCHU, rejectCHU } from '../../controllers/reject';
@@ -72,6 +73,114 @@ const CommUnit = (props) =>
 
     console.log(event.target.value);
   }
+
+  // Define serviceCategories
+  const serviceCategories = [
+    {
+      name: 'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
+      subCategories: [
+        'Accident and Emergency casualty Services',
+        'General Emergency Services',
+      ],
+    },
+    {
+      name: 'AMBULATORY SERVICES',
+      subCategories: ['Ambulatory Services'],
+    },
+    {
+      name: 'ANTENATAL CARE',
+      subCategories: ['Focused Antenatal Care'],
+    },
+    {
+      name: 'BLOOD TRANSFUSION SERVICES',
+      subCategories: [
+        'Blood Bank',
+        'Facility offering Blood Transfusion Service',
+        'Satellite Blood Transfusion service',
+      ],
+    },
+    {
+      name: 'CANCER SCREENING',
+      subCategories: [
+        'Breast',
+        'Coloreactal',
+        'Pap smear',
+        'Prostrate',
+        'Screening using VIA/VILI',
+      ],
+    },
+    {
+      name: 'CURATIVE SERVICES',
+      subCategories: ['Inpatient', 'Outpatient'],
+    },
+    {
+      name: 'DELTED HDU',
+      subCategories: ['High dependency Services'],
+    },
+    {
+      name: 'EMERGENCY PREPAREDNESS',
+      subCategories: [
+        'Basic Emergency Preparedness',
+        'Comprehensive Emergency Preparedness',
+      ],
+    },
+    {
+      name: 'FAMILY PLANNING',
+      subCategories: ['Long Term', 'Natural', 'Permanent'],
+    },
+    {
+      name: 'FORENSIC SERVICES',
+      subCategories: ['Long Term', 'Natural', 'Permanent'],
+    },
+    {
+      name: 'HIV TREATMENT',
+      subCategories: ['HIV treatment and care'],
+    },
+    {
+      name: 'HIV/AIDS Prevention,Care and Treatment Services',
+      subCategories: [
+        'Condom Distribution & STI Prevention',
+        'Elimination of Mother to Child transmission of HIV',
+        'HEI - HIV exposed infants',
+        'HIV preventive Package',
+        'HIV risk reduction for Key populations',
+        'HIV risk reduction services for prioity populations and geographies',
+        'HIV Testing Services',
+        'Infection Prevention and control to mitigate HIV infection in the work place',
+        'Management of Sexually Transmitted Illness (STI)',
+        'Nutrition assessment ,counselling and support ( The NACS process) for PLHIVs',
+        'Post-Exposure Prophylaxis (PEP)',
+      ],
+    },
+    {
+      name: 'HOSPICE SERVICE',
+      subCategories: [],
+    },
+    {
+      name: 'IMMUNISATION',
+      subCategories: [],
+    },
+    {
+      name: 'INTEGRATED MANAGEMENT OF CHILDHOOD ILLNESS',
+      subCategories: [],
+    },
+    {
+      name: 'LABORATORY SERVICES',
+      subCategories: [],
+    },
+    {
+      name: 'LEPROSY DIAGNOSIS',
+      subCategories: [],
+    },
+    {
+      name: 'LEPROSY TREATMENT',
+      subCategories: [],
+    },
+    {
+      name: 'MATERNITY SERVICES',
+      subCategories: [],
+    },
+  ];
   return (
     console.log(props),
     <div className=''>
@@ -177,7 +286,7 @@ const CommUnit = (props) =>
           {/* Form */}
           <div className='col-span-5 md:col-span-3 flex flex-col gap-3 mt-4'>
 
-            <Tabs.Root orientation='horizontal' className='w-full flex flex-col tab-root' defaultValue='overview'>
+            <Tabs.Root orientation='horizontal' className='w-full flex flex-col tab-root' defaultValue='basic_details'>
               {/* Tabs List */}
               <Tabs.List className='list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b'>
                 <Tabs.Tab value='basic_details' className='p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item'>
@@ -663,6 +772,72 @@ const CommUnit = (props) =>
               </Tabs.Panel>
 
 
+              {/* Services Panel */}
+              <Tabs.Panel value='services' className='grow-1 py-3 px-4 tab-panel'>
+                <>
+                  <h3 className='text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight'>
+                    <span className='font-semibold'>Services Offered</span>
+                  </h3>
+                  <ul>
+                    {cu?.services && cu?.services.length > 0 ? (
+                      cu?.services.map((service) => (
+                        <li
+                          key={service.service_id}
+                          className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
+                        >
+                          <div>
+                            <p className="text-gray-800 text-base">
+                              {service.service_name}
+                            </p>
+                            <small className="text-xs text-gray-500">
+                              {service.category_name || ""}
+                            </small>
+                          </div>
+                          <div>
+                            <p className="text-gray-800 text-base">
+                              {service.average_rating || 0}/
+                              {service.number_of_ratings || 0}
+                            </p>
+                            <small className="text-xs text-gray-500">
+                              Rating
+                            </small>
+                          </div>
+                          <label className="text-sm text-gray-600 flex gap-1 items-center">
+                            <CheckCircleIcon className="h-6 w-6 text-green-500" />
+                            <span>Active</span>
+                          </label>
+                        </li>
+                      ))
+                    ) : (
+                      <>
+                        <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                          <p>{cu?.name || cu?.official_name} has not listed the services it offers. Add some below.</p>
+                            </li>
+                            <br />
+                        <form
+                          name='chu_services_form'
+                          className='flex flex-col w-full items-start justify-start gap-3'
+                        >
+                          {/* Transfer list Container */}
+                          <div className='flex items-center w-full h-auto min-h-[200px]'>
+                            {/* serviceCategories.map(ctg => ctg.name) */}
+                            <TransferList
+                              categories={serviceCategories.map(
+                                (data) => data
+                              )}
+                              setServices={() => null}
+                            />
+                          </div>
+
+                        </form>
+                      </>
+                    )}
+                  </ul>
+
+                </>
+              </Tabs.Panel>
+
+
 
             </Tabs.Root>
 
@@ -670,8 +845,8 @@ const CommUnit = (props) =>
 
 
         </div>
-      </MainLayout>
-    </div>
+      </MainLayout >
+    </div >
   );
 };
 
