@@ -181,7 +181,7 @@ const CommUnit = (props) =>
                     Print
                   </button>
                   <button
-                    onClick={() => router.push("/edit_community_unit/" + cu.id)}
+                    onClick={() => router.push("/community-unit/edit_community_unit/" + cu.id)}
                     className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                   >
                     Edit
