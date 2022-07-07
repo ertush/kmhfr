@@ -5,8 +5,10 @@ import React, { useState, useEffect } from "react";
 import MainLayout from "../../components/MainLayout";
 import { approveRejectCHU, rejectCHU } from "../../controllers/reject";
 import { ChevronDownIcon } from "@heroicons/react/solid";
+import router from 'next/router';
 
-import {
+import
+{
   CheckCircleIcon,
   ChevronRightIcon,
   InformationCircleIcon,
@@ -17,7 +19,8 @@ import {
 import { ArrowsExpandIcon } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
 
-const CommUnit = (props) => {
+const CommUnit = (props) =>
+{
   const Map = dynamic(
     () => import("../../components/Map"), // replace '@components/map' with your component's location
     {
@@ -35,14 +38,18 @@ const CommUnit = (props) => {
   const [isCHUDetails, setIsCHUDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
+  useEffect(() =>
+  {
+    if (typeof window !== "undefined")
+    {
       let usr = window.sessionStorage.getItem("user");
-      if (usr && usr.length > 0) {
+      if (usr && usr.length > 0)
+      {
         setUser(JSON.parse(usr));
       }
     }
-    return () => {
+    return () =>
+    {
       setIsCHUDetails(true);
       setIsApproveReject(false);
     };
@@ -174,7 +181,7 @@ const CommUnit = (props) => {
                     Print
                   </button>
                   <button
-                    onClick={() => window.alert("Edit")}
+                    onClick={() => router.push("/edit_community_unit/" + cu.id)}
                     className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                   >
                     Edit
@@ -196,14 +203,14 @@ const CommUnit = (props) => {
                     Overview
                   </Tabs.Tab>
                   <Tabs.Tab
-                   id={2}
+                    id={2}
                     value="services"
                     className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
                     Services
                   </Tabs.Tab>
                   <Tabs.Tab
-                   id={3}
+                    id={3}
                     value="hr_staffing"
                     className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
@@ -212,7 +219,7 @@ const CommUnit = (props) => {
                 </Tabs.List>
                 {/*End of the vertical tabs  */}
 
-                
+
                 <Tabs.Panel
                   value="overview"
                   className="grow-1 py-1 px-4 tab-panel"
@@ -235,8 +242,8 @@ const CommUnit = (props) => {
                               {cu?.status_name || "Yes"}
                             </span>
                           ) : cu.status_name
-                              ?.toLocaleLowerCase()
-                              .includes("semi") ? (
+                            ?.toLocaleLowerCase()
+                            .includes("semi") ? (
                             <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                               <CheckCircleIcon className="h-4 w-4" />
                               {cu?.status_name || "Yes"}
@@ -613,7 +620,7 @@ const CommUnit = (props) => {
                       </h3>
                       <ul>
                         {cu?.health_unit_workers &&
-                        cu?.health_unit_workers.length > 0 ? (
+                          cu?.health_unit_workers.length > 0 ? (
                           cu?.health_unit_workers.map((hr) => (
                             <li
                               key={hr.id}
@@ -671,7 +678,7 @@ const CommUnit = (props) => {
             </div>
           ) : (
 
-          
+
             // Approval Rejection Section
             <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4 mx-3">
               <h3 className="text-2xl tracking-tight font-semibold leading-5">
@@ -760,10 +767,13 @@ const CommUnit = (props) => {
               <div className="grid grid-cols-2 w-full md:w-11/12 h-8 leading-none items-center">
                 <button
                   className="flex bg-green-500 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto rounded-md"
-                  onClick={() => {
-                    if (isCHUDetails) {
+                  onClick={() =>
+                  {
+                    if (isCHUDetails)
+                    {
                       setIsCHUDetails(false);
-                    } else {
+                    } else
+                    {
                       setIsCHUDetails(true);
                     }
                   }}
@@ -838,7 +848,7 @@ const CommUnit = (props) => {
                   onSubmit={(e) =>
                     rejectCHU(e, cu, cu.isApproveReject, e.target.value)
                   }
-                >   
+                >
                   <label htmlFor="comment-text-area"></label>
                   <textarea
                     cols="70"
@@ -899,14 +909,19 @@ const CommUnit = (props) => {
   );
 };
 
-CommUnit.getInitialProps = async (ctx) => {
-  if (ctx.query.q) {
+CommUnit.getInitialProps = async (ctx) =>
+{
+  if (ctx.query.q)
+  {
     const query = ctx.query.q;
 
-    if (typeof window !== "undefined" && query.length > 2) {
-      window.location.href = `/community-units?q=${query}`;
-    } else {
-      if (ctx.res) {
+    if (typeof window !== "undefined" && query.length > 2)
+    {
+      window.location.href = `/community-units?q=${ query }`;
+    } else
+    {
+      if (ctx.res)
+      {
         ctx.res.writeHead(301, {
           Location: "/community-units?q=" + query,
         });
@@ -916,10 +931,13 @@ CommUnit.getInitialProps = async (ctx) => {
     }
   }
   return checkToken(ctx.req, ctx.res)
-    .then((t) => {
-      if (t.error) {
+    .then((t) =>
+    {
+      if (t.error)
+      {
         throw new Error("Error checking token");
-      } else {
+      } else
+      {
         let token = t.token;
         let url =
           process.env.NEXT_PUBLIC_API_URL + "/chul/units/" + ctx.query.id + "/";
@@ -931,12 +949,14 @@ CommUnit.getInitialProps = async (ctx) => {
           },
         })
           .then((r) => r.json())
-          .then((json) => {
+          .then((json) =>
+          {
             return {
               data: json,
             };
           })
-          .catch((err) => {
+          .catch((err) =>
+          {
             console.log("Error fetching facilities: ", err);
             return {
               error: true,
@@ -946,12 +966,16 @@ CommUnit.getInitialProps = async (ctx) => {
           });
       }
     })
-    .catch((err) => {
+    .catch((err) =>
+    {
       console.log("Error checking token: ", err);
-      if (typeof window !== "undefined" && window) {
-        if (ctx?.asPath) {
+      if (typeof window !== "undefined" && window)
+      {
+        if (ctx?.asPath)
+        {
           window.location.href = ctx?.asPath;
-        } else {
+        } else
+        {
           let token = t.token;
           let url =
             process.env.NEXT_PUBLIC_API_URL +
@@ -965,13 +989,15 @@ CommUnit.getInitialProps = async (ctx) => {
             },
           })
             .then((r) => r.json())
-            .then((json) => {
+            .then((json) =>
+            {
               console.log(json);
               return {
                 data: json,
               };
             })
-            .catch((err) => {
+            .catch((err) =>
+            {
               console.log("Error fetching facilities: ", err);
               return {
                 error: true,
