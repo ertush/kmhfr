@@ -28,7 +28,7 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferListInfrastructure({categories, setState, setCount, selectTitle}) {
+export default function TransferListHr({categories, setState, setCount, selectTitle}) {
 
   const [checked, setChecked] = React.useState([]);
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
