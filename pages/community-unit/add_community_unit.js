@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 // Next imports
 import Head from 'next/head';
+import Link from 'next/link';
 
 // Component imports
 import MainLayout from '../../components/MainLayout';
@@ -18,7 +19,8 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 
 // Heroicons imports
-import {
+import
+{
 	ChevronDoubleRightIcon,
 	ChevronDoubleLeftIcon,
 	PlusIcon,
@@ -27,7 +29,8 @@ import {
 // Package imports
 import Select from 'react-select';
 
-function AddCommUnit(props) {
+function AddCommUnit(props)
+{
 	let comm_unit = props.data;
 
 	// Define registration steps
@@ -149,18 +152,22 @@ function AddCommUnit(props) {
 	const [formId, setFormId] = useState(0);
 
 	// Define useEffect
-	useEffect(() => {
+	useEffect(() =>
+	{
 		const formIdState = window.sessionStorage.getItem('formId');
 
-		if (formIdState == undefined || formIdState == null || formIdState == '') {
+		if (formIdState == undefined || formIdState == null || formIdState == '')
+		{
 			window.sessionStorage.setItem('formId', 1);
 		}
 		// console.log(formId);
 
 		setFormId(window.sessionStorage.getItem('formId'));
 
-		return () => {
-			if (window.sessionStorage.getItem('formId') == '3') {
+		return () =>
+		{
+			if (window.sessionStorage.getItem('formId') == '3')
+			{
 				window.sessionStorage.setItem('formId', 0);
 			}
 		};
@@ -216,11 +223,14 @@ function AddCommUnit(props) {
 								className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50'
 								style={{ minHeight: '250px' }}>
 								{/* Form-changing switch statement */}
-								{(() => {
-									switch (parseInt(formId)) {
+								{(() =>
+								{
+									switch (parseInt(formId))
+									{
 										// Basic Details Case
 										case 0:
-											const handleBasicDetailsSubmit = (event) => {
+											const handleBasicDetailsSubmit = (event) =>
+											{
 												event.preventDefault();
 
 												// An empty object of the form data
@@ -229,7 +239,8 @@ function AddCommUnit(props) {
 												// Loop through all the form elements and add them to the object
 												const elements = [...event.target];
 
-												elements.forEach(({ name, value }) => {
+												elements.forEach(({ name, value }) =>
+												{
 													formData[name] = value;
 												});
 												console.log(formData);
@@ -246,7 +257,7 @@ function AddCommUnit(props) {
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 														Community Health Unit Basic Details
 													</h4>
-													{/* Actual form */}
+													{/* BASIC DETAILS FORM */}
 													<form
 														className='flex flex-col w-full items-start justify-start gap-3'
 														onSubmit={handleBasicDetailsSubmit}>
@@ -607,12 +618,16 @@ function AddCommUnit(props) {
 
 														{/* Cancel and CHEWs */}
 														<div className='flex justify-between items-center w-full'>
-															<button className='flex items-center justify-start space-x-2 p-1 bg-red-500 rounded px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-white' />
-																<span className='text-medium font-semibold text-white '>
-																	Cancel
-																</span>
-															</button>
+															<Link href='/community-units' className='text-gray-600 text-sm'>
+																<a>
+																	<button className='flex items-center justify-start space-x-2 p-1 bg-red-500 rounded px-2'>
+																		<ChevronDoubleLeftIcon className='w-4 h-4 text-white' />
+																		<span className='text-medium font-semibold text-white '>
+																			Cancel
+																		</span>
+																	</button>
+																</a>
+															</Link>
 															<button
 																type='submit'
 																className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
@@ -628,7 +643,8 @@ function AddCommUnit(props) {
 										// CHEWs Case
 										case 1:
 											// Handle CHEWs Case
-											const handleCHEWSubmit = (event) => {
+											const handleCHEWSubmit = (event) =>
+											{
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 2);
@@ -636,12 +652,16 @@ function AddCommUnit(props) {
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
 
-											const handleCHEWPrevious = (event) => {
+											const handleCHEWPrevious = (event) =>
+											{
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 0);
+<<<<<<< HEAD
+=======
 
 												console.log({formId})
+>>>>>>> 06fdcb486018919eacf043946df677ffab41f612
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -650,6 +670,7 @@ function AddCommUnit(props) {
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 														CHEWs: Community Health Extension Workers
 													</h4>
+													{/* CHEWS FORM */}
 													<form
 														name='chews_form'
 														className='flex flex-col w-full items-start justify-start gap-3'
@@ -693,7 +714,7 @@ function AddCommUnit(props) {
 															</div>
 
 															{/* Form input */}
-															<div className='grid grid-cols-4 place-content-start gap-3 w-full'>
+															<div className='grid grid-cols-3 place-content-start gap-3 w-full'>
 																{/* First Name */}
 																<div className='col-span-1'>
 																	<input
@@ -713,8 +734,13 @@ function AddCommUnit(props) {
 																	/>
 																</div>
 																{/* In charge */}
+<<<<<<< HEAD
+																<div className='col-start-3 col-span-1'>
+																	<div className='flex items-start py-3'>
+=======
 																<div className='col-span-1'>
 																	<div className='flex items-center py-3'>
+>>>>>>> 06fdcb486018919eacf043946df677ffab41f612
 																		<input
 																			name='incharge'
 																			type='checkbox'
@@ -724,14 +750,19 @@ function AddCommUnit(props) {
 																</div>
 
 																{/* Delete CHEW */}
+<<<<<<< HEAD
+																<div className='col-start-4 col-span-1'>
+																	<div className='flex items-start'>
+=======
 																<div className='col-span-1'>
 																	<div className='flex items-center'>
+>>>>>>> 06fdcb486018919eacf043946df677ffab41f612
 																		{/* insert red button for deleting */}
 																		<button
 																			name='delete'
 																			type='button'
 																			className='bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-4 border border-red-500 hover:border-transparent rounded'
-																			onClick={() => {}}>
+																			onClick={() => { }}>
 																			Delete
 																		</button>
 																	</div>
@@ -764,7 +795,8 @@ function AddCommUnit(props) {
 										// Services Case
 										case 2:
 											// Handle Service Form Submit
-											const handleServiceSubmit = (event) => {
+											const handleServiceSubmit = (event) =>
+											{
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 3);
@@ -772,7 +804,8 @@ function AddCommUnit(props) {
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
 
-											const handleServicesPrevious = (event) => {
+											const handleServicesPrevious = (event) =>
+											{
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 1);
@@ -784,6 +817,7 @@ function AddCommUnit(props) {
 														Services Offered
 													</h4>
 
+													{/* SERVICES FORM */}
 													<form
 														name='chu_services_form'
 														className='flex flex-col w-full items-start justify-start gap-3'
@@ -850,12 +884,16 @@ function AddCommUnit(props) {
 	);
 }
 
-AddCommUnit.getInitialProps = async (ctx) => {
+AddCommUnit.getInitialProps = async (ctx) =>
+{
 	return checkToken(ctx.req, ctx.res)
-		.then((t) => {
-			if (t.error) {
+		.then((t) =>
+		{
+			if (t.error)
+			{
 				throw new Error('Error checking token');
-			} else {
+			} else
+			{
 				let token = t.token;
 				let url =
 					process.env.NEXT_PUBLIC_API_URL +
@@ -870,12 +908,14 @@ AddCommUnit.getInitialProps = async (ctx) => {
 					},
 				})
 					.then((r) => r.json())
-					.then((json) => {
+					.then((json) =>
+					{
 						return {
 							data: json,
 						};
 					})
-					.catch((err) => {
+					.catch((err) =>
+					{
 						console.log('Error fetching facilities: ' + err);
 						return {
 							error: true,
@@ -885,16 +925,21 @@ AddCommUnit.getInitialProps = async (ctx) => {
 					});
 			}
 		})
-		.catch((err) => {
+		.catch((err) =>
+		{
 			console.log('Error checking token: ' + err);
-			if (typeof window !== 'undefined' && window) {
-				if (ctx?.asPath) {
+			if (typeof window !== 'undefined' && window)
+			{
+				if (ctx?.asPath)
+				{
 					window.location.href = ctx?.asPath;
-				} else {
+				} else
+				{
 					window.location.href = '/facilities';
 				}
 			}
-			setTimeout(() => {
+			setTimeout(() =>
+			{
 				return {
 					error: true,
 					err: err,
