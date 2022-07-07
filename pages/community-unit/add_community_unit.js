@@ -189,7 +189,7 @@ function AddCommUnit(props) {
 									Community Units
 								</a>{' '}
 								{'>'}
-								<span className='text-gray-500'>Add Community Unit</span>
+								<span className='text-gray-500'>Community Units</span>
 							</div>
 							<div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'></div>
 						</div>
