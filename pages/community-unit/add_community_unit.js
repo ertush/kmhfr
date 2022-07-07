@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 // Component imports
 import MainLayout from '../../components/MainLayout';
-import TransferList from '../../components/TrasnferList';
+import TransferListServices from '../../components/TrasnferListServices';
 
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
@@ -160,7 +160,7 @@ function AddCommUnit(props)
 		{
 			window.sessionStorage.setItem('formId', 1);
 		}
-		console.log(formId);
+		// console.log(formId);
 
 		setFormId(window.sessionStorage.getItem('formId'));
 
@@ -172,7 +172,7 @@ function AddCommUnit(props)
 			}
 		};
 	}, [formId]);
-	console.log(formId);
+	// console.log(formId);
 
 	return (
 		<div className=''>
@@ -246,7 +246,7 @@ function AddCommUnit(props)
 												console.log(formData);
 
 												// Set the formId to the next step
-												window.sessionStorage.setItem('formId', '1');
+												window.sessionStorage.setItem('formId', 1);
 
 												// Redirect to the next page
 												setFormId(window.sessionStorage.getItem('formId'));
@@ -657,6 +657,11 @@ function AddCommUnit(props)
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 0);
+<<<<<<< HEAD
+=======
+
+												console.log({formId})
+>>>>>>> 06fdcb486018919eacf043946df677ffab41f612
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -672,11 +677,11 @@ function AddCommUnit(props)
 														onSubmit={handleCHEWSubmit}>
 														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 															{/* Form labels */}
-															<div className='grid grid-cols-3 place-content-start gap-3 w-full'>
+															<div className='grid grid-cols-4 place-content-start gap-3 w-full'>
 																{/* First Name */}
 																<div className='col-start-1 col-span-1'>
 																	<label
-																		htmlFor='fname'
+																		htmlFor='fname'start
 																		className='block text-sm font-medium text-gray-700'>
 																		First Name
 																	</label>
@@ -711,7 +716,7 @@ function AddCommUnit(props)
 															{/* Form input */}
 															<div className='grid grid-cols-3 place-content-start gap-3 w-full'>
 																{/* First Name */}
-																<div className='col-start-1 col-span-1'>
+																<div className='col-span-1'>
 																	<input
 																		required
 																		type='text'
@@ -720,7 +725,7 @@ function AddCommUnit(props)
 																	/>
 																</div>
 																{/* Second Name */}
-																<div className='col-start-2 col-span-1'>
+																<div className='col-span-1'>
 																	<input
 																		required
 																		type='text'
@@ -729,8 +734,13 @@ function AddCommUnit(props)
 																	/>
 																</div>
 																{/* In charge */}
+<<<<<<< HEAD
 																<div className='col-start-3 col-span-1'>
 																	<div className='flex items-start py-3'>
+=======
+																<div className='col-span-1'>
+																	<div className='flex items-center py-3'>
+>>>>>>> 06fdcb486018919eacf043946df677ffab41f612
 																		<input
 																			name='incharge'
 																			type='checkbox'
@@ -740,8 +750,13 @@ function AddCommUnit(props)
 																</div>
 
 																{/* Delete CHEW */}
+<<<<<<< HEAD
 																<div className='col-start-4 col-span-1'>
 																	<div className='flex items-start'>
+=======
+																<div className='col-span-1'>
+																	<div className='flex items-center'>
+>>>>>>> 06fdcb486018919eacf043946df677ffab41f612
 																		{/* insert red button for deleting */}
 																		<button
 																			name='delete'
@@ -810,7 +825,7 @@ function AddCommUnit(props)
 														{/* Transfer list Container */}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
 															{/* serviceCategories.map(ctg => ctg.name) */}
-															<TransferList
+															<TransferListServices
 																categories={serviceCategories.map(
 																	(data) => data
 																)}

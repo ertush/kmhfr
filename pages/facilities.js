@@ -394,10 +394,7 @@ const Home = (props) => {
                                         <p>No filters.</p>
                                     </div>)
                                     : (
-                                        <form action="/" onSubmit={ev => {
-                                            ev.preventDefault()
-                                            return false
-                                        }}>
+                                        <div>
                                             {filters && Object.keys(filters).length > 0 &&
                                                 Object.keys(fltrs).map(ft => (
                                                     <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -582,7 +579,7 @@ const Home = (props) => {
                                                     router.push('/facilities')
                                                 }}>Clear filters</button>
                                             </div>
-                                        </form>
+                                        </div>
                                     )
                                 }
                             </div>
