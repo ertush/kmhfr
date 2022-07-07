@@ -25,11 +25,11 @@ import {
 	PlusIcon,
 } from '@heroicons/react/solid';
 import { XCircleIcon } from '@heroicons/react/outline';
-import Checkbox from '@mui/material/Checkbox';
 
 // Package imports
 import Select from 'react-select';
-import TrasnferListInfrastructure from '../../components/TransferListInfrastructure';
+import TransferListHr from '../../components/TransferListHr';
+import TransferListInfrastructure from '../../components/TransferListInfrastructure';
 
 function AddFacility(props) {
 
@@ -39,11 +39,9 @@ function AddFacility(props) {
     const serviceOptionRef = useRef(null)
     const optionRefBody = useRef(null)
 
-    const infrastructureRef = useRef(null)
+
     const infrastructureBodyRef = useRef(null)
-    const categoryRef = useRef(null)
-    const presentRef = useRef(null)
-    const numberRef = useRef(null)
+ 
 
     const steps = [
         'Basic Details',
@@ -289,6 +287,81 @@ function AddFacility(props) {
            
     ]
 
+	const hrCategories = [
+
+		{
+			name:'Clinical Officers',
+			subCategories:[
+				"Clinical Officer ENT/Audiology",
+				"Clinical Officer Lung & Skin",
+				"CO Dermatology/ Venereology",
+				"CO Oncology/Palli--ative Care",
+				"CO Ophthalmology/Cataract Surgery",
+				"CO Orthopaedics",
+				"CO Paediatrics",
+				"CO Psychiatry/Mental Health",
+				"CO Reproductive Health",
+				"General Clinical Officers(Diploma)"
+			]
+		},
+		{
+			name:'Clinical Psychology',
+			subCategories:[
+				"Clinical psychologists"
+			]
+		},
+		{
+			name:'Community Health Services ',
+			subCategories:[		
+				"Community Health Extension/Assistants",
+				"Community Health Volunteers(CHV)"
+			]
+		},
+		{
+			name:'Dental staff',
+			subCategories:[
+				"Community Oral Health Officers",
+				"Dental Officers",
+				"Dental Technologists",
+				"Oromaxillofacial Surgeon",
+				"Orthodontist",
+				"Paediatric Dentist"
+			]
+		},
+		{
+			name:'Diagnostics & Imaging',
+			subCategories:[
+				
+				"CT Scan /MRI Radiographer",
+				"Dental Radiographer",
+				"General Radiographer",
+				"Mammographer",
+				"Nuclear Medicine Technologist",
+				"Radiation Monitoring & Safety Officer",
+				"Therapy Radiographer",
+				"Ultrasonographer"
+			]
+		},
+		{
+			name:'Environmental Health ',
+			subCategories:[
+	
+			]
+		},
+		{
+			name:'General Support Staffs ',
+			subCategories:[
+	
+			]
+		},
+		{
+			name:'Health Administrative Staffs ',
+			subCategories:[
+	
+			]
+		}
+	
+	]
 
     const [formId, setFormId] = useState(0)
     const facilityContactRef = useRef(null)
@@ -302,6 +375,8 @@ function AddFacility(props) {
     const [services, setServices] = useState([])
     const [infrastructure, setInfrastructure] = useState([])
 	const [infrastructureCount, setInfrastructureCount] = useState([])
+	const [hr, setHr] = useState([])
+	const [hrCount, setHrCount] = useState([])
     
 
     useEffect(() => {
@@ -311,7 +386,7 @@ function AddFacility(props) {
         // console.log({formIdState})
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
-            window.sessionStorage.setItem('formId', 4); //0
+            window.sessionStorage.setItem('formId', 7); //0
         }
         
         setFormId(window.sessionStorage.getItem('formId'));
@@ -1987,10 +2062,6 @@ function AddFacility(props) {
                                             }
 
 
-
-                                            
-
-
                                             return (
                                                 <>  
                                                     <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
@@ -2190,6 +2261,7 @@ function AddFacility(props) {
 
                                                 window.sessionStorage.setItem('formId', 6)
                                                 
+												console.log({formId});
                                                 setFormId(window.sessionStorage.getItem('formId'))
 
                                             }
@@ -2201,56 +2273,24 @@ function AddFacility(props) {
                                                 setFormId(window.sessionStorage.getItem('formId'))
                                             }
 
-                                            // const renderInfrastructureCategory = (category, id) => {
-                                            //     return (
-                                            //         <div key={id} className='flex flex-col justify-center items-center w-full flex-1 border-2'>
-                                            //             {
-                                            //             infrastractureCategories.filter(infrastructure => infrastructure.name === category)[0].subCategories.map((subctg, i) => {
-                                            //                 return (
-                                            //                     <div className='grid grid-cols-3 w-full place-content-center' key={i}>
-                                            //                         <p className='text-md font-semibold mt-5'>{subctg}</p>
-                                            //                         <div className='flex items-center col-start-2 space-y-2'>
-                                            //                             <label htmlFor="confirm-infrastructure" className="text-gray-600 capitalize mt-2 text-sm">Yes</label>
-                                            //                             <Checkbox
-                                            //                                 checked={false}
-                                            //                                 id={'confirm-infrastructure'}
-                                            //                                 tabIndex={-1}   
-                                            //                                 sx={{marginTop:'1px'}}
-                                            //                                 disableRipple
-                                            //                                 onChange={() => {}}
-                                            //                                 inputProps={{
-                                            //                                     'aria-labelledby': 'options',
-                                            //                                 }}
-                                            //                                 />
-                                                                         
-                                            //                         </div>
-                                            //                         <input required type="number" name="longitude" className="col-start-3 flex-none w-auto mt-4 h-8 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                            //                     </div>
-                                                                
-                                            //                 )
-                                            //             })
-                                            //             }   
-                                            //         </div>
-                                            //     )
-                                            // }
-
-                                            
+                                        
                                             
                                             return (
                                                 <>  
                                                 <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
-                                                <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleInfrastructureSubmit}>
+                                                <form name="facility_infrastructure_form" className='flex flex-col w-full items-start justify-start gap-3'>
                                                     
                                                     {/* Transfer list Container */}
                                                     <div className='flex items-center w-full h-auto min-h-[300px]'>
                                                        
                                                     {/* Transfer List*/}
-                                                    <TrasnferListInfrastructure 
+                                                    <TransferListInfrastructure 
                                                         categories={
                                                             infrastractureCategories.map((data) => data)
                                                         } 
-                                                        setInfrastructure={setInfrastructure}
-														setInfrastructureCount={setInfrastructureCount}
+                                                        setState={setInfrastructure}
+														setCount={setInfrastructureCount}
+														selectTitle='Infrastructure'
                                                         />
 
                                                     </div>
@@ -2268,10 +2308,10 @@ function AddFacility(props) {
                                                             {
                                                                 infrastructure.map((_infrastructure, i) => (
                                                                     <tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                                        <td ref={infrastructureRef} className='text-lg text-indigo-900'>{_infrastructure}</td>
-                                                                        <td ref={categoryRef} className='text-lg text-indigo-900'>{infrastractureCategories.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
-                                                                        <td ref={presentRef} className='text-lg font-semibold text-indigo-900'>Yes</td>
-                                                                        <td ref={numberRef} className='text-lg  text-indigo-900'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val}</td>
+                                                                        <td className='text-lg text-black'>{_infrastructure}</td>
+                                                                        <td className='text-lg text-black'>{infrastractureCategories.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+                                                                        <td className='text-lg text-black'>Yes</td>
+                                                                        <td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val}</td>
                                                                     </tr>
                                                                 ))
                                                             }
@@ -2285,7 +2325,7 @@ function AddFacility(props) {
                                                             <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
                                                             <span className='text-medium font-semibold text-black '>Services</span>
                                                         </button>
-                                                        <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+														<button onClick={handleInfrastructureSubmit} className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
                                                             <span className='text-medium font-semibold text-white'>Human resources</span>
                                                             <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
                                                         </button>
@@ -2295,112 +2335,82 @@ function AddFacility(props) {
                                             )
                                         case 6:
                                             // Human resources form
-                                            const handleResourcesSubmit = (event) => {
+                                            const handleHrSubmit = (event) => {
+												
                                                 event.preventDefault()
 
-                                                window.sessionStorage.setItem('formId', 7)
+                                                window.sessionStorage.setItem('formId', 0)
                                                 
                                                 setFormId(window.sessionStorage.getItem('formId'))
 
                                             }
 
-                                            const handleResourcesPrevious = (event) => {
+                                            const handleHrPrevious = (event) => {
                                                 event.preventDefault()
                                                 window.sessionStorage.setItem('formId', 5)
                                                 
                                                 setFormId(window.sessionStorage.getItem('formId'))
                                             }
+
+                                        
+                                            
                                             return (
                                                 <>  
-                                                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human Resources</h4>
-                                                    <form name="facility_hr_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleResourcesSubmit}>
-                                                        
-                                                        
-                                                    <div className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityInfrastructureRef}>
-                                                            {/* Infrastructure Name */}
-                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Name</h3>
-                                                            <h3 className='text-medium font-semibold text-blue-900'>Infrastructure Option</h3>
-                                                            <hr className='col-span-2'/>
-                                                        
-                                                            {/* Service Name */}
-                                                            <Select options={
-                                                                            [
-                                                                                {
-                                                                                    value:'Wireless Mobile',
-                                                                                    label: 'Wireless Mobile'
-                                                                                },
-                                                                                {
-                                                                                    value:'Piped Water',
-                                                                                    label: 'Piped Water'
-                                                                                },
-                                                                                {
-                                                                                    value:'Main Grid',
-                                                                                    label: 'Main Grid'
-                                                                                },
-                                                                                {
-                                                                                    value:'Laptops',
-                                                                                    label: 'Laptops'
-                                                                                },
-                                                                                {
-                                                                                    value:'Incinerator',
-                                                                                    label: 'Incinerator'
-                                                                                }
-                                                                                
-                                                                        
-                                                                            ]
-                                                                        } 
-                                                                        required
-                                                                        placeholder="Select Infrastructure Type"
-                                                                        onChange={
-                                                                            () => console.log('changed')
-                                                                        }
-                                                                        name="service_name" 
-                                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human resources</h4>
+                                                <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3'>
+                                                    
+                                                    {/* Transfer list Container */}
+                                                    <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                                       
+                                                    {/* Transfer List*/}
+													
+                                                    <TransferListHr 
+                                                        categories={
+                                                            hrCategories.map((data) => data)
+                                                        } 
+                                                        setState={setHr}
+														setCount={setHrCount}
+														selectTitle='HR Specialities'
+                                                    />
 
-                                                                        {/* Service Option */}
-                                                                        <Select
-                                                                            options={[
-                                                                                {
-                                                                                    value:'Yes',
-                                                                                    label:'Yes'
-                                                                                },
-                                                                                {
-                                                                                    value:'No',
-                                                                                    label:'No'
-                                                                                }
-                
-                                                                            ]}
-                                                                            required
-                                                                            placeholder="Select Contact Type"
-                                                                            onChange={
-                                                                                () => console.log('changed')
-                                                                            }
-                                                                            name="service_option" 
-                                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> 
+                                                    </div>
+                                                     {/* Service Category Table */}
+                                                     <table className='w-full  h-auto my-4'>
+                                                        <thead className='w-full'>
+                                                            <tr className='grid grid-cols-3 place-content-end border-b-4 border-gray-300'>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Name</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Present</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Number</td>
+                                                            </tr>
+                                                        </thead>
 
-                                                                            {/* Append other dropdowns */}
-                                                                        
-                
-                                                        </div>
-                                                        <div className='w-full flex justify-end items-center mt-2'>
-                                                            <button onClick={() => null} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
-                                                                <PlusIcon className='w-4 h-4 text-white'/>
-                                                                <p className='text-medium font-semibold text-white'>Add</p>
-                                                            </button>
-                                                        </div>
-                                                        
-                                                        <div className='flex justify-between items-center w-full'>
-                                                            <button onClick={handleResourcesPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-                                                                <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-                                                                <span className='text-medium font-semibold text-black '>Infrastructure</span>
-                                                            </button>
-                                                            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-                                                                <span className='text-medium font-semibold text-white'>Save</span>
-                
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </>
+                                                        <tbody>
+                                                            {
+                                                                hr.map((_hr, i) => (
+                                                                    <tr key={`${_hr}_${i}`} className='grid grid-cols-3 place-content-end border-b-2 border-gray-300'>
+                                                                        <td className='text-lg text-black'>{_hr}</td>
+                                                                        <td className='text-lg text-black'>Yes</td>
+                                                                        <td className='text-lg  text-black'>{hrCount.filter(({name}) => name == _hr)[0].val}</td>
+                                                                    </tr>
+                                                                ))
+                                                            }
+                                                         
+                                                         
+                                                        </tbody>
+                                                    </table>
+                                                    
+                                                    <div className='flex justify-between items-center w-full'>
+                                                        <button onClick={handleHrPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                                                            <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                                                            <span className='text-medium font-semibold text-black '>Infrastracture</span>
+                                                        </button>
+                                                        <button onClick={handleHrSubmit} className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+                                                            <span className='text-medium font-semibold text-white'>Finish</span>
+                                                            <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </>
                                             )
                                         default:
                                             // 
