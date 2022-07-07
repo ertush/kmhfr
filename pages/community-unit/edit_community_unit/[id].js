@@ -7,12 +7,12 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 // Components imports
-import MainLayout from '../../components/MainLayout';
-import TrasnferListServices from '../../components/TrasnferListServices';
+import MainLayout from '../../../components/MainLayout';
+import TrasnferListServices from '../../../components/TrasnferListServices';
 
 // Controller imports
-import { approveRejectCHU, rejectCHU } from '../../controllers/reject';
-import { checkToken } from '../../controllers/auth/auth';
+import { approveRejectCHU, rejectCHU } from '../../../controllers/reject';
+import { checkToken } from '../../../controllers/auth/auth';
 
 // Heroicons imports
 import { ArrowsExpandIcon } from '@heroicons/react/outline';
@@ -34,7 +34,7 @@ import Select from 'react-select';
 const CommUnit = (props) =>
 {
   const Map = dynamic(
-    () => import('../../components/Map'), // replace '@components/map' with your component's location
+    () => import('../../../components/Map'), // replace '@components/map' with your component's location
     {
       loading: () => (
         <div className='text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3'>
