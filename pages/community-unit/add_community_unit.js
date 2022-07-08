@@ -20,7 +20,6 @@ import StepLabel from '@mui/material/StepLabel';
 import { FixedSizeList } from 'react-window';
 
 
-
 // Heroicons imports
 import {
 	ChevronDoubleRightIcon,
