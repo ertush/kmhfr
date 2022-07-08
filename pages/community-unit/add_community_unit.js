@@ -7,6 +7,7 @@ import Head from 'next/head';
 // Component imports
 import MainLayout from '../../components/MainLayout';
 import TransferListServices from '../../components/TrasnferListServices';
+import {renderMenuItem}  from '../../components/renderMenuItem';
 
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
@@ -16,16 +17,22 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import { FixedSizeList } from 'react-window';
+
+
 
 // Heroicons imports
 import {
 	ChevronDoubleRightIcon,
 	ChevronDoubleLeftIcon,
-	PlusIcon,
+	
+	TrashIcon
 } from '@heroicons/react/solid';
+
 
 // Package imports
 import Select from 'react-select';
+
 
 function AddCommUnit(props) {
 	let comm_unit = props.data;
@@ -189,7 +196,7 @@ function AddCommUnit(props) {
 									Community Units
 								</a>{' '}
 								{'>'}
-								<span className='text-gray-500'>Community Units</span>
+								<span className='text-gray-500'>Add Community Unit</span>
 							</div>
 							<div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'></div>
 						</div>
@@ -730,9 +737,9 @@ function AddCommUnit(props) {
 																		<button
 																			name='delete'
 																			type='button'
-																			className='bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-1 px-4 border border-red-500 hover:border-transparent rounded'
+																			className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 rounded border border-red-500 hover:border-transparent '
 																			onClick={() => {}}>
-																			Delete
+																			<TrashIcon class="w-7 h-7 text-red-500 group-hover:text-white" />
 																		</button>
 																	</div>
 																</div>
@@ -740,9 +747,9 @@ function AddCommUnit(props) {
 														</div>
 
 														{/* Basic Details and Services */}
-														<div className='flex justify-between items-center w-full'>
+														<div className='flex justify-between md:grid md:grid-cols-4 items-center w-full'>
 															<button
-																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'
+																className='flex items-center md:col-start-1 justify-start md:w-36 space-x-2 p-1 border-2 border-black rounded px-2'
 																onClick={handleCHEWPrevious}>
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
 																<span className='text-medium font-semibold text-black '>
@@ -751,7 +758,7 @@ function AddCommUnit(props) {
 															</button>
 															<button
 																type='submit'
-																className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+																className='flex items-center md:col-start-4 justify-start md:w-36 space-x-2 bg-green-500 rounded p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>
 																	Services
 																</span>
@@ -778,6 +785,7 @@ function AddCommUnit(props) {
 												window.sessionStorage.setItem('formId', 1);
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
+											
 											return (
 												<>
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
@@ -829,8 +837,23 @@ function AddCommUnit(props) {
 					{/* Aside */}
 					<aside className='flex flex-col col-span-5 md:col-span-1 p-1 md:h-full'>
 						<details
+							title='Menu filters'
 							className='rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z'
-							open></details>
+							open>
+								<Box
+								sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
+								>
+								<FixedSizeList
+									height={400}
+									width={360}
+									itemSize={46}
+									itemCount={9}
+									overscanCount={5}
+								>
+									{renderMenuItem}
+								</FixedSizeList>
+							</Box>
+							</details>
 					</aside>
 
 					{/* (((((( Floating div at bottom right of page */}

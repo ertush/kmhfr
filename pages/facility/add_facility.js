@@ -8,15 +8,19 @@ import Head from 'next/head';
 import MainLayout from '../../components/MainLayout';
 import FacilityContact from '../../components/FacilityContact';
 import TrasnferListServices from '../../components/TrasnferListServices';
+import TransferListHr from '../../components/TransferListHr';
+import TransferListInfrastructure from '../../components/TransferListInfrastructure';
 
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
 
-// MUI imports
+// MUI imports / vendor imports
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import { FixedSizeList } from 'react-window';
+
 
 // Heroicons imports
 import {
@@ -28,8 +32,9 @@ import { XCircleIcon } from '@heroicons/react/outline';
 
 // Package imports
 import Select from 'react-select';
-import TransferListHr from '../../components/TransferListHr';
-import TransferListInfrastructure from '../../components/TransferListInfrastructure';
+import {renderMenuItem}  from '../../components/renderMenuItem';
+
+
 
 function AddFacility(props) {
 
@@ -38,8 +43,6 @@ function AddFacility(props) {
     const nameOptionRef = useRef(null)
     const serviceOptionRef = useRef(null)
     const optionRefBody = useRef(null)
-
-
     const infrastructureBodyRef = useRef(null)
  
 
@@ -363,6 +366,10 @@ function AddFacility(props) {
 	
 	]
 
+
+
+
+	
     const [formId, setFormId] = useState(0)
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
@@ -414,6 +421,7 @@ function AddFacility(props) {
         }
     }, [formId, services])
       
+
 
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
@@ -2436,8 +2444,20 @@ function AddFacility(props) {
                     </div>
                     
                     <aside className="flex flex-col col-span-5 md:col-span-1 p-1 md:h-full">
-                        <details className="rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z" open>
-                          
+                        <details title={'Menu filters'} className="rounded bg-transparent py-2 text-base flex flex-col w-full md:stickyz md:top-2z" open>
+							<Box
+								sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
+								>
+								<FixedSizeList
+									height={400}
+									width={360}
+									itemSize={46}
+									itemCount={9}
+									overscanCount={5}
+								>
+									{renderMenuItem}
+								</FixedSizeList>
+							</Box>
                         </details>
                     </aside>
                     {/* (((((( Floating div at bottom right of page */}
