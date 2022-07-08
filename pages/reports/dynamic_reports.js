@@ -1,11 +1,11 @@
 import Head from 'next/head'
-import Link from 'next/link'
+// import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { CheckBox } from '@mui/icons-material'
+// import { CheckBox } from '@mui/icons-material'
 
 import Select from 'react-select'
 
@@ -20,8 +20,10 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { ToastContainer, toast } from 'react-toastify';
 // import { WindowSharp } from '@mui/icons-material'
 // import LoadingAnimation from '../../components/LoadingAnimation'
+
 
 
 
@@ -29,10 +31,21 @@ const DynamicReports = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
  
+  
     // const { data, query, path, current_url } = props
     const router = useRouter()
- 
-    let filters = props?.filters
+    
+    // Temporary fix folty Kirinyaga id
+    let filters = (() => {
+        let filters = props?.filters
+        filters.county[0].id = 'ecbf61a6-cd6d-4806-99d8-9340572c0015' // correct Kirinyaga county id
+
+        return filters
+    })()
+
+
+
+    console.log({filters});
     let fltrs = filters
 
     const formRef = useRef(null)
@@ -187,6 +200,20 @@ const DynamicReports = (props) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={true}>
+                {/* Toast notifier */}
+
+                {/* <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                /> */}
+
                 <div className="w-full grid grid-cols-7 gap-4 p-1 md:px-4 my-2">
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
@@ -200,6 +227,7 @@ const DynamicReports = (props) => {
 
                         <div className="flex flex-wrap gap-2 text-sm md:text-base items-center justify-between">
                             <div className="flex flex-col items-start justify-start w-full">
+
                                 <h1 className="text-3xl tracking-tight font-bold leading-none flex items-center justify-start gap-x-2">
                                     Dynamic Reports
                                 </h1>
@@ -226,6 +254,7 @@ const DynamicReports = (props) => {
                                             <form action="/reports/dynamic_reports" className="grid grid-cols-7 gap-2 w-full m-1" ref={formRef} onSubmit={async (ev) => {
                                                 ev.preventDefault()
                                                 setIsLoading(true)
+                                
                                                 const fields = 'code,official_name,operation_status,approved,keph_level,facility_type_name,facility_type_parent,owner,owner_type,regulation_body,number_of_beds,number_of_cots,county,constituency,sub_county,ward,admission_status,facility_services,created,closed'
                                                 if (Object.keys(drillDown).length > 0) {
                                                     let qry = Object.keys(drillDown).map(function (key) {
@@ -244,6 +273,18 @@ const DynamicReports = (props) => {
                                                         const filterQuery = `${op}${qry}&fields=${fields}`
 
                                                         try{
+
+                                                            // toast emmiter
+                                                            // toast('Filtering ...', {
+                                                            //     position: "top-right",
+                                                            //     autoClose: 5000,
+                                                            //     hideProgressBar: false,
+                                                            //     closeOnClick: true,
+                                                            //     pauseOnHover: true,
+                                                            //     draggable: true,
+                                                            //     progress: undefined,
+                                                            //     });
+
                                                             const data = await fetch(`/api/filters/filter/?filter_query=${filterQuery}`)
                                                            data.json().then(r => {
 
@@ -268,6 +309,7 @@ const DynamicReports = (props) => {
                                                            })
 
                                                         //    Close Accordion
+
                                                          setIsLoading(false)
                                                          setIsAccordionExpanded(false)
                                                         }
@@ -965,7 +1007,7 @@ DynamicReports.getInitialProps = async (ctx) => {
         // let current_url = url + '&page_size=25000' //change the limit on prod
         let current_url = url + '&page_size=50'
         if (ctx?.query?.page) {
-            console.log({page:ctx.query.page})
+            // console.log({page:ctx.query.page})
             url = `${url}&page=${ctx.query.page}`
         }
         // console.log('running fetchData(' + url + ')')
