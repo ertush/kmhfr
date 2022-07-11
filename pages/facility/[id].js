@@ -38,7 +38,7 @@ const Facility = (props) => {
         }
     }, []);
     return (
-        <div className="">
+        <>
             <Head>
                 <title>KMHFL - {facility.official_name}</title>
                 <link rel="icon" href="/favicon.ico" />
@@ -805,7 +805,7 @@ const Facility = (props) => {
                     </aside>
                 </div>
             </MainLayout>
-        </div>
+        </>
     )
 }
 

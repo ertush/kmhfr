@@ -202,17 +202,6 @@ const DynamicReports = (props) => {
             <MainLayout isLoading={false} isFullWidth={true}>
                 {/* Toast notifier */}
 
-                {/* <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                /> */}
 
                 <div className="w-full grid grid-cols-7 gap-4 p-1 md:px-4 my-2">
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
@@ -274,17 +263,7 @@ const DynamicReports = (props) => {
 
                                                         try{
 
-                                                            // toast emmiter
-                                                            // toast('Filtering ...', {
-                                                            //     position: "top-right",
-                                                            //     autoClose: 5000,
-                                                            //     hideProgressBar: false,
-                                                            //     closeOnClick: true,
-                                                            //     pauseOnHover: true,
-                                                            //     draggable: true,
-                                                            //     progress: undefined,
-                                                            //     });
-
+                                                          
                                                             const data = await fetch(`/api/filters/filter/?filter_query=${filterQuery}`)
                                                            data.json().then(r => {
 

@@ -127,7 +127,7 @@ export default function HeaderLayout({
   }, []);
 
   return (
-    <header className="flex flex-wrap items-center justify-between gap-x-4 w-full p-1 max-w-screen-2xl">
+    <header className="flex flex-wrap items-center justify-evenly gap-x-4 w-full p-1 max-w-screen-3xl">
       <title>KMHFL 3</title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-0 md:gap-5">
         <div id="logo" className="mx:px-3 pb-1">
@@ -147,6 +147,7 @@ export default function HeaderLayout({
             <MenuAlt1Icon className="w-6" />
           </button>
           <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 px-2 py-1 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none justify-between gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
+            {/* Dashboard / Home */}
             <li className="flex-wrap font-semibold">
               <Link href={isLoggedIn ? "/dashboard" : "/"}>
                 <a
@@ -160,6 +161,7 @@ export default function HeaderLayout({
                 </a>
               </Link>
             </li>
+            {/* Facilities */}
             <li className="flex-wrap font-semibold">
               <Link href="/facilities">
                 <a
@@ -174,6 +176,7 @@ export default function HeaderLayout({
                 </a>
               </Link>
             </li>
+            {/* Community Units */}
             <li className="flex-wrap font-semibold">
               <Link href="/community-units">
                 <a
@@ -188,19 +191,37 @@ export default function HeaderLayout({
                 </a>
               </Link>
             </li>
+            {/* Users */}
             <li className="flex-wrap font-semibold">
-              <Link href="/gis">
+              <Link href="/users">
                 <a
                   className={
-                    (currentPath == "/gis" ? activeClasses : inactiveClasses) +
-                    " text-base md:text-lg"
+                    (currentPath == "/users" ||
+                    currentPath.includes("users")
+                      ? activeClasses
+                      : inactiveClasses) + " text-base md:text-lg"
                   }
                 >
-                  GIS
+                   Users
                 </a>
               </Link>
             </li>
-            {/* <li className="flex-wrap font-semibold"> */}
+            {/* System setup */}
+            <li className="flex-wrap font-semibold">
+              <Link href="/system_setup">
+                <a
+                  className={
+                    (currentPath == "/system_setup" ||
+                    currentPath.includes("system_setup")
+                      ? activeClasses
+                      : inactiveClasses) + " text-base md:text-lg"
+                  }
+                >
+                  System setup 
+                </a>
+              </Link>
+            </li>
+           {/* Reports */}
               
               <Menu as="div" className="relative ">
                   <Menu.Button
@@ -251,7 +272,34 @@ export default function HeaderLayout({
               
             </Menu.Items>
           </Menu>
-            {/* </li> */}
+          
+          {/* Admin Offices */}
+           
+          <li className="flex-wrap font-semibold">
+            <Link href="/admin_offices">
+              <a
+                className={
+                  (currentPath == "/admin_offices" ? activeClasses : inactiveClasses) +
+                  " text-base md:text-lg"
+                }
+              >
+                Admin Offices
+              </a>
+            </Link>
+          </li>
+              {/* GIS */}
+              <li className="flex-wrap font-semibold">
+              <Link href="/gis">
+                <a
+                  className={
+                    (currentPath == "/gis" ? activeClasses : inactiveClasses) +
+                    " text-base md:text-lg"
+                  }
+                >
+                  GIS
+                </a>
+              </Link>
+            </li>
           </ul>
         </div>
       </nav>
