@@ -1,12 +1,10 @@
 // import Link from 'next/link'
 import { useRouter } from 'next/router'
-// import { ChevronDownIcon, ExternalLinkIcon, MenuAlt1Icon, SearchIcon } from '@heroicons/react/solid';
-// import { UserCircleIcon } from '@heroicons/react/outline';
 import React, { useState, useEffect, useCallback } from 'react';
-// import { Menu } from '@headlessui/react'
 import { getUserDetails } from '../controllers/auth/auth'
 import LoadingAnimation from './LoadingAnimation';
 import HeaderLayout from './HeaderLayout';
+
 
 const DelayedLoginButton = () => {
     const [delayed, setDelayed] = useState(false)

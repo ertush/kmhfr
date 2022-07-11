@@ -14,13 +14,20 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
-// import SendIcon from '@mui/icons-material/Send';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
-import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, PostAdd, ReduceCapacity } from '@mui/icons-material';
+import { Paper } from '@mui/material'
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
+
+
+import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
 
 
 
@@ -72,14 +79,59 @@ const system_setup = () => {
         setOpenCHU(!openCHU);
       };
 
-      const handleDocumentsClick = () => {
+    const handleDocumentsClick = () => {
         setOpenDocuments(!openDocuments);
-      };
+    };
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+  
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+  
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(+event.target.value);
+      setPage(0);
+    };
 
 
 
+    function createData(name, code, population) {
+       
+        return { name, code, population };
+    }
+  
+    const columns = [
+        { id: 'name', label: 'Name', minWidth: 170 },
+        { id: 'code', label: 'Code', minWidth: 100 },
+        {
+          id: 'action',
+          label: 'Action',
+          minWidth: 170,
+          align: 'right',
+          format: (value) => value.toLocaleString('en-US'),
+        }
+      ];
+      
 
-    
+      const rows = [
+        createData('India', 'IN', 1324171354),
+        createData('China', 'CN', 1403500365),
+        createData('Italy', 'IT', 60483973),
+        createData('United States', 'US', 327167434),
+        createData('Canada', 'CA', 37602103),
+        createData('Australia', 'AU', 25475400),
+        createData('Germany', 'DE', 83019200),
+        createData('Ireland', 'IE', 4857000),
+        createData('Mexico', 'MX', 126577691),
+        createData('Japan', 'JP', 126317000),
+        createData('France', 'FR', 67022000),
+        createData('United Kingdom', 'GB', 67545757),
+        createData('Russia', 'RU', 146793744),
+        createData('Nigeria', 'NG', 200962417),
+        createData('Brazil', 'BR', 210147125),
+      ];
 
   return (
   <>
@@ -103,17 +155,16 @@ const system_setup = () => {
                             <PlusIcon className='text-white ml-2 h-5 w-5'/>
                           </button>
                         </div>   
-                    {/* </div> */}
-
-                     {/* Side Menu */}
+                
+                        {/* Side Menu */}
                         <div className='col-span-1 w-full col-start-1 h-auto'>
-                        <List
+                            <List
                                 sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
                                 component="nav"
                                 aria-labelledby="nested-list-subheader"
                                 subheader={
                                     <ListSubheader component="div" id="nested-list-subheader">
-                                    Menu
+                                        Menu
                                     </ListSubheader>
                                 }
                                 >
@@ -347,11 +398,66 @@ const system_setup = () => {
 
                                 
                             </List>
-                            </div>
+                        </div>
 
                         {/* Form Section */}
-                        <div className='col-span-4 w-full h-auto  border-2 border-green-500'>
-
+                        <div className='col-span-4 w-full h-auto '>
+                        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                            <TableContainer sx={{ maxHeight: 440 }}>
+                                <Table  aria-label="sticky table">
+                                <TableHead>
+                                    {/* Search input */}
+                                    <TableRow>
+                                    <TableCell>
+                                        <TextField id="standard-basic" label="Search anything" variant="standard" />
+                                        <button className='bg-indigo-500 rounded p-2 text-base font-semibold ml-4 text-white'>Export</button>
+                                    </TableCell>
+                                    </TableRow>
+                                    
+                                    <TableRow>
+                                    {columns.map((column) => (
+                                        <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                        >
+                                        {column.label}
+                                        </TableCell>
+                                    ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {rows
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row) => {
+                                        return (
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                            {columns.map((column) => {
+                                            const value = row[column.id];
+                                            return (
+                                                <TableCell key={column.id} align={column.align}>
+                                                {column.format && typeof value === 'number'
+                                                    ? column.format(value)
+                                                    : value}
+                                                </TableCell>
+                                            );
+                                            })}
+                                        </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <TablePagination
+                                rowsPerPageOptions={[10, 25, 100]}
+                                component="div"
+                                count={rows.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                            </Paper>
                         </div>
                     </div> 
                                                                                                             
