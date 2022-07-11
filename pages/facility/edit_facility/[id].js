@@ -28,7 +28,7 @@ const EditFacility = (props) => {
         }
     }, [])
     return (
-        <div className="">
+        <>
             <Head>
                 <title>KMHFL - {facility.official_name}</title>
                 <link rel="icon" href="/favicon.ico" />
@@ -753,7 +753,7 @@ const EditFacility = (props) => {
                     </div>                   
                 </div>
             </MainLayout>
-        </div>
+        </>
     )
 }
 

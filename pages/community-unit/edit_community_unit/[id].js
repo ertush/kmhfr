@@ -183,7 +183,7 @@ const CommUnit = (props) =>
   ];
   return (
     console.log(props),
-    <div className=''>
+    <>
       <Head>
         <title>KMHFL - {cu?.name || cu?.official_name}</title>
         <link rel='icon' href='/favicon.ico' />
@@ -846,7 +846,7 @@ const CommUnit = (props) =>
 
         </div>
       </MainLayout >
-    </div >
+    </>
   );
 };
 

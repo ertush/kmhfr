@@ -174,7 +174,7 @@ function AddCommUnit(props) {
 	// console.log(formId);
 
 	return (
-		<div className=''>
+		<>
 			{/* Head */}
 			<Head>
 				<title> KMFHL - Add Community Unit</title>
@@ -868,7 +868,7 @@ function AddCommUnit(props) {
 					{/* ))))))) */}
 				</div>
 			</MainLayout>
-		</div>
+		</>
 	);
 }
 
