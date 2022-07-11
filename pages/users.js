@@ -1,5 +1,11 @@
 import React from 'react'
 
+// next imports
+import Head from 'next/dist/shared/lib/head'
+
+// components imports
+import MainLayout from '../components/MainLayout'
+
 const Users = () => {
   return (
     <>
@@ -10,7 +16,7 @@ const Users = () => {
     </Head>
 
     <MainLayout>
-        <div className="w-full grid grid-cols-5 gap-4 p-2 my-6 border-2 border-red-500">
+        <div className="w-full grid grid-cols-5 gap-4 p-2 my-6 ">
             <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
                 <div className="flex flex-row gap-2 text-sm md:text-base">
                     <a className="text-green-700" href="/">Home</a> {'>'}
