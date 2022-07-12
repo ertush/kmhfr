@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react'
 
-// component imports
+// component / controllers imports
 import MainLayout from '../components/MainLayout'
+import { checkToken } from '../controllers/auth/auth';
 
 // next imports
 import Head from 'next/dist/shared/lib/head'
@@ -25,17 +26,16 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
-
-
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
 
 
 
-const system_setup = () => {
+
+const system_setup = (props) => {
 
 
-    const [title, setTitle] = useState('title')
-    const [addBtnLabel, setAddBtnLabel] = useState('Service')
+    const [title, setTitle] = useState('Counties')
+    const [addBtnLabel, setAddBtnLabel] = useState('County')
 
     const [openAdminUnits, setOpenAdminUnits] = useState(false);
     const [openServiceCatalogue, setOpenServiceCatalogue] = useState(false);
@@ -44,11 +44,14 @@ const system_setup = () => {
     const [openContacts, setOpenContacts] = useState(false);
     const [openFacilities, setOpenFacilities] = useState(false);
     const [openCHU, setOpenCHU] = useState(false);    
-    const [openDocuments, setOpenDocuments] = useState(false);    
+    const [openDocuments, setOpenDocuments] = useState(false);  
+    const [rows, setRows] = useState(() => props?.data?.results.map(({id, name, code}) => ({id, name, code})) || [])  
+    // const [fetchData, setFetchData] = useState('')
 
     useEffect(() => {
 
-    }, [])
+     
+    }, [rows])
 
     const handleAdminUnitsClick = () => {
         setTitle('Admin')
@@ -95,44 +98,21 @@ const system_setup = () => {
       setPage(0);
     };
 
-
-
-    function createData(name, code, population) {
-       
-        return { name, code, population };
+    const fetchDataCategory = () => {
+        if(addBtnLabel == "Counties"){
+            setAff
+        }
     }
-  
+
+
     const columns = [
         { id: 'name', label: 'Name', minWidth: 170 },
-        { id: 'code', label: 'Code', minWidth: 100 },
-        {
-          id: 'action',
-          label: 'Action',
-          minWidth: 170,
-          align: 'right',
-          format: (value) => value.toLocaleString('en-US'),
-        }
+        { id: 'code', label: 'Code', minWidth: 100},
+        { id: 'action',label: 'Action',minWidth: 170, align:'right'}
       ];
       
 
-      const rows = [
-        createData('India', 'IN', 1324171354),
-        createData('China', 'CN', 1403500365),
-        createData('Italy', 'IT', 60483973),
-        createData('United States', 'US', 327167434),
-        createData('Canada', 'CA', 37602103),
-        createData('Australia', 'AU', 25475400),
-        createData('Germany', 'DE', 83019200),
-        createData('Ireland', 'IE', 4857000),
-        createData('Mexico', 'MX', 126577691),
-        createData('Japan', 'JP', 126317000),
-        createData('France', 'FR', 67022000),
-        createData('United Kingdom', 'GB', 67545757),
-        createData('Russia', 'RU', 146793744),
-        createData('Nigeria', 'NG', 200962417),
-        createData('Brazil', 'BR', 210147125),
-      ];
-
+      
   return (
   <>
             <Head>
@@ -150,21 +130,21 @@ const system_setup = () => {
                         </div>
                         <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                           <h2 className='text-xl font-bold text-black capitalize'>{title}</h2>
-                          <button className='rounded bg-green-500 p-2 text-white flex items-center text-lg font-semibold'>
+                          <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'>
                             {`Add ${addBtnLabel}`}
                             <PlusIcon className='text-white ml-2 h-5 w-5'/>
                           </button>
                         </div>   
                 
                         {/* Side Menu */}
-                        <div className='col-span-1 w-full col-start-1 h-auto'>
+                        <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
                             <List
                                 sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
                                 component="nav"
                                 aria-labelledby="nested-list-subheader"
                                 subheader={
                                     <ListSubheader component="div" id="nested-list-subheader">
-                                        Menu
+                                        Resources
                                     </ListSubheader>
                                 }
                                 >
@@ -179,7 +159,7 @@ const system_setup = () => {
                                 <Collapse in={openAdminUnits} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {/* Counties */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('Counties'); setAddBtnLabel('County')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('Counties'); setAddBtnLabel('County');}}>
                                             <ListItemText primary="Counties" />
                                         </ListItemButton>
                                         {/* Constituencies */}
@@ -187,7 +167,7 @@ const system_setup = () => {
                                             <ListItemText primary="Constituencies"/>
                                         </ListItemButton>
                                         {/* Wards */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('wards'); setAddBtnLabel('ward')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('wards'); setAddBtnLabel('ward'), setRows([])}}>
                                             <ListItemText primary="Wards" />
                                         </ListItemButton>
                                         {/* Towns */}
@@ -197,8 +177,8 @@ const system_setup = () => {
                                     </List>
                                 </Collapse>
 
-                                 {/* Service Catalogue */}
-                                 <ListItemButton onClick={handleServiceCatalogueClick}>
+                                {/* Service Catalogue */}
+                                <ListItemButton onClick={handleServiceCatalogueClick}>
                                     <ListItemIcon>
                                         <MiscellaneousServices />
                                     </ListItemIcon>
@@ -219,12 +199,12 @@ const system_setup = () => {
                                         <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'service' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('services'); setAddBtnLabel('service')}}>
                                             <ListItemText primary="Services" />
                                         </ListItemButton>
-                                     
+                                    
                                     </List>
                                 </Collapse>
 
-                                  {/* Health Infrastructure */}
-                                  <ListItemButton onClick={handleHealthInfrClick}>
+                                {/* Health Infrastructure */}
+                                <ListItemButton onClick={handleHealthInfrClick}>
                                     <ListItemIcon>
                                         <LocalHospital />
                                     </ListItemIcon>
@@ -265,8 +245,8 @@ const system_setup = () => {
                                     </List>
                                 </Collapse>
 
-                                 {/* Contacts */}
-                                 <ListItemButton onClick={hanldeConactsClick}>
+                                {/* Contacts */}
+                                <ListItemButton onClick={hanldeConactsClick}>
                                     <ListItemIcon>
                                         <Phone />
                                     </ListItemIcon>
@@ -279,12 +259,12 @@ const system_setup = () => {
                                         <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('contact types'); setAddBtnLabel('contact type')}}>
                                             <ListItemText primary="Contact Type" />
                                         </ListItemButton>
-                                       
+                                    
                                     </List>
                                 </Collapse>
 
-                                 {/* Facilities */}
-                                 <ListItemButton onClick={handleFacilitiesClick}>
+                                {/* Facilities */}
+                                <ListItemButton onClick={handleFacilitiesClick}>
                                     <ListItemIcon>
                                         <MapsHomeWork />
                                     </ListItemIcon>
@@ -299,13 +279,13 @@ const system_setup = () => {
                                             <ListItemText primary="Facility Departments" />
                                         </ListItemButton>
 
-                                         {/* Facility Type Details */}
-                                         <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility type details'); setAddBtnLabel('facility type detail')}}>
+                                        {/* Facility Type Details */}
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility type details'); setAddBtnLabel('facility type detail')}}>
                                             <ListItemText primary="Facility Type Details" />
                                         </ListItemButton>
 
-                                         {/* Facility Type Categories */}
-                                         <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility type categories'); setAddBtnLabel('facility type category')}}>
+                                        {/* Facility Type Categories */}
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility type categories'); setAddBtnLabel('facility type category')}}>
                                             <ListItemText primary="Facility Type Categories" />
                                         </ListItemButton>
 
@@ -319,8 +299,8 @@ const system_setup = () => {
                                             <ListItemText primary="Facility Admission Status" />
                                         </ListItemButton>
 
-                                         {/*  Feedback */}
-                                         <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('feedbacks'); setAddBtnLabel('feedback')}}>
+                                        {/*  Feedback */}
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('feedbacks'); setAddBtnLabel('feedback')}}>
                                             <ListItemText primary="Feedback" />
                                         </ListItemButton>
 
@@ -329,8 +309,8 @@ const system_setup = () => {
                                             <ListItemText primary="Facility Owner Details" />
                                         </ListItemButton>
 
-                                         {/* Facility Owners Categories */}
-                                         <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility owner categories'); setAddBtnLabel('facility owner category')}}>
+                                        {/* Facility Owners Categories */}
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility owner categories'); setAddBtnLabel('facility owner category')}}>
                                             <ListItemText primary="Facility Owners Categories" />
                                         </ListItemButton>
 
@@ -339,13 +319,13 @@ const system_setup = () => {
                                             <ListItemText primary="Job Titles" />
                                         </ListItemButton>
 
-                                          {/*  Regulatory Bodies */}
-                                          <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('regulatory bodies'); setAddBtnLabel('regulatory body') }}>
+                                        {/*  Regulatory Bodies */}
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('regulatory bodies'); setAddBtnLabel('regulatory body') }}>
                                             <ListItemText primary="Regulatory Bodies" />
                                         </ListItemButton>
 
-                                         {/*  Regulatory Status */}
-                                         <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('regulatory statuses'); setAddBtnLabel('regulatory status') }}>
+                                        {/*  Regulatory Status */}
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('regulatory statuses'); setAddBtnLabel('regulatory status') }}>
                                             <ListItemText primary="Regulatory Status" />
                                         </ListItemButton>
 
@@ -372,7 +352,7 @@ const system_setup = () => {
                                         <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('CHU Rating Comments'); setAddBtnLabel('CHU Rating Comment') }}>
                                             <ListItemText primary="CHU Rating Comments" />
                                         </ListItemButton>
-                                       
+                                    
                                     </List>
                                 </Collapse>
 
@@ -391,7 +371,7 @@ const system_setup = () => {
                                         <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'document' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('Documents'); setAddBtnLabel('Document') }}>
                                             <ListItemText primary="Documents" />
                                         </ListItemButton>
-                                       
+                                    
                                     </List>
                                 </Collapse>
 
@@ -401,19 +381,16 @@ const system_setup = () => {
                         </div>
 
                         {/* Form Section */}
-                        <div className='col-span-4 w-full h-auto '>
-                        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                        <div className='col-span-4 w-full h-auto'>
+                        <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow:'0', flexDirection:'column', alignContent:'start', justifyContent:'start', backgroundColor:'#f9fafb', borderRadius:'10px'}}>
+                            <form className="flex items-center space-x-3 m-3" onSubmit={e => {e.preventDefault()}}>
+                                <TextField id="search_table_data" label="Search anything" variant="standard" />
+                                <button type= "submit" className='bg-indigo-500 rounded p-2 text-base font-semibold text-white'>Export</button>
+                            </form>
                             <TableContainer sx={{ maxHeight: 440 }}>
-                                <Table  aria-label="sticky table">
+                                <Table stickyHeader aria-label="sticky table">
                                 <TableHead>
-                                    {/* Search input */}
-                                    <TableRow>
-                                    <TableCell>
-                                        <TextField id="standard-basic" label="Search anything" variant="standard" />
-                                        <button className='bg-indigo-500 rounded p-2 text-base font-semibold ml-4 text-white'>Export</button>
-                                    </TableCell>
-                                    </TableRow>
-                                    
+                                  
                                     <TableRow>
                                     {columns.map((column) => (
                                         <TableCell
@@ -426,20 +403,30 @@ const system_setup = () => {
                                     ))}
                                     </TableRow>
                                 </TableHead>
-                                <TableBody>
+                                <TableBody sx={{paddingX: 4}}>
                                     {rows
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row) => {
                                         return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                             {columns.map((column) => {
                                             const value = row[column.id];
                                             return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                {column.format && typeof value === 'number'
-                                                    ? column.format(value)
-                                                    : value}
-                                                </TableCell>
+                                                <>
+                                                    {
+                                                    column.id === 'action' ?
+                                                        <TableCell key={column.id} align={column.align}>
+                                                            <button className='bg-indigo-500 rounded p-2 text-white font-semibold'>view</button>
+                                                        </TableCell>
+                                                        :
+                                                        <TableCell key={column.id} align={column.align}>
+                                                            {column.format && typeof value === 'number'
+                                                                ? column.format(value)
+                                                                : value}
+                                                        </TableCell>
+                                                    }
+                                                </>
+                                                
                                             );
                                             })}
                                         </TableRow>
@@ -459,12 +446,100 @@ const system_setup = () => {
                             />
                             </Paper>
                         </div>
+                        
                     </div> 
                                                                                                             
             
             </MainLayout>
   </>
   )
+}
+
+
+system_setup.getInitialProps = async (ctx) => {
+    const fetchData = (token) => {
+        
+        // if(addBtnLabel == 'ward') {
+            console.log('rows changed')
+        // }
+
+        let url = process.env.NEXT_PUBLIC_API_URL + '/common/counties/?fields=id,code,name'
+        let query = { 'searchTerm': '' }
+        if (ctx?.query?.qf) {
+            query.qf = ctx.query.qf
+        }
+
+        if (ctx?.query?.q) {
+            query.searchTerm = ctx.query.q
+            url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
+        }
+
+        // let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
+        // other_posssible_filters.map(flt => {
+        //     if (ctx?.query[flt]) {
+        //         query[flt] = ctx?.query[flt]
+        //         url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
+        //     }
+        // })
+
+        let current_url = url + '&page_size=50'
+        if (ctx?.query?.page) {
+            url = `${url}&page=${ctx.query.page}`
+        }
+    
+        return fetch(url, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }
+        }).then(r => r.json())
+            .then(json => {
+                // return fetchFilters(token).then(ft => {
+                    return {
+                        data: json, query, path: ctx.asPath || '/system_setup', current_url: current_url 
+                    }
+                // })
+            }).catch(err => {
+                console.log('Error fetching facilities: ', err)
+                return {
+                    error: true,
+                    err: err,
+                    data: [],
+                    query: {},
+                    path: ctx.asPath || '/system_setup',
+                    current_url: ''
+                }
+            })
+    }
+
+    return checkToken(ctx.req, ctx.res).then(t => {
+        if (t.error) {
+            throw new Error('Error checking token')
+        } else {
+            let token = t.token
+            return fetchData(token).then(t => t)
+        }
+    }).catch(err => {
+        console.log('Error checking token: ', err)
+        if (typeof window !== 'undefined' && window) {
+            if (ctx?.asPath) {
+                window.location.href = ctx?.asPath
+            } else {
+                window.location.href = '/system_setup'
+            }
+        }
+        setTimeout(() => {
+            return {
+                error: true,
+                err: err,
+                data: [],
+                query: {},
+                path: ctx.asPath || '/system_setup',
+                current_url: ''
+            }
+        }, 1000);
+    })
+
 }
 
 export default system_setup
