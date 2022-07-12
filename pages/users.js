@@ -5,9 +5,9 @@ import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { checkToken } from '../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { CheckBox } from '@mui/icons-material'
-
+import { SearchIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
 import Select from 'react-select'
+import moment from 'moment'
 
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 // import { Grid, GridOptions } from '@ag-grid-community/core';
@@ -31,10 +31,7 @@ const Users = (props) => {
     let qf = props?.query?.qf || 'all'
     // let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
     let [drillDown, setDrillDown] = useState({})
-   
-    let headers = [
-        "first_name","last_name", "employee_number", "email", "county_name", "last_login", "is_active",
-    ]
+
     let columnDefs= [
         {headerName: "Name", field: "name"},
         {headerName: "Employee number", field: "employee_number"},
@@ -47,22 +44,21 @@ const Users = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
-
-
+console.log(props.current_url);
     const onGridReady = (params) => {
         console.log({api: params.api});
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        console.log(props.data.results);
+        console.log(props.data);
         const lnlst=  props.data.results.map((user)=>{
             return {
                 name: user.first_name + ' '+user.last_name,
                 employee_number: user.employee_number,
                 email: user.email,
                 county_name:user.county_name,
-                last_login:user.last_login,
+                last_login: user.last_login !==null? moment(user.last_login).format('MMM Do YYYY, h:mm a') : "",
                 is_active:user.is_active == true ? "Yes" : "No"
             }
             
@@ -90,7 +86,48 @@ const Users = (props) => {
                         </div>
 
                     </div>
-                    <main className="col-span-7 md:col-span-7 flex flex-col items-center gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+                        
+                    <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+                          <div>
+                          <form
+                                className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
+                                //   action={path || "/facilities"}
+                                >
+                                <input
+                                    name="q"
+                                    id="search-input"
+                                    className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                    type="search"
+                                    // defaultValue={searchTerm}
+                                    placeholder="Search anything ...."
+                                />
+                                <button
+                                    type="submit"
+                                    className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+                                >
+                                    <SearchIcon className="w-5 h-5" />
+                                </button>
+                                <div className='text-white text-md'>
+
+                                <button className="flex items-center bg-green-700 text-white text-md justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full" onClick={() => {
+                                                let dl_url = props?.current_url
+                                                if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
+                                                console.log('Downloading CSV. ' + dl_url || '')
+                                                window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                // window.location.href = dl_url
+                                            }}
+                                            >
+                                                <DownloadIcon className="w-4 h-4 mr-1" />
+                                                <span>Export</span>
+                                </button> 
+                                </div>
+                           
+                                    
+                            </form>
+                            <h5 className="text-lg font-medium text-gray-800 float-right">
+                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
+                            </h5>
+                          </div>
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
                             {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
@@ -108,6 +145,32 @@ const Users = (props) => {
                                     />
                             </div>
                         </div>
+                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                                <li className="text-base text-gray-600">
+                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
+                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
+                                    </Link>
+                                </li>
+                                {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
+                                    <li key={page} className="text-base text-gray-600">
+                                        <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
+                                            <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
+                                        </Link>
+                                    </li>
+                                ))}
+                                <li className="text-sm text-gray-400 flex">
+                                    <DotsHorizontalIcon className="h-3" />
+                                </li>
+                                {/* {props?.data?.far_pages.map(page => (
+                                    <li key={page} className="text-base text-gray-600">
+                                        <a href={'/?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
+                                            {page}
+                                        </a>
+                                    </li>
+                                ))} */}
+
+                            </ul>}
+
                     </main>
 
 
@@ -171,7 +234,7 @@ Users.getInitialProps = async (ctx) => {
         //     }
         // })
         // let current_url = url + '&page_size=25000' //change the limit on prod
-        let current_url = url + '&page_size=50'
+        let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
             console.log({page:ctx.query.page})
             url = `${url}&page=${ctx.query.page}`
