@@ -189,6 +189,18 @@ export default function HeaderLayout({
               </Link>
             </li>
             <li className="flex-wrap font-semibold">
+              <Link href="/users">
+                <a
+                  className={
+                    (currentPath == "/users" ? activeClasses : inactiveClasses) +
+                    " text-base md:text-lg"
+                  }
+                >
+                  Users
+                </a>
+              </Link>
+            </li>
+            <li className="flex-wrap font-semibold">
               <Link href="/gis">
                 <a
                   className={
