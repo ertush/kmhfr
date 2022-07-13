@@ -1,17 +1,16 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import MainLayout from '../components/MainLayout'
+import MainLayout from '../components//MainLayout'
 import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { checkToken } from '../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
+import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
 import Select from 'react-select'
 import moment from 'moment'
 
-import { AgGridColumn, AgGridReact } from 'ag-grid-react';
-// import { Grid, GridOptions } from '@ag-grid-community/core';
-import { LicenseManager, EnterpriseCoreModule } from '@ag-grid-enterprise/core';
+import { AgGridReact } from 'ag-grid-react';
+import { LicenseManager } from '@ag-grid-enterprise/core';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -23,14 +22,7 @@ const Users = (props) => {
  
     // const { data, query, path, current_url } = props
     const router = useRouter()
- 
-    let filters = props?.filters
-    let fltrs = filters
 
-
-    let qf = props?.query?.qf || 'all'
-    // let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
-    let [drillDown, setDrillDown] = useState({})
 
     let columnDefs= [
         {headerName: "Name", field: "name"},
@@ -44,14 +36,12 @@ const Users = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
-console.log(props.current_url);
     const onGridReady = (params) => {
         console.log({api: params.api});
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        console.log(props.data);
         const lnlst=  props.data.results.map((user)=>{
             return {
                 name: user.first_name + ' '+user.last_name,
@@ -82,7 +72,18 @@ console.log(props.current_url);
                                 <a className="text-green-700" href="/">Home</a> {'>'}
                                 <span className="text-gray-500">Users</span> {'>'}
                             </div>
-                           
+                            <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                                <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+                                    <UsersIcon className='ml-2 h-5 w-5'/> 
+                                    {'Manage Users'}
+                                </h2>
+                                <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
+                                onClick={() => {router.push('/add_user')}} 
+                                >
+                                    {`Add User `}
+                                    <PlusIcon className='text-white ml-2 h-5 w-5'/>
+                                </button>
+                        </div>
                         </div>
 
                     </div>
@@ -109,7 +110,7 @@ console.log(props.current_url);
                                 </button>
                                 <div className='text-white text-md'>
 
-                                <button className="flex items-center bg-green-700 text-white text-md justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full" onClick={() => {
+                                <button className="flex items-center bg-green-600 text-white justify-start text-center font-medium active:bg-gray-200 py-2 px-1 w-full" onClick={() => {
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
@@ -194,30 +195,9 @@ console.log(props.current_url);
 
 Users.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
-    // const fetchFilters = token => {
-    //     let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
-
-    //     return fetch(filters_url, {
-    //         headers: {
-    //             'Authorization': 'Bearer ' + token,
-    //             'Accept': 'application/json'
-    //         }
-    //     }).then(r => r.json())
-    //         .then(json => {
-    //             return json
-    //         }).catch(err => {
-    //             console.log('Error fetching filters: ', err)
-    //             return {
-    //                 error: true,
-    //                 err: err,
-    //                 filters: []
-    //             }
-    //         })
-    // }
 
     const fetchData = (token) => {
-      //  api/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=true
-        let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=true'
+         let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=true'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -226,14 +206,7 @@ Users.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
-        // let other_posssible_filters = ["county"]
-        // other_posssible_filters.map(flt => {
-        //     if (ctx?.query[flt]) {
-        //         query[flt] = ctx?.query[flt]
-        //         url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
-        //     }
-        // })
-        // let current_url = url + '&page_size=25000' //change the limit on prod
+    
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
             console.log({page:ctx.query.page})
