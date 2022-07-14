@@ -4,14 +4,14 @@ import {checkToken } from "../../../controllers/auth/auth";
 export default async function filterReport(req, res) {
 
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL
+        
 
         const fetchData = (token) => {
-
+            const API_URL = process.env.NEXT_PUBLIC_API_URL
             const filterQuery = req.query.filter_query;
 
 
-            let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${filterQuery}`
+            let url = `${API_URL}/facilities/facilities/${filterQuery}`
          
             return fetch(url, {
                 headers: {
@@ -28,7 +28,7 @@ export default async function filterReport(req, res) {
                     error: true,
                     err: err,
                     filters: [],
-                    api_url:process.env.NEXT_PUBLIC_API_URL
+                    api_url:API_URL
                 }
             })
         }
@@ -57,7 +57,7 @@ export default async function filterReport(req, res) {
                     }
                     return
                 })
-                return
+                
             } catch (err) {
                 console.log("getData API error: ", err)
                 res.status(500).json({

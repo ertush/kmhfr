@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 
 // component / controllers imports
 import MainLayout from '../components/MainLayout'
 import { checkToken } from '../controllers/auth/auth';
+import useDidMountEffect from '../hooks/useDidMountEffect';
 
 // next imports
 import Head from 'next/dist/shared/lib/head'
@@ -36,7 +37,7 @@ const system_setup = (props) => {
 
     const [title, setTitle] = useState('Counties')
     const [addBtnLabel, setAddBtnLabel] = useState('County')
-
+    
     const [openAdminUnits, setOpenAdminUnits] = useState(false);
     const [openServiceCatalogue, setOpenServiceCatalogue] = useState(false);
     const [openHealthInfr, setOpenHealthInfr] = useState(false);
@@ -44,17 +45,313 @@ const system_setup = (props) => {
     const [openContacts, setOpenContacts] = useState(false);
     const [openFacilities, setOpenFacilities] = useState(false);
     const [openCHU, setOpenCHU] = useState(false);    
-    const [openDocuments, setOpenDocuments] = useState(false);  
-    const [rows, setRows] = useState(() => props?.data?.results.map(({id, name, code}) => ({id, name, code})) || [])  
-    // const [fetchData, setFetchData] = useState('')
+    const [openDocuments, setOpenDocuments] = useState(false); 
+    const [resourceCategory, setResourceCategory] = useState('');
+    const [resource, setResource] = useState(''); 
+    const [columns, setColumns] = useState([
+        { id: 'name', label: 'Name', minWidth: 100 },
+        { id: 'code', label: 'Code', minWidth: 100},
+        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+      ]);
 
-    useEffect(() => {
+    const [fields, setFields] = useState([]);
+    const [rows, setRows] = useState(Array.from(props?.data?.results, ({id, name, code}) => ({id, name, code})))  
 
-     
-    }, [rows])
+    const fetchDataCategory = async () => {
+  
+    // Fetch data
+    try{
+        const response = await fetch(`/api/system_setup/?resource=${resource}&resourceCategory=${resourceCategory}&fields=${fields.join(',')}`)
+
+        const _data = await response.json() 
+        
+        if(_data.results.length > 0){
+            // update columns
+            switch(resourceCategory){
+              case 'AdminUnits':
+                    switch(resource){
+                        case 'wards':
+                            setColumns([
+                                { id: 'name', label: 'Name', minWidth: 100 },
+                                { id: 'code', label: 'Code', minWidth: 100},
+                                { id: 'sub_county_name', label: 'Sub-county', minWidth: 100},
+                                { id: 'constituency_name', label: 'Constituency', minWidth: 100},
+                                { id: 'county_name', label: 'County', minWidth: 100},
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                              ])
+
+                              setRows(Array.from(_data.results, ({id, name, code, sub_county_name, constituency_name, county_name}) => ({id, name, code, sub_county_name, constituency_name, county_name})))
+
+                              break;
+                        case 'towns':
+                            setColumns([
+                                { id: 'name', label: 'Name', minWidth: 100 },
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                              ])
+                                
+                              setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                              break;
+                        default:
+                            setColumns([
+                                { id: 'name', label: 'Name', minWidth: 100 },
+                                { id: 'code', label: 'Code', minWidth: 100},
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                              ])
+                
+                            setRows(Array.from(_data.results, ({id, name, code}) => ({id, name, code})))
+                    }
+                    
+                  break;
+              case 'ServiceCatalogue':
+                  setColumns([
+                      { id: 'name', label: 'Name', minWidth: 100 },
+                      { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                  ])
+      
+                  setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                  
+                  break;
+              case 'HealthInfrastructure':
+                  if(resource === 'infrastructure'){
+                    setColumns([
+                        { id: 'name', label: 'Name', minWidth: 100 },
+                        { id: 'category_name', label: 'Category', minWidth: 100 },
+                        { id: 'numbers', label: 'Tracking numbers?', minWidth: 100, format: 'boolean' },
+                        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                    ])
+                    
+                    console.log({data: _data.results});
+                    setRows(Array.from(_data.results, ({id, name, category_name, numbers}) => ({id, name, category_name, numbers})))
+                  }
+                  else{
+                    setColumns([
+                        { id: 'name', label: 'Name', minWidth: 100 },
+                        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                    ])
+                    
+                    setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                  }
+                 
+                  break;
+              case 'HR':
+                  setColumns([
+                      { id: 'name', label: 'Name', minWidth: 100 },
+                      { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                  ])
+      
+                  setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                  
+                  break;
+              case 'Contacts':
+                  setColumns([
+                      { id: 'num', label: '#', minWidth: 100 },
+                      { id: 'name', label: 'Name', minWidth: 100 },
+                      { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                  ])
+      
+                  setRows(Array.from(_data.results, ({id, name}, i) => ({id, num:i+1, name})))
+                  
+                  break;
+              case 'Facilities':
+                  switch(resource){
+                        case 'facility_depts':
+                            setColumns([
+                                { id: 'name', label: 'Name', minWidth: 100 },
+                                { id: 'description', label: 'Description', minWidth: 100 },
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                            ])
+                            
+                            console.log({data:_data.results})
+
+                            setRows(Array.from(_data.results, ({id, name, description}) => ({id, name, description})))
+                            break;
+
+                        case 'facility_types':
+                            
+                            switch(addBtnLabel){
+
+                                case 'facility type detail':
+                                    setColumns([    
+                                        { id: 'name', label: 'Facility Type', minWidth: 100 },
+                                        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                                    ])
+                                    
+                                    // console.log({data:_data.results})
+                                    setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                                    break;
+
+                                case 'facility type category':
+                                    setColumns([
+                                        { id: 'name', label: 'Facility Type Details', minWidth: 100 },
+                                        { id: 'sub_division', label: 'Facility Type', minWidth: 100 },
+                                        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                                    ])
+
+                                    // console.log({data:_data.results})
+                                    setRows(Array.from(_data.results, ({id, name, sub_division}) => ({id, name, sub_division})))
+                                    break;  
+
+                            }
+                           
+                            break;
+
+                        case 'facility_operation_status':
+                            setColumns([    
+                                { id: 'name', label: 'Facility Status', minWidth: 100 },
+                                { id: 'is_public_visible', label: 'Public Visible', minWidth: 100 },
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                            ])
+                            
+                            console.log({data:_data.results})
+
+                            setRows(Array.from(_data.results, ({id, name, is_public_visible}) => ({id, name, is_public_visible:is_public_visible ? 'Yes' : 'No'})))
+
+                            break;
+                        
+                        case 'facility_admission_status':
+                            setColumns([
+                                { id: 'name', label: 'Facility Admission Status', minWidth: 100 },
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                            ])
+                            
+                            console.log({data:_data.results})
+
+                            setRows(Array.from(_data.results, ({id, name, is_public_visible}) => ({id, name, is_public_visible:is_public_visible ? 'Yes' : 'No'})))
+                            break;
+
+                        case 'facility_service_ratings':
+                            setColumns([
+                                { id: 'facility_name', label: 'Facility', minWidth: 100 },
+                                { id: 'service_name', label: 'Service', minWidth: 100 },
+                                { id: 'comment', label: 'Comment', minWidth: 100 },
+                                { id: 'rating', label: 'Rating', minWidth: 100 },
+                                { id: 'created', label: 'Date', minWidth: 100 },
+                                
+                            ])
+                            // console.log({data:_data.results})
+
+                            setRows(Array.from(_data.results, ({id, facility_name, service_name, comment, rating, date}) => ({id, facility_name, service_name, comment, rating, date})))
+                            break;
+
+                        case 'owner_types':
+    
+                            setColumns([
+                                { id: 'name', label: 'Name', minWidth: 100 },
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                            ])
+                            
+                            setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                            
+                            break;
+
+                        case 'owners':
+
+                            setColumns([
+                                { id: 'code', label: 'Code', minWidth: 100 },
+                                { id: 'name', label: 'Name', minWidth: 100 },
+                                { id: 'abbreviation', label: 'Abbreviation', minWidth: 100 },
+                                { id: 'owner_type_name',label: 'Owner Type',minWidth: 100},
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                            ])
+                            
+                            setRows(Array.from(_data.results, ({id, code, name, abbreviation, owner_type_name}) => ({id, code, name, abbreviation, owner_type_name})))
+                            
+                            break;
+
+                        
+                        case 'job_titles':
+
+                            setColumns([
+                                { id: 'name', label: 'Name', minWidth: 100 },
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                            ])
+                            
+                            setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                            
+                            break;
+                        
+                        case 'regulating_bodies':
+
+                            setColumns([
+                                { id: 'name', label: 'Name', minWidth: 100 },
+                                { id: 'abbreviation', label: 'Abbreviation', minWidth: 100 },
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                            ])
+                            
+                            setRows(Array.from(_data.results, ({id, abbreviation, name}) => ({id, abbreviation, name})))
+                            
+                            break;
+
+                        case 'regulation_status':
+
+                            setColumns([
+                                { id: 'name', label: 'Name', minWidth: 100 },
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                            ])
+                            
+                            setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                            
+                            break;
+
+                        case 'level_change_reasons':
+
+                            setColumns([
+                                { id: 'reason', label: 'Change Reason', minWidth: 100 },
+                                { id: 'description',label: 'Description', minWidth: 100, align:'right'}
+                            ])
+                            
+                            setRows(Array.from(_data.results, ({id, reason, description}) => ({id, reason, description})))
+                            
+                            break;
+
+                        default:
+                            break;
+
+                  }
+
+                  break;
+                 
+              case 'CHU':
+                  setColumns([
+                      { id: 'facility_name', label: 'Facility', minWidth: 100 },
+                      { id: 'chu_name', label: 'CHU', minWidth: 100 },
+                      { id: 'comment', label: 'Comment', minWidth: 100 },
+                      { id: 'rating', label: 'Rating', minWidth: 100 },
+                      { id: 'created',label: 'Date',minWidth: 100, align:'right'}
+                  ])
+                  
+                  setRows(Array.from(_data.results, ({id, facility_name, chu_name, comment, rating, date}) => ({id, facility_name, chu_name, comment, rating, date})))
+                  break;
+
+              case 'Documents':
+      
+                  setColumns([
+                      { id: 'name', label: 'Name', minWidth: 100 },
+                      { id: 'description', label: 'Description', minWidth: 100 },
+                      { id: 'fyl', label: 'Link', minWidth: 100,  link: true },
+                      { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                  ])
+                  
+                  setRows(Array.from(_data.results, ({id, name, description, fyl}) => ({id, name, description, fyl})))
+               
+                  break;
+
+          
+      
+           }
+          }
+      
+
+    } catch (e){
+        console.error(e.message);
+    }
+
+   
+}
+
+    useDidMountEffect(fetchDataCategory, [resource])
 
     const handleAdminUnitsClick = () => {
-        setTitle('Admin')
         setOpenAdminUnits(!openAdminUnits);
       };
 
@@ -98,21 +395,8 @@ const system_setup = (props) => {
       setPage(0);
     };
 
-    const fetchDataCategory = () => {
-        if(addBtnLabel == "Counties"){
-            setAff
-        }
-    }
-
-
-    const columns = [
-        { id: 'name', label: 'Name', minWidth: 170 },
-        { id: 'code', label: 'Code', minWidth: 100},
-        { id: 'action',label: 'Action',minWidth: 170, align:'right'}
-      ];
-      
-
-      
+   
+   
   return (
   <>
             <Head>
@@ -159,19 +443,19 @@ const system_setup = (props) => {
                                 <Collapse in={openAdminUnits} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {/* Counties */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('Counties'); setAddBtnLabel('County');}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county');}}>
                                             <ListItemText primary="Counties" />
                                         </ListItemButton>
                                         {/* Constituencies */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('constituencies'); setAddBtnLabel('constituency')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'code']); setResource('constituencies'); setResourceCategory('AdminUnits'); setTitle('constituencies'); setAddBtnLabel('constituency')}}>
                                             <ListItemText primary="Constituencies"/>
                                         </ListItemButton>
                                         {/* Wards */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('wards'); setAddBtnLabel('ward'), setRows([])}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'code', 'county_name', 'constituency_name', 'sub_county_name, county']); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward')}}>
                                             <ListItemText primary="Wards" />
                                         </ListItemButton>
                                         {/* Towns */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'town' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('towns'); setAddBtnLabel('town')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'town' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'ward_name']); setResource('towns'); setResourceCategory('AdminUnits'); setTitle('towns'); setAddBtnLabel('town')}}>
                                             <ListItemText primary="Towns" />
                                         </ListItemButton>
                                     </List>
@@ -188,15 +472,15 @@ const system_setup = (props) => {
                                 <Collapse in={openServiceCatalogue} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {/* Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('categories'); setAddBtnLabel('category')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('categories'); setAddBtnLabel('category')}}>
                                             <ListItemText primary="Categories" />
                                         </ListItemButton>
                                         {/* Option groups */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('option groups'); setAddBtnLabel('option group')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name']); setResource('option_groups'); setResourceCategory('ServiceCatalogue'); setTitle('option groups'); setAddBtnLabel('option group')}}>
                                             <ListItemText primary="Option Groups" />
                                         </ListItemButton>
                                         {/* Services */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'service' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('services'); setAddBtnLabel('service')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'service' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'code', 'abbreviation', 'category_name']); setResource('services'); setResourceCategory('ServiceCatalogue'); setTitle('services'); setAddBtnLabel('service')}}>
                                             <ListItemText primary="Services" />
                                         </ListItemButton>
                                     
@@ -214,11 +498,11 @@ const system_setup = (props) => {
                                 <Collapse in={openHealthInfr} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {/* Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('categories'); setAddBtnLabel('category')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('categories'); setAddBtnLabel('category')}}>
                                             <ListItemText primary="Categories" />
                                         </ListItemButton>
                                         {/* Infrastructure */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('infrastructures'); setAddBtnLabel('infrastructure')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure')}}>
                                             <ListItemText primary="Infrastructure" />
                                         </ListItemButton>
                                     </List>
@@ -235,11 +519,11 @@ const system_setup = (props) => {
                                 <Collapse in={openHR} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {/* HR Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'hr category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('HR Categories'); setAddBtnLabel('hr category')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'hr category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'description']); setResource('speciality_categories'); setResourceCategory('HR'); setTitle('HR Categories'); setAddBtnLabel('hr category')}}>
                                             <ListItemText primary="HR Categories" />
                                         </ListItemButton>
                                         {/* Specialities */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('specialties'); setAddBtnLabel('specialty')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'category_name']); setResource('specialities'); setResourceCategory('HR'); setTitle('specialities'); setAddBtnLabel('specialty')}}>
                                             <ListItemText primary="Specialities" />
                                         </ListItemButton>
                                     </List>
@@ -256,7 +540,7 @@ const system_setup = (props) => {
                                 <Collapse in={openContacts} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {/* HR Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('contact types'); setAddBtnLabel('contact type')}}>
+                                        <ListItemButton sx={{ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type')}}>
                                             <ListItemText primary="Contact Type" />
                                         </ListItemButton>
                                     
@@ -275,62 +559,62 @@ const system_setup = (props) => {
                                     
                                     <List component="div" disablePadding>
                                         {/* Facility Departments */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility departments'); setAddBtnLabel('facility department')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('facility_depts'); setResourceCategory('Facilities'); setTitle('facility departments'); setAddBtnLabel('facility department')}}>
                                             <ListItemText primary="Facility Departments" />
                                         </ListItemButton>
 
                                         {/* Facility Type Details */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility type details'); setAddBtnLabel('facility type detail')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'sub_division&is_parent=true']); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type details'); setAddBtnLabel('facility type detail')}}>
                                             <ListItemText primary="Facility Type Details" />
                                         </ListItemButton>
 
                                         {/* Facility Type Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility type categories'); setAddBtnLabel('facility type category')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'sub_division&is_parent=false']); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type categories'); setAddBtnLabel('facility type category')}}>
                                             <ListItemText primary="Facility Type Categories" />
                                         </ListItemButton>
 
                                         {/* Facility Operation Status */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility operation statuses'); setAddBtnLabel('facility operation status')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('facility_status'); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status')}}>
                                             <ListItemText primary="Facility Operation Status" />
                                         </ListItemButton>
 
                                         {/*  Facility Admission Status */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility admission statuses'); setAddBtnLabel('facility admission status')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('facility_admission_status'); setResourceCategory('Facilities'); setTitle('facility admission statuses'); setAddBtnLabel('facility admission status')}}>
                                             <ListItemText primary="Facility Admission Status" />
                                         </ListItemButton>
 
                                         {/*  Feedback */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('feedbacks'); setAddBtnLabel('feedback')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('facility_service_ratings'); setResourceCategory('Facilities'); setTitle('feedbacks'); setAddBtnLabel('feedback')}}>
                                             <ListItemText primary="Feedback" />
                                         </ListItemButton>
 
                                         {/*  Facility Owner Details */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility owner details'); setAddBtnLabel('facility owner detail')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id', 'name']); setResource('owner_types'); setResourceCategory('Facilities'); setTitle('facility owner details'); setAddBtnLabel('facility owner detail')}}>
                                             <ListItemText primary="Facility Owner Details" />
                                         </ListItemButton>
 
                                         {/* Facility Owners Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('facility owner categories'); setAddBtnLabel('facility owner category')}}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'code', 'abbreviation', 'owner_type_name']); setResource('owners'); setResourceCategory('Facilities'); setTitle('facility owner categories'); setAddBtnLabel('facility owner category')}}>
                                             <ListItemText primary="Facility Owners Categories" />
                                         </ListItemButton>
 
                                         {/*  Job Titles */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('job titles'); setAddBtnLabel('job title') }}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name']); setResource('job_titles'); setResourceCategory('Facilities'); setTitle('job titles'); setAddBtnLabel('job title') }}>
                                             <ListItemText primary="Job Titles" />
                                         </ListItemButton>
 
                                         {/*  Regulatory Bodies */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('regulatory bodies'); setAddBtnLabel('regulatory body') }}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'abbreviation', 'regulatory_body_type_name', 'regulation_verb']); setResource('regulating_bodies'); setResourceCategory('Facilities'); setTitle('regulatory bodies'); setAddBtnLabel('regulatory body') }}>
                                             <ListItemText primary="Regulatory Bodies" />
                                         </ListItemButton>
 
                                         {/*  Regulatory Status */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('regulatory statuses'); setAddBtnLabel('regulatory status') }}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('regulation_status'); setResourceCategory('Facilities'); setTitle('regulatory statuses'); setAddBtnLabel('regulatory status') }}>
                                             <ListItemText primary="Regulatory Status" />
                                         </ListItemButton>
 
                                         {/*  Upgrade Reason */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason') }}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','reason', 'description']); setResource('level_change_reasons'); setResourceCategory('Facilities'); setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason') }}>
                                             <ListItemText primary="Upgrade Reason" />
                                         </ListItemButton>
 
@@ -349,7 +633,7 @@ const system_setup = (props) => {
                                 <Collapse in={openCHU} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
                                         {/* CHU Rating Comments */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('CHU Rating Comments'); setAddBtnLabel('CHU Rating Comment') }}>
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('chu_ratings'); setResourceCategory('CHU'); setTitle('CHU Rating Comments'); setAddBtnLabel('CHU Rating Comment') }}>
                                             <ListItemText primary="CHU Rating Comments" />
                                         </ListItemButton>
                                     
@@ -367,8 +651,8 @@ const system_setup = (props) => {
                                 </ListItemButton>
                                 <Collapse in={openDocuments} timeout="auto" unmountOnExit>
                                     <List component="div" disablePadding>
-                                        {/* CHU Rating Comments */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'document' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setTitle('Documents'); setAddBtnLabel('Document') }}>
+                                        {/* Documents */}
+                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'document' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'description','fyl','document_type']); setResource('documents'); setResourceCategory('Documents'); setTitle('Documents'); setAddBtnLabel('Document') }}>
                                             <ListItemText primary="Documents" />
                                         </ListItemButton>
                                     
@@ -392,9 +676,9 @@ const system_setup = (props) => {
                                 <TableHead>
                                   
                                     <TableRow>
-                                    {columns.map((column) => (
+                                    {columns.map((column,i) => (
                                         <TableCell
-                                        key={column.id}
+                                        key={i}
                                         align={column.align}
                                         style={{ minWidth: column.minWidth, fontWeight:600 }}
                                         >
@@ -409,23 +693,26 @@ const system_setup = (props) => {
                                     .map((row) => {
                                         return (
                                         <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                            {columns.map((column) => {
+                                            {columns.map((column, i) => {
                                             const value = row[column.id];
                                             return (
-                                                <>
+                                                <TableCell key={column.id} align={column.align}>
                                                     {
                                                     column.id === 'action' ?
-                                                        <TableCell key={column.id} align={column.align}>
-                                                            <button className='bg-indigo-500 rounded p-2 text-white font-semibold'>view</button>
-                                                        </TableCell>
+                                                        
+                                                            <button className='bg-indigo-500 rounded p-2 text-white font-semibold'>{
+                                                                resourceCategory === "HealthInfrastructure" || resourceCategory === "HR" ?
+                                                                'Edit' : 'View'
+                                                            }</button>
+                                                        
                                                         :
-                                                        <TableCell key={column.id} align={column.align}>
-                                                            {column.format && typeof value === 'number'
-                                                                ? column.format(value)
-                                                                : value}
-                                                        </TableCell>
+                                                            column.format && typeof value === 'boolean'
+                                                                ? value.toString()
+                                                                :  column.format && typeof value === 'number'
+                                                                ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+                                                       
                                                     }
-                                                </>
+                                                </TableCell>
                                                 
                                             );
                                             })}
@@ -459,9 +746,6 @@ const system_setup = (props) => {
 system_setup.getInitialProps = async (ctx) => {
     const fetchData = (token) => {
         
-        // if(addBtnLabel == 'ward') {
-            console.log('rows changed')
-        // }
 
         let url = process.env.NEXT_PUBLIC_API_URL + '/common/counties/?fields=id,code,name'
         let query = { 'searchTerm': '' }
@@ -474,13 +758,7 @@ system_setup.getInitialProps = async (ctx) => {
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
 
-        // let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
-        // other_posssible_filters.map(flt => {
-        //     if (ctx?.query[flt]) {
-        //         query[flt] = ctx?.query[flt]
-        //         url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
-        //     }
-        // })
+       
 
         let current_url = url + '&page_size=50'
         if (ctx?.query?.page) {
