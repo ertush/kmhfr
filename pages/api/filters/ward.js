@@ -4,8 +4,6 @@ import { checkToken } from "../../../controllers/auth/auth";
 export default async function getWards(req, res) {
 
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL
-
         const fetchData = (token) => {
             let url = `${process.env.NEXT_PUBLIC_API_URL}/common/wards/?constituency=${req.query.constituency}`
          
