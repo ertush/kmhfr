@@ -11,21 +11,88 @@ import Select from 'react-select';
 const AddUser=(props)=> {
 
     const [formId, setFormId] = useState(0)
-    const [jobs, setJobs]=useState([])
 	const [contactList, setContactList]=useState([{contactType: "", contactDetails: ""}])
-	const [groupList, setGroupList]=useState([{group: ""}])
+	const [subCountyOptions, setSubCountyOptions] = useState([])
+
+	let jobs = props?.data?.results
+	let contact_types = props?.filters[0].params.results
+	let groups = props?.filters[1].params.results
+	let counties = props?.filters[2].params.results
+	let regbodies = props?.filters[3].params.results
+
+	const [userData, setUserData]=useState({
+		first_name:      {name: "first_name" ,         value: null },
+		last_name:       {name: "last_name" ,          value: null },
+		other_names:     {name: "other_names",         value: null },
+		email:           {name: "email",               value: null },
+		employee_number: {name: "employee_number",     value: null },
+		job_title:       {name: "job_title", 		   value: null },
+		password:        {name: "password",            value: null },
+		contact_type:    {name: "contact_type",        value: null },
+		contact_details: {name: "contact_details",     value: null },
+		group:           {name: "group",               value: [] },
+		county:          {name: "county",              value: [] },
+		sub_county:      {name: "sub_county",          value: [] },
+		regulatory_body: {name: "regulatory_body",     value: [] } 
+	})
 
 	const handleAddClick = () => {
 		setContactList([...contactList, { contactType: "", contactDetails: "" }]);
 	};
-	const handleAddGroup = () => {
-		setGroupList([...groupList, { group: "" }]);
-	};
 
+	const handleOnChange =(val)=>{
+		console.log(val);
+		if (val.target && val.target != undefined && val.target != null) {
+            const newObj = {}
+            newObj[val.target.name] = {}
+            newObj[val.target.name].name = val.target.name
+            newObj[val.target.name].value = val.target.value
+            setUserData({ ...userData, ...newObj })
+        }else if(val?.group){
+			const newObj2={}
+				newObj2['group'] = {}
+				newObj2['group'].name = "group"
+				newObj2['group'].value = val.group
+		    	setUserData({ ...userData, ...newObj2 })
+		}else if(val?.regulatory_body){
+			const newObj3={}
+				newObj3['regulatory_body'] = {}
+				newObj3['regulatory_body'].name = "regulatory_body"
+				newObj3['regulatory_body'].value = val.regulatory_body
+		    	setUserData({ ...userData, ...newObj3 })
+		}
+		else {
+            const newObj1 = {}
+            newObj1[val.name] = {}
+            newObj1[val.name].name = val.name
+            newObj1[val.name].value = val.value
+            setUserData({ ...userData, ...newObj1 })
+        }
+	}
+
+	const selectedGroups = userData.group.value.map((ft)=>{
+		return{ id: ft.value}
+	})
+
+	console.log(userData);
+	console.log(selectedGroups);
+	const handleSubCounties =  async (ev)=>{
+		const optionsSubCounty = []
+		for(var i=0;i<ev.length;i++) {
+			const dataSubCounties = await fetch(`/api/filters/subcounty/?county=${ev[i].value}`)
+			.then(r=>r.json()).then(r => {
+				r.results.forEach((t,i) => {
+					optionsSubCounty.push({value: t.id, label: t.name})
+				})
+				
+			})
+		}
+		setSubCountyOptions(optionsSubCounty)
+	}
 	const handleBasicDetailsSubmit =()=>{
 
 	}
-console.log(props);
+// console.log(props);
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
         <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
@@ -89,6 +156,13 @@ console.log(props);
 																required
 																type='text'
 																name='first_name'
+																onChange={ev => {
+																	// console.log(ev);
+																	handleOnChange(
+																		ev
+																	)
+																}}
+																value={userData['first_name']?.value || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -107,6 +181,12 @@ console.log(props);
 																required
 																type='text'
 																name='last_name'
+																onChange={ev => {
+																	handleOnChange(
+																		ev
+																	)
+																}}
+																value={userData['last_name']?.value || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -125,6 +205,12 @@ console.log(props);
 																required
 																type='text'
 																name='other_names'
+																onChange={ev => {
+																	handleOnChange(
+																		ev
+																	)
+																}}
+																value={userData['other_names']?.value || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -144,6 +230,12 @@ console.log(props);
 																required
 																type='email'
 																name='email'
+																onChange={ev => {
+																	handleOnChange(
+																		ev
+																	)
+																}}
+																value={userData['email']?.value || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -163,6 +255,12 @@ console.log(props);
 																required
 																type='text'
 																name='employee_number'
+																onChange={ev => {
+																	handleOnChange(
+																		ev
+																	)
+																}}
+																value={userData['employee_number']?.value || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -180,7 +278,7 @@ console.log(props);
 															</label>
 															<Select
 																options={
-																	Array.from(props?.data?.results || [],
+																	Array.from(jobs || [],
 																		fltopt => {
 																			return {
 																				value: fltopt.id, label: fltopt.name
@@ -189,7 +287,12 @@ console.log(props);
 																}
 																required
 																placeholder='Select job title..'
-																onChange={() => console.log('changed')}
+																onChange={ev => {
+																	handleOnChange(
+																		ev
+																	)
+																}}
+																value={userData['job_title']?.value || ''}
 																name='job_title'
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															/>
@@ -210,6 +313,14 @@ console.log(props);
 																required
 																type='text'
 																name='password'
+																onChange={ev => {
+																
+																	handleOnChange(
+																		ev
+																	)
+																}}
+																value={userData['password']?.value || ''}
+
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -227,7 +338,7 @@ console.log(props);
 															<input
 																required
 																type='text'
-																name='password'
+																name='conf_password'
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -238,7 +349,7 @@ console.log(props);
 															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 																Contacts
 															</h4>
-															{contactList.length -1 > 0?  contactList.map((x,i)=>{
+															{contactList.length > 1?  contactList.map((x,i)=>{
 																return <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<label
@@ -250,12 +361,27 @@ console.log(props);
 																			*
 																		</span>
 																	</label>	
-																	<input
+																	<Select
+																		options={
+																			Array.from(contact_types || [],
+																				fltopt => {
+																					return {
+																						value: fltopt.id, label: fltopt.name
+																					}
+																				})
+																		}
+																		
 																		required
-																		type='text'
+																		placeholder='Select contact type..'
+																		// value={x.contactType}
+																		onChange={ev => {
+																			handleOnChange(
+																				ev
+																			)
+																		}}
+																		value={userData['contact_type']?.value || ''}
 																		name='contact_type'
-																		value={x.contactType}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																		className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																	/>
 																</div>	
 																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
@@ -272,7 +398,13 @@ console.log(props);
 																		required
 																		type='text'
 																		name='contact_details'
-																		value={x.contactDetails}
+																		// value={x.contactDetails}
+																		onChange={ev => {
+																			handleOnChange(
+																				ev
+																			)
+																		}}
+																		value={userData['contact_details']?.value || ''}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -298,34 +430,152 @@ console.log(props);
 															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 																Group
 															</h4>
-															{groupList.length -1 > 0?  groupList.map((x,i)=>{
-																return <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+															 <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
-																	
-																	<input
-																		required
-																		type='text'
-																		name='group'
-																		value={x.group}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
+																<Select
+																options={
+																	Array.from(groups || [],
+																		fltopt => {
+																			return {
+																				value: fltopt.id, label: fltopt.name
+																			}
+																		})
+																}
+																required
+																isMulti
+																placeholder='Select group(s)'
+																name='group'
+																onChange={ev => {
+																	handleOnChange(
+																		{
+																			group:ev
+																		}
+																	)
+																}}
+																value={userData['group']?.value.map((value) => ({ 
+																	value: value.value,
+																	label: value.label 
+																  })) || ''}
+																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+															    />
 																</div>	
 																
 														    </div>
-															})
-															: <h4> No Groups Assigned to User</h4>
-															}
-														</div>
-														<div class="sticky top-0 right-10 w-full flex justify-end">
-															<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
-																onClick={() => {handleAddGroup()}} 
-																>
-																	{`Add Group`}
-																	<PlusIcon className='text-white ml-2 h-5 w-5'/>
-															</button>
-
+														
 														</div>
 
+														{selectedGroups.map((grp)=>{
+															return (
+																<>
+																{(()=>{
+																	if(grp.id==1 || grp.id== 12|| grp.id ==2){
+																		return(
+																			// Administrative area 
+																		<div className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
+																			<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+																				Administrative Areas
+																			</h4>
+																			<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+																				<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
+																					
+																					<Select
+																					options={
+																						Array.from(counties || [],
+																							fltopt => {
+																								return {
+																									value: fltopt.id, label: fltopt.name
+																								}
+																							})
+																					}
+																					isMulti
+																					required
+																					placeholder='Select county..'
+																					onChange={ev => {
+																						handleSubCounties(ev)
+																						handleOnChange(
+																							ev
+																						)
+																					}}
+																					value={userData['county']?.value || ''}
+																					name='county'
+																					className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																					/>
+																					<Select
+																					options={
+																						Array.from(subCountyOptions || [],
+																							fltopt => {
+																								return {
+																									value: fltopt.value, label: fltopt.label
+																								}
+																							})
+																					}
+																					isMulti
+																					required
+																					placeholder='Select a sub county..'
+																					onChange={ev => {
+																						handleOnChange(
+																							ev
+																						)
+																					}}
+																					value={userData['subcounty']?.value || ''}
+																					name='subcounty'
+																					className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																					/>
+																				</div>	
+																				
+																			</div>
+																			
+																		</div>)
+																	} 
+																	else if(grp.id==3){
+																		return (
+																			//  Regulatory body 
+																			<div className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
+																				<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+																					Regulatory Body
+																				</h4>
+																				<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+																					<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
+																						
+																						<Select
+																						options={
+																							Array.from(regbodies || [],
+																								fltopt => {
+																									return {
+																										value: fltopt.id, label: fltopt.name
+																									}
+																								})
+																						}
+																						isMulti
+																						required
+																						placeholder='Select regulatory body(s)'
+																						onChange={ev => {
+																							handleOnChange({
+																								regulatory_body: ev
+																							})
+																						}}
+																						value={userData['regulatory_body']?.value.map((value) => ({ 
+																							value: value.value,
+																							label: value.label 
+																						  })) || ''}
+																						name='regulatory_body'
+																						className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																						/>
+																					</div>	
+																					
+																				</div>
+																				
+																			</div>
+																		)
+																	}
+																	else {
+																		return null
+																	}
+																})()}
+																</>
+															)	
+														})}
+ 
 														{/* Cancel & Save */}
 														<div className='flex justify-between items-center w-full'>
 															<button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
@@ -377,7 +627,28 @@ console.log(props);
 
 AddUser.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL
-	const fetchFilters = token => {
+	//groups counties/?page_size=500&ordering=name
+	const fetchGroups = token => {
+        let filters_url = API_URL + '/users/groups?ordering=name&page_size=100'
+        return fetch(filters_url, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }
+        }).then(r => r.json())
+            .then(json => {
+                return json
+            }).catch(err => {
+                console.log('Error fetching groups: ', err)
+                return {
+                    error: true,
+                    err: err,
+                    filters: []
+                }
+            })
+    }
+	//contact types
+	const fetchContactType = token => {
         let filters_url = API_URL + '/common/contact_types/?fields=id,name'
         return fetch(filters_url, {
             headers: {
@@ -396,8 +667,58 @@ AddUser.getInitialProps = async (ctx) => {
                 }
             })
     }
-	const fetchData = (token) => {
+	// counties 
+	const fetchCounties = token => {
+        let filters_url = API_URL + '/common/counties/?page_size=500&ordering=name'
+        return fetch(filters_url, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }
+        }).then(r => r.json())
+            .then(json => {
+                return json
+            }).catch(err => {
+                console.log('Error fetching counties: ', err)
+                return {
+                    error: true,
+                    err: err,
+                    filters: []
+                }
+            })
+    } 
+
+	// counties 
+	const fetchRegulatingBodies = token => {
+		let filters_url = API_URL + '/facilities/regulating_bodies/'
+		return fetch(filters_url, {
+			headers: {
+				'Authorization': 'Bearer ' + token,
+				'Accept': 'application/json'
+			}
+		}).then(r => r.json())
+			.then(json => {
+				return json
+			}).catch(err => {
+				console.log('Error fetching regulating bodies: ', err)
+				return {
+					error: true,
+					err: err,
+					filters: []
+				}
+			})
+	}
+
+	//job titles
+	const fetchData = async (token) => {
 		 let url = API_URL + '/facilities/job_titles/'
+		 const all = await Promise.all([
+			fetchContactType(token),
+			fetchGroups(token),
+			fetchCounties(token),
+			fetchRegulatingBodies(token)
+		  ]);
+		  const paths = all.map(a => ({params: a}))
 		  let query = { 'searchTerm': '' }
 		  if (ctx?.query?.qf) {
 			  query.qf = ctx.query.qf
@@ -420,12 +741,9 @@ AddUser.getInitialProps = async (ctx) => {
 			  }
 		  }).then(r => r.json())
 			  .then(json => {
-				return fetchFilters(token).then(ft=>{
-
 					return {
-						data: json, query, token, filters: { ...ft }, path: ctx.asPath || '/add_user', current_url: current_url 
+						data: json, query, token, filters: { ...paths }, path: ctx.asPath || '/add_user', current_url: current_url 
 					}
-				})
 				  
 			  }).catch(err => {
 				  console.log('Error fetching job titles: ', err)
