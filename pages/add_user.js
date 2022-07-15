@@ -11,13 +11,14 @@ import Select from 'react-select';
 const AddUser=(props)=> {
 
     const [formId, setFormId] = useState(0)
-	const [contactList, setContactList]=useState([{contactType: "", contactDetails: ""}])
+	const [contactList, setContactList]=useState([{contactType: "", id: 1, contactDetails: ""}])
 	const [subCountyOptions, setSubCountyOptions] = useState([])
 
 	let jobs = props?.data?.results
 	let contact_types = props?.filters[0].params.results
 	let groups = props?.filters[1].params.results
 	let counties = props?.filters[2].params.results
+	let sub_counties = props?.filters[4].params.results
 	let regbodies = props?.filters[3].params.results
 
 	const [userData, setUserData]=useState({
@@ -37,11 +38,13 @@ const AddUser=(props)=> {
 	})
 
 	const handleAddClick = () => {
-		setContactList([...contactList, { contactType: "", contactDetails: "" }]);
+		setContactList(s=>{
+			return [...s, {contactType: "", contactDetails: ""}]
+		})
 	};
 
 	const handleOnChange =(val)=>{
-		console.log(val);
+		// console.log(val);
 		if (val.target && val.target != undefined && val.target != null) {
             const newObj = {}
             newObj[val.target.name] = {}
@@ -50,22 +53,34 @@ const AddUser=(props)=> {
             setUserData({ ...userData, ...newObj })
         }else if(val?.group){
 			const newObj2={}
-				newObj2['group'] = {}
-				newObj2['group'].name = "group"
-				newObj2['group'].value = val.group
-		    	setUserData({ ...userData, ...newObj2 })
+			newObj2['group'] = {}
+			newObj2['group'].name = "group"
+			newObj2['group'].value = val.group.map((id)=>{return {value: id.value}})
+			setUserData({ ...userData, ...newObj2 })
 		}else if(val?.regulatory_body){
 			const newObj3={}
-				newObj3['regulatory_body'] = {}
-				newObj3['regulatory_body'].name = "regulatory_body"
-				newObj3['regulatory_body'].value = val.regulatory_body
-		    	setUserData({ ...userData, ...newObj3 })
+			newObj3['regulatory_body'] = {}
+			newObj3['regulatory_body'].name = "regulatory_body"
+			newObj3['regulatory_body'].value = val.regulatory_body.map((id)=>{return {value: id.value}})
+			setUserData({ ...userData, ...newObj3 })
+		}else if(val?.county){
+			const newObj4={}
+			newObj4['county'] = {}
+			newObj4['county'].name = "county"
+			newObj4['county'].value = val.county.map((id)=>{return {value: id.value}})
+			setUserData({ ...userData, ...newObj4 })
+		}else if(val?.subcounty){
+			const newObj5={}
+			newObj5['sub_county'] = {}
+			newObj5['sub_county'].name = "sub_county"
+			newObj5['sub_county'].value = val.subcounty.map((id)=>{return {value: id.value}})
+			setUserData({ ...userData, ...newObj5 })
 		}
 		else {
             const newObj1 = {}
             newObj1[val.name] = {}
             newObj1[val.name].name = val.name
-            newObj1[val.name].value = val.value
+            newObj1[val.name].value = [{value: val.value.value}]
             setUserData({ ...userData, ...newObj1 })
         }
 	}
@@ -75,24 +90,28 @@ const AddUser=(props)=> {
 	})
 
 	console.log(userData);
-	console.log(selectedGroups);
+	// console.log(selectedGroups);
 	const handleSubCounties =  async (ev)=>{
 		const optionsSubCounty = []
+		
 		for(var i=0;i<ev.length;i++) {
-			const dataSubCounties = await fetch(`/api/filters/subcounty/?county=${ev[i].value}`)
-			.then(r=>r.json()).then(r => {
-				r.results.forEach((t,i) => {
-					optionsSubCounty.push({value: t.id, label: t.name})
-				})
-				
-			})
+			const id= sub_counties?.filter((sbcty)=>{
+               if(sbcty.county==ev[i].value){
+					return {
+						value: sbcty.id, label: sbcty.name
+					}
+			   }
+			}
+			
+			)
+			optionsSubCounty.push(...id)
 		}
 		setSubCountyOptions(optionsSubCounty)
 	}
 	const handleBasicDetailsSubmit =()=>{
 
 	}
-// console.log(props);
+// console.log(subCountyOptions);
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
         <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
@@ -103,36 +122,15 @@ const AddUser=(props)=> {
                                 <a className="text-indigo-700" href="/users">Users</a> {'>'}
                                 <span className="text-gray-500">Add user</span>
                             </div>
-                            <div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3">
-                            
-                            </div>
                         </div>
                   
                     </div>
 
-					{/* Stepper and Form */}
 					<div className='col-span-5 md:col-span-4 flex flex-col items-center border rounded pt-8 pb-4 gap-4 mt-2 order-last md:order-none'>
-						{/* Stepper Header */}
-						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
-							<Box sx={{ width: '100%' }}>
-								<Stepper activeStep={parseInt(formId)} alternativeLabel>
-									{/* {steps.map((label) => (
-										<Step key={label}>
-											<StepLabel>{label}</StepLabel>
-										</Step>
-									))} */}
-								</Stepper>
-							</Box>
-						</div>
-
-						{/* Stepper Body */}
 						<div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-							<div
-								className=' w-full flex flex-col items-start p-3 rounded border border-gray-300/70 bg-gray-50'
+							<div className=' w-full flex flex-col items-start p-3 rounded border border-gray-300/70 bg-gray-50'
 								style={{ minHeight: '250px' }}>
-								
-											
-											{/* return ( */}
+							
 												<>
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 														Bio Details
@@ -349,7 +347,7 @@ const AddUser=(props)=> {
 															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 																Contacts
 															</h4>
-															{contactList.length > 1?  contactList.map((x,i)=>{
+															{contactList.map((x,i)=>{
 																return <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<label
@@ -373,13 +371,16 @@ const AddUser=(props)=> {
 																		
 																		required
 																		placeholder='Select contact type..'
+																		key={x.contactType[i]}
 																		// value={x.contactType}
-																		onChange={ev => {
-																			handleOnChange(
-																				ev
+																		onChange={value => {
+																			handleOnChange({
+																				name: "contact_type", value
+																			}
+																				
 																			)
 																		}}
-																		value={userData['contact_type']?.value || ''}
+																		// value={userData['contact_type']?.value || ''}
 																		name='contact_type'
 																		className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																	/>
@@ -398,20 +399,21 @@ const AddUser=(props)=> {
 																		required
 																		type='text'
 																		name='contact_details'
+																		key={x.contactDetails[i]}
 																		// value={x.contactDetails}
 																		onChange={ev => {
 																			handleOnChange(
 																				ev
 																			)
 																		}}
-																		value={userData['contact_details']?.value || ''}
+																		// value={userData['contact_details']?.value || ''}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
 
 														    </div>
 															})
-															: <h4>No Contacts Assigned to User</h4>
+															// : <h4>No Contacts Assigned to User</h4>
 															}
 
 														</div>
@@ -454,7 +456,7 @@ const AddUser=(props)=> {
 																}}
 																value={userData['group']?.value.map((value) => ({ 
 																	value: value.value,
-																	label: value.label 
+																	label: groups?.find((rg)=> rg.id==value.value).name 
 																  })) || ''}
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															    />
@@ -492,11 +494,14 @@ const AddUser=(props)=> {
 																					placeholder='Select county..'
 																					onChange={ev => {
 																						handleSubCounties(ev)
-																						handleOnChange(
-																							ev
-																						)
+																						handleOnChange({
+																							county: ev
+																						})
 																					}}
-																					value={userData['county']?.value || ''}
+																					value={userData['county']?.value.map((value) => ({ 
+																						value: value.value,
+																						label: counties?.find((rg)=> rg.id==value.value).name 
+																					  })) || ''}
 																					name='county'
 																					className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																					/>
@@ -505,7 +510,7 @@ const AddUser=(props)=> {
 																						Array.from(subCountyOptions || [],
 																							fltopt => {
 																								return {
-																									value: fltopt.value, label: fltopt.label
+																									value: fltopt.id, label: fltopt.name
 																								}
 																							})
 																					}
@@ -513,11 +518,15 @@ const AddUser=(props)=> {
 																					required
 																					placeholder='Select a sub county..'
 																					onChange={ev => {
-																						handleOnChange(
-																							ev
-																						)
+																						handleOnChange({
+																							subcounty: ev
+																						})
 																					}}
-																					value={userData['subcounty']?.value || ''}
+																					value={userData['sub_county']?.value.map((value) => ({ 
+																						value: value.value,
+																						label: subCountyOptions?.find((rg)=> rg.id==value.value).name 
+																					  })) || ''}
+
 																					name='subcounty'
 																					className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																					/>
@@ -556,7 +565,7 @@ const AddUser=(props)=> {
 																						}}
 																						value={userData['regulatory_body']?.value.map((value) => ({ 
 																							value: value.value,
-																							label: value.label 
+																							label: regbodies?.find((rg)=> rg.id==value.value).name
 																						  })) || ''}
 																						name='regulatory_body'
 																						className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -594,11 +603,7 @@ const AddUser=(props)=> {
 														</div>
 													</form>
 												</>
-											{/* ); */}
 									
-                                      
-
-                             
                             </div>
                         </div>
                         
@@ -688,7 +693,28 @@ AddUser.getInitialProps = async (ctx) => {
             })
     } 
 
-	// counties 
+	// sub_counties 
+	const fetchSubCounties = token => {
+        let filters_url = API_URL + '/common/sub_counties/?page_size=500&ordering=name'
+        return fetch(filters_url, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }
+        }).then(r => r.json())
+            .then(json => {
+                return json
+            }).catch(err => {
+                console.log('Error fetching counties: ', err)
+                return {
+                    error: true,
+                    err: err,
+                    filters: []
+                }
+            })
+    } 
+
+	// regulating bodies 
 	const fetchRegulatingBodies = token => {
 		let filters_url = API_URL + '/facilities/regulating_bodies/'
 		return fetch(filters_url, {
@@ -716,7 +742,7 @@ AddUser.getInitialProps = async (ctx) => {
 			fetchContactType(token),
 			fetchGroups(token),
 			fetchCounties(token),
-			fetchRegulatingBodies(token)
+			fetchRegulatingBodies(token), fetchSubCounties(token)
 		  ]);
 		  const paths = all.map(a => ({params: a}))
 		  let query = { 'searchTerm': '' }
