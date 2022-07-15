@@ -27,6 +27,8 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
+
+import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
 
 
@@ -55,6 +57,7 @@ const system_setup = (props) => {
       ]);
 
     const [fields, setFields] = useState([]);
+    const [isAddForm, setIsAddForm] = useState(false);
     const [rows, setRows] = useState(Array.from(props?.data?.results, ({id, name, code}) => ({id, name, code})))  
 
     const fetchDataCategory = async () => {
@@ -120,7 +123,7 @@ const system_setup = (props) => {
                         { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                     ])
                     
-                    console.log({data: _data.results});
+                    // console.log({data: _data.results});
                     setRows(Array.from(_data.results, ({id, name, category_name, numbers}) => ({id, name, category_name, numbers})))
                   }
                   else{
@@ -349,7 +352,7 @@ const system_setup = (props) => {
    
 }
 
-    useDidMountEffect(fetchDataCategory, [resource])
+    useDidMountEffect(fetchDataCategory, [resource, isAddForm])
 
     const handleAdminUnitsClick = () => {
         setOpenAdminUnits(!openAdminUnits);
@@ -406,335 +409,713 @@ const system_setup = (props) => {
             </Head>
 
             <MainLayout>
+
                 <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
-                    {/* <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3"> */}
-                        <div className="flex flex-row gap-2 text-sm md:text-base">
+                     {/* Bread Cumbs  */}
+                     <div className="flex flex-row gap-2 text-sm md:text-base">
                             <a className="text-green-700" href="/">Home</a> {'>'}
                             <span className="text-gray-500" >System setup</span>   
-                        </div>
-                        <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
-                          <h2 className='text-xl font-bold text-black capitalize'>{title}</h2>
-                          <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'>
-                            {`Add ${addBtnLabel}`}
-                            <PlusIcon className='text-white ml-2 h-5 w-5'/>
-                          </button>
-                        </div>   
-                
-                        {/* Side Menu */}
-                        <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
-                            <List
-                                sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                                component="nav"
-                                aria-labelledby="nested-list-subheader"
-                                subheader={
-                                    <ListSubheader component="div" id="nested-list-subheader">
-                                        Resources
-                                    </ListSubheader>
-                                }
-                                >
-                                {/* Administrative Units */}
-                                <ListItemButton onClick={handleAdminUnitsClick}>
-                                    <ListItemIcon>
-                                        <AddLocationAlt />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Administrative Units" />
-                                    {openAdminUnits ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openAdminUnits} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                        {/* Counties */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county');}}>
-                                            <ListItemText primary="Counties" />
-                                        </ListItemButton>
-                                        {/* Constituencies */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'code']); setResource('constituencies'); setResourceCategory('AdminUnits'); setTitle('constituencies'); setAddBtnLabel('constituency')}}>
-                                            <ListItemText primary="Constituencies"/>
-                                        </ListItemButton>
-                                        {/* Wards */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'code', 'county_name', 'constituency_name', 'sub_county_name, county']); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward')}}>
-                                            <ListItemText primary="Wards" />
-                                        </ListItemButton>
-                                        {/* Towns */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'town' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'ward_name']); setResource('towns'); setResourceCategory('AdminUnits'); setTitle('towns'); setAddBtnLabel('town')}}>
-                                            <ListItemText primary="Towns" />
-                                        </ListItemButton>
-                                    </List>
-                                </Collapse>
-
-                                {/* Service Catalogue */}
-                                <ListItemButton onClick={handleServiceCatalogueClick}>
-                                    <ListItemIcon>
-                                        <MiscellaneousServices />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Service Catalogue" />
-                                    {openServiceCatalogue ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openServiceCatalogue} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                        {/* Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('categories'); setAddBtnLabel('category')}}>
-                                            <ListItemText primary="Categories" />
-                                        </ListItemButton>
-                                        {/* Option groups */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name']); setResource('option_groups'); setResourceCategory('ServiceCatalogue'); setTitle('option groups'); setAddBtnLabel('option group')}}>
-                                            <ListItemText primary="Option Groups" />
-                                        </ListItemButton>
-                                        {/* Services */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'service' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'code', 'abbreviation', 'category_name']); setResource('services'); setResourceCategory('ServiceCatalogue'); setTitle('services'); setAddBtnLabel('service')}}>
-                                            <ListItemText primary="Services" />
-                                        </ListItemButton>
-                                    
-                                    </List>
-                                </Collapse>
-
-                                {/* Health Infrastructure */}
-                                <ListItemButton onClick={handleHealthInfrClick}>
-                                    <ListItemIcon>
-                                        <LocalHospital />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Health Infrastructure" />
-                                    {openHealthInfr ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openHealthInfr} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                        {/* Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('categories'); setAddBtnLabel('category')}}>
-                                            <ListItemText primary="Categories" />
-                                        </ListItemButton>
-                                        {/* Infrastructure */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure')}}>
-                                            <ListItemText primary="Infrastructure" />
-                                        </ListItemButton>
-                                    </List>
-                                </Collapse>
-
-                                {/* Human Resource */}
-                                <ListItemButton onClick={handleHRClick}>
-                                    <ListItemIcon>
-                                        <ReduceCapacity />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Human Resource" />
-                                    {openHR ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openHR} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                        {/* HR Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'hr category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'description']); setResource('speciality_categories'); setResourceCategory('HR'); setTitle('HR Categories'); setAddBtnLabel('hr category')}}>
-                                            <ListItemText primary="HR Categories" />
-                                        </ListItemButton>
-                                        {/* Specialities */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'category_name']); setResource('specialities'); setResourceCategory('HR'); setTitle('specialities'); setAddBtnLabel('specialty')}}>
-                                            <ListItemText primary="Specialities" />
-                                        </ListItemButton>
-                                    </List>
-                                </Collapse>
-
-                                {/* Contacts */}
-                                <ListItemButton onClick={hanldeConactsClick}>
-                                    <ListItemIcon>
-                                        <Phone />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Contacts" />
-                                    {openContacts ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openContacts} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                        {/* HR Categories */}
-                                        <ListItemButton sx={{ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type')}}>
-                                            <ListItemText primary="Contact Type" />
-                                        </ListItemButton>
-                                    
-                                    </List>
-                                </Collapse>
-
-                                {/* Facilities */}
-                                <ListItemButton onClick={handleFacilitiesClick}>
-                                    <ListItemIcon>
-                                        <MapsHomeWork />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Facilities" />
-                                    {openFacilities ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openFacilities} timeout="auto" unmountOnExit>
-                                    
-                                    <List component="div" disablePadding>
-                                        {/* Facility Departments */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('facility_depts'); setResourceCategory('Facilities'); setTitle('facility departments'); setAddBtnLabel('facility department')}}>
-                                            <ListItemText primary="Facility Departments" />
-                                        </ListItemButton>
-
-                                        {/* Facility Type Details */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'sub_division&is_parent=true']); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type details'); setAddBtnLabel('facility type detail')}}>
-                                            <ListItemText primary="Facility Type Details" />
-                                        </ListItemButton>
-
-                                        {/* Facility Type Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'sub_division&is_parent=false']); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type categories'); setAddBtnLabel('facility type category')}}>
-                                            <ListItemText primary="Facility Type Categories" />
-                                        </ListItemButton>
-
-                                        {/* Facility Operation Status */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('facility_status'); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status')}}>
-                                            <ListItemText primary="Facility Operation Status" />
-                                        </ListItemButton>
-
-                                        {/*  Facility Admission Status */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('facility_admission_status'); setResourceCategory('Facilities'); setTitle('facility admission statuses'); setAddBtnLabel('facility admission status')}}>
-                                            <ListItemText primary="Facility Admission Status" />
-                                        </ListItemButton>
-
-                                        {/*  Feedback */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('facility_service_ratings'); setResourceCategory('Facilities'); setTitle('feedbacks'); setAddBtnLabel('feedback')}}>
-                                            <ListItemText primary="Feedback" />
-                                        </ListItemButton>
-
-                                        {/*  Facility Owner Details */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id', 'name']); setResource('owner_types'); setResourceCategory('Facilities'); setTitle('facility owner details'); setAddBtnLabel('facility owner detail')}}>
-                                            <ListItemText primary="Facility Owner Details" />
-                                        </ListItemButton>
-
-                                        {/* Facility Owners Categories */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'code', 'abbreviation', 'owner_type_name']); setResource('owners'); setResourceCategory('Facilities'); setTitle('facility owner categories'); setAddBtnLabel('facility owner category')}}>
-                                            <ListItemText primary="Facility Owners Categories" />
-                                        </ListItemButton>
-
-                                        {/*  Job Titles */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name']); setResource('job_titles'); setResourceCategory('Facilities'); setTitle('job titles'); setAddBtnLabel('job title') }}>
-                                            <ListItemText primary="Job Titles" />
-                                        </ListItemButton>
-
-                                        {/*  Regulatory Bodies */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'abbreviation', 'regulatory_body_type_name', 'regulation_verb']); setResource('regulating_bodies'); setResourceCategory('Facilities'); setTitle('regulatory bodies'); setAddBtnLabel('regulatory body') }}>
-                                            <ListItemText primary="Regulatory Bodies" />
-                                        </ListItemButton>
-
-                                        {/*  Regulatory Status */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('regulation_status'); setResourceCategory('Facilities'); setTitle('regulatory statuses'); setAddBtnLabel('regulatory status') }}>
-                                            <ListItemText primary="Regulatory Status" />
-                                        </ListItemButton>
-
-                                        {/*  Upgrade Reason */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','reason', 'description']); setResource('level_change_reasons'); setResourceCategory('Facilities'); setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason') }}>
-                                            <ListItemText primary="Upgrade Reason" />
-                                        </ListItemButton>
-
-
-                                    </List>
-                                </Collapse>
-
-                                {/* CHU */}
-                                <ListItemButton onClick={handleCHUClick}>
-                                    <ListItemIcon>
-                                        <GroupAdd />
-                                    </ListItemIcon>
-                                    <ListItemText primary="CHU" />
-                                    {openCHU ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openCHU} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                        {/* CHU Rating Comments */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['']); setResource('chu_ratings'); setResourceCategory('CHU'); setTitle('CHU Rating Comments'); setAddBtnLabel('CHU Rating Comment') }}>
-                                            <ListItemText primary="CHU Rating Comments" />
-                                        </ListItemButton>
-                                    
-                                    </List>
-                                </Collapse>
-
-
-                                {/* Documents */}
-                                <ListItemButton onClick={handleDocumentsClick}>
-                                    <ListItemIcon>
-                                        <Article />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Documents" />
-                                    {openDocuments ? <ExpandLess /> : <ExpandMore />}
-                                </ListItemButton>
-                                <Collapse in={openDocuments} timeout="auto" unmountOnExit>
-                                    <List component="div" disablePadding>
-                                        {/* Documents */}
-                                        <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'document' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setFields(['id','name', 'description','fyl','document_type']); setResource('documents'); setResourceCategory('Documents'); setTitle('Documents'); setAddBtnLabel('Document') }}>
-                                            <ListItemText primary="Documents" />
-                                        </ListItemButton>
-                                    
-                                    </List>
-                                </Collapse>
-
-
-                                
-                            </List>
-                        </div>
-
-                        {/* Form Section */}
-                        <div className='col-span-4 w-full h-auto'>
-                        <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow:'0', flexDirection:'column', alignContent:'start', justifyContent:'start', backgroundColor:'#f9fafb', borderRadius:'10px'}}>
-                            <form className="flex items-center space-x-3 m-3" onSubmit={e => {e.preventDefault()}}>
-                                <TextField id="search_table_data" label="Search anything" variant="standard" />
-                                <button type= "submit" className='bg-indigo-500 rounded p-2 text-base font-semibold text-white'>Export</button>
-                            </form>
-                            <TableContainer sx={{ maxHeight: 440 }}>
-                                <Table stickyHeader aria-label="sticky table">
-                                <TableHead>
-                                  
-                                    <TableRow>
-                                    {columns.map((column,i) => (
-                                        <TableCell
-                                        key={i}
-                                        align={column.align}
-                                        style={{ minWidth: column.minWidth, fontWeight:600 }}
-                                        >
-                                        {column.label}
-                                        </TableCell>
-                                    ))}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody sx={{paddingX: 4}}>
-                                    {rows
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row) => {
-                                        return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                            {columns.map((column, i) => {
-                                            const value = row[column.id];
-                                            return (
-                                                <TableCell key={column.id} align={column.align}>
-                                                    {
-                                                    column.id === 'action' ?
-                                                        
-                                                            <button className='bg-indigo-500 rounded p-2 text-white font-semibold'>{
-                                                                resourceCategory === "HealthInfrastructure" || resourceCategory === "HR" ?
-                                                                'Edit' : 'View'
-                                                            }</button>
-                                                        
-                                                        :
-                                                            column.format && typeof value === 'boolean'
-                                                                ? value.toString()
-                                                                :  column.format && typeof value === 'number'
-                                                                ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
-                                                       
-                                                    }
-                                                </TableCell>
-                                                
-                                            );
-                                            })}
-                                        </TableRow>
-                                        );
-                                    })}
-                                </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <TablePagination
-                                rowsPerPageOptions={[10, 25, 100]}
-                                component="div"
-                                count={rows.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
-                            </Paper>
-                        </div>
-                        
+                    </div>
+                    {/* Header Bunner */}
+                    <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                        <h2 className='text-xl font-bold text-black capitalize'>{title}</h2>
+                        {
+                        !isAddForm &&
+                        <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setTitle(`Add ${addBtnLabel}`); setIsAddForm(true)}}>
+                        {`Add ${addBtnLabel}`}
+                        <PlusIcon className='text-white ml-2 h-5 w-5'/>
+                        </button>
+                        }
                     </div> 
+
+                    {/* Side Menu */}
+                    <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
+                                <List
+                                    sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                                    component="nav"
+                                    aria-labelledby="nested-list-subheader"
+                                    subheader={
+                                        <ListSubheader component="div" id="nested-list-subheader">
+                                            Resources
+                                        </ListSubheader>
+                                    }
+                                    >
+                                    {/* Administrative Units */}
+                                    <ListItemButton onClick={handleAdminUnitsClick}>
+                                        <ListItemIcon>
+                                            <AddLocationAlt />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Administrative Units" />
+                                        {openAdminUnits ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItemButton>
+                                    <Collapse in={openAdminUnits} timeout="auto" unmountOnExit>
+                                        <List component="div" disablePadding>
+                                            {/* Counties */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county');}}>
+                                                <ListItemText primary="Counties" />
+                                            </ListItemButton>
+                                            {/* Constituencies */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code']); setResource('constituencies'); setResourceCategory('AdminUnits'); setTitle('constituencies'); setAddBtnLabel('constituency')}}>
+                                                <ListItemText primary="Constituencies"/>
+                                            </ListItemButton>
+                                            {/* Wards */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'county_name', 'constituency_name', 'sub_county_name, county']); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward')}}>
+                                                <ListItemText primary="Wards" />
+                                            </ListItemButton>
+                                            {/* Towns */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'town' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'ward_name']); setResource('towns'); setResourceCategory('AdminUnits'); setTitle('towns'); setAddBtnLabel('town')}}>
+                                                <ListItemText primary="Towns" />
+                                            </ListItemButton>
+                                        </List>
+                                    </Collapse>
+
+                                    {/* Service Catalogue */}
+                                    <ListItemButton onClick={handleServiceCatalogueClick}>
+                                        <ListItemIcon>
+                                            <MiscellaneousServices />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Service Catalogue" />
+                                        {openServiceCatalogue ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItemButton>
+                                    <Collapse in={openServiceCatalogue} timeout="auto" unmountOnExit>
+                                        <List component="div" disablePadding>
+                                            {/* Categories */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('categories'); setAddBtnLabel('category')}}>
+                                                <ListItemText primary="Categories" />
+                                            </ListItemButton>
+                                            {/* Option groups */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('option_groups'); setResourceCategory('ServiceCatalogue'); setTitle('option groups'); setAddBtnLabel('option group')}}>
+                                                <ListItemText primary="Option Groups" />
+                                            </ListItemButton>
+                                            {/* Services */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'service' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'category_name']); setResource('services'); setResourceCategory('ServiceCatalogue'); setTitle('services'); setAddBtnLabel('service')}}>
+                                                <ListItemText primary="Services" />
+                                            </ListItemButton>
+                                        
+                                        </List>
+                                    </Collapse>
+
+                                    {/* Health Infrastructure */}
+                                    <ListItemButton onClick={handleHealthInfrClick}>
+                                        <ListItemIcon>
+                                            <LocalHospital />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Health Infrastructure" />
+                                        {openHealthInfr ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItemButton>
+                                    <Collapse in={openHealthInfr} timeout="auto" unmountOnExit>
+                                        <List component="div" disablePadding>
+                                            {/* Categories */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('categories'); setAddBtnLabel('category')}}>
+                                                <ListItemText primary="Categories" />
+                                            </ListItemButton>
+                                            {/* Infrastructure */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure')}}>
+                                                <ListItemText primary="Infrastructure" />
+                                            </ListItemButton>
+                                        </List>
+                                    </Collapse>
+
+                                    {/* Human Resource */}
+                                    <ListItemButton onClick={handleHRClick}>
+                                        <ListItemIcon>
+                                            <ReduceCapacity />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Human Resource" />
+                                        {openHR ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItemButton>
+                                    <Collapse in={openHR} timeout="auto" unmountOnExit>
+                                        <List component="div" disablePadding>
+                                            {/* HR Categories */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'hr category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('speciality_categories'); setResourceCategory('HR'); setTitle('HR Categories'); setAddBtnLabel('hr category')}}>
+                                                <ListItemText primary="HR Categories" />
+                                            </ListItemButton>
+                                            {/* Specialities */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name']); setResource('specialities'); setResourceCategory('HR'); setTitle('specialities'); setAddBtnLabel('specialty')}}>
+                                                <ListItemText primary="Specialities" />
+                                            </ListItemButton>
+                                        </List>
+                                    </Collapse>
+
+                                    {/* Contacts */}
+                                    <ListItemButton onClick={hanldeConactsClick}>
+                                        <ListItemIcon>
+                                            <Phone />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Contacts" />
+                                        {openContacts ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItemButton>
+                                    <Collapse in={openContacts} timeout="auto" unmountOnExit>
+                                        <List component="div" disablePadding>
+                                            {/* HR Categories */}
+                                            <ListItemButton sx={{ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type')}}>
+                                                <ListItemText primary="Contact Type" />
+                                            </ListItemButton>
+                                        
+                                        </List>
+                                    </Collapse>
+
+                                    {/* Facilities */}
+                                    <ListItemButton onClick={handleFacilitiesClick}>
+                                        <ListItemIcon>
+                                            <MapsHomeWork />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Facilities" />
+                                        {openFacilities ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItemButton>
+                                    <Collapse in={openFacilities} timeout="auto" unmountOnExit>
+                                        
+                                        <List component="div" disablePadding>
+                                            {/* Facility Departments */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_depts'); setResourceCategory('Facilities'); setTitle('facility departments'); setAddBtnLabel('facility department')}}>
+                                                <ListItemText primary="Facility Departments" />
+                                            </ListItemButton>
+
+                                            {/* Facility Type Details */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division&is_parent=true']); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type details'); setAddBtnLabel('facility type detail')}}>
+                                                <ListItemText primary="Facility Type Details" />
+                                            </ListItemButton>
+
+                                            {/* Facility Type Categories */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division&is_parent=false']); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type categories'); setAddBtnLabel('facility type category')}}>
+                                                <ListItemText primary="Facility Type Categories" />
+                                            </ListItemButton>
+
+                                            {/* Facility Operation Status */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_status'); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status')}}>
+                                                <ListItemText primary="Facility Operation Status" />
+                                            </ListItemButton>
+
+                                            {/*  Facility Admission Status */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_admission_status'); setResourceCategory('Facilities'); setTitle('facility admission statuses'); setAddBtnLabel('facility admission status')}}>
+                                                <ListItemText primary="Facility Admission Status" />
+                                            </ListItemButton>
+
+                                            {/*  Feedback */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_service_ratings'); setResourceCategory('Facilities'); setTitle('feedbacks'); setAddBtnLabel('feedback')}}>
+                                                <ListItemText primary="Feedback" />
+                                            </ListItemButton>
+
+                                            {/*  Facility Owner Details */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id', 'name']); setResource('owner_types'); setResourceCategory('Facilities'); setTitle('facility owner details'); setAddBtnLabel('facility owner detail')}}>
+                                                <ListItemText primary="Facility Owner Details" />
+                                            </ListItemButton>
+
+                                            {/* Facility Owners Categories */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'owner_type_name']); setResource('owners'); setResourceCategory('Facilities'); setTitle('facility owner categories'); setAddBtnLabel('facility owner category')}}>
+                                                <ListItemText primary="Facility Owners Categories" />
+                                            </ListItemButton>
+
+                                            {/*  Job Titles */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('job_titles'); setResourceCategory('Facilities'); setTitle('job titles'); setAddBtnLabel('job title') }}>
+                                                <ListItemText primary="Job Titles" />
+                                            </ListItemButton>
+
+                                            {/*  Regulatory Bodies */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'regulatory_body_type_name', 'regulation_verb']); setResource('regulating_bodies'); setResourceCategory('Facilities'); setTitle('regulatory bodies'); setAddBtnLabel('regulatory body') }}>
+                                                <ListItemText primary="Regulatory Bodies" />
+                                            </ListItemButton>
+
+                                            {/*  Regulatory Status */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('regulation_status'); setResourceCategory('Facilities'); setTitle('regulatory statuses'); setAddBtnLabel('regulatory status') }}>
+                                                <ListItemText primary="Regulatory Status" />
+                                            </ListItemButton>
+
+                                            {/*  Upgrade Reason */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','reason', 'description']); setResource('level_change_reasons'); setResourceCategory('Facilities'); setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason') }}>
+                                                <ListItemText primary="Upgrade Reason" />
+                                            </ListItemButton>
+
+
+                                        </List>
+                                    </Collapse>
+
+                                    {/* CHU */}
+                                    <ListItemButton onClick={handleCHUClick}>
+                                        <ListItemIcon>
+                                            <GroupAdd />
+                                        </ListItemIcon>
+                                        <ListItemText primary="CHU" />
+                                        {openCHU ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItemButton>
+                                    <Collapse in={openCHU} timeout="auto" unmountOnExit>
+                                        <List component="div" disablePadding>
+                                            {/* CHU Rating Comments */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('chu_ratings'); setResourceCategory('CHU'); setTitle('CHU Rating Comments'); setAddBtnLabel('CHU Rating Comment') }}>
+                                                <ListItemText primary="CHU Rating Comments" />
+                                            </ListItemButton>
+                                        
+                                        </List>
+                                    </Collapse>
+
+
+                                    {/* Documents */}
+                                    <ListItemButton onClick={handleDocumentsClick}>
+                                        <ListItemIcon>
+                                            <Article />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Documents" />
+                                        {openDocuments ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItemButton>
+                                    <Collapse in={openDocuments} timeout="auto" unmountOnExit>
+                                        <List component="div" disablePadding>
+                                            {/* Documents */}
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'document' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description','fyl','document_type']); setResource('documents'); setResourceCategory('Documents'); setTitle('Documents'); setAddBtnLabel('Document') }}>
+                                                <ListItemText primary="Documents" />
+                                            </ListItemButton>
+                                        
+                                        </List>
+                                    </Collapse>
+
+
+                                    
+                                </List>
+                    </div>
+                        {
+                            !isAddForm ? (
+                            <>
+                            {/* Table Section */}
+                            <div className='col-span-4 w-full h-auto'>
+                            <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow:'0', flexDirection:'column', alignContent:'start', justifyContent:'start', backgroundColor:'#f9fafb', borderRadius:'10px'}}>
+                                <form className="flex items-center space-x-3 m-3" onSubmit={e => {e.preventDefault()}}>
+                                    <TextField id="search_table_data" label="Search anything" variant="standard" />
+                                    <button type= "submit" className='bg-indigo-500 rounded p-2 text-base font-semibold text-white'>Export</button>
+                                </form>
+                                <TableContainer sx={{ maxHeight: 440 }}>
+                                    <Table stickyHeader aria-label="sticky table">
+                                    <TableHead>
+                                        <TableRow>
+                                        {columns.map((column,i) => (
+                                            <TableCell
+                                            key={i}
+                                            align={column.align}
+                                            style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                            >
+                                            {column.label}
+                                            </TableCell>
+                                        ))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody sx={{paddingX: 4}}>
+                                        {rows
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((row) => {
+                                            return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                                {columns.map((column, i) => {
+                                                const value = row[column.id];
+                                                return (
+                                                    <TableCell key={column.id} align={column.align}>
+                                                        {
+                                                        column.id === 'action' ?
+                                                            
+                                                                <button className='bg-indigo-500 rounded p-2 text-white font-semibold'>{
+                                                                    resourceCategory === "HealthInfrastructure" || resourceCategory === "HR" ?
+                                                                    'Edit' : 'View'
+                                                                }</button>
+                                                            
+                                                            :
+                                                                column.format && typeof value === 'boolean'
+                                                                    ? value.toString()
+                                                                    :  column.format && typeof value === 'number'
+                                                                    ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+                                                        
+                                                        }
+                                                    </TableCell>
+                                                    
+                                                );
+                                                })}
+                                            </TableRow>
+                                            );
+                                        })}
+                                    </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <TablePagination
+                                    rowsPerPageOptions={[10, 25, 100]}
+                                    component="div"
+                                    count={rows.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                />
+                                </Paper>
+                            </div>
+                            </>
+                            ) : (
+
+                                <div className='col-span-4 flex items-start justify-start h-auto w-full'>
+                                {/* Add Form */}
+                                <Paper sx={{width: '100%', Height: 'auto', padding:5, boxShadow:'none'}} >
+                                    {
+                                
+                                            (() => {
+                                                switch(addBtnLabel){
+                                                    case 'county':
+                                                        return (
+                                                        
+                                                                <form className='w-full h-full' onSubmit={() => console.log('submitting form')}>
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                County Name
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    *
+                                                                                </span>
+                                                                            </label>
+                                                                            <input
+                                                                                required
+                                                                                type='text'
+                                                                                placeholder='County Name'
+                                                                                name={`add_${addBtnLabel}`}
+                                                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            />
+                                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                                <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                            </div>
+                                                                        </div>
+                                                                </form>
+                                                        
+                                                        )
+                                                        case 'constituency':
+                                                            return (
+                                                            
+                                                                    <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
+                                                                        {/* Constituency Name */}
+                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            
+                                                                                <label
+                                                                                    htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                                    Constituency Name
+                                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                                        {' '}
+                                                                                        *
+                                                                                    </span>
+                                                                                </label>
+                                                                                <input
+                                                                                    required
+                                                                                    type='text'
+                                                                                    placeholder='Constitency Name'
+                                                                                    name={`add_${addBtnLabel}_constituency_field`}
+                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                />
+                                                                        </div>
+
+                                                                        {/* County */}
+                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Facility Type{' '}
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    *
+                                                                                </span>
+                                                                            </label>
+                                                                            <Select
+                                                                                options={[
+                                                                                    {
+                                                                                        value: 'type-1',
+                                                                                        label: 'type-1',
+                                                                                    },
+                                                                                    {
+                                                                                        value: 'type-2',
+                                                                                        label: 'type-2',
+                                                                                    },
+                                                                                ]}
+                                                                                required
+                                                                                placeholder='Select county'
+                                                                                onChange={() => console.log('changed type')}
+                                                                                name={`add_${addBtnLabel}_county_field`}
+                                                                                className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            />
+
+                                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                                <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                            )
+                                                        case 'ward':
+                                                            return (
+                                                            
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
+                                                                    {/* Ward Name */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_field`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Ward Name
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    *
+                                                                                </span>
+                                                                            </label>
+                                                                            <input
+                                                                                required
+                                                                                type='text'
+                                                                                placeholder='Ward Name'
+                                                                                name={`add_${addBtnLabel}_field`}
+                                                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            />
+                                                                    </div>
+
+                                                                    {/* County */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                             County{' '}
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
+                                                                            required
+                                                                            placeholder='Select county'
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_county_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Sub County */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_sub_county_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Sub County{' '}
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
+                                                                            required
+                                                                            placeholder='Select Sub County'
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_sub_county_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Constituency */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Constitency{' '}
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
+                                                                            required
+                                                                            placeholder='Select county'
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_constituency_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        />
+
+                                                                        <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </form>
+                                                            )
+                                                        case 'town':
+                                                            return (
+                                                                <form className='w-full h-full' onSubmit={() => console.log('submitting form')}>
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_town_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Town Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Town Name'
+                                                                            name={`add_${addBtnLabel}_town_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                        <div className='flex items-center space-x-3 mt-4'>
+                                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            )
+                                                        case 'category':
+                                                            return (
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
+                                                                        {/* Name */}
+                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            
+                                                                                <label
+                                                                                    htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                                    Name
+                                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                                        {' '}
+                                                                                        *
+                                                                                    </span>
+                                                                                </label>
+                                                                                <input
+                                                                                    required
+                                                                                    type='text'
+                                                                                    placeholder='Name'
+                                                                                    name={`add_${addBtnLabel}_constituency_field`}
+                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                />
+                                                                        </div>
+
+                                                                        {/* Parent */}
+                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Parent{' '}
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    
+                                                                                </span>
+                                                                            </label>
+                                                                            <Select
+                                                                                options={[
+                                                                                    {
+                                                                                        value: 'type-1',
+                                                                                        label: 'type-1',
+                                                                                    },
+                                                                                    {
+                                                                                        value: 'type-2',
+                                                                                        label: 'type-2',
+                                                                                    },
+                                                                                ]}
+                                                                                
+                                                                                placeholder='Select county'
+                                                                                onChange={() => console.log('changed type')}
+                                                                                name={`add_${addBtnLabel}_county_field`}
+                                                                                className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            />
+
+                                                                        </div>
+
+                                                                        {/* Abbreviation */}
+                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            
+                                                                                <label
+                                                                                    htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                                    Abbreviation
+                                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                                        {' '}
+                                                                                        
+                                                                                    </span>
+                                                                                </label>
+                                                                                <input
+                                                                                    required
+                                                                                    type='text'
+                                                                                    placeholder='Name'
+                                                                                    name={`add_${addBtnLabel}_constituency_field`}
+                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                />
+                                                                        </div>
+
+                                                                        {/* Description */}
+                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Description
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    
+                                                                                </span>
+                                                                            </label>
+                                                                            <textarea
+                                                                                required
+                                                                                type='text'
+                                                                                placeholder='Name'
+                                                                                name={`add_${addBtnLabel}_constituency_field`}
+                                                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            />
+                                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                                <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                            )
+
+                                                        
+
+                                                }
+
+                                            })()
+
+                                    }
+
+                               </Paper>
+                            </div>
+                                
+                            )
+                                
+                        }
+                        
+
+                </div> 
                                                                                                             
             
             </MainLayout>
