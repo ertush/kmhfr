@@ -11,7 +11,7 @@ import Select from 'react-select';
 const AddUser=(props)=> {
 
     const [formId, setFormId] = useState(0)
-	const [contactList, setContactList]=useState([{contactType: "", id: 1, contactDetails: ""}])
+	const [contactList, setContactList]=useState([{}])
 	const [subCountyOptions, setSubCountyOptions] = useState([])
 
 	let jobs = props?.data?.results
@@ -29,8 +29,8 @@ const AddUser=(props)=> {
 		employee_number: {name: "employee_number",     value: null },
 		job_title:       {name: "job_title", 		   value: null },
 		password:        {name: "password",            value: null },
-		contact_type:    {name: "contact_type",        value: null },
-		contact_details: {name: "contact_details",     value: null },
+		contact_type:    {name: "contact_type",        value: [] },
+		contact_details: {name: "contact_details",     value: [] },
 		group:           {name: "group",               value: [] },
 		county:          {name: "county",              value: [] },
 		sub_county:      {name: "sub_county",          value: [] },
@@ -39,18 +39,19 @@ const AddUser=(props)=> {
 
 	const handleAddClick = () => {
 		setContactList(s=>{
-			return [...s, {contactType: "", contactDetails: ""}]
+			return [...s, {}]
 		})
 	};
 
 	const handleOnChange =(val)=>{
 		// console.log(val);
 		if (val.target && val.target != undefined && val.target != null) {
-            const newObj = {}
-            newObj[val.target.name] = {}
-            newObj[val.target.name].name = val.target.name
-            newObj[val.target.name].value = val.target.value
-            setUserData({ ...userData, ...newObj })
+				const newObj = {}
+				newObj[val.target.name] = {}
+				newObj[val.target.name].name = val.target.name
+				newObj[val.target.name].value = val.target.value
+				setUserData({ ...userData, ...newObj })
+		
         }else if(val?.group){
 			const newObj2={}
 			newObj2['group'] = {}
@@ -75,13 +76,33 @@ const AddUser=(props)=> {
 			newObj5['sub_county'].name = "sub_county"
 			newObj5['sub_county'].value = val.subcounty.map((id)=>{return {value: id.value}})
 			setUserData({ ...userData, ...newObj5 })
+		}else if(val?.job_title){
+			const newObj6={}
+			newObj6['job_title'] = {}
+			newObj6['job_title'].name = "job_title"
+			newObj6['job_title'].value = val.job_title.value
+			setUserData({ ...userData, ...newObj6 })
 		}
+
 		else {
-            const newObj1 = {}
-            newObj1[val.name] = {}
-            newObj1[val.name].name = val.name
-            newObj1[val.name].value = [{value: val.value.value}]
-            setUserData({ ...userData, ...newObj1 })
+			if(val.name == "contact_type"){
+				let data = [...contactList];
+				data[val.id][val.name] = val.value.value
+				const newObj1 = {}
+				newObj1[val.name] = {}
+				newObj1[val.name].name = val.name
+				newObj1[val.name].value = data.map((id)=>{return {value: id.contact_type}})
+				setUserData({ ...userData, ...newObj1 })
+			}
+			if(val.name == "contact_details"){
+				let data = [...contactList];
+				data[val.id][val.name] = val.value.target.value
+				const newObj1 = {}
+				newObj1[val.name] = {}
+				newObj1[val.name].name = val.name
+				newObj1[val.name].value = data.map((id)=>{return {value: id.contact_details}})
+				setUserData({ ...userData, ...newObj1 })
+			}
         }
 	}
 
@@ -89,7 +110,7 @@ const AddUser=(props)=> {
 		return{ id: ft.value}
 	})
 
-	console.log(userData);
+console.log(userData['job_title']?.value);
 	// console.log(selectedGroups);
 	const handleSubCounties =  async (ev)=>{
 		const optionsSubCounty = []
@@ -101,9 +122,7 @@ const AddUser=(props)=> {
 						value: sbcty.id, label: sbcty.name
 					}
 			   }
-			}
-			
-			)
+			})
 			optionsSubCounty.push(...id)
 		}
 		setSubCountyOptions(optionsSubCounty)
@@ -286,11 +305,14 @@ const AddUser=(props)=> {
 																required
 																placeholder='Select job title..'
 																onChange={ev => {
-																	handleOnChange(
-																		ev
-																	)
+																	handleOnChange({
+																		job_title:ev
+																	})
 																}}
-																value={userData['job_title']?.value || ''}
+																value={{
+																	value: userData['job_title']?.value,
+																	label: jobs?.find((rg)=> rg.id==(userData['job_title']?.value)).name 
+																  } || ''}
 																name='job_title'
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															/>
@@ -371,11 +393,10 @@ const AddUser=(props)=> {
 																		
 																		required
 																		placeholder='Select contact type..'
-																		key={x.contactType[i]}
-																		// value={x.contactType}
+																		key={i}
 																		onChange={value => {
 																			handleOnChange({
-																				name: "contact_type", value
+																				name: "contact_type", value, id: i
 																			}
 																				
 																			)
@@ -399,14 +420,13 @@ const AddUser=(props)=> {
 																		required
 																		type='text'
 																		name='contact_details'
-																		key={x.contactDetails[i]}
-																		// value={x.contactDetails}
-																		onChange={ev => {
-																			handleOnChange(
-																				ev
-																			)
+																		key={i}
+																		onChange={value => {
+																			handleOnChange({
+																				name: "contact_details", value, id: i
+																			})
 																		}}
-																		// value={userData['contact_details']?.value || ''}
+																		value={((userData['contact_details']?.value)[i])?.value || ''}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
