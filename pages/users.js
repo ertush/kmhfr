@@ -7,8 +7,13 @@ import { checkToken } from '../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
 import Select from 'react-select'
+import Button from '@mui/material/Button';
 import moment from 'moment'
-
+import ListSubheader from '@mui/material/ListSubheader';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 
@@ -21,6 +26,8 @@ const Users = (props) => {
     LicenseManager.setLicenseKey("test");
  
     // const { data, query, path, current_url } = props
+    const API_URL = process.env.NEXT_PUBLIC_API_URL 
+  
     const router = useRouter()
 
 
@@ -36,6 +43,8 @@ const Users = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
+
+
     const onGridReady = (params) => {
         console.log({api: params.api});
         setGridApi(params.api);
@@ -58,6 +67,36 @@ const Users = (props) => {
         updateData(lnlst)
     };
 
+    const fetchUsers =(param)=>{
+        let url = API_URL + `/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=${param}`
+        return fetch(url, {
+            headers: {
+                'Authorization': 'Bearer ' + props?.token,
+                'Accept': 'application/json'
+            }
+        }).then(r => r.json())
+            .then(json => {
+               const lnlst= json.results.map((user)=>{
+                return {
+                    name: user.first_name + ' '+user.last_name,
+                    employee_number: user.employee_number,
+                    email: user.email,
+                    county_name:user.county_name,
+                    last_login: user.last_login !==null? moment(user.last_login).format('MMM Do YYYY, h:mm a') : "",
+                    is_active:user.is_active == true ? "Yes" : "No"
+                }
+                
+            })
+            setUsers(lnlst)
+            }).catch(err => {
+                console.log('Error fetching contact types: ', err)
+                return {
+                    error: true,
+                    err: err,
+                    filters: []
+                }
+            })
+    }
     return (
         <div className="">
             <Head>
@@ -85,10 +124,41 @@ const Users = (props) => {
                                 </button>
                         </div>
                         </div>
-
                     </div>
-                        
+                    <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
+						
+                        <List
+                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                        component="nav"
+                        aria-labelledby="nested-list-subheader"
+                        subheader={
+                            <ListSubheader component="div" id="nested-list-subheader">
+                                Resources
+                            </ListSubheader>
+                        }
+                        >	
+                            <ListItemButton sx={{backgroundColor: '#e7ebf0'}} name="rt"
+                            onClick={()=>
+                                fetchUsers(true)
+                            }
+                            >
+                                <ListItemText primary="Users" />
+                            </ListItemButton>
+                            <ListItemButton sx={{ backgroundColor: '#e7ebf0'  }} 
+                             onClick={()=>
+                                fetchUsers(false)
+                            }
+                            >
+                                <ListItemText primary="InActive Users" />
+                            </ListItemButton>
+                            <ListItemButton sx={{ backgroundColor: '#e7ebf0' }}>
+                                <ListItemText primary="Groups"/>
+                            </ListItemButton>
+                                
+                        </List>
+                </div>
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+                        
                           <div>
                           <form
                                 className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
@@ -130,7 +200,7 @@ const Users = (props) => {
                             </h5>
                           </div>
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
-                            {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
+                      
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
                                 <AgGridReact
                                     // floatingFilter={true}
@@ -195,9 +265,9 @@ const Users = (props) => {
 
 Users.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
-
+// console.log(ctx.query.is_active);
     const fetchData = (token) => {
-         let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=true'
+        let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=true'
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
