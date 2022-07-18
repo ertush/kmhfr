@@ -7,7 +7,7 @@ import useDidMountEffect from '../hooks/useDidMountEffect';
 
 // next imports
 import Head from 'next/dist/shared/lib/head'
-import { PlusIcon } from '@heroicons/react/solid'
+import { PlusIcon, TrashIcon } from '@heroicons/react/solid'
 
 // MUI imports
 import ListSubheader from '@mui/material/ListSubheader';
@@ -15,6 +15,8 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import {useRef} from 'react'
+
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -30,6 +32,8 @@ import TextField from '@mui/material/TextField';
 
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
+
+import useId from 'react-use-uuid';
 
 
 
@@ -60,6 +64,14 @@ const system_setup = (props) => {
     const [isAddForm, setIsAddForm] = useState(false);
     const [rows, setRows] = useState(Array.from(props?.data?.results, ({id, name, code}) => ({id, name, code})))  
 
+    // Refs
+    const optionTypeRef = useRef(null)
+    const displayTextRef = useRef(null)
+    const optionValueRef = useRef(null)
+    const inputsContainerRef = useRef(null)
+   
+    const uid = useId();
+   
     const fetchDataCategory = async () => {
   
     // Fetch data
@@ -745,7 +757,7 @@ const system_setup = (props) => {
                             </>
                             ) : (
 
-                                <div className='col-span-4 flex items-start justify-start h-auto w-full'>
+                            <div className='col-span-4 flex items-start justify-start h-auto w-full'>
                                 {/* Add Form */}
                                 <Paper sx={{width: '100%', Height: 'auto', padding:5, boxShadow:'none'}} >
                                     {
@@ -755,12 +767,43 @@ const system_setup = (props) => {
                                                     case 'county':
                                                         return (
                                                         
-                                                                <form className='w-full h-full' onSubmit={() => console.log('submitting form')}>
+                                                            <form className='w-full h-full' onSubmit={() => console.log('submitting form')}>
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            County Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='County Name'
+                                                                            name={`add_${addBtnLabel}`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                        <div className='flex items-center space-x-3 mt-4'>
+                                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        </div>
+                                                                    </div>
+                                                            </form>
+                                                    
+                                                        )
+                                                        case 'constituency':
+                                                            return (
+                                                            
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
+                                                                    {/* Constituency Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
                                                                             <label
-                                                                                htmlFor={`add_${addBtnLabel}`}
+                                                                                htmlFor={`add_${addBtnLabel}_constituency_field`}
                                                                                 className='text-gray-600 capitalize text-sm'>
-                                                                                County Name
+                                                                                Constituency Name
                                                                                 <span className='text-medium leading-12 font-semibold'>
                                                                                     {' '}
                                                                                     *
@@ -769,80 +812,49 @@ const system_setup = (props) => {
                                                                             <input
                                                                                 required
                                                                                 type='text'
-                                                                                placeholder='County Name'
-                                                                                name={`add_${addBtnLabel}`}
+                                                                                placeholder='Constitency Name'
+                                                                                name={`add_${addBtnLabel}_constituency_field`}
                                                                                 className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                             />
-                                                                            <div className='flex items-center space-x-3 mt-4'>
-                                                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                                <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
-                                                                            </div>
+                                                                    </div>
+
+                                                                    {/* County */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Facility Type{' '}
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
+                                                                            required
+                                                                            placeholder='Select county'
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_county_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        />
+
+                                                                        <div className='flex items-center space-x-3 mt-4'>
+                                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                                         </div>
+                                                                    </div>
                                                                 </form>
-                                                        
                                                         )
-                                                        case 'constituency':
-                                                            return (
-                                                            
-                                                                    <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
-                                                                        {/* Constituency Name */}
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            
-                                                                                <label
-                                                                                    htmlFor={`add_${addBtnLabel}_constituency_field`}
-                                                                                    className='text-gray-600 capitalize text-sm'>
-                                                                                    Constituency Name
-                                                                                    <span className='text-medium leading-12 font-semibold'>
-                                                                                        {' '}
-                                                                                        *
-                                                                                    </span>
-                                                                                </label>
-                                                                                <input
-                                                                                    required
-                                                                                    type='text'
-                                                                                    placeholder='Constitency Name'
-                                                                                    name={`add_${addBtnLabel}_constituency_field`}
-                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                                                                />
-                                                                        </div>
-
-                                                                        {/* County */}
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_county_field`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Facility Type{' '}
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-                                                                                    *
-                                                                                </span>
-                                                                            </label>
-                                                                            <Select
-                                                                                options={[
-                                                                                    {
-                                                                                        value: 'type-1',
-                                                                                        label: 'type-1',
-                                                                                    },
-                                                                                    {
-                                                                                        value: 'type-2',
-                                                                                        label: 'type-2',
-                                                                                    },
-                                                                                ]}
-                                                                                required
-                                                                                placeholder='Select county'
-                                                                                onChange={() => console.log('changed type')}
-                                                                                name={`add_${addBtnLabel}_county_field`}
-                                                                                className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-                                                                            />
-
-                                                                            <div className='flex items-center space-x-3 mt-4'>
-                                                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                                <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </form>
-                                                            )
                                                         case 'ward':
                                                             return (
                                                             
@@ -1096,10 +1108,379 @@ const system_setup = (props) => {
                                                                                 <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                                             </div>
                                                                         </div>
-                                                                    </form>
+                                                                </form>
                                                             )
 
-                                                        
+                                                        case 'option group':
+                                                            const handleAddOptionGroup = e => {
+                                                              
+
+                                                                e.preventDefault()
+                             
+                                                                // Option Type Node
+                                                                /*
+                                                                const optionTypeNode = document.createElement('select')
+                                                                optionTypeNode.setAttribute('class', ' h-10 border-2 border-gray-200 flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none');
+                                                                optionTypeNode.setAttribute(
+                                                                    'placeholder',
+                                                                    'Select Service'
+                                                                );
+                                                                optionTypeNode.setAttribute(
+                                                                    'name',
+                                                                    `option_type_${uid}`
+                                                                );
+            
+                                                                const option0 = document.createElement('option');
+                                                                option0.innerText = 'BOOLEAN';
+                                                                option0.value = 'BOOLEAN';
+
+                                                                const option1 = document.createElement('option');
+                                                                option1.innerText = 'INTEGER';
+                                                                option1.value = 'INTEGER';
+
+                                                                const option2 = document.createElement('option');
+                                                                option2.innerText = 'DECIMAL';
+                                                                option2.value = 'DECIMAL';
+
+                                                                const option3 = document.createElement('option');
+                                                                option3.innerText = 'TEXT';
+                                                                option3.value = 'TEXT';
+
+                                                                optionTypeNode.appendChild(option0.getRootNode());
+                                                                optionTypeNode.appendChild(option1.getRootNode());
+                                                                optionTypeNode.appendChild(option2.getRootNode());
+                                                                optionTypeNode.appendChild(option3.getRootNode());
+                                                               
+
+                                                                optionTypeRef.current.append(optionTypeNode)
+                                                                 */
+
+                                                                const optionTypeNode = inputsContainerRef.current.childNodes[3].cloneNode(true);
+                                                          
+													            optionTypeNode.setAttribute('name', `option_type_${uid}`);
+                                                                optionTypeNode.setAttribute('options', `
+                                                                    type-1
+                                                                    type-2
+                                                                `)
+                                                                optionTypeRef.current.append(optionTypeNode)
+
+
+                                                                // Display Text
+                                                                 const displayTextNode = document.createElement('input')
+                                                                 displayTextNode.setAttribute(
+                                                                    'placeholder',
+                                                                    'Display Text'
+                                                                 );
+                                                                 displayTextNode.setAttribute(
+                                                                    'name',
+                                                                    `display_input_${uid}`
+                                                                 );
+                                                                 displayTextNode.setAttribute('class', 'flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none')
+                                                                 displayTextRef.current.append(displayTextNode)
+
+                                                                 // Delete Btn
+                                                                const deleteBtnNode = document.createElement('button')
+                                                                deleteBtnNode.setAttribute('class', 'w-auto h-auto flex-shrink-1 col-span-1 rounded p-2 bg-white border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white')
+                                                                deleteBtnNode.append('Delete')
+                                                                deleteBtnNode.onclick = (e) => {
+                                                                    e.preventDefault()
+
+                                                                    // optionTypeRef.current.childNodes
+                                                                    console.log('deleting...', {childNodes: optionTypeRef.current.childNodes});
+
+                                                                }
+                                                                
+
+                                                                // Option Value
+
+                                                                const optionValueNode = document.createElement('input')
+                                                                optionValueNode.setAttribute('class', 'col-span-2')
+                                                                optionValueNode.setAttribute(
+                                                                    'placeholder',
+                                                                    'Option Value'
+                                                                 );
+                                                                optionValueNode.setAttribute(
+                                                                    'name',
+                                                                    `option_value_${uid}`
+                                                                 );
+                                                                optionValueNode.setAttribute('class', 'flex-none col-span-3 w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none')
+                                                                optionValueRef.current.append(optionValueNode)
+                                                                optionValueRef.current.append(deleteBtnNode)
+
+                                                                
+                                                              
+
+                                                            } 
+
+                                                            return (
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => {e.preventDefault()}}>
+                                                                {/* Name */}
+                                                              
+                                                                    <div className='col-span-3 flex-1 flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_option_group`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Option Group Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Option Group Name'
+                                                                            name={`add_${addBtnLabel}_option_group`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                     </div>
+                                                               
+                                                                
+
+                                                                {/* inputsContainer */}
+                                                                <div className='grid grid-cols-3 place-content-start gap-3 space-y-1' ref={inputsContainerRef}>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Option Type*</h2>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Display Text*</h2>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Option Value*</h2>
+
+                                                                    {/* Option Type */}
+                                                                    <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
+                                                                            required
+                                                                            placeholder='Select Option Type'
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_option_type`}
+                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        />
+                                                                    {/* Display Text */}
+                                                                      <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Display Text'
+                                                                            name={`add_${addBtnLabel}_display_text`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+
+                                                                    {/* Option Value */}
+                                                                    <div className='grid grid-cols-4 w-full'>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Option Value'
+                                                                            name={`add_${addBtnLabel}_option_value`}
+                                                                            className='flex-none w-full bg-gray-50 col-span-3 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                    </div>
+                                                                    
+
+                                                                    <div ref={optionTypeRef} className='mx-0 px-0 space-y-4'>
+
+                                                                    </div>
+
+                                                                    <div ref={displayTextRef} className='mx-0 px-0 space-y-3'>
+
+                                                                    </div>
+                                                                    
+                                                                   
+                                                                    <div ref={optionValueRef} className='m-0 p-0 grid grid-cols-4 gap-2 w-full'>
+                                                                        
+                                                                    </div>
+
+                                                                 
+                                                                    <div className='col-span-3 flex items-center justify-end'>
+                                                                        <button className='rounded p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
+                                                                        onClick={handleAddOptionGroup}
+                                                                        >Add <PlusIcon className='w-5 h-5 text-white'/></button>
+                                                                    </div>
+                                                                   
+                                                                    
+                                                                   
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                 </div>
+                                                        </form>
+                                                            )
+
+                                                        case 'service':
+                                                            return (
+                                                                <form>
+
+                                                                     {/* Service code */}
+                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                     <label
+                                                                            htmlFor={`add_${addBtnLabel}_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Service Code
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                        <span className='bg-blue-300 rounded p-2 text-indigo-900 border-blue-900 border-2 text-base'>Service Code will be generated after creating the service</span>
+
+                                                                    </div>
+                                                                     {/* Service Name */}
+                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Service Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Ward Name'
+                                                                            name={`add_${addBtnLabel}_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                  {/* Abbreviation */}
+                                                                  <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                             Abbreviation
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                              
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Ward Name'
+                                                                            name={`add_${addBtnLabel}_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                {/* Category */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_category_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                         Category{' '}
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        options={[
+                                                                            {
+                                                                                value: 'type-1',
+                                                                                label: 'type-1',
+                                                                            },
+                                                                            {
+                                                                                value: 'type-2',
+                                                                                label: 'type-2',
+                                                                            },
+                                                                        ]}
+                                                                        required
+                                                                        placeholder='Select county'
+                                                                        onChange={() => console.log('changed type')}
+                                                                        name={`add_${addBtnLabel}_category_field`}
+                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Option Groups */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_sub_county_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Option Groups   {' '}
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        options={[
+                                                                            {
+                                                                                value: 'type-1',
+                                                                                label: 'type-1',
+                                                                            },
+                                                                            {
+                                                                                value: 'type-2',
+                                                                                label: 'type-2',
+                                                                            },
+                                                                        ]}
+                                                                        required
+                                                                        placeholder='Select Sub County'
+                                                                        onChange={() => console.log('changed type')}
+                                                                        name={`add_${addBtnLabel}_sub_county_field`}
+                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_desc`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                        <textarea
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Service description'
+                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                {/* Has options */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                         <label
+                                                                            htmlFor={`add_${addBtnLabel}_has_options`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Service has options?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+
+                                                                        <input className='' type='checkbox'/>
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                </div>
+
+                                                                </form>
+                                                            )
+
+             
 
                                                 }
 
