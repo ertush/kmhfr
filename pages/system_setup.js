@@ -7,7 +7,7 @@ import useDidMountEffect from '../hooks/useDidMountEffect';
 
 // next imports
 import Head from 'next/dist/shared/lib/head'
-import { PlusIcon } from '@heroicons/react/solid'
+import { PlusIcon, TrashIcon } from '@heroicons/react/solid'
 
 // MUI imports
 import ListSubheader from '@mui/material/ListSubheader';
@@ -15,6 +15,8 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import {useRef} from 'react'
+
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -27,9 +29,12 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
+import Alert from '@mui/material/Alert';
 
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
+
+import useId from 'react-use-uuid';
 
 
 
@@ -60,6 +65,17 @@ const system_setup = (props) => {
     const [isAddForm, setIsAddForm] = useState(false);
     const [rows, setRows] = useState(Array.from(props?.data?.results, ({id, name, code}) => ({id, name, code})))  
 
+    // Refs
+    const optionTypeRef = useRef(null)
+    const displayTextRef = useRef(null)
+    const optionValueRef = useRef(null)
+    const inputsContainerRef = useRef(null)
+    const inputsContainerRef2 = useRef(null)
+    const contactTypeRef = useRef(null)
+    const contactDetailRef = useRef(null)
+   
+    const uid = useId();
+   
     const fetchDataCategory = async () => {
   
     // Fetch data
@@ -420,7 +436,7 @@ const system_setup = (props) => {
                     <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                         <h2 className='text-xl font-bold text-black capitalize'>{title}</h2>
                         {
-                        !isAddForm &&
+                        !isAddForm && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' &&
                         <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setTitle(`Add ${addBtnLabel}`); setIsAddForm(true)}}>
                         {`Add ${addBtnLabel}`}
                         <PlusIcon className='text-white ml-2 h-5 w-5'/>
@@ -745,7 +761,7 @@ const system_setup = (props) => {
                             </>
                             ) : (
 
-                                <div className='col-span-4 flex items-start justify-start h-auto w-full'>
+                            <div className='col-span-4 flex items-start justify-start h-auto w-full'>
                                 {/* Add Form */}
                                 <Paper sx={{width: '100%', Height: 'auto', padding:5, boxShadow:'none'}} >
                                     {
@@ -755,12 +771,45 @@ const system_setup = (props) => {
                                                     case 'county':
                                                         return (
                                                         
-                                                                <form className='w-full h-full' onSubmit={() => console.log('submitting form')}>
+                                                            <form className='w-full h-full' onSubmit={() => console.log('submitting form')}>
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            County Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='County Name'
+                                                                            name={`add_${addBtnLabel}`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                       
+                                                                    </div>
+
+                                                                    <div className='flex items-center space-x-3 mt-4'>
+                                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        </div>
+                                                            </form>
+                                                    
+                                                        )
+                                                        case 'constituency':
+                                                            return (
+                                                            
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
+                                                                    {/* Constituency Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
                                                                             <label
-                                                                                htmlFor={`add_${addBtnLabel}`}
+                                                                                htmlFor={`add_${addBtnLabel}_constituency_field`}
                                                                                 className='text-gray-600 capitalize text-sm'>
-                                                                                County Name
+                                                                                Constituency Name
                                                                                 <span className='text-medium leading-12 font-semibold'>
                                                                                     {' '}
                                                                                     *
@@ -769,80 +818,51 @@ const system_setup = (props) => {
                                                                             <input
                                                                                 required
                                                                                 type='text'
-                                                                                placeholder='County Name'
-                                                                                name={`add_${addBtnLabel}`}
+                                                                                placeholder='Constitency Name'
+                                                                                name={`add_${addBtnLabel}_constituency_field`}
                                                                                 className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                             />
-                                                                            <div className='flex items-center space-x-3 mt-4'>
-                                                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                                <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
-                                                                            </div>
+                                                                    </div>
+
+                                                                    {/* County */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                             County{' '}
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
+                                                                            required
+                                                                            placeholder='Select '
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_county_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        />
+
+                                        
+                                                                    </div>
+
+                                                                    <div className='flex items-center space-x-3 mt-4'>
+                                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                                         </div>
                                                                 </form>
-                                                        
                                                         )
-                                                        case 'constituency':
-                                                            return (
-                                                            
-                                                                    <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
-                                                                        {/* Constituency Name */}
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                            
-                                                                                <label
-                                                                                    htmlFor={`add_${addBtnLabel}_constituency_field`}
-                                                                                    className='text-gray-600 capitalize text-sm'>
-                                                                                    Constituency Name
-                                                                                    <span className='text-medium leading-12 font-semibold'>
-                                                                                        {' '}
-                                                                                        *
-                                                                                    </span>
-                                                                                </label>
-                                                                                <input
-                                                                                    required
-                                                                                    type='text'
-                                                                                    placeholder='Constitency Name'
-                                                                                    name={`add_${addBtnLabel}_constituency_field`}
-                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                                                                />
-                                                                        </div>
-
-                                                                        {/* County */}
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_county_field`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Facility Type{' '}
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-                                                                                    *
-                                                                                </span>
-                                                                            </label>
-                                                                            <Select
-                                                                                options={[
-                                                                                    {
-                                                                                        value: 'type-1',
-                                                                                        label: 'type-1',
-                                                                                    },
-                                                                                    {
-                                                                                        value: 'type-2',
-                                                                                        label: 'type-2',
-                                                                                    },
-                                                                                ]}
-                                                                                required
-                                                                                placeholder='Select county'
-                                                                                onChange={() => console.log('changed type')}
-                                                                                name={`add_${addBtnLabel}_county_field`}
-                                                                                className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-                                                                            />
-
-                                                                            <div className='flex items-center space-x-3 mt-4'>
-                                                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                                <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </form>
-                                                            )
                                                         case 'ward':
                                                             return (
                                                             
@@ -954,16 +974,18 @@ const system_setup = (props) => {
                                                                                 },
                                                                             ]}
                                                                             required
-                                                                            placeholder='Select county'
+                                                                            placeholder='Select Constituency'
                                                                             onChange={() => console.log('changed type')}
                                                                             name={`add_${addBtnLabel}_constituency_field`}
                                                                             className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
 
-                                                                        <div className='flex items-center space-x-3 mt-4'>
+                                                                       
+                                                                    </div>
+
+                                                                    <div className='flex items-center space-x-3 mt-4'>
                                                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
                                                                             <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
-                                                                        </div>
                                                                     </div>
 
                                                                 </form>
@@ -988,72 +1010,1231 @@ const system_setup = (props) => {
                                                                             name={`add_${addBtnLabel}_town_field`}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
-                                                                        <div className='flex items-center space-x-3 mt-4'>
+                                                                      
+                                                                    </div>
+
+                                                                    <div className='flex items-center space-x-3 mt-4'>
                                                                             <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
                                                                             <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
-                                                                        </div>
                                                                     </div>
                                                                 </form>
                                                             )
                                                         case 'category':
                                                             return (
-                                                                <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
-                                                                        {/* Name */}
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                 resourceCategory === 'ServiceCatalogue' ? (
+                                                                    <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
+                                                                            {/* Name */}
+                                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                                
+                                                                                    <label
+                                                                                        htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                                        Name
+                                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                                            {' '}
+                                                                                            *
+                                                                                        </span>
+                                                                                    </label>
+                                                                                    <input
+                                                                                        required
+                                                                                        type='text'
+                                                                                        placeholder='Name'
+                                                                                        name={`add_${addBtnLabel}_constituency_field`}
+                                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    />
+                                                                            </div>
+
+                                                                            {/* Parent */}
+                                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                                <label
+                                                                                    htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                                    className='text-gray-600 capitalize text-sm'>
+                                                                                    Parent{' '}
+                                                                                    <span className='text-medium leading-12 font-semibold'>
+                                                                                        {' '}
+                                                                                        
+                                                                                    </span>
+                                                                                </label>
+                                                                                <Select
+                                                                                    options={[
+                                                                                        {
+                                                                                            value: 'type-1',
+                                                                                            label: 'type-1',
+                                                                                        },
+                                                                                        {
+                                                                                            value: 'type-2',
+                                                                                            label: 'type-2',
+                                                                                        },
+                                                                                    ]}
+                                                                                    
+                                                                                    placeholder='Select Parent'
+                                                                                    onChange={() => console.log('changed type')}
+                                                                                    name={`add_${addBtnLabel}_county_field`}
+                                                                                    className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                                />
+
+                                                                            </div>
+
+                                                                            {/* Abbreviation */}
+                                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                                
+                                                                                    <label
+                                                                                        htmlFor={`add_${addBtnLabel}_constituency_field`}
+                                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                                        Abbreviation
+                                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                                            {' '}
+                                                                                            
+                                                                                        </span>
+                                                                                    </label>
+                                                                                    <input
+                                                                                        required
+                                                                                        type='text'
+                                                                                        placeholder='Abbreviation'
+                                                                                        name={`add_${addBtnLabel}_constituency_field`}
+                                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    />
+                                                                            </div>
+
+                                                                            {/* Description */}
+                                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                             
                                                                                 <label
                                                                                     htmlFor={`add_${addBtnLabel}_constituency_field`}
                                                                                     className='text-gray-600 capitalize text-sm'>
-                                                                                    Name
+                                                                                    Description
                                                                                     <span className='text-medium leading-12 font-semibold'>
                                                                                         {' '}
-                                                                                        *
+                                                                                        
                                                                                     </span>
                                                                                 </label>
-                                                                                <input
+                                                                                <textarea
                                                                                     required
                                                                                     type='text'
-                                                                                    placeholder='Name'
+                                                                                    placeholder='Description'
                                                                                     name={`add_${addBtnLabel}_constituency_field`}
                                                                                     className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                 />
-                                                                        </div>
+                                                                               
+                                                                            </div>
 
-                                                                        {/* Parent */}
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                            </div>
+                                                                    </form>
+                                                                 ) :
+                                                                 (
+                                                                    <form className='w-full h-full'>
+                                                                
+                                                                        {/* Name */}
+                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_name`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                               Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Name'
+                                                                            name={`add_${addBtnLabel}_name`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
 
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_county_field`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Parent{' '}
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-                                                                                    
-                                                                                </span>
-                                                                            </label>
-                                                                            <Select
-                                                                                options={[
-                                                                                    {
-                                                                                        value: 'type-1',
-                                                                                        label: 'type-1',
-                                                                                    },
-                                                                                    {
-                                                                                        value: 'type-2',
-                                                                                        label: 'type-2',
-                                                                                    },
-                                                                                ]}
+                                                                 {/* Description */}
+                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_desc`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
                                                                                 
-                                                                                placeholder='Select county'
-                                                                                onChange={() => console.log('changed type')}
-                                                                                name={`add_${addBtnLabel}_county_field`}
-                                                                                className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-                                                                            />
+                                                                            </span>
+                                                                        </label>
+                                                                        <textarea
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Description'
+                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
 
-                                                                        </div>
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                </div>
 
-                                                                        {/* Abbreviation */}
+                                                                    </form>
+                                                                 )
+                                                            )
+
+                                                        case 'option group':
+                                                            const handleAddOptionGroup = e => {
+                                                              
+
+                                                                e.preventDefault()
+                             
+                                                                // Option Type Node
+                                                                /*
+                                                                const optionTypeNode = document.createElement('select')
+                                                                optionTypeNode.setAttribute('class', ' h-10 border-2 border-gray-200 flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none');
+                                                                optionTypeNode.setAttribute(
+                                                                    'placeholder',
+                                                                    'Select Service'
+                                                                );
+                                                                optionTypeNode.setAttribute(
+                                                                    'name',
+                                                                    `option_type_${uid}`
+                                                                );
+            
+                                                                const option0 = document.createElement('option');
+                                                                option0.innerText = 'BOOLEAN';
+                                                                option0.value = 'BOOLEAN';
+
+                                                                const option1 = document.createElement('option');
+                                                                option1.innerText = 'INTEGER';
+                                                                option1.value = 'INTEGER';
+
+                                                                const option2 = document.createElement('option');
+                                                                option2.innerText = 'DECIMAL';
+                                                                option2.value = 'DECIMAL';
+
+                                                                const option3 = document.createElement('option');
+                                                                option3.innerText = 'TEXT';
+                                                                option3.value = 'TEXT';
+
+                                                                optionTypeNode.appendChild(option0.getRootNode());
+                                                                optionTypeNode.appendChild(option1.getRootNode());
+                                                                optionTypeNode.appendChild(option2.getRootNode());
+                                                                optionTypeNode.appendChild(option3.getRootNode());
+                                                               
+
+                                                                optionTypeRef.current.append(optionTypeNode)
+                                                                 */
+
+                                                                const optionTypeNode = inputsContainerRef.current.childNodes[3].cloneNode(true);
+                                                          
+													            optionTypeNode.setAttribute('name', `option_type_${uid}`);
+                                                                optionTypeNode.setAttribute('options', `
+                                                                    type-1
+                                                                    type-2
+                                                                `)
+                                                                optionTypeRef.current.append(optionTypeNode)
+
+
+                                                                // Display Text
+                                                                 const displayTextNode = document.createElement('input')
+                                                                 displayTextNode.setAttribute(
+                                                                    'placeholder',
+                                                                    'Display Text'
+                                                                 );
+                                                                 displayTextNode.setAttribute(
+                                                                    'name',
+                                                                    `display_input_${uid}`
+                                                                 );
+                                                                 displayTextNode.setAttribute('class', 'flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none')
+                                                                 displayTextRef.current.append(displayTextNode)
+
+                                                                 // Delete Btn
+                                                                const deleteBtnNode = document.createElement('button')
+                                                                deleteBtnNode.setAttribute('class', 'w-auto h-auto flex-shrink-1 col-span-1 rounded p-2 bg-white border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white')
+                                                                deleteBtnNode.append('Delete')
+                                                                deleteBtnNode.onclick = (e) => {
+                                                                    e.preventDefault()
+
+                                                                    // optionTypeRef.current.childNodes
+                                                                    console.log('deleting...', {childNodes: optionTypeRef.current.childNodes});
+
+                                                                }
+                                                                
+
+                                                                // Option Value
+
+                                                                const optionValueNode = document.createElement('input')
+                                                                optionValueNode.setAttribute('class', 'col-span-2')
+                                                                optionValueNode.setAttribute(
+                                                                    'placeholder',
+                                                                    'Option Value'
+                                                                 );
+                                                                optionValueNode.setAttribute(
+                                                                    'name',
+                                                                    `option_value_${uid}`
+                                                                 );
+                                                                optionValueNode.setAttribute('class', 'flex-none col-span-3 w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none')
+                                                                optionValueRef.current.append(optionValueNode)
+                                                                optionValueRef.current.append(deleteBtnNode)
+
+                                                                
+                                                              
+
+                                                            } 
+
+                                                            return (
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => {e.preventDefault()}}>
+                                                                {/* Name */}
+                                                              
+                                                                    <div className='col-span-3 flex-1 flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_option_group`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Option Group Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Option Group Name'
+                                                                            name={`add_${addBtnLabel}_option_group`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                     </div>
+                                                               
+                                                                
+
+                                                                {/* inputsContainer */}
+                                                                <div className='grid grid-cols-3 place-content-start gap-3 space-y-1' ref={inputsContainerRef}>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Option Type*</h2>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Display Text*</h2>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Option Value*</h2>
+
+                                                                    {/* Option Type */}
+                                                                    <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
+                                                                            required
+                                                                            placeholder='Select Option Type'
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_option_type`}
+                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        />
+                                                                    {/* Display Text */}
+                                                                      <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Display Text'
+                                                                            name={`add_${addBtnLabel}_display_text`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+
+                                                                    {/* Option Value */}
+                                                                    <div className='grid grid-cols-4 w-full'>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Option Value'
+                                                                            name={`add_${addBtnLabel}_option_value`}
+                                                                            className='flex-none w-full bg-gray-50 col-span-3 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                    </div>
+                                                                    
+
+                                                                    <div ref={optionTypeRef} className='mx-0 px-0 space-y-4'>
+
+                                                                    </div>
+
+                                                                    <div ref={displayTextRef} className='mx-0 px-0 space-y-3'>
+
+                                                                    </div>
+                                                                    
+                                                                   
+                                                                    <div ref={optionValueRef} className='m-0 p-0 grid grid-cols-4 gap-2 w-full'>
+                                                                        
+                                                                    </div>
+
+                                                                 
+                                                                    <div className='col-span-3 flex items-center justify-end'>
+                                                                        <button className='rounded p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
+                                                                        onClick={handleAddOptionGroup}
+                                                                        >Add <PlusIcon className='w-5 h-5 text-white'/></button>
+                                                                    </div>
+                                                                   
+                                                                    
+                                                                   
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                 </div>
+                                                        </form>
+                                                            )
+
+                                                        case 'service':
+                                                            return (
+                                                                <form className='w-full h-full'>
+
+                                                                     {/* Service code */}
+                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                     <label
+                                                                            htmlFor={`add_${addBtnLabel}_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Service Code
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                        <Alert severity="info">Service Code will be generated after creating the service</Alert>
+
+                                                                    </div>
+                                                                     {/* Service Name */}
+                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Service Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Service Name'
+                                                                            name={`add_${addBtnLabel}_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                  {/* Abbreviation */}
+                                                                  <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                             Abbreviation
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                              
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Abbreviation'
+                                                                            name={`add_${addBtnLabel}_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                {/* Category */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_category_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                         Category{' '}
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        options={[
+                                                                            {
+                                                                                value: 'type-1',
+                                                                                label: 'type-1',
+                                                                            },
+                                                                            {
+                                                                                value: 'type-2',
+                                                                                label: 'type-2',
+                                                                            },
+                                                                        ]}
+                                                                        required
+                                                                        placeholder='Select a Category'
+                                                                        onChange={() => console.log('changed type')}
+                                                                        name={`add_${addBtnLabel}_category_field`}
+                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Option Groups */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_sub_county_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Option Groups   {' '}
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        options={[
+                                                                            {
+                                                                                value: 'type-1',
+                                                                                label: 'type-1',
+                                                                            },
+                                                                            {
+                                                                                value: 'type-2',
+                                                                                label: 'type-2',
+                                                                            },
+                                                                        ]}
+                                                                        required
+                                                                        placeholder='Select Option Group'
+                                                                        onChange={() => console.log('changed type')}
+                                                                        name={`add_${addBtnLabel}_sub_county_field`}
+                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_desc`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                        <textarea
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Service description'
+                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                {/* Has options */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                         <label
+                                                                            htmlFor={`add_${addBtnLabel}_has_options`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Service has options?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+
+                                                                        <input className='' type='checkbox' name={`add_${addBtnLabel}_has_options`}/>
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                </div>
+
+                                                                </form>
+                                                            )
+
+                                                        case 'infrastructure':
+                                                            return (
+                                                                <form className='w-full h-full'>
+
+                                                                {/* Name */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                                    </div>                                                            
+
+                                                                {/* Category */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_category_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                            Category{' '}
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        options={[
+                                                                            {
+                                                                                value: 'type-1',
+                                                                                label: 'type-1',
+                                                                            },
+                                                                            {
+                                                                                value: 'type-2',
+                                                                                label: 'type-2',
+                                                                            },
+                                                                        ]}
+                                                                        required
+                                                                        placeholder='Select a Category'
+                                                                        onChange={() => console.log('changed type')}
+                                                                        name={`add_${addBtnLabel}_category_field`}
+                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                 {/* Track Numbers */}
+                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                            <label
+                                                                            htmlFor={`add_${addBtnLabel}_track_numbers`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                             Track Numbers
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+
+                                                                        <input className='' type='checkbox' name={`add_${addBtnLabel}_track_numbers`}/>
+                                                                </div>
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_desc`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                        <textarea
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Description'
+                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                               
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                </div>
+
+                                                                </form>
+                                                            )
+
+                                                        case 'hr category':
+                                                            return (
+                                                                <form className='w-full h-full'>
+                                                                
+                                                                    {/* Name */}
+                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_name`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                               Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Name'
+                                                                            name={`add_${addBtnLabel}_name`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                 {/* Description */}
+                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_desc`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                        <textarea
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Description'
+                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                </div>
+
+                                                                </form>
+                                                            )
+                                                        case 'specialty':
+                                                            return(
+                                                                <form className='w-full h-full'>
+
+                                                                {/* Name */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                                    </div>                                                            
+
+                                                                {/* Category */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_category_field`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                            Category{' '}
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        options={[
+                                                                            {
+                                                                                value: 'type-1',
+                                                                                label: 'type-1',
+                                                                            },
+                                                                            {
+                                                                                value: 'type-2',
+                                                                                label: 'type-2',
+                                                                            },
+                                                                        ]}
+                                                                        required
+                                                                        placeholder='Select a Category'
+                                                                        onChange={() => console.log('changed type')}
+                                                                        name={`add_${addBtnLabel}_category_field`}
+                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_desc`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                        <textarea
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Description'
+                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                               
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                </div>
+
+                                                                </form>
+                                                            )
+
+                                                        case 'contact type':
+                                                            return (
+                                                                <form className='w-full h-full'>
+                                                                
+                                                                    {/* Name */}
                                                                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_name`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                                Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Name'
+                                                                            name={`add_${addBtnLabel}_name`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                    {/* Description */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_desc`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+
+                                                                        <textarea
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Description'
+                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                </div>
+
+                                                                </form>
+                                                            )
+                                                        case 'facility department':
+                                                            return (
+                                                            <form className='w-full h-full'>
+                                                                
+                                                                {/* Name */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                            Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+                                                                {/* Description */}
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_desc`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Description
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
                                                                             
+                                                                        </span>
+                                                                    </label>
+
+                                                                    <textarea
+                                                                    
+                                                                        type='text'
+                                                                        placeholder='Description'
+                                                                        name={`add_${addBtnLabel}_desc`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+                                                              {/* Regulatory Body */}
+                                                              <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                            Regulatory Body
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+
+                                                                    <Select
+                                                                        options={[
+                                                                            {
+                                                                                value: 'type-1',
+                                                                                label: 'type-1',
+                                                                            },
+                                                                            {
+                                                                                value: 'type-2',
+                                                                                label: 'type-2',
+                                                                            },
+                                                                        ]}
+                                                                        required
+                                                                        placeholder='Select a regulatory body'
+                                                                        onChange={() => console.log('changed type')}
+                                                                        name={`add_${addBtnLabel}_category_field`}
+                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                    />
+                                                                   
+                                                            </div>
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                            </div>
+
+                                                            </form>
+                                                            )
+                                                        case 'facility type detail':
+                                                            return (
+                                                            <form className='w-full h-full'>
+                                                                
+                                                                {/* Facility Type */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                            Facility Type
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                            </div>
+
+                                                            </form>
+                                                            )
+                                                        case 'facility type category':
+                                                            return (
+                                                                
+                                                            <form className='w-full h-full'>
+                                                                
+                                                                {/* Facility Type */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_type`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                            Facility Type
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <Select
+                                                                        options={[
+                                                                            {
+                                                                                value: 'type-1',
+                                                                                label: 'type-1',
+                                                                            },
+                                                                            {
+                                                                                value: 'type-2',
+                                                                                label: 'type-2',
+                                                                            },
+                                                                        ]}
+                                                                        
+                                                                        placeholder='Select facility type'
+                                                                        onChange={() => console.log('changed type')}
+                                                                        name={`add_${addBtnLabel}_type`}
+                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                    />
+                                                            </div>
+
+                                                            {/* Facility Type Detail */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_type_detail`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                            Facility Type Detail
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_type_detail`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                            </div>
+
+                                                            </form>
+                                                            )
+                                                        case 'facility operation status':
+                                                            return (
+                                                                
+                                                             <form className='w-full h-full'>
+                                                                
+                                                                {/* Facility Type */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_status`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                            Facility Status
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_status`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+                                                            {/* Is Seen Public */}
+                                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_is_public`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                            Will facilities with this status be seen in public? 
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='checkbox'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_is_public`}
+                                                                        
+                                                                    />
+                                                            </div>
+
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                            </div>
+
+                                                            </form>
+                                                            )
+                                                        case 'facility admission status':
+                                                            return (
+                                                                
+                                                            <form className='w-full h-full'>
+                                                                
+                                                                {/* Facility Type */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_status`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                            Facility Admission Status
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_status`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                            </div>
+
+                                                            </form>
+                                                            )
+                                                        case 'facility owner detail':
+                                                            return(
+                                                                <form className='w-full h-full'>
+                                                                
+                                                                {/* Name */}
+                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                           Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+                                                             {/* Description */}
+                                                             <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_desc`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Description
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            
+                                                                        </span>
+                                                                    </label>
+                                                                    <textarea
+                                                                    
+                                                                        type='text'
+                                                                        placeholder='Description'
+                                                                        name={`add_${addBtnLabel}_desc`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                            </div>
+
+                                                            <button onClick={(e) => {e.preventDefault()}} className="rounded p-2 bg-indigo-500 mt-3 text-white font-semibold">View change log</button>
+
+                                                                </form>
+                                                            )
+                                                            case 'facility owner category':
+                                                                return(
+                                                                    <form className='w-full h-full'>
+                                                                    
+                                                                    {/* Name */}
+                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_name`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                               Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Name'
+                                                                            name={`add_${addBtnLabel}_name`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                   
+                                                                    {/* Owner Type */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_owner_type`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                               Owner Type
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
+                                                                            required
+                                                                            placeholder='Select Facility Owner'
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_owner_type`}
+                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        />
+                                                                       
+                                                                </div>
+
+                                                                  {/* Abbreviation */}
+                                                                  <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                                
                                                                                 <label
                                                                                     htmlFor={`add_${addBtnLabel}_constituency_field`}
                                                                                     className='text-gray-600 capitalize text-sm'>
@@ -1066,40 +2247,391 @@ const system_setup = (props) => {
                                                                                 <input
                                                                                     required
                                                                                     type='text'
-                                                                                    placeholder='Name'
+                                                                                    placeholder='Abbreviation'
                                                                                     name={`add_${addBtnLabel}_constituency_field`}
                                                                                     className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                 />
-                                                                        </div>
+                                                                     </div>
 
-                                                                        {/* Description */}
-                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+    
+    
+                                                                 {/* Description */}
+                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                         
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_constituency_field`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Description
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-                                                                                    
-                                                                                </span>
-                                                                            </label>
-                                                                            <textarea
-                                                                                required
-                                                                                type='text'
-                                                                                placeholder='Name'
-                                                                                name={`add_${addBtnLabel}_constituency_field`}
-                                                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                                                            />
-                                                                            <div className='flex items-center space-x-3 mt-4'>
-                                                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                                <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
-                                                                            </div>
-                                                                        </div>
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_desc`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                        <textarea
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Description'
+                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+    
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                </div>
+    
+                                                                <button onClick={(e) => {e.preventDefault()}} className="rounded p-2 bg-indigo-500 mt-3 text-white font-semibold">View change log</button>
+    
                                                                     </form>
+                                                                )
+                                                        case 'job title':
+                                                            return (
+                                                                <form className='w-full h-full'>
+                                                                
+                                                                {/* Name */}
+                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                           Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+                                                             {/* Description */}
+                                                             <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_desc`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Description
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            
+                                                                        </span>
+                                                                    </label>
+                                                                    <textarea
+                                                                    
+                                                                        type='text'
+                                                                        placeholder='Description'
+                                                                        name={`add_${addBtnLabel}_desc`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                            </div>
+
+                                                            </form>
+                                                            )
+                                                    case 'regulatory body':
+                                                        const handleAddContactGroup = (e) => {
+                                                            e.preventDefault()
+                                                            // Contact Type
+                                                            const contactTypeNode = inputsContainerRef2.current.childNodes[2].cloneNode(true);
+                                                          
+                                                            contactTypeNode.setAttribute('name', `option_type_${uid}`);
+                                                            contactTypeNode.setAttribute('options', `
+                                                                type-1
+                                                                type-2
+                                                            `)
+                                                            contactTypeRef.current.append(contactTypeNode)
+
+
+                                                            // Contact Details
+                                                             const contactDetailsNode = document.createElement('input')
+                                                             contactDetailsNode.setAttribute(
+                                                                'placeholder',
+                                                                'Display Text'
+                                                             );
+                                                             contactDetailsNode.setAttribute(
+                                                                'name',
+                                                                `display_input_${uid}`
+                                                             );
+                                                             contactDetailsNode.setAttribute('class', 'flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none')
+                                                             contactDetailRef.current.append(contactDetailsNode)
+                                                        }
+                                                       
+                                                        return (
+                                                            <form className='w-full h-full'>
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_name`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                           Name
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            *
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                        required
+                                                                        type='text'
+                                                                        placeholder='Name'
+                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+                                                             {/* Abbreviation */}
+                                                             <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_abbr`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Abbreviation
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                    
+                                                                        type='text'
+                                                                        placeholder=''
+                                                                        name={`add_${addBtnLabel}_abbr`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+
+                                                                {/* inputsContainer */}
+                                                                <div className='grid grid-cols-2 place-content-start gap-3 space-y-1' ref={inputsContainerRef2}>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Contact Type*</h2>
+                                                                    <h2 className='text-lg font-semibold text-indigo-900'>Contact Details*</h2>
+                                                                
+
+                                                                    {/* Contact Type */}
+                                                                    <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
+                                                                            required
+                                                                            placeholder='Select Contact Type'
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_contact_type`}
+                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        />
+                                                                    {/* Contact Detail */}
+                                                                      <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Contact Details'
+                                                                            name={`add_${addBtnLabel}_display_text`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+
+                                                                    <div ref={contactTypeRef} className='mx-0 px-0 space-y-4'>
+
+                                                                    </div>
+
+                                                                    <div ref={contactDetailRef} className='mx-0 px-0 space-y-3'>
+
+                                                                    </div>
+                                                                    
+                                                                    <div className='col-span-2 flex items-center justify-end'>
+                                                                        <button className='rounded p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
+                                                                        onClick={handleAddContactGroup}
+                                                                        >Add <PlusIcon className='w-5 h-5 text-white'/></button>
+                                                                    </div>
+
+                                                                </div>
+                                                                
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                 </div>
+                                                    
+                                                            
+
+                                                            </form>
+                                                        )
+
+                                                    case 'regulatory status':
+                                                        return (
+                                                            <form className='w-full h-full'>
+                                                                 {/* regulatory Status */}
+                                                             <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    
+                                                                    <label
+                                                                        htmlFor={`add_${addBtnLabel}_status`}
+                                                                        className='text-gray-600 capitalize text-sm'>
+                                                                        Regulatory Status
+                                                                        <span className='text-medium leading-12 font-semibold'>
+                                                                            {' '}
+                                                                            
+                                                                        </span>
+                                                                    </label>
+                                                                    <input
+                                                                    
+                                                                        type='text'
+                                                                        placeholder='Enter Regulatory status'
+                                                                        name={`add_${addBtnLabel}_status`}
+                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                    />
+                                                            </div>
+
+                                                            <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                             </div>
+                                                    
+                                                            </form>
+                                                        )
+                                                        case 'upgrade reason':
+                                                            return (
+                                                                <form className='w-full h-full'>
+                                                                
+                                                                    {/* Facility Change reason */}
+                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_reason`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                               Facility Change reason
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Name'
+                                                                            name={`add_${addBtnLabel}_reason`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                 {/* Description */}
+                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_desc`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                        <textarea
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Description'
+                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                </div>
+
+                                                                </form>
                                                             )
 
-                                                        
+                                                        case 'Document':
+                                                            return (
+                                                                <form className='w-full h-full'>
+                                                                
+                                                                    {/* Name */}
+                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_reason`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                                Name
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder=''
+                                                                            name={`add_${addBtnLabel}_reason`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                 {/* Description */}
+                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_desc`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Description
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                        <textarea
+                                                                        
+                                                                            type='text'
+                                                                            placeholder='Description'
+                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                  {/* File */}
+                                                                  <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_file`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            File
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                        
+                                                                            type='file'
+                                                                            placeholder=''
+                                                                            name={`add_${addBtnLabel}_file`}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        />
+                                                                </div>
+
+                                                                <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                </div>
+
+                                                                </form>
+                                                            )
+                                                            
+                                                    
+
+             
 
                                                 }
 
