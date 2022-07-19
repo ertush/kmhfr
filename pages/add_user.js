@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MainLayout from '../components/MainLayout';
 import { checkToken } from '../controllers/auth/auth';
-
 import {ChevronDoubleLeftIcon} from '@heroicons/react/solid';
 import { PlusIcon } from "@heroicons/react/solid";
 import Select from 'react-select';
@@ -109,7 +108,7 @@ const AddUser=(props)=> {
 		return{ id: ft.value}
 	})
 
-console.log(userData['job_title']?.value);
+     // console.log(userData['job_title']?.value);
 	// console.log(selectedGroups);
 	const handleSubCounties =  async (ev)=>{
 		const optionsSubCounty = []
@@ -144,7 +143,6 @@ console.log(userData['job_title']?.value);
                   
                     </div>
 
-					
 					<div className='col-span-5 md:col-span-4 flex flex-col items-center border rounded pt-8 pb-4 gap-4 mt-2 order-last md:order-none'>
 						<div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
 							<div className=' w-full flex flex-col items-start p-3 rounded border border-gray-300/70 bg-gray-50'
