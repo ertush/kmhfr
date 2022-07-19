@@ -1,19 +1,11 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../components//MainLayout'
-import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
-import React, { useState, useRef, useEffect, useMemo } from 'react'
+import { DownloadIcon } from '@heroicons/react/outline'
+import React, { useState } from 'react'
 import { checkToken } from '../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
-import Select from 'react-select'
-import Button from '@mui/material/Button';
-import moment from 'moment'
-import ListSubheader from '@mui/material/ListSubheader';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 
@@ -29,7 +21,6 @@ const Users = (props) => {
   
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
-        console.log(params);
     return(
         <Link
         target="_blank"
@@ -47,7 +38,6 @@ const Users = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [groups, setGroups]=useState([])
- console.log(props.data)
         
     const onGridReady = (params) => {
         // console.log({api: params.api});
@@ -86,7 +76,7 @@ const Users = (props) => {
                                     {'Manage Groups'}
                                 </h2>
                                 <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/add_user')}} 
+                                onClick={() => {router.push('/add_group')}} 
                                 >
                                     {`Add Group `}
                                     <PlusIcon className='text-white ml-2 h-5 w-5'/>
@@ -94,10 +84,7 @@ const Users = (props) => {
                         </div>
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
-						
-                        
-                    </div>
+                
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div>

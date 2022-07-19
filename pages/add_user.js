@@ -132,13 +132,19 @@ const AddUser=(props)=> {
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
         <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
-                    <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
+			<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
                                 <a className="text-indigo-700" href="/">Home</a> {'>'}
                                 <a className="text-indigo-700" href="/users">Users</a> {'>'}
                                 <span className="text-gray-500">Add user</span>
                             </div>
+                        </div>
+                        <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                                <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+                                   <PlusIcon className='text-black ml-2 h-5 w-5'/>
+                                    {'New User'}
+                                </h2>
                         </div>
                   
                     </div>
@@ -627,12 +633,6 @@ const AddUser=(props)=> {
                         
 
                     </div>
-                    
-                    <aside className="flex flex-col col-span-5 md:col-span-1 p-1 md:h-full">
-                        <details className="rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z" open>
-                          
-                        </details>
-                    </aside>
                     {/* (((((( Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
@@ -796,7 +796,7 @@ AddUser.getInitialProps = async (ctx) => {
 					  err: err,
 					  data: [],
 					  query: {},
-					  path: ctx.asPath || '/users',
+					  path: ctx.asPath || '/add_user',
 					  current_url: ''
 				  }
 			  })
