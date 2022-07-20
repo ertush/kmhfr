@@ -2,15 +2,10 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../components//MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { checkToken } from '../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
-import moment from 'moment'
-import ListSubheader from '@mui/material/ListSubheader';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 
@@ -18,28 +13,32 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
-const Users = (props) => {
+const Groups = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
  
     // const { data, query, path, current_url } = props
   
     const router = useRouter()
+    const LinkCellRenderer = (params) =>{
+        // console.log(params);
+    return(
+        <Link
+        href={{ pathname: `/edit_group/`,
+        query: { id: params.data.id } }}
+        as={`/edit_group/${params.value}`}
 
+        ><a>{params.value}</a></Link>
+    )} 
 
     let columnDefs= [
-        {headerName: "Name", field: "name"},
-        {headerName: "Employee number", field: "employee_number"},
-        {headerName: "Email", field: "email"},
-        {headerName: "County", field: "county_name"},
-        {headerName: "Last login", field: "last_login"},
-        {headerName: "Active", field: "is_active"}
+        {headerName: "Name", field: "name", 
+        cellRenderer: "LinkCellRenderer" },
     ]
 
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
- console.log(props.data)
+    const [groups, setGroups]=useState([])
         
     const onGridReady = (params) => {
         // console.log({api: params.api});
@@ -48,39 +47,15 @@ const Users = (props) => {
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst=  props.data.results.map((user)=>{
+        const lnlst=  props.data.results.map((group)=>{
             return {
-                name: user.first_name + ' '+user.last_name,
-                employee_number: user.employee_number,
-                email: user.email,
-                county_name:user.county_name,
-                last_login: user.last_login !==null? moment(user.last_login).format('MMM Do YYYY, h:mm a') : "",
-                is_active:user.is_active == true ? "Yes" : "No"
+                id: group.id,
+                name: group.name
             }
-            
         })
-        // console.log(lnlst);
-     
-        setUsers(lnlst)
+        setGroups(lnlst)
         updateData(lnlst)
     };
-
-    useEffect(()=>{
-        const lnlst=  props.data.results.map((user)=>{
-            return {
-                name: user.first_name + ' '+user.last_name,
-                employee_number: user.employee_number,
-                email: user.email,
-                county_name:user.county_name,
-                last_login: user.last_login !==null? moment(user.last_login).format('MMM Do YYYY, h:mm a') : "",
-                is_active:user.is_active == true ? "Yes" : "No"
-            }
-            
-        })
-        // console.log(lnlst);
-     
-        setUsers(lnlst)
-    },[props.data.results])
 
     return (
         <div className="">
@@ -94,61 +69,23 @@ const Users = (props) => {
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
-                                <span className="text-gray-500">Users</span> {'>'}
+                                <span className="text-gray-500">Groups</span> {'>'}
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 
-                                    {'Manage Users'}
+                                    {'Manage Groups'}
                                 </h2>
                                 <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/add_user')}} 
+                                onClick={() => {router.push('/add_group')}} 
                                 >
-                                    {`Add User `}
+                                    {`Add Group `}
                                     <PlusIcon className='text-white ml-2 h-5 w-5'/>
                                 </button>
                         </div>
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
-						
-                        <List
-                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                        subheader={
-                            <ListSubheader component="div" id="nested-list-subheader">
-                                Resources
-                            </ListSubheader>
-                        }
-                        >	
-                            <ListItemButton sx={{backgroundColor: '#e7ebf0'}} name="rt"
-                                onClick={()=>{
-                                    router.push('/users?is_active=' + true)
-                                
-                                }}
-                            >
-                                <ListItemText primary="Users" />
-                            </ListItemButton>
-                            <ListItemButton sx={{ backgroundColor: '#e7ebf0'  }} 
-                                onClick={()=>{
-                                    router.push('/users?is_active=' + false)
-                                
-                                }}
-                            >
-                                <ListItemText primary="InActive Users" />
-                            </ListItemButton>
-                            <ListItemButton sx={{ backgroundColor: '#e7ebf0' }}
-                            onClick={()=>{
-                                router.push('/groups')
-                            
-                            }}
-                            >
-                                <ListItemText primary="Groups"/>
-                            </ListItemButton>
-                                
-                        </List>
-                </div>
+                
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div>
@@ -193,23 +130,27 @@ const Users = (props) => {
                           </div>
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
                       
-                            <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
+                            <div className="ag-theme-alpine" style={{ height: '100vh', width: '100%' }}>
                                 <AgGridReact
                                     // floatingFilter={true}
+                                    // sideBar={true} //{'filters'}
                                     rowStyle={{width: '100vw'}}
-                                    sideBar={true} //{'filters'}
                                     defaultColDef={{
                                         sortable: true,
                                         filter: true,
                                     }}
+                                    reactNext={true}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={users}
+                                    rowData={groups}
                                     columnDefs={columnDefs}
+                                    frameworkComponents={{
+                                        LinkCellRenderer
+                                      }}
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {groups && groups.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
@@ -256,12 +197,12 @@ const Users = (props) => {
     )
 }   
 
-Users.getInitialProps = async (ctx) => {
+Groups.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
 // console.log(ctx.query.is_active);
 
     const fetchData = (token) => {
-        let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name'
+        let url = API_URL + '/users/groups/?fields=id,name'
         let query = { 'searchTerm': ''}
         let id={'id': ''}
         if (ctx?.query?.qf) {
@@ -299,7 +240,7 @@ Users.getInitialProps = async (ctx) => {
         }).then(r => r.json())
             .then(json => {
                     return {
-                        data: json, query, token, path: ctx.asPath || '/users', current_url: current_url 
+                        data: json, query, token, path: ctx.asPath || '/groups', current_url: current_url 
                     }
                 
             }).catch(err => {
@@ -309,7 +250,7 @@ Users.getInitialProps = async (ctx) => {
                     err: err,
                     data: [],
                     query: {},
-                    path: ctx.asPath || '/users',
+                    path: ctx.asPath || '/groups',
                     current_url: ''
                 }
             })
@@ -328,7 +269,7 @@ Users.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/users'
+                window.location.href = '/groups'
             }
         }
         setTimeout(() => {
@@ -337,7 +278,7 @@ Users.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/users',
+                path: ctx.asPath || '/groups',
                 current_url: ''
             }
         }, 1000);
@@ -345,4 +286,4 @@ Users.getInitialProps = async (ctx) => {
 
 }
 
-export default Users
+export default Groups
