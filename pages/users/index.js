@@ -106,7 +106,7 @@ const Users = (props) => {
                                     {'Manage Users'}
                                 </h2>
                                 <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/add_user')}} 
+                                onClick={() => {router.push('/users/add_user')}} 
                                 >
                                     {`Add User `}
                                     <PlusIcon className='text-white ml-2 h-5 w-5'/>

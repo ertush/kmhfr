@@ -19,14 +19,14 @@ export default function NativePickers({ onSelected }) {
   }
   
   return (
-    <Stack component="form" noValidate spacing={3}>
+    <Stack component="form" noValidate sx={{flexDirection:'column', alignItems:'center', justifyContent:'center', gap:3, marginTop:4}}>
       <TextField
         id="date"
         label="From"
         type="date"
         size='small'
         defaultValue={ dateNow }
-        sx={{ width: 240 }}
+        sx={{ width: '100%' }}
         InputLabelProps={{
           shrink: true,
         }}
@@ -43,10 +43,8 @@ export default function NativePickers({ onSelected }) {
         defaultValue={ dateNow }
         margin='dense'
         sx={{
-          width: 240
-      
-    
-        
+          width: '100%' 
+
         }}
         onChange={(e) => {
           setToDate(e.target.value)

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import MainLayout from '../components/MainLayout';
-import { checkToken } from '../controllers/auth/auth';
-import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon} from '@heroicons/react/solid';
+import MainLayout from '../../components/MainLayout';
+import { checkToken } from '../../controllers/auth/auth';
+import router from 'next/router';
+import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, UserGroupIcon, PlusIcon} from '@heroicons/react/solid';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 
 
-const AddGroup=(props)=> {
+const AddGroup = (props)=> {
 	const [selPermissions, setselPermissions] = useState([])
 
 	let permissions = props?.data?.results
@@ -58,22 +59,21 @@ const AddGroup=(props)=> {
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <a className="text-indigo-700" href="/">Home</a> {'>'}
-                                <a className="text-indigo-700" href="/groups">Groups</a> {'>'}
+								<span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/')}>Home</span> {'>'}
+                                <span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/users/groups')}>Groups</span> {'>'}
                                 <span className="text-gray-500">Add group</span>
                             </div>
                         </div>
                         <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                   <PlusIcon className='text-black ml-2 h-5 w-5'/>
+                                   <UserGroupIcon className='text-black ml-2 h-5 w-5'/>
                                     {'New Group'}
                                 </h2>
                         </div>
                   
                     </div>
 
-					<div className='col-span-5 md:col-span-4 flex flex-col items-center border rounded pt-8 pb-4 gap-4 mt-2 order-last md:order-none'>
-						<div className='flex flex-col justify-center items-start px-1 md:px-4 w-full'>
+						<div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full'>
 							<div className=' w-full flex flex-col items-start p-3 rounded border border-gray-300/70 bg-gray-50'
 								style={{ minHeight: '250px' }}>
 							
@@ -314,7 +314,7 @@ const AddGroup=(props)=> {
                         </div>
                         
 
-                    </div>
+                
                
                     {/* (((((( Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
