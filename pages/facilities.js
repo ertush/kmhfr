@@ -115,14 +115,15 @@ const Home = (props) => {
         const pascalCaseArr = []
         if (str !== undefined || str !== '' || str !== null) {
         const words = str?.split(' ')
-        
 
+       
         words?.forEach(word => {
             pascalCaseArr.push(`${word[0]?.toUpperCase()}${word?.slice(1,word?.length)}`)
         })
         }
 
-        return pascalCaseArr.join(' ')
+        // console.log({pascalCaseArr: pascalCaseArr.join(' ')})
+        return pascalCaseArr.join(' ') === "Undefined" ? 'Facilities' : `${pascalCaseArr.join(' ')} Matches`
     }
 
     const applyFilter = (qf) => {
@@ -151,17 +152,25 @@ const Home = (props) => {
             return
         }
     }
+
+    const [facilityTitle, setFacilityTitle] = useState('') 
+
     useEffect(() => {
+        setFacilityTitle(toPascalCase(decodeURI(props?.path?.split('=')[1]?.split('&')[0]?.split('_')?.join(' '))))
         let qry = props?.query
-        console.log({props})
+        // console.log({props})
         delete qry.searchTerm
         delete qry.qf
         setDrillDown({ ...drillDown, ...qry })
-    }, [currentQuickFilter])
+
+        return () => {
+            setFacilityTitle('')
+        }
+    }, [currentQuickFilter, facilityTitle])
     // }, [drillDown])
 
 
-
+    
 
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
@@ -174,7 +183,7 @@ const Home = (props) => {
 
 
     return (
-        <div className="">
+        <>
             <Head>
                 <title>KMHFL - Facilities</title>
                 <link rel="icon" href="/favicon.ico" />
@@ -198,7 +207,7 @@ const Home = (props) => {
                                             onClick={evt => {
                                                 setCurrentQuickFilter(qf.id)
                                                 let robj = {pathname: '/facilities', query: {qf: qf.id}, qf: qf.id}
-                                                console.log({robj})
+                                                // console.log({robj})
                                                 if(qf.id === 'all'){
                                                     router.push(robj)
                                                     return
@@ -218,15 +227,14 @@ const Home = (props) => {
                                 })}
                             </div>
                         </div>
-                        {/* <details open className="bg-gray-100 p-1 rounded"><summary>drilldown:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify(drillDown, null, 2)}</pre></details> */}
+                        
 
-                        {/* <details className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">{JSON.stringify({ ...filters, owner_type: "", county: [], sub_county: [], service: [], service_category: [], constituency: [], keph_level:[], ward: [], facility_type: [] }, null, 2)}</pre></details> */}
 
                         <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
                             <div className="flex flex-col items-start justify-start gap-y-1">
                                 <h1 className="text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2">
                                     {/* {(props?.query?.searchTerm && !props?.query?.searchTerm.includes('undefined') && props?.query?.searchTerm.length > 0) ? `Facilities matching '${props?.query?.searchTerm}'` : `${props?.query?.searchTerm}`} */}
-                                    { !props?.path.includes('all') ? `${toPascalCase(props?.path?.split('=')[1]?.split('&')[0]?.split('_')?.join(' '))} Facilities` : 'All Facilities' }
+                                    { !props?.path.includes('all') ? `${facilityTitle}` : 'All Facilities' }
                                 </h1>
                                 <h5 className="text-lg font-medium text-gray-800">
                                     {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('ndefined') &&
@@ -240,7 +248,7 @@ const Home = (props) => {
                                 {/* Button group */}
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Facility Button */}
-     c                               <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
+                                   <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facility/add_facility')}} className='flex items-center justify-center'>
 
                                             <span>Add Facility</span>
@@ -257,20 +265,7 @@ const Home = (props) => {
                                 </div>
                             
                                 <Menu.Items as="ul" className="absolute top-10 right-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-1/2">
-                                    {/* <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
-                                        {({ active }) => (
-                                            <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=pdf' } else { dl_url += '?format=pdf' }
-                                                console.log('Downloading PDF. ' + dl_url || '')
-                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                window.location.href = dl_url
-                                            }}>
-                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>PDF</span>
-                                            </button>
-                                        )}
-                                    </Menu.Item> */}
+                                   
                                     <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
                                         {({ active }) => (
                                             <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
@@ -563,7 +558,7 @@ const Home = (props) => {
                                                     }).join('&')
                                                     let op = '?'
                                                     if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                    console.log(props.path)
+                                                    // console.log(props.path)
                                                     // setDrillDown({})
                                                     if (router || typeof window == 'undefined') {
                                                         router.push(props.path + op + qry)
@@ -597,7 +592,7 @@ const Home = (props) => {
                     {/* ))))))) */}
                 </div>
             </MainLayout >
-        </div >
+        </>
     )
 }
 

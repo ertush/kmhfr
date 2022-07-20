@@ -183,7 +183,7 @@ const CommUnit = (props) =>
   ];
   return (
     console.log(props),
-    <div className=''>
+    <>
       <Head>
         <title>KMHFL - {cu?.name || cu?.official_name}</title>
         <link rel='icon' href='/favicon.ico' />
@@ -191,7 +191,7 @@ const CommUnit = (props) =>
       </Head>
 
       <MainLayout>
-        <div className='w-full grid grid-cols-4 gap-4 p-2 my-6'>
+        <div className='w-full grid grid-cols-1 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6'>
           <div className='col-span-4 flex flex-col items-start px-4 justify-start gap-3'>
 
             {/* Breadcrumb */}
@@ -284,11 +284,11 @@ const CommUnit = (props) =>
           </div>
 
           {/* Form */}
-          <div className='col-span-5 md:col-span-3 flex flex-col gap-3 mt-4'>
+          <div className='col-span-1 md:col-span-4 flex flex-col md:gap-3 mt-4'>
 
             <Tabs.Root orientation='horizontal' className='w-full flex flex-col tab-root' defaultValue='basic_details'>
               {/* Tabs List */}
-              <Tabs.List className='list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b'>
+              <Tabs.List className='list-none md:grid md:grid-cols-3 flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b'>
                 <Tabs.Tab value='basic_details' className='p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item'>
                   Basic Details
                 </Tabs.Tab>
@@ -663,7 +663,7 @@ const CommUnit = (props) =>
                 <>
                   <form className='flex flex-col w-full items-start justify-start gap-3'>
                     {/* Form labels */}
-                    <div className='grid grid-cols-3 place-content-start gap-3 w-full'>
+                    <div className='grid grid-cols-4 place-content-start gap-3 w-full'>
                       {/* First Name */}
                       <div className='col-start-1 col-span-1'>
                         <label
@@ -700,7 +700,7 @@ const CommUnit = (props) =>
                     </div>
 
                     {/* Form Data */}
-                    <div className='grid grid-cols-3 place-content-start gap-3 w-full'>
+                    <div className='grid grid-cols-4 place-content-start gap-3 w-full'>
                       {
                         cu.health_unit_workers &&
                         cu.health_unit_workers.length > 0 &&
@@ -816,10 +816,10 @@ const CommUnit = (props) =>
                             <br />
                         <form
                           name='chu_services_form'
-                          className='flex flex-col w-full items-start justify-start gap-3'
+                          className='flex flex-col w-full items-center justify-start gap-3'
                         >
                           {/* Transfer list Container */}
-                          <div className='flex items-center w-full h-auto min-h-[200px]'>
+                          <div className='flex items-center w-full h-auto min-h-[300px]'>
                             {/* serviceCategories.map(ctg => ctg.name) */}
                             <TrasnferListServices
                               categories={serviceCategories.map(
@@ -846,7 +846,7 @@ const CommUnit = (props) =>
 
         </div>
       </MainLayout >
-    </div >
+    </>
   );
 };
 

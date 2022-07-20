@@ -32,7 +32,7 @@ const DelayedLoginButton = () => {
     return (
       <a
         href="/auth/login"
-        className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold"
+        className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-2 md:mr-3 whitespace-nowrap py-2 rounded text-base font-semibold"
       >
         Log in
       </a>
@@ -56,7 +56,7 @@ export default function HeaderLayout({
 }) {
   const router = useRouter();
   const activeClasses =
-    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-2 border-green-600";
+    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4  border-green-600";
   const inactiveClasses =
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];
@@ -127,7 +127,7 @@ export default function HeaderLayout({
   }, []);
 
   return (
-    <header className="flex flex-wrap items-center justify-between gap-x-4 w-full p-1 max-w-screen-2xl">
+    <header className="flex flex-wrap items-center justify-start gap-x-4 w-full p-1 max-w-screen-3xl">
       <title>KMHFL 3</title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-0 md:gap-5">
         <div id="logo" className="mx:px-3 pb-1">
@@ -146,7 +146,8 @@ export default function HeaderLayout({
           <button className="border-2 border-gray-600 rounded p-1 md:hidden focus:bg-black focus:border-black focus:text-white hover:bg-black hover:border-black hover:text-white active:bg-black active:border-black active:text-white">
             <MenuAlt1Icon className="w-6" />
           </button>
-          <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 px-2 py-1 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none justify-between gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
+          <ul className="flex-col md:flex-row items-start md:mx-4 md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
+            {/* Dashboard / Home */}
             <li className="flex-wrap font-semibold">
               <Link href={isLoggedIn ? "/dashboard" : "/"}>
                 <a
@@ -160,6 +161,7 @@ export default function HeaderLayout({
                 </a>
               </Link>
             </li>
+            {/* Facilities */}
             <li className="flex-wrap font-semibold">
               <Link href="/facilities">
                 <a
@@ -174,6 +176,7 @@ export default function HeaderLayout({
                 </a>
               </Link>
             </li>
+            {/* Community Units */}
             <li className="flex-wrap font-semibold">
               <Link href="/community-units">
                 <a
@@ -188,6 +191,7 @@ export default function HeaderLayout({
                 </a>
               </Link>
             </li>
+            {/* Users */}
             <li className="flex-wrap font-semibold">
               <Link href="/users">
                 <a
@@ -204,15 +208,32 @@ export default function HeaderLayout({
               <Link href="/gis">
                 <a
                   className={
-                    (currentPath == "/gis" ? activeClasses : inactiveClasses) +
-                    " text-base md:text-lg"
+                    (currentPath == "/gis" ||
+                    currentPath.includes("gis")
+                      ? activeClasses
+                      : inactiveClasses) + " text-base md:text-lg"
                   }
                 >
-                  GIS
+                   GIS
                 </a>
               </Link>
             </li>
-            {/* <li className="flex-wrap font-semibold"> */}
+            {/* System setup */}
+            <li className="flex-wrap font-semibold">
+              <Link href="/system_setup">
+                <a
+                  className={
+                    (currentPath == "/system_setup" ||
+                    currentPath.includes("system_setup")
+                      ? activeClasses
+                      : inactiveClasses) + " text-base md:text-lg"
+                  }
+                >
+                  System setup 
+                </a>
+              </Link>
+            </li>
+           {/* Reports */}
               
               <Menu as="div" className="relative ">
                   <Menu.Button
@@ -263,19 +284,46 @@ export default function HeaderLayout({
               
             </Menu.Items>
           </Menu>
-            {/* </li> */}
+          
+          {/* Admin Offices */}
+           
+          <li className="flex-wrap font-semibold">
+            <Link href="/admin_offices">
+              <a
+                className={
+                  (currentPath == "/admin_offices" ? activeClasses : inactiveClasses) +
+                  " text-base md:text-lg"
+                }
+              >
+                Admin Offices
+              </a>
+            </Link>
+          </li>
+              {/* GIS */}
+              <li className="flex-wrap font-semibold">
+              <Link href="/gis">
+                <a
+                  className={
+                    (currentPath == "/gis" ? activeClasses : inactiveClasses) +
+                    " text-base md:text-lg"
+                  }
+                >
+                  GIS
+                </a>
+              </Link>
+            </li>
           </ul>
         </div>
       </nav>
       <div className="flex flex-wrap items-center justify-end gap-2 md:gap-5 px-2 md:flex-grow order-last sm:order-none flex-grow sm:flex-grow-0z">
         <form
-          className="inline-flex flex-row flex-grow gap-x-2 py-2 lg:py-0"
+          className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
           action={path || "/facilities"}
         >
           <input
             name="q"
             id="search-input"
-            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+            className="flex-none bg-gray-50 rounded p-2 md:w-9/12 md:flex-grow-0 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
             type="search"
             defaultValue={searchTerm}
             placeholder="Search a facility/CHU"
@@ -309,16 +357,7 @@ export default function HeaderLayout({
               as="ul"
               className="list-none flex flex-col items-center justify-start gap-2 p-3 absolute mt-3 bg-black right-0 text-white w-40 rounded"
             >
-              {/* <Menu.Item as="li" className="flex items-center w-full gap-1">
-                                        {({ active }) => (
-                                            <a
-                                                className={`w-full hover:text-green-400 font-medium ${active && 'text-green-400'}`}
-                                                href="/account"
-                                            >
-                                                My account
-                                            </a>
-                                        )}
-                                    </Menu.Item> */}
+          
               <Menu.Item as="li" className="flex items-center w-full gap-1">
                 {({ active }) => (
                   <a

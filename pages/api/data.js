@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { getUserDetails, logUserIn, checkToken } from "../../controllers/auth/auth";
+import { checkToken } from "../../controllers/auth/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -44,7 +44,6 @@ export default async function getData(req, res) {
                 }
                 return
             })
-            return
         } catch (err) {
             console.log("getData API error: ", err)
             res.status(500).json({

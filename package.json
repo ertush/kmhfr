@@ -42,12 +42,15 @@
     "react-dual-listbox": "^2.2.0",
     "react-highcharts": "^16.1.0",
     "react-leaflet": "^3.2.0",
-    "react-select": "^4.3.1"
+    "react-select": "^4.3.1",
+    "react-toastify": "^9.0.5",
+    "react-use-uuid": "^2.0.1",
+    "react-window": "^1.8.7"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.6",
-    "postcss": "^8.3.5",
     "eslint": "^8.18.0",
+    "postcss": "^8.3.5",
     "tailwindcss": "^2.2.4"
   }
 }
