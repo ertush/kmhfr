@@ -7,10 +7,25 @@ import { checkToken } from '../../controllers/auth/auth'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/outline'
+import { ChevronDownIcon, FilterIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
 
+// @mui imports
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
+import TabPanel from '../../components/TabPanel'
+
+
 import NativePickers from '../../components/date-picker'
+
+// import { display, grid } from '@mui/system'
 
 
 const Home = (props) => {
@@ -111,6 +126,13 @@ const Home = (props) => {
         },
     ]
 
+    const a11yProps = (index) => {
+        return {
+          id: `vertical-tab-${index}`,
+          'aria-controls': `vertical-tabpanel-${index}`,
+        };
+      }
+
     const toPascalCase = (str) => {
         const pascalCaseArr = []
         if (str !== undefined || str !== '' || str !== null) {
@@ -153,6 +175,8 @@ const Home = (props) => {
         }
     }
 
+ 
+
     const [facilityTitle, setFacilityTitle] = useState('') 
 
     useEffect(() => {
@@ -171,15 +195,30 @@ const Home = (props) => {
 
 
     
-
+    
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
+    const [isAccordionExpanded, setIsAccordionExpanded] = useState(true)
+    const [value, setValue] = React.useState(0);
 
     const handleDates=(from, to) => {
         setFromDate(from);
         setToDate(to);
     
      }
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+     const handleAccordionExpand = (ev) => {
+        if(isAccordionExpanded){
+            setIsAccordionExpanded(false)
+        }else{
+            setIsAccordionExpanded(true)
+        }
+        
+    }
 
 
     return (
@@ -190,13 +229,189 @@ const Home = (props) => {
             </Head>
 
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
-                    <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
-                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
+                <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 ">
+                    <div className="col-span-5 flex flex-col gap-4 px-4">
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
+                            {/* Bread Crumbs */}
+
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
                                 <span className="text-gray-500">Facilities</span>
                             </div>
+
+                            {/* Accordion Filter */}
+
+                            <Accordion sx={{my:1, width:'100%', boxShadow:'none', border:'solid 1px #d5d8de', borderRadius:1}} expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
+                                            <AccordionSummary
+                                                expandIcon={<ExpandMoreIcon />}
+                                                aria-controls="panel1a-content"
+                                                id="panel1a-header"
+                                                >
+                                                
+                                                <h2 className='my-2 font-semibold text-xl text-black flex items-center space-x-2'>
+                                                <FilterIcon className='w-6 h-6 text-black'/>
+                                                    <p> Filter Facilities By ...</p></h2>
+                                            </AccordionSummary>
+                                            <AccordionDetails sx={{width:'100%', padding:4, height:'auto' }}>
+                                            <div className="flex flex-col gap-2">
+                                                        {filters && filters?.error ?
+                                                            (<div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                                                <p>No filters.</p>
+                                                            </div>)
+                                                            : (
+                                                                <div className='grid grid-cols-4 place-content-center items-content-end gap-2'>
+                                                                    {filters && Object.keys(filters).length > 0 &&
+                                                                        Object.keys(fltrs).map(ft => (
+                                                                            <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                                                <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
+                                                                                <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                                                    options={
+                                                                                        Array.from(filters[ft] || [],
+                                                                                            fltopt => {
+                                                                                                return {
+                                                                                                    value: fltopt.id, label: fltopt.name
+                                                                                                }
+                                                                                            })
+                                                                                    }
+                                                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                    onChange={sl => {
+                                                                                        let nf = {}
+                                                                                        if (Array.isArray(sl)) {
+                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                        } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                            nf[ft] = sl.value
+                                                                                        } else {
+                                                                                            delete nf[ft]
+                                                                                            // let rr = drillDown.filter(d => d.key !== ft)
+                                                                                            // setDrilldown(rr)
+                                                                                        }
+                                                                                        setDrillDown({ ...drillDown, ...nf })
+                                                                                    }} />
+                                                                            </div>
+                                                                        ))}
+                                                                    {/* From and To Date Picker Components */}
+
+                                                                    <NativePickers onSelected={
+                                                                        handleDates
+                                                                    }></NativePickers>
+                                                                    
+
+                                                                    {/* Yes/No Dialog */}
+                                                                    <div className="w-full col-span-3 grid grid-cols-4  mb-3">
+                                                                        <div className='flex flex-col items-start justify-center gap-1'>
+                                                                            <span className='inline-flex gap-2'>
+                                                                                <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm">Has edits</label>
+                                                                                <input type="checkbox" className="justify-self-end" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
+                                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                                }} />
+                                                                            </span>
+                                                                            
+
+                                                                            <span className='inline-flex gap-2'>
+                                                                                <label htmlFor="is_approved" className="text-gray-700 capitalize text-sm">Approved</label>
+                                                                                <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.is_approved === "true"} name="is_approved" id="is_approved" onChange={ev => {
+                                                                                    setDrillDown({ ...drillDown, 'is_approved': true })
+                                                                                }} />   
+                                                                            </span>
+                                                                        </div>
+
+         
+                                                                        <div className='flex flex-col items-start justify-center gap-1'>
+                                                                                <span className='inline-flex gap-2'>
+                                                                                <label htmlFor="is_complete" className="text-gray-700 capitalize text-sm">Complete</label>
+                                                                        
+                                                                                    <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.is_complete === "true"} name="is_complete" id="is_complete" onChange={ev => {
+                                                                                        setDrillDown({ ...drillDown, 'is_complete': true })
+                                                                                    }} />
+                                                                                </span>
+                                                                        
+                                                                        
+                                                                                <span className='inline-flex gap-2'>
+                                                                            <label htmlFor="number_of_beds" className="text-gray-700 capitalize text-sm">Has beds</label>
+                                                                        
+                                                                            <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.number_of_beds === "true"} name="number_of_beds" id="number_of_beds" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'number_of_beds': true })
+                                                                            }} />
+                                                                            </span>
+                                                                        </div>
+                                                                        
+
+                                                                        <div className='flex flex-col items-start justify-center gap-1'>
+                                                                                    <span className='inline-flex gap-2'>
+                                                                            <label htmlFor="number_of_cots" className="text-gray-700 capitalize text-sm">Has cots</label>
+                                                                        
+                                                                            <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.number_of_cots === "true"} name="number_of_cots" id="number_of_cots" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'number_of_cots': true })
+                                                                            }} />
+                                                                            </span>
+                                                                        
+                                                                            <span className='inline-flex gap-2'>
+                                                                            <label htmlFor="open_whole_day" className="text-gray-700 capitalize text-sm">Open 24 hours</label>
+                                                                        
+                                                                            <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.open_whole_day === "true"} name="open_whole_day" id="open_whole_day" onChange={ev => {
+                                                                                setDrillDown({ ...drillDown, 'open_whole_day': true })
+                                                                            }} />
+                                                                            </span>
+                                                                        </div>
+                                                                    
+                                                                        <div className='flex flex-col items-start justify-center gap-1'>
+                                                                                    <span className='inline-flex gap-2'>
+                                                                        <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm">Open weekends</label>
+                                                                        
+                                                                        <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.open_weekends === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                            setDrillDown({ ...drillDown, 'open_weekends': true })
+                                                                        }} />
+                                                                        </span>
+                                                                        
+                                                                        <span className='inline-flex gap-2'>
+                                                                        <label htmlFor="open_public_holidays" className="text-gray-700 capitalize text-sm">Open holidays</label>
+                                                                    
+                                                                    <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
+                                                                        setDrillDown({ ...drillDown, 'open_public_holidays': true })
+                                                                    }} />
+                                                                        </span>
+                                                                        </div>
+                                                                        
+                                                                    
+                                                                    </div>
+                                                                    <button onClick={ev => {
+                                                                        if (Object.keys(drillDown).length > 0) {
+                                                                            let qry = Object.keys(drillDown).map(function (key) {
+                                                                                let er = ''
+                                                                                if (props.path && !props.path.includes(key + '=')) {
+                                                                                    er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
+                                                                                }
+                                                                                return er
+                                                                            }).join('&')
+                                                                            let op = '?'
+                                                                            if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
+                                                                            // console.log(props.path)
+                                                                            // setDrillDown({})
+                                                                            if (router || typeof window == 'undefined') {
+                                                                                router.push(props.path + op + qry)
+                                                                            } else {
+                                                                                if (typeof window !== 'undefined' && window) {
+                                                                                    window.location.href = props.path + op + qry
+                                                                                }
+                                                                            }
+
+                                                                        }
+                                                                        setIsAccordionExpanded(false)
+                                                                    }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
+                                                                    
+                                                                    <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center" onClick={ev => {
+                                                                        router.push('/facilities')
+                                                                    }}>Clear filters</button>
+                                                                    
+                                                                </div>
+                                                            )
+                                                        }
+                                             </div>
+                                            </AccordionDetails>
+                            </Accordion> 
+                            
+                            {/* Old Quick Filters */}
+
                             <div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3">
                                 {quickFilters.map((qf, i) => {
                                     return (
@@ -228,7 +443,7 @@ const Home = (props) => {
                             </div>
                         </div>
                         
-
+                        {/* Buttons section */}
 
                         <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
                             <div className="flex flex-col items-start justify-start gap-y-1">
@@ -300,222 +515,137 @@ const Home = (props) => {
 
                         </div>
                     </div>
-                    <div className="col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none">
-                        <div className="flex flex-col justify-center items-center px-1 md:px-4 w-full ">
-                            {/* <pre>{JSON.stringify(facilities[0], null, 2)}</pre> */}
-                            {facilities && facilities.length > 0 ? facilities.map((facility, index) => (
-                                <div key={facility.id} className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
-                                    <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
-                                        <h3 className="text-2xl w-full">
-                                            <a href={'/facilities/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
-                                                <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility.official_name || facility.official_name || facility.name}
-                                            </a>
-                                        </h3>
-                                        {/* <p className="text-sm text-gray-600 w-full">{facility.nearest_landmark || ' '}{' '} {facility.location_desc || ' '}</p> */}
-                                        <p className="text-sm text-gray-600 w-full flex gap-y-2 gap-x-5 items-center">
-                                            <span className="text-lg text-black font-semibold"># {facility.code ? facility.code : 'NO_CODE' || ' '}</span>
-                                            <span>{facility.owner_name || ' '}</span>
-                                        </p>
-                                        <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
-                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                <label className="text-xs text-gray-500">County:</label>
-                                                <span className="whitespace-pre-line">{facility.county_name || facility.county || 'N/A'}</span>
-                                            </div>
-                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                <label className="text-xs text-gray-500">Sub-county:</label>
-                                                <span className="whitespace-pre-line">{facility.sub_county_name || facility.sub_county || 'N/A'}</span>
-                                            </div>
-                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                <label className="text-xs text-gray-500">Ward:</label>
-                                                <span className="whitespace-pre-line">{facility.ward_name || 'N/A'}</span>
-                                            </div>
-                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
-                                                <label className="text-xs text-gray-500">Constituency:</label>
-                                                <span className="whitespace-pre-line">{facility.constituency_name || facility.constituency || 'N/A'}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-8 md:col-span-8 lg:col-span-2 flex flex-wrap items-center justify-evenly gap-x-2 gap-y-1 text-lg">
-                                        {(facility.operational || facility.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
-                                        {!facility.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility.approved ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility.rejected ? "Rejected" : ""}</span>}
-                                        {facility.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
-                                    </div>
-                                </div>
-                            )) : (
-                                <div className="w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3">
-                                    <span className="text-base text-gray-700">No facilities found</span>
-                                    <Link href={props.path || '/'}>
-                                        <a className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
-                                            Refresh.
-                                        </a>
-                                    </Link>
-                                </div>
-                            )}
-                            {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
-                                <li className="text-base text-gray-600">
-                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
-                                    </Link>
-                                </li>
-                                {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
-                                    <li key={page} className="text-base text-gray-600">
-                                        <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
-                                            <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
-                                        </Link>
-                                    </li>
-                                ))}
-                                <li className="text-sm text-gray-400 flex">
-                                    <DotsHorizontalIcon className="h-3" />
-                                </li>
-                                {/* {props?.data?.far_pages.map(page => (
-                                    <li key={page} className="text-base text-gray-600">
-                                        <a href={'/?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
-                                            {page}
-                                        </a>
-                                    </li>
-                                ))} */}
-
-                            </ul>}
-                        </div>
-                    </div>
-                    <aside className="flex flex-col col-span-5 md:col-span-1 p-1 md:h-full">
-                        <details className="rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z" open>
-                            <summary className="flex cursor-pointer w-full bg-white p-2">
-                                <h3 className="text-2xl tracking-tight font-bold leading-3">Filters</h3>
-                            </summary>
-                            <div className="flex flex-col gap-2 p-2">
-                                {filters && filters?.error ?
-                                    (<div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                                        <p>No filters.</p>
-                                    </div>)
-                                    : (
-                                        <div>
-                                            {filters && Object.keys(filters).length > 0 &&
-                                                Object.keys(fltrs).map(ft => (
-                                                    <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                        <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                        <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
-                                                            options={
-                                                                Array.from(filters[ft] || [],
-                                                                    fltopt => {
-                                                                        return {
-                                                                            value: fltopt.id, label: fltopt.name
-                                                                        }
-                                                                    })
-                                                            }
-                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                            onChange={sl => {
-                                                                let nf = {}
-                                                                if (Array.isArray(sl)) {
-                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                    nf[ft] = sl.value
-                                                                } else {
-                                                                    delete nf[ft]
-                                                                    // let rr = drillDown.filter(d => d.key !== ft)
-                                                                    // setDrilldown(rr)
-                                                                }
-                                                                setDrillDown({ ...drillDown, ...nf })
-                                                            }} />
+                    
+                    {/* Quick Filters Vertical Tab */}
+                    <div className="w-full col-span-5 md:h-auto">
+                        <Box
+                            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 'auto' }}
+                            >
+                                <Tabs
+                                    
+                                    orientation="vertical"    
+                                    variant="scrollable"
+                                    value={value}
+                                    onChange={handleChange}
+                                    
+                                    aria-label="Vertical tabs example"
+                                    sx={{ borderRight: 1, borderColor: 'divider', width:300, marginTop: 3}}
+                                >
+                                
+                                    <Tab label="all" {...a11yProps(0)} labelPosition='' />
+                                    <Tab label="approved" {...a11yProps(1)} labelPosition='start' />
+                                    <Tab label="New pending validation" {...a11yProps(2)} />
+                                    <Tab label="Updated pending validation" {...a11yProps(3)} />
+                                    <Tab label="Pending Approval" {...a11yProps(4)} />
+                                    <Tab label="KHIS-Synched" {...a11yProps(5)} />
+                                    <Tab label="Incomplete" {...a11yProps(6)} />
+                                    <Tab label="Rejected" {...a11yProps(6)} />
+                                    <Tab label="Closed" {...a11yProps(6)} />
+                                </Tabs>
+                                <TabPanel value={value} index={0}>
+                                    {/*  Quick Filters status display */}
+                                    <div className="flex-grow w-full flex flex-col items-center gap-4 order-last md:order-none">
+                                        <div className="flex flex-col justify-center items-center px-1 md:px-4 w-full ">
+                                            {/* <pre>{JSON.stringify(facilities[0], null, 2)}</pre> */}
+                                            {facilities && facilities.length > 0 ? facilities.map((facility, index) => (
+                                                <div key={facility.id} className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
+                                                    <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
+                                                        <h3 className="text-2xl w-full">
+                                                            <a href={'/facilities/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
+                                                                <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility.official_name || facility.official_name || facility.name}
+                                                            </a>
+                                                        </h3>
+                                                        {/* <p className="text-sm text-gray-600 w-full">{facility.nearest_landmark || ' '}{' '} {facility.location_desc || ' '}</p> */}
+                                                        <p className="text-sm text-gray-600 w-full flex gap-y-2 gap-x-5 items-center">
+                                                            <span className="text-lg text-black font-semibold"># {facility.code ? facility.code : 'NO_CODE' || ' '}</span>
+                                                            <span>{facility.owner_name || ' '}</span>
+                                                        </p>
+                                                        <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">County:</label>
+                                                                <span className="whitespace-pre-line">{facility.county_name || facility.county || 'N/A'}</span>
+                                                            </div>
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Sub-county:</label>
+                                                                <span className="whitespace-pre-line">{facility.sub_county_name || facility.sub_county || 'N/A'}</span>
+                                                            </div>
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Ward:</label>
+                                                                <span className="whitespace-pre-line">{facility.ward_name || 'N/A'}</span>
+                                                            </div>
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Constituency:</label>
+                                                                <span className="whitespace-pre-line">{facility.constituency_name || facility.constituency || 'N/A'}</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <div className="col-span-8 md:col-span-8 lg:col-span-2 flex flex-wrap items-center justify-evenly gap-x-2 gap-y-1 text-lg">
+                                                        {(facility.operational || facility.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
+                                                        {!facility.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility.approved ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility.rejected ? "Rejected" : ""}</span>}
+                                                        {facility.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
+                                                    </div>
+                                                </div>
+                                            )) : (
+                                                <div className="w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3">
+                                                    <span className="text-base text-gray-700">No facilities found</span>
+                                                    <Link href={props.path || '/'}>
+                                                        <a className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
+                                                            Refresh.
+                                                        </a>
+                                                    </Link>
+                                                </div>
+                                            )}
+                                            {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                                                <li className="text-base text-gray-600">
+                                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
+                                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
+                                                    </Link>
+                                                </li>
+                                                {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
+                                                    <li key={page} className="text-base text-gray-600">
+                                                        <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
+                                                            <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
+                                                        </Link>
+                                                    </li>
                                                 ))}
-                                            {/* From and To Date Picker Components */}
+                                                <li className="text-sm text-gray-400 flex">
+                                                    <DotsHorizontalIcon className="h-3" />
+                                                </li>
+                                                {/* {props?.data?.far_pages.map(page => (
+                                                    <li key={page} className="text-base text-gray-600">
+                                                        <a href={'/?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
+                                                            {page}
+                                                        </a>
+                                                    </li>
+                                                ))} */}
 
-                                            <NativePickers onSelected={
-                                                handleDates
-                                            }></NativePickers>
-                                            
-
-                                            {/* Yes/No Dialog */}
-                                            <div className="w-full grid grid-cols-2 gap-3 mb-3">
-                                                <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm">Has edits</label>
-                                                <input type="checkbox" className="justify-self-end" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'has_edits': true })
-                                                }} />
-
-                                           
-                                                <label htmlFor="is_approved" className="text-gray-700 capitalize text-sm">Approved</label>
-                                                <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.is_approved === "true"} name="is_approved" id="is_approved" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'is_approved': true })
-                                                }} />
-                                                    
-                                               
-                                           
-                                                <label htmlFor="is_complete" className="text-gray-700 capitalize text-sm">Complete</label>
-                                               
-                                                <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.is_complete === "true"} name="is_complete" id="is_complete" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'is_complete': true })
-                                                }} />
-                                             
-                                          
-                                                <label htmlFor="number_of_beds" className="text-gray-700 capitalize text-sm">Has beds</label>
-                                               
-                                                <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.number_of_beds === "true"} name="number_of_beds" id="number_of_beds" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'number_of_beds': true })
-                                                }} />
-                                                
-                                           
-                                                <label htmlFor="number_of_cots" className="text-gray-700 capitalize text-sm">Has cots</label>
-                                               
-                                                <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.number_of_cots === "true"} name="number_of_cots" id="number_of_cots" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'number_of_cots': true })
-                                                }} />
-                                               
-                                          
-                                                <label htmlFor="open_whole_day" className="text-gray-700 capitalize text-sm">Open 24 hours</label>
-                                               
-                                                <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.open_whole_day === "true"} name="open_whole_day" id="open_whole_day" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'open_whole_day': true })
-                                                }} />
-                                            
-                                            
-                                                <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm">Open weekends</label>
-                                                
-                                                <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.open_weekends === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'open_weekends': true })
-                                                }} />
-                                                 
-                                        
-                                                <label htmlFor="open_public_holidays" className="text-gray-700 capitalize text-sm">Open holidays</label>
-                                              
-                                                <input type="checkbox" className="justify-self-end" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
-                                                    setDrillDown({ ...drillDown, 'open_public_holidays': true })
-                                                }} />
-                                             
-                                            </div>
-                                            <button onClick={ev => {
-                                                if (Object.keys(drillDown).length > 0) {
-                                                    let qry = Object.keys(drillDown).map(function (key) {
-                                                        let er = ''
-                                                        if (props.path && !props.path.includes(key + '=')) {
-                                                            er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
-                                                        }
-                                                        return er
-                                                    }).join('&')
-                                                    let op = '?'
-                                                    if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                    // console.log(props.path)
-                                                    // setDrillDown({})
-                                                    if (router || typeof window == 'undefined') {
-                                                        router.push(props.path + op + qry)
-                                                    } else {
-                                                        if (typeof window !== 'undefined' && window) {
-                                                            window.location.href = props.path + op + qry
-                                                        }
-                                                    }
-                                                }
-                                            }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
-                                            <div className="w-full flex items-center py-2 justify-center">
-                                                <button className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline" onClick={ev => {
-                                                    router.push('/facilities')
-                                                }}>Clear filters</button>
-                                            </div>
+                                            </ul>}
                                         </div>
-                                    )
-                                }
-                            </div>
-                        </details>
-                    </aside>
+                                    </div>
+                                </TabPanel>
+                                {/* <TabPanel value={value} index={1}>
+                                    Item Two
+                                </TabPanel>
+                                <TabPanel value={value} index={2}>
+                                    Item Three
+                                </TabPanel>
+                                <TabPanel value={value} index={3}>
+                                    Item Four
+                                </TabPanel>
+                                <TabPanel value={value} index={4}>
+                                    Item Five
+                                </TabPanel>
+                                <TabPanel value={value} index={5}>
+                                    Item Six
+                                </TabPanel>
+                                <TabPanel value={value} index={6}>
+                                    Item Seven
+                                </TabPanel> */}
+                            </Box>
+                        </div>
+
+                  
+                   
                     {/* (((((( Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">

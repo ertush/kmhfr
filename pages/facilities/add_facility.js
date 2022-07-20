@@ -2449,7 +2449,10 @@ function AddFacility(props) {
 						</div>
 						
 						<aside className="flex flex-col col-span-5 md:col-span-1 p-1 md:h-full">
-							<details title={'Menu filters'} className="rounded bg-transparent py-2 text-base flex flex-col w-full md:stickyz md:top-2z" open>
+							<details  className="rounded bg-transparent py-2 text-base flex flex-col w-full md:stickyz md:top-2z" open>
+								<summary className="flex cursor-pointer w-full bg-white p-2">
+									<h3 className="text-2xl tracking-tight font-bold leading-3">Menu Filters</h3>
+								</summary>
 								<Box
 									sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
 									>
