@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import MainLayout from '../components/MainLayout';
-import { checkToken } from '../controllers/auth/auth';
+import MainLayout from '../../components/MainLayout';
+import { checkToken } from '../../controllers/auth/auth';
 import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, PencilAltIcon} from '@heroicons/react/solid';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
@@ -58,12 +58,12 @@ const EditGroup=(props)=> {
 // console.log(groupData);
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-        <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
+        <div className="w-full grid grid-cols-5 gap-4 md:mx-4 my-4">
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
                                 <a className="text-indigo-700" href="/">Home</a> {'>'}
-                                <a className="text-indigo-700" href="/groups">Groups</a> {'>'}
+                                <a className="text-indigo-700" href="/users/groups">Groups</a> {'>'}
                                 <span className="text-gray-500">Edit group</span>
                             </div>
                         </div>
@@ -76,8 +76,7 @@ const EditGroup=(props)=> {
                   
                     </div>
 
-					<div className='col-span-5 md:col-span-4 flex flex-col items-center border rounded pt-8 pb-4 gap-4 mt-2 order-last md:order-none'>
-						<div className='flex flex-col justify-center items-start px-1 md:px-4 w-full'>
+					<div className=' col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full'>
 							<div className=' w-full flex flex-col items-start p-3 rounded border border-gray-300/70 bg-gray-50'>
 							
 												<>
@@ -316,8 +315,6 @@ const EditGroup=(props)=> {
                             </div>
                         </div>
                         
-
-                    </div>
                
                     {/* (((((( Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
@@ -387,7 +384,7 @@ EditGroup.getInitialProps = async (ctx) => {
 		  }).then(r => r.json())
 			  .then(json => {
 					return {
-						data: json, query, token, permissions:{...paths}, path: ctx.asPath || '/edit_group', current_url: current_url 
+						data: json, query, token, permissions:{...paths}, path: ctx.asPath || '/users/edit_group', current_url: current_url 
 					}
 				  
 			  }).catch(err => {
@@ -397,7 +394,7 @@ EditGroup.getInitialProps = async (ctx) => {
 					  err: err,
 					  data: [],
 					  query: {},
-					  path: ctx.asPath || '/edit_group',
+					  path: ctx.asPath || '/users/edit_group',
 					  current_url: ''
 				  }
 			  })
@@ -416,7 +413,7 @@ EditGroup.getInitialProps = async (ctx) => {
 			  if (ctx?.asPath) {
 				  window.location.href = ctx?.asPath
 			  } else {
-				  window.location.href = '/edit_group'
+				  window.location.href = '/users/edit_group'
 			  }
 		  }
 		  setTimeout(() => {
@@ -425,7 +422,7 @@ EditGroup.getInitialProps = async (ctx) => {
 				  err: err,
 				  data: [],
 				  query: {},
-				  path: ctx.asPath || '/edit_group',
+				  path: ctx.asPath || '/users/edit_group',
 				  current_url: ''
 			  }
 		  }, 1000);
