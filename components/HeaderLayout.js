@@ -196,13 +196,25 @@ export default function HeaderLayout({
               <Link href="/users">
                 <a
                   className={
-                    (currentPath == "/users" ||
-                    currentPath.includes("users")
+                    (currentPath == "/users" ? activeClasses : inactiveClasses) +
+                    " text-base md:text-lg"
+                  }
+                >
+                  Users
+                </a>
+              </Link>
+            </li>
+            <li className="flex-wrap font-semibold">
+              <Link href="/gis">
+                <a
+                  className={
+                    (currentPath == "/gis" ||
+                    currentPath.includes("gis")
                       ? activeClasses
                       : inactiveClasses) + " text-base md:text-lg"
                   }
                 >
-                   Users
+                   GIS
                 </a>
               </Link>
             </li>
