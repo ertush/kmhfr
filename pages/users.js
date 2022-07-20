@@ -1,18 +1,15 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../components//MainLayout'
-import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
-import React, { useState, useRef, useEffect, useMemo } from 'react'
+import { DownloadIcon } from '@heroicons/react/outline'
+import React, { useState, useEffect } from 'react'
 import { checkToken } from '../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
-import Select from 'react-select'
-import Button from '@mui/material/Button';
 import moment from 'moment'
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
@@ -199,6 +196,7 @@ const Users = (props) => {
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
                                 <AgGridReact
                                     // floatingFilter={true}
+                                    rowStyle={{width: '100vw'}}
                                     sideBar={true} //{'filters'}
                                     defaultColDef={{
                                         sortable: true,

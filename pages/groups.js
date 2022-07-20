@@ -13,7 +13,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
-const Users = (props) => {
+const Groups = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
  
@@ -21,14 +21,15 @@ const Users = (props) => {
   
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
+        // console.log(params);
     return(
         <Link
-        target="_blank"
-        rel="noopener noreferrer"
-        href={"/regulators" + params.value}
-      >{params.value}</Link>
-          );
-    } 
+        href={{ pathname: `/edit_group/`,
+        query: { id: params.data.id } }}
+        as={`/edit_group/${params.value}`}
+
+        ><a>{params.value}</a></Link>
+    )} 
 
     let columnDefs= [
         {headerName: "Name", field: "name", 
@@ -129,10 +130,11 @@ const Users = (props) => {
                           </div>
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
                       
-                            <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
+                            <div className="ag-theme-alpine" style={{ height: '100vh', width: '100%' }}>
                                 <AgGridReact
                                     // floatingFilter={true}
                                     // sideBar={true} //{'filters'}
+                                    rowStyle={{width: '100vw'}}
                                     defaultColDef={{
                                         sortable: true,
                                         filter: true,
@@ -195,7 +197,7 @@ const Users = (props) => {
     )
 }   
 
-Users.getInitialProps = async (ctx) => {
+Groups.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
 // console.log(ctx.query.is_active);
 
@@ -238,7 +240,7 @@ Users.getInitialProps = async (ctx) => {
         }).then(r => r.json())
             .then(json => {
                     return {
-                        data: json, query, token, path: ctx.asPath || '/users', current_url: current_url 
+                        data: json, query, token, path: ctx.asPath || '/groups', current_url: current_url 
                     }
                 
             }).catch(err => {
@@ -248,7 +250,7 @@ Users.getInitialProps = async (ctx) => {
                     err: err,
                     data: [],
                     query: {},
-                    path: ctx.asPath || '/users',
+                    path: ctx.asPath || '/groups',
                     current_url: ''
                 }
             })
@@ -267,7 +269,7 @@ Users.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/users'
+                window.location.href = '/groups'
             }
         }
         setTimeout(() => {
@@ -276,7 +278,7 @@ Users.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/users',
+                path: ctx.asPath || '/groups',
                 current_url: ''
             }
         }, 1000);
@@ -284,4 +286,4 @@ Users.getInitialProps = async (ctx) => {
 
 }
 
-export default Users
+export default Groups
