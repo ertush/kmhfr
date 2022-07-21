@@ -244,7 +244,7 @@ const Home = (props) => {
                             {/* Bread Crumbs */}
 
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <a className="text-green-700" href="/">Home</a> {'>'}
+                                <a className="text-green-800" href="/">Home</a> {'>'}
                                 <span className="text-gray-500">Facilities</span>
                             </div>
 
@@ -773,7 +773,21 @@ const Home = (props) => {
                                                     </div>
                                                 </div>
                                             )) : (
-                                                <Alert severity="warning" sx={{width:'100%'}}>No facilities found <span onClick={() => router.push({pathname:'/facilities', query: {qf: 'all'}})} className='hover:underline text-indigo-700 cursor-pointer'>Refresh</span></Alert>
+                                                <Alert severity="warning" sx={{width:'100%'}}>No facilities found <span onClick={() => {
+                                                    setTitle('Facilities')
+                                                    setAllFctsSelected(true)
+                                                    setApprovedFctsSelected(false)
+                                                    setNewFctsSelected(false)
+                                                    setUpdatedFctsSelected(false)
+                                                    setFailedValidationFctsSelected(false)                                  
+                                                    setRejectedFctsSelected(false)
+                                                    setClosedFctsSelected(false)
+                                                    setIncompleteFctsSelected(false)
+                                                    setSyncRegulatedFctsSelected(false)
+                                                    setFeedBackFctsSelected(false)
+
+                                                    router.push({pathname:'/facilities', query: {qf: 'all'}})
+                                                }} className='hover:underline text-indigo-700 cursor-pointer'>back to all facilities</span></Alert>
                                             )}
                                             {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                                 <li className="text-base text-gray-600">
