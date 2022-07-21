@@ -440,7 +440,7 @@ const Facility = (props) => {
                                                 </h3>
                                                 <ul>
                                                     {(facility?.facility_services && facility?.facility_services.length > 0) ? facility?.facility_services.map(service => (
-                                                        <li key={service.service_id} className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300">
+                                                        <li key={service.service_id} className="w-full grid grid-cols-3 gap-3 place-content-end my-2 p-3 border-b border-gray-300">
                                                             <div>
                                                                 <p className="text-gray-800 text-base">{service.service_name}</p>
                                                                 <small className="text-xs text-gray-500">{service.category_name || ''}</small>

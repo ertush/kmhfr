@@ -434,8 +434,8 @@ function AddFacility(props) {
 						<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
 							<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
 								<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-									<a className="text-indigo-700" href="/">Home</a> {'>'}
-									<a className="text-indigo-700" href="/facilities">Facilities</a> {'>'}
+									<a className="text-green-800" href="/">Home</a> {'>'}
+									<a className="text-green-800" href="/facilities/">Facilities</a> {'>'}
 									<span className="text-gray-500">Add Facility</span>
 								</div>
 								<div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3">
@@ -2449,7 +2449,10 @@ function AddFacility(props) {
 						</div>
 						
 						<aside className="flex flex-col col-span-5 md:col-span-1 p-1 md:h-full">
-							<details title={'Menu filters'} className="rounded bg-transparent py-2 text-base flex flex-col w-full md:stickyz md:top-2z" open>
+							<details  className="rounded bg-transparent py-2 text-base flex flex-col w-full md:stickyz md:top-2z" open>
+								<summary className="flex cursor-pointer w-full bg-white p-2">
+									<h3 className="text-2xl tracking-tight font-bold leading-3">Menu Filters</h3>
+								</summary>
 								<Box
 									sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
 									>

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import { margin } from '@mui/system';
-import { createTheme } from '@mui/material';
+// import Stack from '@mui/material/Stack';
+// import { margin } from '@mui/system';
+// import { createTheme } from '@mui/material';
 
 export default function NativePickers({ onSelected }) {
     const [fromDate, setFromDate] = React.useState(new Date());
@@ -10,23 +10,23 @@ export default function NativePickers({ onSelected }) {
 
 //Date now string in form of yyyy-mm-dd
     const dateNow = '2022-06-28';
-    const theme = createTheme({
-      spacing: 4,
-    });
+    // const theme = createTheme({
+    //   spacing: 4,
+    // });
     
   const handleDates = () => {
     onSelected(fromDate??dateNow, toDate??dateNow);
   }
   
   return (
-    <Stack component="form" noValidate spacing={3}>
+    <>
       <TextField
         id="date"
         label="From"
         type="date"
         size='small'
         defaultValue={ dateNow }
-        sx={{ width: 240 }}
+        sx={{ width: '100%', marginTop:3 }}
         InputLabelProps={{
           shrink: true,
         }}
@@ -41,12 +41,10 @@ export default function NativePickers({ onSelected }) {
         size='small'
         type="date"
         defaultValue={ dateNow }
-        margin='dense'
+     
         sx={{
-          width: 240
-      
-    
-        
+          width: '100%', 
+          marginTop:1 
         }}
         onChange={(e) => {
           setToDate(e.target.value)
@@ -56,11 +54,11 @@ export default function NativePickers({ onSelected }) {
         InputLabelProps={{
           shrink: true,
         }}
-        style={{ marginBottom: theme.spacing(5) }}
+      
         
       />
       
 
-    </Stack>
+    </>
   );
 }

@@ -636,22 +636,22 @@ const EditFacility = (props) => {
                                     <div className="bg-white w-full p-4 rounded">
                                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                                             <span className="font-semibold">Services</span>
-                                            {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
+                                            
                                         </h3>
                                         <ul>
                                             {(facility?.facility_services && facility?.facility_services.length > 0) ? facility?.facility_services.map(service => (
-                                                <li key={service.service_id} className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300">
-                                                    <div>
+                                                <li key={service.service_id} className="w-full grid grid-cols-3 gap-2 my-2 p-3 border-b border-gray-300">
+                                                    <div >
                                                         <p className="text-gray-800 text-base">{service.service_name}</p>
                                                         <small className="text-xs text-gray-500">{service.category_name || ''}</small>
                                                     </div>
-                                                    <div>
+                                                    <div className='justify-self-center'>
                                                         <p className="text-gray-800 text-base">
                                                             {service.average_rating || 0}/{service.number_of_ratings || 0}
                                                         </p>
                                                         <small className="text-xs text-gray-500">Rating</small>
                                                     </div>
-                                                    <label className="text-sm text-gray-600 flex gap-1 items-center">
+                                                    <label className=" justify-self-end text-sm text-gray-600 flex gap-1 items-center">
                                                         <CheckCircleIcon className="h-6 w-6 text-green-500" />
                                                         <span>Active</span>
                                                     </label>

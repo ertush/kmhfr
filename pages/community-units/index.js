@@ -1,13 +1,13 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import MainLayout from '../components/MainLayout';
+import MainLayout from '../../components/MainLayout';
 import {
 	DotsHorizontalIcon,
 	PencilIcon,
     DownloadIcon,
     PlusIcon
 } from '@heroicons/react/solid';
-import { checkToken } from '../controllers/auth/auth';
+import { checkToken } from '../../controllers/auth/auth';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
@@ -195,7 +195,7 @@ const Home = (props) => {
 											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<button
 												onClick={() => {
-													router.push('/community-unit/add_community_unit');
+													router.push('/community-units/add_community_unit');
 												}}
 												className='flex items-center justify-center'>
 												<span>Add Community Health Unit</span>
@@ -295,7 +295,7 @@ const Home = (props) => {
 										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
-													href={'/community-unit/' + comm_unit.id}
+													href={'/community-units/' + comm_unit.id}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 													<small className='text-gray-500'>
 														{index + props?.data?.start_index}.

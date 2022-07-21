@@ -187,11 +187,11 @@ function AddCommUnit(props) {
 					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-4'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 							<div className='flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3'>
-								<a className='text-indigo-700' href='/'>
+								<a className='text-green-800' href='/'>
 									Home
 								</a>{' '}
 								{'>'}
-								<a className='text-indigo-700' href='/community-units'>
+								<a className='text-green-800' href='/community-units'>
 									Community Units
 								</a>{' '}
 								{'>'}

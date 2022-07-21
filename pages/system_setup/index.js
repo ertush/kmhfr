@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
 
 // component / controllers imports
-import MainLayout from '../components/MainLayout'
-import { checkToken } from '../controllers/auth/auth';
-import useDidMountEffect from '../hooks/useDidMountEffect';
+import MainLayout from '../../components/MainLayout'
+import { checkToken } from '../../controllers/auth/auth';
+import useDidMountEffect from '../../hooks/useDidMountEffect';
 
 // next imports
 import Head from 'next/dist/shared/lib/head'
