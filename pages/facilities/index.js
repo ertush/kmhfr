@@ -15,15 +15,13 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import { styled } from '@mui/material/styles';
-import TabPanel from '../../components/TabPanel'
-
-
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import Alert from '@mui/material/Alert';
+// import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import NativePickers from '../../components/date-picker'
+
 
 // import { display, grid } from '@mui/system'
 
@@ -65,15 +63,18 @@ const Home = (props) => {
             name: 'Approved',
             id: 'approved',
             filters: [
-                { id: "is_approved", value: true },
+                { id: "approved", value: true },
+                { id: "approved_national_level", value: true },
+                { id: "rejected", value: false },
             ],
         },
         {
             name: 'New pending validation',
             id: 'new_pending_validation',
             filters: [
+                { id: "pending_approval", value: true },
                 { id: "has_edits", value: false },
-                { id: "pending_approval", value: false },
+                
             ],
         },
         {
@@ -85,10 +86,10 @@ const Home = (props) => {
             ],
         },
         {
-            name: 'Pending approval',
-            id: 'pending_approval',
+            name: 'Failed Validation',
+            id: 'failed_validation',
             filters: [
-                { id: "to_publish", value: true },
+                { id: "rejected", value: true },
             ],
         },
         {
@@ -124,82 +125,74 @@ const Home = (props) => {
                 { id: "closed", value: true },
             ]
         },
+        {
+            name: 'Feedback',
+            id: 'feedback',
+            filters: [
+            ]
+        },
     ]
 
-    const a11yProps = (index) => {
-        return {
-          id: `vertical-tab-${index}`,
-          'aria-controls': `vertical-tabpanel-${index}`,
-        };
-      }
 
-    const toPascalCase = (str) => {
-        const pascalCaseArr = []
-        if (str !== undefined || str !== '' || str !== null) {
-        const words = str?.split(' ')
 
-       
-        words?.forEach(word => {
-            pascalCaseArr.push(`${word[0]?.toUpperCase()}${word?.slice(1,word?.length)}`)
-        })
-        }
-
-        // console.log({pascalCaseArr: pascalCaseArr.join(' ')})
-        return pascalCaseArr.join(' ') === "Undefined" ? 'Facilities' : `${pascalCaseArr.join(' ')} Matches`
-    }
-
-    const applyFilter = (qf) => {
-        let routerObj = {}
-        if (currentQuickFilter === 'all') {
-            let goto = '/facilities'
-            if(props?.query?.searchTerm){
-                routerObj.query = {q: props?.query?.searchTerm}
-            }
-            routerObj.pathname = goto
-            // console.log('drillDown: all:::', routerObj)
-            router.push(routerObj)
-            return
-        }
-        if(Object.keys(qf).length > 0){
-            let goto = '/facilities'
-            let payload = { ...qf }
-            if(props?.query?.searchTerm){
-                payload.q = props?.query?.searchTerm
-            }
-            // console.log('payload:: ', payload)
-            routerObj.pathname = goto
-            routerObj.query = payload
-            // console.log('drillDown:::', routerObj)
-            router.push(routerObj)
-            return
-        }
-    }
+    // const applyFilter = (qf) => {
+    //     let routerObj = {}
+    //     if (currentQuickFilter === 'all') {
+    //         let goto = '/facilities'
+    //         if(props?.query?.searchTerm){
+    //             routerObj.query = {q: props?.query?.searchTerm}
+    //         }
+    //         routerObj.pathname = goto
+    //         // console.log('drillDown: all:::', routerObj)
+    //         router.push(routerObj)
+    //         return
+    //     }
+    //     if(Object.keys(qf).length > 0){
+    //         let goto = '/facilities'
+    //         let payload = { ...qf }
+    //         if(props?.query?.searchTerm){
+    //             payload.q = props?.query?.searchTerm
+    //         }
+    //         // console.log('payload:: ', payload)
+    //         routerObj.pathname = goto
+    //         routerObj.query = payload
+            
+    //         router.push(routerObj)
+    //         return
+    //     }
+    // }
 
  
 
-    const [facilityTitle, setFacilityTitle] = useState('') 
+    const [fromDate, setFromDate] = React.useState(new Date());
+    const [toDate, setToDate] = React.useState(new Date());
+    const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
+    const [title, setTitle] = useState('Facilities') 
 
+    // quick filter themes
+    const [allFctsSelected, setAllFctsSelected] = useState(true);
+    const [approvedFctsSelected, setApprovedFctsSelected] = useState(false);
+    const [newFtsSelected, setNewFctsSelected] = useState(false);
+    const [updatedFctsSelected, setUpdatedFctsSelected] = useState(false);
+    const [failedValidationFctsSelected, setFailedValidationFctsSelected] = useState(false);
+    const [rejectedFctsSelected, setRejectedFctsSelected] = useState(false);
+    const [closedFctsSelected, setClosedFctsSelected] = useState(false);
+    const [syncRegulatedFctsSelected, setSyncRegulatedFctsSelected] = useState(false);
+    const [incompleteFctsSelected, setIncompleteFctsSelected] = useState(false);
+    const [feedBackFctsSelected, setFeedBackFctsSelected] = useState(false);
+  
     useEffect(() => {
-        setFacilityTitle(toPascalCase(decodeURI(props?.path?.split('=')[1]?.split('&')[0]?.split('_')?.join(' '))))
         let qry = props?.query
-        // console.log({props})
+        
         delete qry.searchTerm
         delete qry.qf
         setDrillDown({ ...drillDown, ...qry })
 
         return () => {
-            setFacilityTitle('')
+            
         }
-    }, [currentQuickFilter, facilityTitle])
-    // }, [drillDown])
+    }, [currentQuickFilter, title])
 
-
-    
-    
-    const [fromDate, setFromDate] = React.useState(new Date());
-    const [toDate, setToDate] = React.useState(new Date());
-    const [isAccordionExpanded, setIsAccordionExpanded] = useState(true)
-    const [value, setValue] = React.useState(0);
 
     const handleDates=(from, to) => {
         setFromDate(from);
@@ -207,17 +200,33 @@ const Home = (props) => {
     
      }
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+ 
 
-     const handleAccordionExpand = (ev) => {
+    const handleAccordionExpand = (ev) => {
         if(isAccordionExpanded){
             setIsAccordionExpanded(false)
         }else{
             setIsAccordionExpanded(true)
         }
         
+    }
+
+    const handleQuickFiltersClick = (filter_id) => {
+        
+    const qfilter = quickFilters.filter(({id}) => id === filter_id).map(f => f.filters.map(({id, value}) => ({id, value})))
+    let filter = {}
+    qfilter[0].forEach(({id, value}) => {filter[id] = value})
+
+    console.log({filter});
+
+    if(filter_id === 'all'){
+        router.push({pathname:'/facilities', query: {qf: filter_id}})
+    }
+
+    let robj = {pathname: '/facilities', query: {qf: filter_id, ...filter}}
+    
+    router.push(robj)
+
     }
 
 
@@ -409,38 +418,7 @@ const Home = (props) => {
                                              </div>
                                             </AccordionDetails>
                             </Accordion> 
-                            
-                            {/* Old Quick Filters */}
-
-                            <div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3">
-                                {quickFilters.map((qf, i) => {
-                                    return (
-                                        <button
-                                            key={qf.id}
-                                            style={{ paddingTop: '2px', paddingBottom: '2px' }}
-                                            className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium hover:border-green-400 focus:ring-1 focus:ring-blue-500 text-sm ${currentQuickFilter == qf.id ? "bg-green-800 border-green-800 text-green-50" : "text-gray-800 border-gray-300"}`}
-                                            onClick={evt => {
-                                                setCurrentQuickFilter(qf.id)
-                                                let robj = {pathname: '/facilities', query: {qf: qf.id}, qf: qf.id}
-                                                // console.log({robj})
-                                                if(qf.id === 'all'){
-                                                    router.push(robj)
-                                                    return
-                                                }
-                                                quickFilters.forEach(q_f => {
-                                                    if (q_f.id === qf.id) {
-                                                        q_f.filters.map(sf => {
-                                                            robj.query[sf.id] = sf.value
-                                                        })
-                                                    }
-                                                })
-                                                router.push(robj)
-                                            }}>
-                                            {qf.name}
-                                        </button>
-                                    )
-                                })}
-                            </div>
+                        
                         </div>
                         
                         {/* Buttons section */}
@@ -448,25 +426,22 @@ const Home = (props) => {
                         <div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
                             <div className="flex flex-col items-start justify-start gap-y-1">
                                 <h1 className="text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2">
-                                    {/* {(props?.query?.searchTerm && !props?.query?.searchTerm.includes('undefined') && props?.query?.searchTerm.length > 0) ? `Facilities matching '${props?.query?.searchTerm}'` : `${props?.query?.searchTerm}`} */}
-                                    { !props?.path.includes('all') ? `${facilityTitle}` : 'All Facilities' }
+                                    { title }
                                 </h1>
-                                <h5 className="text-lg font-medium text-gray-800">
-                                    {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('ndefined') &&
-                                        `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') || k.split('_').join(' ') : k.split('_').join(' ')})`)?.join(' & ')}`
-                                    }
-                                    {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
-                                </h5>
+                           
                             </div>
-                            {/* ((((((( dropdown options to download data */}
+                            {/* dropdown options to download data */}
                             {props?.current_url && props?.current_url.length > 5 && <Menu as="div" className="relative">
                                 {/* Button group */}
+                             
+                                {
+                                allFctsSelected &&
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Facility Button */}
                                    <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facilities/add_facility')}} className='flex items-center justify-center'>
 
-                                            <span>Add Facility</span>
+                                            <span className='font-semibold uppercase'>Add Facility</span>
                                             <PlusIcon className="w-4 h-4 ml-2" />
                                         </button>
                                     </Menu.Item>
@@ -478,6 +453,7 @@ const Home = (props) => {
                                         <ChevronDownIcon className="w-4 h-4 ml-2" />
                                     </Menu.Button>
                                 </div>
+                                }
                             
                                 <Menu.Items as="ul" className="absolute top-10 right-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-1/2">
                                    
@@ -511,38 +487,249 @@ const Home = (props) => {
                                     </Menu.Item>
                                 </Menu.Items>
                             </Menu>}
-                            {/* ))))))) dropdown options to download data */}
+                      
 
                         </div>
                     </div>
+
+                    {/* Side Menu Filters*/}
+
+                    <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
+                        <List
+                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                        component="nav"
+                        aria-labelledby="nested-list-subheader"
                     
-                    {/* Quick Filters Vertical Tab */}
-                    <div className="w-full col-span-5 md:h-auto">
-                        <Box
-                            sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 'auto' }}
-                            >
-                                <Tabs
+                        >	
+                            <ListItemButton sx={{ backgroundColor: allFctsSelected ?  '#e7ebf0' : 'none' }} name="rt"
+                                onClick={(ev)=>{
+                                    setTitle('Facilities')
+                                    setAllFctsSelected(true)
+                                    setApprovedFctsSelected(false)
+                                    setNewFctsSelected(false)
+                                    setUpdatedFctsSelected(false)
+                                    setFailedValidationFctsSelected(false)                                  
+                                    setRejectedFctsSelected(false)
+                                    setClosedFctsSelected(false)
+                                    setIncompleteFctsSelected(false)
+                                    setSyncRegulatedFctsSelected(false)
+                                    setFeedBackFctsSelected(false)
+
+                                    handleQuickFiltersClick('all')
                                     
-                                    orientation="vertical"    
-                                    variant="scrollable"
-                                    value={value}
-                                    onChange={handleChange}
-                                    
-                                    aria-label="Vertical tabs example"
-                                    sx={{ borderRight: 1, borderColor: 'divider', width:300, marginTop: 3}}
-                                >
                                 
-                                    <Tab label="all" {...a11yProps(0)} labelPosition='' />
-                                    <Tab label="approved" {...a11yProps(1)} labelPosition='start' />
-                                    <Tab label="New pending validation" {...a11yProps(2)} />
-                                    <Tab label="Updated pending validation" {...a11yProps(3)} />
-                                    <Tab label="Pending Approval" {...a11yProps(4)} />
-                                    <Tab label="KHIS-Synched" {...a11yProps(5)} />
-                                    <Tab label="Incomplete" {...a11yProps(6)} />
-                                    <Tab label="Rejected" {...a11yProps(6)} />
-                                    <Tab label="Closed" {...a11yProps(6)} />
-                                </Tabs>
-                                <TabPanel value={value} index={0}>
+                                }}
+                            >
+                                <ListItemText primary="All Facilities" />
+                            </ListItemButton>
+                            <ListItemButton sx={{ backgroundColor: approvedFctsSelected ?  '#e7ebf0' : 'none' }} 
+                                onClick={(ev)=>{
+                                    setTitle('Approved Facilities')
+                                    setAllFctsSelected(false)
+                                    setApprovedFctsSelected(true)
+                                    setNewFctsSelected(false)
+                                    setUpdatedFctsSelected(false)
+                                    setFailedValidationFctsSelected(false)                                   
+                                    setRejectedFctsSelected(false)
+                                    setClosedFctsSelected(false)
+                                    setIncompleteFctsSelected(false)
+                                    setSyncRegulatedFctsSelected(false)
+                                    setFeedBackFctsSelected(false)
+
+                                    handleQuickFiltersClick('approved')
+                                   
+                                
+                                }}
+                            >
+                                <ListItemText primary="Approved Facilities" />
+                            </ListItemButton>
+                            <ListItemButton sx={{ backgroundColor: newFtsSelected ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle('Validate New Facilities')
+                                setAllFctsSelected(false)
+                                setApprovedFctsSelected(false)
+                                setNewFctsSelected(true)
+                                setUpdatedFctsSelected(false)
+                                setFailedValidationFctsSelected(false)                              
+                                setRejectedFctsSelected(false)
+                                setClosedFctsSelected(false)
+                                setIncompleteFctsSelected(false)
+                                setSyncRegulatedFctsSelected(false)
+                                setFeedBackFctsSelected(false)
+
+                                handleQuickFiltersClick('new_pending_validation')
+                                
+                            
+                            }}
+                            >
+                                <ListItemText primary="New Facilities Pending Validation"/>
+                            </ListItemButton>
+
+                            <ListItemButton sx={{ backgroundColor: updatedFctsSelected ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle('Validate Updated Facilities')
+                                setAllFctsSelected(false)
+                                setApprovedFctsSelected(false)
+                                setNewFctsSelected(false)
+                                setUpdatedFctsSelected(true)
+                                setFailedValidationFctsSelected(false)
+                                setRejectedFctsSelected(false)
+                                setClosedFctsSelected(false)
+                                setIncompleteFctsSelected(false)
+                                setSyncRegulatedFctsSelected(false)
+                                setFeedBackFctsSelected(false)
+                                
+                                handleQuickFiltersClick('updated_pending_validation')
+                            
+                            }}
+                            >
+                                <ListItemText primary="Updated Facilities Pending Validation"/>
+                            </ListItemButton>
+
+                            <ListItemButton sx={{ backgroundColor: failedValidationFctsSelected ?  '#e7ebf0' : 'none'}}
+                            onClick={()=>{
+                                setTitle('Rejected Facilities')
+                                setAllFctsSelected(false)
+                                setApprovedFctsSelected(false)
+                                setNewFctsSelected(false)
+                                setUpdatedFctsSelected(false)
+                                setFailedValidationFctsSelected(true)
+                                setRejectedFctsSelected(false)
+                                setClosedFctsSelected(false)
+                                setIncompleteFctsSelected(false)
+                                setSyncRegulatedFctsSelected(false)
+                                setFeedBackFctsSelected(false)
+                                
+                                handleQuickFiltersClick('failed_validation')
+                            }}
+                            >
+                                <ListItemText primary="Failed Validation Facilities"/>
+                            </ListItemButton>
+
+                            <ListItemButton sx={{  backgroundColor: rejectedFctsSelected ?  '#e7ebf0' : 'none'}}
+                            onClick={()=>{
+                                setTitle('Rejected Facilities')
+                                setAllFctsSelected(false)
+                                setApprovedFctsSelected(false)
+                                setNewFctsSelected(false)
+                                setUpdatedFctsSelected(false)
+                                setFailedValidationFctsSelected(false)
+                                setRejectedFctsSelected(true)
+                                setClosedFctsSelected(false)
+                                setIncompleteFctsSelected(false)
+                                setSyncRegulatedFctsSelected(false)
+                                setFeedBackFctsSelected(false)
+
+                                handleQuickFiltersClick('rejected')
+                                
+                            
+                            }}
+                            >
+                                <ListItemText primary="Rejected Facilities"/>
+                            </ListItemButton>
+
+                            <ListItemButton sx={{ backgroundColor: closedFctsSelected ?  '#e7ebf0' : 'none'}}
+                            onClick={()=>{
+                                setTitle('Closed Facilities')
+                                setAllFctsSelected(false)
+                                setApprovedFctsSelected(false)
+                                setNewFctsSelected(false)
+                                setUpdatedFctsSelected(false)
+                                setFailedValidationFctsSelected(false)
+                                setRejectedFctsSelected(false)
+                                setClosedFctsSelected(true)
+                                setIncompleteFctsSelected(false)
+                                setSyncRegulatedFctsSelected(false)
+                                setFeedBackFctsSelected(false)
+
+                                handleQuickFiltersClick('closed')
+                                
+                            
+                            }}
+                            >
+                                <ListItemText primary="Closed Facilities "/>
+                            </ListItemButton>
+
+                            <ListItemButton sx={{  backgroundColor: incompleteFctsSelected ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle('Incomplete Facilities')
+                                setAllFctsSelected(false)
+                                setApprovedFctsSelected(false)
+                                setNewFctsSelected(false)
+                                setUpdatedFctsSelected(false)
+                                setFailedValidationFctsSelected(false)
+                                setRejectedFctsSelected(false)
+                                setClosedFctsSelected(false)
+                                setIncompleteFctsSelected(true)
+                                setSyncRegulatedFctsSelected(false)
+                                setFeedBackFctsSelected(false)
+                                
+                                handleQuickFiltersClick('incomplete')
+                            
+                            }}
+                            >
+                                <ListItemText primary="Incomplete Facilities"/>
+                            </ListItemButton>
+
+                            <ListItemButton sx={{ backgroundColor: syncRegulatedFctsSelected ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle('Synchronize Regulated Facilities')
+                                setAllFctsSelected(false)
+                                setApprovedFctsSelected(false)
+                                setNewFctsSelected(false)
+                                setUpdatedFctsSelected(false)
+                                setFailedValidationFctsSelected(false)
+                                setRejectedFctsSelected(false)
+                                setClosedFctsSelected(false)
+                                setIncompleteFctsSelected(false)
+                                setSyncRegulatedFctsSelected(true)
+                                setFeedBackFctsSelected(false)
+
+                                handleQuickFiltersClick('khis_synched')
+               
+                            }}
+                            >
+                                <ListItemText primary="Synchronize Regulated Facilities"/>
+                            </ListItemButton>
+
+                            
+                            <ListItemButton sx={{ backgroundColor: feedBackFctsSelected ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle('Facilities Feedback From Public')
+                                setAllFctsSelected(false)
+                                setApprovedFctsSelected(false)
+                                setNewFctsSelected(false)
+                                setUpdatedFctsSelected(false)
+                                setFailedValidationFctsSelected(false)
+                                setRejectedFctsSelected(false)
+                                setClosedFctsSelected(false)
+                                setIncompleteFctsSelected(false)
+                                setSyncRegulatedFctsSelected(false)
+                                setFeedBackFctsSelected(true)
+
+                                handleQuickFiltersClick('feedback')
+              
+                            }}
+                            >
+                                
+                                <ListItemText primary="Feedback on Facilities"/>
+                            </ListItemButton>
+                                
+                        </List>
+                    </div>
+
+                 
+                    
+                    {/* Main Body */}
+                    <div className="w-full md:col-span-4 md:col-start-2  col-span-5 md:h-auto">
+                                    {/* Data Indicator sectio */}
+                                    <h5 className="text-lg font-medium text-gray-800 float-right mr-4 mb-2">
+                                                    {/* {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('undefined') &&
+                                                        `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') || k.split('_').join(' ') : k.split('_').join(' ')})`)?.join(' & ')}`
+                                                    } */}
+                                                    {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
+                                    </h5>
+                        
                                     {/*  Quick Filters status display */}
                                     <div className="flex-grow w-full flex flex-col items-center gap-4 order-last md:order-none">
                                         <div className="flex flex-col justify-center items-center px-1 md:px-4 w-full ">
@@ -586,14 +773,7 @@ const Home = (props) => {
                                                     </div>
                                                 </div>
                                             )) : (
-                                                <div className="w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3">
-                                                    <span className="text-base text-gray-700">No facilities found</span>
-                                                    <Link href={props.path || '/'}>
-                                                        <a className="text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800">
-                                                            Refresh.
-                                                        </a>
-                                                    </Link>
-                                                </div>
+                                                <Alert severity="warning" sx={{width:'100%'}}>No facilities found <span onClick={() => router.push({pathname:'/facilities', query: {qf: 'all'}})} className='hover:underline text-indigo-700 cursor-pointer'>Refresh</span></Alert>
                                             )}
                                             {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                                 <li className="text-base text-gray-600">
@@ -622,27 +802,8 @@ const Home = (props) => {
                                             </ul>}
                                         </div>
                                     </div>
-                                </TabPanel>
-                                {/* <TabPanel value={value} index={1}>
-                                    Item Two
-                                </TabPanel>
-                                <TabPanel value={value} index={2}>
-                                    Item Three
-                                </TabPanel>
-                                <TabPanel value={value} index={3}>
-                                    Item Four
-                                </TabPanel>
-                                <TabPanel value={value} index={4}>
-                                    Item Five
-                                </TabPanel>
-                                <TabPanel value={value} index={5}>
-                                    Item Six
-                                </TabPanel>
-                                <TabPanel value={value} index={6}>
-                                    Item Seven
-                                </TabPanel> */}
-                            </Box>
-                        </div>
+                             
+                    </div>
 
                   
                    
@@ -663,6 +824,8 @@ const Home = (props) => {
 }
 
 Home.getInitialProps = async (ctx) => {
+
+    
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     const fetchFilters = token => {
@@ -688,8 +851,8 @@ Home.getInitialProps = async (ctx) => {
 
     const fetchData = (token) => {
 
-    
         let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
+     
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -698,19 +861,59 @@ Home.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
-        let other_posssible_filters = ["owner_type", "service", "facility_type", "county", "service_category", "sub_county", "keph_level", "owner", "operation_status", "constituency", "ward", "has_edits", "is_approved", "is_complete", "number_of_beds", "number_of_cots", "open_whole_day", "open_weekends", "open_public_holidays"]
+        let other_posssible_filters = [
+            "owner_type", 
+            "service", 
+            "facility_type", 
+            "county", 
+            "service_category", 
+            "sub_county", 
+            "keph_level", 
+            "owner", 
+            "operation_status", 
+            "constituency", 
+            "ward", 
+            "has_edits", 
+            "rejected_national",
+            "rejected",
+            "closed",
+            "is_approved", 
+            "is_complete", 
+            "number_of_beds", 
+            "number_of_cots", 
+            "incomplete",
+            "open_whole_day", 
+            "open_weekends",
+            "approved",
+            "reporting_in_dhis",
+            "pending_approval",
+            "approved_national_level",
+            "admitting_maternity_general", 
+            "admitting_maternity_only",
+            "open_public_holidays"]
+
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
                 url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
             }
         })
-     
+
+        // console.log({ctxAsPath: ctx.asPath});
+
+        // if(ctx?.query) {
+            
+        //     url = url.replace('/facilities/?', `${ctx?.asPath.replace(/qf=[a-z]*&/, '')}&`)
+         
+        // }
+
+
         let current_url = url + '&page_size=100'
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
-   
+
+
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

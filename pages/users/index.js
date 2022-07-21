@@ -46,8 +46,7 @@ const Users = (props) => {
  
         
     const onGridReady = (params) => {
-        // console.log({api: params.api});
-        // console.log(params);
+     
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
