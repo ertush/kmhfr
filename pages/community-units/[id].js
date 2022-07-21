@@ -143,9 +143,7 @@ const CommUnit = (props) =>
                 </div>
               </div>
               <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
-                {/* {user && user?.id ? <a href={'/community-unit/edit/' + cu.id} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black-700 active:bg-black-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
-                                    Edit
-                                </a> : <a href="/auth/login">Log in</a>} */}
+               
               </div>
             </div>
           </div>
@@ -181,7 +179,7 @@ const CommUnit = (props) =>
                     Print
                   </button>
                   <button
-                    onClick={() => router.push("/community-unit/edit_community_unit/" + cu.id)}
+                    onClick={() => router.push("/community-units/edit_community_unit/" + cu.id)}
                     className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                   >
                     Edit
@@ -542,7 +540,7 @@ const CommUnit = (props) =>
                       <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                         <span className="font-semibold">Services</span>
                         <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
-                        {/* {user && user?.id ? <a href={"/community-unit/edit/"+cu.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> :""} */}
+                       
                       </h3>
                       <ul>
                         {cu?.services && cu?.services.length > 0 ? (
@@ -616,7 +614,7 @@ const CommUnit = (props) =>
                         <span className="font-semibold">
                           Health Unit workers
                         </span>
-                        {/* {user && user?.id ? <a href={"/community-unit/edit/"+cu.id+"#hr"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a> : ""} */}
+                       
                       </h3>
                       <ul>
                         {cu?.health_unit_workers &&

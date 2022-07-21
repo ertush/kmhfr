@@ -163,7 +163,7 @@ const checkToken = async (req, res, isProtected, creds) => {
 }
 
 const logUserIn = (req, res, creds, was) => {
-    console.log({creds})
+    // console.log({creds})
     // console.log('------------logUserIn: ', creds)
     return getToken(req, res, null, creds).then(tk => {
         if (tk.error) {

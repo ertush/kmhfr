@@ -20,7 +20,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { ToastContainer, toast } from 'react-toastify';
+// import { ToastContainer, toast } from 'react-toastify';
 // import { WindowSharp } from '@mui/icons-material'
 // import LoadingAnimation from '../../components/LoadingAnimation'
 
@@ -228,7 +228,7 @@ const DynamicReports = (props) => {
                                             <p>No filters.</p>
                                         </div>)
                                         : (
-                                            <Accordion sx={{my:3, width:'100%'}} expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
+                                            <Accordion sx={{my:3, width:'100%', boxShadow:'none', border:'solid 1px #d5d8de', borderRadius:1}} expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
                                                         <AccordionSummary
                                                             expandIcon={<ExpandMoreIcon />}
                                                             aria-controls="panel1a-content"
@@ -769,7 +769,7 @@ const DynamicReports = (props) => {
                                                 
                                             </form>
                                             </AccordionDetails>
-                                                    </Accordion>  
+                                            </Accordion>  
                                         )
                                     }
                                     </div>
