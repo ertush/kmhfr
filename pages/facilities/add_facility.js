@@ -19,7 +19,9 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import { FixedSizeList } from 'react-window';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 
 
 // Heroicons imports
@@ -32,7 +34,7 @@ import { XCircleIcon } from '@heroicons/react/outline';
 
 // Package imports
 import Select from 'react-select';
-import {renderMenuItem}  from '../../components/renderMenuItem';
+import router from 'next/router';
 
 
 
@@ -366,9 +368,6 @@ function AddFacility(props) {
 	
 	]
 
-
-
-
 	
     const [formId, setFormId] = useState(0)
     const facilityContactRef = useRef(null)
@@ -422,6 +421,50 @@ function AddFacility(props) {
     }, [formId, services])
       
 
+	const handleQuickFiltersClick = (link) => {
+		switch(link){
+			case 'all':
+				router.push({pathname:'/facilities', query:{qf:'all'}})
+				break;
+				
+			case 'approved_facilities':
+				
+				router.push({pathname:'/facilities', query:{qf:'approved', approved_national_level: true, rejected:false }})
+				break;
+			case 'new_pending_validation':
+
+				router.push({pathname:'/facilities', query:{qf:'new_pending_validation', pending_approval:true, has_edits:false}})
+				break;
+			case 'updated_pending_validation':
+				
+				router.push({pathname:'/facilities', query:{qf:'updated_pending_validation', has_edits:true, pending_approval:true} })
+				break;
+			case 'failed_validation_facilities':
+				
+				router.push({pathname:'/facilities', query:{qf:'failed_validation', rejected:true}})
+				break;
+			case 'rejected_facilities':
+				
+				router.push({pathname:'/facilities', query:{qf:'rejected', rejected_national:true}})
+				break;
+			case 'closed_facilities':
+				
+				router.push({pathname:'/facilities', query:{qf:'closed', closed:true}})
+				break;
+			case 'incomplete_facilities':
+				
+				router.push({pathname:'/facilities', query:{qf:'incomplete', incomplete:true}})
+				break;
+			case 'synchronize_regulated_facilities':
+				router.push({pathname:'/facilities', query:{qf:'all'}})
+				break;
+			case 'feedback_facilities':
+				router.push({pathname:'/facilities', query:{qf:'all'}})
+				break;
+			default:
+				break;
+	}
+	}
 
   return (
 	<>
@@ -438,15 +481,90 @@ function AddFacility(props) {
 									<a className="text-green-800" href="/facilities/">Facilities</a> {'>'}
 									<span className="text-gray-500">Add Facility</span>
 								</div>
-								<div className="flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3">
-								
-								</div>
+							</div>
+
+							<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+										{'New Facility'}
+								</h2>
 							</div>
 					
 						</div>
 
+						{/* Side Menu Filters */}
+
+						<div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
+                        <List
+                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                        component="nav"
+                        aria-labelledby="nested-list-subheader"
+                    
+                        >	
+                            <ListItemButton name="rt"
+                                onClick={() => handleQuickFiltersClick('all') }
+                            >
+                                <ListItemText primary="All Facilities" />
+                            </ListItemButton>
+                            <ListItemButton 
+                                 onClick={() => handleQuickFiltersClick('approved_facilities') }
+                            >
+                                <ListItemText primary="Approved Facilities" />
+                            </ListItemButton>
+                            <ListItemButton 
+                            	 onClick={() => handleQuickFiltersClick('new_pending_validation') }
+                            >
+                                <ListItemText primary="New Facilities Pending Validation"/>
+                            </ListItemButton>
+
+                            <ListItemButton 
+                            	 onClick={() => handleQuickFiltersClick('updated_pending_validation') }
+                            >
+                                <ListItemText primary="Updated Facilities Pending Validation"/>
+                            </ListItemButton>
+
+                            <ListItemButton 
+                              	onClick={() => handleQuickFiltersClick('failed_validation_facilities') }
+                            >
+                                <ListItemText primary="Failed Validation Facilities"/>
+                            </ListItemButton>
+
+                            <ListItemButton 
+                             	onClick={() => handleQuickFiltersClick('rejected_facilities') }
+                            >
+                                <ListItemText primary="Rejected Facilities"/>
+                            </ListItemButton>
+
+                            <ListItemButton 
+                              	onClick={() => handleQuickFiltersClick('closed_facilities') }
+                            >
+                                <ListItemText primary="Closed Facilities "/>
+                            </ListItemButton>
+
+                            <ListItemButton 
+                              	onClick={() => handleQuickFiltersClick('incomplete_facilities') }
+                            >
+                                <ListItemText primary="Incomplete Facilities"/>
+                            </ListItemButton>
+
+                            <ListItemButton 
+                             	 onClick={() => handleQuickFiltersClick('synchronize_regulated_facilities') }
+                            >
+                                <ListItemText primary="Synchronize Regulated Facilities"/>
+                            </ListItemButton>
+
+                            
+                            <ListItemButton 
+                              	onClick={() => handleQuickFiltersClick('feedback_facilities') }
+                            >
+                                
+                                <ListItemText primary="Feedback on Facilities"/>
+                            </ListItemButton>
+                                
+                        </List>
+                    	</div>
+
 						{/* Stepper and Form */}
-						<div className='col-span-5 md:col-span-4 flex flex-col items-center border rounded pt-8 pb-4 gap-4 mt-2 order-last md:order-none'>
+						<div className='col-span-4 md:col-start-2 md:col-span-4 flex flex-col items-center border rounded pt-8 pb-4 gap-4 mt-2 order-last md:order-none'>
 							{/* Stepper Header */}
 							<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
 								<Box sx={{ width: '100%' }}>
@@ -2447,28 +2565,9 @@ function AddFacility(props) {
 							
 
 						</div>
+
 						
-						<aside className="flex flex-col col-span-5 md:col-span-1 p-1 md:h-full">
-							<details  className="rounded bg-transparent py-2 text-base flex flex-col w-full md:stickyz md:top-2z" open>
-								<summary className="flex cursor-pointer w-full bg-white p-2">
-									<h3 className="text-2xl tracking-tight font-bold leading-3">Menu Filters</h3>
-								</summary>
-								<Box
-									sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
-									>
-									<FixedSizeList
-										height={400}
-										width={360}
-										itemSize={46}
-										itemCount={9}
-										overscanCount={5}
-									>
-										{renderMenuItem}
-									</FixedSizeList>
-								</Box>
-							</details>
-						</aside>
-						{/* (((((( Floating div at bottom right of page */}
+						{/* Floating Notification Bottom Right*/}
 						<div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
 							<h5 className="text-sm font-bold">
 								<span className="text-gray-600 uppercase">Limited results</span>
@@ -2477,7 +2576,7 @@ function AddFacility(props) {
 								For testing reasons, downloads are limited to the first 100 results.
 							</p>
 						</div>
-						{/* ))))))) */}
+					
 					</div>
 		</MainLayout>
 	</>
