@@ -134,21 +134,21 @@ const AddUser = (props)=> {
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
         <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
 			<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
-                        <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-								<span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/')}>Home</span>{'>'}
-                                <span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/users')}>Users</span> {'>'}
-                                <span className="text-gray-500">Add user</span>
-                            </div>
-                        </div>
-                        <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
-                                <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                   <UserAddIcon className='text-black ml-2 h-5 w-5'/>
-                                    {'New User'}
-                                </h2>
-                        </div>
-                  
-                    </div>
+				<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
+					<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+						<span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/')}>Home</span>{'>'}
+						<span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/users')}>Users</span> {'>'}
+						<span className="text-gray-500">Add user</span>
+					</div>
+				</div>
+				<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+						<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+							<UserAddIcon className='text-black ml-2 h-5 w-5'/>
+							{'New User'}
+						</h2>
+				</div>
+			
+			</div>
 
 						<div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
 							<div className=' w-full flex flex-col items-start p-3 rounded border border-gray-300/70 bg-gray-50'
