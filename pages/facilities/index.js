@@ -23,9 +23,6 @@ import ListItemText from '@mui/material/ListItemText';
 import NativePickers from '../../components/date-picker'
 
 
-
-
-
 const Home = (props) => {
     const router = useRouter()
    
