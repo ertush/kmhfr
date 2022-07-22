@@ -728,7 +728,7 @@ const Home = (props) => {
                                                                 <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility.official_name || facility.official_name || facility.name}
                                                             </a>
                                                         </h3>
-                                                        {/* <p className="text-sm text-gray-600 w-full">{facility.nearest_landmark || ' '}{' '} {facility.location_desc || ' '}</p> */}
+                                                        
                                                         <p className="text-sm text-gray-600 w-full flex gap-y-2 gap-x-5 items-center">
                                                             <span className="text-lg text-black font-semibold"># {facility.code ? facility.code : 'NO_CODE' || ' '}</span>
                                                             <span>{facility.owner_name || ' '}</span>
@@ -835,13 +835,7 @@ const Home = (props) => {
                                                 <li className="text-sm text-gray-400 flex">
                                                     <DotsHorizontalIcon className="h-3" />
                                                 </li>
-                                                {/* {props?.data?.far_pages.map(page => (
-                                                    <li key={page} className="text-base text-gray-600">
-                                                        <a href={'/?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
-                                                            {page}
-                                                        </a>
-                                                    </li>
-                                                ))} */}
+                                               
 
                                             </ul>}
                                         </div>
