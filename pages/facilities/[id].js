@@ -148,13 +148,13 @@ const Facility = (props) => {
                                         Edit
                                     </button>
                                     <button
-                                        onClick={() => window.alert("Edit")}
+                                        onClick={() => router.push('/facilities/regulate')}
                                         className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                                     >
                                         Regulate
                                     </button>
                                     <button
-                                        onClick={() => window.alert("Edit")}
+                                        onClick={() => router.push('/facilities/upgrade')}
                                         className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                                     >
                                         Upgrade

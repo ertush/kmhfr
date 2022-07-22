@@ -18,12 +18,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import Alert from '@mui/material/Alert';
-// import ListItemIcon from '@mui/material/ListItemIcon';
+
 import ListItemText from '@mui/material/ListItemText';
 import NativePickers from '../../components/date-picker'
 
 
-// import { display, grid } from '@mui/system'
+
 
 
 const Home = (props) => {
@@ -34,7 +34,7 @@ const Home = (props) => {
     let fltrs = filters
     let [drillDown, setDrillDown] = useState({})
     let qf = props?.query?.qf || 'all'
-    let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
+   
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
     filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
@@ -93,18 +93,6 @@ const Home = (props) => {
             ],
         },
         {
-            name: 'KHIS-synched',
-            id: 'khis_synched',
-            filters: [
-                { id: "approved", value: true },
-                { id: "approved_national_level", value: true },
-                { id: "rejected", value: false },
-                { id: "reporting_in_dhis", value: true },
-                { id: "admitting_maternity_general", value: true },
-                { id: "admitting_maternity_only", value: true },
-            ],
-        },
-        {
             name: 'Incomplete',
             id: 'incomplete',
             filters: [
@@ -124,46 +112,12 @@ const Home = (props) => {
             filters: [
                 { id: "closed", value: true },
             ]
-        },
-        {
-            name: 'Feedback',
-            id: 'feedback',
-            filters: [
-            ]
-        },
+        }
     ]
 
 
 
-    // const applyFilter = (qf) => {
-    //     let routerObj = {}
-    //     if (currentQuickFilter === 'all') {
-    //         let goto = '/facilities'
-    //         if(props?.query?.searchTerm){
-    //             routerObj.query = {q: props?.query?.searchTerm}
-    //         }
-    //         routerObj.pathname = goto
-    //         // console.log('drillDown: all:::', routerObj)
-    //         router.push(routerObj)
-    //         return
-    //     }
-    //     if(Object.keys(qf).length > 0){
-    //         let goto = '/facilities'
-    //         let payload = { ...qf }
-    //         if(props?.query?.searchTerm){
-    //             payload.q = props?.query?.searchTerm
-    //         }
-    //         // console.log('payload:: ', payload)
-    //         routerObj.pathname = goto
-    //         routerObj.query = payload
-            
-    //         router.push(routerObj)
-    //         return
-    //     }
-    // }
-
- 
-
+  
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
     const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
@@ -180,6 +134,9 @@ const Home = (props) => {
     const [syncRegulatedFctsSelected, setSyncRegulatedFctsSelected] = useState(false);
     const [incompleteFctsSelected, setIncompleteFctsSelected] = useState(false);
     const [feedBackFctsSelected, setFeedBackFctsSelected] = useState(false);
+    const [khisSynched, setKhisSynched] = useState(false);
+
+    const [facilityFeedBack, setFacilityFeedBack] = useState([])
   
     useEffect(() => {
         let qry = props?.query
@@ -191,7 +148,7 @@ const Home = (props) => {
         return () => {
             
         }
-    }, [currentQuickFilter, title])
+    }, [facilityFeedBack, title])
 
 
     const handleDates=(from, to) => {
@@ -211,21 +168,53 @@ const Home = (props) => {
         
     }
 
-    const handleQuickFiltersClick = (filter_id) => {
+    const handleQuickFiltersClick = async (filter_id) => {
+    
+    let filter = {}
+    if(filter_id !== 'khis_synched' && filter_id !== 'feedback') {
         
     const qfilter = quickFilters.filter(({id}) => id === filter_id).map(f => f.filters.map(({id, value}) => ({id, value})))
-    let filter = {}
+ 
     qfilter[0].forEach(({id, value}) => {filter[id] = value})
 
-    console.log({filter});
-
-    if(filter_id === 'all'){
-        router.push({pathname:'/facilities', query: {qf: filter_id}})
     }
 
-    let robj = {pathname: '/facilities', query: {qf: filter_id, ...filter}}
-    
-    router.push(robj)
+   
+    switch(filter_id){
+        case 'all':
+            setFacilityFeedBack([])
+            setKhisSynched(false)
+            router.push({pathname:'/facilities', query: {qf: filter_id}})
+            break;
+        case 'khis_synched':
+            setFacilityFeedBack([])
+            setKhisSynched(true)
+            
+            break;
+        case 'feedback':
+            setKhisSynched(false)
+            try {
+                const feedback = await fetch('/api/facility_filters/?path=facility_service_ratings&fields=county,sub_county,constituency,ward,comment,facility_id,facility_name,service_name,created,rating&id=feedback')
+                const feedbackFacilities = (await feedback.json()).results
+
+                setFacilityFeedBack(feedbackFacilities)
+               
+
+            }
+            catch (err){
+                console.error(err.message);
+            }
+         
+            break;
+        default:
+            setFacilityFeedBack([])
+            setKhisSynched(false)
+            let robj = {pathname: '/facilities', query: {qf: filter_id, ...filter}}
+            router.push(robj)
+            break;
+
+    }
+        
 
     }
 
@@ -238,7 +227,7 @@ const Home = (props) => {
             </Head>
 
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 ">
+                <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 md:mt-3 ">
                     <div className="col-span-5 flex flex-col gap-4 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base ">
                             {/* Bread Crumbs */}
@@ -270,8 +259,8 @@ const Home = (props) => {
                                                             : (
                                                                 <div className='grid grid-cols-4 place-content-center items-content-end gap-2'>
                                                                     {filters && Object.keys(filters).length > 0 &&
-                                                                        Object.keys(fltrs).map(ft => (
-                                                                            <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
+                                                                        Object.keys(fltrs).map((ft, i) => (
+                                                                            <div key={i} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
                                                                                 <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
                                                                                     options={
@@ -291,8 +280,7 @@ const Home = (props) => {
                                                                                             nf[ft] = sl.value
                                                                                         } else {
                                                                                             delete nf[ft]
-                                                                                            // let rr = drillDown.filter(d => d.key !== ft)
-                                                                                            // setDrilldown(rr)
+                                                                                           
                                                                                         }
                                                                                         setDrillDown({ ...drillDown, ...nf })
                                                                                     }} />
@@ -385,7 +373,7 @@ const Home = (props) => {
                                                                     </div>
                                                                     <button onClick={ev => {
                                                                         if (Object.keys(drillDown).length > 0) {
-                                                                            let qry = Object.keys(drillDown).map(function (key) {
+                                                                            let qry = Object.keys(drillDown).map(key => {
                                                                                 let er = ''
                                                                                 if (props.path && !props.path.includes(key + '=')) {
                                                                                     er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
@@ -394,8 +382,7 @@ const Home = (props) => {
                                                                             }).join('&')
                                                                             let op = '?'
                                                                             if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                                            // console.log(props.path)
-                                                                            // setDrillDown({})
+                                                                            
                                                                             if (router || typeof window == 'undefined') {
                                                                                 router.push(props.path + op + qry)
                                                                             } else {
@@ -724,18 +711,17 @@ const Home = (props) => {
                     <div className="w-full md:col-span-4 md:col-start-2  col-span-5 md:h-auto">
                                     {/* Data Indicator sectio */}
                                     <h5 className="text-lg font-medium text-gray-800 float-right mr-4 mb-2">
-                                                    {/* {drillDown && Object.keys(drillDown).length > 0 && !JSON.stringify(Object.keys(drillDown)).includes('undefined') &&
-                                                        `Matching ${Object.keys(drillDown).map(k => `${k[0].toLocaleUpperCase()}${k.split('_').join(' ').slice(1).toLocaleLowerCase()}: (${filters[k] ? Array.from(drillDown[k].split(','), j => filters[k].find(w => w.id == j)?.name.split('_').join(' ') || j.split('_').join(' ')).join(', ') || k.split('_').join(' ') : k.split('_').join(' ')})`)?.join(' & ')}`
-                                                    } */}
+                                                  
                                                     {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
                                     </h5>
                         
                                     {/*  Quick Filters status display */}
                                     <div className="flex-grow w-full flex flex-col items-center gap-4 order-last md:order-none">
                                         <div className="flex flex-col justify-center items-center px-1 md:px-4 w-full ">
-                                            {/* <pre>{JSON.stringify(facilities[0], null, 2)}</pre> */}
-                                            {facilities && facilities.length > 0 ? facilities.map((facility, index) => (
-                                                <div key={facility.id} className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
+                                            {/* Facilities View */}
+                                            {facilities && facilities.length > 0 && facilityFeedBack.length === 0 && !khisSynched &&
+                                            facilities.map((facility, index) => (
+                                                <div key={index} className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
                                                         <h3 className="text-2xl w-full">
                                                             <a href={'/facilities/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
@@ -772,31 +758,75 @@ const Home = (props) => {
                                                         {facility.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
                                                     </div>
                                                 </div>
-                                            )) : (
-                                                <Alert severity="warning" sx={{width:'100%'}}>No facilities found <span onClick={() => {
-                                                    setTitle('Facilities')
-                                                    setAllFctsSelected(true)
-                                                    setApprovedFctsSelected(false)
-                                                    setNewFctsSelected(false)
-                                                    setUpdatedFctsSelected(false)
-                                                    setFailedValidationFctsSelected(false)                                  
-                                                    setRejectedFctsSelected(false)
-                                                    setClosedFctsSelected(false)
-                                                    setIncompleteFctsSelected(false)
-                                                    setSyncRegulatedFctsSelected(false)
-                                                    setFeedBackFctsSelected(false)
+                                            ))
+                                            }
 
-                                                    router.push({pathname:'/facilities', query: {qf: 'all'}})
-                                                }} className='hover:underline text-indigo-700 cursor-pointer'>back to all facilities</span></Alert>
-                                            )}
-                                            {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                                            {/* FeedBack Facilities View */}
+                                            {
+                                                facilityFeedBack && facilityFeedBack.length > 0  ? facilityFeedBack.map((facility, index) => (
+                                                    <div key={index} className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
+                                                    <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
+                                                        <h3 className="text-2xl w-full">
+                                                            <a href={'/facilities/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
+                                                                <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility.facility_name}
+                                                            </a>
+                                                        </h3>
+                                                     
+                                                        <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Service:</label>
+                                                                <span className="whitespace-pre-line">{facility.service_name || facility.county || '-'}</span>
+                                                            </div>
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Comment:</label>
+                                                                <span className="whitespace-pre-line">{facility.comment || facility.county || '-'}</span>
+                                                            </div>
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Rating:</label>
+                                                                <span className="whitespace-pre-line">{facility.rating || facility.sub_county || '0'}</span>
+                                                            </div>
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Date:</label>
+                                                                <span className="whitespace-pre-line">{new Date(facility.created).toLocaleDateString() || '-'}</span>
+                                                            </div>
+                                                          
+                                                        </div>
+                                                    </div>
+                                                
+                                                </div>
+                                                )):(
+                                                    
+                                                    (facilities.length === 0 && facilityFeedBack.length == 0 || khisSynched) &&
+                                                    // No Facility feedback data found
+                                                    <Alert severity="warning" sx={{width:'100%'}}>No facilities found <span onClick={() => {
+                                                        setTitle('Facilities')
+                                                        setAllFctsSelected(true)
+                                                        setApprovedFctsSelected(false)
+                                                        setNewFctsSelected(false)
+                                                        setUpdatedFctsSelected(false)
+                                                        setFailedValidationFctsSelected(false)                                  
+                                                        setRejectedFctsSelected(false)
+                                                        setClosedFctsSelected(false)
+                                                        setIncompleteFctsSelected(false)
+                                                        setSyncRegulatedFctsSelected(false)
+                                                        setFeedBackFctsSelected(false)
+    
+                                                        router.push({pathname:'/facilities', query: {qf: 'all'}})
+                                                    }} className='hover:underline text-indigo-700 cursor-pointer'>back to all facilities</span>
+                                                    </Alert>
+                                                  
+                                                )
+
+                                            }
+
+                                            {facilities && facilities.length > 0 && !khisSynched && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                                 <li className="text-base text-gray-600">
                                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
                                                     </Link>
                                                 </li>
-                                                {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
-                                                    <li key={page} className="text-base text-gray-600">
+                                                {props?.path && props?.data?.near_pages && props?.data?.near_pages.map((page, i) => (
+                                                    <li key={i} className="text-base text-gray-600">
                                                         <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
                                                             <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
                                                         </Link>

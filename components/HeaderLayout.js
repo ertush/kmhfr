@@ -129,7 +129,7 @@ export default function HeaderLayout({
   return (
     <header className="flex flex-wrap items-center justify-start gap-x-4 w-full p-1 max-w-screen-3xl">
       <title>KMHFL 3</title>
-      <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-0 md:gap-5">
+      <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-3 md:gap-5">
         <div id="logo" className="mx:px-3 pb-1">
           <a
             href="/"
@@ -204,6 +204,7 @@ export default function HeaderLayout({
                 </a>
               </Link>
             </li>
+            {/* GIS */}
             <li className="flex-wrap font-semibold">
               <Link href="/gis">
                 <a
@@ -299,19 +300,7 @@ export default function HeaderLayout({
               </a>
             </Link>
           </li>
-              {/* GIS */}
-              <li className="flex-wrap font-semibold">
-              <Link href="/gis">
-                <a
-                  className={
-                    (currentPath == "/gis" ? activeClasses : inactiveClasses) +
-                    " text-base md:text-lg"
-                  }
-                >
-                  GIS
-                </a>
-              </Link>
-            </li>
+          
           </ul>
         </div>
       </nav>
