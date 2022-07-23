@@ -424,43 +424,38 @@ function AddFacility(props) {
 	const handleQuickFiltersClick = (link) => {
 		switch(link){
 			case 'all':
-				router.push({pathname:'/facilities', query:{qf:'all'}})
+				router.push({pathname:'/facilities', query:{qf:'all', id:'not_all'}})
 				break;
 				
 			case 'approved_facilities':
 				
-				router.push({pathname:'/facilities', query:{qf:'approved', approved_national_level: true, rejected:false }})
+				router.push({pathname:'/facilities', query:{qf:'approved', approved_national_level: true, rejected:false, id:'approved' }})
 				break;
 			case 'new_pending_validation':
 
-				router.push({pathname:'/facilities', query:{qf:'new_pending_validation', pending_approval:true, has_edits:false}})
+				router.push({pathname:'/facilities', query:{qf:'new_pending_validation', pending_approval:true, has_edits:false, id:'new_pending_validation'}})
 				break;
 			case 'updated_pending_validation':
 				
-				router.push({pathname:'/facilities', query:{qf:'updated_pending_validation', has_edits:true, pending_approval:true} })
+				router.push({pathname:'/facilities', query:{qf:'updated_pending_validation', has_edits:true, pending_approval:true, id:'updated_pending_validation'} })
 				break;
 			case 'failed_validation_facilities':
 				
-				router.push({pathname:'/facilities', query:{qf:'failed_validation', rejected:true}})
+				router.push({pathname:'/facilities', query:{qf:'failed_validation', rejected:true, id:'failed_validation'}})
 				break;
 			case 'rejected_facilities':
 				
-				router.push({pathname:'/facilities', query:{qf:'rejected', rejected_national:true}})
+				router.push({pathname:'/facilities', query:{qf:'rejected', rejected_national:true, id:'rejected'}})
 				break;
 			case 'closed_facilities':
 				
-				router.push({pathname:'/facilities', query:{qf:'closed', closed:true}})
+				router.push({pathname:'/facilities', query:{qf:'closed', closed:true, id:'closed'}})
 				break;
 			case 'incomplete_facilities':
 				
-				router.push({pathname:'/facilities', query:{qf:'incomplete', incomplete:true}})
+				router.push({pathname:'/facilities', query:{qf:'incomplete', incomplete:true, id:'incomplete'}})
 				break;
-			case 'synchronize_regulated_facilities':
-				router.push({pathname:'/facilities', query:{qf:'all'}})
-				break;
-			case 'feedback_facilities':
-				router.push({pathname:'/facilities', query:{qf:'all'}})
-				break;
+		
 			default:
 				break;
 	}
@@ -546,19 +541,7 @@ function AddFacility(props) {
                                 <ListItemText primary="Incomplete Facilities"/>
                             </ListItemButton>
 
-                            <ListItemButton 
-                             	 onClick={() => handleQuickFiltersClick('synchronize_regulated_facilities') }
-                            >
-                                <ListItemText primary="Synchronize Regulated Facilities"/>
-                            </ListItemButton>
-
-                            
-                            <ListItemButton 
-                              	onClick={() => handleQuickFiltersClick('feedback_facilities') }
-                            >
-                                
-                                <ListItemText primary="Feedback on Facilities"/>
-                            </ListItemButton>
+                           
                                 
                         </List>
                     	</div>

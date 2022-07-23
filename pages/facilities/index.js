@@ -21,6 +21,7 @@ import Alert from '@mui/material/Alert';
 
 import ListItemText from '@mui/material/ListItemText';
 import NativePickers from '../../components/date-picker'
+import { set } from 'nprogress'
 
 
 const Home = (props) => {
@@ -31,6 +32,8 @@ const Home = (props) => {
     let fltrs = filters
     let [drillDown, setDrillDown] = useState({})
     let qf = props?.query?.qf || 'all'
+
+    // console.log({path: props?.path, current_url:props?.current_url});
    
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -121,7 +124,7 @@ const Home = (props) => {
     const [title, setTitle] = useState('Facilities') 
 
     // quick filter themes
-    const [allFctsSelected, setAllFctsSelected] = useState(true);
+    
     const [approvedFctsSelected, setApprovedFctsSelected] = useState(false);
     const [newFtsSelected, setNewFctsSelected] = useState(false);
     const [updatedFctsSelected, setUpdatedFctsSelected] = useState(false);
@@ -134,8 +137,19 @@ const Home = (props) => {
     const [khisSynched, setKhisSynched] = useState(false);
 
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
-  
+    const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '')
+    const [allFctsSelected, setAllFctsSelected] = useState(true);
+
+    if(allFctsSelected && pathId.length > 0){
+        setAllFctsSelected(false)
+    }
+
+   
+    
     useEffect(() => {
+        
+       
+      
         let qry = props?.query
         
         delete qry.searchTerm
@@ -419,7 +433,7 @@ const Home = (props) => {
                                 {/* Button group */}
                              
                                 {
-                                allFctsSelected &&
+                                (allFctsSelected || pathId === 'all') &&
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Facility Button */}
                                    <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
@@ -485,9 +499,10 @@ const Home = (props) => {
                         aria-labelledby="nested-list-subheader"
                     
                         >	
-                            <ListItemButton sx={{ backgroundColor: allFctsSelected ?  '#e7ebf0' : 'none' }} name="rt"
+                            <ListItemButton sx={{ backgroundColor: (allFctsSelected || pathId === 'all') ?  '#e7ebf0' : 'none' }} name="rt"
                                 onClick={(ev)=>{
                                     setTitle('Facilities')
+                                    setPathId('all')
                                     setAllFctsSelected(true)
                                     setApprovedFctsSelected(false)
                                     setNewFctsSelected(false)
@@ -506,10 +521,11 @@ const Home = (props) => {
                             >
                                 <ListItemText primary="All Facilities" />
                             </ListItemButton>
-                            <ListItemButton sx={{ backgroundColor: approvedFctsSelected ?  '#e7ebf0' : 'none' }} 
+                            <ListItemButton sx={{ backgroundColor: (approvedFctsSelected || pathId === 'new_pending_validation')  ?  '#e7ebf0' : 'none' }} 
                                 onClick={(ev)=>{
                                     setTitle('Approved Facilities')
                                     setAllFctsSelected(false)
+                                    setPathId('not_all')
                                     setApprovedFctsSelected(true)
                                     setNewFctsSelected(false)
                                     setUpdatedFctsSelected(false)
@@ -527,7 +543,7 @@ const Home = (props) => {
                             >
                                 <ListItemText primary="Approved Facilities" />
                             </ListItemButton>
-                            <ListItemButton sx={{ backgroundColor: newFtsSelected ?  '#e7ebf0' : 'none' }}
+                            <ListItemButton sx={{ backgroundColor: (newFtsSelected || pathId === 'new_pending_validation') ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('Validate New Facilities')
                                 setAllFctsSelected(false)
@@ -549,7 +565,7 @@ const Home = (props) => {
                                 <ListItemText primary="New Facilities Pending Validation"/>
                             </ListItemButton>
 
-                            <ListItemButton sx={{ backgroundColor: updatedFctsSelected ?  '#e7ebf0' : 'none' }}
+                            <ListItemButton sx={{ backgroundColor: (updatedFctsSelected  || pathId === 'updated_pending_validation') ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('Validate Updated Facilities')
                                 setAllFctsSelected(false)
@@ -570,7 +586,7 @@ const Home = (props) => {
                                 <ListItemText primary="Updated Facilities Pending Validation"/>
                             </ListItemButton>
 
-                            <ListItemButton sx={{ backgroundColor: failedValidationFctsSelected ?  '#e7ebf0' : 'none'}}
+                            <ListItemButton sx={{ backgroundColor: (failedValidationFctsSelected || pathId === 'failed_validation')?  '#e7ebf0' : 'none'}}
                             onClick={()=>{
                                 setTitle('Rejected Facilities')
                                 setAllFctsSelected(false)
@@ -590,7 +606,7 @@ const Home = (props) => {
                                 <ListItemText primary="Failed Validation Facilities"/>
                             </ListItemButton>
 
-                            <ListItemButton sx={{  backgroundColor: rejectedFctsSelected ?  '#e7ebf0' : 'none'}}
+                            <ListItemButton sx={{  backgroundColor: (rejectedFctsSelected || pathId === 'rejected') ?  '#e7ebf0' : 'none'}}
                             onClick={()=>{
                                 setTitle('Rejected Facilities')
                                 setAllFctsSelected(false)
@@ -612,7 +628,7 @@ const Home = (props) => {
                                 <ListItemText primary="Rejected Facilities"/>
                             </ListItemButton>
 
-                            <ListItemButton sx={{ backgroundColor: closedFctsSelected ?  '#e7ebf0' : 'none'}}
+                            <ListItemButton sx={{ backgroundColor: (closedFctsSelected || pathId == "closed") ?  '#e7ebf0' : 'none'}}
                             onClick={()=>{
                                 setTitle('Closed Facilities')
                                 setAllFctsSelected(false)
@@ -634,7 +650,7 @@ const Home = (props) => {
                                 <ListItemText primary="Closed Facilities "/>
                             </ListItemButton>
 
-                            <ListItemButton sx={{  backgroundColor: incompleteFctsSelected ?  '#e7ebf0' : 'none' }}
+                            <ListItemButton sx={{  backgroundColor: (incompleteFctsSelected || pathId == "incomplete")  ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('Incomplete Facilities')
                                 setAllFctsSelected(false)
@@ -655,7 +671,7 @@ const Home = (props) => {
                                 <ListItemText primary="Incomplete Facilities"/>
                             </ListItemButton>
 
-                            <ListItemButton sx={{ backgroundColor: syncRegulatedFctsSelected ?  '#e7ebf0' : 'none' }}
+                            <ListItemButton sx={{ backgroundColor: (syncRegulatedFctsSelected || pathId == "khis_synched")  ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('Synchronize Regulated Facilities')
                                 setAllFctsSelected(false)
@@ -677,7 +693,7 @@ const Home = (props) => {
                             </ListItemButton>
 
                             
-                            <ListItemButton sx={{ backgroundColor: feedBackFctsSelected ?  '#e7ebf0' : 'none' }}
+                            <ListItemButton sx={{ backgroundColor: (feedBackFctsSelected || pathId == "feedback") ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('Facilities Feedback From Public')
                                 setAllFctsSelected(false)
@@ -706,10 +722,10 @@ const Home = (props) => {
                     
                     {/* Main Body */}
                     <div className="w-full md:col-span-4 md:col-start-2  col-span-5 md:h-auto">
-                                    {/* Data Indicator sectio */}
+                                    {/* Data Indicator section */}
                                     <h5 className="text-lg font-medium text-gray-800 float-right mr-4 mb-2">
                                                   
-                                                    {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
+                                        {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || ''} - {props?.data?.end_index || ''} of {props?.data?.count || ''} </small>}
                                     </h5>
                         
                                     {/*  Quick Filters status display */}
@@ -842,7 +858,7 @@ const Home = (props) => {
 
                   
                    
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -851,7 +867,7 @@ const Home = (props) => {
                             For testing reasons, downloads are limited to the first 100 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                   
                 </div>
             </MainLayout >
         </>
