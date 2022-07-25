@@ -403,7 +403,7 @@ function AddFacility(props) {
     useEffect(() => {
 
 		Object.keys(props).forEach(id => {
-			console.log(props[id].owners)
+			// console.log(props[id].owners)
 			
 				setFacilityTypeOpts(props[id].facility_types)
 				
@@ -417,9 +417,7 @@ function AddFacility(props) {
 		setKephOpts(props?.keph || [])
 		setFacilityAdmissionsOpts(props?.facility_admission_status || [])
 
-		console.log({props})
-		// setCountyOpts(props?.county)
-
+	
 
         const formIdState = window.sessionStorage.getItem('formId');
 
