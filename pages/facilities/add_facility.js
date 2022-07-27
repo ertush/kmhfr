@@ -40,13 +40,41 @@ import router from 'next/router';
 
 function AddFacility(props) {
 
-    let facility = props.data
+	// console.log({props});
+
+	// Form drop down options
+
+	let facility = props.data
+
+     let facilityOptions = [
+		props['0']?.facility_types[0],  // STAND ALONE
+		props['0']?.facility_types[1],  // DISPENSARY 
+		props['0']?.facility_types[2],  // MEDICAL CLINIC
+		props['0']?.facility_types[8],  // NURSING HOME
+		props['0']?.facility_types[10], // HOSPITALS
+		props['0']?.facility_types[16], // HEALTH CENTRE
+		props['0']?.facility_types[25]  // MEDICAL CENTRE
+	]
+
+	 let facilityTypeOptions = props['1']?.facility_type_details
+	 let ownerOptions =  props['2']?.owners
+	 let ownerTypeOptions =  props['3']?.owner_types
+	 let kephOptions =  props['4']?.keph
+	 let facilityAdmissionOptions =  props['5']?.facility_admission_status
+	 let countyOptions =  props['6']?.counties
+	 let subCountyOptions =  props['7']?.sub_counties
+	 let constituencyOptions =  props['8']?.constituencies
+	 let wardOptions =  props['9']?.wards
+
+	
 
     const nameOptionRef = useRef(null)
     const serviceOptionRef = useRef(null)
     const optionRefBody = useRef(null)
     const infrastructureBodyRef = useRef(null)
+	
 
+	
 
     const steps = [
         'Basic Details',
@@ -383,41 +411,12 @@ function AddFacility(props) {
 	const [infrastructureCount, setInfrastructureCount] = useState([])
 	const [hr, setHr] = useState([])
 	const [hrCount, setHrCount] = useState([])
-
-	// DropDown Option states
-	const [facilityTypeOpts, setFacilityTypeOpts] = useState([])
-	const [facilityTypeDetailsOpts, setFacilityTypeDetailsOpts] = useState([])
-	const [ownerTypesOpts, setOwnerTypeOpts] = useState([])
-	const [ownerOpts, setOwnerOpts] = useState([])
-	const [kephOpts, setKephOpts] = useState([])
-	const [facilityAdmissionsOpts, setFacilityAdmissionsOpts] = useState([])
-	const [countyOpts, setCountyOpts] = useState([])
-	const [subCountyOpts, setSubCountyOpts] = useState([])
-	const [constituencyOpts, setConstituencyOpts] = useState([])
-	const [wardOpts, setWardOpts] = useState([])
-	const [townOpts, setTownOpts] = useState([])
-	
+	const [facilityOption, setFacilityOption] = useState('')
+	const [facilityOfficialName, setFacilityOfficialName] = useState('')
 
 
 
     useEffect(() => {
-
-		Object.keys(props).forEach(id => {
-			// console.log(props[id].owners)
-			
-				setFacilityTypeOpts(props[id].facility_types)
-				
-				setOwnerTypeOpts(props[id].ownerTypesOpts)
-					
-			
-		})
-		
-		
-		setOwnerOpts(props?.owner_types || [])
-		setKephOpts(props?.keph || [])
-		setFacilityAdmissionsOpts(props?.facility_admission_status || [])
-
-	
 
         const formIdState = window.sessionStorage.getItem('formId');
 
@@ -450,7 +449,7 @@ function AddFacility(props) {
             }
             
         }
-    }, [formId, facilityTypeOpts, ownerTypesOpts, services])
+    }, [facilityOfficialName, facilityOption, formId, services])
       
 
 	const handleQuickFiltersClick = (link) => {
@@ -601,7 +600,8 @@ function AddFacility(props) {
 									{(() => {
 										switch (parseInt(formId)) {
 											case 0:
-												const handleBasicDetailsSubmit = (event) => {
+
+												const handleBasicDetailsSubmit = async (event) => {
 													event.preventDefault();
 													const formData = {};
 
@@ -611,10 +611,27 @@ function AddFacility(props) {
 														formData[name] = value;
 													});
 
+													// Posting Facility Basic Details
+													// try{
+													// 	const response = await fetch('/api/add_facility')
+
+													// }catch(e){
+													// 	console.error(e.message)
+													// 	return {
+													// 		error:e.message,
+													// 		id:null
+													// 	}
+													// }
+
+													router.push({pathname:'/create', query:{payload: formData}})
+
 													window.sessionStorage.setItem('formId', 1);
 
 													setFormId(window.sessionStorage.getItem('formId'));
 												};
+
+
+
 												// Basic Details form
 												return (
 													<>
@@ -638,6 +655,7 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='text'
+																	onChange={e => setFacilityOfficialName(e.target.value) }
 																	name='facility_official_name'
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
@@ -656,11 +674,14 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='text'
+																	value={facilityOfficialName ?? ''}
+																	onChange={() => {}}
 																	name='facility_unique_name'
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
 															{/* Facility Type */}
+															
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
 																	htmlFor='facility_type'
@@ -671,16 +692,17 @@ function AddFacility(props) {
 																		*
 																	</span>
 																</label>
+																
 																<Select
-																	options={facilityTypeOpts}
+																	options={facilityOptions || []}
 																	required
 																	placeholder='Select a facility type...'
-																	onChange={() => console.log('changed type')}
+																	onChange={(e) => setFacilityOption(e.label)}
 																	name='facility_type'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
 															</div>
-
+															
 															{/* Facility Type Details */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
@@ -693,7 +715,67 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<Select
-																	options={facilityTypeDetailsOpts}
+																	options={
+																		(() => {
+																			
+																			switch(facilityOption){
+																				case 'STAND ALONE':
+							
+																					return [
+																						facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Drug and Substance abuse")[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Nutrition and Dietetics')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Dialysis Center')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Physiotherapy, Orthopaedic & Occupational Therapy")[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'VCT')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Farewell Home')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Laboratory')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Radiology Clinic')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Pharmacy')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Regional Blood Transfusion Centre')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Ophthalmology')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Dental Clinic')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Blood Bank')[0] || {},
+
+																						 ] 
+																					
+																				case 'DISPENSARY':
+																					return  facilityTypeOptions.filter(({label}) => label == 'DISPENSARY') || []
+																					
+
+																				case 'MEDICAL CLINIC':
+																					return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
+																					
+																				case 'NURSING HOME':
+																					
+																					return [
+																							facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
+																							facilityTypeOptions.filter(({label}) => label == 'Nursing Homes')[0] || {}
+																							]
+
+																				case 'HOSPITALS':
+															
+																					return [
+																					   facilityTypeOptions.filter(({label}) => label == 'Specialized & Tertiary Referral hospitals')[0] || {},
+																					   facilityTypeOptions.filter(({label}) => label == 'Secondary care hospitals')[0] || {},
+																					   facilityTypeOptions.filter(({label}) => label == 'Comprehensive Teaching & Tertiary Referral Hospital')[0] || {},
+																					   facilityTypeOptions.filter(({label}) => label == 'Primary care hospitals')[0] || {}
+																						] 
+																			
+																				case 'HEALTH CENTRE':
+																				
+																					return [
+																						facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
+																						facilityTypeOptions.filter(({label}) => label == 'Comprehensive health Centre')[0] || {}
+																						]
+
+																				case 'MEDICAL CENTRE':
+
+																					return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
+																				
+																			}
+																		})()
+																	}
 																	required
 																	placeholder='Select a facility type details...'
 																	onChange={() => console.log('changed type')}
@@ -795,7 +877,7 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<Select
-																	options={ownerOpts}
+																	options={ownerTypeOptions || []}
 																	required
 																	placeholder='Select owner..'
 																	onChange={() => console.log('changed')}
@@ -816,7 +898,7 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<Select
-																	options={ownerTypesOpts}
+																	options={ownerOptions || []}
 																	required
 																	placeholder='Select an owner..'
 																	onChange={() => console.log('changed')}
@@ -833,7 +915,7 @@ function AddFacility(props) {
 																	KEPH Level
 																</label>
 																<Select
-																	options={kephOpts}
+																	options={kephOptions || []}
 																	placeholder='Select a KEPH Level..'
 																	onChange={() => console.log('changed')}
 																	name='keph_level'
@@ -1078,24 +1160,7 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<Select
-																	options={[
-																		{
-																			value: 'Private Practice',
-																			label: 'Private Practice',
-																		},
-																		{
-																			value: 'Non-Governmental Organizations',
-																			label: 'Non-Governmental Organizations',
-																		},
-																		{
-																			value: 'Ministry of Health',
-																			label: 'Ministry of Health',
-																		},
-																		{
-																			value: 'Faith Based Organization',
-																			label: 'Faith Based Organization',
-																		},
-																	]}
+																	options={facilityAdmissionOptions || []}
 																	required
 																	placeholder='Select an admission status..'
 																	onChange={() => console.log('changed')}
@@ -1287,26 +1352,7 @@ function AddFacility(props) {
 																				</span>
 																			</label>
 																			<Select
-																				options={[
-																					{
-																						value: 'Private Practice',
-																						label: 'Private Practice',
-																					},
-																					{
-																						value:
-																							'Non-Governmental Organizations',
-																						label:
-																							'Non-Governmental Organizations',
-																					},
-																					{
-																						value: 'Ministry of Health',
-																						label: 'Ministry of Health',
-																					},
-																					{
-																						value: 'Faith Based Organization',
-																						label: 'Faith Based Organization',
-																					},
-																				]}
+																				options={countyOptions || []}
 																				required
 																				placeholder='Select County'
 																				onChange={() => console.log('changed')}
@@ -1329,26 +1375,7 @@ function AddFacility(props) {
 																				</span>
 																			</label>
 																			<Select
-																				options={[
-																					{
-																						value: 'Private Practice',
-																						label: 'Private Practice',
-																					},
-																					{
-																						value:
-																							'Non-Governmental Organizations',
-																						label:
-																							'Non-Governmental Organizations',
-																					},
-																					{
-																						value: 'Ministry of Health',
-																						label: 'Ministry of Health',
-																					},
-																					{
-																						value: 'Faith Based Organization',
-																						label: 'Faith Based Organization',
-																					},
-																				]}
+																				options={subCountyOptions || []}
 																				required
 																				placeholder='Select Sub County'
 																				onChange={() => console.log('changed')}
@@ -1371,26 +1398,7 @@ function AddFacility(props) {
 																				</span>
 																			</label>
 																			<Select
-																				options={[
-																					{
-																						value: 'Private Practice',
-																						label: 'Private Practice',
-																					},
-																					{
-																						value:
-																							'Non-Governmental Organizations',
-																						label:
-																							'Non-Governmental Organizations',
-																					},
-																					{
-																						value: 'Ministry of Health',
-																						label: 'Ministry of Health',
-																					},
-																					{
-																						value: 'Faith Based Organization',
-																						label: 'Faith Based Organization',
-																					},
-																				]}
+																				options={constituencyOptions || []}
 																				required
 																				placeholder='Select Constituency'
 																				onChange={() => console.log('changed')}
@@ -1413,26 +1421,7 @@ function AddFacility(props) {
 																				</span>
 																			</label>
 																			<Select
-																				options={[
-																					{
-																						value: 'Private Practice',
-																						label: 'Private Practice',
-																					},
-																					{
-																						value:
-																							'Non-Governmental Organizations',
-																						label:
-																							'Non-Governmental Organizations',
-																					},
-																					{
-																						value: 'Ministry of Health',
-																						label: 'Ministry of Health',
-																					},
-																					{
-																						value: 'Faith Based Organization',
-																						label: 'Faith Based Organization',
-																					},
-																				]}
+																				options={wardOptions || []}
 																				required
 																				placeholder='Select Ward'
 																				onChange={() => console.log('changed')}
@@ -1443,12 +1432,12 @@ function AddFacility(props) {
 																	</div>
 																</div>
 
-																{/* Nearest Town/Shopping Center */}
+																{/* Nearest Town/Shopping Centre */}
 																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																	<label
 																		htmlFor='town_name'
 																		className='text-gray-600 capitalize text-sm'>
-																		Nearest Town/Shopping Center
+																		Nearest Town/Shopping Centre
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
 																			*
@@ -2145,8 +2134,6 @@ function AddFacility(props) {
 													divContainer.appendChild(inputRegNo)
 													divContainer.appendChild(delBtn.getRootNode())
 
-
-
 												}
 
 
@@ -2543,27 +2530,19 @@ function AddFacility(props) {
 
 AddFacility.getInitialProps = async (ctx) => {
 
-	// const fetchFacilityOptions =  async (path) => {
-			
-	// 	try{
-	// 		const _facilityTypeOpts = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/${path}/?is_active=true&page_size=10000`)
-
-	// 		return (await _facilityTypeOpts.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value: id, label:sub_division} : {value:id, label:name})
-
-	// 	} catch (e){
-	// 		console.error(`Error fetching Facility Options ${e.message}`)
-	// 	}
-	// }
-	
-
 	const allOptions = []
 	const options = [
 		'facility_types',
+		'facility_type_details',
 		'owners',
 		'owner_types',
 		'keph',
-		'facility_admissions_status',
-
+		'facility_admission_status',
+		'counties',
+		'sub_counties',
+		'constituencies',
+		'wards',
+	
 	]
 
 	return checkToken(ctx.req, ctx.res)
@@ -2574,24 +2553,29 @@ AddFacility.getInitialProps = async (ctx) => {
 
 				let token = t.token;
 				let url = '';
+				
 
 				for(let i = 0; i < options.length; i++) {
 					const option = options[i]
 					switch(option) {
 						case 'facility_types':
 						url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
-	
+
 								
 								try{
-			
+								
 									const _data = await fetch(url, {
 										headers: {
 											Authorization: 'Bearer ' + token,
 											Accept: 'application/json',
 										},
 									})
-			
-								allOptions.push({facility_types: (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value: id, label:sub_division} : {value:id, label:name})})
+
+									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value:id, label:sub_division} : {value:id, label:name})
+
+													
+									// console.log({results})
+									allOptions.push({facility_types: results })
 									
 								}
 								catch(err) {
@@ -2603,7 +2587,35 @@ AddFacility.getInitialProps = async (ctx) => {
 									});
 								}
 								break;
-	
+							case 'facility_type_details':
+								url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_active=true&page_size=10000`;
+										
+								try{
+								
+									const _data = await fetch(url, {
+										headers: {
+											Authorization: 'Bearer ' + token,
+											Accept: 'application/json',
+										},
+									})
+		
+									let _results  = (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))
+
+									allOptions.push({facility_type_details: _results })
+									
+									
+								}
+								catch(err) {
+									console.log(`Error fetching ${option}: `, err);
+									allOptions.push({
+										error: true,
+										err: err,
+										facility_types: [],
+									});
+								}
+								break;
+
+					
 					
 						case 'owners':
 								url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
@@ -2708,6 +2720,42 @@ AddFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
+						default:
+								let fields = ''
+								let _obj = {}
+
+								if(option === 'counties') fields = 'id,name'
+								if(option === 'sub_counties') fields = 'id,name,county'
+								if(option === 'wards') fields = 'id,name,sub_county,constituency'
+								if(option === 'constituencies') fields = 'id,name,county'
+
+								
+								url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=${fields}`;
+							
+								
+								try{
+			
+									const _data = await fetch(url, {
+										headers: {
+											Authorization: 'Bearer ' + token,
+											Accept: 'application/json',
+										},
+									})
+
+									_obj[option] = (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))
+			
+								allOptions.push(_obj)
+									
+								}
+								catch(err) {
+									console.log(`Error fetching ${option}: `, err);
+									allOptions.push({
+										error: true,
+										err: err,
+										data: []
+									});
+								}
+								break;
 
 					}
 				}
