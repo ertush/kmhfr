@@ -35,6 +35,7 @@ import { XCircleIcon } from '@heroicons/react/outline';
 // Package imports
 import Select from 'react-select';
 import router from 'next/router';
+import { ColumnsToolPanelModule } from '@ag-grid-enterprise/all-modules';
 
 
 
@@ -602,28 +603,63 @@ function AddFacility(props) {
 											case 0:
 
 												const handleBasicDetailsSubmit = async (event) => {
+
 													event.preventDefault();
 													const formData = {};
 
 													const elements = [...event.target];
 
 													elements.forEach(({ name, value }) => {
-														formData[name] = value;
+														
+														formData[name] = value === "true" || value === "false" ? Boolean(value) : (() => {
+															// Accomodates format of facility checklist document
+															if (name === "facility_checklist_document") {
+																return {fileName: value.replace("C:\\fakepath\\", '')}
+															}
+
+															// check if value is alphanumeral and convert to number
+															return value.match(/^[0-9]$/) !== null ? Number(value) : value
+														})()
 													});
 
+													// Add officer in charge to payload
+													formData['officer_in_charge'] = {
+														name:'',
+														reg_no:'',
+														contacts:[
+															{
+																type:'',
+																contact:''
+															}
+														]
+													}
+
+
+													// console.log(formData)
+
 													// Posting Facility Basic Details
-													// try{
-													// 	const response = await fetch('/api/add_facility')
+													try{
+														const response = await fetch('/api/facility/create_facility', {
+															headers:{
+																'Accept': 'application/json, text/plain, */*',
+																'Content-Type': 'application/json;charset=utf-8'
+																
+															},
+															method:'POST',
+															body: JSON.stringify(formData).replace(',"":""','')
+														})
 
-													// }catch(e){
-													// 	console.error(e.message)
-													// 	return {
-													// 		error:e.message,
-													// 		id:null
-													// 	}
-													// }
+														console.log((await response.json()))
 
-													router.push({pathname:'/create', query:{payload: formData}})
+													}catch(e){
+														console.error(e.message)
+														return {
+															error:e.message,
+															id:null
+														}
+													}
+
+													// router.push({pathname:'/facilities/add_facility', query:{: formData}})
 
 													window.sessionStorage.setItem('formId', 1);
 
@@ -644,7 +680,7 @@ function AddFacility(props) {
 															{/* Facility Official Name */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
-																	htmlFor='facility_official_name'
+																	htmlFor='official_name'
 																	className='text-gray-600 capitalize text-sm'>
 																	Facility Official Name
 																	<span className='text-medium leading-12 font-semibold'>
@@ -656,14 +692,14 @@ function AddFacility(props) {
 																	required
 																	type='text'
 																	onChange={e => setFacilityOfficialName(e.target.value) }
-																	name='facility_official_name'
+																	name='official_name'
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
 															{/* Facility Unique Name  */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
-																	htmlFor='facility_unique_name'
+																	htmlFor='name'
 																	className='text-gray-600 capitalize text-sm'>
 																	Facility Unique Name
 																	<span className='text-medium leading-12 font-semibold'>
@@ -676,7 +712,7 @@ function AddFacility(props) {
 																	type='text'
 																	value={facilityOfficialName ?? ''}
 																	onChange={() => {}}
-																	name='facility_unique_name'
+																	name='name'
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
@@ -809,7 +845,6 @@ function AddFacility(props) {
 																	]}
 																	required
 																	placeholder='Select an operation status...'
-																	onChange={() => console.log('changed')}
 																	name='opertaion_status'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
@@ -880,7 +915,6 @@ function AddFacility(props) {
 																	options={ownerTypeOptions || []}
 																	required
 																	placeholder='Select owner..'
-																	onChange={() => console.log('changed')}
 																	name='owner_type'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
@@ -901,7 +935,6 @@ function AddFacility(props) {
 																	options={ownerOptions || []}
 																	required
 																	placeholder='Select an owner..'
-																	onChange={() => console.log('changed')}
 																	name='owner'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
@@ -917,7 +950,6 @@ function AddFacility(props) {
 																<Select
 																	options={kephOptions || []}
 																	placeholder='Select a KEPH Level..'
-																	onChange={() => console.log('changed')}
 																	name='keph_level'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
@@ -1163,7 +1195,6 @@ function AddFacility(props) {
 																	options={facilityAdmissionOptions || []}
 																	required
 																	placeholder='Select an admission status..'
-																	onChange={() => console.log('changed')}
 																	name='admission_status'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
@@ -1355,7 +1386,7 @@ function AddFacility(props) {
 																				options={countyOptions || []}
 																				required
 																				placeholder='Select County'
-																				onChange={() => console.log('changed')}
+		
 																				name='county_id'
 																				className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																			/>
@@ -1378,7 +1409,7 @@ function AddFacility(props) {
 																				options={subCountyOptions || []}
 																				required
 																				placeholder='Select Sub County'
-																				onChange={() => console.log('changed')}
+		
 																				name='sub_county_id'
 																				className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																			/>
@@ -1401,7 +1432,7 @@ function AddFacility(props) {
 																				options={constituencyOptions || []}
 																				required
 																				placeholder='Select Constituency'
-																				onChange={() => console.log('changed')}
+		
 																				name='constituency_id'
 																				className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																			/>
@@ -1424,7 +1455,7 @@ function AddFacility(props) {
 																				options={wardOptions || []}
 																				required
 																				placeholder='Select Ward'
-																				onChange={() => console.log('changed')}
+		
 																				name='ward'
 																				className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																			/>
@@ -2554,6 +2585,7 @@ AddFacility.getInitialProps = async (ctx) => {
 				let token = t.token;
 				let url = '';
 				
+				// console.log({ctx});
 
 				for(let i = 0; i < options.length; i++) {
 					const option = options[i]

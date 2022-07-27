@@ -205,7 +205,7 @@ const Home = (props) => {
         case 'feedback':
             setKhisSynched(false)
             try {
-                const feedback = await fetch('/api/facility_filters/?path=facility_service_ratings&fields=county,sub_county,constituency,ward,comment,facility_id,facility_name,service_name,created,rating&id=feedback')
+                const feedback = await fetch('/api/facility/facility_filters/?path=facility_service_ratings&fields=county,sub_county,constituency,ward,comment,facility_id,facility_name,service_name,created,rating&id=feedback')
                 const feedbackFacilities = (await feedback.json()).results
 
                 setFacilityFeedBack(feedbackFacilities)
