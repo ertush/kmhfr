@@ -51,6 +51,9 @@ const Gis = (props) => {
     // --------------------------------------------------
 
     useEffect(() => {
+        console.log({results: props?.data?.results})
+
+        
         if (props?.isUnits) {
             let qry = props?.query
             delete qry.searchTerm

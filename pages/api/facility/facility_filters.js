@@ -1,6 +1,6 @@
 
 
-import { checkToken } from "../../controllers/auth/auth";
+import { checkToken } from "../../../controllers/auth/auth";
 
 export default async function fetchFacilityFilters(req, res) {
 

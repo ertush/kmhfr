@@ -2708,7 +2708,7 @@ leaflet-geosearch@^3.3.2:
   optionalDependencies:
     leaflet "^1.6.0"
 
-leaflet@^1.6.0, leaflet@^1.7.1:
+leaflet@^1.6.0:
   version "1.7.1"
   resolved "https://registry.npmjs.org/leaflet/-/leaflet-1.7.1.tgz"
   integrity sha512-/xwPEBidtg69Q3HlqPdU3DnrXQOvQU/CCHA1tcDQVzOwm91YMYaILjNp7L4Eaw5Z4sOYdbBz6koWyibppd8Zqw==
