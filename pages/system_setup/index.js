@@ -80,7 +80,7 @@ const system_setup = (props) => {
   
     // Fetch data
     try{
-        const response = await fetch(`/api/system_setup/?resource=${resource}&resourceCategory=${resourceCategory}&fields=${fields.join(',')}`)
+        const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&fields=${fields.join(',')}`)
 
         const _data = await response.json() 
         

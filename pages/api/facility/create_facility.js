@@ -1,63 +1,52 @@
 
 
-import { checkToken } from "../../controllers/auth/auth";
+import { checkToken } from "../../../controllers/auth/auth";
 
-export default async function fetchSystemSetupData(req, res) {
+export default async function createFacility(req, res) {
 
     
     const fetchData = async (token) => {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-        const {resource, resourceCategory, fields} = req.query
+        console.log({body: req.body})
     
         let url = ''
-        // console.log({resource, resourceCategory, fields});
+      
 
-        switch (resourceCategory){
-            case 'AdminUnits':
-                url = `${API_URL}/common/${resource}/?fields=${fields}`
-            break;
-            case 'ServiceCatalogue':
-                url = `${API_URL}/facilities/${resource}/?fields=${fields}` 
-            break;
-            case 'HealthInfrastructure':
-                url = `${API_URL}/facilities/${resource}/?fields=${fields}`
-            break;
-            case 'HR':
-                url = `${API_URL}/facilities/${resource}/?fields=${fields}`
-            break;
-            case 'Contacts':
-                url = `${API_URL}/common/${resource}/?fields=${fields}`
-            break;
-            case 'Facilities':
-                url = `${API_URL}/facilities/${resource}/?fields=${fields}`
-            break;
-            case 'CHU':
-                url = `${API_URL}/chul/${resource}/?fields=${fields}`
-            break;
-            case 'Documents':
-                url = `${API_URL}/common/${resource}/?fields=${fields}`
-            break;
-            default:
-            break;
-        }
+        // switch (id){
+        //     case 'khis_synched':
+        //         url = `${API_URL}/facilities/${path}/?${filters}&fields=${fields}` 
+        //     break;
+        //     case 'feedback':
+        //         url = `${API_URL}/facilities/${path}/?fields=${fields}` 
+        //     break;
+        
+        //     default:
+        //     break;
+        // }
+
+        url = `${API_URL}/facilities/facilities/` 
+        
         
 
         try {
+            // console.log({url});
           
             const resp = await fetch(url, {
                 headers: {
                     'Authorization': 'Bearer ' + token,
-                    'Accept': 'application/json',
-                    
-                }
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                method:'POST',
+                body: JSON.stringify(req.body)
             })
             
             return resp.json()
         }
         catch(err) {
-            console.error('Error fetching system setup data: ', err)
+            console.error('Error fetching facility_filters: ', err)
             return {
                 error: true,
                 err: err,
@@ -67,7 +56,7 @@ export default async function fetchSystemSetupData(req, res) {
         
     }
 
-    if (req.method === "GET") {
+    if (req.method === "POST") {
                                                                                     
         try {
             return checkToken(req, res).then(t => {
