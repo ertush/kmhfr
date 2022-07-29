@@ -2,61 +2,54 @@
 
 import { checkToken } from "../../../controllers/auth/auth";
 
-export default async function createFacility(req, res) {
+export default async function fetchFacilityData(req, res) {
 
     
     const fetchData = async (token) => {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-        console.log({body: req.body})
+        // console.log({body: req.body})
     
         let url = ''
-      
 
-        // switch (id){
-        //     case 'khis_synched':
-        //         url = `${API_URL}/facilities/${path}/?${filters}&fields=${fields}` 
-        //     break;
-        //     case 'feedback':
-        //         url = `${API_URL}/facilities/${path}/?fields=${fields}` 
-        //     break;
-        
-        //     default:
-        //     break;
-        // }
 
-        url = `${API_URL}/facilities/facilities/` 
-        
-        
-
-        try {
-            // console.log({url});
-          
-            const resp = await fetch(url, {
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Accept': 'application/json, text/plain, */*',
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                method:'POST',
-                body: JSON.stringify(req.body)
-            })
-            
-            return resp.json()
-        }
-        catch(err) {
-            console.error('Error fetching facility_filters: ', err)
-            return {
-                error: true,
-                err: err,
-                api_url:API_URL
+             // Set url based on request
+             switch (path){
+                case 'wards':
+                    url = `${API_URL}/common/${path}/${id}/` 
+                break;
+              
+                default:
+                break;
             }
-        }
+
+            try {
+                // console.log({url});
+                const resp = await fetch(url, {
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Accept': 'application/json',
+                        
+                    }
+                })
+                
+                return resp.json()
+                }
+                catch(err) {
+                    console.error('Error fetching facility data: ', err)
+                    return {
+                        error: true,
+                        err: err,
+                        api_url:API_URL
+                    }
+            }
         
     }
 
-    if (req.method === "POST") {
+ 
+
+    if (req.method === "GET") {
                                                                                     
         try {
             return checkToken(req, res).then(t => {
@@ -88,5 +81,6 @@ export default async function createFacility(req, res) {
                 "message": err.message
             });
         }
-     }
+    }
+     
 }
