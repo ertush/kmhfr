@@ -61,7 +61,7 @@ const DynamicReports = (props) => {
     const [subCountyOptions, setSubCountyOptions] = useState([])
 
     const [isConstituencyOptionsUpdate, setIsConstituencyOptionsUpdate] = useState(false)
-    const [constituencyOptions, setConstituencyOptions] = useState([])
+   
 
     const [isWardOptionsUpdate, setIsWardOptionsUpdate] = useState(false)
     const [wardOptions, setWardOptions] = useState([])
@@ -465,7 +465,7 @@ const DynamicReports = (props) => {
                                                                                   
                                                                                         // set constituencies
 
-                                                                                        setConstituencyOptions(optionsConstituency)
+                                                                                        
                                                                                         setIsConstituencyOptionsUpdate(!isConstituencyOptionsUpdate)
 
                                                                                     })
@@ -591,7 +591,7 @@ const DynamicReports = (props) => {
                                                                                         name={ft}
                                                                                        
                                                                                         className="w-full p-1 rounded bg-gray-50 col-start-1"
-                                                                                        options={constituencyOptions}
+                                                                                        options={subCountyOptions}
                                                                                        
                                                                                         placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                         onChange={handleConstituencyChange}
