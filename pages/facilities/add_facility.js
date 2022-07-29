@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 
 // Next imports
 import Head from 'next/head';
+import router from 'next/router';
+import dynamic from 'next/dynamic'
 
 // Component imports
 import MainLayout from '../../components/MainLayout';
@@ -34,9 +36,19 @@ import { XCircleIcon } from '@heroicons/react/outline';
 
 // Package imports
 import Select from 'react-select';
-import router from 'next/router';
-import { ColumnsToolPanelModule } from '@ag-grid-enterprise/all-modules';
 
+
+
+
+const WardMap = dynamic(
+	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
+	{
+		loading: () => <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
+		ssr: false // This line is important. It's what prevents server-side render
+	} 
+)
+
+const Map = React.memo(WardMap)
 
 
 function AddFacility(props) {
@@ -45,7 +57,7 @@ function AddFacility(props) {
 
 	// Form drop down options
 
-	let facility = props.data
+	 
 
      let facilityOptions = [
 		props['0']?.facility_types[0],  // STAND ALONE
@@ -63,19 +75,21 @@ function AddFacility(props) {
 	 let kephOptions =  props['4']?.keph
 	 let facilityAdmissionOptions =  props['5']?.facility_admission_status
 	 let countyOptions =  props['6']?.counties
-	 let subCountyOptions =  props['7']?.sub_counties
+	//  let subCountyOpts =  props['7']?.sub_counties
 	 let constituencyOptions =  props['8']?.constituencies
 	 let wardOptions =  props['9']?.wards
 
+	
+	 console.log({ownerOptions})
 	
 
     const nameOptionRef = useRef(null)
     const serviceOptionRef = useRef(null)
     const optionRefBody = useRef(null)
     const infrastructureBodyRef = useRef(null)
-	
 
 	
+
 
     const steps = [
         'Basic Details',
@@ -401,12 +415,11 @@ function AddFacility(props) {
     const [formId, setFormId] = useState(0)
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
-    // const facilityServiceRef = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
-    // const facilityInfrastructureRef = useRef(null)
+  
 
 
-    // Services State
+    // Services State data
     const [services, setServices] = useState([])
     const [infrastructure, setInfrastructure] = useState([])
 	const [infrastructureCount, setInfrastructureCount] = useState([])
@@ -414,8 +427,15 @@ function AddFacility(props) {
 	const [hrCount, setHrCount] = useState([])
 	const [facilityOption, setFacilityOption] = useState('')
 	const [facilityOfficialName, setFacilityOfficialName] = useState('')
+	const [geolocationData, setGeolocationData] = useState({})
 
+	const [ownerTypeOption, setOwnerTypeOption] = useState('')
 
+	// console.log({geolocationData})
+
+	// Drop down select options data
+	const [subCountyOpt, setSubCountyOpt] = useState('')
+	const [wardOpt, setWardOpt] = useState('')
 
     useEffect(() => {
 
@@ -635,11 +655,9 @@ function AddFacility(props) {
 													}
 
 
-													// console.log(formData)
-
-													// Posting Facility Basic Details
+													// Post Facility Basic Details
 													try{
-														const response = await fetch('/api/facility/create_facility', {
+														fetch('/api/facility/post_facility', {
 															headers:{
 																'Accept': 'application/json, text/plain, */*',
 																'Content-Type': 'application/json;charset=utf-8'
@@ -647,9 +665,28 @@ function AddFacility(props) {
 															},
 															method:'POST',
 															body: JSON.stringify(formData).replace(',"":""','')
-														})
+														}).then(async (resp) => {
+															if(resp.status === 200){
+																// Fetch data for Geolocation Form
+																try{
+																	const response = await fetch(`/api/facility/get_facility/?path=wards&id=${(await resp.json()).ward}`)
 
-														console.log((await response.json()))
+																	setGeolocationData((await response.json()))
+																	
+
+																}catch(e){
+																	console.error(e.message)
+																	return {
+																		error:e.message,
+																		id:null
+																	}
+																}
+															}
+														}
+															
+														)
+
+														// console.log((await response.json()))
 
 													}catch(e){
 														console.error(e.message)
@@ -659,8 +696,11 @@ function AddFacility(props) {
 														}
 													}
 
-													// router.push({pathname:'/facilities/add_facility', query:{: formData}})
+													
 
+
+
+													// Change form Id
 													window.sessionStorage.setItem('formId', 1);
 
 													setFormId(window.sessionStorage.getItem('formId'));
@@ -916,6 +956,7 @@ function AddFacility(props) {
 																	required
 																	placeholder='Select owner..'
 																	name='owner_type'
+																	onChange={(e) => setOwnerTypeOption(e.label)}
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
 															</div>
@@ -932,7 +973,51 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<Select
-																	options={ownerOptions || []}
+																	options={ (() => {
+																	
+																		switch(ownerTypeOption){
+																			case "Private Practice":
+
+						
+																				return [
+																					ownerOptions.filter(({label}) => label == "Private Practice- Pharmacist")[0] || {},
+																					ownerOptions.filter(({label}) => label == "Private Practice - Private Company")[0] || {},
+																					ownerOptions.filter(({label}) => label == "Private Practice Lab Technician/Technologist")[0] || {},
+																					ownerOptions.filter(({label}) => label == "Private Practice - Nurse / Midwifery")[0] || {},
+																					ownerOptions.filter(({label}) => label == "Private Practice - Medical Specialist")[0] || {},
+																					ownerOptions.filter(({label}) => label == "Private Practice - General Practitioner")[0] || {},
+																					ownerOptions.filter(({label}) => label == "Private Practice - Clinical Officer")[0] || {},
+																					ownerOptions.filter(({label}) => label == "Private Practice - Private Institution Academic")[0] || {}
+																				
+																					 ] 
+																				
+																			case 'Non-Governmental Organizations':
+																				return  ownerOptions.filter(({label}) => label == 'Non-Governmental Organizations') || []
+																				
+
+																			case 'Ministry of Health':
+																
+																				return [
+																					ownerOptions.filter(({label}) => label == "Public Institution - Parastatal")[0] || {},
+																					ownerOptions.filter(({label}) => label == 'Ministry of Health')[0] || {},
+																					ownerOptions.filter(({label}) => label == 'Armed Forces')[0] || {},
+																					ownerOptions.filter(({label}) => label == 'Public Institution - Academic')[0] || {},
+																				]																				
+																				
+																			case 'Faith Based Organization':																		
+
+																				return [
+																							ownerOptions.filter(({label}) => label == 'Seventh Day Adventist')[0] || {},
+																							ownerOptions.filter(({label}) => label == 'Supreme Council for Kenya Muslims')[0] || {},
+																							ownerOptions.filter(({label}) => label == 'Other Faith Based')[0] || {},
+																							ownerOptions.filter(({label}) => label == 'Seventh Day Adventist')[0] || {},
+																							ownerOptions.filter(({label}) => label == 'Kenya Episcopal Conference-Catholic Secretariat')[0] || {},
+																							ownerOptions.filter(({label}) => label == 'Christian Health Association of Kenya')[0] || {},
+																						]
+
+																			
+																		}
+																	})() ?? ownerTypeOptions }
 																	required
 																	placeholder='Select an owner..'
 																	name='owner'
@@ -1386,7 +1471,23 @@ function AddFacility(props) {
 																				options={countyOptions || []}
 																				required
 																				placeholder='Select County'
-		
+																				onChange={async (ev) => {
+																					if( ev.value.length > 0){
+																						try{
+																							const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
+
+																							setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
+
+																							
+																						}
+																						catch(e){
+																							console.error('Unable to fetch sub_county options')
+																							setSubCountyOpt(null)
+																						}
+																					}else{
+																						return setSubCountyOpt(null)
+																					}
+																				}}
 																				name='county_id'
 																				className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																			/>
@@ -1406,11 +1507,11 @@ function AddFacility(props) {
 																				</span>
 																			</label>
 																			<Select
-																				options={subCountyOptions || []}
+																				options={subCountyOpt ?? subCountyOptions}
 																				required
 																				placeholder='Select Sub County'
-		
 																				name='sub_county_id'
+																				
 																				className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																			/>
 																		</div>
@@ -1429,10 +1530,25 @@ function AddFacility(props) {
 																				</span>
 																			</label>
 																			<Select
-																				options={constituencyOptions || []}
+																				options={subCountyOpt ?? constituencyOptions}
 																				required
 																				placeholder='Select Constituency'
-		
+																				onChange={async (ev) => {
+																					if( ev.value.length > 0){
+																						try{
+																							const resp = await fetch(`/api/filters/ward/?constituency=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
+
+																							setWardOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
+
+																						}
+																						catch(e){
+																							console.error('Unable to fetch sub_county options')
+																							setWardOpt(null)
+																						}
+																					}else{
+																						return setWardOpt(null)
+																					}
+																				}}
 																				name='constituency_id'
 																				className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																			/>
@@ -1452,7 +1568,7 @@ function AddFacility(props) {
 																				</span>
 																			</label>
 																			<Select
-																				options={wardOptions || []}
+																				options={wardOpt ?? wardOptions}
 																				required
 																				placeholder='Select Ward'
 		
@@ -1665,33 +1781,19 @@ function AddFacility(props) {
 																</div>
 															</div>
 
-															{/* Map View */}
-															<div className='w-full h-min-48'>
-																{facility?.lat_long &&
-																facility?.lat_long.length > 0 ? (
+															{/* Ward Geo Map */}
+															<div className='w-full h-auto'>
+																{
+																	geolocationData && geolocationData !== {} &&
 																	<div className='w-full bg-gray-200  rounded flex flex-col items-center justify-center relative'>
-																		<Map
-																			operational={
-																				facility.operational ||
-																				facility.operation_status_name
-																			}
-																			code={facility?.code || 'NO_CODE'}
-																			lat={facility?.lat_long[0]}
-																			long={facility?.lat_long[1]}
-																			name={
-																				facility.official_name ||
-																				facility.name ||
-																				''
-																			}
-																		/>
+																		<Map data={geolocationData} />
 																	</div>
-																) : (
-																	<div className='w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none'>
-																		<p>
-																			No location data found for this facility.
-																		</p>
-																	</div>
-																)}
+
+																}
+															
+																	
+
+																
 															</div>
 
 															{/* Next/Previous Form  */}
@@ -2218,8 +2320,8 @@ function AddFacility(props) {
 																<Select options={
 																					[
 																						{
-																							value:'Private Practice',
-																							label: 'Private Practice'
+																							value:"Private Practice",
+																							label: "Private Practice"
 																						},
 																						{
 																							value:'Non-Governmental Organizations',
@@ -2576,6 +2678,8 @@ AddFacility.getInitialProps = async (ctx) => {
 	
 	]
 
+	console.log('get initial props...')
+
 	return checkToken(ctx.req, ctx.res)
 		.then(async (t) => {
 			if (t.error) {
@@ -2756,7 +2860,7 @@ AddFacility.getInitialProps = async (ctx) => {
 								let fields = ''
 								let _obj = {}
 
-								if(option === 'counties') fields = 'id,name'
+								if(option === 'counties') fields = 'id,name&page_size=47'
 								if(option === 'sub_counties') fields = 'id,name,county'
 								if(option === 'wards') fields = 'id,name,sub_county,constituency'
 								if(option === 'constituencies') fields = 'id,name,county'
@@ -2776,7 +2880,9 @@ AddFacility.getInitialProps = async (ctx) => {
 
 									_obj[option] = (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))
 			
+
 								allOptions.push(_obj)
+								console.log({allOptions})
 									
 								}
 								catch(err) {

@@ -2,7 +2,7 @@ import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet'
 import MapData from '../assets/maps/counties.min.json'
-import MapCenters from '../assets/maps/county-centers-coordinates'
+// import MapCenters from '../assets/maps/county-centers-coordinates'
 
 const GISMap = ({ data }) => {
     const [geoJSON, setGeoJSON] = useState(MapData)
