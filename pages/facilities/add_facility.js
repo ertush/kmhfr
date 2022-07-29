@@ -510,7 +510,7 @@ function AddFacility(props) {
 								</div>
 							</div>
 
-							<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
 								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 										{'New Facility'}
 								</h2>
