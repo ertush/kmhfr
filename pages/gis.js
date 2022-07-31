@@ -51,7 +51,7 @@ const Gis = (props) => {
     // --------------------------------------------------
 
     useEffect(() => {
-        console.log({results: props?.data?.results})
+        // console.log({results: props?.data?.results})
 
         
         if (props?.isUnits) {

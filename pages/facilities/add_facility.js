@@ -75,12 +75,12 @@ function AddFacility(props) {
 	 let kephOptions =  props['4']?.keph
 	 let facilityAdmissionOptions =  props['5']?.facility_admission_status
 	 let countyOptions =  props['6']?.counties
-	//  let subCountyOpts =  props['7']?.sub_counties
+	 let subCountyOptions =  props['7']?.sub_counties
 	 let constituencyOptions =  props['8']?.constituencies
 	 let wardOptions =  props['9']?.wards
 
 	
-	 console.log({ownerOptions})
+	//  console.log({props})
 	
 
     const nameOptionRef = useRef(null)
@@ -430,6 +430,8 @@ function AddFacility(props) {
 	const [geolocationData, setGeolocationData] = useState({})
 
 	const [ownerTypeOption, setOwnerTypeOption] = useState('')
+	const [latitude, setLatitude] = useState(null)
+	const [longitude, setLongitude] = useState(null)
 
 	// console.log({geolocationData})
 
@@ -671,7 +673,9 @@ function AddFacility(props) {
 																try{
 																	const response = await fetch(`/api/facility/get_facility/?path=wards&id=${(await resp.json()).ward}`)
 
-																	setGeolocationData((await response.json()))
+																	const _data = await response.json()
+																	console.log({_data})
+																	setGeolocationData(_data)
 																	
 
 																}catch(e){
@@ -1536,7 +1540,7 @@ function AddFacility(props) {
 																				onChange={async (ev) => {
 																					if( ev.value.length > 0){
 																						try{
-																							const resp = await fetch(`/api/filters/ward/?constituency=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
+																							const resp = await fetch(`/api/filters/ward/?sub_county=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
 
 																							setWardOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
 
@@ -1758,6 +1762,7 @@ function AddFacility(props) {
 																		required
 																		type='decimal'
 																		name='longitude'
+																		onChange={ev => setLongitude(Number(ev.target.value).toFixed(6))}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -1776,6 +1781,7 @@ function AddFacility(props) {
 																		required
 																		type='decimal'
 																		name='latitude'
+																		onChange={ev => setLatitude(Number(ev.target.value).toFixed(6))}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -1786,7 +1792,7 @@ function AddFacility(props) {
 																{
 																	geolocationData && geolocationData !== {} &&
 																	<div className='w-full bg-gray-200  rounded flex flex-col items-center justify-center relative'>
-																		<Map data={geolocationData} />
+																		<Map data={geolocationData} markerCoordinates={[latitude, longitude]} />
 																	</div>
 
 																}
@@ -2882,7 +2888,7 @@ AddFacility.getInitialProps = async (ctx) => {
 			
 
 								allOptions.push(_obj)
-								console.log({allOptions})
+								// console.log({allOptions})
 									
 								}
 								catch(err) {

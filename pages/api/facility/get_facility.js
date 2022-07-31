@@ -10,6 +10,8 @@ export default async function fetchFacilityData(req, res) {
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
         // console.log({body: req.body})
+
+        const { path, id } = req.query
     
         let url = ''
 
@@ -25,7 +27,7 @@ export default async function fetchFacilityData(req, res) {
             }
 
             try {
-                // console.log({url});
+                console.log({url});
                 const resp = await fetch(url, {
                     headers: {
                         'Authorization': 'Bearer ' + token,

@@ -1,12 +1,19 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MapContainer, Marker,TileLayer, GeoJSON } from 'react-leaflet'
+import MapCenters from '../assets/maps/county-centers-coordinates'
+import MapData from '../assets/maps/counties.min.json'
 
+import Alert from '@mui/material/Alert';
 
 const WardGISMap = ({data, markerCoordinates}) => {
 
-    const [center, setCenter] = useState(data?.ward_boundary?.properties?.center?.coordinates ?? [])
-    const [geoJSON, setGeoJSON] = useState(data?.ward_boundary ?? {})
+    const [county, setCounty] = useState(String((data?.county_name ?? '').toLocaleUpperCase()))
+    const [geoJSON, setGeoJSON] = useState(MapData.features.filter(({properties}) => properties.AREA_NAME === county)[0] ?? MapData)
+    const mapCenterObj = MapCenters.filter(({name}) => name === county)[0] ?? {longitude: 37.477222 , latitude: -0.818389 }
+    // const mapCenter = [, mapCenterObj.longitude]
+
+    // console.log({geoJSON, center})
 
     const geoJsonStyles = {
         color: '#000',
@@ -15,16 +22,20 @@ const WardGISMap = ({data, markerCoordinates}) => {
         fillOpacity: 0.3
     }
 
+    useEffect(() => {
+        console.log({data, county})
+    }, [county, geoJSON, markerCoordinates])
+
   return (
     <>
     {
-        data && data?.length > 0 ? 
+        county !== '' ? 
         <>
             {/* Map title */}
-            <h3 className='mb-1 text-blue-900 font-normal text-lg'>{data?.name}{" Ward"}</h3>
+            <h3 className='mb-1 text-blue-900 font-normal float-left text-lg'>{county}{" Ward"}</h3>
 
             {/* Ward Map */}
-            <MapContainer center={center} zoom={6.899} maxZoom={15.70} scrollWheelZoom={false} touchZoom={false} style={{ height: '300px', width: "100%", position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
+            <MapContainer center={[Number(mapCenterObj.latitude).toFixed(5), Number(mapCenterObj.longitude).toFixed(5)]} zoom={8.49} maxZoom={15.70} scrollWheelZoom={false} touchZoom={false} style={{ height: '300px', width: "100%", position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
                     <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' url='http://{s}.tile.osm.org/{z}/{x}/{y}.png' />
                     <GeoJSON data={geoJSON} key={geoJSON} stylez={geoJsonStyles}/>
                     
@@ -38,11 +49,8 @@ const WardGISMap = ({data, markerCoordinates}) => {
             </MapContainer>
     </>
     :
-    <div className='w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none'>
-        <p>
-            No location data found for this facility.
-        </p>
-    </div>
+
+        <Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
     }
     </>
   )
