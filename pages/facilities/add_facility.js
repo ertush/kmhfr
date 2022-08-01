@@ -24,6 +24,8 @@ import StepLabel from '@mui/material/StepLabel';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import Alert from '@mui/material/Alert';
+
 
 
 // Heroicons imports
@@ -427,17 +429,24 @@ function AddFacility(props) {
 	const [hrCount, setHrCount] = useState([])
 	const [facilityOption, setFacilityOption] = useState('')
 	const [facilityOfficialName, setFacilityOfficialName] = useState('')
-	const [geolocationData, setGeolocationData] = useState({})
+	// const [geolocationData, setGeolocationData] = useState({})
 
 	const [ownerTypeOption, setOwnerTypeOption] = useState('')
 	const [latitude, setLatitude] = useState(null)
 	const [longitude, setLongitude] = useState(null)
+	const [county, setCounty] = useState('')
+	const [facilityId, setFacilityId] = useState('')
+	// const [wardId, setWardNameId] = useState('')
+
+	const [geoJSON, setGeoJSON] = useState(null)
+    const [center, setCenter] = useState(null)
+    const [wardName, setWardName] = useState('')
 
 	// console.log({geolocationData})
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
-	const [wardOpt, setWardOpt] = useState('')
+	const [wardOpt, setWardNameOpt] = useState('')
 
     useEffect(() => {
 
@@ -472,7 +481,7 @@ function AddFacility(props) {
             }
             
         }
-    }, [facilityOfficialName, facilityOption, formId, services])
+    }, [facilityOfficialName, facilityOption, formId, services, latitude, geoJSON, longitude])
       
 
 	const handleQuickFiltersClick = (link) => {
@@ -659,7 +668,7 @@ function AddFacility(props) {
 
 													// Post Facility Basic Details
 													try{
-														fetch('/api/facility/post_facility', {
+														fetch('/api/facility/post_facility/?path=facilities', {
 															headers:{
 																'Accept': 'application/json, text/plain, */*',
 																'Content-Type': 'application/json;charset=utf-8'
@@ -668,23 +677,41 @@ function AddFacility(props) {
 															method:'POST',
 															body: JSON.stringify(formData).replace(',"":""','')
 														}).then(async (resp) => {
-															if(resp.status === 200){
-																// Fetch data for Geolocation Form
-																try{
-																	const response = await fetch(`/api/facility/get_facility/?path=wards&id=${(await resp.json()).ward}`)
+															if(resp){
 
-																	const _data = await response.json()
-																	console.log({_data})
-																	setGeolocationData(_data)
+																const {id, ward} = (await resp.json())
+
+																	setFacilityId(id) //set facility Id
 																	
+																	let _data
+																													
+																	try{
+																		const response = await fetch(`/api/facility/get_facility/?path=wards&id=${ward}`)
 
-																}catch(e){
-																	console.error(e.message)
-																	return {
-																		error:e.message,
-																		id:null
+																		_data = await response.json()
+
+
+																		setGeoJSON(JSON.parse(JSON.stringify(_data?.ward_boundary)))
+
+																		const [lng, lat] = _data?.ward_boundary.properties.center.coordinates 
+
+																		setCenter(JSON.parse(JSON.stringify([lat, lng])))
+																		setWardName(_data?.name)
+
+																		
+
+																		console.log({geoJSON, center, ward})
+
+																		
+																	
+																	}catch(e){
+																		console.error(e.message)
+																		return {
+																			error:e.message,
+																			id:null
+																		}
 																	}
-																}
+																
 															}
 														}
 															
@@ -1477,6 +1504,9 @@ function AddFacility(props) {
 																				placeholder='Select County'
 																				onChange={async (ev) => {
 																					if( ev.value.length > 0){
+
+																						setCounty(String(ev.label).toLocaleUpperCase())
+
 																						try{
 																							const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
 
@@ -1542,15 +1572,15 @@ function AddFacility(props) {
 																						try{
 																							const resp = await fetch(`/api/filters/ward/?sub_county=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
 
-																							setWardOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
+																							setWardNameOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
 
 																						}
 																						catch(e){
 																							console.error('Unable to fetch sub_county options')
-																							setWardOpt(null)
+																							setWardNameOpt(null)
 																						}
 																					}else{
-																						return setWardOpt(null)
+																						return setWardNameOpt(null)
 																					}
 																				}}
 																				name='constituency_id'
@@ -1706,6 +1736,46 @@ function AddFacility(props) {
 												const handleGeolocationSubmit = (event) => {
 													event.preventDefault();
 
+													const formData = {};
+
+													const elements = [...event.target];
+
+													elements.forEach(({ name, value }) => {
+														
+														formData[name] = value 
+													});
+
+													// Set missing formData i.e coordinates & facility
+
+													formData['coordinates'] = {
+														coordinates : [
+															formData.longitude,
+															formData.latitude
+														],
+														type: 'Point'
+													}
+
+													formData['facility'] = facilityId
+
+													console.log({formData})
+
+													// Post Geolocation Details
+
+													try{
+														fetch('/api/facility/post_facility/?path=gis', {
+															headers:{
+																'Accept': 'application/json, text/plain, */*',
+																'Content-Type': 'application/json;charset=utf-8'
+																
+															},
+															method:'POST',
+															body: JSON.stringify(formData)
+														})
+													}
+													catch(e){
+														console.error('Unable to post geolocation details')
+													}
+
 													window.sessionStorage.setItem('formId', 2);
 
 													setFormId(window.sessionStorage.getItem('formId'));
@@ -1790,13 +1860,15 @@ function AddFacility(props) {
 															{/* Ward Geo Map */}
 															<div className='w-full h-auto'>
 																{
-																	geolocationData && geolocationData !== {} &&
-																	<div className='w-full bg-gray-200  rounded flex flex-col items-center justify-center relative'>
-																		<Map data={geolocationData} markerCoordinates={[latitude, longitude]} />
+																	 geoJSON !== null ? 
+																	<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
+																		<Map markerCoordinates={[latitude ?? 0.00000, longitude ?? 0.00000]} geoJSON={geoJSON} ward={wardName} center={center} />
 																	</div>
+																	:
+																	<Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
 
 																}
-															
+															 
 																	
 
 																

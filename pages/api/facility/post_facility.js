@@ -8,16 +8,24 @@ export default async function postFacilityData(req, res) {
     const fetchData = async (token) => {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-        // console.log({body: req.body})
+        
+        const { path } = req.query
     
         let url = ''
-
-
-            url = `${API_URL}/facilities/facilities/` 
+     
+            switch (path) {
+                case 'facilities':
+                    url = `${API_URL}/facilities/facilities/`
+                    break;
+                case 'gis':
+                    url = `${API_URL}/gis/facility_coordinates/`
+                default:
+                    break;
+            }
+             
  
             try {
-                // console.log({url});
+                console.log({url});
                 const resp = await fetch(url, {
                     headers: {
                         'Authorization': 'Bearer ' + token,
