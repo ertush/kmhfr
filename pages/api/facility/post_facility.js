@@ -8,21 +8,34 @@ export default async function postFacilityData(req, res) {
     const fetchData = async (token) => {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-        // console.log({body: req.body})
+        
+        const { path } = req.query
     
         let url = ''
-
-
-            url = `${API_URL}/facilities/facilities/` 
+     
+            switch (path) {
+                case 'facilities':
+                    url = `${API_URL}/facilities/facilities/`
+                    break;
+                case 'gis':
+                    url = `${API_URL}/gis/facility_coordinates/`
+                    break
+                case 'documents':
+                    url = `${API_URL}/common/documents/`
+                    break
+                default:
+                    
+                    break;
+            }
+             
  
             try {
-                // console.log({url});
+                console.log({url});
                 const resp = await fetch(url, {
                     headers: {
                         'Authorization': 'Bearer ' + token,
                         'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json;charset=utf-8'
+                        'Content-Type': `${path === 'documents' ? 'multipart/form-data; boundary=---------------------------225842045917620681641702784814' : 'application/json;charset=utf-8'}`
                     },
                     method:'POST',
                     body: JSON.stringify(req.body)

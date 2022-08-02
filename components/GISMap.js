@@ -12,7 +12,10 @@ const GISMap = ({ data }) => {
         fillColor: '#46f',
         fillOpacity: 0.3
     }
+
+  
     useEffect(() => {
+        console.log(typeof(geoJSON), {geoJSON})
         let mtd = true
         if (mtd) {
             // setGeoJSON(MapData)
