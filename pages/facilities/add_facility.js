@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 
 // Next imports
 import Head from 'next/head';
@@ -436,7 +436,7 @@ function AddFacility(props) {
 	const [longitude, setLongitude] = useState(null)
 	const [county, setCounty] = useState('')
 	const [facilityId, setFacilityId] = useState('')
-	// const [wardId, setWardNameId] = useState('')
+	const [kephLvl, setKephLvl] = useState(null)
 
 	const [geoJSON, setGeoJSON] = useState(null)
     const [center, setCenter] = useState(null)
@@ -481,7 +481,7 @@ function AddFacility(props) {
             }
             
         }
-    }, [facilityOfficialName, facilityOption, formId, services, latitude, geoJSON, longitude])
+    }, [facilityOfficialName, facilityOption, formId, services, latitude, geoJSON, longitude, kephLvl])
       
 
 	const handleQuickFiltersClick = (link) => {
@@ -636,6 +636,10 @@ function AddFacility(props) {
 												const handleBasicDetailsSubmit = async (event) => {
 
 													event.preventDefault();
+
+													let _ward;
+													let _id;
+
 													const formData = {};
 
 													const elements = [...event.target];
@@ -653,7 +657,7 @@ function AddFacility(props) {
 														})()
 													});
 
-													// Add officer in charge to payload
+													// Add officer in charge to payload8
 													formData['officer_in_charge'] = {
 														name:'',
 														reg_no:'',
@@ -676,17 +680,57 @@ function AddFacility(props) {
 															},
 															method:'POST',
 															body: JSON.stringify(formData).replace(',"":""','')
-														}).then(async (resp) => {
+														})
+														// Post Checklist document
+														.then(async resp => {
+
+															const {id, ward} = (await resp.json())
+
+															_id = id
+															_ward = ward
+
+															const payload = {
+																name: `${formData['official_name']} Facility Checklist File`,
+																description: 'Facilities checklist file',
+																document_type: 'Facility_ChecKList',
+																facility_name:formData['official_name'],
+																fyl: {
+																	filename:formData['facility_checklist_document']
+																}
+
+
+															}
+
+															if(resp){
+																try {
+																	const resp = await fetch('/api/facility/post_facility/?path=documents', {
+																		headers:{
+																			'Accept': 'application/json, text/plain, */*',
+																			'Content-Type': 'multipart/form-data; boundary=---------------------------225842045917620681641702784814'
+																			
+																		},
+																		method:'POST',
+																		body: JSON.stringify(payload)
+																	})
+
+																	return (await resp.json())
+																}
+																catch(e){
+																	console.error('Unable to Post document')
+																}
+															}
+														})
+														//  fetch data for Geolocation form
+														.then(async (resp) => {
 															if(resp){
 
-																const {id, ward} = (await resp.json())
-
-																	setFacilityId(id) //set facility Id
+																
+																	setFacilityId(_id) //set facility Id
 																	
 																	let _data
 																													
 																	try{
-																		const response = await fetch(`/api/facility/get_facility/?path=wards&id=${ward}`)
+																		const response = await fetch(`/api/facility/get_facility/?path=wards&id=${_ward}`)
 
 																		_data = await response.json()
 
@@ -700,7 +744,7 @@ function AddFacility(props) {
 
 																		
 
-																		console.log({geoJSON, center, ward})
+																		console.log({geoJSON, center, _ward})
 
 																		
 																	
@@ -827,6 +871,8 @@ function AddFacility(props) {
 																			
 																			switch(facilityOption){
 																				case 'STAND ALONE':
+
+																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 2')[0])
 							
 																					return [
 																						facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
@@ -854,6 +900,7 @@ function AddFacility(props) {
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
 																					
 																				case 'NURSING HOME':
+																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 2')[0])
 																					
 																					return [
 																							facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
@@ -877,6 +924,7 @@ function AddFacility(props) {
 																						]
 
 																				case 'MEDICAL CENTRE':
+																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 3')[0])
 
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
 																				
@@ -885,7 +933,20 @@ function AddFacility(props) {
 																	}
 																	required
 																	placeholder='Select a facility type details...'
-																	onChange={() => console.log('changed type')}
+																	onChange={ev => {
+																		switch(ev.label){
+																			case /.+\ Tertiary\ Referral\ hospitals/:
+																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 6')[0])
+																				break;
+																			case 'Secondary care hospitals':
+																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 5')[0])
+																				break;
+																			case 'Primary care hospitals':
+																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 4')[0])
+																				break;
+																			
+																		}
+																	}}
 																	name='facility_type_details'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
@@ -1064,7 +1125,7 @@ function AddFacility(props) {
 																	KEPH Level
 																</label>
 																<Select
-																	options={kephOptions || []}
+																	options={kephLvl ?? kephOptions ?? []}
 																	placeholder='Select a KEPH Level..'
 																	name='keph_level'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -1742,20 +1803,20 @@ function AddFacility(props) {
 
 													elements.forEach(({ name, value }) => {
 														
-														formData[name] = value 
+														formData[name] = name === 'collection_date' ? new Date(value) : value 
 													});
 
 													// Set missing formData i.e coordinates & facility
 
 													formData['coordinates'] = {
 														coordinates : [
-															formData.longitude,
-															formData.latitude
+															Number(formData.longitude),
+															Number(formData.latitude)
 														],
 														type: 'Point'
 													}
 
-													formData['facility'] = facilityId
+													formData['facility'] = facilityId ?? ''
 
 													console.log({formData})
 
@@ -1861,9 +1922,12 @@ function AddFacility(props) {
 															<div className='w-full h-auto'>
 																{
 																	 geoJSON !== null ? 
-																	<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																		<Map markerCoordinates={[latitude ?? 0.00000, longitude ?? 0.00000]} geoJSON={geoJSON} ward={wardName} center={center} />
-																	</div>
+																	 <Suspense fallBack={<h3 className='text-blue-900'>Loading ....</h3>}>
+																		<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
+																			<Map markerCoordinates={[Number(latitude).toFixed(6) ?? 0.00000, Number(longitude).toFixed(6) ?? 0.00000]} geoJSON={geoJSON} ward={wardName} center={center} />
+																		</div>
+																	 </Suspense>
+																	
 																	:
 																	<Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
 

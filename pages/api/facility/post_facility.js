@@ -19,7 +19,12 @@ export default async function postFacilityData(req, res) {
                     break;
                 case 'gis':
                     url = `${API_URL}/gis/facility_coordinates/`
+                    break
+                case 'documents':
+                    url = `${API_URL}/common/documents/`
+                    break
                 default:
+                    
                     break;
             }
              
@@ -30,7 +35,7 @@ export default async function postFacilityData(req, res) {
                     headers: {
                         'Authorization': 'Bearer ' + token,
                         'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json;charset=utf-8'
+                        'Content-Type': `${path === 'documents' ? 'multipart/form-data; boundary=---------------------------225842045917620681641702784814' : 'application/json;charset=utf-8'}`
                     },
                     method:'POST',
                     body: JSON.stringify(req.body)
