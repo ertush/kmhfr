@@ -9,10 +9,10 @@ import { ListItem, ListItemText } from '@mui/material';
 // Heroicons imports
 import { DownloadIcon } from '@heroicons/react/solid';
 
-function ReportItem({ title, last_generated, info_snippet }) {
+function ReportItem({ title, last_generated, info_snippet })
+{
 	return (
-		<a
-			href={`/static_reports/download?title=${title}`}
+		<span
 			className='text-green-700'>
 			<ListItem
 				sx={{
@@ -32,11 +32,13 @@ function ReportItem({ title, last_generated, info_snippet }) {
 					secondary={info_snippet}
 				/>
 				<ListItemText secondary={'Last generated on ' + last_generated} />
-				<button className='bg-transparent hover:bg-green-800 rounded-md font-semibold hover:text-white py-2 px-4 border border-green-800 hover:border-transparent'>
-					Download
-				</button>
+				<a href={`/static_reports/download?title=${ title }`}>
+					<button className='bg-transparent hover:bg-green-800 rounded-md font-semibold hover:text-white py-2 px-4 border border-green-800 hover:border-transparent'>
+						Download
+					</button>
+				</a>
 			</ListItem>
-		</a>
+		</span>
 	);
 }
 
