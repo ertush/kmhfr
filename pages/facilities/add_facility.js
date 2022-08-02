@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 
 // Next imports
 import Head from 'next/head';
@@ -24,6 +24,8 @@ import StepLabel from '@mui/material/StepLabel';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import Alert from '@mui/material/Alert';
+
 
 
 // Heroicons imports
@@ -75,12 +77,12 @@ function AddFacility(props) {
 	 let kephOptions =  props['4']?.keph
 	 let facilityAdmissionOptions =  props['5']?.facility_admission_status
 	 let countyOptions =  props['6']?.counties
-	//  let subCountyOpts =  props['7']?.sub_counties
+	 let subCountyOptions =  props['7']?.sub_counties
 	 let constituencyOptions =  props['8']?.constituencies
 	 let wardOptions =  props['9']?.wards
 
 	
-	 console.log({ownerOptions})
+	//  console.log({props})
 	
 
     const nameOptionRef = useRef(null)
@@ -427,15 +429,24 @@ function AddFacility(props) {
 	const [hrCount, setHrCount] = useState([])
 	const [facilityOption, setFacilityOption] = useState('')
 	const [facilityOfficialName, setFacilityOfficialName] = useState('')
-	const [geolocationData, setGeolocationData] = useState({})
+	// const [geolocationData, setGeolocationData] = useState({})
 
 	const [ownerTypeOption, setOwnerTypeOption] = useState('')
+	const [latitude, setLatitude] = useState(null)
+	const [longitude, setLongitude] = useState(null)
+	const [county, setCounty] = useState('')
+	const [facilityId, setFacilityId] = useState('')
+	const [kephLvl, setKephLvl] = useState(null)
+
+	const [geoJSON, setGeoJSON] = useState(null)
+    const [center, setCenter] = useState(null)
+    const [wardName, setWardName] = useState('')
 
 	// console.log({geolocationData})
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
-	const [wardOpt, setWardOpt] = useState('')
+	const [wardOpt, setWardNameOpt] = useState('')
 
     useEffect(() => {
 
@@ -470,7 +481,7 @@ function AddFacility(props) {
             }
             
         }
-    }, [facilityOfficialName, facilityOption, formId, services])
+    }, [facilityOfficialName, facilityOption, formId, services, latitude, geoJSON, longitude, kephLvl])
       
 
 	const handleQuickFiltersClick = (link) => {
@@ -625,6 +636,10 @@ function AddFacility(props) {
 												const handleBasicDetailsSubmit = async (event) => {
 
 													event.preventDefault();
+
+													let _ward;
+													let _id;
+
 													const formData = {};
 
 													const elements = [...event.target];
@@ -642,7 +657,7 @@ function AddFacility(props) {
 														})()
 													});
 
-													// Add officer in charge to payload
+													// Add officer in charge to payload8
 													formData['officer_in_charge'] = {
 														name:'',
 														reg_no:'',
@@ -657,7 +672,7 @@ function AddFacility(props) {
 
 													// Post Facility Basic Details
 													try{
-														fetch('/api/facility/post_facility', {
+														fetch('/api/facility/post_facility/?path=facilities', {
 															headers:{
 																'Accept': 'application/json, text/plain, */*',
 																'Content-Type': 'application/json;charset=utf-8'
@@ -665,22 +680,82 @@ function AddFacility(props) {
 															},
 															method:'POST',
 															body: JSON.stringify(formData).replace(',"":""','')
-														}).then(async (resp) => {
-															if(resp.status === 200){
-																// Fetch data for Geolocation Form
-																try{
-																	const response = await fetch(`/api/facility/get_facility/?path=wards&id=${(await resp.json()).ward}`)
+														})
+														// Post Checklist document
+														.then(async resp => {
 
-																	setGeolocationData((await response.json()))
-																	
+															const {id, ward} = (await resp.json())
 
-																}catch(e){
-																	console.error(e.message)
-																	return {
-																		error:e.message,
-																		id:null
-																	}
+															_id = id
+															_ward = ward
+
+															const payload = {
+																name: `${formData['official_name']} Facility Checklist File`,
+																description: 'Facilities checklist file',
+																document_type: 'Facility_ChecKList',
+																facility_name:formData['official_name'],
+																fyl: {
+																	filename:formData['facility_checklist_document']
 																}
+
+
+															}
+
+															if(resp){
+																try {
+																	const resp = await fetch('/api/facility/post_facility/?path=documents', {
+																		headers:{
+																			'Accept': 'application/json, text/plain, */*',
+																			'Content-Type': 'multipart/form-data; boundary=---------------------------225842045917620681641702784814'
+																			
+																		},
+																		method:'POST',
+																		body: JSON.stringify(payload)
+																	})
+
+																	return (await resp.json())
+																}
+																catch(e){
+																	console.error('Unable to Post document')
+																}
+															}
+														})
+														//  fetch data for Geolocation form
+														.then(async (resp) => {
+															if(resp){
+
+																
+																	setFacilityId(_id) //set facility Id
+																	
+																	let _data
+																													
+																	try{
+																		const response = await fetch(`/api/facility/get_facility/?path=wards&id=${_ward}`)
+
+																		_data = await response.json()
+
+
+																		setGeoJSON(JSON.parse(JSON.stringify(_data?.ward_boundary)))
+
+																		const [lng, lat] = _data?.ward_boundary.properties.center.coordinates 
+
+																		setCenter(JSON.parse(JSON.stringify([lat, lng])))
+																		setWardName(_data?.name)
+
+																		
+
+																		console.log({geoJSON, center, _ward})
+
+																		
+																	
+																	}catch(e){
+																		console.error(e.message)
+																		return {
+																			error:e.message,
+																			id:null
+																		}
+																	}
+																
 															}
 														}
 															
@@ -796,6 +871,8 @@ function AddFacility(props) {
 																			
 																			switch(facilityOption){
 																				case 'STAND ALONE':
+
+																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 2')[0])
 							
 																					return [
 																						facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
@@ -823,6 +900,7 @@ function AddFacility(props) {
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
 																					
 																				case 'NURSING HOME':
+																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 2')[0])
 																					
 																					return [
 																							facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
@@ -846,6 +924,7 @@ function AddFacility(props) {
 																						]
 
 																				case 'MEDICAL CENTRE':
+																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 3')[0])
 
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
 																				
@@ -854,7 +933,20 @@ function AddFacility(props) {
 																	}
 																	required
 																	placeholder='Select a facility type details...'
-																	onChange={() => console.log('changed type')}
+																	onChange={ev => {
+																		switch(ev.label){
+																			case /.+\ Tertiary\ Referral\ hospitals/:
+																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 6')[0])
+																				break;
+																			case 'Secondary care hospitals':
+																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 5')[0])
+																				break;
+																			case 'Primary care hospitals':
+																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 4')[0])
+																				break;
+																			
+																		}
+																	}}
 																	name='facility_type_details'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
@@ -1033,7 +1125,7 @@ function AddFacility(props) {
 																	KEPH Level
 																</label>
 																<Select
-																	options={kephOptions || []}
+																	options={kephLvl ?? kephOptions ?? []}
 																	placeholder='Select a KEPH Level..'
 																	name='keph_level'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -1473,6 +1565,9 @@ function AddFacility(props) {
 																				placeholder='Select County'
 																				onChange={async (ev) => {
 																					if( ev.value.length > 0){
+
+																						setCounty(String(ev.label).toLocaleUpperCase())
+
 																						try{
 																							const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
 
@@ -1536,17 +1631,17 @@ function AddFacility(props) {
 																				onChange={async (ev) => {
 																					if( ev.value.length > 0){
 																						try{
-																							const resp = await fetch(`/api/filters/ward/?constituency=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
+																							const resp = await fetch(`/api/filters/ward/?sub_county=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
 
-																							setWardOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
+																							setWardNameOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
 
 																						}
 																						catch(e){
 																							console.error('Unable to fetch sub_county options')
-																							setWardOpt(null)
+																							setWardNameOpt(null)
 																						}
 																					}else{
-																						return setWardOpt(null)
+																						return setWardNameOpt(null)
 																					}
 																				}}
 																				name='constituency_id'
@@ -1702,6 +1797,46 @@ function AddFacility(props) {
 												const handleGeolocationSubmit = (event) => {
 													event.preventDefault();
 
+													const formData = {};
+
+													const elements = [...event.target];
+
+													elements.forEach(({ name, value }) => {
+														
+														formData[name] = name === 'collection_date' ? new Date(value) : value 
+													});
+
+													// Set missing formData i.e coordinates & facility
+
+													formData['coordinates'] = {
+														coordinates : [
+															Number(formData.longitude),
+															Number(formData.latitude)
+														],
+														type: 'Point'
+													}
+
+													formData['facility'] = facilityId ?? ''
+
+													console.log({formData})
+
+													// Post Geolocation Details
+
+													try{
+														fetch('/api/facility/post_facility/?path=gis', {
+															headers:{
+																'Accept': 'application/json, text/plain, */*',
+																'Content-Type': 'application/json;charset=utf-8'
+																
+															},
+															method:'POST',
+															body: JSON.stringify(formData)
+														})
+													}
+													catch(e){
+														console.error('Unable to post geolocation details')
+													}
+
 													window.sessionStorage.setItem('formId', 2);
 
 													setFormId(window.sessionStorage.getItem('formId'));
@@ -1758,6 +1893,7 @@ function AddFacility(props) {
 																		required
 																		type='decimal'
 																		name='longitude'
+																		onChange={ev => setLongitude(Number(ev.target.value).toFixed(6))}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -1776,6 +1912,7 @@ function AddFacility(props) {
 																		required
 																		type='decimal'
 																		name='latitude'
+																		onChange={ev => setLatitude(Number(ev.target.value).toFixed(6))}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -1784,13 +1921,18 @@ function AddFacility(props) {
 															{/* Ward Geo Map */}
 															<div className='w-full h-auto'>
 																{
-																	geolocationData && geolocationData !== {} &&
-																	<div className='w-full bg-gray-200  rounded flex flex-col items-center justify-center relative'>
-																		<Map data={geolocationData} />
-																	</div>
+																	 geoJSON !== null ? 
+																	 <Suspense fallBack={<h3 className='text-blue-900'>Loading ....</h3>}>
+																		<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
+																			<Map markerCoordinates={[Number(latitude).toFixed(6) ?? 0.00000, Number(longitude).toFixed(6) ?? 0.00000]} geoJSON={geoJSON} ward={wardName} center={center} />
+																		</div>
+																	 </Suspense>
+																	
+																	:
+																	<Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
 
 																}
-															
+															 
 																	
 
 																
@@ -2882,7 +3024,7 @@ AddFacility.getInitialProps = async (ctx) => {
 			
 
 								allOptions.push(_obj)
-								console.log({allOptions})
+								// console.log({allOptions})
 									
 								}
 								catch(err) {

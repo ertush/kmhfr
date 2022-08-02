@@ -547,7 +547,7 @@ const DynamicReports = (props) => {
                                                                                 const handleConstituencyChange = async (ev) => {
 
                                                                                     try{ 
-                                                                                        const dataConstituencies = await fetch(`/api/filters/ward/?constituency=${ev.value}`)
+                                                                                        const dataConstituencies = await fetch(`/api/filters/ward/?sub_county=${ev.value}`)
                                                                                         dataConstituencies.json().then(r => {
                                                                                             const optionsWard = []
                                                                                          

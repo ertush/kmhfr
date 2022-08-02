@@ -5,7 +5,7 @@ export default async function getWards(req, res) {
 
 
         const fetchData = (token) => {
-            let url = `${process.env.NEXT_PUBLIC_API_URL}/common/wards/?sub_county=${req.query.constituency}`
+            let url = `${process.env.NEXT_PUBLIC_API_URL}/common/wards/?sub_county=${req.query.sub_county}`
          
             return fetch(url, {
                 headers: {
