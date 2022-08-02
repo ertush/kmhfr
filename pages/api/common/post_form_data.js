@@ -2,7 +2,7 @@
 
 import { checkToken } from "../../../controllers/auth/auth";
 
-export default async function postFacilityData(req, res) {
+export default async function postFormData(req, res) {
 
     
     const fetchData = async (token) => {
