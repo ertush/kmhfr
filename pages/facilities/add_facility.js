@@ -669,10 +669,9 @@ function AddFacility(props) {
 														]
 													}
 
-
 													// Post Facility Basic Details
 													try{
-														fetch('/api/facility/post_facility/?path=facilities', {
+														fetch('/api/common/post_form_data/?path=facilities', {
 															headers:{
 																'Accept': 'application/json, text/plain, */*',
 																'Content-Type': 'application/json;charset=utf-8'
@@ -703,7 +702,7 @@ function AddFacility(props) {
 
 															if(resp){
 																try {
-																	const resp = await fetch('/api/facility/post_facility/?path=documents', {
+																	const resp = await fetch('/api/common/post_form_data/?path=documents', {
 																		headers:{
 																			'Accept': 'application/json, text/plain, */*',
 																			'Content-Type': 'multipart/form-data; boundary=---------------------------225842045917620681641702784814'
@@ -1797,40 +1796,42 @@ function AddFacility(props) {
 												const handleGeolocationSubmit = (event) => {
 													event.preventDefault();
 
-													const formData = {};
+													const geolocationData = {};
 
 													const elements = [...event.target];
 
 													elements.forEach(({ name, value }) => {
 														
-														formData[name] = name === 'collection_date' ? new Date(value) : value 
+														geolocationData[name] = name === 'collection_date' ? new Date(value) : (() => {
+															return value.match(/^[0-9]+\.[0-9]$/) !== null ? Number(value).toFixed(6) : value
+														}) 
 													});
 
-													// Set missing formData i.e coordinates & facility
+													// Set missing geolocationData i.e coordinates & facility
 
-													formData['coordinates'] = {
+													geolocationData['coordinates'] = {
 														coordinates : [
-															Number(formData.longitude),
-															Number(formData.latitude)
+															Number(geolocationData.longitude),
+															Number(geolocationData.latitude)
 														],
 														type: 'Point'
 													}
 
-													formData['facility'] = facilityId ?? ''
+													geolocationData['facility'] = facilityId ?? ''
 
-													console.log({formData})
+													console.log({geolocationData})
 
 													// Post Geolocation Details
 
 													try{
-														fetch('/api/facility/post_facility/?path=gis', {
+														fetch('/api/common/post_form_data/?path=gis', {
 															headers:{
 																'Accept': 'application/json, text/plain, */*',
 																'Content-Type': 'application/json;charset=utf-8'
 																
 															},
 															method:'POST',
-															body: JSON.stringify(formData)
+															body: JSON.stringify(geolocationData).replace(',"":""','')
 														})
 													}
 													catch(e){
@@ -1924,7 +1925,7 @@ function AddFacility(props) {
 																	 geoJSON !== null ? 
 																	 <Suspense fallBack={<h3 className='text-blue-900'>Loading ....</h3>}>
 																		<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																			<Map markerCoordinates={[Number(latitude).toFixed(6) ?? 0.00000, Number(longitude).toFixed(6) ?? 0.00000]} geoJSON={geoJSON} ward={wardName} center={center} />
+																			<Map markerCoordinates={[Number(latitude ?? 0.00000).toFixed(6), Number(longitude ?? 0.00000).toFixed(6)]} geoJSON={geoJSON} ward={wardName} center={center} />
 																		</div>
 																	 </Suspense>
 																	
