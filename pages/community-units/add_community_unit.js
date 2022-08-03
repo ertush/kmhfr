@@ -36,10 +36,11 @@ import Select from 'react-select';
 
 function AddCommUnit(props)
 {
-	let comm_unit = props.data;
 
-	let facilityOptions = props[0]?.facilities
+	const facilities = props.facility_data.results;
 
+	// const [CULinkedFacility, setCULinkedFacility] = useState(null);
+	const [countyValue, setCountyValue] = useState(null);
 	// Define registration steps
 	const steps = [
 		'Basic Details',
@@ -161,6 +162,8 @@ function AddCommUnit(props)
 	// Define useEffect
 	useEffect(() =>
 	{
+		// console.log(facilities.filter(({ county }) => county )[0])
+
 		const formIdState = window.sessionStorage.getItem('formId');
 
 		if (formIdState == undefined || formIdState == null || formIdState == '')
@@ -178,7 +181,7 @@ function AddCommUnit(props)
 				window.sessionStorage.setItem('formId', 0);
 			}
 		};
-	}, [formId]);
+	}, [formId, facilities]);
 	// console.log(formId);
 
 	return (
@@ -299,14 +302,20 @@ function AddCommUnit(props)
 																</span>
 															</label>
 															<Select
-																options={facilityOptions || []}
+																onChange={(label) =>
+																{
+																	const selected_facililty = facilities.filter((data) => data.county === label);
+																	setCountyValue(selected_facililty.length > 0 ? selected_facililty[0].county : 'Default Name');
+																}}
+																options={facilities.map((facility) =>
+																{
+																	return {
+																		value: facility.id,
+																		label: facility.name,
+																	};
+																}
+																)}
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-															/>
-															<input
-																required
-																type='text'
-																name='comm_unit_facility'
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
@@ -444,7 +453,7 @@ function AddCommUnit(props)
 																<div className='col-start-1 col-span-1'>
 																	<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																		<label
-																			htmlFor='keph_level'
+																			htmlFor='linked_facility_county'
 																			className='text-gray-600 capitalize text-sm'>
 																			County
 																			<span className='text-medium leading-12 font-semibold'>
@@ -452,32 +461,13 @@ function AddCommUnit(props)
 																				*
 																			</span>
 																		</label>
-																		<Select
-																			options={[
-																				{
-																					value: 'Private Practice',
-																					label: 'Private Practice',
-																				},
-																				{
-																					value:
-																						'Non-Governmental Organizations',
-																					label:
-																						'Non-Governmental Organizations',
-																				},
-																				{
-																					value: 'Ministry of Health',
-																					label: 'Ministry of Health',
-																				},
-																				{
-																					value: 'Faith Based Organization',
-																					label: 'Faith Based Organization',
-																				},
-																			]}
-																			required
-																			placeholder='Select County'
-																			onChange={() => console.log('changed')}
-																			name='keph_level'
-																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		<input
+																			value={
+																				countyValue
+																			}
+																			type='text'
+																			name='linked_facility_county'
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -894,11 +884,6 @@ function AddCommUnit(props)
 
 AddCommUnit.getInitialProps = async (ctx) =>
 {
-	const allOptions = []
-	const options = [
-		'facilities'
-	]
-
 
 	return checkToken(ctx.req, ctx.res)
 		.then(async (t) =>
@@ -908,72 +893,32 @@ AddCommUnit.getInitialProps = async (ctx) =>
 				throw new Error('Error checking token');
 			} else
 			{
-
 				let token = t.token;
+				console.log('token', token);
 
-				let url = '';
-
-				for (let i = 0; i < options.length; i++)
-				{
-					const option = options[i];
-					switch (option)
-					{
-						case 'facilities':
-							url = `${ process.env.NEXT_PUBLIC_API_URL }/facilities/${ option }/?fields=id%2Cname%2Ccounty%2Csub_county_name%2Cconstituency%2Cward_name&page=3&page_size=10000`;
-
-							try
-							{
-								const _data = await fetch(url, {
-									headers: {
-										Authorization: 'Bearer ' + token,
-										Accept: 'application/json',
-									},
-								})
-								let results = await _data.json().results.map(({ id, name }) => ({ value: id, label: name }));
-
-								allOptions.push({ facilities: results })
-							} catch (err)
-							{
-								console.log(`Error fetching ${ option }: `, err);
-								allOptions.push({
-									error: true,
-									err: err,
-									facility_types: [],
-								});
-
-							}
-							break;
-					}
-				}
-
-				// let url =
-				// 	process.env.NEXT_PUBLIC_API_URL +
-				// 	'/community_unit/add' +
-				// 	ctx.query.id +
-				// 	'/';
-
-				return fetch(url, {
+				let url = `${ process.env.NEXT_PUBLIC_API_URL }/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=30`;
+				console.log('url', url);
+				const response = await fetch(url, {
 					headers: {
 						Authorization: 'Bearer ' + token,
 						Accept: 'application/json',
 					},
 				})
-					.then((r) => r.json())
-					.then((json) =>
-					{
-						return {
-							data: json,
-						};
-					})
-					.catch((err) =>
-					{
-						console.log('Error fetching facilities: ' + err);
-						return {
-							error: true,
-							err: err,
-							data: [],
-						};
-					});
+				let facility_data = await response.json();
+				console.log(url)
+				console.log(facility_data);
+
+				if (facility_data.error)
+				{
+					throw new Error('Error fetching facility data');
+					window.location.reload();
+				}
+
+				return {
+					token: token,
+					facility_data: facility_data,
+				};
+
 			}
 		})
 		.catch((err) =>

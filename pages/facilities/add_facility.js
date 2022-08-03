@@ -2892,10 +2892,7 @@ AddFacility.getInitialProps = async (ctx) => {
 										facility_types: [],
 									});
 								}
-								break;
-
-					
-					
+								break;				
 						case 'owners':
 								url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
 		
