@@ -24,7 +24,7 @@ import StepLabel from '@mui/material/StepLabel';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import Alert from '@mui/material/Alert';
+// import Alert from '@mui/material/Alert';
 
 
 
@@ -38,6 +38,7 @@ import { XCircleIcon } from '@heroicons/react/outline';
 
 // Package imports
 import Select from 'react-select';
+import LoadingAnimation from '../../components/LoadingAnimation';
 
 
 
@@ -80,6 +81,7 @@ function AddFacility(props) {
 	 let subCountyOptions =  props['7']?.sub_counties
 	 let constituencyOptions =  props['8']?.constituencies
 	 let wardOptions =  props['9']?.wards
+	 let kephLvl = {label:'Level 2', value:'level-2'}
 
 	
 	//  console.log({props})
@@ -89,6 +91,7 @@ function AddFacility(props) {
     const serviceOptionRef = useRef(null)
     const optionRefBody = useRef(null)
     const infrastructureBodyRef = useRef(null)
+	const kephLvlRef = useRef(null)
 
 	
 
@@ -418,6 +421,7 @@ function AddFacility(props) {
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
+	const checklistFileRef = useRef(null)
   
 
 
@@ -432,25 +436,28 @@ function AddFacility(props) {
 	// const [geolocationData, setGeolocationData] = useState({})
 
 	const [ownerTypeOption, setOwnerTypeOption] = useState('')
-	const [latitude, setLatitude] = useState(null)
-	const [longitude, setLongitude] = useState(null)
+	const [latitude, setLatitude] = useState('')
+	const [longitude, setLongitude] = useState('')
 	const [county, setCounty] = useState('')
 	const [facilityId, setFacilityId] = useState('')
-	const [kephLvl, setKephLvl] = useState(null)
+	
 
 	const [geoJSON, setGeoJSON] = useState(null)
     const [center, setCenter] = useState(null)
     const [wardName, setWardName] = useState('')
+	const [facilityTypeDetail, setFacilityTypeDetail] = useState('')
 
 	// console.log({geolocationData})
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
+	
 
     useEffect(() => {
 
         const formIdState = window.sessionStorage.getItem('formId');
+		
 
         // console.log({formIdState})
 
@@ -481,7 +488,7 @@ function AddFacility(props) {
             }
             
         }
-    }, [facilityOfficialName, facilityOption, formId, services, latitude, geoJSON, longitude, kephLvl])
+    }, [facilityOfficialName, facilityOption, formId, services, latitude, geoJSON, longitude])
       
 
 	const handleQuickFiltersClick = (link) => {
@@ -522,6 +529,30 @@ function AddFacility(props) {
 			default:
 				break;
 	}
+	}
+
+	if(facilityTypeDetail !== ''){
+		switch(facilityTypeDetail){
+			case 'Comprehensive Teaching & Tertiary Referral Hospital':
+				
+				kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 6')[0]
+				
+				break;
+			case 'Specialized & Tertiary Referral hospitals':
+				
+				kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 6')[0]
+				
+				break;
+			case 'Secondary care hospitals':
+			
+				kephLvlRef.current.state.value =   kephOptions.filter(({label}) => label === 'Level 5')[0]
+					
+				break;
+			case 'Primary care hospitals':
+				
+				kephLvlRef.current.state.value =  kephOptions.filter(({label}) => label === 'Level 4')[0]
+				break;
+		}
 	}
 
   return (
@@ -701,11 +732,13 @@ function AddFacility(props) {
 															}
 
 															if(resp){
+
+																console.log({input: checklistFileRef.current})
+																
 																try {
 																	const resp = await fetch('/api/common/post_form_data/?path=documents', {
 																		headers:{
 																			'Accept': 'application/json, text/plain, */*',
-																			'Content-Type': 'multipart/form-data; boundary=---------------------------225842045917620681641702784814'
 																			
 																		},
 																		method:'POST',
@@ -723,7 +756,7 @@ function AddFacility(props) {
 														.then(async (resp) => {
 															if(resp){
 
-																
+																															
 																	setFacilityId(_id) //set facility Id
 																	
 																	let _data
@@ -789,6 +822,7 @@ function AddFacility(props) {
 															Facility Basic Details
 														</h4>
 														<form
+															
 															className='flex flex-col w-full items-start justify-start gap-3'
 															onSubmit={handleBasicDetailsSubmit}>
 															{/* Facility Official Name */}
@@ -870,9 +904,9 @@ function AddFacility(props) {
 																			
 																			switch(facilityOption){
 																				case 'STAND ALONE':
+			
+																					kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 
-																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 2')[0])
-							
 																					return [
 																						facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
 																						facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Drug and Substance abuse")[0] || {},
@@ -892,14 +926,16 @@ function AddFacility(props) {
 																						 ] 
 																					
 																				case 'DISPENSARY':
+																					kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 																					return  facilityTypeOptions.filter(({label}) => label == 'DISPENSARY') || []
 																					
 
 																				case 'MEDICAL CLINIC':
+																					kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
 																					
 																				case 'NURSING HOME':
-																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 2')[0])
+																					kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 																					
 																					return [
 																							facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
@@ -916,14 +952,14 @@ function AddFacility(props) {
 																						] 
 																			
 																				case 'HEALTH CENTRE':
-																				
+																					kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 																					return [
 																						facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
 																						facilityTypeOptions.filter(({label}) => label == 'Comprehensive health Centre')[0] || {}
 																						]
 
 																				case 'MEDICAL CENTRE':
-																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 3')[0])
+																					kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
 																				
@@ -934,14 +970,23 @@ function AddFacility(props) {
 																	placeholder='Select a facility type details...'
 																	onChange={ev => {
 																		switch(ev.label){
-																			case /.+\ Tertiary\ Referral\ hospitals/:
-																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 6')[0])
+																			case 'Comprehensive Teaching & Tertiary Referral Hospital':
+																				setFacilityTypeDetail('Comprehensive Teaching & Tertiary Referral Hospital')
+																				
+																				
+																				break;
+																			case 'Specialized & Tertiary Referral hospitals':
+																				setFacilityTypeDetail('Specialized & Tertiary Referral hospitals')
+																				
 																				break;
 																			case 'Secondary care hospitals':
-																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 5')[0])
+																				setFacilityTypeDetail('Secondary care hospitals')
+																			
+																					
 																				break;
 																			case 'Primary care hospitals':
-																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 4')[0])
+																				setFacilityTypeDetail('Primary care hospitals')
+																				
 																				break;
 																			
 																		}
@@ -1124,7 +1169,8 @@ function AddFacility(props) {
 																	KEPH Level
 																</label>
 																<Select
-																	options={kephLvl ?? kephOptions ?? []}
+																	ref={kephLvlRef}
+																	options={kephOptions ?? []}
 																	placeholder='Select a KEPH Level..'
 																	name='keph_level'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -1570,7 +1616,7 @@ function AddFacility(props) {
 																						try{
 																							const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
 
-																							setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
+																							setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
 
 																							
 																						}
@@ -1632,7 +1678,7 @@ function AddFacility(props) {
 																						try{
 																							const resp = await fetch(`/api/filters/ward/?sub_county=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
 
-																							setWardNameOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
+																							setWardNameOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
 
 																						}
 																						catch(e){
@@ -1764,6 +1810,7 @@ function AddFacility(props) {
 																	</label>
 																	<input
 																		required
+																		ref={checklistFileRef}
 																		type='file'
 																		name='facility_checklist_document'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1802,17 +1849,27 @@ function AddFacility(props) {
 
 													elements.forEach(({ name, value }) => {
 														
-														geolocationData[name] = name === 'collection_date' ? new Date(value) : (() => {
-															return value.match(/^[0-9]+\.[0-9]$/) !== null ? Number(value).toFixed(6) : value
-														}) 
+														geolocationData[name] = (() => {
+															switch (name) {
+																case 'collection_date':
+																	return  new Date(value)
+																case 'latitude':
+																	return  Number(value).toFixed(6)
+																case 'longitude':
+																	return  Number(value).toFixed(6)
+																default:
+
+																	return value
+															}
+														})() 
 													});
 
 													// Set missing geolocationData i.e coordinates & facility
 
 													geolocationData['coordinates'] = {
 														coordinates : [
-															Number(geolocationData.longitude),
-															Number(geolocationData.latitude)
+															Number(geolocationData.longitude).toFixed(6),
+															Number(geolocationData.latitude).toFixed(6)
 														],
 														type: 'Point'
 													}
@@ -1923,19 +1980,19 @@ function AddFacility(props) {
 															<div className='w-full h-auto'>
 																{
 																	 geoJSON !== null ? 
-																	 <Suspense fallBack={<h3 className='text-blue-900'>Loading ....</h3>}>
+																	//  <Suspense fallBack={<LoadingAnimation size={6} isLight={false}/>}>
 																		<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																			<Map markerCoordinates={[Number(latitude ?? 0.00000).toFixed(6), Number(longitude ?? 0.00000).toFixed(6)]} geoJSON={geoJSON} ward={wardName} center={center} />
+
+																			<Map markerCoordinates={[Number(latitude.match(/^\-$/) !== null ? 0.000000 : latitude).toFixed(6), Number(longitude.match(/^\-$/) !== null ? 0.000000 : longitude).toFixed(6)]} geoJSON={geoJSON} ward={wardName} center={center} />
 																		</div>
-																	 </Suspense>
+																	//  </Suspense> 
 																	
 																	:
-																	<Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
+																	// <Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
+																	<LoadingAnimation size={6} isLight={false}/>
 
 																}
 															 
-																	
-
 																
 															</div>
 
@@ -2773,8 +2830,7 @@ function AddFacility(props) {
 														</form>
 													</>
 												)
-										
-										
+	
 										}
 									})()
 									}
