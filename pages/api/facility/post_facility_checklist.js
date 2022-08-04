@@ -12,16 +12,43 @@ export default async function postChecklistFile(req, res) {
     
         let url = `${API_URL}/common/documents/`
      
+<<<<<<< HEAD:pages/api/facility/post_facility_checklist.js
+=======
+            switch (path) {
+                case 'facilities':
+                    url = `${API_URL}/facilities/facilities/`
+                    break;
+                case 'gis':
+                    url = `${API_URL}/gis/facility_coordinates/`
+                    break
+                case 'documents':
+                    url = `${API_URL}/common/documents/`
+                    break
+                case 'users':
+                    url = `${API_URL}/users/`
+                    break
+                case 'groups':
+                    url = `${API_URL}/users/groups/`
+                    break
+                case `edit`:
+                    url = `${API_URL}/users/groups/${req.query.id}`
+                    break    
+                default:
+                    
+                    break;
+            }
+             
+>>>>>>> add and edit functions:pages/api/common/post_form_data.js
  
             try {
-                console.log({url});
+
                 const resp = await fetch(url, {
                     headers: {
                         'Authorization': 'Bearer ' + token,
                         'Accept': 'application/json, text/plain, */*',
                         'Content-Type': 'multipart/form-data; boundary=---------------------------225842045917620681641702784814'
                     },
-                    method:'POST',
+                    method:req.method,
                     body: JSON.stringify(req.body)
                 })
                 
@@ -40,7 +67,7 @@ export default async function postChecklistFile(req, res) {
        
         
 
-    if (req.method === "POST") {
+    if (req.method !== null && req.method !== '') {
                                                                                     
         try {
             return checkToken(req, res).then(t => {
