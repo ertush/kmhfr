@@ -23,6 +23,15 @@ export default async function postFormData(req, res) {
                 case 'documents':
                     url = `${API_URL}/common/documents/`
                     break
+                case 'users':
+                    url = `${API_URL}/users/`
+                    break
+                case 'groups':
+                    url = `${API_URL}/users/groups/`
+                    break
+                case `edit`:
+                    url = `${API_URL}/users/groups/${req.query.id}`
+                    break    
                 default:
                     
                     break;
@@ -30,14 +39,14 @@ export default async function postFormData(req, res) {
              
  
             try {
-                console.log({url});
+
                 const resp = await fetch(url, {
                     headers: {
                         'Authorization': 'Bearer ' + token,
                         'Accept': 'application/json, text/plain, */*',
                         'Content-Type': `${path === 'documents' ? 'multipart/form-data; boundary=---------------------------225842045917620681641702784814' : 'application/json;charset=utf-8'}`
                     },
-                    method:'POST',
+                    method:req.method,
                     body: JSON.stringify(req.body)
                 })
                 
@@ -56,7 +65,7 @@ export default async function postFormData(req, res) {
        
         
 
-    if (req.method === "POST") {
+    if (req.method !== null && req.method !== '') {
                                                                                     
         try {
             return checkToken(req, res).then(t => {

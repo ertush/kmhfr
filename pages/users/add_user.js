@@ -7,8 +7,6 @@ import {ChevronDoubleLeftIcon, UserAddIcon, PlusIcon} from '@heroicons/react/sol
 import Select from 'react-select';
 
 const AddUser = (props)=> {
-
-    const [formId, setFormId] = useState(0)
 	const [contactList, setContactList]=useState([{}])
 	const [subCountyOptions, setSubCountyOptions] = useState([])
 
@@ -20,19 +18,18 @@ const AddUser = (props)=> {
 	let regbodies = props?.filters[3].params.results
 
 	const [userData, setUserData]=useState({
-		first_name:      {name: "first_name" ,         value: null },
-		last_name:       {name: "last_name" ,          value: null },
-		other_names:     {name: "other_names",         value: null },
-		email:           {name: "email",               value: null },
-		employee_number: {name: "employee_number",     value: null },
-		job_title:       {name: "job_title", 		   value: null },
-		password:        {name: "password",            value: null },
-		contact_type:    {name: "contact_type",        value: [] },
-		contact_details: {name: "contact_details",     value: [] },
-		group:           {name: "group",               value: [] },
-		county:          {name: "county",              value: [] },
-		sub_county:      {name: "sub_county",          value: [] },
-		regulatory_body: {name: "regulatory_body",     value: [] } 
+		first_name:'',
+		last_name: '' ,
+		other_names:  '',
+		email: '',
+		employee_number: '',
+		job_title:[],
+		password: '',
+		contacts: [],
+		groups: [],
+		user_counties: [],
+		user_sub_counties: [],
+		regulatory_users: []
 	})
 
 	const handleAddClick = (e) => {
@@ -47,69 +44,36 @@ const AddUser = (props)=> {
 		if (val.target && val.target != undefined && val.target != null) {
 				const newObj = {}
 				newObj[val.target.name] = {}
-				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.value
+				newObj[val.target.name] = val.target.name
+				newObj[val.target.name] = val.target.value
 				setUserData({ ...userData, ...newObj })
 		
-        }else if(val?.group){
+        }else if(val?.name !== null & val?.name !== undefined){
 			const newObj2={}
-			newObj2['group'] = {}
-			newObj2['group'].name = "group"
-			newObj2['group'].value = val.group.map((id)=>{return {value: id.value}})
+			newObj2[val.name] = {}
+			// newObj2[val.name].name = val?.name
+			val.name == "job_title"? newObj2[val.name]= val.ev.value : newObj2[val.name] = val.ev.map((id)=>{return {id: id.value, name: id.label }})
 			setUserData({ ...userData, ...newObj2 })
-		}else if(val?.regulatory_body){
-			const newObj3={}
-			newObj3['regulatory_body'] = {}
-			newObj3['regulatory_body'].name = "regulatory_body"
-			newObj3['regulatory_body'].value = val.regulatory_body.map((id)=>{return {value: id.value}})
-			setUserData({ ...userData, ...newObj3 })
-		}else if(val?.county){
-			const newObj4={}
-			newObj4['county'] = {}
-			newObj4['county'].name = "county"
-			newObj4['county'].value = val.county.map((id)=>{return {value: id.value}})
-			setUserData({ ...userData, ...newObj4 })
-		}else if(val?.subcounty){
-			const newObj5={}
-			newObj5['sub_county'] = {}
-			newObj5['sub_county'].name = "sub_county"
-			newObj5['sub_county'].value = val.subcounty.map((id)=>{return {value: id.value}})
-			setUserData({ ...userData, ...newObj5 })
-		}else if(val?.job_title){
-			const newObj6={}
-			newObj6['job_title'] = {}
-			newObj6['job_title'].name = "job_title"
-			newObj6['job_title'].value = val.job_title.value
-			setUserData({ ...userData, ...newObj6 })
 		}
-
 		else {
-			if(val.name == "contact_type"){
 				let data = [...contactList];
-				data[val.id][val.name] = val.value.value
-				const newObj1 = {}
-				newObj1[val.name] = {}
-				newObj1[val.name].name = val.name
-				newObj1[val.name].value = data.map((id)=>{return {value: id.contact_type}})
+				const newObj1={}
+				newObj1['contacts'] = {}
+				newObj1['contacts'] = "contacts"
+				val.cont_name =="contact_type"?data[val.id][val.cont_name] = val.value.value : data[val.id][val.cont_name] = val.value.target.value
+				newObj1['contacts'] = data.map((id)=>({
+					contact_text: id.contact_details,
+					contact_type:id.contact_type
+				}))
 				setUserData({ ...userData, ...newObj1 })
-			}
-			if(val.name == "contact_details"){
-				let data = [...contactList];
-				data[val.id][val.name] = val.value.target.value
-				const newObj1 = {}
-				newObj1[val.name] = {}
-				newObj1[val.name].name = val.name
-				newObj1[val.name].value = data.map((id)=>{return {value: id.contact_details}})
-				setUserData({ ...userData, ...newObj1 })
-			}
         }
 	}
 
-	const selectedGroups = userData.group.value.map((ft)=>{
-		return{ id: ft.value}
+	const selectedGroups = userData.groups.map((ft)=>{
+		return{ id: ft.id}
 	})
 
-     // console.log(userData['job_title']?.value);
+    //console.log(userData);
 	// console.log(selectedGroups);
 	const handleSubCounties =  async (ev)=>{
 		const optionsSubCounty = []
@@ -126,10 +90,25 @@ const AddUser = (props)=> {
 		}
 		setSubCountyOptions(optionsSubCounty)
 	}
-	const handleBasicDetailsSubmit =()=>{
-
+	const handleBasicDetailsSubmit = async (event)=>{
+		event.preventDefault()
+		try{
+			 fetch('/api/common/post_form_data/?path=users', {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json;charset=utf-8'
+					
+				},
+				method:'POST',
+				body: JSON.stringify(userData).replace(',"":""','')
+			})
+			.then(resp =>resp.json())
+			.then(res => console.log(res))
+		}catch (e){
+			console.error(e)
+		}
 	}
-// console.log(subCountyOptions);
+
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
         <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
@@ -183,7 +162,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['first_name']?.value || ''}
+																// value={userData['first_name']?.value || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -207,7 +186,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['last_name']?.value || ''}
+																// value={userData['last_name']?.value || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -231,7 +210,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['other_names']?.value || ''}
+																// value={userData['other_names']?.value || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -256,7 +235,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['email']?.value || ''}
+																// value={userData['email']?.value || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -281,7 +260,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['employee_number']?.value || ''}
+																// value={userData['employee_number']?.value || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -309,14 +288,13 @@ const AddUser = (props)=> {
 																required
 																placeholder='Select job title..'
 																onChange={ev => {
-																	handleOnChange({
-																		job_title:ev
-																	})
+																	handleOnChange({name:'job_title', ev})
 																}}
-																value={{
-																	value: userData['job_title']?.value,
-																	label: jobs?.find((rg)=> rg.id==(userData['job_title']?.value))?.name 
-																  } || ''}
+																
+																// value={{
+																// 	value: userData['job_title']?.value,
+																// 	label: jobs?.find((rg)=> rg.id==(userData['job_title']?.value))?.name 
+																//   } || ''}
 																name='job_title'
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															/>
@@ -335,7 +313,7 @@ const AddUser = (props)=> {
 															</label>
 															<input
 																required
-																type='text'
+																type='password'
 																name='password'
 																onChange={ev => {
 																
@@ -343,7 +321,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['password']?.value || ''}
+																// value={userData['password']?.value || ''}
 
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
@@ -361,7 +339,7 @@ const AddUser = (props)=> {
 															</label>
 															<input
 																required
-																type='text'
+																type='password'
 																name='conf_password'
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
@@ -399,13 +377,13 @@ const AddUser = (props)=> {
 																		placeholder='Select contact type..'
 																		key={i}
 																		onChange={value => {
-																			handleOnChange({
-																				name: "contact_type", value, id: i
-																			}
-																				
-																			)
+																			handleOnChange({cont_name: "contact_type", value, id: i})
 																		}}
-																		// value={userData['contact_type']?.value || ''}
+																		// value={((userData['contacts']?.value)[i]).contact_type || ''}
+																		// value={{
+																		// 	value: ((userData.contacts)[i])?.contact_type,
+																		// 	label: contact_types?.find((rg)=> rg.id==(((userData.contacts)[i])?.contact_type))?.name 
+																		//   } || ''}
 																		name='contact_type'
 																		className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																	/>
@@ -427,10 +405,10 @@ const AddUser = (props)=> {
 																		key={i}
 																		onChange={value => {
 																			handleOnChange({
-																				name: "contact_details", value, id: i
+																				cont_name: "contact_details", value, id: i
 																			})
 																		}}
-																		value={((userData['contact_details']?.value)[i])?.value || ''}
+																		// value={((userData['contacts']?.value)[i])?.contact_text || ''}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -472,16 +450,12 @@ const AddUser = (props)=> {
 																placeholder='Select group(s)'
 																name='group'
 																onChange={ev => {
-																	handleOnChange(
-																		{
-																			group:ev
-																		}
-																	)
+																	handleOnChange({ name:'groups' , ev})
 																}}
-																value={userData['group']?.value.map((value) => ({ 
-																	value: value.value,
-																	label: groups?.find((rg)=> rg.id==value.value).name 
-																  })) || ''}
+																// value={userData.group?.map((value) => ({ 
+																// 	value: value.value,
+																// 	label: groups?.find((rg)=> rg.id==value.value).name 
+																//   })) || ''}
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															    />
 																</div>	
@@ -518,14 +492,12 @@ const AddUser = (props)=> {
 																					placeholder='Select county..'
 																					onChange={ev => {
 																						handleSubCounties(ev)
-																						handleOnChange({
-																							county: ev
-																						})
+																						handleOnChange({ name:'user_counties', ev	})
 																					}}
-																					value={userData['county']?.value.map((value) => ({ 
-																						value: value.value,
-																						label: counties?.find((rg)=> rg.id==value.value).name 
-																					  })) || ''}
+																					// value={userData['county']?.value.map((value) => ({ 
+																					// 	value: value.value,
+																					// 	label: counties?.find((rg)=> rg.id==value.value).name 
+																					//   })) || ''}
 																					name='county'
 																					className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																					/>
@@ -542,16 +514,14 @@ const AddUser = (props)=> {
 																					required
 																					placeholder='Select a sub county..'
 																					onChange={ev => {
-																						handleOnChange({
-																							subcounty: ev
-																						})
+																						handleOnChange({name:'user_sub_counties', ev})
 																					}}
-																					value={userData['sub_county']?.value.map((value) => ({ 
-																						value: value.value,
-																						label: subCountyOptions?.find((rg)=> rg.id==value.value).name 
-																					  })) || ''}
+																					// value={userData['sub_county']?.value.map((value) => ({ 
+																					// 	value: value.value,
+																					// 	label: subCountyOptions?.find((rg)=> rg.id==value.value).name 
+																					//   })) || ''}
 
-																					name='subcounty'
+																					name='sub_county'
 																					className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																					/>
 																				</div>	
@@ -583,14 +553,12 @@ const AddUser = (props)=> {
 																						required
 																						placeholder='Select regulatory body(s)'
 																						onChange={ev => {
-																							handleOnChange({
-																								regulatory_body: ev
-																							})
+																							handleOnChange({name: 'regulatory_users', ev})
 																						}}
-																						value={userData['regulatory_body']?.value.map((value) => ({ 
-																							value: value.value,
-																							label: regbodies?.find((rg)=> rg.id==value.value).name
-																						  })) || ''}
+																						// value={userData['regulatory_body']?.value.map((value) => ({ 
+																						// 	value: value.value,
+																						// 	label: regbodies?.find((rg)=> rg.id==value.value).name
+																						//   })) || ''}
 																						name='regulatory_body'
 																						className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																						/>

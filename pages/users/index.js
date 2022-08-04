@@ -69,7 +69,7 @@ const Users = (props) => {
     };
 
     useEffect(()=>{
-        const lnlst=  props.data.results.map((user)=>{
+        const lnlst=  props.data?.results.map((user)=>{
             return {
                 name: user.first_name + ' '+user.last_name,
                 employee_number: user.employee_number,
@@ -275,7 +275,6 @@ Users.getInitialProps = async (ctx) => {
     const fetchData = (token) => {
         let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name'
         let query = { 'searchTerm': ''}
-        let id={'id': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
         }
@@ -302,7 +301,7 @@ Users.getInitialProps = async (ctx) => {
             console.log({page:ctx.query.page})
             url = `${url}&page=${ctx.query.page}`
         }
-        // console.log('running fetchData(' + url + ')')
+        
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

@@ -5,7 +5,7 @@ import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronR
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import DualListBox from 'react-dual-listbox';
-import { withRouter } from 'next/router'
+import { withRouter, useRouter } from 'next/router'
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 
 
@@ -15,44 +15,43 @@ const EditGroup=(props)=> {
 
     let permissions = props?.permissions[0].params.results
 	let group_details = props?.data
-
-	const [groupData, setGroupData]=useState({
-		name:                 {name: "name" ,  value: null },
-		permissions:          {name: "permissions", value: [] },
-		is_regulator:         {name: "is_regulator" , value: null },
-		is_national:          {name: "is_national",  value: null },
-		is_administrator:     {name: "is_administrator", value: null },
-		is_county_level:      {name: "is_county_level",  value: null },
-		is_sub_county_level:  {name: "is_sub_county_level", value: null },
-	})
+	const [groupData, setGroupData]=useState(props.data)
+	// console.log(groupData);
 
 	const handleOnChange =(val)=>{
 		// console.log(val);
 		if (val.target && val.target != undefined && val.target != null) {
-				const newObj = {}
-				newObj[val.target.name] = {}
-				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.value
-				setGroupData({ ...groupData, ...newObj })
-                if(val.target.type=="checkbox"){
-                const newObj = {}
-				newObj[val.target.name] = {}
-				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.checked
-				setGroupData({ ...groupData, ...newObj })
-                }
-		
-        }else{
+			const newObj = {}
+			newObj[val.target.name] = {}
+			newObj[val.target.name].name = val.target.name
+			val.target.type =="checkbox" ? newObj[val.target.name] = val.target.checked : newObj[val.target.name] = val.target.value
+			setGroupData({ ...groupData, ...newObj })
+		}else{
 			const newObj2={}
 			newObj2['permissions'] = {}
-			newObj2['permissions'].name = "permissions"
-			newObj2['permissions'].value = val.map((id)=>{return {value: id}})
+			newObj2['permissions'] = "permissions"
+			newObj2['permissions'] = val.map((id)=>{return {id: id.value, name:id.label, codename:id.codename}})
 			setGroupData({ ...groupData, ...newObj2 })
-        }
+		}
 	}
 
-	const handleGroupSubmit =()=>{
-
+	const handleGroupSubmit =(event)=>{
+		event.preventDefault()
+		try{
+			 fetch(`/api/common/post_form_data/?path=edit&id=${props.data.id}`, {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json;charset=utf-8'
+					
+				},
+				method:'PATCH',
+				body: JSON.stringify(groupData).replace(',"":""','')
+			})
+			.then(resp =>resp.json())
+			.then(res => console.log(res))
+		}catch (e){
+			console.error(e)
+		}
 	}
 
 // console.log(groupData);
