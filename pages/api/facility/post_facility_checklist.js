@@ -11,9 +11,7 @@ export default async function postChecklistFile(req, res) {
     
     
         let url = `${API_URL}/common/documents/`
-     
-<<<<<<< HEAD:pages/api/facility/post_facility_checklist.js
-=======
+
             switch (path) {
                 case 'facilities':
                     url = `${API_URL}/facilities/facilities/`
@@ -26,7 +24,7 @@ export default async function postChecklistFile(req, res) {
                     break
                 case 'users':
                     url = `${API_URL}/users/`
-                    break
+                      
                 case 'groups':
                     url = `${API_URL}/users/groups/`
                     break
@@ -47,8 +45,6 @@ export default async function postChecklistFile(req, res) {
                     break;
             }
              
->>>>>>> add and edit functions:pages/api/common/post_form_data.js
- 
             try {
 
                 const resp = await fetch(url, {
