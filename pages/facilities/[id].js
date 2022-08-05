@@ -786,7 +786,7 @@ const Facility = (props) => {
                         <h3 className="text-2xl tracking-tight font-semibold leading-5">Map</h3>
 
                         {(facility?.lat_long && facility?.lat_long.length > 0) ? <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
-                            <Map operational={facility.operational || facility.operation_status_name} code={facility?.code || "NO_CODE"} lat={facility?.lat_long[0]} long={facility?.lat_long[1]} name={facility.official_name || facility.name || ""} />
+                            <Map operational={(facility.operational ?? facility.operation_status_name) ?? ''} code={facility?.code || "NO_CODE"} lat={facility?.lat_long[0]} long={facility?.lat_long[1]} name={facility.official_name || facility.name || ""} />
                         </div> :
                             <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
                                 <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
