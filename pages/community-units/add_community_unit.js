@@ -39,8 +39,11 @@ function AddCommUnit(props)
 
 	const facilities = props.facility_data.results;
 
-	// const [CULinkedFacility, setCULinkedFacility] = useState(null);
-	const [countyValue, setCountyValue] = useState(null);
+	const [selected_facility, setSelectedFacility] = useState(null);
+	const [countyValue, setCountyValue] = useState('');
+	const [subCountyValue, setSubCountyValue] = useState('');
+	const [constituencyValue, setConstituencyValue] = useState('');
+	const [wardValue, setWardValue] = useState('');
 	// Define registration steps
 	const steps = [
 		'Basic Details',
@@ -302,10 +305,24 @@ function AddCommUnit(props)
 																</span>
 															</label>
 															<Select
-																onChange={(label) =>
+																onChange={(value) =>
 																{
-																	const selected_facililty = facilities.filter((data) => data.county === label);
-																	setCountyValue(selected_facililty.length > 0 ? selected_facililty[0].county : 'Default Name');
+																	setSelectedFacility(value);
+																	console.log('value', value.value);
+
+																	// list the facilities and their counties
+																	facilities.map((facility) =>
+																	{
+																		if (facility.id === value.value)
+																		{
+																			setCountyValue(facility.county);
+																			setSubCountyValue(facility.sub_county_name);
+																			setConstituencyValue(facility.constituency);
+																			setWardValue(facility.ward_name);
+																		}
+																	}
+																	);
+																	console.log(countyValue);
 																}}
 																options={facilities.map((facility) =>
 																{
@@ -462,9 +479,7 @@ function AddCommUnit(props)
 																			</span>
 																		</label>
 																		<input
-																			value={
-																				countyValue
-																			}
+																			value={countyValue}
 																			type='text'
 																			name='linked_facility_county'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -484,32 +499,11 @@ function AddCommUnit(props)
 																				*
 																			</span>
 																		</label>
-																		<Select
-																			options={[
-																				{
-																					value: 'Private Practice',
-																					label: 'Private Practice',
-																				},
-																				{
-																					value:
-																						'Non-Governmental Organizations',
-																					label:
-																						'Non-Governmental Organizations',
-																				},
-																				{
-																					value: 'Ministry of Health',
-																					label: 'Ministry of Health',
-																				},
-																				{
-																					value: 'Faith Based Organization',
-																					label: 'Faith Based Organization',
-																				},
-																			]}
-																			required
-																			placeholder='Select Sub County'
-																			onChange={() => console.log('changed')}
-																			name='keph_level'
-																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		<input
+																			value={subCountyValue}
+																			type='text'
+																			name='linked_facility_sub_county'
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -526,32 +520,11 @@ function AddCommUnit(props)
 																				*
 																			</span>
 																		</label>
-																		<Select
-																			options={[
-																				{
-																					value: 'Private Practice',
-																					label: 'Private Practice',
-																				},
-																				{
-																					value:
-																						'Non-Governmental Organizations',
-																					label:
-																						'Non-Governmental Organizations',
-																				},
-																				{
-																					value: 'Ministry of Health',
-																					label: 'Ministry of Health',
-																				},
-																				{
-																					value: 'Faith Based Organization',
-																					label: 'Faith Based Organization',
-																				},
-																			]}
-																			required
-																			placeholder='Select Constituency'
-																			onChange={() => console.log('changed')}
-																			name='keph_level'
-																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		<input
+																			value={constituencyValue}
+																			type='text'
+																			name='linked_facility_sub_county'
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -568,32 +541,11 @@ function AddCommUnit(props)
 																				*
 																			</span>
 																		</label>
-																		<Select
-																			options={[
-																				{
-																					value: 'Private Practice',
-																					label: 'Private Practice',
-																				},
-																				{
-																					value:
-																						'Non-Governmental Organizations',
-																					label:
-																						'Non-Governmental Organizations',
-																				},
-																				{
-																					value: 'Ministry of Health',
-																					label: 'Ministry of Health',
-																				},
-																				{
-																					value: 'Faith Based Organization',
-																					label: 'Faith Based Organization',
-																				},
-																			]}
-																			required
-																			placeholder='Select Ward'
-																			onChange={() => console.log('changed')}
-																			name='keph_level'
-																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		<input
+																			value={wardValue}
+																			type='text'
+																			name='linked_facility_sub_county'
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -896,7 +848,7 @@ AddCommUnit.getInitialProps = async (ctx) =>
 				let token = t.token;
 				console.log('token', token);
 
-				let url = `${ process.env.NEXT_PUBLIC_API_URL }/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=30`;
+				let url = `${ process.env.NEXT_PUBLIC_API_URL }/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
 				console.log('url', url);
 				const response = await fetch(url, {
 					headers: {
