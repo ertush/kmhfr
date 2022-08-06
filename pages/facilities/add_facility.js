@@ -81,7 +81,7 @@ function AddFacility(props) {
 	 let wardOptions =  props['9']?.wards
 	 let jobTitleOptions = props['10']?.job_titles
 	 let contactTypeOptions = props['11']?.contact_types
-	 let kephLvl = {label:'', value:''}
+	//  let kephLvl = {label:'', value:''}
 
 	
 	//  console.log({props})
@@ -92,8 +92,6 @@ function AddFacility(props) {
     const optionRefBody = useRef(null)
     const infrastructureBodyRef = useRef(null)
 	const kephLvlRef = useRef(null)
-
-	
 
 
     const steps = [
@@ -2941,7 +2939,7 @@ AddFacility.getInitialProps = async (ctx) => {
 	
 	]
 
-	console.log('get initial props...')
+	// console.log('get initial props...')
 
 	return checkToken(ctx.req, ctx.res)
 		.then(async (t) => {
@@ -2972,7 +2970,6 @@ AddFacility.getInitialProps = async (ctx) => {
 
 									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value:id, label:sub_division} : {value:id, label:name})
 
-													
 									// console.log({results})
 									allOptions.push({facility_types: results })
 									
