@@ -31,7 +31,7 @@ export default async function submitFormData(req, res) {
                     method = 'POST';
                     contentType = 'multipart/form-data; boundary=---------------------------22584204591762068164170278481';
                     break;
-                case 'facility_contacts':
+                case 'facility_data':
                     const {id} = req.query;
                     console.log({facility_id: id});
                     url = `${API_URL}/facilities/facilities/${id}/`;

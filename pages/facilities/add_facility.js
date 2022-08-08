@@ -26,8 +26,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 // import Alert from '@mui/material/Alert';
 
-
-
 // Heroicons imports
 import {
 	ChevronDoubleRightIcon,
@@ -81,10 +79,14 @@ function AddFacility(props) {
 	 let wardOptions =  props['9']?.wards
 	 let jobTitleOptions = props['10']?.job_titles
 	 let contactTypeOptions = props['11']?.contact_types
+	 let facilityDeptOptions = props['12']?.facility_depts
+	 let regBodyOptions = props['13']?.regulating_bodies
+	 let regulationStateOptions = props['14']?.regulation_status
+	 let serviceOptions = props['15'].services
 	//  let kephLvl = {label:'', value:''}
 
 	
-	//  console.log({props})
+	//  console.log({props}) 
 	
 
     const nameOptionRef = useRef(null)
@@ -92,6 +94,7 @@ function AddFacility(props) {
     const optionRefBody = useRef(null)
     const infrastructureBodyRef = useRef(null)
 	const kephLvlRef = useRef(null)
+	const regBodyRef = useRef(null)
 
 
     const steps = [
@@ -558,7 +561,8 @@ function AddFacility(props) {
 		 <Head>
                 <title>KMHFL - Add Facility</title>
                 <link rel="icon" href="/favicon.ico" />
-            </Head>
+        </Head>
+
 		<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 			<div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
 						<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
@@ -1498,7 +1502,7 @@ function AddFacility(props) {
 																		}}
 																	/>
 																	<label
-																		htmlFor='open_whole_day'
+																		htmlFor='open_24hrs'
 																		className='text-gray-700 capitalize text-sm flex-grow'>
 																		{' '}
 																		Open 24 hours
@@ -1592,7 +1596,7 @@ function AddFacility(props) {
 																	<div className='col-start-1 col-span-1'>
 																		<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																			<label
-																				htmlFor='keph_level'
+																				htmlFor='county_id'
 																				className='text-gray-600 capitalize text-sm'>
 																				County
 																				<span className='text-medium leading-12 font-semibold'>
@@ -2036,7 +2040,7 @@ function AddFacility(props) {
 														contactFormData[name] = value 
 													});
 
-													// console.log({contactFormData})
+													console.log({contactFormData})
 
 
 													const payload  = {
@@ -2050,13 +2054,12 @@ function AddFacility(props) {
 															name: contactFormData['name'],
 															reg_no: contactFormData['reg_no'],
 															title: contactFormData['title']
-
 														}
 													}
 
 												
 													try{
-														fetch(`/api/common/submit_form_data/?path=facility_contacts&id=${facilityId}`, {
+														fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
 															headers:{
 																'Accept': 'application/json, text/plain, */*',
 																'Content-Type': 'application/json;charset=utf-8'
@@ -2259,19 +2262,8 @@ function AddFacility(props) {
 																<hr className='col-span-2' />
 
 																{/* Contact Type / Contact Details */}
-																{/* <FacilityContact contactTypeOptions={contactTypeOptions} id={'facility'}/> */}
-																<Select options={contactTypeOptions || []} 
-																	required
-																	placeholder="Select Contact Type"
-																	onChange={
-																		() => console.log('changed')
-																	}
-																	name="contact_type" 
-																	id={'facility'}
-																	className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+																<FacilityContact contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
 																
-																	{/* Contact Details */}
-																	<input type="text" name="contact" id={'facility'} className="flex-none col-start-2 w-full bg-gray-50 rounded flex-grow border-2 placeholder-gray-500 border-gray-200 px-2 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 															</div>
 
 															<div className='w-full flex justify-end items-center'>
@@ -2294,7 +2286,7 @@ function AddFacility(props) {
 																{/*  Name  */}
 																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																	<label
-																		htmlFor='facility_official_name'
+																		htmlFor='name'
 																		className='text-gray-600 capitalize text-sm'>
 																		Name
 																		<span className='text-medium leading-12 font-semibold'>
@@ -2313,7 +2305,7 @@ function AddFacility(props) {
 																{/*  Registration Number */}
 																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																	<label
-																		htmlFor='facility_official_name'
+																		htmlFor='reg_no'
 																		className='text-gray-600 capitalize text-sm'>
 																		Registration Number/License Number{' '}
 																	</label>
@@ -2327,7 +2319,7 @@ function AddFacility(props) {
 																{/* Job Title */}
 																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																	<label
-																		htmlFor='facility_official_name'
+																		htmlFor='title'
 																		className='text-gray-600 capitalize text-sm'>
 																		Job Title
 																		<span className='text-medium leading-12 font-semibold'>
@@ -2360,7 +2352,7 @@ function AddFacility(props) {
 																	<hr className='col-span-2' />
 
 																	{/* Contact Type / Contact Details */}
-																	<FacilityContact contactTypeOptions={contactTypeOptions} id={'facility_officer'} />
+																	<FacilityContact contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
 																</div>
 
 																<div className='w-full flex justify-end items-center mt-2'>
@@ -2400,6 +2392,89 @@ function AddFacility(props) {
 												// Regulation form
 												const handleRegulationSubmit = (event) => {
 													event.preventDefault();
+
+													// Post Facility Regulation Data
+
+													const facilityRegDataA = {};
+													const facilityRegDataB = {};
+
+
+													const elements = [...event.target];
+
+													const payload = []
+
+													elements.forEach(({ name, value }) => {
+														switch(name){
+															case 'license_number':
+																facilityRegDataA[name] = value
+																break;
+															case 'registration_number':
+																facilityRegDataA[name] = value
+																break;
+															case 'regulation_status':
+																facilityRegDataA[name] = value
+																break;
+															case 'regulatory_body':
+																facilityRegDataA[name] = value
+																break;
+															case 'facility_dept_name':
+																facilityRegDataB['0'] = {
+																	unit: value,
+																}
+																break;
+															case 'facility_regulatory_body':
+																facilityRegDataB['1'] = {
+																	regulation_body_name: value,
+																}
+																break;
+															case 'facility_registration_number':
+															facilityRegDataB['2'] = {
+																registration_number: value,
+															}
+															break;
+															case 'facility_license_number':
+															facilityRegDataB['3'] = {
+																license_number: value,
+															}
+															break;	
+
+
+														}
+														
+													});
+
+
+
+													payload.push(facilityRegDataA)
+													payload.push({units:[{
+														unit: facilityRegDataB['0'].unit, 
+														regulation_body_name:facilityRegDataB['1'].regulation_body_name,
+														registration_number:facilityRegDataB['2'].registration_number,
+														license_number:facilityRegDataB['3'].license_number
+													}]})
+													
+													console.log({payload})
+
+													payload.forEach(data => {
+														try{
+															fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
+																headers:{
+																	'Accept': 'application/json, text/plain, */*',
+																	'Content-Type': 'application/json;charset=utf-8'
+																	
+																},
+																method:'POST',
+																body: JSON.stringify(data)
+															})
+	
+														}
+														catch(e){
+															console.error('Unable to patch facility contacts details'. e.message)
+														}
+													})
+
+													
+
 
 													window.sessionStorage.setItem('formId', 4);
 
@@ -2536,30 +2611,45 @@ function AddFacility(props) {
 														<form name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleRegulationSubmit}>
 
 															{/* Regulatory Body */}
-
-															{/* Job Title */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-																	<label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
-																	<input required type="text" name="regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																	<label htmlFor="regulatory_body" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
+																	<Select 
+																		options={regBodyOptions || []} 
+																		required
+																		placeholder="Select Regulatory Body"
+																		name='regulatory_body'
+																		className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+        
 															</div>
 
 															{/* Regulation Status */} 
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-																<label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">License Number</label>
+																<label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">License Number</label>
+																<Select 
+																		options={regulationStateOptions || []} 
+																		required
+																		placeholder="Select Regulation Status"
+																		name='regulation_status'
+																		className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+															</div>
+
+															{/* License Number */} 
+															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+																<label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
 																<input type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 															</div>
 
 															{/* Registration Number */} 
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-																<label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Registration Number</label>
-																<input type="text" name="reg_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																<label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number</label>
+																<input type="text" name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 															</div>
 
 															{/* check file upload */}
 															<div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
 																<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-																	<label htmlFor="checklist_file" className="text-gray-600 capitalize text-sm">Upload license document</label>
-																	<input required type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																	<label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
+																	<input type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 																</div>
 															</div>
 
@@ -2577,43 +2667,29 @@ function AddFacility(props) {
 
 																
 																{/* Name */}
-																<Select options={
-																					[
-																						{
-																							value:"Private Practice",
-																							label: "Private Practice"
-																						},
-																						{
-																							value:'Non-Governmental Organizations',
-																							label: 'Non-Governmental Organizations'
-																						},
-																						{
-																							value:'Ministry of Health',
-																							label: 'Ministry of Health'
-																						},
-																						{
-																							value:'Faith Based Organization',
-																							label: 'Faith Based Organization'
-																						}
-																					]
-																				} 
-																				required
-																				placeholder="Select Ward"
-																				onChange={
-																					() => console.log('changed')
-																				}
-																				name="facility_dept_name" 
-																				className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+																<Select options={facilityDeptOptions || []} 
+																	required
+																	placeholder="Select Name"
+																	onChange={
+																		e => {
+																			if(regBodyRef.current !== null){
+																				console.log({regBody: facilityDeptOptions.filter(({label}) => label === e.label)})
+																				regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
+																			}
+																		}
+																	}
+																	name="facility_dept_name" 
+																	className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 																
 																{/* Regulatory Body */}
-																<input type="text" name="regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																<input type="text" disabled ref={regBodyRef} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
 																{/* License No. */}
-																<input type="number" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																<input type="number" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 										
 																<div className='col-start-4 flex items-center space-x-2 w-full'>
 																	{/* Reg No. */}
-																	<input type="number" name="reg_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																	<input type="number" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 																
 																	{/* Delete Btn */}
 
@@ -2935,7 +3011,11 @@ AddFacility.getInitialProps = async (ctx) => {
 		'constituencies',
 		'wards',
 		'job_titles',
-		'contact_types'
+		'contact_types',
+		'facility_depts',
+		'regulating_bodies',
+		'regulation_status',
+		'services'
 	
 	]
 
@@ -3168,6 +3248,148 @@ AddFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
+
+						case 'facility_depts':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,regulatory_body,regulatory_body_name`;
+	
+						
+							try{
+	
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},
+								})
+	
+								allOptions.push({facility_depts: (await _data.json()).results.map(({id, name, regulatory_body_name}) => ({value:id, label:name, reg_body_name: regulatory_body_name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									facility_depts: [],
+								})
+							}
+							break;
+
+						case 'regulating_bodies':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
+	
+						
+							try{
+	
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},
+								})
+	
+								allOptions.push({regulating_bodies: (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									regulating_bodies: [],
+								})
+							}
+							break;
+
+						case 'regulation_status':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/`;
+	
+						
+							try{
+	
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},
+								})
+	
+								allOptions.push({regulation_status: (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									regulation_status: [],
+								})
+							}
+							break;
+
+						case 'services':
+							const categoryIDS = [
+								'f9841f9a-e435-4bbe-b52e-ac71668af4dc',
+								'7de52474-6aa9-4bd2-8291-a5cd29a1b64c',
+								'71e0e86e-bd52-40d5-8f30-3afc9f491840',
+								'f9ff84d2-c00d-433c-84c8-ba68cb2edaaf',
+								'4a5acc1b-894f-4405-b80e-8e1cfe2609c5',
+								'9614d93b-1695-486e-85bd-4df0c4571b01',
+								'f32cdd06-fcde-496d-944b-ac5187130d9d',
+								'5e5201c1-1b06-4981-9c78-d652b87f060b',
+								'6b43a283-fe4d-4734-a242-d4d9899042e4',
+								'99af6fc1-8ec0-4741-a424-f8d0f5b427b5',
+								'2086ae8e-bfd5-48b9-bfa8-f8bac94d16a2',
+								'97c6193f-2c84-47ac-9fc9-1938c195cad6',
+								'24fd65c9-56ea-497c-82ec-3fdf0ac9d006',
+								'2e19785f-74f4-42ca-a7c8-6815faa5bb09',
+								'7ac5c640-94b3-463c-b820-7c18efa59626',
+								'6f8c6c75-135c-4911-848d-8d3467c00605',
+								'3e3aaefc-720d-4179-b2f6-e2106ee1cdb3',
+								'16917242-1f97-493c-9fc5-36d4184fa7b5',
+								'987a5807-fff3-41c6-af81-ac75ad956e49',
+								'36d2f7a8-41b3-40f8-8943-e513fa28c8db',
+								'3a7cb460-2ecb-450b-b21a-4c67e90ba6d2',
+								'6ed4d7f1-52c1-4279-91e6-9cefd3ee71fb',
+								'f2cd8d63-b836-4b6e-adbb-b9559f39f130',
+								'2bd4d89c-f532-4ac0-97d4-7e235f199b12',
+								'4b7a0f5d-20eb-4dd9-824e-9e887853c2dd',
+								'09486fbb-8b12-41fa-aa9f-dce183608bb8',
+								'731362b6-7769-480d-be85-23cb895c5525',
+								'4002e139-e14f-4a47-9005-c69a6d53e97a',
+								'4b37538b-483c-4209-8ebc-7f20bee1ef2e',
+								'ce8c70b7-14f1-4d56-a7d1-0b5f2886a6d0',
+								'f2763883-9b94-4338-a502-58eb44031cd3',
+								'9bd7424e-c333-471f-974d-6f8283fa263c',
+								'4da1bda7-0f22-4aab-ae23-4c86d206dfaf',
+								'281fa080-27a0-46aa-b1e5-1e0a69146c09'
+
+							]
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
+	
+						
+							try{
+	
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},regulation_status
+								})
+	
+								allOptions.push({services: (await _data.json()).results.map(({id, name, category, category_name}) => ({id, name, category, category_name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									regulation_status: [],
+								})
+							}
+							break;
+	
 
 						
 						default:
