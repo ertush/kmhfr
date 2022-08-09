@@ -3362,7 +3362,10 @@ AddFacility.getInitialProps = async (ctx) => {
 								'f2763883-9b94-4338-a502-58eb44031cd3',
 								'9bd7424e-c333-471f-974d-6f8283fa263c',
 								'4da1bda7-0f22-4aab-ae23-4c86d206dfaf',
-								'281fa080-27a0-46aa-b1e5-1e0a69146c09'
+								'281fa080-27a0-46aa-b1e5-1e0a69146c09',
+								'a2b3b32d-dd24-4ee6-9170-1ccba11dd9c8',
+								'f312d0b2-5e41-4587-b54d-ff1d1bc128c6',
+								'f3a7f739-8246-4e2e-8c2e-e264eb529e45',
 
 							]
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
