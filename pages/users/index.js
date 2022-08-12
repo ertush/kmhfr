@@ -23,12 +23,18 @@ const Users = (props) => {
     LicenseManager.setLicenseKey("test");
  
     // const { data, query, path, current_url } = props
-  
     const router = useRouter()
+    const LinkCellRenderer = (params) =>{
+    return(
+        <Link
+        href={{ pathname: `/users/add_user/`,
+        query: { id: params.data.id } }}
 
+        ><a>{params.value}</a></Link>
+    )} 
 
     let columnDefs= [
-        {headerName: "Name", field: "name"},
+        {headerName: "Name", field: "name",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Employee number", field: "employee_number"},
         {headerName: "Email", field: "email"},
         {headerName: "County", field: "county_name"},
@@ -53,6 +59,7 @@ const Users = (props) => {
         const updateData = (data) => params.api.setRowData(data);
         const lnlst=  props.data.results.map((user)=>{
             return {
+                ...user,
                 name: user.first_name + ' '+user.last_name,
                 employee_number: user.employee_number,
                 email: user.email,
@@ -71,6 +78,7 @@ const Users = (props) => {
     useEffect(()=>{
         const lnlst=  props.data?.results.map((user)=>{
             return {
+                ...user,
                 name: user.first_name + ' '+user.last_name,
                 employee_number: user.employee_number,
                 email: user.email,
@@ -207,9 +215,8 @@ const Users = (props) => {
                       
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
                                 <AgGridReact
-                                    // floatingFilter={true}
                                     rowStyle={{width: '100vw'}}
-                                    sideBar={true} //{'filters'}
+                                    sideBar={true}
                                     defaultColDef={{
                                         sortable: true,
                                         filter: true,
@@ -218,6 +225,9 @@ const Users = (props) => {
                                     onGridReady={onGridReady}
                                     rowData={users}
                                     columnDefs={columnDefs}
+                                    frameworkComponents={{
+                                        LinkCellRenderer
+                                      }}
                                     />
                             </div>
                         </div>
@@ -237,13 +247,6 @@ const Users = (props) => {
                                 <li className="text-sm text-gray-400 flex">
                                     <DotsHorizontalIcon className="h-3" />
                                 </li>
-                                {/* {props?.data?.far_pages.map(page => (
-                                    <li key={page} className="text-base text-gray-600">
-                                        <a href={'/?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
-                                            {page}
-                                        </a>
-                                    </li>
-                                ))} */}
 
                             </ul>}
 
@@ -273,7 +276,7 @@ Users.getInitialProps = async (ctx) => {
 // console.log(ctx.query.is_active);
 
     const fetchData = (token) => {
-        let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name'
+        let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=true'
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf

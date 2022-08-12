@@ -31,7 +31,16 @@ export default async function postFormData(req, res) {
                     break
                 case `edit`:
                     url = `${API_URL}/users/groups/${req.query.id}`
-                    break    
+                    break  
+                case `edit_user`:
+                    url = `${API_URL}/users/${req.query.id}`
+                    break
+                case `delete`:
+                    url = `${API_URL}/users/groups/${req.query.id}`
+                    break 
+                case `delete_user`:
+                    url = `${API_URL}/users/${req.query.id}`
+                    break             
                 default:
                     
                     break;

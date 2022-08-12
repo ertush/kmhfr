@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import MainLayout from '../../components/MainLayout';
+import router from 'next/router';
 import { checkToken } from '../../controllers/auth/auth';
 import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, PencilAltIcon} from '@heroicons/react/solid';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import DualListBox from 'react-dual-listbox';
-import { withRouter, useRouter } from 'next/router'
+import { withRouter } from 'next/router'
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 
 
@@ -47,11 +48,45 @@ const EditGroup=(props)=> {
 				method:'PATCH',
 				body: JSON.stringify(groupData).replace(',"":""','')
 			})
-			.then(resp =>resp.json())
-			.then(res => console.log(res))
+			.then(resp =>resp)
+			.then(res => {
+				
+				// console.log(res)
+				if(res.status==200){
+					router.push('/users/groups')
+				}
+				
+			})
 		}catch (e){
 			console.error(e)
 		}
+	}
+	const deleteGroup =(event)=>{
+		event.preventDefault()
+		try {
+			fetch(`/api/common/post_form_data/?path=delete&id=${props.data.id}`, {
+				// headers:{
+				// 	// 'Accept': 'application/json, text/plain, */*',
+				// 	'Content-Type': 'application/json;charset=utf-8'
+					
+				// },
+				method:'DELETE',
+				// body: JSON.stringify(groupData).replace(',"":""','')
+			})
+			.then(resp =>resp)
+			.then(res => {
+				
+				// console.log(res)
+				// if(res.status==200){
+					router.push('/users/groups')
+				// }
+				
+			})
+			
+		} catch (error) {
+			
+		}
+
 	}
 
 // console.log(groupData);
@@ -71,6 +106,14 @@ const EditGroup=(props)=> {
                                     <PencilAltIcon className='ml-2 h-5 w-5' />
                                     {'Edit Group'}
                                 </h2>
+								<button
+								type='button'
+								onClick={deleteGroup}
+								className='rounded bg-red-500 p-2 text-white flex text-md font-semibold '>
+								<span className='text-medium font-semibold text-white'>
+									Delete
+								</span>
+							</button>
                         </div>
                   
                     </div>

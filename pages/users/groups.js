@@ -23,16 +23,17 @@ const Groups = (props) => {
     const LinkCellRenderer = (params) =>{
         // console.log(params);
     return(
+        
         <Link
         href={{ pathname: `/users/edit_group/`,
         query: { id: params.data.id } }}
         as={`/users/edit_group/${params.value}`}
 
-        ><a>{params.value}</a></Link>
+        >{params.value}</Link>
     )} 
 
     let columnDefs= [
-        {headerName: "Name", field: "name", 
+        {headerName: "Name", field: "name", width:400,
         cellRenderer: "LinkCellRenderer" },
     ]
 
