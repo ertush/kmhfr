@@ -1,135 +1,191 @@
 // React imports
-import React, { useState  } from 'react';
+import React, { useEffect, useState  } from 'react';
 import router from 'next/router';
 import MainLayout from '../../components/MainLayout';
 import { checkToken } from '../../controllers/auth/auth';
-import {ChevronDoubleLeftIcon, UserAddIcon, PlusIcon} from '@heroicons/react/solid';
-import Select from 'react-select';
+import {ChevronDoubleLeftIcon, UserAddIcon, PlusIcon, PencilAltIcon} from '@heroicons/react/solid';
+import Select from 'react-select'; 
+import { withRouter } from 'next/router';
+import Alert from '@mui/material/Alert';
 
 const AddUser = (props)=> {
-
-    const [formId, setFormId] = useState(0)
-	const [contactList, setContactList]=useState([{}])
 	const [subCountyOptions, setSubCountyOptions] = useState([])
+	const [editMode, setEditMode]= useState(false)
+	let groups = props[0]?.groups
+	let contact_types = props[1]?.contact_type
+	let counties = props[2]?.counties
+	let regbodies = props[3]?.regulating_bodies
+	let jobs = props[4]?.job_titles
+	let person_details =props[5]?.person_details 
+	const [contactList, setContactList]=useState([{}])
+	const [status, setStatus]=useState(null)
+	// let usr = JSON.parse( window.sessionStorage.getItem('user'))
 
-	let jobs = props?.data?.results
-	let contact_types = props?.filters[0].params.results
-	let groups = props?.filters[1].params.results
-	let counties = props?.filters[2].params.results
-	let sub_counties = props?.filters[4].params.results
-	let regbodies = props?.filters[3].params.results
+	// console.log(usr)
 
 	const [userData, setUserData]=useState({
-		first_name:      {name: "first_name" ,         value: null },
-		last_name:       {name: "last_name" ,          value: null },
-		other_names:     {name: "other_names",         value: null },
-		email:           {name: "email",               value: null },
-		employee_number: {name: "employee_number",     value: null },
-		job_title:       {name: "job_title", 		   value: null },
-		password:        {name: "password",            value: null },
-		contact_type:    {name: "contact_type",        value: [] },
-		contact_details: {name: "contact_details",     value: [] },
-		group:           {name: "group",               value: [] },
-		county:          {name: "county",              value: [] },
-		sub_county:      {name: "sub_county",          value: [] },
-		regulatory_body: {name: "regulatory_body",     value: [] } 
+		first_name:'',
+		last_name: '' ,
+		other_names:  '',
+		email: '',
+		employee_number: '',
+		job_title:'',
+		password: '',
+		contacts: [{contact_type: '', contact_text: ''}],
+		groups: [],
+		user_counties: [],
+		user_sub_counties: [],
+		regulatory_users: []
 	})
 
 	const handleAddClick = (e) => {
 		e.preventDefault();
 		setContactList(s=>{
-			return [...s, {}]
+			return [...s, {contact_type: '', contact_text: ''}]
 		})
 	};
-
+// console.log(person_details.contacts.length);
 	const handleOnChange =(val)=>{
-		// console.log(val);
 		if (val.target && val.target != undefined && val.target != null) {
 				const newObj = {}
 				newObj[val.target.name] = {}
-				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.value
+				newObj[val.target.name] = val.target.name
+				newObj[val.target.name] = val.target.value
 				setUserData({ ...userData, ...newObj })
 		
-        }else if(val?.group){
+        }else if(val?.name !== null & val?.name !== undefined){
 			const newObj2={}
-			newObj2['group'] = {}
-			newObj2['group'].name = "group"
-			newObj2['group'].value = val.group.map((id)=>{return {value: id.value}})
+			newObj2[val.name] = {}
+			val.name == "job_title"? newObj2[val.name]= val.ev.value : newObj2[val.name] = val.ev.map((id)=>{return {id: id.value, name: id.label }})
 			setUserData({ ...userData, ...newObj2 })
-		}else if(val?.regulatory_body){
-			const newObj3={}
-			newObj3['regulatory_body'] = {}
-			newObj3['regulatory_body'].name = "regulatory_body"
-			newObj3['regulatory_body'].value = val.regulatory_body.map((id)=>{return {value: id.value}})
-			setUserData({ ...userData, ...newObj3 })
-		}else if(val?.county){
-			const newObj4={}
-			newObj4['county'] = {}
-			newObj4['county'].name = "county"
-			newObj4['county'].value = val.county.map((id)=>{return {value: id.value}})
-			setUserData({ ...userData, ...newObj4 })
-		}else if(val?.subcounty){
-			const newObj5={}
-			newObj5['sub_county'] = {}
-			newObj5['sub_county'].name = "sub_county"
-			newObj5['sub_county'].value = val.subcounty.map((id)=>{return {value: id.value}})
-			setUserData({ ...userData, ...newObj5 })
-		}else if(val?.job_title){
-			const newObj6={}
-			newObj6['job_title'] = {}
-			newObj6['job_title'].name = "job_title"
-			newObj6['job_title'].value = val.job_title.value
-			setUserData({ ...userData, ...newObj6 })
 		}
-
 		else {
-			if(val.name == "contact_type"){
 				let data = [...contactList];
-				data[val.id][val.name] = val.value.value
-				const newObj1 = {}
-				newObj1[val.name] = {}
-				newObj1[val.name].name = val.name
-				newObj1[val.name].value = data.map((id)=>{return {value: id.contact_type}})
+				const newObj1={}
+				newObj1['contacts'] = {}
+				newObj1['contacts'] = "contacts"
+				val.cont_name =="contact_type"?data[val.id][val.cont_name] = val.value.value : data[val.id][val.cont_name] = val.value.target.value
+				console.log(data);
+				newObj1['contacts'] = data.map((id)=>({
+					
+					contact_text: id.contact_text,
+					contact_type:id.contact_type
+				}))
 				setUserData({ ...userData, ...newObj1 })
-			}
-			if(val.name == "contact_details"){
-				let data = [...contactList];
-				data[val.id][val.name] = val.value.target.value
-				const newObj1 = {}
-				newObj1[val.name] = {}
-				newObj1[val.name].name = val.name
-				newObj1[val.name].value = data.map((id)=>{return {value: id.contact_details}})
-				setUserData({ ...userData, ...newObj1 })
-			}
         }
 	}
 
-	const selectedGroups = userData.group.value.map((ft)=>{
-		return{ id: ft.value}
+	const selectedGroups = userData.groups?.map((ft)=>{
+		return{ id: ft.id}
 	})
 
-     // console.log(userData['job_title']?.value);
-	// console.log(selectedGroups);
-	const handleSubCounties =  async (ev)=>{
-		const optionsSubCounty = []
-		
-		for(var i=0;i<ev.length;i++) {
-			const id= sub_counties?.filter((sbcty)=>{
-               if(sbcty.county==ev[i].value){
-					return {
-						value: sbcty.id, label: sbcty.name
-					}
-			   }
+	console.log(userData);
+	console.log(person_details);
+	// Object.keys(userData).map(fd => console.log(fd))
+
+	const handleBasicDetailsSubmit = async (event)=>{
+		event.preventDefault()
+		let url=''
+		editMode ? url=`/api/common/post_form_data/?path=edit_user&id=${person_details.id}`: url ='/api/common/post_form_data/?path=users'
+		try{
+			 fetch(url, {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json;charset=utf-8'
+					
+				},
+				method:(editMode ? 'PUT':'POST'),
+				body: JSON.stringify(userData).replace(',"":""','')
 			})
-			optionsSubCounty.push(...id)
+			.then(resp =>resp)
+			.then(res =>{ 
+				
+				// console.log(res.json)
+				if(res.status==200){
+					router.push('/users')
+				}
+			})
+			.catch(e=>{
+			  setStatus({status:'error', message: e})
+			})
+		}catch (e){
+
+			setStatus({status:'error', message: e})
+			console.error(e)
 		}
-		setSubCountyOptions(optionsSubCounty)
 	}
-	const handleBasicDetailsSubmit =()=>{
+
+	const deleteUser=(event)=>{
+		event.preventDefault()
+		try {
+			fetch(`/api/common/post_form_data/?path=delete_user&id=${person_details.id}`, {
+				// headers:{
+				// 	// 'Accept': 'application/json, text/plain, */*',
+				// 	'Content-Type': 'application/json;charset=utf-8'
+					
+				// },
+				method:'DELETE',
+				// body: JSON.stringify(groupData).replace(',"":""','')
+			})
+			.then(resp =>resp)
+			.then(res => {
+				
+				// console.log(res)
+				// if(res.status==200){
+					router.push('/users/')
+				// }
+				
+			})
+			
+		} catch (error) {
+			
+		}
 
 	}
-// console.log(subCountyOptions);
+
+	useEffect(()=>{
+	if (!person_details.detail)	{
+		setEditMode(true)
+		Object.keys(person_details).map((pd, pd_ky)=>{
+			// (person_details).(pd)
+		// console.log(person_details[`${pd}`]),
+			Object.keys(userData).map(ud => {
+				if (ud === pd) {
+					let newObj_i = {}
+					// newObj_i[pd] = pd
+					if(pd=='user_counties'){
+						newObj_i[pd]=[{id: person_details[`${pd}`][0]?.county, name: person_details[`${pd}`][0]?.county_name }]
+					}else if(pd=='user_sub_counties'){
+						const results = person_details.user_sub_counties.map((sbc)=>{
+							return{
+								id: sbc.sub_county,
+								name: sbc.sub_county_name
+							}
+						})
+						newObj_i[pd]=results
+					}else{
+
+						newObj_i[pd] = person_details[`${pd}`]
+					}
+					setUserData(prevState => ({ ...prevState, ...newObj_i}));
+				}
+			})
+		}
+		)
+		// setUserData(prevState => ({ ...prevState, ...person_details}));
+		// setUserData(person_details)
+	}
+	if(person_details.contacts !== null && person_details.contacts !== undefined && person_details.contacts !== ''){	
+		for(let i =0; i<person_details?.contacts?.length; i ++){
+			setContactList(s=>{
+				return [ ...person_details?.contacts]
+			})
+		}
+	}
+
+	},[person_details?.contacts, person_details])
+	// console.log(editMode);
+
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
         <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
@@ -138,14 +194,26 @@ const AddUser = (props)=> {
 					<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
 						<span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/')}>Home</span>{'>'}
 						<span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/users')}>Users</span> {'>'}
-						<span className="text-gray-500">Add user</span>
+						<span className="text-gray-500">{editMode? 'Edit user' : 'Add user'}</span>
 					</div>
 				</div>
+				{status && <Alert severity={status.status} sx={{width:'100%'}}>{status.message}</Alert>}
 				<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
 						<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-							<UserAddIcon className='text-black ml-2 h-5 w-5'/>
-							{'New User'}
+							
+							{editMode? <><PencilAltIcon className='ml-2 h-5 w-5' /> Edit user</> : <><UserAddIcon className='text-black ml-2 h-5 w-5'/> Add user </> }
 						</h2>
+						{editMode &&
+						
+							<button
+								type='button'
+								onClick={deleteUser}
+								className='rounded bg-red-500 p-2 text-white flex text-md font-semibold '>
+								<span className='text-medium font-semibold text-white'>
+									Delete
+								</span>
+							</button>
+						}
 				</div>
 			
 			</div>
@@ -183,7 +251,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['first_name']?.value || ''}
+																value={userData.first_name || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -207,7 +275,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['last_name']?.value || ''}
+																value={userData.last_name ||''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -217,13 +285,9 @@ const AddUser = (props)=> {
 																htmlFor='other_names'
 																className='text-gray-600 capitalize text-sm'>
 																Other Names
-																<span className='text-medium leading-12 font-semibold'>
-																	{' '}
-																	*
-																</span>
+																
 															</label>
 															<input
-																required
 																type='text'
 																name='other_names'
 																onChange={ev => {
@@ -231,7 +295,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['other_names']?.value || ''}
+																value={userData.other_names ||''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -256,7 +320,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['email']?.value || ''}
+																value={userData.email ||''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -281,7 +345,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['employee_number']?.value || ''}
+																value={userData.employee_number ||''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -298,24 +362,16 @@ const AddUser = (props)=> {
 																</span>
 															</label>
 															<Select
-																options={
-																	Array.from(jobs || [],
-																		fltopt => {
-																			return {
-																				value: fltopt.id, label: fltopt.name
-																			}
-																		})
-																}
+																options={jobs|| []}
 																required
 																placeholder='Select job title..'
 																onChange={ev => {
-																	handleOnChange({
-																		job_title:ev
-																	})
+																	handleOnChange({name:'job_title', ev})
 																}}
+																
 																value={{
-																	value: userData['job_title']?.value,
-																	label: jobs?.find((rg)=> rg.id==(userData['job_title']?.value))?.name 
+																	value: userData?.job_title,
+																	label: jobs?.find(r=> r.value == userData?.job_title)?.label
 																  } || ''}
 																name='job_title'
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -335,7 +391,7 @@ const AddUser = (props)=> {
 															</label>
 															<input
 																required
-																type='text'
+																type='password'
 																name='password'
 																onChange={ev => {
 																
@@ -343,7 +399,7 @@ const AddUser = (props)=> {
 																		ev
 																	)
 																}}
-																value={userData['password']?.value || ''}
+																value={userData.password || ''}
 
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
@@ -361,24 +417,50 @@ const AddUser = (props)=> {
 															</label>
 															<input
 																required
-																type='text'
+																type='password'
 																name='conf_password'
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
-
+														
+														{editMode && <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+																<input
+																	type='checkbox'
+																	value={person_details?.is_active}
+																	defaultChecked={person_details?.is_active}
+																	name='is_active'
+																	id='is_active'
+																	onChange={(ev) => {
+																		handleOnChange(
+                                                                            ev
+                                                                        )
+																	}}
+																/>
+																<label
+																	htmlFor='is_active'
+																	className='text-gray-700 capitalize text-sm flex-grow'>
+																	{' '}
+																	Is Active? 
+																</label>
+															</div>}
 														{/* Contacts */}
 
 														<div className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
 															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 																Contacts
 															</h4>
+														
 															{contactList.map((x,i)=>{
-																return <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+																// console.log(x)
+															
+																return( 
+																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
 																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<label
 																		htmlFor='contact_type'
-																		className='text-gray-600 capitalize text-sm'>
+																		className='text-gray-600 capitalize text-sm'
+																		// key={i}
+																		>
 																		Contact Type
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
@@ -386,33 +468,30 @@ const AddUser = (props)=> {
 																		</span>
 																	</label>	
 																	<Select
-																		options={
-																			Array.from(contact_types || [],
-																				fltopt => {
-																					return {
-																						value: fltopt.id, label: fltopt.name
-																					}
-																				})
-																		}
-																		
+																		options={contact_types || [] }
 																		required
 																		placeholder='Select contact type..'
 																		key={i}
 																		onChange={value => {
-																			handleOnChange({
-																				name: "contact_type", value, id: i
-																			}
-																				
-																			)
+																			handleOnChange({cont_name: "contact_type", value, id: i})
 																		}}
-																		// value={userData['contact_type']?.value || ''}
+																		// value={(()=>{
+
+																		// 	( {value: person_details.contacts[i]?.contact_type, label:person_details.contacts[i]?.contact_type_name })
+																		// })()}
+																		value={
+																			{
+																				value: userData?.contacts[i]?.contact_type || '',
+																				label: contact_types.find(ct=> ct.value== userData?.contacts[i]?.contact_type)?.label || ''
+																			}
+																		}
 																		name='contact_type'
 																		className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																	/>
 																</div>	
 																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<label
-																		htmlFor='contact_details'
+																		htmlFor='contact_text'
 																		className='text-gray-600 capitalize text-sm'>
 																		Contact Details
 																		<span className='text-medium leading-12 font-semibold'>
@@ -423,19 +502,24 @@ const AddUser = (props)=> {
 																	<input
 																		required
 																		type='text'
-																		name='contact_details'
+																		name='contact_text'
 																		key={i}
 																		onChange={value => {
 																			handleOnChange({
-																				name: "contact_details", value, id: i
+																				cont_name: "contact_text", value, id: i
 																			})
 																		}}
-																		value={((userData['contact_details']?.value)[i])?.value || ''}
+																		// value={(()=>{
+																		// 	 ((person_details.contacts)[i])?.contact_text 
+																		// })()}
+																		value={
+																			 (userData.contacts[i])?.contact_text || ''
+																		}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
 
-														    </div>
+														    </div>)
 															})
 															// : <h4>No Contacts Assigned to User</h4>
 															}
@@ -459,28 +543,18 @@ const AddUser = (props)=> {
 															 <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 																<Select
-																options={
-																	Array.from(groups || [],
-																		fltopt => {
-																			return {
-																				value: fltopt.id, label: fltopt.name
-																			}
-																		})
-																}
+																options={groups || []}
 																required
 																isMulti
 																placeholder='Select group(s)'
 																name='group'
 																onChange={ev => {
-																	handleOnChange(
-																		{
-																			group:ev
-																		}
-																	)
+																	handleOnChange({ name:'groups' , ev})
 																}}
-																value={userData['group']?.value.map((value) => ({ 
-																	value: value.value,
-																	label: groups?.find((rg)=> rg.id==value.value).name 
+																
+																value={userData.groups?.map((value) => ({ 
+																	value: value.id || '',
+																	label: value.name || ''
 																  })) || ''}
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															    />
@@ -490,7 +564,7 @@ const AddUser = (props)=> {
 														
 														</div>
 
-														{selectedGroups.map((grp)=>{
+														{selectedGroups?.map((grp)=>{
 															return (
 																<>
 																{(()=>{
@@ -505,53 +579,51 @@ const AddUser = (props)=> {
 																				<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 																					
 																					<Select
-																					options={
-																						Array.from(counties || [],
-																							fltopt => {
-																								return {
-																									value: fltopt.id, label: fltopt.name
-																								}
-																							})
-																					}
+																					options={counties || []}
 																					isMulti
 																					required
 																					placeholder='Select county..'
-																					onChange={ev => {
-																						handleSubCounties(ev)
-																						handleOnChange({
-																							county: ev
-																						})
+
+																					onChange={async (ev) => {
+
+																							handleOnChange({ name:'user_counties', ev	})
+
+																							for(let i=0;i<ev.length;i++) {
+																								try{
+																									const resp = await fetch(`/api/filters/subcounty/?county=${ev[i].value}${"&fields=id,name,county&page_size=30"}`)
+		
+																									setSubCountyOptions((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
+		
+																								}
+																								catch(e){
+																									console.error('Unable to fetch sub_county options')
+																									setSubCountyOpt(null)
+																								}
+																							}
+	
+																						
 																					}}
-																					value={userData['county']?.value.map((value) => ({ 
-																						value: value.value,
-																						label: counties?.find((rg)=> rg.id==value.value).name 
+																					value={userData.user_counties?.map((value) => ({ 
+																						value: value.county|| '',
+																						label: value.county_name || value.name || ''
 																					  })) || ''}
 																					name='county'
 																					className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																					/>
 																					<Select
-																					options={
-																						Array.from(subCountyOptions || [],
-																							fltopt => {
-																								return {
-																									value: fltopt.id, label: fltopt.name
-																								}
-																							})
-																					}
+																					options={subCountyOptions || []}
 																					isMulti
 																					required
 																					placeholder='Select a sub county..'
 																					onChange={ev => {
-																						handleOnChange({
-																							subcounty: ev
-																						})
+																						handleOnChange({name:'user_sub_counties', ev})
 																					}}
-																					value={userData['sub_county']?.value.map((value) => ({ 
-																						value: value.value,
-																						label: subCountyOptions?.find((rg)=> rg.id==value.value).name 
+																					value={userData.user_sub_counties?.map((value) => ({ 
+																						value: value.id || '',
+																						label: value.sub_county_name || value.name ||''
 																					  })) || ''}
 
-																					name='subcounty'
+																					name='sub_county'
 																					className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																					/>
 																				</div>	
@@ -571,25 +643,16 @@ const AddUser = (props)=> {
 																					<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 																						
 																						<Select
-																						options={
-																							Array.from(regbodies || [],
-																								fltopt => {
-																									return {
-																										value: fltopt.id, label: fltopt.name
-																									}
-																								})
-																						}
+																						options={regbodies || []}
 																						isMulti
 																						required
 																						placeholder='Select regulatory body(s)'
 																						onChange={ev => {
-																							handleOnChange({
-																								regulatory_body: ev
-																							})
+																							handleOnChange({name: 'regulatory_users', ev})
 																						}}
-																						value={userData['regulatory_body']?.value.map((value) => ({ 
-																							value: value.value,
-																							label: regbodies?.find((rg)=> rg.id==value.value).name
+																						value={userData.regulatory_users?.map((value) => ({ 
+																							value: value.id,
+																							label: value.name
 																						  })) || ''}
 																						name='regulatory_body'
 																						className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -621,7 +684,7 @@ const AddUser = (props)=> {
 																type='submit'
 																className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '>
 																<span className='text-medium font-semibold text-white'>
-																	Save
+																	{editMode? 'Update' : ' Save'}
 																</span>
 															</button>
 														</div>
@@ -650,164 +713,177 @@ const AddUser = (props)=> {
 
 AddUser.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL
-	//groups counties/?page_size=500&ordering=name
-	const fetchGroups = token => {
-        let filters_url = API_URL + '/users/groups?ordering=name&page_size=100'
-        return fetch(filters_url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                return json
-            }).catch(err => {
-                console.log('Error fetching groups: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    filters: []
-                }
-            })
-    }
-	//contact types
-	const fetchContactType = token => {
-        let filters_url = API_URL + '/common/contact_types/?fields=id,name'
-        return fetch(filters_url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                return json
-            }).catch(err => {
-                console.log('Error fetching contact types: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    filters: []
-                }
-            })
-    }
-	// counties 
-	const fetchCounties = token => {
-        let filters_url = API_URL + '/common/counties/?page_size=500&ordering=name'
-        return fetch(filters_url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                return json
-            }).catch(err => {
-                console.log('Error fetching counties: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    filters: []
-                }
-            })
-    } 
-
-	// sub_counties 
-	const fetchSubCounties = token => {
-        let filters_url = API_URL + '/common/sub_counties/?page_size=500&ordering=name'
-        return fetch(filters_url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                return json
-            }).catch(err => {
-                console.log('Error fetching counties: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    filters: []
-                }
-            })
-    } 
-
-	// regulating bodies 
-	const fetchRegulatingBodies = token => {
-		let filters_url = API_URL + '/facilities/regulating_bodies/'
-		return fetch(filters_url, {
-			headers: {
-				'Authorization': 'Bearer ' + token,
-				'Accept': 'application/json'
-			}
-		}).then(r => r.json())
-			.then(json => {
-				return json
-			}).catch(err => {
-				console.log('Error fetching regulating bodies: ', err)
-				return {
-					error: true,
-					err: err,
-					filters: []
-				}
-			})
-	}
-
-	//job titles
-	const fetchData = async (token) => {
-		 let url = API_URL + '/facilities/job_titles/'
-		 const all = await Promise.all([
-			fetchContactType(token),
-			fetchGroups(token),
-			fetchCounties(token),
-			fetchRegulatingBodies(token), fetchSubCounties(token)
-		  ]);
-		  const paths = all.map(a => ({params: a}))
-		  let query = { 'searchTerm': '' }
-		  if (ctx?.query?.qf) {
-			  query.qf = ctx.query.qf
-		  }
-		  if (ctx?.query?.q) {
-			  query.searchTerm = ctx.query.q
-			  url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
-		  }
-		  
-		  let current_url = url + '&page_size=100000'
-		  if (ctx?.query?.page) {
-			  console.log({page:ctx.query.page})
-			//   url = `${url}&page=${ctx.query.page}`
-		  }
-		  // console.log('running fetchData(' + url + ')')
-		  return fetch(url, {
-			  headers: {
-				  'Authorization': 'Bearer ' + token,
-				  'Accept': 'application/json'
-			  }
-		  }).then(r => r.json())
-			  .then(json => {
-					return {
-						data: json, query, token, filters: { ...paths }, path: ctx.asPath || '/add_user', current_url: current_url 
-					}
-				  
-			  }).catch(err => {
-				  console.log('Error fetching job titles: ', err)
-				  return {
-					  error: true,
-					  err: err,
-					  data: [],
-					  query: {},
-					  path: ctx.asPath || '/add_user',
-					  current_url: ''
-				  }
-			  })
-	  }
+	const person_id = ctx.query.id
+	const allOptions =[]
+	const options = [
+		'groups',
+		'contact_type',
+		'counties',
+		'regulating_bodies',
+		'job_titles',
+		'individual_details'
+	]
   
-	  return checkToken(ctx.req, ctx.res).then(t => {
-		  if (t.error) {
-			  throw new Error('Error checking token')
-		  } else {
-			  let token = t.token
-			  return fetchData(token).then(t => t)
+	return checkToken(ctx.req, ctx.res).then(async t => {
+		if (t.error) {
+			throw new Error('Error checking token')
+		} else {
+			let token = t.token
+			let url = ''
+			for (let i=0; i< options.length; i++){
+				const option = options[i]
+				switch(option){
+					case 'groups':
+						url = `${API_URL}/users/groups/`
+						try{
+							
+							const _data = await fetch(url, {
+								headers: {
+									Authorization: 'Bearer ' + token,
+									Accept: 'application/json',
+								},
+							})
+							
+							let results = (await _data.json()).results.map(({id, name }) => {return {value:id, label:name}})
+
+							allOptions.push({groups: results })
+							
+						}
+						catch(err) {
+							console.log(`Error fetching ${option}: `, err);
+							allOptions.push({
+								error: true,
+								err: err,
+								groups: [],
+							});
+						}
+						break;
+					case 'contact_type':
+					url =`${API_URL}/common/contact_types/?fields=id,name`
+						try{
+										
+							const _data = await fetch(url, {
+								headers: {
+									Authorization: 'Bearer ' + token,
+									Accept: 'application/json',
+								},
+							})
+
+							let results = (await _data.json()).results.map(({id, name }) => {return {value:id, label:name}})
+
+							allOptions.push({contact_type: results })
+							
+						}
+						catch(err) {
+							console.log(`Error fetching ${option}: `, err);
+							allOptions.push({
+								error: true,
+								err: err,
+								contact_type: [],
+							});
+						}
+						break;
+					case 'counties':
+					url = `${API_URL}/common/counties/?page_size=500&ordering=name`
+						try{
+										
+							const _data = await fetch(url, {
+								headers: {
+									Authorization: 'Bearer ' + token,
+									Accept: 'application/json',
+								},
+							})
+
+							let results = (await _data.json()).results.map(({id, name }) => {return {value:id, label:name}})
+
+							allOptions.push({counties: results })
+							
+						}
+						catch(err) {
+							console.log(`Error fetching ${option}: `, err);
+							allOptions.push({
+								error: true,
+								err: err,
+								counties: [],
+							});
+						}
+						break;
+					case 'regulating_bodies':
+					url =`${API_URL}/facilities/regulating_bodies/`
+						try{
+										
+							const _data = await fetch(url, {
+								headers: {
+									Authorization: 'Bearer ' + token,
+									Accept: 'application/json',
+								},
+							})
+
+							let results = (await _data.json()).results.map(({id, name }) => {return  {value:id, label:name}})
+
+							allOptions.push({regulating_bodies: results })
+							
+						}
+						catch(err) {
+							console.log(`Error fetching ${option}: `, err);
+							allOptions.push({
+								error: true,
+								err: err,
+								regulating_bodies: [],
+							});
+						}
+						break;
+					case 'job_titles':
+					url =`${API_URL}/facilities/job_titles/`
+						try{
+										
+							const _data = await fetch(url, {
+								headers: {
+									Authorization: 'Bearer ' + token,
+									Accept: 'application/json',
+								},
+							})
+							let results = (await _data.json()).results.map(({id, name }) => {return {value:id, label:name}})
+							allOptions.push({job_titles: results })
+							
+						}
+						catch(err) {
+							console.log(`Error fetching ${option}: `, err);
+							allOptions.push({
+								error: true,
+								err: err,
+								job_titles: [],
+							});
+						}
+						break;
+					case 'individual_details':
+						if(person_id !== null && person_id !== ''){
+							url =`${API_URL}/users/${person_id}/`
+								try{
+												
+									const _data = await fetch(url, {
+										headers: {
+											Authorization: 'Bearer ' + token,
+											Accept: 'application/json',
+										},
+									}).then(r=>r.json()).then(resp=> {return resp})
+									
+									allOptions.push({person_details: _data })
+								}
+								catch(err) {
+									console.log(`Error fetching ${option}: `, err);
+									allOptions.push({
+										error: true,
+										err: err,
+										job_titles: [],
+									});
+								}
+						}
+							break;
+
+				}
+			  }
+			  return allOptions
 		  }
 	  }).catch(err => {
 		  console.log('Error checking token: ', err)
@@ -832,4 +908,4 @@ AddUser.getInitialProps = async (ctx) => {
   
 }
   
-  export default AddUser
+  export default withRouter(AddUser)
