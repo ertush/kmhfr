@@ -53,8 +53,13 @@ const AddGroup = (props)=> {
 				method:'POST',
 				body: JSON.stringify(groupData).replace(',"":""','')
 			})
-			.then(resp =>console.log(resp))
-			.then(res => console.log(res))
+			.then(resp =>resp)
+			.then(res => {
+				// console.log(res)
+				if(res.status==200){
+					router.push('/users/groups')
+				}
+			})
 			.catch(e=>console.log(e))
 		}catch (e){
 			console.error(e)
