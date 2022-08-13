@@ -564,14 +564,14 @@ const AddUser = (props)=> {
 														
 														</div>
 
-														{selectedGroups?.map((grp)=>{
+														{selectedGroups?.map((grp, i)=>{
 															return (
 																<>
 																{(()=>{
 																	if(grp.id==1 || grp.id== 12|| grp.id ==2){
 																		return(
 																			// Administrative area 
-																		<div className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
+																		<div key={i} className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
 																			<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 																				Administrative Areas
 																			</h4>
