@@ -37,7 +37,7 @@ import { XCircleIcon } from '@heroicons/react/outline';
 // Package imports
 import Select from 'react-select';
 import LoadingAnimation from '../../components/LoadingAnimation';
-
+import { useForkRef } from '@mui/material';
 
 
 
@@ -82,11 +82,11 @@ function AddFacility(props) {
 	 let facilityDeptOptions = props['12']?.facility_depts
 	 let regBodyOptions = props['13']?.regulating_bodies
 	 let regulationStateOptions = props['14']?.regulation_status
-	 let serviceOptions = props['15'].services
+	//  let serviceOptions = props['15'].services
 	//  let kephLvl = {label:'', value:''}
 
 	
-	//  console.log({props}) 
+	 console.log({props}) 
 	
 
     const nameOptionRef = useRef(null)
@@ -206,15 +206,37 @@ function AddFacility(props) {
             name:'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
             subCategories:[
                 'Accident and Emergency casualty Services',
-                'General Emergency Services'
-            ]
+                'General Emergency Services',
+            ],
+			value:[
+				'175f9481-9e91-481a-aa47-173e790c41df',
+				'c009442b-a0db-4406-8568-844edf17afbb'
+			]
         },
         {
             name:'AMBULATORY SERVICES',
             subCategories:[
-                'Ambulatory Services'
-            ]
+                'Ambulatory Services',
+            ],
+			value:[
+				'edb9376c-28d3-4362-b90a-5301be6e4b6e'
+			]
         },
+		{
+            name:'FORENSIC SERVICES',
+            subCategories:[
+                'Comprehensive -Post Mortem',
+                'Basic -collection, preservation, of evidence',
+                'Forensic Services'
+            ],
+			value:[
+				'6fccd2ac-d394-4cdc-bead-97747ca1dbad',
+				'dc777557-3513-4728-a976-668b4b0e53ba',
+				'42954c00-add8-4339-bc75-88540984a0d8'
+			]
+
+        },
+		/*,
         {
             name:'ANTENATAL CARE',
             subCategories:[
@@ -337,7 +359,7 @@ function AddFacility(props) {
             name: 'MATERNITY SERVICES',
             subCategories:[
             ]
-        }
+        }*/
            
     ]
 
@@ -418,7 +440,7 @@ function AddFacility(props) {
 	]
 
 	
-    const [formId, setFormId] = useState(0)
+    const [formId, setFormId] = useState(5) //0
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
@@ -460,10 +482,10 @@ function AddFacility(props) {
         const formIdState = window.sessionStorage.getItem('formId');
 		
 
-        // console.log({formIdState})
+        console.log({services})
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
-            window.sessionStorage.setItem('formId', 7); //0
+            window.sessionStorage.setItem('formId', 5); //0
         }
         
         setFormId(window.sessionStorage.getItem('formId'));
@@ -2773,7 +2795,7 @@ function AddFacility(props) {
 																</thead>
 																<tbody ref={optionRefBody}>
 																	{
-																		services.map((service, i) => (
+																		services.map(({subctg}) => subctg).map((service, i) => (
 																			<tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
 																				<td ref={nameOptionRef}>{service}</td>
 																				<td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
@@ -3038,7 +3060,6 @@ AddFacility.getInitialProps = async (ctx) => {
 						case 'facility_types':
 						url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
 
-								
 								try{
 								
 									const _data = await fetch(url, {
@@ -3328,59 +3349,21 @@ AddFacility.getInitialProps = async (ctx) => {
 							break;
 
 						case 'services':
-							const categoryIDS = [
-								'f9841f9a-e435-4bbe-b52e-ac71668af4dc',
-								'7de52474-6aa9-4bd2-8291-a5cd29a1b64c',
-								'71e0e86e-bd52-40d5-8f30-3afc9f491840',
-								'f9ff84d2-c00d-433c-84c8-ba68cb2edaaf',
-								'4a5acc1b-894f-4405-b80e-8e1cfe2609c5',
-								'9614d93b-1695-486e-85bd-4df0c4571b01',
-								'f32cdd06-fcde-496d-944b-ac5187130d9d',
-								'5e5201c1-1b06-4981-9c78-d652b87f060b',
-								'6b43a283-fe4d-4734-a242-d4d9899042e4',
-								'99af6fc1-8ec0-4741-a424-f8d0f5b427b5',
-								'2086ae8e-bfd5-48b9-bfa8-f8bac94d16a2',
-								'97c6193f-2c84-47ac-9fc9-1938c195cad6',
-								'24fd65c9-56ea-497c-82ec-3fdf0ac9d006',
-								'2e19785f-74f4-42ca-a7c8-6815faa5bb09',
-								'7ac5c640-94b3-463c-b820-7c18efa59626',
-								'6f8c6c75-135c-4911-848d-8d3467c00605',
-								'3e3aaefc-720d-4179-b2f6-e2106ee1cdb3',
-								'16917242-1f97-493c-9fc5-36d4184fa7b5',
-								'987a5807-fff3-41c6-af81-ac75ad956e49',
-								'36d2f7a8-41b3-40f8-8943-e513fa28c8db',
-								'3a7cb460-2ecb-450b-b21a-4c67e90ba6d2',
-								'6ed4d7f1-52c1-4279-91e6-9cefd3ee71fb',
-								'f2cd8d63-b836-4b6e-adbb-b9559f39f130',
-								'2bd4d89c-f532-4ac0-97d4-7e235f199b12',
-								'4b7a0f5d-20eb-4dd9-824e-9e887853c2dd',
-								'09486fbb-8b12-41fa-aa9f-dce183608bb8',
-								'731362b6-7769-480d-be85-23cb895c5525',
-								'4002e139-e14f-4a47-9005-c69a6d53e97a',
-								'4b37538b-483c-4209-8ebc-7f20bee1ef2e',
-								'ce8c70b7-14f1-4d56-a7d1-0b5f2886a6d0',
-								'f2763883-9b94-4338-a502-58eb44031cd3',
-								'9bd7424e-c333-471f-974d-6f8283fa263c',
-								'4da1bda7-0f22-4aab-ae23-4c86d206dfaf',
-								'281fa080-27a0-46aa-b1e5-1e0a69146c09',
-								'a2b3b32d-dd24-4ee6-9170-1ccba11dd9c8',
-								'f312d0b2-5e41-4587-b54d-ff1d1bc128c6',
-								'f3a7f739-8246-4e2e-8c2e-e264eb529e45',
 
-							]
+						/*
+
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
-	
-						
+
 							try{
-	
+		
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
-									},regulation_status
+									}
 								})
 	
-								allOptions.push({services: (await _data.json()).results.map(({id, name, category, category_name}) => ({id, name, category, category_name}))})
+								allOptions.push({service: (await _data.json()).results.map(({id, name, category, category_name}) => ({id, name, category, category_name}))})
 								
 							}
 							catch(err) {
@@ -3388,13 +3371,16 @@ AddFacility.getInitialProps = async (ctx) => {
 								allOptions.push({
 									error: true,
 									err: err,
-									regulation_status: [],
+									service: [],
 								})
 							}
-							break;
-	
+							*/
 
-						
+
+							
+
+							break;
+
 						default:
 								let fields = ''
 								let _obj = {}
