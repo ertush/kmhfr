@@ -24,9 +24,7 @@ import StepLabel from '@mui/material/StepLabel';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import Alert from '@mui/material/Alert';
-
-
+// import Alert from '@mui/material/Alert';
 
 // Heroicons imports
 import {
@@ -38,7 +36,8 @@ import { XCircleIcon } from '@heroicons/react/outline';
 
 // Package imports
 import Select from 'react-select';
-
+import LoadingAnimation from '../../components/LoadingAnimation';
+import { useForkRef } from '@mui/material';
 
 
 
@@ -55,11 +54,9 @@ const Map = React.memo(WardMap)
 
 function AddFacility(props) {
 
-	// console.log({props});
+	
 
 	// Form drop down options
-
-	 
 
      let facilityOptions = [
 		props['0']?.facility_types[0],  // STAND ALONE
@@ -80,17 +77,24 @@ function AddFacility(props) {
 	 let subCountyOptions =  props['7']?.sub_counties
 	 let constituencyOptions =  props['8']?.constituencies
 	 let wardOptions =  props['9']?.wards
+	 let jobTitleOptions = props['10']?.job_titles
+	 let contactTypeOptions = props['11']?.contact_types
+	 let facilityDeptOptions = props['12']?.facility_depts
+	 let regBodyOptions = props['13']?.regulating_bodies
+	 let regulationStateOptions = props['14']?.regulation_status
+	//  let serviceOptions = props['15'].services
+	//  let kephLvl = {label:'', value:''}
 
 	
-	//  console.log({props})
+	 console.log({props}) 
 	
 
     const nameOptionRef = useRef(null)
     const serviceOptionRef = useRef(null)
     const optionRefBody = useRef(null)
     const infrastructureBodyRef = useRef(null)
-
-	
+	const kephLvlRef = useRef(null)
+	const regBodyRef = useRef(null)
 
 
     const steps = [
@@ -202,15 +206,37 @@ function AddFacility(props) {
             name:'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
             subCategories:[
                 'Accident and Emergency casualty Services',
-                'General Emergency Services'
-            ]
+                'General Emergency Services',
+            ],
+			value:[
+				'175f9481-9e91-481a-aa47-173e790c41df',
+				'c009442b-a0db-4406-8568-844edf17afbb'
+			]
         },
         {
             name:'AMBULATORY SERVICES',
             subCategories:[
-                'Ambulatory Services'
-            ]
+                'Ambulatory Services',
+            ],
+			value:[
+				'edb9376c-28d3-4362-b90a-5301be6e4b6e'
+			]
         },
+		{
+            name:'FORENSIC SERVICES',
+            subCategories:[
+                'Comprehensive -Post Mortem',
+                'Basic -collection, preservation, of evidence',
+                'Forensic Services'
+            ],
+			value:[
+				'6fccd2ac-d394-4cdc-bead-97747ca1dbad',
+				'dc777557-3513-4728-a976-668b4b0e53ba',
+				'42954c00-add8-4339-bc75-88540984a0d8'
+			]
+
+        },
+		/*,
         {
             name:'ANTENATAL CARE',
             subCategories:[
@@ -333,7 +359,7 @@ function AddFacility(props) {
             name: 'MATERNITY SERVICES',
             subCategories:[
             ]
-        }
+        }*/
            
     ]
 
@@ -414,10 +440,11 @@ function AddFacility(props) {
 	]
 
 	
-    const [formId, setFormId] = useState(0)
+    const [formId, setFormId] = useState(5) //0
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
+	const checklistFileRef = useRef(null)
   
 
 
@@ -432,30 +459,33 @@ function AddFacility(props) {
 	// const [geolocationData, setGeolocationData] = useState({})
 
 	const [ownerTypeOption, setOwnerTypeOption] = useState('')
-	const [latitude, setLatitude] = useState(null)
-	const [longitude, setLongitude] = useState(null)
+	const [latitude, setLatitude] = useState('')
+	const [longitude, setLongitude] = useState('')
 	const [county, setCounty] = useState('')
 	const [facilityId, setFacilityId] = useState('')
-	const [kephLvl, setKephLvl] = useState(null)
+	
 
 	const [geoJSON, setGeoJSON] = useState(null)
     const [center, setCenter] = useState(null)
     const [wardName, setWardName] = useState('')
+	const [facilityTypeDetail, setFacilityTypeDetail] = useState('')
 
 	// console.log({geolocationData})
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
+	
 
     useEffect(() => {
 
         const formIdState = window.sessionStorage.getItem('formId');
+		
 
-        // console.log({formIdState})
+        console.log({services})
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
-            window.sessionStorage.setItem('formId', 7); //0
+            window.sessionStorage.setItem('formId', 5); //0
         }
         
         setFormId(window.sessionStorage.getItem('formId'));
@@ -481,7 +511,7 @@ function AddFacility(props) {
             }
             
         }
-    }, [facilityOfficialName, facilityOption, formId, services, latitude, geoJSON, longitude, kephLvl])
+    }, [facilityOfficialName, facilityOption, formId, services, latitude, geoJSON, longitude])
       
 
 	const handleQuickFiltersClick = (link) => {
@@ -524,12 +554,37 @@ function AddFacility(props) {
 	}
 	}
 
+	if(facilityTypeDetail !== '' && kephLvlRef.current !== null){
+		switch(facilityTypeDetail){
+			case 'Comprehensive Teaching & Tertiary Referral Hospital':
+				
+				if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 6')[0]
+				
+				break;
+			case 'Specialized & Tertiary Referral hospitals':
+				
+				if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 6')[0]
+				
+				break;
+			case 'Secondary care hospitals':
+			
+				if(kephLvlRef.current !== null) kephLvlRef.current.state.value =   kephOptions.filter(({label}) => label === 'Level 5')[0]
+					
+				break;
+			case 'Primary care hospitals':
+				
+				if(kephLvlRef.current !== null) kephLvlRef.current.state.value =  kephOptions.filter(({label}) => label === 'Level 4')[0]
+				break;
+		}
+	}
+
   return (
 	<>
 		 <Head>
                 <title>KMHFL - Add Facility</title>
                 <link rel="icon" href="/favicon.ico" />
-            </Head>
+        </Head>
+
 		<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 			<div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
 						<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
@@ -671,7 +726,7 @@ function AddFacility(props) {
 
 													// Post Facility Basic Details
 													try{
-														fetch('/api/common/post_form_data/?path=facilities', {
+														fetch('/api/common/submit_form_data/?path=facilities', {
 															headers:{
 																'Accept': 'application/json, text/plain, */*',
 																'Content-Type': 'application/json;charset=utf-8'
@@ -701,11 +756,13 @@ function AddFacility(props) {
 															}
 
 															if(resp){
+
+																console.log({input: checklistFileRef.current})
+																
 																try {
-																	const resp = await fetch('/api/common/post_form_data/?path=documents', {
+																	const resp = await fetch('/api/common/submit_form_data/?path=documents', {
 																		headers:{
 																			'Accept': 'application/json, text/plain, */*',
-																			'Content-Type': 'multipart/form-data; boundary=---------------------------225842045917620681641702784814'
 																			
 																		},
 																		method:'POST',
@@ -723,7 +780,7 @@ function AddFacility(props) {
 														.then(async (resp) => {
 															if(resp){
 
-																
+																															
 																	setFacilityId(_id) //set facility Id
 																	
 																	let _data
@@ -772,8 +829,6 @@ function AddFacility(props) {
 
 													
 
-
-
 													// Change form Id
 													window.sessionStorage.setItem('formId', 1);
 
@@ -789,6 +844,7 @@ function AddFacility(props) {
 															Facility Basic Details
 														</h4>
 														<form
+															
 															className='flex flex-col w-full items-start justify-start gap-3'
 															onSubmit={handleBasicDetailsSubmit}>
 															{/* Facility Official Name */}
@@ -870,9 +926,9 @@ function AddFacility(props) {
 																			
 																			switch(facilityOption){
 																				case 'STAND ALONE':
+			
+																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 
-																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 2')[0])
-							
 																					return [
 																						facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
 																						facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Drug and Substance abuse")[0] || {},
@@ -892,14 +948,16 @@ function AddFacility(props) {
 																						 ] 
 																					
 																				case 'DISPENSARY':
+																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 																					return  facilityTypeOptions.filter(({label}) => label == 'DISPENSARY') || []
 																					
 
 																				case 'MEDICAL CLINIC':
+																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
 																					
 																				case 'NURSING HOME':
-																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 2')[0])
+																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 																					
 																					return [
 																							facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
@@ -916,14 +974,14 @@ function AddFacility(props) {
 																						] 
 																			
 																				case 'HEALTH CENTRE':
-																				
+																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 																					return [
 																						facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
 																						facilityTypeOptions.filter(({label}) => label == 'Comprehensive health Centre')[0] || {}
 																						]
 
 																				case 'MEDICAL CENTRE':
-																					setKephLvl(kephOptions.filter(({label}) => label === 'Level 3')[0])
+																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
 																				
@@ -934,14 +992,23 @@ function AddFacility(props) {
 																	placeholder='Select a facility type details...'
 																	onChange={ev => {
 																		switch(ev.label){
-																			case /.+\ Tertiary\ Referral\ hospitals/:
-																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 6')[0])
+																			case 'Comprehensive Teaching & Tertiary Referral Hospital':
+																				setFacilityTypeDetail('Comprehensive Teaching & Tertiary Referral Hospital')
+																				
+																				
+																				break;
+																			case 'Specialized & Tertiary Referral hospitals':
+																				setFacilityTypeDetail('Specialized & Tertiary Referral hospitals')
+																				
 																				break;
 																			case 'Secondary care hospitals':
-																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 5')[0])
+																				setFacilityTypeDetail('Secondary care hospitals')
+																			
+																					
 																				break;
 																			case 'Primary care hospitals':
-																				setKephLvl(kephOptions.filter(({label}) => label === 'Level 4')[0])
+																				setFacilityTypeDetail('Primary care hospitals')
+																				
 																				break;
 																			
 																		}
@@ -1124,7 +1191,8 @@ function AddFacility(props) {
 																	KEPH Level
 																</label>
 																<Select
-																	options={kephLvl ?? kephOptions ?? []}
+																	ref={kephLvlRef}
+																	options={kephOptions ?? []}
 																	placeholder='Select a KEPH Level..'
 																	name='keph_level'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -1456,7 +1524,7 @@ function AddFacility(props) {
 																		}}
 																	/>
 																	<label
-																		htmlFor='open_whole_day'
+																		htmlFor='open_24hrs'
 																		className='text-gray-700 capitalize text-sm flex-grow'>
 																		{' '}
 																		Open 24 hours
@@ -1550,7 +1618,7 @@ function AddFacility(props) {
 																	<div className='col-start-1 col-span-1'>
 																		<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																			<label
-																				htmlFor='keph_level'
+																				htmlFor='county_id'
 																				className='text-gray-600 capitalize text-sm'>
 																				County
 																				<span className='text-medium leading-12 font-semibold'>
@@ -1570,7 +1638,7 @@ function AddFacility(props) {
 																						try{
 																							const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
 
-																							setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
+																							setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
 
 																							
 																						}
@@ -1632,7 +1700,7 @@ function AddFacility(props) {
 																						try{
 																							const resp = await fetch(`/api/filters/ward/?sub_county=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
 
-																							setWardNameOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})))
+																							setWardNameOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
 
 																						}
 																						catch(e){
@@ -1764,6 +1832,7 @@ function AddFacility(props) {
 																	</label>
 																	<input
 																		required
+																		ref={checklistFileRef}
 																		type='file'
 																		name='facility_checklist_document'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1802,29 +1871,46 @@ function AddFacility(props) {
 
 													elements.forEach(({ name, value }) => {
 														
-														geolocationData[name] = name === 'collection_date' ? new Date(value) : (() => {
-															return value.match(/^[0-9]+\.[0-9]$/) !== null ? Number(value).toFixed(6) : value
-														}) 
+														geolocationData[name] = (() => {
+															switch (name) {
+																case 'collection_date':
+																	return  new Date(value)
+																case 'latitude':
+																	return  value.match(/^\-$/) !== null ? 0.000000 : value
+																case 'longitude':
+																	return  value.match(/^\-$/) !== null ? 0.000000 : value
+																default:
+
+																	return value
+															}
+														})() 
 													});
+
+													
+
+													geolocationData['facility'] = facilityId ?? ''
+
+													// Convert the latitude/longitude from string to number
+
+													geolocationData['latitude'] = Number(geolocationData.latitude)
+													geolocationData['longitude'] = Number(geolocationData.longitude)
 
 													// Set missing geolocationData i.e coordinates & facility
 
 													geolocationData['coordinates'] = {
-														coordinates : [
-															Number(geolocationData.longitude),
-															Number(geolocationData.latitude)
+														coordinates : [														
+															geolocationData.longitude,
+															geolocationData.latitude
 														],
 														type: 'Point'
 													}
-
-													geolocationData['facility'] = facilityId ?? ''
 
 													console.log({geolocationData})
 
 													// Post Geolocation Details
 
 													try{
-														fetch('/api/common/post_form_data/?path=gis', {
+														fetch('/api/common/submit_form_data/?path=gis', {
 															headers:{
 																'Accept': 'application/json, text/plain, */*',
 																'Content-Type': 'application/json;charset=utf-8'
@@ -1894,7 +1980,7 @@ function AddFacility(props) {
 																		required
 																		type='decimal'
 																		name='longitude'
-																		onChange={ev => setLongitude(Number(ev.target.value).toFixed(6))}
+																		onChange={ev => setLongitude(ev.target.value)}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -1913,7 +1999,7 @@ function AddFacility(props) {
 																		required
 																		type='decimal'
 																		name='latitude'
-																		onChange={ev => setLatitude(Number(ev.target.value).toFixed(6))}
+																		onChange={ev => setLatitude(ev.target.value)}
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -1923,19 +2009,19 @@ function AddFacility(props) {
 															<div className='w-full h-auto'>
 																{
 																	 geoJSON !== null ? 
-																	 <Suspense fallBack={<h3 className='text-blue-900'>Loading ....</h3>}>
+																	//  <Suspense fallBack={<LoadingAnimation size={6} isLight={false}/>}>
 																		<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																			<Map markerCoordinates={[Number(latitude ?? 0.00000).toFixed(6), Number(longitude ?? 0.00000).toFixed(6)]} geoJSON={geoJSON} ward={wardName} center={center} />
+																			{/* [Number(latitude.match(/^\-$/) !== null ? 0.000000 : latitude).toFixed(6), Number(longitude.match(/^\-$/) !== null ? 0.000000 : longitude).toFixed(6)] */}
+																			<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
 																		</div>
-																	 </Suspense>
+																	//  </Suspense> 
 																	
 																	:
-																	<Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
+																	// <Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
+																	<LoadingAnimation size={6} isLight={false}/>
 
 																}
 															 
-																	
-
 																
 															</div>
 
@@ -1966,6 +2052,48 @@ function AddFacility(props) {
 
 												const handleFacilityContactsSubmit = (event) => {
 													event.preventDefault();
+
+													const contactFormData = {};
+
+													const elements = [...event.target];
+
+													elements.forEach(({ name, value }) => {
+														console.log({name, value});
+														contactFormData[name] = value 
+													});
+
+													console.log({contactFormData})
+
+
+													const payload  = {
+														contacts: [
+															{
+																contact: contactFormData['contact'],
+																contact_type: contactFormData['contact_type']
+															}
+														],
+														officer_in_charge: {
+															name: contactFormData['name'],
+															reg_no: contactFormData['reg_no'],
+															title: contactFormData['title']
+														}
+													}
+
+												
+													try{
+														fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
+															headers:{
+																'Accept': 'application/json, text/plain, */*',
+																'Content-Type': 'application/json;charset=utf-8'
+																
+															},
+															method:'POST',
+															body: JSON.stringify(payload).replace(',"":""','')
+														})
+													}
+													catch(e){
+														console.error('Unable to patch facility contacts details'. e.message)
+													}
 
 													window.sessionStorage.setItem('formId', 3);
 
@@ -2156,7 +2284,8 @@ function AddFacility(props) {
 																<hr className='col-span-2' />
 
 																{/* Contact Type / Contact Details */}
-																<FacilityContact />
+																<FacilityContact contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
+																
 															</div>
 
 															<div className='w-full flex justify-end items-center'>
@@ -2179,7 +2308,7 @@ function AddFacility(props) {
 																{/*  Name  */}
 																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																	<label
-																		htmlFor='facility_official_name'
+																		htmlFor='name'
 																		className='text-gray-600 capitalize text-sm'>
 																		Name
 																		<span className='text-medium leading-12 font-semibold'>
@@ -2198,13 +2327,13 @@ function AddFacility(props) {
 																{/*  Registration Number */}
 																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																	<label
-																		htmlFor='facility_official_name'
+																		htmlFor='reg_no'
 																		className='text-gray-600 capitalize text-sm'>
 																		Registration Number/License Number{' '}
 																	</label>
 																	<input
 																		type='text'
-																		name='reg_num'
+																		name='reg_no'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -2212,7 +2341,7 @@ function AddFacility(props) {
 																{/* Job Title */}
 																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																	<label
-																		htmlFor='facility_official_name'
+																		htmlFor='title'
 																		className='text-gray-600 capitalize text-sm'>
 																		Job Title
 																		<span className='text-medium leading-12 font-semibold'>
@@ -2220,12 +2349,14 @@ function AddFacility(props) {
 																			*
 																		</span>{' '}
 																	</label>
-																	<input
+																	<Select options={jobTitleOptions || []} 
 																		required
-																		type='text'
-																		name='job_title'
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
+																		placeholder="Select Job Title"
+																		onChange={
+																			() => console.log('changed')
+																		}
+																		name="title" 
+            															className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 																</div>
 
 																{/* Facility Officer Contact Type / Contact Details */}
@@ -2243,7 +2374,7 @@ function AddFacility(props) {
 																	<hr className='col-span-2' />
 
 																	{/* Contact Type / Contact Details */}
-																	<FacilityContact />
+																	<FacilityContact contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
 																</div>
 
 																<div className='w-full flex justify-end items-center mt-2'>
@@ -2283,6 +2414,89 @@ function AddFacility(props) {
 												// Regulation form
 												const handleRegulationSubmit = (event) => {
 													event.preventDefault();
+
+													// Post Facility Regulation Data
+
+													const facilityRegDataA = {};
+													const facilityRegDataB = {};
+
+
+													const elements = [...event.target];
+
+													const payload = []
+
+													elements.forEach(({ name, value }) => {
+														switch(name){
+															case 'license_number':
+																facilityRegDataA[name] = value
+																break;
+															case 'registration_number':
+																facilityRegDataA[name] = value
+																break;
+															case 'regulation_status':
+																facilityRegDataA[name] = value
+																break;
+															case 'regulatory_body':
+																facilityRegDataA[name] = value
+																break;
+															case 'facility_dept_name':
+																facilityRegDataB['0'] = {
+																	unit: value,
+																}
+																break;
+															case 'facility_regulatory_body':
+																facilityRegDataB['1'] = {
+																	regulation_body_name: value,
+																}
+																break;
+															case 'facility_registration_number':
+															facilityRegDataB['2'] = {
+																registration_number: value,
+															}
+															break;
+															case 'facility_license_number':
+															facilityRegDataB['3'] = {
+																license_number: value,
+															}
+															break;	
+
+
+														}
+														
+													});
+
+
+
+													payload.push(facilityRegDataA)
+													payload.push({units:[{
+														unit: facilityRegDataB['0'].unit, 
+														regulation_body_name:facilityRegDataB['1'].regulation_body_name,
+														registration_number:facilityRegDataB['2'].registration_number,
+														license_number:facilityRegDataB['3'].license_number
+													}]})
+													
+													console.log({payload})
+
+													payload.forEach(data => {
+														try{
+															fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
+																headers:{
+																	'Accept': 'application/json, text/plain, */*',
+																	'Content-Type': 'application/json;charset=utf-8'
+																	
+																},
+																method:'POST',
+																body: JSON.stringify(data)
+															})
+	
+														}
+														catch(e){
+															console.error('Unable to patch facility contacts details'. e.message)
+														}
+													})
+
+													
+
 
 													window.sessionStorage.setItem('formId', 4);
 
@@ -2419,30 +2633,45 @@ function AddFacility(props) {
 														<form name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleRegulationSubmit}>
 
 															{/* Regulatory Body */}
-
-															{/* Job Title */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-																	<label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
-																	<input required type="text" name="regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																	<label htmlFor="regulatory_body" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
+																	<Select 
+																		options={regBodyOptions || []} 
+																		required
+																		placeholder="Select Regulatory Body"
+																		name='regulatory_body'
+																		className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+        
 															</div>
 
 															{/* Regulation Status */} 
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-																<label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">License Number</label>
+																<label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">License Number</label>
+																<Select 
+																		options={regulationStateOptions || []} 
+																		required
+																		placeholder="Select Regulation Status"
+																		name='regulation_status'
+																		className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+															</div>
+
+															{/* License Number */} 
+															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+																<label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
 																<input type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 															</div>
 
 															{/* Registration Number */} 
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-																<label htmlFor="facility_official_name" className="text-gray-600 capitalize text-sm">Registration Number</label>
-																<input type="text" name="reg_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																<label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number</label>
+																<input type="text" name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 															</div>
 
 															{/* check file upload */}
 															<div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
 																<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-																	<label htmlFor="checklist_file" className="text-gray-600 capitalize text-sm">Upload license document</label>
-																	<input required type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																	<label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
+																	<input type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 																</div>
 															</div>
 
@@ -2460,43 +2689,29 @@ function AddFacility(props) {
 
 																
 																{/* Name */}
-																<Select options={
-																					[
-																						{
-																							value:"Private Practice",
-																							label: "Private Practice"
-																						},
-																						{
-																							value:'Non-Governmental Organizations',
-																							label: 'Non-Governmental Organizations'
-																						},
-																						{
-																							value:'Ministry of Health',
-																							label: 'Ministry of Health'
-																						},
-																						{
-																							value:'Faith Based Organization',
-																							label: 'Faith Based Organization'
-																						}
-																					]
-																				} 
-																				required
-																				placeholder="Select Ward"
-																				onChange={
-																					() => console.log('changed')
-																				}
-																				name="facility_dept_name" 
-																				className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+																<Select options={facilityDeptOptions || []} 
+																	required
+																	placeholder="Select Name"
+																	onChange={
+																		e => {
+																			if(regBodyRef.current !== null){
+																				console.log({regBody: facilityDeptOptions.filter(({label}) => label === e.label)})
+																				regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
+																			}
+																		}
+																	}
+																	name="facility_dept_name" 
+																	className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 																
 																{/* Regulatory Body */}
-																<input type="text" name="regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																<input type="text" disabled ref={regBodyRef} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
 																{/* License No. */}
-																<input type="number" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																<input type="number" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 										
 																<div className='col-start-4 flex items-center space-x-2 w-full'>
 																	{/* Reg No. */}
-																	<input type="number" name="reg_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																	<input type="number" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 																
 																	{/* Delete Btn */}
 
@@ -2580,7 +2795,7 @@ function AddFacility(props) {
 																</thead>
 																<tbody ref={optionRefBody}>
 																	{
-																		services.map((service, i) => (
+																		services.map(({subctg}) => subctg).map((service, i) => (
 																			<tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
 																				<td ref={nameOptionRef}>{service}</td>
 																				<td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
@@ -2773,8 +2988,7 @@ function AddFacility(props) {
 														</form>
 													</>
 												)
-										
-										
+	
 										}
 									})()
 									}
@@ -2818,10 +3032,16 @@ AddFacility.getInitialProps = async (ctx) => {
 		'sub_counties',
 		'constituencies',
 		'wards',
+		'job_titles',
+		'contact_types',
+		'facility_depts',
+		'regulating_bodies',
+		'regulation_status',
+		'services'
 	
 	]
 
-	console.log('get initial props...')
+	// console.log('get initial props...')
 
 	return checkToken(ctx.req, ctx.res)
 		.then(async (t) => {
@@ -2840,7 +3060,6 @@ AddFacility.getInitialProps = async (ctx) => {
 						case 'facility_types':
 						url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
 
-								
 								try{
 								
 									const _data = await fetch(url, {
@@ -2852,7 +3071,6 @@ AddFacility.getInitialProps = async (ctx) => {
 
 									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value:id, label:sub_division} : {value:id, label:name})
 
-													
 									// console.log({results})
 									allOptions.push({facility_types: results })
 									
@@ -2999,6 +3217,170 @@ AddFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
+
+						case 'job_titles':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
+	
+						
+							try{
+	
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},
+								})
+	
+								allOptions.push({job_titles: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									facility_admission_status: [],
+								})
+							}
+							break;
+
+						case 'contact_types':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=id,name`;
+	
+						
+							try{
+	
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},
+								})
+	
+								allOptions.push({contact_types: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									facility_admission_status: [],
+								})
+							}
+							break;
+
+						case 'facility_depts':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,regulatory_body,regulatory_body_name`;
+	
+						
+							try{
+	
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},
+								})
+	
+								allOptions.push({facility_depts: (await _data.json()).results.map(({id, name, regulatory_body_name}) => ({value:id, label:name, reg_body_name: regulatory_body_name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									facility_depts: [],
+								})
+							}
+							break;
+
+						case 'regulating_bodies':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
+	
+						
+							try{
+	
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},
+								})
+	
+								allOptions.push({regulating_bodies: (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									regulating_bodies: [],
+								})
+							}
+							break;
+
+						case 'regulation_status':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/`;
+	
+						
+							try{
+	
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},
+								})
+	
+								allOptions.push({regulation_status: (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									regulation_status: [],
+								})
+							}
+							break;
+
+						case 'services':
+
+						/*
+
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
+
+							try{
+		
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									}
+								})
+	
+								allOptions.push({service: (await _data.json()).results.map(({id, name, category, category_name}) => ({id, name, category, category_name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									service: [],
+								})
+							}
+							*/
+
+
+							
+
+							break;
+
 						default:
 								let fields = ''
 								let _obj = {}
