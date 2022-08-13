@@ -61,7 +61,6 @@ export default function HeaderLayout({
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [subCountyLevel, setSubcountyLevel]=useState(false)
   const [user, setUser] = useState(null);
   let API_URL = process.env.NEXT_PUBLIC_API_URL; // || "http://localhost:8000/api";
   if (
@@ -114,9 +113,6 @@ export default function HeaderLayout({
             } else {
               setIsLoggedIn(true);
               setUser(usr);
-              if(usr.user_groups.is_sub_county_level){
-                setSubcountyLevel(true)
-              }
             }
           }
         );
@@ -196,7 +192,6 @@ export default function HeaderLayout({
               </Link>
             </li>
             {/* Users */}
-            {!subCountyLevel && 
             <li className="flex-wrap font-semibold">
               <Link href="/users">
                 <a
@@ -209,7 +204,6 @@ export default function HeaderLayout({
                 </a>
               </Link>
             </li>
-              }  
             {/* GIS */}
             <li className="flex-wrap font-semibold">
               <Link href="/gis">
