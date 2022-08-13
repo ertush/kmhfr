@@ -15,13 +15,13 @@ const AddGroup = (props)=> {
 	let permissions = props?.data?.results
 
 	const [groupData, setGroupData]=useState({
-		name:                 {name: "name" ,  value: null },
-		permissions:          {name: "permissions", value: [] },
-		is_regulator:         {name: "is_regulator" , value: null },
-		is_national:          {name: "is_national",  value: null },
-		is_administrator:     {name: "is_administrator", value: null },
-		is_county_level:      {name: "is_county_level",  value: null },
-		is_sub_county_level:  {name: "is_sub_county_level", value: null },
+		name: '',
+		permissions: [],
+		is_regulator:false,
+		is_national: false,
+		is_administrator: false,
+		is_county_level: false,
+		is_sub_county_level: false,
 	})
 
 	const handleOnChange =(val)=>{
@@ -30,27 +30,40 @@ const AddGroup = (props)=> {
 				const newObj = {}
 				newObj[val.target.name] = {}
 				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.value
+				val.target.type =="checkbox" ? newObj[val.target.name] = val.target.checked : newObj[val.target.name] = val.target.value
 				setGroupData({ ...groupData, ...newObj })
-                if(val.target.type=="checkbox"){
-                const newObj = {}
-				newObj[val.target.name] = {}
-				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.checked
-				setGroupData({ ...groupData, ...newObj })
-                }
-		
         }else{
 			const newObj2={}
 			newObj2['permissions'] = {}
-			newObj2['permissions'].name = "permissions"
-			newObj2['permissions'].value = val.map((id)=>{return {value: id}})
+			newObj2['permissions'] = "permissions"
+			newObj2['permissions'] = val.map((id)=>{return {id: id.value, name:id.label, codename:id.codename}})
 			setGroupData({ ...groupData, ...newObj2 })
         }
 	}
 
-	const handleGroupSubmit =()=>{
-
+	const handleGroupSubmit =(event)=>{
+		event.preventDefault()
+		try{
+			 fetch('/api/common/submit_form_data/?path=groups', {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json;charset=utf-8'
+					
+				},
+				method:'POST',
+				body: JSON.stringify(groupData).replace(',"":""','')
+			})
+			.then(resp =>resp)
+			.then(res => {
+				// console.log(res)
+				if(res.status==200){
+					router.push('/users/groups')
+				}
+			})
+			.catch(e=>console.log(e))
+		}catch (e){
+			console.error(e)
+		}
 	}
 // console.log(groupData);
   return (
@@ -263,11 +276,12 @@ const AddGroup = (props)=> {
                                                                     Array.from(permissions || [],
 																		fltopt => {
 																			return {
-																				value: fltopt.id, label: fltopt.name
+																				value: fltopt.id, label: fltopt.name, codename: fltopt.codename
 																			}
 																		})
                                                                 } 
-                                                               onChange={(ev)=>{
+																simpleValue={false}
+                                                                onChange={(ev)=>{
                                                                 setselPermissions(ev)
                                                                 handleOnChange(
                                                                     ev
@@ -312,7 +326,6 @@ const AddGroup = (props)=> {
 									
                             </div>
                         </div>
-                        
 
                 
                

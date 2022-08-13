@@ -2,7 +2,7 @@
 
 import { checkToken } from "../../../controllers/auth/auth";
 
-export default async function postFormData(req, res) {
+export default async function submitFormData(req, res) {
 
     
     const fetchData = async (token) => {
@@ -12,17 +12,63 @@ export default async function postFormData(req, res) {
         const { path } = req.query
     
         let url = ''
+        let contentType = ''
+        let method = ''
      
             switch (path) {
                 case 'facilities':
-                    url = `${API_URL}/facilities/facilities/`
+                    url = `${API_URL}/facilities/facilities/`;
+                    method = 'POST';
+                    contentType = 'application/json;charset=utf-8';
                     break;
                 case 'gis':
                     url = `${API_URL}/gis/facility_coordinates/`
+                    method = 'POST';
+                    contentType = 'application/json;charset=utf-8';
                     break
                 case 'documents':
-                    url = `${API_URL}/common/documents/`
+                    url = `${API_URL}/common/documents/`;
+                    method = 'POST';
+                    contentType = 'multipart/form-data; boundary=---------------------------22584204591762068164170278481';
+                    break;
+
+                case 'facility_data':
+                    const {id} = req.query;
+                    console.log({facility_id: id});
+                    url = `${API_URL}/facilities/facilities/${id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
+                case 'users':
+                    url = `${API_URL}/users/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
                     break
+                case 'groups':
+                    url = `${API_URL}/users/groups/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break
+                case `edit`:
+                    url = `${API_URL}/users/groups/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break  
+                case `edit_user`:
+                    url = `${API_URL}/users/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break
+                case `delete`:
+                    url = `${API_URL}/users/groups/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break 
+                case `delete_user`:
+                    url = `${API_URL}/users/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break             
                 default:
                     
                     break;
@@ -35,9 +81,9 @@ export default async function postFormData(req, res) {
                     headers: {
                         'Authorization': 'Bearer ' + token,
                         'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': `${path === 'documents' ? 'multipart/form-data; boundary=---------------------------225842045917620681641702784814' : 'application/json;charset=utf-8'}`
+                        'Content-Type': contentType
                     },
-                    method:'POST',
+                    method,
                     body: JSON.stringify(req.body)
                 })
                 
@@ -47,7 +93,7 @@ export default async function postFormData(req, res) {
                 console.error('Error posting facility basic details: ', err)
                 return {
                     error: true,
-                    err: err,
+                    err: err.message,
                     api_url:API_URL
                 }
             }

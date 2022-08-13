@@ -33,15 +33,17 @@ function intersection(a, b) {
 export default function TrasnferListServices({categories, setServices}) {
 
  
-
+  const [newSelected, setNewSelected] = React.useState([])
   const [checked, setChecked] = React.useState([]);
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
   const [right, setRight] = React.useState([]);
   const [checkAll, setCheckAll] = React.useState(false);
+  const [selectedService, setSelectedService] = React.useState({});
 
   let leftChecked = intersection(checked, left);
   let rightChecked = intersection(checked, right);
+ 
 
 
 useMemo(() => {
@@ -68,46 +70,64 @@ useMemo(() => {
 
   };
 
-  const handleCheckBoxToggle =  (value) => () => {
-    const currentIndex = checkBoxChecked.indexOf(value);
-   
+  const handleCheckBoxToggle =  (service) => () => {
+    console.log({service})
+
+    
+    const currentIndex = checkBoxChecked.indexOf(service.subctg);
+  
+    const crntIndex =  newSelected.indexOf(service)
+
     const newChecked = [...checkBoxChecked];
+    
+    let allSelected = newSelected 
+    setNewSelected((() => {allSelected.push(service); return allSelected}))
 
     if (currentIndex === -1) {
-      newChecked.push(value);
+     
+      newChecked.push(service.subctg);
     } else {
       newChecked.splice(currentIndex, 1);
+      let selected = newSelected
+      selected.splice(crntIndex, 1)
+      setNewSelected(selected)
     }
 
+    setSelectedService(newSelected)
     setCheckBoxChecked(newChecked);
-
+    
   }
-
 
   const handleAllRight = () => {
     setRight(right.concat(left));
     setLeft([]);
     setCheckAll(true);
 
+    // console.log({categories})
     setServices((ctgs => {
      return ctgs.map(({subCategories}) => subCategories)
     })(categories));
+
+    setServices(selectedService)
  
   };
 
   const handleCheckedRight = () => {
+    // console.log({checkBoxChecked})
     setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
    
-    setServices(checkBoxChecked)
-   
+    // console.log({selectedService})
+    setServices(selectedService)
   };
 
   const handleCheckedLeft = () => {
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
+
+    setServices(selectedService)
   };
 
   const handleAllLeft = () => {
@@ -123,7 +143,9 @@ useMemo(() => {
 
       const [_data] = data
 
-      const {name, subCategories} = _data
+      const {name, subCategories, value} = _data
+
+      console.log({value})
  
       return (
        
@@ -148,11 +170,12 @@ useMemo(() => {
                       !isRight ?
       
                       <>
+                        {(() => {console.log({checkBoxChecked})})()}
                         <Checkbox
                           checked={checkBoxChecked.indexOf(subctg) !== -1}
                           tabIndex={-1}
                           disableRipple
-                          onChange={handleCheckBoxToggle(subctg)}
+                          onChange={handleCheckBoxToggle({subctg, value:value[i]})}
                           inputProps={{
                             'aria-labelledby': 'options',
                           }}
@@ -168,7 +191,7 @@ useMemo(() => {
                           checked={checkAll ? true : checkBoxChecked.indexOf(subctg) !== -1}
                           tabIndex={-1}
                           disableRipple
-                          onChange={handleCheckBoxToggle(subctg)}
+                          onChange={handleCheckBoxToggle({subctg, value:value[i]})}
                           inputProps={{
                             'aria-labelledby': 'options',
                           }}

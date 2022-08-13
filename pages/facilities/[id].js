@@ -20,12 +20,19 @@ const Facility = (props) => {
         } // This line is important. It's what prevents server-side render
     )
 
-    let facility = props.data
+    let facility = props['0'].data
+    let center = props['1'].geoLocation.center
+    let geoLocationData = props['1'].geoLocation
+    let wardName = props['0'].data.ward_name
+    
+
     const [user, setUser] = useState(null);
     const [isFacDetails, setIsFacDetails] = useState(true);
     const [isApproveReject, setIsApproveReject] = useState(false);
 
     useEffect(() => {
+
+        console.log({props})
         if (typeof window !== 'undefined') {
             let usr = window.sessionStorage.getItem('user')
             if (usr && usr.length > 0) {
@@ -40,7 +47,7 @@ const Facility = (props) => {
     return (
         <>
             <Head>
-                <title>KMHFL - {facility.official_name}</title>
+                <title>KMHFL - {facility.official_name ?? ''}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
@@ -51,7 +58,7 @@ const Facility = (props) => {
                         <div className="flex flex-row gap-2 text-sm md:text-base">
                             <a className="text-green-700" href="/">Home</a> {'>'}
                             <a className="text-green-700" href="/facilities">Facilities</a> {'>'}
-                            <span className="text-gray-500">{facility.official_name} ( #<i className="text-black">{facility.code || "NO_CODE"}</i> )</span>
+                            <span className="text-gray-500">{facility.official_name ?? ''} ( #<i className="text-black">{facility.code || "NO_CODE"}</i> )</span>
                         </div>
                         <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (facility.is_approved ? "border-green-600" : "border-red-600")}>
                             <div className="col-span-6 md:col-span-3">
@@ -63,10 +70,7 @@ const Facility = (props) => {
                             </div>
                             <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
-                                    {/* {<span className="p-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center bg-blue-500 text-white-900 gap-x-1">
-                                        <PencilAltIcon className="h-4 w-4" />
-                                        <a href={'/edit_facility/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 "> Edit Facility </a>
-                                    </span>} */}
+
                                     {(facility.operational || facility.operation_status_name) ? <span className={"leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"}>
                                         <CheckCircleIcon className="h-4 w-4" />
                                         Operational
@@ -95,9 +99,7 @@ const Facility = (props) => {
                                 </div>
                             </div>
                             <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
-                                {/* {user && user?.id ? <a href={'/facility/edit/' + facility.id} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black-700 active:bg-black-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
-                                    Edit
-                                </a> : <a href="/auth/login">Log in</a>} */}
+                                
                             </div>
                         </div>
                     </div>
@@ -109,9 +111,7 @@ const Facility = (props) => {
                             {/* Approve/Reject, Edit Buttons */}
                             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
-                                    {/* <a  href="/facility/validate" className="p-2 text-center rounded-md font-semibold text-base text-white bg-red-500">
-                                            <span>Validate/Reject</span>
-                                    </a>                                                                                                 */}
+                                    
                                     <button
                                         onClick={ 
                                             () => approveRejectFacility(facility.rejected, setIsApproveReject)
@@ -126,14 +126,7 @@ const Facility = (props) => {
                                         {/* Dynamic Button Rendering */}
                                         {facility.rejected ? "Appreve" : "Reject"}
                                     </button>
-                                    {/* <button href='/facility/validate'
-                                        onClick={() =>
-                                            approveRejectFacility(facility.is_approved, setIsApproveReject)
-                                        }
-                                        className="p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
-                                    >
-                                        Validate/Reject
-                                    </button> */}
+
                                     <button
                                         onClick={() => console.log(props.data)
                                         }
@@ -423,12 +416,7 @@ const Facility = (props) => {
                                                     </div>
                                                 ))}
                                             </div>
-                                            {/* <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
-                                                <summary>All data</summary>
-                                                <pre className="language-json leading-normal text-sm whitespace-pre-wrap text-gray-800 overflow-y-auto normal-case" style={{ maxHeight: '70vh' }}>
-                                                    {JSON.stringify({ ...facility }, null, 2).split('{').join('\n').split('"').join('').split(',').join('\n').split('_').join(' ')}
-                                                </pre>
-                                            </details> */}
+                                            
                                         </div>
                                     </Tabs.Panel>
                                     <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
@@ -561,27 +549,7 @@ const Facility = (props) => {
 
                             {/* Facility details */}
                             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                                {/* <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                                    <label className="col-span-1 text-gray-600">Functionality Status</label>
-                                    <p className="text-black font-medium text-base flex">
-                                        {facility.status_name.toLocaleLowerCase().includes("fully-") ? (
-                                            <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
-                                                <CheckCircleIcon className="h-4 w-4" />
-                                                {facility?.status_name || "Yes"}
-                                            </span>
-                                        ) : facility?.status_name.toLocaleLowerCase().includes("semi") ? (
-                                            <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
-                                                <CheckCircleIcon className="h-4 w-4" />
-                                                {facility?.status_name || "Yes"}
-                                            </span>
-                                        ) : (
-                                            <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                                                <XCircleIcon className="h-4 w-4" />
-                                                {facility?.status_name || "No"}
-                                            </span>
-                                        )}
-                                    </p>
-                                </div> */}
+                                
 
                                 <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                                     <label className="col-span-1 text-gray-600">
@@ -640,19 +608,7 @@ const Facility = (props) => {
                                         </p>
                                     </div>
                                 )}
-                                {/* {facility.date_operational && (
-                                    <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                                        <label className="col-span-1 text-gray-600">
-                                            Date operational
-                                        </label>
-                                        <p className="col-span-2 text-black font-medium text-base">
-                                            {new Date(facility.date_operational).toLocaleDateString(
-                                                "en-GB",
-                                                { year: "numeric", month: "long", day: "numeric" }
-                                            ) || " - "}
-                                        </p>
-                                    </div>
-                                )} */}
+
                             </div>
 
 
@@ -718,10 +674,6 @@ const Facility = (props) => {
 
                             {/* Facility Approval Comment */}
 
-                            {/* <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                                <label htmlFor="approval-comment" className="col-span-1 text-gray-900 font-semibold leading-16 text-medium"> Approval comment: </label>
-                                <p className="text-gray-400 text-medium text-left leading-16" name="approval-comment">some approval comments</p>
-                            </div> */}
 
                             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
                                 <label
@@ -767,16 +719,7 @@ const Facility = (props) => {
                                 </form>
                             </div>
 
-                            {/* <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                                <h3 className="text-gray-900 font-semibold leading-16 text-medium">Reject this Community Unit</h3>
-                                <form className="space-y-3" onSubmit={e => rejectCHU(e, cu, facility.isApproveReject, e.target.value)}>
-                                    <label htmlFor="comment-text-area"></label>
-                                    <textarea cols="70" rows="auto" className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2" placeholder="Enter a comment for rejecting community health unit">
-
-                                    </textarea>
-                                    <button type="submit" className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold" >Reject Community Health Unit</button>
-                                </form>
-                            </div>                                                   */}
+                           
                         </div>
                     )}
                     {/* end facility approval */}
@@ -786,7 +729,7 @@ const Facility = (props) => {
                         <h3 className="text-2xl tracking-tight font-semibold leading-5">Map</h3>
 
                         {(facility?.lat_long && facility?.lat_long.length > 0) ? <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
-                            <Map operational={facility.operational || facility.operation_status_name} code={facility?.code || "NO_CODE"} lat={facility?.lat_long[0]} long={facility?.lat_long[1]} name={facility.official_name || facility.name || ""} />
+                            <Map ward_name={wardName} operational={(facility.operational ?? facility.operation_status_name) ?? ''} code={facility?.code || "NO_CODE"} lat={facility?.lat_long[0]} center={center} geoJSON={geoLocationData} long={facility?.lat_long[1]} name={facility.official_name || facility.name || ""} />
                         </div> :
                             <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
                                 <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
@@ -798,7 +741,7 @@ const Facility = (props) => {
                             <ol className="list-decimal list-outside ml-4 flex flex-row gap-3">
                                 <li className="bg-gray-50 w-full rounded-sm p-2">
                                     {facility?.latest_approval_or_rejection?.comment && <p>{facility?.latest_approval_or_rejection?.comment}</p>}
-                                    {/* <small className="text-gray-500">{facility?.latest_approval_or_rejection?.id}</small> */}
+                           
                                 </li>
                             </ol>
                         </div>
@@ -810,6 +753,9 @@ const Facility = (props) => {
 }
 
 Facility.getInitialProps = async (ctx) => {
+
+    const allOptions = []
+
     if (ctx.query.q) {
         const query = ctx.query.q
         if (typeof window !== 'undefined' && query.length > 2) {
@@ -829,6 +775,7 @@ Facility.getInitialProps = async (ctx) => {
             throw new Error('Error checking token')
         } else {
             let token = t.token
+            let _data
             let url = process.env.NEXT_PUBLIC_API_URL + '/facilities/facilities/' + ctx.query.id + '/'
             return fetch(url, {
                 headers: {
@@ -836,10 +783,46 @@ Facility.getInitialProps = async (ctx) => {
                     'Accept': 'application/json'
                 }
             }).then(r => r.json())
-                .then(json => {
-                    return {
+                .then(async (json) => {
+                    allOptions.push({
                         data: json
+                    })
+
+                    // fetch ward boundaries
+                    if(json){
+                    
+                        try{
+                            const response = await fetch(
+                                `${process.env.NEXT_PUBLIC_API_URL}/common/wards/${json.ward}/`,
+                                {
+                                    headers: {
+                                        Authorization: 'Bearer ' + token,
+                                        Accept: 'application/json',
+                                    }
+                                }
+                                )
+
+							_data = await response.json()
+
+                            const [lng, lat] = _data?.ward_boundary.properties.center.coordinates 
+
+                            allOptions.push({
+                                geoLocation:JSON.parse(JSON.stringify(_data?.ward_boundary)),
+                                center: [lat, lng]
+                            })
+
+                       
+                           
+                        }
+                        catch (e){
+                            console.error('Error in fetching ward boundaries', e.message)
+                        }
                     }
+                    
+           
+
+                    return allOptions
+
                 }).catch(err => {
                     console.log('Error fetching facilities: ', err)
                     return {
@@ -866,6 +849,8 @@ Facility.getInitialProps = async (ctx) => {
             }
         }, 1000);
     })
+
+    
 }
 
 export default Facility
