@@ -39,7 +39,7 @@ const EditGroup=(props)=> {
 	const handleGroupSubmit =(event)=>{
 		event.preventDefault()
 		try{
-			 fetch(`/api/common/post_form_data/?path=edit&id=${props.data.id}`, {
+			 fetch(`/api/common/submit_form_data/?path=edit&id=${props.data.id}`, {
 				headers:{
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json;charset=utf-8'
@@ -64,7 +64,7 @@ const EditGroup=(props)=> {
 	const deleteGroup =(event)=>{
 		event.preventDefault()
 		try {
-			fetch(`/api/common/post_form_data/?path=delete&id=${props.data.id}`, {
+			fetch(`/api/common/submit_form_data/?path=delete&id=${props.data.id}`, {
 				// headers:{
 				// 	// 'Accept': 'application/json, text/plain, */*',
 				// 	'Content-Type': 'application/json;charset=utf-8'

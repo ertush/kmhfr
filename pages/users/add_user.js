@@ -86,7 +86,7 @@ const AddUser = (props)=> {
 	const handleBasicDetailsSubmit = async (event)=>{
 		event.preventDefault()
 		let url=''
-		editMode ? url=`/api/common/post_form_data/?path=edit_user&id=${person_details.id}`: url ='/api/common/post_form_data/?path=users'
+		editMode ? url=`/api/common/submit_form_data/?path=edit_user&id=${person_details.id}`: url ='/api/common/submit_form_data/?path=users'
 		try{
 			 fetch(url, {
 				headers:{
@@ -118,7 +118,7 @@ const AddUser = (props)=> {
 	const deleteUser=(event)=>{
 		event.preventDefault()
 		try {
-			fetch(`/api/common/post_form_data/?path=delete_user&id=${person_details.id}`, {
+			fetch(`/api/common/submit_form_data/?path=delete_user&id=${person_details.id}`, {
 				// headers:{
 				// 	// 'Accept': 'application/json, text/plain, */*',
 				// 	'Content-Type': 'application/json;charset=utf-8'

@@ -44,7 +44,7 @@ const AddGroup = (props)=> {
 	const handleGroupSubmit =(event)=>{
 		event.preventDefault()
 		try{
-			 fetch('/api/common/post_form_data/?path=groups', {
+			 fetch('/api/common/submit_form_data/?path=groups', {
 				headers:{
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json;charset=utf-8'
