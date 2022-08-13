@@ -79,11 +79,13 @@ function AddFacility(props) {
 	 let wardOptions =  props['9']?.wards
 	 let jobTitleOptions = props['10']?.job_titles
 	 let contactTypeOptions = props['11']?.contact_types
+
 	 let facilityDeptOptions = props['12']?.facility_depts
 	 let regBodyOptions = props['13']?.regulating_bodies
 	 let regulationStateOptions = props['14']?.regulation_status
 	//  let serviceOptions = props['15'].services
 	//  let kephLvl = {label:'', value:''}
+
 
 	
 	 console.log({props}) 
@@ -2062,8 +2064,6 @@ function AddFacility(props) {
 														contactFormData[name] = value 
 													});
 
-													console.log({contactFormData})
-
 
 													const payload  = {
 														contacts: [
@@ -2076,12 +2076,15 @@ function AddFacility(props) {
 															name: contactFormData['name'],
 															reg_no: contactFormData['reg_no'],
 															title: contactFormData['title']
+
 														}
 													}
 
 												
 													try{
+
 														fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
+
 															headers:{
 																'Accept': 'application/json, text/plain, */*',
 																'Content-Type': 'application/json;charset=utf-8'
@@ -2284,8 +2287,24 @@ function AddFacility(props) {
 																<hr className='col-span-2' />
 
 																{/* Contact Type / Contact Details */}
+
 																<FacilityContact contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
 																
+
+																{/* <FacilityContact contactTypeOptions={contactTypeOptions} id={'facility'}/> */}
+																<Select options={contactTypeOptions || []} 
+																	required
+																	placeholder="Select Contact Type"
+																	onChange={
+																		() => console.log('changed')
+																	}
+																	name="contact_type" 
+																	id={'facility'}
+																	className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+																
+																	{/* Contact Details */}
+																	<input type="text" name="contact" id={'facility'} className="flex-none col-start-2 w-full bg-gray-50 rounded flex-grow border-2 placeholder-gray-500 border-gray-200 px-2 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+
 															</div>
 
 															<div className='w-full flex justify-end items-center'>
@@ -2374,7 +2393,9 @@ function AddFacility(props) {
 																	<hr className='col-span-2' />
 
 																	{/* Contact Type / Contact Details */}
+
 																	<FacilityContact contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+
 																</div>
 
 																<div className='w-full flex justify-end items-center mt-2'>
@@ -3037,7 +3058,9 @@ AddFacility.getInitialProps = async (ctx) => {
 		'facility_depts',
 		'regulating_bodies',
 		'regulation_status',
-		'services'
+		'services',
+		'contact_types'
+
 	
 	]
 
@@ -3269,6 +3292,7 @@ AddFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
+
 
 						case 'facility_depts':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,regulatory_body,regulatory_body_name`;

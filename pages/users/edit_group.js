@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import MainLayout from '../../components/MainLayout';
+import router from 'next/router';
 import { checkToken } from '../../controllers/auth/auth';
 import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, PencilAltIcon} from '@heroicons/react/solid';
 import Tooltip from '@mui/material/Tooltip';
@@ -15,43 +16,76 @@ const EditGroup=(props)=> {
 
     let permissions = props?.permissions[0].params.results
 	let group_details = props?.data
-
-	const [groupData, setGroupData]=useState({
-		name:                 {name: "name" ,  value: null },
-		permissions:          {name: "permissions", value: [] },
-		is_regulator:         {name: "is_regulator" , value: null },
-		is_national:          {name: "is_national",  value: null },
-		is_administrator:     {name: "is_administrator", value: null },
-		is_county_level:      {name: "is_county_level",  value: null },
-		is_sub_county_level:  {name: "is_sub_county_level", value: null },
-	})
+	const [groupData, setGroupData]=useState(props.data)
+	// console.log(groupData);
 
 	const handleOnChange =(val)=>{
 		// console.log(val);
 		if (val.target && val.target != undefined && val.target != null) {
-				const newObj = {}
-				newObj[val.target.name] = {}
-				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.value
-				setGroupData({ ...groupData, ...newObj })
-                if(val.target.type=="checkbox"){
-                const newObj = {}
-				newObj[val.target.name] = {}
-				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.checked
-				setGroupData({ ...groupData, ...newObj })
-                }
-		
-        }else{
+			const newObj = {}
+			newObj[val.target.name] = {}
+			newObj[val.target.name].name = val.target.name
+			val.target.type =="checkbox" ? newObj[val.target.name] = val.target.checked : newObj[val.target.name] = val.target.value
+			setGroupData({ ...groupData, ...newObj })
+		}else{
 			const newObj2={}
 			newObj2['permissions'] = {}
-			newObj2['permissions'].name = "permissions"
-			newObj2['permissions'].value = val.map((id)=>{return {value: id}})
+			newObj2['permissions'] = "permissions"
+			newObj2['permissions'] = val.map((id)=>{return {id: id.value, name:id.label, codename:id.codename}})
 			setGroupData({ ...groupData, ...newObj2 })
-        }
+		}
 	}
 
-	const handleGroupSubmit =()=>{
+	const handleGroupSubmit =(event)=>{
+		event.preventDefault()
+		try{
+			 fetch(`/api/common/submit_form_data/?path=edit&id=${props.data.id}`, {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json;charset=utf-8'
+					
+				},
+				method:'PATCH',
+				body: JSON.stringify(groupData).replace(',"":""','')
+			})
+			.then(resp =>resp)
+			.then(res => {
+				
+				// console.log(res)
+				if(res.status==200){
+					router.push('/users/groups')
+				}
+				
+			})
+		}catch (e){
+			console.error(e)
+		}
+	}
+	const deleteGroup =(event)=>{
+		event.preventDefault()
+		try {
+			fetch(`/api/common/submit_form_data/?path=delete&id=${props.data.id}`, {
+				// headers:{
+				// 	// 'Accept': 'application/json, text/plain, */*',
+				// 	'Content-Type': 'application/json;charset=utf-8'
+					
+				// },
+				method:'DELETE',
+				// body: JSON.stringify(groupData).replace(',"":""','')
+			})
+			.then(resp =>resp)
+			.then(res => {
+				
+				// console.log(res)
+				// if(res.status==200){
+					router.push('/users/groups')
+				// }
+				
+			})
+			
+		} catch (error) {
+			
+		}
 
 	}
 
@@ -72,6 +106,14 @@ const EditGroup=(props)=> {
                                     <PencilAltIcon className='ml-2 h-5 w-5' />
                                     {'Edit Group'}
                                 </h2>
+								<button
+								type='button'
+								onClick={deleteGroup}
+								className='rounded bg-red-500 p-2 text-white flex text-md font-semibold '>
+								<span className='text-medium font-semibold text-white'>
+									Delete
+								</span>
+							</button>
                         </div>
                   
                     </div>

@@ -31,6 +31,7 @@ export default async function submitFormData(req, res) {
                     method = 'POST';
                     contentType = 'multipart/form-data; boundary=---------------------------22584204591762068164170278481';
                     break;
+
                 case 'facility_data':
                     const {id} = req.query;
                     console.log({facility_id: id});
@@ -38,6 +39,36 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
+                case 'users':
+                    url = `${API_URL}/users/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break
+                case 'groups':
+                    url = `${API_URL}/users/groups/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break
+                case `edit`:
+                    url = `${API_URL}/users/groups/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break  
+                case `edit_user`:
+                    url = `${API_URL}/users/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break
+                case `delete`:
+                    url = `${API_URL}/users/groups/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break 
+                case `delete_user`:
+                    url = `${API_URL}/users/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
+                    break             
                 default:
                     
                     break;
