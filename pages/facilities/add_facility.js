@@ -37,7 +37,7 @@ import { XCircleIcon } from '@heroicons/react/outline';
 // Package imports
 import Select from 'react-select';
 import LoadingAnimation from '../../components/LoadingAnimation';
-import { useForkRef } from '@mui/material';
+// import { useForkRef } from '@mui/material';
 
 
 
@@ -50,7 +50,6 @@ const WardMap = dynamic(
 )
 
 const Map = React.memo(WardMap)
-
 
 function AddFacility(props) {
 
@@ -83,12 +82,45 @@ function AddFacility(props) {
 	 let facilityDeptOptions = props['12']?.facility_depts
 	 let regBodyOptions = props['13']?.regulating_bodies
 	 let regulationStateOptions = props['14']?.regulation_status
-	//  let serviceOptions = props['15'].services
+
+	 let serviceOptions = ((_services) => {
+		
+		const _serviceOptions = []
+		let _values = []
+		let _subCtgs = []
+
+		if(_services.length > 0){
+			_services.forEach(({category_name:ctg}) => {
+				let allOccurences = _services.filter(({category_name}) => category_name === ctg)
+				
+				allOccurences.forEach(({id, name}) => {
+					_subCtgs.push(name)
+					_values.push(id)
+				})
+				
+				if(_serviceOptions.map(({name}) => name).indexOf(ctg) === -1){
+					_serviceOptions.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+
+		return _serviceOptions
+	 })(props['15'].service ?? [])
+
 	//  let kephLvl = {label:'', value:''}
 
 
 	
-	 console.log({props}) 
+	//  console.log({props}) 
 	
 
     const nameOptionRef = useRef(null)
@@ -107,7 +139,7 @@ function AddFacility(props) {
         'Services',
         'Infrastructure',
         'Human resources'
-      ];
+    ];
 
     const infrastractureCategories = [
         {
@@ -203,168 +235,7 @@ function AddFacility(props) {
         
     ]
 
-    const serviceCategories = [
-        {
-            name:'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
-            subCategories:[
-                'Accident and Emergency casualty Services',
-                'General Emergency Services',
-            ],
-			value:[
-				'175f9481-9e91-481a-aa47-173e790c41df',
-				'c009442b-a0db-4406-8568-844edf17afbb'
-			]
-        },
-        {
-            name:'AMBULATORY SERVICES',
-            subCategories:[
-                'Ambulatory Services',
-            ],
-			value:[
-				'edb9376c-28d3-4362-b90a-5301be6e4b6e'
-			]
-        },
-		{
-            name:'FORENSIC SERVICES',
-            subCategories:[
-                'Comprehensive -Post Mortem',
-                'Basic -collection, preservation, of evidence',
-                'Forensic Services'
-            ],
-			value:[
-				'6fccd2ac-d394-4cdc-bead-97747ca1dbad',
-				'dc777557-3513-4728-a976-668b4b0e53ba',
-				'42954c00-add8-4339-bc75-88540984a0d8'
-			]
-
-        },
-		/*,
-        {
-            name:'ANTENATAL CARE',
-            subCategories:[
-                'Focused Antenatal Care'
-            ]
-        },
-        {
-            name:'BLOOD TRANSFUSION SERVICES',
-            subCategories:[
-                'Blood Bank',
-                'Facility offering Blood Transfusion Service',
-                'Satellite Blood Transfusion service'
-            ]
-        },
-        {
-            name:'CANCER SCREENING',
-            subCategories:[
-                'Breast',
-                'Coloreactal',
-                'Pap smear',
-                'Prostrate',
-                'Screening using VIA/VILI'
-            ]
-        },
-        {
-            name:'CURATIVE SERVICES',
-            subCategories:[
-                'Inpatient',
-                'Outpatient'
-                
-            ]
-        },
-        {
-            name:'DELTED HDU',
-            subCategories:[
-                'High dependency Services',
-                
-            ]
-        },
-        {
-            name:'EMERGENCY PREPAREDNESS',
-            subCategories:[
-                'Basic Emergency Preparedness',
-                'Comprehensive Emergency Preparedness'
-            ]
-        },
-        {
-            name:'FAMILY PLANNING',
-            subCategories:[
-                'Long Term',
-                'Natural',
-                'Permanent'
-            ]
-
-        },
-        {
-            name:'FORENSIC SERVICES',
-            subCategories:[
-                'Long Term',
-                'Natural',
-                'Permanent'
-            ]
-
-        },
-        {
-            name: 'HIV TREATMENT',
-            subCategories:[
-                'HIV treatment and care'
-            ]
-
-        },
-        {
-            name: 'HIV/AIDS Prevention,Care and Treatment Services',
-            subCategories:[
-                'Condom Distribution & STI Prevention',
-                'Elimination of Mother to Child transmission of HIV',
-                'HEI - HIV exposed infants',
-                'HIV preventive Package',
-                'HIV risk reduction for Key populations',
-                'HIV risk reduction services for prioity populations and geographies',
-                'HIV Testing Services',
-                'Infection Prevention and control to mitigate HIV infection in the work place',
-                'Management of Sexually Transmitted Illness (STI)',
-                'Nutrition assessment ,counselling and support ( The NACS process) for PLHIVs',
-                'Post-Exposure Prophylaxis (PEP)'
-            ]
-        },
-        {
-            name: 'HOSPICE SERVICE',
-            subCategories:[
-            ]
-        },
-        {
-            
-            name: 'IMMUNISATION',
-            subCategories:[
-            ]   
-        },
-        {
-            name: 'INTEGRATED MANAGEMENT OF CHILDHOOD ILLNESS',
-            subCategories:[
-            ]
-        },
-        {
-            name: 'LABORATORY SERVICES',
-            subCategories:[
-            ]
-        },
-        {
-            name: 'LEPROSY DIAGNOSIS',
-            subCategories:[
-            ]
-        },
-        {
-            name: 'LEPROSY TREATMENT',
-            subCategories:[
-            ]
-        },
-        {
-            name: 'MATERNITY SERVICES',
-            subCategories:[
-            ]
-        }*/
-           
-    ]
-
+   
 	const hrCategories = [
 
 		{
@@ -471,6 +342,7 @@ function AddFacility(props) {
     const [center, setCenter] = useState(null)
     const [wardName, setWardName] = useState('')
 	const [facilityTypeDetail, setFacilityTypeDetail] = useState('')
+	const [refreshForm, setRefreshForm] = useState(false)
 
 	// console.log({geolocationData})
 
@@ -513,7 +385,7 @@ function AddFacility(props) {
             }
             
         }
-    }, [facilityOfficialName, facilityOption, formId, services, latitude, geoJSON, longitude])
+    }, [facilityOfficialName, facilityOption, formId, refreshForm, latitude, geoJSON, longitude])
       
 
 	const handleQuickFiltersClick = (link) => {
@@ -1907,7 +1779,7 @@ function AddFacility(props) {
 														type: 'Point'
 													}
 
-													console.log({geolocationData})
+													// console.log({geolocationData})
 
 													// Post Geolocation Details
 
@@ -2060,7 +1932,7 @@ function AddFacility(props) {
 													const elements = [...event.target];
 
 													elements.forEach(({ name, value }) => {
-														console.log({name, value});
+														// console.log({name, value});
 														contactFormData[name] = value 
 													});
 
@@ -2107,7 +1979,7 @@ function AddFacility(props) {
 														'contact_details_others'
 													);
 
-													console.log(event.target);
+													// console.log(event.target);
 
 													if (dropDowns.length > 0) {
 														dropDowns.forEach((dropDown) => {
@@ -2291,19 +2163,7 @@ function AddFacility(props) {
 																<FacilityContact contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
 																
 
-																{/* <FacilityContact contactTypeOptions={contactTypeOptions} id={'facility'}/> */}
-																<Select options={contactTypeOptions || []} 
-																	required
-																	placeholder="Select Contact Type"
-																	onChange={
-																		() => console.log('changed')
-																	}
-																	name="contact_type" 
-																	id={'facility'}
-																	className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 																
-																	{/* Contact Details */}
-																	<input type="text" name="contact" id={'facility'} className="flex-none col-start-2 w-full bg-gray-50 rounded flex-grow border-2 placeholder-gray-500 border-gray-200 px-2 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
 															</div>
 
@@ -2496,7 +2356,7 @@ function AddFacility(props) {
 														license_number:facilityRegDataB['3'].license_number
 													}]})
 													
-													console.log({payload})
+													// console.log({payload})
 
 													payload.forEach(data => {
 														try{
@@ -2667,7 +2527,7 @@ function AddFacility(props) {
 
 															{/* Regulation Status */} 
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-																<label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">License Number</label>
+																<label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
 																<Select 
 																		options={regulationStateOptions || []} 
 																		required
@@ -2681,6 +2541,7 @@ function AddFacility(props) {
 																<label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
 																<input type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 															</div>
+
 
 															{/* Registration Number */} 
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -2728,11 +2589,11 @@ function AddFacility(props) {
 																<input type="text" disabled ref={regBodyRef} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
 																{/* License No. */}
-																<input type="number" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																<input type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 										
 																<div className='col-start-4 flex items-center space-x-2 w-full'>
 																	{/* Reg No. */}
-																	<input type="number" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																	<input type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 																
 																	{/* Delete Btn */}
 
@@ -2769,10 +2630,28 @@ function AddFacility(props) {
 													</>
 												);
 											case 4:
-
 												// Services form
-												const handleServiceSubmit = (event) => {
+												const handleServiceSubmit = async (event) => {
 													event.preventDefault()
+
+
+													const _payload = services.map(({value}) => ({service: value}))
+
+													try{
+														fetch(`/api/common/submit_form_data/?path=services&_id=${facilityId || '04ffd222-b511-4b31-ac76-c7f5d4505dde'}`, {
+															headers:{
+																'Accept': 'application/json, text/plain, */*',
+																'Content-Type': 'application/json;charset=utf-8'
+																
+															},
+															method:'POST',
+															body: JSON.stringify({services:_payload})
+														})
+
+													}
+													catch(e){
+														console.error('Unable to patch facility contacts details'. e.message)
+													}
 
 													window.sessionStorage.setItem('formId', 5)
 													
@@ -2799,10 +2678,10 @@ function AddFacility(props) {
 															
 														
 															<TrasnferListServices 
-															categories={
-																serviceCategories.map((data) => data)
-															} 
-															setServices={setServices}
+																categories={serviceOptions}
+																setServices={setServices}
+																setRefreshForm={setRefreshForm}
+																refreshForm={refreshForm}
 															/>
 
 															</div>
@@ -2848,7 +2727,7 @@ function AddFacility(props) {
 
 													window.sessionStorage.setItem('formId', 6)
 													
-													console.log({formId});
+													// console.log({formId});
 													setFormId(window.sessionStorage.getItem('formId'))
 
 												}
@@ -3374,7 +3253,7 @@ AddFacility.getInitialProps = async (ctx) => {
 
 						case 'services':
 
-						/*
+						
 
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
 
@@ -3398,7 +3277,7 @@ AddFacility.getInitialProps = async (ctx) => {
 									service: [],
 								})
 							}
-							*/
+							
 
 
 							

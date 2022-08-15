@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useMemo } from 'react'
+import React, {useMemo} from 'react';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -16,8 +15,6 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 
-
-
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
@@ -30,7 +27,7 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TrasnferListServices({categories, setServices}) {
+export default function TrasnferListServices({categories, setServices, setRefreshForm, refreshForm}) {
 
  
   const [newSelected, setNewSelected] = React.useState([])
@@ -50,7 +47,8 @@ useMemo(() => {
      
      leftChecked = intersection(checked, left);
      rightChecked = intersection(checked, right);
-  
+
+
   }, [left])
 
   const handleToggle = (value) => () => {
@@ -71,7 +69,7 @@ useMemo(() => {
   };
 
   const handleCheckBoxToggle =  (service) => () => {
-    console.log({service})
+    // console.log({service})
 
     
     const currentIndex = checkBoxChecked.indexOf(service.subctg);
@@ -104,9 +102,9 @@ useMemo(() => {
     setCheckAll(true);
 
     // console.log({categories})
-    setServices((ctgs => {
-     return ctgs.map(({subCategories}) => subCategories)
-    })(categories));
+    // setServices((ctgs => {
+    //  return ctgs.map(({subCategories}) => subCategories)
+    // })(categories));
 
     setServices(selectedService)
  
@@ -118,7 +116,8 @@ useMemo(() => {
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
    
-    // console.log({selectedService})
+    console.log({selectedService})
+    setRefreshForm(!refreshForm)
     setServices(selectedService)
   };
 
@@ -134,6 +133,7 @@ useMemo(() => {
     setLeft(left.concat(right));
     setRight([]);
 
+    setNewSelected([])
     setServices([]);
   };
 
@@ -145,7 +145,7 @@ useMemo(() => {
 
       const {name, subCategories, value} = _data
 
-      console.log({value})
+      // console.log({value})
  
       return (
        
@@ -170,7 +170,7 @@ useMemo(() => {
                       !isRight ?
       
                       <>
-                        {(() => {console.log({checkBoxChecked})})()}
+                        {/* {(() => {console.log({checkBoxChecked})})()} */}
                         <Checkbox
                           checked={checkBoxChecked.indexOf(subctg) !== -1}
                           tabIndex={-1}
