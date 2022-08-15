@@ -1,5 +1,6 @@
 
 
+import { sendStatusCode } from "next/dist/server/api-utils";
 import { checkToken } from "../../../controllers/auth/auth";
 
 export default async function submitFormData(req, res) {
@@ -31,11 +32,14 @@ export default async function submitFormData(req, res) {
                     method = 'POST';
                     contentType = 'multipart/form-data; boundary=---------------------------22584204591762068164170278481';
                     break;
-
                 case 'facility_data':
-                    const {id} = req.query;
-                    console.log({facility_id: id});
-                    url = `${API_URL}/facilities/facilities/${id}/`;
+                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
+                case 'services':
+                    const {_id} = req.query;
+                    url = `${API_URL}/facilities/facilities/${_id}/`;
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
@@ -87,7 +91,7 @@ export default async function submitFormData(req, res) {
                     body: JSON.stringify(req.body)
                 })
                 
-                return resp.json()
+                return resp.status === 204 ?  sendStatusCode(resp, 204) : resp.json()
             }
             catch(err) {
                 console.error('Error posting facility basic details: ', err)
