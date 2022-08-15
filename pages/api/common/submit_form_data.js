@@ -33,9 +33,7 @@ export default async function submitFormData(req, res) {
                     contentType = 'multipart/form-data; boundary=---------------------------22584204591762068164170278481';
                     break;
                 case 'facility_data':
-                    const {id} = req.query;
-                    console.log({facility_id: id});
-                    url = `${API_URL}/facilities/facilities/${id}/`;
+                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
