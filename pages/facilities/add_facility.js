@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Next imports
 import Head from 'next/head';
@@ -52,8 +52,6 @@ const WardMap = dynamic(
 const Map = React.memo(WardMap)
 
 function AddFacility(props) {
-
-	
 
 	// Form drop down options
 
@@ -112,9 +110,40 @@ function AddFacility(props) {
 			})
 		}
 		
-
 		return _serviceOptions
 	 })(props['15'].service ?? [])
+
+	 let infrastructureOption = ((_infrastructure) => {
+		
+		const _infrastructureOptions = []
+		let _values = []
+		let _subCtgs = []
+
+		if(_infrastructure.length > 0){
+			_infrastructure.forEach(({category_name:ctg}) => {
+				let allOccurences = _infrastructure.filter(({category_name}) => category_name === ctg)
+				
+				allOccurences.forEach(({id, name}) => {
+					_subCtgs.push(name)
+					_values.push(id)
+				})
+				
+				if(_infrastructureOptions.map(({name}) => name).indexOf(ctg) === -1){
+					_infrastructureOptions.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+		return _infrastructureOptions
+	 })(props['17'].infrastructure ?? [])
 
 	//  let kephLvl = {label:'', value:''}
 
@@ -141,99 +170,7 @@ function AddFacility(props) {
         'Human resources'
     ];
 
-    const infrastractureCategories = [
-        {
-            name:'COLD CHAIN',
-            subCategories:[
-                'Cold room',
-                'Cool boxes',
-                'Freezers',
-                'Fridges'
-            ]        
-        },
-        {
-            name:'COMMUNICATIONS',
-            subCategories:[
-                'Land Line',
-                'Radio Call',
-                'Teleconfererncing Facility',
-                'TV Screen',
-                'Video Conferencing Facility',
-                'Video Conferencing Sapce',
-                'wireless Mobile'
-            ]
-        },
-        {
-            name:'ICT INFRASTRUCTURE',
-            subCategories:[
-                'LAN',
-                'Laptops',
-                'Printers',
-                'Routers',
-                'Scanners',
-                'Servers',
-                'WAN (Internet connectivity)',
-                'Wi-Fi'
-            ]
-        },
-        {
-            name:'MEDICAL EQUIPMENT',
-            subCategories:[
-                'Boiler',
-                'Cold chain vaccine carriers',
-                'CT Scan Machines',
-                'Dialysis machines',
-                'MRI Machines',
-                'Oxygen Plant',
-                'Ventilators',
-                'X-Ray Machines',
-
-            ]
-        },
-        {
-            name:'MEDICAL WASTE MANAGEMENT',
-            subCategories:[
-                'Dump without burning',
-                'Incinerator',
-                'Open burning',
-                'Remove offsite',
-                'Sewer system',
-            ]
-        },
-        {
-            name:'POWER SOURCE',
-            subCategories:[
-                'Battery  Backups',
-                'Bio-Gas',
-                'Gas',
-                 'Generator',
-                 'Main Grid',
-                 'Solar'
-            ]
-        },
-        {
-            name:'ROADS',
-            subCategories:[
-                'Earthen Road',
-                'Graded (Murrum)',
-                'Gravel',
-                'Tarmac'
-            ]
-        },
-        {
-            name:'WATER SOURCE',
-            subCategories:[
-                'Bore Hole',
-                'Donkey Cart / Vendor',
-                'Piped Water',
-                'Protected Wells / Springs',
-                ' River /Dam /Lake',
-                'Roof Harvested Water'                
-            ]
-        },
-        
-        
-    ]
+ 
 
    
 	const hrCategories = [
@@ -342,7 +279,8 @@ function AddFacility(props) {
     const [center, setCenter] = useState(null)
     const [wardName, setWardName] = useState('')
 	const [facilityTypeDetail, setFacilityTypeDetail] = useState('')
-	const [refreshForm, setRefreshForm] = useState(false)
+	const [refreshForm4, setRefreshForm4] = useState(false)
+	const [refreshForm5, setRefreshForm5] = useState(false)
 
 	// console.log({geolocationData})
 
@@ -350,13 +288,14 @@ function AddFacility(props) {
 	const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
 	
+	console.log({infrastructure})
 
     useEffect(() => {
 
         const formIdState = window.sessionStorage.getItem('formId');
 		
 
-        console.log({services})
+       console.log({infrastructureOption})
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
             window.sessionStorage.setItem('formId', 5); //0
@@ -385,7 +324,7 @@ function AddFacility(props) {
             }
             
         }
-    }, [facilityOfficialName, facilityOption, formId, refreshForm, latitude, geoJSON, longitude])
+    }, [facilityOfficialName, facilityOption, formId, refreshForm4, refreshForm5, latitude, geoJSON, longitude])
       
 
 	const handleQuickFiltersClick = (link) => {
@@ -532,9 +471,7 @@ function AddFacility(props) {
                             >
                                 <ListItemText primary="Incomplete Facilities"/>
                             </ListItemButton>
-
-                           
-                                
+        
                         </List>
                     	</div>
 
@@ -1623,11 +1560,11 @@ function AddFacility(props) {
 																		Nearest Town/Shopping Centre
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			*
+																			
 																		</span>
 																	</label>
 																	<input
-																		required
+																		
 																		type='text'
 																		name='town_name'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1642,11 +1579,11 @@ function AddFacility(props) {
 																		Plot number
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			*
+																			
 																		</span>
 																	</label>
 																	<input
-																		required
+																		
 																		type='text'
 																		name='plot_number'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1661,11 +1598,11 @@ function AddFacility(props) {
 																		Nearest landmark
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			*
+																			
 																		</span>
 																	</label>
 																	<input
-																		required
+																		
 																		type='text'
 																		name='nearest_landmark'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1680,11 +1617,11 @@ function AddFacility(props) {
 																		location description
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			*
+																			
 																		</span>
 																	</label>
 																	<input
-																		required
+																		
 																		type='text'
 																		name='location_desc'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -2638,7 +2575,7 @@ function AddFacility(props) {
 													const _payload = services.map(({value}) => ({service: value}))
 
 													try{
-														fetch(`/api/common/submit_form_data/?path=services&_id=${facilityId || '04ffd222-b511-4b31-ac76-c7f5d4505dde'}`, {
+														fetch(`/api/common/submit_form_data/?path=services&id=${facilityId}`, {
 															headers:{
 																'Accept': 'application/json, text/plain, */*',
 																'Content-Type': 'application/json;charset=utf-8'
@@ -2680,8 +2617,8 @@ function AddFacility(props) {
 															<TrasnferListServices 
 																categories={serviceOptions}
 																setServices={setServices}
-																setRefreshForm={setRefreshForm}
-																refreshForm={refreshForm}
+																setRefreshForm4={setRefreshForm4}
+																refreshForm4={refreshForm4}
 															/>
 
 															</div>
@@ -2725,6 +2662,26 @@ function AddFacility(props) {
 												const handleInfrastructureSubmit = (event) => {
 													event.preventDefault()
 
+													const _payload = infrastructure.map(({value}, i) => ({count: i < infrastructureCount.length ? Number(infrastructureCount[i]['val'] ?? 0) : 0 , infrastructure: value}))
+
+													console.log({infrastructureCount, _payload})
+
+													try{
+														fetch(`/api/common/submit_form_data/?path=infrastructure&id=${facilityId}`, {
+															headers:{
+																'Accept': 'application/json, text/plain, */*',
+																'Content-Type': 'application/json;charset=utf-8'
+																
+															},
+															method:'POST',
+															body: JSON.stringify({infrastructure:_payload})
+														})
+
+													}
+													catch(e){
+														console.error('Unable to patch facility contacts details'. e.message)
+													}
+
 													window.sessionStorage.setItem('formId', 6)
 													
 													// console.log({formId});
@@ -2752,10 +2709,12 @@ function AddFacility(props) {
 														{/* Transfer List*/}
 														<TransferListInfrastructure 
 															categories={
-																infrastractureCategories.map((data) => data)
+																infrastructureOption
 															} 
 															setState={setInfrastructure}
 															setCount={setInfrastructureCount}
+															setRefreshForm5={setRefreshForm5}
+															refreshForm5={refreshForm5}
 															selectTitle='Infrastructure'
 															/>
 
@@ -2772,10 +2731,10 @@ function AddFacility(props) {
 															</thead>
 															<tbody ref={infrastructureBodyRef}>
 																{
-																	infrastructure.map((_infrastructure, i) => (
+																	infrastructure.map(({subctg}) => subctg).map((_infrastructure, i) => (
 																		<tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
 																			<td className='text-lg text-black'>{_infrastructure}</td>
-																			<td className='text-lg text-black'>{infrastractureCategories.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+																			<td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
 																			<td className='text-lg text-black'>Yes</td>
 																			<td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val}</td>
 																		</tr>
@@ -2938,7 +2897,9 @@ AddFacility.getInitialProps = async (ctx) => {
 		'regulating_bodies',
 		'regulation_status',
 		'services',
-		'contact_types'
+		'contact_types',
+		'infrastructure',
+		'facility_specialists'
 
 	
 	]
@@ -3226,7 +3187,7 @@ AddFacility.getInitialProps = async (ctx) => {
 							break;
 
 						case 'regulation_status':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
 	
 						
 							try{
@@ -3253,8 +3214,6 @@ AddFacility.getInitialProps = async (ctx) => {
 
 						case 'services':
 
-						
-
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
 
 							try{
@@ -3277,12 +3236,62 @@ AddFacility.getInitialProps = async (ctx) => {
 									service: [],
 								})
 							}
-							
+	
+							break;
 
+						case 'infrastructure':
 
-							
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
+
+							try{
+		
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									}
+								})
+
+								allOptions.push({infrastructure: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,	
+									err: err,
+									service: [],
+								})
+							}
 
 							break;
+						
+						case 'facility_specialists':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
+
+							try{
+		
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									}
+								})
+
+								allOptions.push({infrastructure: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,	
+									err: err,
+									service: [],
+								})
+							}
+
+
+						break;
 
 						default:
 								let fields = ''

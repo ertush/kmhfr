@@ -27,7 +27,7 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TrasnferListServices({categories, setServices, setRefreshForm, refreshForm}) {
+export default function TrasnferListServices({categories, setServices, setRefreshForm4, refreshForm4}) {
 
  
   const [newSelected, setNewSelected] = React.useState([])
@@ -117,7 +117,7 @@ useMemo(() => {
     setChecked(not(checked, leftChecked));
    
     console.log({selectedService})
-    setRefreshForm(!refreshForm)
+    setRefreshForm4(!refreshForm4)
     setServices(selectedService)
   };
 
