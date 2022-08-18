@@ -34,14 +34,17 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
-                case 'services':
-                    // const {_id} = req.query;
+                case 'services':                 
                     url = `${API_URL}/facilities/facilities/${req.query.id}/`;
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
-                case 'infrastructure':
-                    // const {f_id} = req.query;
+                case 'infrastructure':           
+                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
+                case 'hr':               
                     url = `${API_URL}/facilities/facilities/${req.query.id}/`;
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';

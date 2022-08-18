@@ -28,14 +28,16 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferListHr({categories, setState, setCount, selectTitle}) {
+export default function TransferListHr({categories, setState, setCount, setRefreshForm6, refreshForm6, selectTitle}) {
 
   const [checked, setChecked] = React.useState([]);
+  const [newSelected, setNewSelected] = React.useState([])
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
   const [inputVal, setInputVal] = React.useState([])
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
   const [right, setRight] = React.useState([]);
   const [checkAll, setCheckAll] = React.useState(false);
+  const [selectedSpeciality, setSelectedSpeciality] =  React.useState({});
 
   let leftChecked = intersection(checked, left);
   let rightChecked = intersection(checked, right);
@@ -66,17 +68,27 @@ export default function TransferListHr({categories, setState, setCount, selectTi
 
   };
 
-  const handleCheckBoxToggle =  (value) => () => {
-    const currentIndex = checkBoxChecked.indexOf(value);
+  const handleCheckBoxToggle =  (speciality) => () => {
+    const currentIndex = checkBoxChecked.indexOf(speciality.subctg);
+
+    const crntIndex =  newSelected.indexOf(speciality)
    
     const newChecked = [...checkBoxChecked];
 
+    let allSelected = newSelected;
+
+    setNewSelected((() => {allSelected.push(speciality); return allSelected}))
+
     if (currentIndex === -1) {
-      newChecked.push(value);
+      newChecked.push(speciality.subctg);
     } else {
       newChecked.splice(currentIndex, 1);
+      let selected = newSelected
+      selected.splice(crntIndex, 1)
+      setNewSelected(selected)
     }
 
+    setSelectedSpeciality(newSelected);
     setCheckBoxChecked(newChecked);
 
   }
@@ -112,9 +124,7 @@ export default function TransferListHr({categories, setState, setCount, selectTi
     setLeft([]);
     setCheckAll(true);
 
-    setState((ctgs => {
-     return ctgs.map(({subCategories}) => subCategories)
-    })(categories));
+    setState(selectedSpeciality)
  
   };
 
@@ -126,7 +136,9 @@ export default function TransferListHr({categories, setState, setCount, selectTi
     setState(checkBoxChecked)
     setCount(inputVal)
 
-    // console.log({inputVal})
+
+    setRefreshForm6(!refreshForm6)
+    setState(selectedSpeciality)
    
   };
 
@@ -149,7 +161,7 @@ export default function TransferListHr({categories, setState, setCount, selectTi
 
       const [_data] = data
 
-      const {name, subCategories} = _data === undefined ? {name:'Loading...', subCategories:[]} : _data
+      const {name, subCategories, value} = _data ?? {name:'Loading...', subCategories:[], value:[]} 
  
       return (
        
@@ -183,7 +195,7 @@ export default function TransferListHr({categories, setState, setCount, selectTi
                                     checked={checkBoxChecked.indexOf(subctg) !== -1}
                                     tabIndex={-1}
                                     disableRipple
-                                    onChange={handleCheckBoxToggle(subctg)}
+                                    onChange={handleCheckBoxToggle({subctg, value:value[i]})}
                                     inputProps={{
                                         'aria-labelledby': 'options',
                                     }}
@@ -217,7 +229,7 @@ export default function TransferListHr({categories, setState, setCount, selectTi
                             }
                             {
                             (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
-                            <ListItemText  primary={`${subctg} (0)`} sx={{borderBottom: '1px solid grey'}} />
+                            <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
                             }
                         </>
                         }
@@ -257,24 +269,7 @@ export default function TransferListHr({categories, setState, setCount, selectTi
              
                 <Checkbox
 
-                  checked={
-                    checked.indexOf(_data) !== -1
-                    /*(() => {
-                      
-                      const foundCtgs = Array.from(checkBoxChecked, subCtg => {
-                        return categories.filter(_subCtg => {for(let i = 0 ; i < _subCtg.subCategories.length; i++) if(_subCtg.subCategories[i] === subCtg) return _subCtg.subCategories[i] === subCtg})[0] || [] 
-                      }) 
-
-                      // console.log({foundCtgs})
-
-                      const _eval = Array.from(foundCtgs, ctg => {
-                        if(ctg === _data) return true
-                      }) || []
-
-                      console.log(_eval, _data)
-
-                    return _eval.length > 0 ? true : checked.indexOf(_data) !== -1
-                  })()*/} 
+                  checked={checked.indexOf(_data) !== -1} 
                   tabIndex={-1}
                   disableRipple
                   onChange={handleToggle(_data)}

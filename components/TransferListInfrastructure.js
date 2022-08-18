@@ -124,10 +124,6 @@ export default function TransferListInfrastructure({categories, setState, setCou
     setLeft([]);
     setCheckAll(true);
 
-    // setState((ctgs => {
-    //  return ctgs.map(({subCategories}) => subCategories)
-    // })(categories));
-
     setState(selectedInfrastructure)
  
   };
@@ -140,7 +136,6 @@ export default function TransferListInfrastructure({categories, setState, setCou
     setState(checkBoxChecked)
     setCount(inputVal)
 
-    // console.log({inputVal})
     setRefreshForm5(!refreshForm5)
     setState(selectedInfrastructure)
    
@@ -276,24 +271,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
              
                 <Checkbox
 
-                  checked={
-                    checked.indexOf(_data) !== -1
-                    /*(() => {
-                      
-                      const foundCtgs = Array.from(checkBoxChecked, subCtg => {
-                        return categories.filter(_subCtg => {for(let i = 0 ; i < _subCtg.subCategories.length; i++) if(_subCtg.subCategories[i] === subCtg) return _subCtg.subCategories[i] === subCtg})[0] || [] 
-                      }) 
-
-                      // console.log({foundCtgs})
-
-                      const _eval = Array.from(foundCtgs, ctg => {
-                        if(ctg === _data) return true
-                      }) || []
-
-                      console.log(_eval, _data)
-
-                    return _eval.length > 0 ? true : checked.indexOf(_data) !== -1
-                  })()*/} 
+                  checked={checked.indexOf(_data) !== -1} 
                   tabIndex={-1}
                   disableRipple
                   onChange={handleToggle(_data)}

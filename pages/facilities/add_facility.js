@@ -145,6 +145,39 @@ function AddFacility(props) {
 		return _infrastructureOptions
 	 })(props['17'].infrastructure ?? [])
 
+
+	 let hrOptions = ((_hr) => {
+		
+		const _hrOptions = []
+		let _values = []
+		let _subCtgs = []
+
+		if(_hr.length > 0){
+			_hr.forEach(({category_name:ctg}) => {
+				let allOccurences = _hr.filter(({category_name}) => category_name === ctg)
+				
+				allOccurences.forEach(({id, name}) => {
+					_subCtgs.push(name)
+					_values.push(id)
+				})
+				
+				if(_hrOptions.map(({name}) => name).indexOf(ctg) === -1){
+					_hrOptions.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+		return _hrOptions
+	 })(props['18'].hr ?? [])
+
 	//  let kephLvl = {label:'', value:''}
 
 
@@ -173,81 +206,81 @@ function AddFacility(props) {
  
 
    
-	const hrCategories = [
+	// const hrCategories = [
 
-		{
-			name:'Clinical Officers',
-			subCategories:[
-				"Clinical Officer ENT/Audiology",
-				"Clinical Officer Lung & Skin",
-				"CO Dermatology/ Venereology",
-				"CO Oncology/Palli--ative Care",
-				"CO Ophthalmology/Cataract Surgery",
-				"CO Orthopaedics",
-				"CO Paediatrics",
-				"CO Psychiatry/Mental Health",
-				"CO Reproductive Health",
-				"General Clinical Officers(Diploma)"
-			]
-		},
-		{
-			name:'Clinical Psychology',
-			subCategories:[
-				"Clinical psychologists"
-			]
-		},
-		{
-			name:'Community Health Services ',
-			subCategories:[		
-				"Community Health Extension/Assistants",
-				"Community Health Volunteers(CHV)"
-			]
-		},
-		{
-			name:'Dental staff',
-			subCategories:[
-				"Community Oral Health Officers",
-				"Dental Officers",
-				"Dental Technologists",
-				"Oromaxillofacial Surgeon",
-				"Orthodontist",
-				"Paediatric Dentist"
-			]
-		},
-		{
-			name:'Diagnostics & Imaging',
-			subCategories:[
+	// 	{
+	// 		name:'Clinical Officers',
+	// 		subCategories:[
+	// 			"Clinical Officer ENT/Audiology",
+	// 			"Clinical Officer Lung & Skin",
+	// 			"CO Dermatology/ Venereology",
+	// 			"CO Oncology/Palli--ative Care",
+	// 			"CO Ophthalmology/Cataract Surgery",
+	// 			"CO Orthopaedics",
+	// 			"CO Paediatrics",
+	// 			"CO Psychiatry/Mental Health",
+	// 			"CO Reproductive Health",
+	// 			"General Clinical Officers(Diploma)"
+	// 		]
+	// 	},
+	// 	{
+	// 		name:'Clinical Psychology',
+	// 		subCategories:[
+	// 			"Clinical psychologists"
+	// 		]
+	// 	},
+	// 	{
+	// 		name:'Community Health Services ',
+	// 		subCategories:[		
+	// 			"Community Health Extension/Assistants",
+	// 			"Community Health Volunteers(CHV)"
+	// 		]
+	// 	},
+	// 	{
+	// 		name:'Dental staff',
+	// 		subCategories:[
+	// 			"Community Oral Health Officers",
+	// 			"Dental Officers",
+	// 			"Dental Technologists",
+	// 			"Oromaxillofacial Surgeon",
+	// 			"Orthodontist",
+	// 			"Paediatric Dentist"
+	// 		]
+	// 	},
+	// 	{
+	// 		name:'Diagnostics & Imaging',
+	// 		subCategories:[
 				
-				"CT Scan /MRI Radiographer",
-				"Dental Radiographer",
-				"General Radiographer",
-				"Mammographer",
-				"Nuclear Medicine Technologist",
-				"Radiation Monitoring & Safety Officer",
-				"Therapy Radiographer",
-				"Ultrasonographer"
-			]
-		},
-		{
-			name:'Environmental Health ',
-			subCategories:[
+	// 			"CT Scan /MRI Radiographer",
+	// 			"Dental Radiographer",
+	// 			"General Radiographer",
+	// 			"Mammographer",
+	// 			"Nuclear Medicine Technologist",
+	// 			"Radiation Monitoring & Safety Officer",
+	// 			"Therapy Radiographer",
+	// 			"Ultrasonographer"
+	// 		]
+	// 	},
+	// 	{
+	// 		name:'Environmental Health ',
+	// 		subCategories:[
 	
-			]
-		},
-		{
-			name:'General Support Staffs ',
-			subCategories:[
+	// 		]
+	// 	},
+	// 	{
+	// 		name:'General Support Staffs ',
+	// 		subCategories:[
 	
-			]
-		},
-		{
-			name:'Health Administrative Staffs ',
-			subCategories:[
+	// 		]
+	// 	},
+	// 	{
+	// 		name:'Health Administrative Staffs ',
+	// 		subCategories:[
 	
-			]
-		}
+	// 		]
+	// 	}
 	
-	]
+	// ]
 
 	
     const [formId, setFormId] = useState(5) //0
@@ -281,21 +314,20 @@ function AddFacility(props) {
 	const [facilityTypeDetail, setFacilityTypeDetail] = useState('')
 	const [refreshForm4, setRefreshForm4] = useState(false)
 	const [refreshForm5, setRefreshForm5] = useState(false)
-
-	// console.log({geolocationData})
+	const [refreshForm6, setRefreshForm6] = useState(false)
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
 	
-	console.log({infrastructure})
+	// console.log({infrastructure})
 
     useEffect(() => {
 
         const formIdState = window.sessionStorage.getItem('formId');
 		
 
-       console.log({infrastructureOption})
+       console.log({hrOptions})
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
             window.sessionStorage.setItem('formId', 5); //0
@@ -324,7 +356,7 @@ function AddFacility(props) {
             }
             
         }
-    }, [facilityOfficialName, facilityOption, formId, refreshForm4, refreshForm5, latitude, geoJSON, longitude])
+    }, [facilityOfficialName, facilityOption, formId, refreshForm4, refreshForm5, refreshForm6, latitude, geoJSON, longitude])
       
 
 	const handleQuickFiltersClick = (link) => {
@@ -2664,7 +2696,7 @@ function AddFacility(props) {
 
 													const _payload = infrastructure.map(({value}, i) => ({count: i < infrastructureCount.length ? Number(infrastructureCount[i]['val'] ?? 0) : 0 , infrastructure: value}))
 
-													console.log({infrastructureCount, _payload})
+													// console.log({infrastructureCount, _payload})
 
 													try{
 														fetch(`/api/common/submit_form_data/?path=infrastructure&id=${facilityId}`, {
@@ -2736,7 +2768,7 @@ function AddFacility(props) {
 																			<td className='text-lg text-black'>{_infrastructure}</td>
 																			<td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
 																			<td className='text-lg text-black'>Yes</td>
-																			<td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val}</td>
+																			<td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
 																		</tr>
 																	))
 																}
@@ -2761,8 +2793,28 @@ function AddFacility(props) {
 											case 6:
 												// Human resources form
 												const handleHrSubmit = (event) => {
-													
 													event.preventDefault()
+
+													const _payload = hr.map(({value}, i) => ({count: i < hrCount.length ? Number(hrCount[i]['val'] ?? 0) : 0 , speciality: value}))
+
+													console.log({specialities:_payload})
+
+													try{
+														fetch(`/api/common/submit_form_data/?path=hr&id=${facilityId}`, {
+															headers:{
+																'Accept': 'application/json, text/plain, */*',
+																'Content-Type': 'application/json;charset=utf-8'
+																
+															},
+															method:'POST',
+															body: JSON.stringify({specialities:_payload})
+														})
+
+													}
+													catch(e){
+														console.error('Unable to patch facility contacts details'. e.message)
+													}
+
 
 													window.sessionStorage.setItem('formId', 0)
 													
@@ -2790,10 +2842,10 @@ function AddFacility(props) {
 														{/* Transfer List*/}
 														
 														<TransferListHr 
-															categories={
-																hrCategories.map((data) => data)
-															} 
+															categories={hrOptions} 
 															setState={setHr}
+															setRefreshForm6={setRefreshForm6}
+															refreshForm6={refreshForm6}
 															setCount={setHrCount}
 															selectTitle='HR Specialities'
 														/>
@@ -2811,11 +2863,11 @@ function AddFacility(props) {
 
 															<tbody>
 																{
-																	hr.map((_hr, i) => (
+																	hr.map(({subctg}) => subctg).map((_hr, i) => (
 																		<tr key={`${_hr}_${i}`} className='grid grid-cols-3 place-content-end border-b-2 border-gray-300'>
 																			<td className='text-lg text-black'>{_hr}</td>
 																			<td className='text-lg text-black'>Yes</td>
-																			<td className='text-lg  text-black'>{hrCount.filter(({name}) => name == _hr)[0].val}</td>
+																			<td className='text-lg  text-black'>{hrCount.filter(({name}) => name == _hr)[0].val || 0}</td>
 																		</tr>
 																	))
 																}
@@ -2899,7 +2951,7 @@ AddFacility.getInitialProps = async (ctx) => {
 		'services',
 		'contact_types',
 		'infrastructure',
-		'facility_specialists'
+		'specialities'
 
 	
 	]
@@ -3266,8 +3318,8 @@ AddFacility.getInitialProps = async (ctx) => {
 
 							break;
 						
-						case 'facility_specialists':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
+						case 'specialities':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=2000&ordering=name`;
 
 							try{
 		
@@ -3278,7 +3330,7 @@ AddFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								allOptions.push({infrastructure: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name}))})
+								allOptions.push({hr: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name}))})
 								
 							}
 							catch(err) {
