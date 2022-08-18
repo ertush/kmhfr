@@ -86,9 +86,9 @@ const Facility = (props) => {
                                         <InformationCircleIcon className="h-4 w-4" />
                                         Has changes
                                     </span>}
-                                    {!facility.is_complete ? (<span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1"> 
+                                    {facility.is_complete ? (<span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1"> 
                                         <CheckCircleIcon className="h-4 w-4" />
-                                        Completed </span>) : (<span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1"> 
+                                        Completed </span>) : (<span className="bg-yellow-200 text-yellow-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1"> 
                                         <CheckCircleIcon className="h-4 w-4" />
                                         Incomplete </span>)
                                     }
@@ -325,15 +325,15 @@ const Facility = (props) => {
                                                 </div>
                                                 <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                     <label className="col-span-1 text-gray-600">Regulating body</label>
-                                                    <p className="col-span-2 text-black font-medium text-base">{facility.regulatory_body_name || " - "}</p>
+                                                    <p className="col-span-2 text-black font-medium text-base">{facility.facility_units[0].regulating_body_name || " - "}</p>
                                                 </div>
                                                 <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                     <label className="col-span-1 text-gray-600">Registration number</label>
-                                                    <p className="col-span-2 text-black font-medium text-base">{facility.registration_number || " - "}</p>
+                                                    <p className="col-span-2 text-black font-medium text-base">{facility.facility_units[0].registration_number || " - "}</p>
                                                 </div>
                                                 <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                     <label className="col-span-1 text-gray-600">License number</label>
-                                                    <p className="col-span-2 text-black font-medium text-base">{facility.license_number || " - "}</p>
+                                                    <p className="col-span-2 text-black font-medium text-base">{facility.facility_units[0].license_number || " - "}</p>
                                                 </div>
                                             </div>
                                             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
