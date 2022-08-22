@@ -258,6 +258,21 @@ function AddCommUnit(props)
 												});
 												console.log(formData);
 
+												try{
+													fetch('/api/common/submit_form_data/?path=CHUs', {
+														headers:{
+															'Accept': 'application/json, text/plain, */*',
+															'Content-Type': 'application/json;charset=utf-8'
+															
+														},
+														method:'POST',
+														body: JSON.stringify(formData).replace(',"":""','')
+													})
+												}
+												catch(e){
+													console.error('Unable to post basic details')
+												}
+
 												// Set the formId to the next step
 												window.sessionStorage.setItem('formId', 1);
 
@@ -274,6 +289,7 @@ function AddCommUnit(props)
 													<form
 														className='flex flex-col w-full items-start justify-start gap-3'
 														onSubmit={handleBasicDetailsSubmit}>
+
 														{/* CHU name */}
 														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 															<label
@@ -286,9 +302,9 @@ function AddCommUnit(props)
 																</span>
 															</label>
 															<input
-																required
+																
 																type='text'
-																name='comm_unit_name'
+																name='name'
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -308,7 +324,7 @@ function AddCommUnit(props)
 																onChange={(value) =>
 																{
 																	setSelectedFacility(value);
-																	console.log('value', value.value);
+																	console.log('value', value.name);
 
 																	// list the facilities and their counties
 																	facilities.map((facility) =>
@@ -324,24 +340,73 @@ function AddCommUnit(props)
 																	);
 																	console.log(countyValue);
 																}}
-																options={facilities.map((facility) =>
-																{
-																	return {
-																		value: facility.id,
-																		label: facility.name,
-																	};
-																}
+
+																options={facilities.map((facility) =>															
+																	{
+																		return {
+																			value: facility.id,
+																			label: facility.name,
+																		};
+																	}
 																)}
+																
+																placeholder='Select linked facility...'
+																name='facility'														
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															/>
 														</div>
 
 														{/* CHU Status */}
+
 														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<label 
+																htmlFor="comm_unit_status"
+																className='text-gray-600 capitalize text-sm'>
+																Operation Status
+																<span className='text-medium leading-12 font-semibold'>
+																	{' '}
+																	*
+																</span>
+															</label>
+																	
+															<Select
+																options = {[
+																	{
+																		value: '2943e6c1-a581-461e-85a4-b9f25a2674ab',
+																		label: 'Closed',
+																	},
+																	{
+																		value: 'bac8ab50-1dad-4f96-ab96-a18a4e420871',
+																		label: 'Non-functional',
+																	},
+																	{
+																		value: 'fbc7fce5-3328-4dad-af70-0ec3d8f5ad80',
+																		label: 'Semi-functional',
+																	},
+																	{
+																		value: '50ef43f0-887c-44e2-9b09-cfa7a7090deb',
+																		label: 'Fully-functional',
+																	},
+																	// {
+																	// 	value: '190f470f-9678-47c3-a771-de7ceebfc53c',
+																	// 	label: 'Closed',
+																	// },
+																	// {
+																	// 	value: 'ae75777e-5ce3-4ac9-a17e-63823c34b55e',
+																	// 	label: 'Operational',
+																	// },
+																]}
+																required
+																placeholder='Select an operation status ...'
+																name='status'
+																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+															/>
+														</div>
+														{/* <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 															<label
 																htmlFor='comm_unit_status'
 																className='text-gray-600 capitalize text-sm'>
-																Operation Status{' '}
+																Operation Status
 																<span className='text-medium leading-12 font-semibold'>
 																	{' '}
 																	*
@@ -366,13 +431,12 @@ function AddCommUnit(props)
 																		label: 'Fully-functional',
 																	},
 																]}
-																required
+																
 																placeholder='Select an operation status ...'
-																onChange={() => console.log('changed')}
-																name='comm_unit_status'
+																	name='status'
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															/>
-														</div>
+														</div> */}
 
 														{/* Date Established and Date Operational */}
 														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>

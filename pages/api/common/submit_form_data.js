@@ -22,11 +22,16 @@ export default async function submitFormData(req, res) {
                     method = 'POST';
                     contentType = 'application/json;charset=utf-8';
                     break;
+                case 'CHUs':
+                    url = `${API_URL}/chul/units/`
+                    method = 'POST';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
                 case 'gis':
                     url = `${API_URL}/gis/facility_coordinates/`
                     method = 'POST';
                     contentType = 'application/json;charset=utf-8';
-                    break
+                    break;
                 case 'documents':
                     url = `${API_URL}/common/documents/`;
                     method = 'POST';
