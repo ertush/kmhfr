@@ -203,86 +203,7 @@ function AddFacility(props) {
         'Human resources'
     ];
 
- 
 
-   
-	// const hrCategories = [
-
-	// 	{
-	// 		name:'Clinical Officers',
-	// 		subCategories:[
-	// 			"Clinical Officer ENT/Audiology",
-	// 			"Clinical Officer Lung & Skin",
-	// 			"CO Dermatology/ Venereology",
-	// 			"CO Oncology/Palli--ative Care",
-	// 			"CO Ophthalmology/Cataract Surgery",
-	// 			"CO Orthopaedics",
-	// 			"CO Paediatrics",
-	// 			"CO Psychiatry/Mental Health",
-	// 			"CO Reproductive Health",
-	// 			"General Clinical Officers(Diploma)"
-	// 		]
-	// 	},
-	// 	{
-	// 		name:'Clinical Psychology',
-	// 		subCategories:[
-	// 			"Clinical psychologists"
-	// 		]
-	// 	},
-	// 	{
-	// 		name:'Community Health Services ',
-	// 		subCategories:[		
-	// 			"Community Health Extension/Assistants",
-	// 			"Community Health Volunteers(CHV)"
-	// 		]
-	// 	},
-	// 	{
-	// 		name:'Dental staff',
-	// 		subCategories:[
-	// 			"Community Oral Health Officers",
-	// 			"Dental Officers",
-	// 			"Dental Technologists",
-	// 			"Oromaxillofacial Surgeon",
-	// 			"Orthodontist",
-	// 			"Paediatric Dentist"
-	// 		]
-	// 	},
-	// 	{
-	// 		name:'Diagnostics & Imaging',
-	// 		subCategories:[
-				
-	// 			"CT Scan /MRI Radiographer",
-	// 			"Dental Radiographer",
-	// 			"General Radiographer",
-	// 			"Mammographer",
-	// 			"Nuclear Medicine Technologist",
-	// 			"Radiation Monitoring & Safety Officer",
-	// 			"Therapy Radiographer",
-	// 			"Ultrasonographer"
-	// 		]
-	// 	},
-	// 	{
-	// 		name:'Environmental Health ',
-	// 		subCategories:[
-	
-	// 		]
-	// 	},
-	// 	{
-	// 		name:'General Support Staffs ',
-	// 		subCategories:[
-	
-	// 		]
-	// 	},
-	// 	{
-	// 		name:'Health Administrative Staffs ',
-	// 		subCategories:[
-	
-	// 		]
-	// 	}
-	
-	// ]
-
-	
     const [formId, setFormId] = useState(5) //0
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
@@ -377,8 +298,16 @@ function AddFacility(props) {
 				
 				router.push({pathname:'/facilities', query:{qf:'updated_pending_validation', has_edits:true, pending_approval:true, id:'updated_pending_validation'} })
 				break;
-			case 'failed_validation_facilities':
+			case 'to_publish':
+			
+				router.push({pathname:'/facilities', query:{qf:'to_publish', to_publish:true, id:'to_publish'} })
+				break;
+			case 'dhis_synced_facilities':
 				
+				router.push({pathname:'/facilities', query:{qf:'dhis_synced_facilities', approved:true, approved_national_level:true, rejected:false, reporting_in_dhis:true, id:'dhis_synced_facilities'}})
+				break;
+			case 'failed_validation_facilities':
+			
 				router.push({pathname:'/facilities', query:{qf:'failed_validation', rejected:true, id:'failed_validation'}})
 				break;
 			case 'rejected_facilities':
@@ -396,7 +325,7 @@ function AddFacility(props) {
 		
 			default:
 				break;
-	}
+		}
 	}
 
 	if(facilityTypeDetail !== '' && kephLvlRef.current !== null){
@@ -441,7 +370,7 @@ function AddFacility(props) {
 								</div>
 							</div>
 
-							<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
 								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 										{'New Facility'}
 								</h2>
@@ -478,6 +407,18 @@ function AddFacility(props) {
                             	 onClick={() => handleQuickFiltersClick('updated_pending_validation') }
                             >
                                 <ListItemText primary="Updated Facilities Pending Validation"/>
+                            </ListItemButton>
+
+							<ListItemButton 
+                            	 onClick={() => handleQuickFiltersClick('to_publish') }
+                            >
+                                <ListItemText primary="Facilities Pending Approval"/>
+                            </ListItemButton>
+
+							<ListItemButton 
+                            	 onClick={() => handleQuickFiltersClick('dhis_synced_facilities') }
+                            >
+                                <ListItemText primary="DHIS Synced Approved Facilities"/>
                             </ListItemButton>
 
                             <ListItemButton 
@@ -1852,12 +1793,16 @@ function AddFacility(props) {
 															<div className='w-full h-auto'>
 																{
 																	 geoJSON !== null ? 
-																	//  <Suspense fallBack={<LoadingAnimation size={6} isLight={false}/>}>
+																	 <Suspense fallBack={
+																		<div className='w-full flex'>
+																			<Alert severity="info" sx={{width:'100%'}} />
+
+																		</div>
+																	 }>
 																		<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																			{/* [Number(latitude.match(/^\-$/) !== null ? 0.000000 : latitude).toFixed(6), Number(longitude.match(/^\-$/) !== null ? 0.000000 : longitude).toFixed(6)] */}
 																			<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
 																		</div>
-																	//  </Suspense> 
+																	 </Suspense> 
 																	
 																	:
 																	// <Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
@@ -3025,10 +2970,7 @@ AddFacility.getInitialProps = async (ctx) => {
 										facility_types: [],
 									});
 								}
-								break;
-
-					
-					
+								break;				
 						case 'owners':
 								url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
 		

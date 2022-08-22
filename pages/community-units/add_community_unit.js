@@ -7,7 +7,7 @@ import Head from 'next/head';
 // Component imports
 import MainLayout from '../../components/MainLayout';
 import TransferListServices from '../../components/TrasnferListServices';
-import {renderMenuItem}  from '../../components/renderMenuItem';
+import { renderMenuItem } from '../../components/renderMenuItem';
 
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
@@ -21,10 +21,11 @@ import { FixedSizeList } from 'react-window';
 
 
 // Heroicons imports
-import {
+import
+{
 	ChevronDoubleRightIcon,
 	ChevronDoubleLeftIcon,
-	
+
 	TrashIcon
 } from '@heroicons/react/solid';
 
@@ -33,9 +34,16 @@ import {
 import Select from 'react-select';
 
 
-function AddCommUnit(props) {
-	let comm_unit = props.data;
+function AddCommUnit(props)
+{
 
+	const facilities = props.facility_data.results;
+
+	const [selected_facility, setSelectedFacility] = useState(null);
+	const [countyValue, setCountyValue] = useState('');
+	const [subCountyValue, setSubCountyValue] = useState('');
+	const [constituencyValue, setConstituencyValue] = useState('');
+	const [wardValue, setWardValue] = useState('');
 	// Define registration steps
 	const steps = [
 		'Basic Details',
@@ -155,22 +163,28 @@ function AddCommUnit(props) {
 	const [formId, setFormId] = useState(0);
 
 	// Define useEffect
-	useEffect(() => {
+	useEffect(() =>
+	{
+		// console.log(facilities.filter(({ county }) => county )[0])
+
 		const formIdState = window.sessionStorage.getItem('formId');
 
-		if (formIdState == undefined || formIdState == null || formIdState == '') {
+		if (formIdState == undefined || formIdState == null || formIdState == '')
+		{
 			window.sessionStorage.setItem('formId', 1);
 		}
 		// console.log(formId);
 
 		setFormId(window.sessionStorage.getItem('formId'));
 
-		return () => {
-			if (window.sessionStorage.getItem('formId') == '3') {
+		return () =>
+		{
+			if (window.sessionStorage.getItem('formId') == '3')
+			{
 				window.sessionStorage.setItem('formId', 0);
 			}
 		};
-	}, [formId]);
+	}, [formId, facilities]);
 	// console.log(formId);
 
 	return (
@@ -222,11 +236,14 @@ function AddCommUnit(props) {
 								className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50'
 								style={{ minHeight: '250px' }}>
 								{/* Form-changing switch statement */}
-								{(() => {
-									switch (parseInt(formId)) {
+								{(() =>
+								{
+									switch (parseInt(formId))
+									{
 										// Basic Details Case
 										case 0:
-											const handleBasicDetailsSubmit = (event) => {
+											const handleBasicDetailsSubmit = (event) =>
+											{
 												event.preventDefault();
 
 												// An empty object of the form data
@@ -235,7 +252,8 @@ function AddCommUnit(props) {
 												// Loop through all the form elements and add them to the object
 												const elements = [...event.target];
 
-												elements.forEach(({ name, value }) => {
+												elements.forEach(({ name, value }) =>
+												{
 													formData[name] = value;
 												});
 												console.log(formData);
@@ -286,11 +304,35 @@ function AddCommUnit(props) {
 																	*
 																</span>
 															</label>
-															<input
-																required
-																type='text'
-																name='comm_unit_facility'
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+															<Select
+																onChange={(value) =>
+																{
+																	setSelectedFacility(value);
+																	console.log('value', value.value);
+
+																	// list the facilities and their counties
+																	facilities.map((facility) =>
+																	{
+																		if (facility.id === value.value)
+																		{
+																			setCountyValue(facility.county);
+																			setSubCountyValue(facility.sub_county_name);
+																			setConstituencyValue(facility.constituency);
+																			setWardValue(facility.ward_name);
+																		}
+																	}
+																	);
+																	console.log(countyValue);
+																}}
+																options={facilities.map((facility) =>
+																{
+																	return {
+																		value: facility.id,
+																		label: facility.name,
+																	};
+																}
+																)}
+																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															/>
 														</div>
 
@@ -428,7 +470,7 @@ function AddCommUnit(props) {
 																<div className='col-start-1 col-span-1'>
 																	<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																		<label
-																			htmlFor='keph_level'
+																			htmlFor='linked_facility_county'
 																			className='text-gray-600 capitalize text-sm'>
 																			County
 																			<span className='text-medium leading-12 font-semibold'>
@@ -436,32 +478,11 @@ function AddCommUnit(props) {
 																				*
 																			</span>
 																		</label>
-																		<Select
-																			options={[
-																				{
-																					value: 'Private Practice',
-																					label: 'Private Practice',
-																				},
-																				{
-																					value:
-																						'Non-Governmental Organizations',
-																					label:
-																						'Non-Governmental Organizations',
-																				},
-																				{
-																					value: 'Ministry of Health',
-																					label: 'Ministry of Health',
-																				},
-																				{
-																					value: 'Faith Based Organization',
-																					label: 'Faith Based Organization',
-																				},
-																			]}
-																			required
-																			placeholder='Select County'
-																			onChange={() => console.log('changed')}
-																			name='keph_level'
-																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		<input
+																			value={countyValue}
+																			type='text'
+																			name='linked_facility_county'
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -478,32 +499,11 @@ function AddCommUnit(props) {
 																				*
 																			</span>
 																		</label>
-																		<Select
-																			options={[
-																				{
-																					value: 'Private Practice',
-																					label: 'Private Practice',
-																				},
-																				{
-																					value:
-																						'Non-Governmental Organizations',
-																					label:
-																						'Non-Governmental Organizations',
-																				},
-																				{
-																					value: 'Ministry of Health',
-																					label: 'Ministry of Health',
-																				},
-																				{
-																					value: 'Faith Based Organization',
-																					label: 'Faith Based Organization',
-																				},
-																			]}
-																			required
-																			placeholder='Select Sub County'
-																			onChange={() => console.log('changed')}
-																			name='keph_level'
-																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		<input
+																			value={subCountyValue}
+																			type='text'
+																			name='linked_facility_sub_county'
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -520,32 +520,11 @@ function AddCommUnit(props) {
 																				*
 																			</span>
 																		</label>
-																		<Select
-																			options={[
-																				{
-																					value: 'Private Practice',
-																					label: 'Private Practice',
-																				},
-																				{
-																					value:
-																						'Non-Governmental Organizations',
-																					label:
-																						'Non-Governmental Organizations',
-																				},
-																				{
-																					value: 'Ministry of Health',
-																					label: 'Ministry of Health',
-																				},
-																				{
-																					value: 'Faith Based Organization',
-																					label: 'Faith Based Organization',
-																				},
-																			]}
-																			required
-																			placeholder='Select Constituency'
-																			onChange={() => console.log('changed')}
-																			name='keph_level'
-																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		<input
+																			value={constituencyValue}
+																			type='text'
+																			name='linked_facility_sub_county'
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -562,32 +541,11 @@ function AddCommUnit(props) {
 																				*
 																			</span>
 																		</label>
-																		<Select
-																			options={[
-																				{
-																					value: 'Private Practice',
-																					label: 'Private Practice',
-																				},
-																				{
-																					value:
-																						'Non-Governmental Organizations',
-																					label:
-																						'Non-Governmental Organizations',
-																				},
-																				{
-																					value: 'Ministry of Health',
-																					label: 'Ministry of Health',
-																				},
-																				{
-																					value: 'Faith Based Organization',
-																					label: 'Faith Based Organization',
-																				},
-																			]}
-																			required
-																			placeholder='Select Ward'
-																			onChange={() => console.log('changed')}
-																			name='keph_level'
-																			className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		<input
+																			value={wardValue}
+																			type='text'
+																			name='linked_facility_sub_county'
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -634,7 +592,8 @@ function AddCommUnit(props) {
 										// CHEWs Case
 										case 1:
 											// Handle CHEWs Case
-											const handleCHEWSubmit = (event) => {
+											const handleCHEWSubmit = (event) =>
+											{
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 2);
@@ -642,12 +601,13 @@ function AddCommUnit(props) {
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
 
-											const handleCHEWPrevious = (event) => {
+											const handleCHEWPrevious = (event) =>
+											{
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 0);
 
-												console.log({formId})
+												console.log({ formId })
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -666,7 +626,7 @@ function AddCommUnit(props) {
 																{/* First Name */}
 																<div className='col-start-1 col-span-1'>
 																	<label
-																		htmlFor='fname'start
+																		htmlFor='fname' start
 																		className='block text-sm font-medium text-gray-700'>
 																		First Name
 																	</label>
@@ -737,7 +697,7 @@ function AddCommUnit(props) {
 																			name='delete'
 																			type='button'
 																			className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 rounded border border-red-500 hover:border-transparent '
-																			onClick={() => {}}>
+																			onClick={() => { }}>
 																			<TrashIcon class="w-7 h-7 text-red-500 group-hover:text-white" />
 																		</button>
 																	</div>
@@ -770,7 +730,8 @@ function AddCommUnit(props) {
 										// Services Case
 										case 2:
 											// Handle Service Form Submit
-											const handleServiceSubmit = (event) => {
+											const handleServiceSubmit = (event) =>
+											{
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 3);
@@ -778,13 +739,14 @@ function AddCommUnit(props) {
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
 
-											const handleServicesPrevious = (event) => {
+											const handleServicesPrevious = (event) =>
+											{
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 1);
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
-											
+
 											return (
 												<>
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
@@ -839,9 +801,9 @@ function AddCommUnit(props) {
 							title='Menu filters'
 							className='rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z'
 							open>
-								<Box
+							<Box
 								sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
-								>
+							>
 								<FixedSizeList
 									height={400}
 									width={360}
@@ -852,7 +814,7 @@ function AddCommUnit(props) {
 									{renderMenuItem}
 								</FixedSizeList>
 							</Box>
-							</details>
+						</details>
 					</aside>
 
 					{/* (((((( Floating div at bottom right of page */}
@@ -872,51 +834,60 @@ function AddCommUnit(props) {
 	);
 }
 
-AddCommUnit.getInitialProps = async (ctx) => {
-	return checkToken(ctx.req, ctx.res)
-		.then((t) => {
-			if (t.error) {
-				throw new Error('Error checking token');
-			} else {
-				let token = t.token;
-				let url =
-					process.env.NEXT_PUBLIC_API_URL +
-					'/community_unit/add' +
-					ctx.query.id +
-					'/';
+AddCommUnit.getInitialProps = async (ctx) =>
+{
 
-				return fetch(url, {
+	return checkToken(ctx.req, ctx.res)
+		.then(async (t) =>
+		{
+			if (t.error)
+			{
+				throw new Error('Error checking token');
+			} else
+			{
+				let token = t.token;
+				console.log('token', token);
+
+				let url = `${ process.env.NEXT_PUBLIC_API_URL }/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
+				console.log('url', url);
+				const response = await fetch(url, {
 					headers: {
 						Authorization: 'Bearer ' + token,
 						Accept: 'application/json',
 					},
 				})
-					.then((r) => r.json())
-					.then((json) => {
-						return {
-							data: json,
-						};
-					})
-					.catch((err) => {
-						console.log('Error fetching facilities: ' + err);
-						return {
-							error: true,
-							err: err,
-							data: [],
-						};
-					});
+				let facility_data = await response.json();
+				console.log(url)
+				console.log(facility_data);
+
+				if (facility_data.error)
+				{
+					throw new Error('Error fetching facility data');
+					window.location.reload();
+				}
+
+				return {
+					token: token,
+					facility_data: facility_data,
+				};
+
 			}
 		})
-		.catch((err) => {
+		.catch((err) =>
+		{
 			console.log('Error checking token: ' + err);
-			if (typeof window !== 'undefined' && window) {
-				if (ctx?.asPath) {
+			if (typeof window !== 'undefined' && window)
+			{
+				if (ctx?.asPath)
+				{
 					window.location.href = ctx?.asPath;
-				} else {
+				} else
+				{
 					window.location.href = '/facilities';
 				}
 			}
-			setTimeout(() => {
+			setTimeout(() =>
+			{
 				return {
 					error: true,
 					err: err,
