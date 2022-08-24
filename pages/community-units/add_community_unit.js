@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Next imports
 import Head from 'next/head';
@@ -38,6 +38,11 @@ function AddCommUnit(props) {
 	const facilities = props.facility_data.results;
 	const serviceCtg = props.service_categories.results;
 
+	// Reference hooks for the services section
+	const nameOptionRef = useRef();
+	const serviceCategoriesRef = useRef();
+	const optionRefBody = useRef();
+
 	const [selected_facility, setSelectedFacility] = useState(null);
 	const [countyValue, setCountyValue] = useState('');
 	const [subCountyValue, setSubCountyValue] = useState('');
@@ -58,7 +63,6 @@ function AddCommUnit(props) {
 	];
 
 	// Define serviceCategories
-	console.log(serviceCtg);
 	let serviceCategories = ((_services) => {
 		
 		const _serviceCategories = []
@@ -69,8 +73,8 @@ function AddCommUnit(props) {
 			_services.forEach(({name:ctg}) => {
 				let allOccurences = _services.filter(({name}) => name === ctg)
 				
-				allOccurences.forEach(({id, name}) => {
-					_subCtgs.push(name)
+				allOccurences.forEach(({id, description}) => {
+					_subCtgs.push(description)
 					_values.push(id)
 				})
 				
@@ -89,7 +93,9 @@ function AddCommUnit(props) {
 		}
 		
 		return _serviceCategories
-	 })(props.service_categories ?? [])
+	 })(props.service_categories.results ?? [])
+
+
 
 
 	// const serviceCategories = [
@@ -843,9 +849,56 @@ function AddCommUnit(props) {
 											const handleServiceSubmit = (event) => {
 												event.preventDefault();
 
+												// const serviceData = {};
+
+												// const elements = [...event.target];
+
+												// let new_payload = {}
+
+												// elements.forEach(({ name, value }) => {
+												// 	switch (name) {
+												// 		case 'first_name':
+												// 			ChewData[name] = value
+												// 			break;
+												// 		case 'last_name':
+												// 			ChewData[name] = value
+												// 			break;
+												// 		case 'is_incharge':
+												// 			ChewData[name] = value
+												// 			break;
+												// 	}
+												// });		
+												
+												// new_payload = {
+												// 	services:[{
+
+												// 	}]
+												// }
+
+												const _payload = services.map(({name, value, subCategories }) => ({service_categories: value}))
+												console.log('This is the payload', _payload);
+
+												try{
+													fetch(`/api/common/submit_form_data/?path=chul_services&id=${chulId}`, {
+														headers:{
+															'Accept': 'application/json, text/plain, */*',
+															'Content-Type': 'application/json;charset=utf-8'
+															
+														},
+														method:'POST',
+														body: JSON.stringify({services:_payload})
+													})
+
+												}
+												catch(e){
+													console.error('Unable to patch CHU service details'. e.message)
+												}
+												
+
 												window.sessionStorage.setItem('formId', 3);
 
-												setFormId(window.sessionStorage.getItem('formId'));
+												setFormId(window.sessionStorage.getItem('formId'))
+												setServices([])
 											};
 
 											const handleServicesPrevious = (event) => {
@@ -854,6 +907,14 @@ function AddCommUnit(props) {
 												window.sessionStorage.setItem('formId', 1);
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
+
+											const handleServicesCurr = (event) => {
+												event.preventDefault();
+
+												window.sessionStorage.setItem('formId', 2);
+												setFormId(window.sessionStorage.getItem('formId'));
+											};
+
 
 											return (
 												<>
@@ -875,6 +936,26 @@ function AddCommUnit(props) {
 																refreshForm={refreshForm}
 															/>
 														</div>
+																												
+														{/* Service Category Table */}
+														<table className='w-full  h-auto my-4'>
+															<thead className='w-full'>
+																<tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
+																	<td className='text-lg font-semibold text-indigo-900 '>Name</td>
+																	<td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
+																</tr>
+															</thead>
+															<tbody ref={optionRefBody}>
+																{
+																	services.map(({subctg}) => subctg).map((service_categories, i) => (
+																		<tr key={`${service_categories}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+																			<td ref={nameOptionRef}>{service_categories}</td>
+																			<td ref={serviceCategoriesRef} className='ml-12 text-base'>Yes</td>
+																		</tr>
+																	))
+																}															
+															</tbody>
+														</table>
 
 														<div className='flex justify-between items-center w-full'>
 															<button
@@ -887,6 +968,7 @@ function AddCommUnit(props) {
 															</button>
 															<button
 																type='submit'
+																
 																className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>
 																	Save

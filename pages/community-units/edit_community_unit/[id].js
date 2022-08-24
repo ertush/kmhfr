@@ -75,112 +75,143 @@ const CommUnit = (props) =>
   }
 
   // Define serviceCategories
-  const serviceCategories = [
-    {
-      name: 'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
-      subCategories: [
-        'Accident and Emergency casualty Services',
-        'General Emergency Services',
-      ],
-    },
-    {
-      name: 'AMBULATORY SERVICES',
-      subCategories: ['Ambulatory Services'],
-    },
-    {
-      name: 'ANTENATAL CARE',
-      subCategories: ['Focused Antenatal Care'],
-    },
-    {
-      name: 'BLOOD TRANSFUSION SERVICES',
-      subCategories: [
-        'Blood Bank',
-        'Facility offering Blood Transfusion Service',
-        'Satellite Blood Transfusion service',
-      ],
-    },
-    {
-      name: 'CANCER SCREENING',
-      subCategories: [
-        'Breast',
-        'Coloreactal',
-        'Pap smear',
-        'Prostrate',
-        'Screening using VIA/VILI',
-      ],
-    },
-    {
-      name: 'CURATIVE SERVICES',
-      subCategories: ['Inpatient', 'Outpatient'],
-    },
-    {
-      name: 'DELTED HDU',
-      subCategories: ['High dependency Services'],
-    },
-    {
-      name: 'EMERGENCY PREPAREDNESS',
-      subCategories: [
-        'Basic Emergency Preparedness',
-        'Comprehensive Emergency Preparedness',
-      ],
-    },
-    {
-      name: 'FAMILY PLANNING',
-      subCategories: ['Long Term', 'Natural', 'Permanent'],
-    },
-    {
-      name: 'FORENSIC SERVICES',
-      subCategories: ['Long Term', 'Natural', 'Permanent'],
-    },
-    {
-      name: 'HIV TREATMENT',
-      subCategories: ['HIV treatment and care'],
-    },
-    {
-      name: 'HIV/AIDS Prevention,Care and Treatment Services',
-      subCategories: [
-        'Condom Distribution & STI Prevention',
-        'Elimination of Mother to Child transmission of HIV',
-        'HEI - HIV exposed infants',
-        'HIV preventive Package',
-        'HIV risk reduction for Key populations',
-        'HIV risk reduction services for prioity populations and geographies',
-        'HIV Testing Services',
-        'Infection Prevention and control to mitigate HIV infection in the work place',
-        'Management of Sexually Transmitted Illness (STI)',
-        'Nutrition assessment ,counselling and support ( The NACS process) for PLHIVs',
-        'Post-Exposure Prophylaxis (PEP)',
-      ],
-    },
-    {
-      name: 'HOSPICE SERVICE',
-      subCategories: [],
-    },
-    {
-      name: 'IMMUNISATION',
-      subCategories: [],
-    },
-    {
-      name: 'INTEGRATED MANAGEMENT OF CHILDHOOD ILLNESS',
-      subCategories: [],
-    },
-    {
-      name: 'LABORATORY SERVICES',
-      subCategories: [],
-    },
-    {
-      name: 'LEPROSY DIAGNOSIS',
-      subCategories: [],
-    },
-    {
-      name: 'LEPROSY TREATMENT',
-      subCategories: [],
-    },
-    {
-      name: 'MATERNITY SERVICES',
-      subCategories: [],
-    },
-  ];
+  let serviceCategories = ((_services) => {
+		
+		const _serviceCategories = []
+		let _values = []
+		let _subCtgs = []
+
+		if(_services.length > 0){
+			_services.forEach(({name:ctg}) => {
+				let allOccurences = _services.filter(({name}) => name === ctg)
+				
+				allOccurences.forEach(({id, description}) => {
+					_subCtgs.push(description)
+					_values.push(id)
+				})
+				
+				if(_serviceCategories.map(({name}) => name).indexOf(ctg) === -1){
+					_serviceCategories.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+		return _serviceCategories
+	 })(props.service_categories.results ?? [])
+  // const serviceCategories = [
+  //   {
+  //     name: 'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
+  //     subCategories: [
+  //       'Accident and Emergency casualty Services',
+  //       'General Emergency Services',
+  //     ],
+  //   },
+  //   {
+  //     name: 'AMBULATORY SERVICES',
+  //     subCategories: ['Ambulatory Services'],
+  //   },
+  //   {
+  //     name: 'ANTENATAL CARE',
+  //     subCategories: ['Focused Antenatal Care'],
+  //   },
+  //   {
+  //     name: 'BLOOD TRANSFUSION SERVICES',
+  //     subCategories: [
+  //       'Blood Bank',
+  //       'Facility offering Blood Transfusion Service',
+  //       'Satellite Blood Transfusion service',
+  //     ],
+  //   },
+  //   {
+  //     name: 'CANCER SCREENING',
+  //     subCategories: [
+  //       'Breast',
+  //       'Coloreactal',
+  //       'Pap smear',
+  //       'Prostrate',
+  //       'Screening using VIA/VILI',
+  //     ],
+  //   },
+  //   {
+  //     name: 'CURATIVE SERVICES',
+  //     subCategories: ['Inpatient', 'Outpatient'],
+  //   },
+  //   {
+  //     name: 'DELTED HDU',
+  //     subCategories: ['High dependency Services'],
+  //   },
+  //   {
+  //     name: 'EMERGENCY PREPAREDNESS',
+  //     subCategories: [
+  //       'Basic Emergency Preparedness',
+  //       'Comprehensive Emergency Preparedness',
+  //     ],
+  //   },
+  //   {
+  //     name: 'FAMILY PLANNING',
+  //     subCategories: ['Long Term', 'Natural', 'Permanent'],
+  //   },
+  //   {
+  //     name: 'FORENSIC SERVICES',
+  //     subCategories: ['Long Term', 'Natural', 'Permanent'],
+  //   },
+  //   {
+  //     name: 'HIV TREATMENT',
+  //     subCategories: ['HIV treatment and care'],
+  //   },
+  //   {
+  //     name: 'HIV/AIDS Prevention,Care and Treatment Services',
+  //     subCategories: [
+  //       'Condom Distribution & STI Prevention',
+  //       'Elimination of Mother to Child transmission of HIV',
+  //       'HEI - HIV exposed infants',
+  //       'HIV preventive Package',
+  //       'HIV risk reduction for Key populations',
+  //       'HIV risk reduction services for prioity populations and geographies',
+  //       'HIV Testing Services',
+  //       'Infection Prevention and control to mitigate HIV infection in the work place',
+  //       'Management of Sexually Transmitted Illness (STI)',
+  //       'Nutrition assessment ,counselling and support ( The NACS process) for PLHIVs',
+  //       'Post-Exposure Prophylaxis (PEP)',
+  //     ],
+  //   },
+  //   {
+  //     name: 'HOSPICE SERVICE',
+  //     subCategories: [],
+  //   },
+  //   {
+  //     name: 'IMMUNISATION',
+  //     subCategories: [],
+  //   },
+  //   {
+  //     name: 'INTEGRATED MANAGEMENT OF CHILDHOOD ILLNESS',
+  //     subCategories: [],
+  //   },
+  //   {
+  //     name: 'LABORATORY SERVICES',
+  //     subCategories: [],
+  //   },
+  //   {
+  //     name: 'LEPROSY DIAGNOSIS',
+  //     subCategories: [],
+  //   },
+  //   {
+  //     name: 'LEPROSY TREATMENT',
+  //     subCategories: [],
+  //   },
+  //   {
+  //     name: 'MATERNITY SERVICES',
+  //     subCategories: [],
+  //   },
+  // ];
   return (
     console.log(props),
     <>
@@ -850,8 +881,7 @@ const CommUnit = (props) =>
   );
 };
 
-CommUnit.getInitialProps = async (ctx) =>
-{
+CommUnit.getInitialProps = async (ctx) => {
   if (ctx.query.q)
   {
     const query = ctx.query.q;
@@ -872,14 +902,32 @@ CommUnit.getInitialProps = async (ctx) =>
     }
   }
   return checkToken(ctx.req, ctx.res)
-    .then((t) =>
-    {
+    .then(async (t) =>{
       if (t.error)
       {
         throw new Error('Error checking token');
       } else
       {
         let token = t.token;
+
+        // Fetch the service options
+				let service_url = `${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=100&ordering=name`;
+
+				const service_response = await fetch(service_url,
+					{
+						headers: {
+							Authorization: 'Bearer ' + token,
+							Accept: 'application/json',
+						},
+					})
+
+				let service_categories = await service_response.json();
+				console.log('Service Categories', service_categories)
+
+				if (service_categories.error){
+					throw new Error('Error fetching the service categories');
+				}
+
         let url =
           process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + ctx.query.id + '/';
 
@@ -893,11 +941,12 @@ CommUnit.getInitialProps = async (ctx) =>
           .then((json) =>
           {
             return {
+              token: token,
+              service_categories: service_categories,
               data: json,
             };
           })
-          .catch((err) =>
-          {
+          .catch((err) => {
             console.log('Error fetching facilities: ', err);
             return {
               error: true,

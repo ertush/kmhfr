@@ -47,6 +47,11 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
+                case 'chul_services':
+                    url = `${API_URL}/chul/units/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;              
                 case 'services':
                     const {_id} = req.query;
                     url = `${API_URL}/facilities/facilities/${_id}/`;
