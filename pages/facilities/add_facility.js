@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, Suspense, useEffect, useRef } from 'react';
 
 // Next imports
 import Head from 'next/head';
@@ -24,7 +24,7 @@ import StepLabel from '@mui/material/StepLabel';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-// import Alert from '@mui/material/Alert';
+import Alert from '@mui/material/Alert';
 
 // Heroicons imports
 import {
@@ -55,7 +55,7 @@ function AddFacility(props) {
 
 	// Form drop down options
 
-     let facilityOptions = [
+     const facilityOptions = [
 		props['0']?.facility_types[0],  // STAND ALONE
 		props['0']?.facility_types[1],  // DISPENSARY 
 		props['0']?.facility_types[2],  // MEDICAL CLINIC
@@ -65,23 +65,23 @@ function AddFacility(props) {
 		props['0']?.facility_types[25]  // MEDICAL CENTRE
 	]
 
-	 let facilityTypeOptions = props['1']?.facility_type_details
-	 let ownerOptions =  props['2']?.owners
-	 let ownerTypeOptions =  props['3']?.owner_types
-	 let kephOptions =  props['4']?.keph
-	 let facilityAdmissionOptions =  props['5']?.facility_admission_status
-	 let countyOptions =  props['6']?.counties
-	 let subCountyOptions =  props['7']?.sub_counties
-	 let constituencyOptions =  props['8']?.constituencies
-	 let wardOptions =  props['9']?.wards
-	 let jobTitleOptions = props['10']?.job_titles
-	 let contactTypeOptions = props['11']?.contact_types
+	 const facilityTypeOptions = props['1']?.facility_type_details
+	 const ownerOptions =  props['2']?.owners
+	 const ownerTypeOptions =  props['3']?.owner_types
+	 const kephOptions =  props['4']?.keph
+	 const facilityAdmissionOptions =  props['5']?.facility_admission_status
+	 const countyOptions =  props['6']?.counties
+	 const subCountyOptions =  props['7']?.sub_counties
+	 const constituencyOptions =  props['8']?.constituencies
+	 const wardOptions =  props['9']?.wards
+	 const jobTitleOptions = props['10']?.job_titles
+	 const contactTypeOptions = props['11']?.contact_types
 
-	 let facilityDeptOptions = props['12']?.facility_depts
-	 let regBodyOptions = props['13']?.regulating_bodies
-	 let regulationStateOptions = props['14']?.regulation_status
+	 const facilityDeptOptions = props['12']?.facility_depts
+	 const regBodyOptions = props['13']?.regulating_bodies
+	 const regulationStateOptions = props['14']?.regulation_status
 
-	 let serviceOptions = ((_services) => {
+	 const serviceOptions = ((_services) => {
 		
 		const _serviceOptions = []
 		let _values = []
@@ -113,7 +113,7 @@ function AddFacility(props) {
 		return _serviceOptions
 	 })(props['15'].service ?? [])
 
-	 let infrastructureOption = ((_infrastructure) => {
+	 const infrastructureOption = ((_infrastructure) => {
 		
 		const _infrastructureOptions = []
 		let _values = []
@@ -146,7 +146,7 @@ function AddFacility(props) {
 	 })(props['17'].infrastructure ?? [])
 
 
-	 let hrOptions = ((_hr) => {
+	 const hrOptions = ((_hr) => {
 		
 		const _hrOptions = []
 		let _values = []
@@ -178,12 +178,8 @@ function AddFacility(props) {
 		return _hrOptions
 	 })(props['18'].hr ?? [])
 
-	//  let kephLvl = {label:'', value:''}
 
-
-	
-	//  console.log({props}) 
-	
+	//  Refs
 
     const nameOptionRef = useRef(null)
     const serviceOptionRef = useRef(null)
@@ -241,14 +237,11 @@ function AddFacility(props) {
 	const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
 	
-	// console.log({infrastructure})
-
+	
     useEffect(() => {
 
         const formIdState = window.sessionStorage.getItem('formId');
 		
-
-       console.log({hrOptions})
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
             window.sessionStorage.setItem('formId', 5); //0
@@ -540,8 +533,7 @@ function AddFacility(props) {
 															}
 
 															if(resp){
-
-																console.log({input: checklistFileRef.current})
+			
 																
 																try {
 																	const resp = await fetch('/api/common/submit_form_data/?path=documents', {
@@ -582,11 +574,6 @@ function AddFacility(props) {
 																		setCenter(JSON.parse(JSON.stringify([lat, lng])))
 																		setWardName(_data?.name)
 
-																		
-
-																		console.log({geoJSON, center, _ward})
-
-																		
 																	
 																	}catch(e){
 																		console.error(e.message)
@@ -601,7 +588,6 @@ function AddFacility(props) {
 															
 														)
 
-														// console.log((await response.json()))
 
 													}catch(e){
 														console.error(e.message)
@@ -1188,7 +1174,7 @@ function AddFacility(props) {
 																		name='reporting_in_dhis'
 																		id='reporting_in_dhis_yes'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			
 																		}}
 																	/>
 																	<small className='text-gray-700'>Yes</small>
@@ -1201,7 +1187,7 @@ function AddFacility(props) {
 																		name='reporting_in_dhis'
 																		id='reporting_in_dhis_no'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																	
 																		}}
 																	/>
 																	<small className='text-gray-700'>No</small>
@@ -1244,7 +1230,7 @@ function AddFacility(props) {
 																		name='nhif_accreditation'
 																		id='nhif_accreditation_yes'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<small className='text-gray-700'>Yes</small>
@@ -1257,7 +1243,7 @@ function AddFacility(props) {
 																		name='nhif_accreditation'
 																		id='nhif_accreditation_no'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<small className='text-gray-700'>No</small>
@@ -1275,14 +1261,14 @@ function AddFacility(props) {
 																		type='checkbox'
 																		value={false}
 																		defaultChecked={false}
-																		name='open_whole_day'
+																		name='is_classified'
 																		id='is_armed_forces'
 																		onChange={(ev) => {
-																			console.log({ ev });
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
-																		htmlFor='is_armed_forces'
+																		htmlFor='is_classified'
 																		className='text-gray-700 capitalize text-sm flex-grow'>
 																		{' '}
 																		Is this an Armed Force facility?{' '}
@@ -1304,7 +1290,7 @@ function AddFacility(props) {
 																		name='open_whole_day'
 																		id='open_24hrs'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
@@ -1323,7 +1309,7 @@ function AddFacility(props) {
 																		name='open_late_night'
 																		id='open_late_night'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
@@ -1342,7 +1328,7 @@ function AddFacility(props) {
 																		name='open_public_holidays'
 																		id='open_public_holidays'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
@@ -1361,7 +1347,7 @@ function AddFacility(props) {
 																		name='open_weekends'
 																		id='open_weekends'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
@@ -1380,7 +1366,7 @@ function AddFacility(props) {
 																		name='open_normal_day'
 																		id='open_8_5'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
@@ -1689,8 +1675,7 @@ function AddFacility(props) {
 														type: 'Point'
 													}
 
-													// console.log({geolocationData})
-
+													
 													// Post Geolocation Details
 
 													try{
@@ -1795,7 +1780,7 @@ function AddFacility(props) {
 																	 geoJSON !== null ? 
 																	 <Suspense fallBack={
 																		<div className='w-full flex'>
-																			<Alert severity="info" sx={{width:'100%'}} />
+																			<Alert severity="info"  sx={{width:'100%'}} >Loading</Alert>
 
 																		</div>
 																	 }>
@@ -1805,7 +1790,7 @@ function AddFacility(props) {
 																	 </Suspense> 
 																	
 																	:
-																	// <Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
+																	
 																	<LoadingAnimation size={6} isLight={false}/>
 
 																}
@@ -1846,7 +1831,7 @@ function AddFacility(props) {
 													const elements = [...event.target];
 
 													elements.forEach(({ name, value }) => {
-														// console.log({name, value});
+														
 														contactFormData[name] = value 
 													});
 
@@ -1893,7 +1878,7 @@ function AddFacility(props) {
 														'contact_details_others'
 													);
 
-													// console.log(event.target);
+													
 
 													if (dropDowns.length > 0) {
 														dropDowns.forEach((dropDown) => {
@@ -2146,7 +2131,7 @@ function AddFacility(props) {
 																		required
 																		placeholder="Select Job Title"
 																		onChange={
-																			() => console.log('changed')
+																			(ev) => ev.preventDefault()
 																		}
 																		name="title" 
             															className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
@@ -2270,7 +2255,7 @@ function AddFacility(props) {
 														license_number:facilityRegDataB['3'].license_number
 													}]})
 													
-													// console.log({payload})
+											
 
 													payload.forEach(data => {
 														try{
@@ -2641,8 +2626,6 @@ function AddFacility(props) {
 
 													const _payload = infrastructure.map(({value}, i) => ({count: i < infrastructureCount.length ? Number(infrastructureCount[i]['val'] ?? 0) : 0 , infrastructure: value}))
 
-													// console.log({infrastructureCount, _payload})
-
 													try{
 														fetch(`/api/common/submit_form_data/?path=infrastructure&id=${facilityId}`, {
 															headers:{
@@ -2661,7 +2644,7 @@ function AddFacility(props) {
 
 													window.sessionStorage.setItem('formId', 6)
 													
-													// console.log({formId});
+													
 													setFormId(window.sessionStorage.getItem('formId'))
 
 												}
@@ -2877,6 +2860,7 @@ function AddFacility(props) {
 AddFacility.getInitialProps = async (ctx) => {
 
 	const allOptions = []
+
 	const options = [
 		'facility_types',
 		'facility_type_details',
@@ -2901,7 +2885,7 @@ AddFacility.getInitialProps = async (ctx) => {
 	
 	]
 
-	// console.log('get initial props...')
+	
 
 	return checkToken(ctx.req, ctx.res)
 		.then(async (t) => {
@@ -2912,8 +2896,7 @@ AddFacility.getInitialProps = async (ctx) => {
 				let token = t.token;
 				let url = '';
 				
-				// console.log({ctx});
-
+				
 				for(let i = 0; i < options.length; i++) {
 					const option = options[i]
 					switch(option) {
@@ -2931,7 +2914,7 @@ AddFacility.getInitialProps = async (ctx) => {
 
 									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value:id, label:sub_division} : {value:id, label:name})
 
-									// console.log({results})
+									
 									allOptions.push({facility_types: results })
 									
 								}
@@ -2943,6 +2926,7 @@ AddFacility.getInitialProps = async (ctx) => {
 										facility_types: [],
 									});
 								}
+
 								break;
 							case 'facility_type_details':
 								url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_active=true&page_size=10000`;
@@ -2970,6 +2954,7 @@ AddFacility.getInitialProps = async (ctx) => {
 										facility_types: [],
 									});
 								}
+
 								break;				
 						case 'owners':
 								url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
@@ -3313,7 +3298,7 @@ AddFacility.getInitialProps = async (ctx) => {
 			
 
 								allOptions.push(_obj)
-								// console.log({allOptions})
+								
 									
 								}
 								catch(err) {

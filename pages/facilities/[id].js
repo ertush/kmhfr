@@ -733,6 +733,7 @@ const Facility = (props) => {
                                     {service.category_name || ""}
                                   </small>
                                 </div>
+
                                 <div>
                                   <p className="text-gray-800 text-base">
                                     {service.average_rating || 0}/
@@ -927,6 +928,7 @@ const Facility = (props) => {
                     {facility.facility_type_name || " - "}
                   </p>
                 </div>
+
 
                 <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                   <label className="col-span-1 text-gray-600">County</label>

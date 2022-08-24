@@ -33,8 +33,6 @@ const Home = (props) => {
     let fltrs = filters
     let [drillDown, setDrillDown] = useState({})
     let qf = props?.query?.qf || 'all'
-
-    // console.log({path: props?.path, current_url:props?.current_url});
    
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -238,7 +236,7 @@ const Home = (props) => {
             setFacilityFeedBack([])
             setKhisSynched(false)
 
-            console.log({filter})  
+ 
             let robj = {pathname: '/facilities', query: {qf: filter_id, ...filter}}
             router.push(robj)
             break;
@@ -543,11 +541,11 @@ const Home = (props) => {
                             </ListItemButton>
 
                             {/* Approved Facilities */}
-                            <ListItemButton sx={{ backgroundColor: (approvedFctsSelected || pathId === 'new_pending_validation')  ?  '#e7ebf0' : 'none' }} 
+                            <ListItemButton sx={{ backgroundColor: (approvedFctsSelected || pathId === 'approved')  ?  '#e7ebf0' : 'none' }} 
                                 onClick={(ev)=>{
                                     setTitle('Approved Facilities')
                                     setAllFctsSelected(false)
-                                    setPathId('not_all')
+                                    setPathId('approved')
                                     setApprovedFctsSelected(true)
                                     setNewFctsSelected(false)
                                     setUpdatedFctsSelected(false)
@@ -1052,9 +1050,11 @@ Home.getInitialProps = async (ctx) => {
                 url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
             }
 
-            if (flt === 'to_publish') url = url.replace('approved,', '')
 
-            console.log({url})
+            // Remove approved field if fetching for Facilities pending approval
+            // if (flt === 'to_publish') url = url.replace('approved,', '')
+
+          
         })
 
 
@@ -1065,9 +1065,6 @@ Home.getInitialProps = async (ctx) => {
 
     
 
-        // Remove approved field if fetching for Facilities pending approval
-
-       
 
         return fetch(url, {
             headers: {
