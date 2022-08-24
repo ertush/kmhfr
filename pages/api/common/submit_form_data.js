@@ -37,6 +37,11 @@ export default async function submitFormData(req, res) {
                     method = 'POST';
                     contentType = 'multipart/form-data; boundary=---------------------------22584204591762068164170278481';
                     break;
+                case 'chul_data':
+                    url = `${API_URL}/chul/units/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
                 case 'facility_data':
                     url = `${API_URL}/facilities/facilities/${req.query.id}/`;
                     method = 'PATCH';
