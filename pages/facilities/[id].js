@@ -734,6 +734,7 @@ const Facility = (props) => {
                                   </small>
                                 </div>
 
+
                                 <div>
                                   <p className="text-gray-800 text-base">
                                     {service.average_rating || 0}/
@@ -896,6 +897,7 @@ const Facility = (props) => {
                 Approve/Reject Facility
               </h3>
 
+
               {/* Facility details */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                 <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
@@ -937,6 +939,7 @@ const Facility = (props) => {
                   </p>
                 </div>
 
+
                 {facility.date_established && (
                   <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                     <label className="col-span-1 text-gray-600">
@@ -951,6 +954,7 @@ const Facility = (props) => {
                   </div>
                 )}
               </div>
+
 
               {/* Facility details hidden section */}
               <div className="grid grid-cols-2 w-full md:w-11/12 h-8 leading-none items-center">

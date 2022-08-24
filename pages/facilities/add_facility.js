@@ -1861,8 +1861,7 @@ function AddFacility(props) {
 																	</label>
 																	<Select options={jobTitleOptions || []} 
 																		required
-																		placeholder="Select Job Title"
-																	
+																		placeholder="Select Job Title"																	
 																		name="title" 
             															className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 																</div>

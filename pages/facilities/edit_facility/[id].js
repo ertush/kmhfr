@@ -4,7 +4,10 @@ import { checkToken } from '../../../controllers/auth/auth'
 import React, { useState, useEffect, useRef } from 'react';
 import Select from 'react-select'
 import MainLayout from '../../../components/MainLayout'
+
 import dynamic from 'next/dynamic'
+
+
 
 import { 
 	handleBasicDetailsSubmit,
@@ -177,6 +180,7 @@ const EditFacility = (props) => {
     const [wardName, setWardName] = useState(ward_name)
 
 
+
     
     const [facilityOption, setFacilityOption] = useState('')
     const [ownerTypeOption, setOwnerTypeOption] = useState('')
@@ -282,6 +286,7 @@ const EditFacility = (props) => {
             
             wardRef.current.state.value = wardOptions.filter(({value}) => value === ward)[0] || ''
         }
+
         
     }, [])
 
@@ -893,7 +898,7 @@ const EditFacility = (props) => {
                                             name='collection_date'
                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                         />
-                                    </div>
+                                   </div>
 
                                     {/* Lon/Lat */}
                                     <div className='grid grid-cols-2 gap-4 place-content-start w-full'>
@@ -1442,6 +1447,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
 								
 								url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=${fields}&page_size=20000&page=1`;
+
 							
 								
 								try{
