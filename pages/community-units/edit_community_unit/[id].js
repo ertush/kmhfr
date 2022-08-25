@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Next imports
 import Head from 'next/head';
@@ -23,6 +23,8 @@ import { ChevronDownIcon } from '@heroicons/react/solid';
 import
 {
   CheckCircleIcon,
+  ChevronDoubleRightIcon,
+	ChevronDoubleLeftIcon,
   ChevronRightIcon,
   InformationCircleIcon,
   LocationMarkerIcon,
@@ -31,8 +33,8 @@ import
 } from '@heroicons/react/solid';
 import Select from 'react-select';
 
-const CommUnit = (props) =>
-{
+const CommUnit = (props) => {
+  const facilities = props.facility_data.results;
   const Map = dynamic(
     () => import('../../../components/Map'), // replace '@components/map' with your component's location
     {
@@ -45,6 +47,23 @@ const CommUnit = (props) =>
     }
   );
   let cu = props.data;
+
+  // Changing the value of the linked facility and its locality
+  const [selected_facility, setSelectedFacility] = useState('');
+  const [countyValue, setCountyValue] = useState('');
+	const [subCountyValue, setSubCountyValue] = useState('');
+	const [constituencyValue, setConstituencyValue] = useState('');
+	const [wardValue, setWardValue] = useState('');
+
+  // Services states
+  const [services, setServices] = useState([])
+	const [refreshForm, setRefreshForm] = useState(false)
+
+ 	// Reference hooks for the services section
+	const nameOptionRef = useRef();
+	const serviceCategoriesRef = useRef();
+	const optionRefBody = useRef();
+
 
   const [user, setUser] = useState(null);
   const [isCHUDetails, setIsCHUDetails] = useState(true);
@@ -65,12 +84,11 @@ const CommUnit = (props) =>
       setIsCHUDetails(true);
       setIsApproveReject(false);
     };
-  }, []);
+  }, [facilities]);
 
   const handleChange = (event) =>
   {
     event.preventDefault();
-
     console.log(event.target.value);
   }
 
@@ -106,112 +124,7 @@ const CommUnit = (props) =>
 		
 		return _serviceCategories
 	 })(props.service_categories.results ?? [])
-  // const serviceCategories = [
-  //   {
-  //     name: 'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
-  //     subCategories: [
-  //       'Accident and Emergency casualty Services',
-  //       'General Emergency Services',
-  //     ],
-  //   },
-  //   {
-  //     name: 'AMBULATORY SERVICES',
-  //     subCategories: ['Ambulatory Services'],
-  //   },
-  //   {
-  //     name: 'ANTENATAL CARE',
-  //     subCategories: ['Focused Antenatal Care'],
-  //   },
-  //   {
-  //     name: 'BLOOD TRANSFUSION SERVICES',
-  //     subCategories: [
-  //       'Blood Bank',
-  //       'Facility offering Blood Transfusion Service',
-  //       'Satellite Blood Transfusion service',
-  //     ],
-  //   },
-  //   {
-  //     name: 'CANCER SCREENING',
-  //     subCategories: [
-  //       'Breast',
-  //       'Coloreactal',
-  //       'Pap smear',
-  //       'Prostrate',
-  //       'Screening using VIA/VILI',
-  //     ],
-  //   },
-  //   {
-  //     name: 'CURATIVE SERVICES',
-  //     subCategories: ['Inpatient', 'Outpatient'],
-  //   },
-  //   {
-  //     name: 'DELTED HDU',
-  //     subCategories: ['High dependency Services'],
-  //   },
-  //   {
-  //     name: 'EMERGENCY PREPAREDNESS',
-  //     subCategories: [
-  //       'Basic Emergency Preparedness',
-  //       'Comprehensive Emergency Preparedness',
-  //     ],
-  //   },
-  //   {
-  //     name: 'FAMILY PLANNING',
-  //     subCategories: ['Long Term', 'Natural', 'Permanent'],
-  //   },
-  //   {
-  //     name: 'FORENSIC SERVICES',
-  //     subCategories: ['Long Term', 'Natural', 'Permanent'],
-  //   },
-  //   {
-  //     name: 'HIV TREATMENT',
-  //     subCategories: ['HIV treatment and care'],
-  //   },
-  //   {
-  //     name: 'HIV/AIDS Prevention,Care and Treatment Services',
-  //     subCategories: [
-  //       'Condom Distribution & STI Prevention',
-  //       'Elimination of Mother to Child transmission of HIV',
-  //       'HEI - HIV exposed infants',
-  //       'HIV preventive Package',
-  //       'HIV risk reduction for Key populations',
-  //       'HIV risk reduction services for prioity populations and geographies',
-  //       'HIV Testing Services',
-  //       'Infection Prevention and control to mitigate HIV infection in the work place',
-  //       'Management of Sexually Transmitted Illness (STI)',
-  //       'Nutrition assessment ,counselling and support ( The NACS process) for PLHIVs',
-  //       'Post-Exposure Prophylaxis (PEP)',
-  //     ],
-  //   },
-  //   {
-  //     name: 'HOSPICE SERVICE',
-  //     subCategories: [],
-  //   },
-  //   {
-  //     name: 'IMMUNISATION',
-  //     subCategories: [],
-  //   },
-  //   {
-  //     name: 'INTEGRATED MANAGEMENT OF CHILDHOOD ILLNESS',
-  //     subCategories: [],
-  //   },
-  //   {
-  //     name: 'LABORATORY SERVICES',
-  //     subCategories: [],
-  //   },
-  //   {
-  //     name: 'LEPROSY DIAGNOSIS',
-  //     subCategories: [],
-  //   },
-  //   {
-  //     name: 'LEPROSY TREATMENT',
-  //     subCategories: [],
-  //   },
-  //   {
-  //     name: 'MATERNITY SERVICES',
-  //     subCategories: [],
-  //   },
-  // ];
+
   return (
     console.log(props),
     <>
@@ -266,6 +179,7 @@ const CommUnit = (props) =>
                   </p>
                 </div>
               </div>
+
               {/* Info snippet */}
               <div className='flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2'>
                 <div className='flex flex-wrap gap-3 w-full items-center justify-start md:justify-center'>
@@ -280,7 +194,7 @@ const CommUnit = (props) =>
                       Not approved
                     </span>
                   )}
-                  {cu.is_closed && (
+                  {cu.is_closed &&  (
                     <span className='bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1'>
                       <LockClosedIcon className='h-4 w-4' />
                       CHU Closed
@@ -361,18 +275,39 @@ const CommUnit = (props) =>
                       <label
                         htmlFor='comm_unit_facility'
                         className='text-gray-600 capitalize text-sm'>
-                        Community Health Unit Linked Facility
+                        Community Health Unit Linked Facility{' '}
                         <span className='text-medium leading-12 font-semibold'>
                           {' '}
                           *
                         </span>
-                      </label>
-                      <input
+                      </label>                    
+                      <Select
+                        onChange={(value) => {
+                          setSelectedFacility(value);
+                          
+                          // list the facilities and their counties
+                          facilities.map((facility) => {
+                            if (facility.id === value.value) {
+                              setCountyValue(facility.county);
+                              setSubCountyValue(facility.sub_county_name);
+                              setConstituencyValue(facility.constituency);
+                              setWardValue(facility.ward_name);
+                            }
+                          }
+                          );
+                        }}
+
+                        options={facilities.map((facility) => {
+                          return {
+                            value: facility.id,
+                            label: facility.name,
+                          };
+                        }
+                        )}
                         required
-                        type='text'
+                        placeholder={cu.facility_name || ' - '}
                         name='comm_unit_facility'
-                        value={cu.facility_name || ' - '}
-                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                       />
                     </div>
 
@@ -386,31 +321,32 @@ const CommUnit = (props) =>
                           {' '}
                           *
                         </span>
-                      </label>
+                      </label>                    
                       <Select
                         options={[
                           {
-                            value: 'closed',
+                            value: '2943e6c1-a581-461e-85a4-b9f25a2674ab',
                             label: 'Closed',
                           },
                           {
-                            value: 'non-functional',
+                            value: 'bac8ab50-1dad-4f96-ab96-a18a4e420871',
                             label: 'Non-functional',
                           },
                           {
-                            value: 'semi-functional',
+                            value: 'fbc7fce5-3328-4dad-af70-0ec3d8f5ad80',
                             label: 'Semi-functional',
                           },
                           {
-                            value: 'fully-functional',
+                            value: '50ef43f0-887c-44e2-9b09-cfa7a7090deb',
                             label: 'Fully-functional',
                           },
                         ]}
                         required
-                        placeholder='Select an operation status ...'
+                        placeholder={cu.status_name || ' - '}
                         onChange={() => console.log('changed')}
                         name='comm_unit_status'
-                        value={cu.status_name}
+                        value={cu.status_name || ' - '}
+                        //value={cu.status_name}
                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                       />
                     </div>
@@ -511,11 +447,12 @@ const CommUnit = (props) =>
                     {/* CHU, Linked Facility Location */}
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                       <div className='grid grid-cols-4 place-content-start gap-3 w-full'>
+                       
                         {/* County  */}
                         <div className='col-start-1 col-span-1'>
                           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                              htmlFor='county'
+                              htmlFor='linked_facility_county'
                               className='text-gray-600 capitalize text-sm'>
                               County
                               <span className='text-medium leading-12 font-semibold'>
@@ -523,42 +460,22 @@ const CommUnit = (props) =>
                                 *
                               </span>
                             </label>
-                            <Select
-                              options={[
-                                {
-                                  value: 'Private Practice',
-                                  label: 'Private Practice',
-                                },
-                                {
-                                  value:
-                                    'Non-Governmental Organizations',
-                                  label:
-                                    'Non-Governmental Organizations',
-                                },
-                                {
-                                  value: 'Ministry of Health',
-                                  label: 'Ministry of Health',
-                                },
-                                {
-                                  value: 'Faith Based Organization',
-                                  label: 'Faith Based Organization',
-                                },
-                              ]}
-                              required
-                              placeholder='Select County'
-                              name='county'
-                              onChange={handleChange}
-                              value={cu.facility_county}
-                              className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                            <input
+                              value={countyValue}
+                              placeholder = {cu.facility_county}
+                              type='text'
+                              name='linked_facility_county'
+                              className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                           </div>
                         </div>
+
 
                         {/* Sub-county */}
                         <div className='col-start-2 col-span-1'>
                           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                              htmlFor='sub_county'
+                              htmlFor='keph_level'
                               className='text-gray-600 capitalize text-sm'>
                               Sub-county
                               <span className='text-medium leading-12 font-semibold'>
@@ -566,33 +483,12 @@ const CommUnit = (props) =>
                                 *
                               </span>
                             </label>
-                            <Select
-                              options={[
-                                {
-                                  value: 'Private Practice',
-                                  label: 'Private Practice',
-                                },
-                                {
-                                  value:
-                                    'Non-Governmental Organizations',
-                                  label:
-                                    'Non-Governmental Organizations',
-                                },
-                                {
-                                  value: 'Ministry of Health',
-                                  label: 'Ministry of Health',
-                                },
-                                {
-                                  value: 'Faith Based Organization',
-                                  label: 'Faith Based Organization',
-                                },
-                              ]}
-                              required
-                              placeholder='Select Sub County'
-                              onChange={handleChange}
-                              name='sub_county'
-                              value={cu.facility_subcounty}
-                              className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                            <input
+                              placeholder={cu.facility_subcounty}
+                              value={subCountyValue}
+                              type='text'
+                              name='linked_facility_sub_county'
+                              className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                           </div>
                         </div>
@@ -601,7 +497,7 @@ const CommUnit = (props) =>
                         <div className='col-start-3 col-span-1'>
                           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                              htmlFor='constituency'
+                              htmlFor='keph_level'
                               className='text-gray-600 capitalize text-sm'>
                               Constituency
                               <span className='text-medium leading-12 font-semibold'>
@@ -609,33 +505,12 @@ const CommUnit = (props) =>
                                 *
                               </span>
                             </label>
-                            <Select
-                              options={[
-                                {
-                                  value: 'Private Practice',
-                                  label: 'Private Practice',
-                                },
-                                {
-                                  value:
-                                    'Non-Governmental Organizations',
-                                  label:
-                                    'Non-Governmental Organizations',
-                                },
-                                {
-                                  value: 'Ministry of Health',
-                                  label: 'Ministry of Health',
-                                },
-                                {
-                                  value: 'Faith Based Organization',
-                                  label: 'Faith Based Organization',
-                                },
-                              ]}
-                              required
-                              placeholder='Select Constituency'
-                              onChange={handleChange}
-                              name='constituency'
-                              value={cu.constituency}
-                              className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                            <input
+                              placeholder={cu.facility_constituency}
+                              value={constituencyValue}
+                              type='text'
+                              name='linked_facility_sub_county'
+                              className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                           </div>
                         </div>
@@ -644,7 +519,7 @@ const CommUnit = (props) =>
                         <div className='col-start-4 col-span-1'>
                           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                              htmlFor='ward'
+                              htmlFor='keph_level'
                               className='text-gray-600 capitalize text-sm'>
                               Ward
                               <span className='text-medium leading-12 font-semibold'>
@@ -652,33 +527,12 @@ const CommUnit = (props) =>
                                 *
                               </span>
                             </label>
-                            <Select
-                              options={[
-                                {
-                                  value: 'Private Practice',
-                                  label: 'Private Practice',
-                                },
-                                {
-                                  value:
-                                    'Non-Governmental Organizations',
-                                  label:
-                                    'Non-Governmental Organizations',
-                                },
-                                {
-                                  value: 'Ministry of Health',
-                                  label: 'Ministry of Health',
-                                },
-                                {
-                                  value: 'Faith Based Organization',
-                                  label: 'Faith Based Organization',
-                                },
-                              ]}
-                              required
-                              placeholder='Select Ward'
-                              name='ward'
-                              onChange={handleChange}
-                              value={cu.facility_ward}
-                              className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                            <input
+                              placeholder={cu.facility_ward}
+                              value={wardValue}
+                              type='text'
+                              name='linked_facility_sub_county'
+                              className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                           </div>
                         </div>
@@ -839,31 +693,68 @@ const CommUnit = (props) =>
                           </label>
                         </li>
                       ))
+
                     ) : (
                       <>
                         <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                           <p>{cu?.name || cu?.official_name} has not listed the services it offers. Add some below.</p>
                             </li>
                             <br />
-                        <form
-                          name='chu_services_form'
-                          className='flex flex-col w-full items-center justify-start gap-3'
-                        >
-                          {/* Transfer list Container */}
-                          <div className='flex items-center w-full h-auto min-h-[300px]'>
-                            {/* serviceCategories.map(ctg => ctg.name) */}
-                            <TrasnferListServices
-                              categories={serviceCategories.map(
-                                (data) => data
-                              )}
-                              setServices={() => null}
-                            />
-                          </div>
 
-                        </form>
                       </>
                     )}
                   </ul>
+
+                  <form
+                      name='chu_services_form'
+                      className='flex flex-col w-full items-center justify-start gap-3'
+                    >
+                      <h3 className='text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight'>
+                        <span className='font-semibold'>Select New Services</span>
+                      </h3>
+                      {/* Transfer list Container */}
+                      <div className='flex items-center w-full h-auto min-h-[300px]'>
+                        {/* serviceCategories.map(ctg => ctg.name) */}
+                        <TrasnferListServices
+                            categories={serviceCategories}
+                            setServices={setServices}
+                            setRefreshForm={setRefreshForm}
+                            refreshForm={refreshForm}
+                        />
+                      </div>
+
+                      {/* Service Category Table */}
+                      <table className='w-full  h-auto my-4'>
+                        <thead className='w-full'>
+                          <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
+                            <td className='text-lg font-semibold text-indigo-900 '>Name</td>
+                            <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
+                          </tr>
+                        </thead>
+                        <tbody ref={optionRefBody}>
+                          {
+                            services.map(({subctg}) => subctg).map((service_categories, i) => (
+                              <tr key={`${service_categories}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                <td ref={nameOptionRef}>{service_categories}</td>
+                                <td ref={serviceCategoriesRef} className='ml-12 text-base'>Yes</td>
+                              </tr>
+                            ))
+                          }															
+                        </tbody>
+                      </table>
+
+                      <div className='flex justify-between items-center w-full'>
+                        <button
+                          type='submit'
+                          className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+                          <span className='text-medium font-semibold text-white'>
+                            Save
+                          </span>
+                          <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+                        </button>
+                      </div>
+
+                    </form>
 
                 </>
               </Tabs.Panel>
@@ -901,14 +792,31 @@ CommUnit.getInitialProps = async (ctx) => {
       }
     }
   }
+
   return checkToken(ctx.req, ctx.res)
     .then(async (t) =>{
-      if (t.error)
-      {
+      if (t.error){
         throw new Error('Error checking token');
-      } else
-      {
+      }
+      else{
+        // Fetching the required token
         let token = t.token;
+
+        // Prefetch the facility data details
+				let facility_url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
+				
+				const response = await fetch(facility_url, {
+					headers: {
+						Authorization: 'Bearer ' + token,
+						Accept: 'application/json',
+					},
+				})
+
+				let facility_data = await response.json();
+				if (facility_data.error) {
+					throw new Error('Error fetching facility data');
+					window.location.reload();
+				}
 
         // Fetch the service options
 				let service_url = `${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=100&ordering=name`;
@@ -928,8 +836,8 @@ CommUnit.getInitialProps = async (ctx) => {
 					throw new Error('Error fetching the service categories');
 				}
 
-        let url =
-          process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + ctx.query.id + '/';
+        // Fetching the details of the quieried chu
+        let url = process.env.NEXT_PUBLIC_API_URL + '/chul/units/' + ctx.query.id + '/';
 
         return fetch(url, {
           headers: {
@@ -943,6 +851,7 @@ CommUnit.getInitialProps = async (ctx) => {
             return {
               token: token,
               service_categories: service_categories,
+              facility_data: facility_data,
               data: json,
             };
           })
@@ -961,17 +870,12 @@ CommUnit.getInitialProps = async (ctx) => {
       console.log('Error checking token: ', err);
       if (typeof window !== 'undefined' && window)
       {
-        if (ctx?.asPath)
-        {
+        if (ctx?.asPath){
           window.location.href = ctx?.asPath;
-        } else
-        {
+        } 
+        else{
           let token = t.token;
-          let url =
-            process.env.NEXT_PUBLIC_API_URL +
-            '/chul/units/' +
-            ctx.query.id +
-            '/';
+          let url = process.env.NEXT_PUBLIC_API_URL +  '/chul/units/' + ctx.query.id + '/';
           return fetch(url, {
             headers: {
               Authorization: 'Bearer ' + token,

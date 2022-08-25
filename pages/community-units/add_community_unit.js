@@ -95,116 +95,6 @@ function AddCommUnit(props) {
 		return _serviceCategories
 	 })(props.service_categories.results ?? [])
 
-
-
-
-	// const serviceCategories = [
-	// 	{
-	// 		name: 'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
-	// 		subCategories: [
-	// 			'Accident and Emergency casualty Services',
-	// 			'General Emergency Services',
-	// 		],
-	// 	},
-	// 	{
-	// 		name: 'AMBULATORY SERVICES',
-	// 		subCategories: ['Ambulatory Services'],
-	// 	},
-	// 	{
-	// 		name: 'ANTENATAL CARE',
-	// 		subCategories: ['Focused Antenatal Care'],
-	// 	},
-	// 	{
-	// 		name: 'BLOOD TRANSFUSION SERVICES',
-	// 		subCategories: [
-	// 			'Blood Bank',
-	// 			'Facility offering Blood Transfusion Service',
-	// 			'Satellite Blood Transfusion service',
-	// 		],
-	// 	},
-	// 	{
-	// 		name: 'CANCER SCREENING',
-	// 		subCategories: [
-	// 			'Breast',
-	// 			'Coloreactal',
-	// 			'Pap smear',
-	// 			'Prostrate',
-	// 			'Screening using VIA/VILI',
-	// 		],
-	// 	},
-	// 	{
-	// 		name: 'CURATIVE SERVICES',
-	// 		subCategories: ['Inpatient', 'Outpatient'],
-	// 	},
-	// 	{
-	// 		name: 'DELTED HDU',
-	// 		subCategories: ['High dependency Services'],
-	// 	},
-	// 	{
-	// 		name: 'EMERGENCY PREPAREDNESS',
-	// 		subCategories: [
-	// 			'Basic Emergency Preparedness',
-	// 			'Comprehensive Emergency Preparedness',
-	// 		],
-	// 	},
-	// 	{
-	// 		name: 'FAMILY PLANNING',
-	// 		subCategories: ['Long Term', 'Natural', 'Permanent'],
-	// 	},
-	// 	{
-	// 		name: 'FORENSIC SERVICES',
-	// 		subCategories: ['Long Term', 'Natural', 'Permanent'],
-	// 	},
-	// 	{
-	// 		name: 'HIV TREATMENT',
-	// 		subCategories: ['HIV treatment and care'],
-	// 	},
-	// 	{
-	// 		name: 'HIV/AIDS Prevention,Care and Treatment Services',
-	// 		subCategories: [
-	// 			'Condom Distribution & STI Prevention',
-	// 			'Elimination of Mother to Child transmission of HIV',
-	// 			'HEI - HIV exposed infants',
-	// 			'HIV preventive Package',
-	// 			'HIV risk reduction for Key populations',
-	// 			'HIV risk reduction services for prioity populations and geographies',
-	// 			'HIV Testing Services',
-	// 			'Infection Prevention and control to mitigate HIV infection in the work place',
-	// 			'Management of Sexually Transmitted Illness (STI)',
-	// 			'Nutrition assessment ,counselling and support ( The NACS process) for PLHIVs',
-	// 			'Post-Exposure Prophylaxis (PEP)',
-	// 		],
-	// 	},
-	// 	{
-	// 		name: 'HOSPICE SERVICE',
-	// 		subCategories: [],
-	// 	},
-	// 	{
-	// 		name: 'IMMUNISATION',
-	// 		subCategories: [],
-	// 	},
-	// 	{
-	// 		name: 'INTEGRATED MANAGEMENT OF CHILDHOOD ILLNESS',
-	// 		subCategories: [],
-	// 	},
-	// 	{
-	// 		name: 'LABORATORY SERVICES',
-	// 		subCategories: [],
-	// 	},
-	// 	{
-	// 		name: 'LEPROSY DIAGNOSIS',
-	// 		subCategories: [],
-	// 	},
-	// 	{
-	// 		name: 'LEPROSY TREATMENT',
-	// 		subCategories: [],
-	// 	},
-	// 	{
-	// 		name: 'MATERNITY SERVICES',
-	// 		subCategories: [],
-	// 	},
-	// ];
-
 	// Define state
 	const [formId, setFormId] = useState(0);
 
@@ -373,8 +263,7 @@ function AddCommUnit(props) {
 															<Select
 																onChange={(value) => {
 																	setSelectedFacility(value);
-																	console.log('value', value.name);
-
+																	
 																	// list the facilities and their counties
 																	facilities.map((facility) => {
 																		if (facility.id === value.value) {
@@ -849,35 +738,10 @@ function AddCommUnit(props) {
 											const handleServiceSubmit = (event) => {
 												event.preventDefault();
 
-												// const serviceData = {};
+												const _payload = services.map(({value}) => ({service: value}))
 
-												// const elements = [...event.target];
-
-												// let new_payload = {}
-
-												// elements.forEach(({ name, value }) => {
-												// 	switch (name) {
-												// 		case 'first_name':
-												// 			ChewData[name] = value
-												// 			break;
-												// 		case 'last_name':
-												// 			ChewData[name] = value
-												// 			break;
-												// 		case 'is_incharge':
-												// 			ChewData[name] = value
-												// 			break;
-												// 	}
-												// });		
-												
-												// new_payload = {
-												// 	services:[{
-
-												// 	}]
-												// }
-
-												const _payload = services.map(({name, value, subCategories }) => ({service_categories: value}))
-												console.log('This is the payload', _payload);
-
+												_payload.forEach(obj => obj['health_unit'] = chulId)
+	
 												try{
 													fetch(`/api/common/submit_form_data/?path=chul_services&id=${chulId}`, {
 														headers:{
@@ -907,14 +771,6 @@ function AddCommUnit(props) {
 												window.sessionStorage.setItem('formId', 1);
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
-
-											const handleServicesCurr = (event) => {
-												event.preventDefault();
-
-												window.sessionStorage.setItem('formId', 2);
-												setFormId(window.sessionStorage.getItem('formId'));
-											};
-
 
 											return (
 												<>
@@ -1055,10 +911,6 @@ AddCommUnit.getInitialProps = async (ctx) => {
 
 				// Fetch the service options
 				let service_url = `${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=100&ordering=name`;
-
-				// console.log('In the GetIntialProps Now')
-				
-				// console.log('service url', service_url);
 
 				const service_response = await fetch(service_url,
 					{
