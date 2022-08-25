@@ -39,6 +39,16 @@ import Select from 'react-select';
 import LoadingAnimation from '../../components/LoadingAnimation';
 // import { useForkRef } from '@mui/material';
 
+import { 
+	handleBasicDetailsSubmit,
+    handleGeolocationSubmit,
+    handleFacilityContactsSubmit,
+    handleRegulationSubmit,
+    handleServiceSubmit,
+    handleInfrastructureSubmit,
+    handleHrSubmit
+} from '../../controllers/facility/addFacilitySubmitHandlers';
+
 
 
 const WardMap = dynamic(
@@ -200,7 +210,7 @@ function AddFacility(props) {
     ];
 
 
-    const [formId, setFormId] = useState(5) //0
+    const [formId, setFormId] = useState(0) //0
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
@@ -465,148 +475,7 @@ function AddFacility(props) {
 										switch (parseInt(formId)) {
 											case 0:
 
-												const handleBasicDetailsSubmit = async (event) => {
-
-													event.preventDefault();
-
-													let _ward;
-													let _id;
-
-													const formData = {};
-
-													const elements = [...event.target];
-
-													elements.forEach(({ name, value }) => {
-														
-														formData[name] = value === "true" || value === "false" ? Boolean(value) : (() => {
-															// Accomodates format of facility checklist document
-															if (name === "facility_checklist_document") {
-																return {fileName: value.replace("C:\\fakepath\\", '')}
-															}
-
-															// check if value is alphanumeral and convert to number
-															return value.match(/^[0-9]$/) !== null ? Number(value) : value
-														})()
-													});
-
-													// Add officer in charge to payload8
-													formData['officer_in_charge'] = {
-														name:'',
-														reg_no:'',
-														contacts:[
-															{
-																type:'',
-																contact:''
-															}
-														]
-													}
-
-													// Post Facility Basic Details
-													try{
-														fetch('/api/common/submit_form_data/?path=facilities', {
-															headers:{
-																'Accept': 'application/json, text/plain, */*',
-																'Content-Type': 'application/json;charset=utf-8'
-																
-															},
-															method:'POST',
-															body: JSON.stringify(formData).replace(',"":""','')
-														})
-														// Post Checklist document
-														.then(async resp => {
-
-															const {id, ward} = (await resp.json())
-
-															_id = id
-															_ward = ward
-
-															const payload = {
-																name: `${formData['official_name']} Facility Checklist File`,
-																description: 'Facilities checklist file',
-																document_type: 'Facility_ChecKList',
-																facility_name:formData['official_name'],
-																fyl: {
-																	filename:formData['facility_checklist_document']
-																}
-
-
-															}
-
-															if(resp){
-			
-																
-																try {
-																	const resp = await fetch('/api/common/submit_form_data/?path=documents', {
-																		headers:{
-																			'Accept': 'application/json, text/plain, */*',
-																			
-																		},
-																		method:'POST',
-																		body: JSON.stringify(payload)
-																	})
-
-																	return (await resp.json())
-																}
-																catch(e){
-																	console.error('Unable to Post document')
-																}
-															}
-														})
-														//  fetch data for Geolocation form
-														.then(async (resp) => {
-															if(resp){
-
-																															
-																	setFacilityId(_id) //set facility Id
-																	
-																	let _data
-																													
-																	try{
-																		const response = await fetch(`/api/facility/get_facility/?path=wards&id=${_ward}`)
-
-																		_data = await response.json()
-
-
-																		setGeoJSON(JSON.parse(JSON.stringify(_data?.ward_boundary)))
-
-																		const [lng, lat] = _data?.ward_boundary.properties.center.coordinates 
-
-																		setCenter(JSON.parse(JSON.stringify([lat, lng])))
-																		setWardName(_data?.name)
-
-																	
-																	}catch(e){
-																		console.error(e.message)
-																		return {
-																			error:e.message,
-																			id:null
-																		}
-																	}
-																
-															}
-														}
-															
-														)
-
-
-													}catch(e){
-														console.error(e.message)
-														return {
-															error:e.message,
-															id:null
-														}
-													}
-
-													
-
-													// Change form Id
-													window.sessionStorage.setItem('formId', 1);
-
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
-
-
-
+												
 												// Basic Details form
 												return (
 													<>
@@ -616,7 +485,7 @@ function AddFacility(props) {
 														<form
 															
 															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={handleBasicDetailsSubmit}>
+															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId])}>
 															{/* Facility Official Name */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
@@ -1631,72 +1500,7 @@ function AddFacility(props) {
 													</>
 												);
 											case 1:
-												// Geolocation form
-												const handleGeolocationSubmit = (event) => {
-													event.preventDefault();
-
-													const geolocationData = {};
-
-													const elements = [...event.target];
-
-													elements.forEach(({ name, value }) => {
-														
-														geolocationData[name] = (() => {
-															switch (name) {
-																case 'collection_date':
-																	return  new Date(value)
-																case 'latitude':
-																	return  value.match(/^\-$/) !== null ? 0.000000 : value
-																case 'longitude':
-																	return  value.match(/^\-$/) !== null ? 0.000000 : value
-																default:
-
-																	return value
-															}
-														})() 
-													});
-
-													
-
-													geolocationData['facility'] = facilityId ?? ''
-
-													// Convert the latitude/longitude from string to number
-
-													geolocationData['latitude'] = Number(geolocationData.latitude)
-													geolocationData['longitude'] = Number(geolocationData.longitude)
-
-													// Set missing geolocationData i.e coordinates & facility
-
-													geolocationData['coordinates'] = {
-														coordinates : [														
-															geolocationData.longitude,
-															geolocationData.latitude
-														],
-														type: 'Point'
-													}
-
-													
-													// Post Geolocation Details
-
-													try{
-														fetch('/api/common/submit_form_data/?path=gis', {
-															headers:{
-																'Accept': 'application/json, text/plain, */*',
-																'Content-Type': 'application/json;charset=utf-8'
-																
-															},
-															method:'POST',
-															body: JSON.stringify(geolocationData).replace(',"":""','')
-														})
-													}
-													catch(e){
-														console.error('Unable to post geolocation details')
-													}
-
-													window.sessionStorage.setItem('formId', 2);
-
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
+												// Geolocation Form
 
 												const handleGeolocationPrevious = (event) => {
 													event.preventDefault();
@@ -1713,7 +1517,7 @@ function AddFacility(props) {
 														<form
 															name='geolocation_form'
 															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={handleGeolocationSubmit}>
+															onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId])}>
 															{/* Collection Date */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
@@ -1821,79 +1625,7 @@ function AddFacility(props) {
 													</>
 												);
 											case 2:
-												// Facility Contacts
-
-												const handleFacilityContactsSubmit = (event) => {
-													event.preventDefault();
-
-													const contactFormData = {};
-
-													const elements = [...event.target];
-
-													elements.forEach(({ name, value }) => {
-														
-														contactFormData[name] = value 
-													});
-
-
-													const payload  = {
-														contacts: [
-															{
-																contact: contactFormData['contact'],
-																contact_type: contactFormData['contact_type']
-															}
-														],
-														officer_in_charge: {
-															name: contactFormData['name'],
-															reg_no: contactFormData['reg_no'],
-															title: contactFormData['title']
-
-														}
-													}
-
-												
-													try{
-
-														fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
-
-															headers:{
-																'Accept': 'application/json, text/plain, */*',
-																'Content-Type': 'application/json;charset=utf-8'
-																
-															},
-															method:'POST',
-															body: JSON.stringify(payload).replace(',"":""','')
-														})
-													}
-													catch(e){
-														console.error('Unable to patch facility contacts details'. e.message)
-													}
-
-													window.sessionStorage.setItem('formId', 3);
-
-													const dropDowns = document.getElementsByName(
-														'dropdown_contact_types'
-													);
-													const inputs = document.getElementsByName(
-														'contact_details_others'
-													);
-
-													
-
-													if (dropDowns.length > 0) {
-														dropDowns.forEach((dropDown) => {
-															dropDown.remove();
-														});
-													}
-
-													if (inputs.length > 0) {
-														inputs.forEach((input) => {
-															input.remove();
-														});
-													}
-
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
+												// Facility Contacts Form
 
 												const handleFacilityContactsPrevious = (event) => {
 													event.preventDefault();
@@ -2042,7 +1774,7 @@ function AddFacility(props) {
 														<form
 															className='flex flex-col w-full items-start justify-start gap-3'
 															name='facility_contacts_form'
-															onSubmit={handleFacilityContactsSubmit}>
+															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId])}>
 															{/* Contacts */}
 
 															<div
@@ -2130,9 +1862,7 @@ function AddFacility(props) {
 																	<Select options={jobTitleOptions || []} 
 																		required
 																		placeholder="Select Job Title"
-																		onChange={
-																			(ev) => ev.preventDefault()
-																		}
+																	
 																		name="title" 
             															className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 																</div>
@@ -2191,97 +1921,7 @@ function AddFacility(props) {
 													</>
 												);
 											case 3:
-												// Regulation form
-												const handleRegulationSubmit = (event) => {
-													event.preventDefault();
-
-													// Post Facility Regulation Data
-
-													const facilityRegDataA = {};
-													const facilityRegDataB = {};
-
-
-													const elements = [...event.target];
-
-													const payload = []
-
-													elements.forEach(({ name, value }) => {
-														switch(name){
-															case 'license_number':
-																facilityRegDataA[name] = value
-																break;
-															case 'registration_number':
-																facilityRegDataA[name] = value
-																break;
-															case 'regulation_status':
-																facilityRegDataA[name] = value
-																break;
-															case 'regulatory_body':
-																facilityRegDataA[name] = value
-																break;
-															case 'facility_dept_name':
-																facilityRegDataB['0'] = {
-																	unit: value,
-																}
-																break;
-															case 'facility_regulatory_body':
-																facilityRegDataB['1'] = {
-																	regulation_body_name: value,
-																}
-																break;
-															case 'facility_registration_number':
-															facilityRegDataB['2'] = {
-																registration_number: value,
-															}
-															break;
-															case 'facility_license_number':
-															facilityRegDataB['3'] = {
-																license_number: value,
-															}
-															break;	
-
-
-														}
-														
-													});
-
-
-
-													payload.push(facilityRegDataA)
-													payload.push({units:[{
-														unit: facilityRegDataB['0'].unit, 
-														regulation_body_name:facilityRegDataB['1'].regulation_body_name,
-														registration_number:facilityRegDataB['2'].registration_number,
-														license_number:facilityRegDataB['3'].license_number
-													}]})
-													
-											
-
-													payload.forEach(data => {
-														try{
-															fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
-																headers:{
-																	'Accept': 'application/json, text/plain, */*',
-																	'Content-Type': 'application/json;charset=utf-8'
-																	
-																},
-																method:'POST',
-																body: JSON.stringify(data)
-															})
-	
-														}
-														catch(e){
-															console.error('Unable to patch facility contacts details'. e.message)
-														}
-													})
-
-													
-
-
-													window.sessionStorage.setItem('formId', 4);
-
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
+												// Regulation Form
 
 												const handleRegulationPrevious = (event) => {
 													event.preventDefault();
@@ -2410,7 +2050,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-														<form name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleRegulationSubmit}>
+														<form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId])}>
 
 															{/* Regulatory Body */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -2529,36 +2169,8 @@ function AddFacility(props) {
 													</>
 												);
 											case 4:
-												// Services form
-												const handleServiceSubmit = async (event) => {
-													event.preventDefault()
-
-
-													const _payload = services.map(({value}) => ({service: value}))
-
-													try{
-														fetch(`/api/common/submit_form_data/?path=services&id=${facilityId}`, {
-															headers:{
-																'Accept': 'application/json, text/plain, */*',
-																'Content-Type': 'application/json;charset=utf-8'
-																
-															},
-															method:'POST',
-															body: JSON.stringify({services:_payload})
-														})
-
-													}
-													catch(e){
-														console.error('Unable to patch facility contacts details'. e.message)
-													}
-
-													window.sessionStorage.setItem('formId', 5)
-													
-													setFormId(window.sessionStorage.getItem('formId'))
-													setServices([])
-
-												}
-
+												// Services Form
+	
 												const handleServicePrevious = (event) => {
 													event.preventDefault()
 													window.sessionStorage.setItem('formId', 3)
@@ -2570,7 +2182,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
-														<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleServiceSubmit}>
+														<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices])}>
 															
 															{/* Transfer list Container */}
 															<div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2621,34 +2233,7 @@ function AddFacility(props) {
 												)
 											case 5:
 												// Infrastructure form
-												const handleInfrastructureSubmit = (event) => {
-													event.preventDefault()
-
-													const _payload = infrastructure.map(({value}, i) => ({count: i < infrastructureCount.length ? Number(infrastructureCount[i]['val'] ?? 0) : 0 , infrastructure: value}))
-
-													try{
-														fetch(`/api/common/submit_form_data/?path=infrastructure&id=${facilityId}`, {
-															headers:{
-																'Accept': 'application/json, text/plain, */*',
-																'Content-Type': 'application/json;charset=utf-8'
-																
-															},
-															method:'POST',
-															body: JSON.stringify({infrastructure:_payload})
-														})
-
-													}
-													catch(e){
-														console.error('Unable to patch facility contacts details'. e.message)
-													}
-
-													window.sessionStorage.setItem('formId', 6)
-													
-													
-													setFormId(window.sessionStorage.getItem('formId'))
-
-												}
-
+											
 												const handleInfrastructurePrevious = (event) => {
 													event.preventDefault()
 													window.sessionStorage.setItem('formId', 4)
@@ -2661,7 +2246,7 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
-													<form name="facility_infrastructure_form" className='flex flex-col w-full items-start justify-start gap-3'>
+													<form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId])}  className='flex flex-col w-full items-start justify-start gap-3'>
 														
 														{/* Transfer list Container */}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2710,7 +2295,7 @@ function AddFacility(props) {
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
 																<span className='text-medium font-semibold text-black '>Services</span>
 															</button>
-															<button onClick={handleInfrastructureSubmit} className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+															<button type={'submit'} className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>Human resources</span>
 																<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
 															</button>
@@ -2720,36 +2305,7 @@ function AddFacility(props) {
 												)
 											case 6:
 												// Human resources form
-												const handleHrSubmit = (event) => {
-													event.preventDefault()
-
-													const _payload = hr.map(({value}, i) => ({count: i < hrCount.length ? Number(hrCount[i]['val'] ?? 0) : 0 , speciality: value}))
-
-													console.log({specialities:_payload})
-
-													try{
-														fetch(`/api/common/submit_form_data/?path=hr&id=${facilityId}`, {
-															headers:{
-																'Accept': 'application/json, text/plain, */*',
-																'Content-Type': 'application/json;charset=utf-8'
-																
-															},
-															method:'POST',
-															body: JSON.stringify({specialities:_payload})
-														})
-
-													}
-													catch(e){
-														console.error('Unable to patch facility contacts details'. e.message)
-													}
-
-
-													window.sessionStorage.setItem('formId', 0)
-													
-													setFormId(window.sessionStorage.getItem('formId'))
-
-												}
-
+		
 												const handleHrPrevious = (event) => {
 													event.preventDefault()
 													window.sessionStorage.setItem('formId', 5)
@@ -2762,7 +2318,7 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human resources</h4>
-													<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3'>
+													<form name="facility_services_form" onSubmit={ev => handleHrSubmit(ev, [hr, hrCount, facilityId, setFormId])} className='flex flex-col w-full items-start justify-start gap-3'>
 														
 														{/* Transfer list Container */}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2790,7 +2346,9 @@ function AddFacility(props) {
 															</thead>
 
 															<tbody>
+																{console.log({hr})}
 																{
+																	
 																	hr.map(({subctg}) => subctg).map((_hr, i) => (
 																		<tr key={`${_hr}_${i}`} className='grid grid-cols-3 place-content-end border-b-2 border-gray-300'>
 																			<td className='text-lg text-black'>{_hr}</td>
@@ -2809,7 +2367,7 @@ function AddFacility(props) {
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
 																<span className='text-medium font-semibold text-black '>Infrastracture</span>
 															</button>
-															<button onClick={handleHrSubmit} className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+															<button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>Finish</span>
 																<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
 															</button>

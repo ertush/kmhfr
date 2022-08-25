@@ -202,7 +202,7 @@ export default function TransferListHr({categories, setState, setCount, setRefre
                             />
                             </div> 
                                 <input
-                                    required
+                                    
                                     id={`${subctg}-${i}`}
                                     onChange={handleInputChange(subctg)}
                                     type='number'
