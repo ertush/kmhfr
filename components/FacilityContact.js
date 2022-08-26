@@ -1,17 +1,19 @@
 import React from 'react'
 import Select from 'react-select'
 
-const FacilityContact = ({contactTypeOptions, names, id}) => {
+const FacilityContact = ({contactTypeOptions, names, id, contactRef, setContact}) => {
 
   return (
   
         <>
             {/* Contact Type */}
-            <Select options={contactTypeOptions || []} 
+            <Select 
+            ref={contactRef}
+            options={contactTypeOptions || []} 
             required
             placeholder="Select Contact Type"
             onChange={
-                () => console.log('changed')
+                ev => setContact(ev.value)
             }
             name={names[0]} 
 

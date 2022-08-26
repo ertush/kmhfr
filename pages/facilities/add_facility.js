@@ -1579,27 +1579,10 @@ function AddFacility(props) {
 															</div>
 
 															{/* Ward Geo Map */}
-															<div className='w-full h-auto'>
-																{
-																	 geoJSON !== null ? 
-																	 <Suspense fallBack={
-																		<div className='w-full flex'>
-																			<Alert severity="info"  sx={{width:'100%'}} >Loading</Alert>
-
-																		</div>
-																	 }>
-																		<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																			<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
-																		</div>
-																	 </Suspense> 
-																	
-																	:
-																	
-																	<LoadingAnimation size={6} isLight={false}/>
-
-																}
-															 
-																
+															<div className='w-full h-auto'>																		
+																<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
+																	<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
+																</div>
 															</div>
 
 															{/* Next/Previous Form  */}
@@ -2438,8 +2421,6 @@ AddFacility.getInitialProps = async (ctx) => {
 		'contact_types',
 		'infrastructure',
 		'specialities'
-
-	
 	]
 
 	
