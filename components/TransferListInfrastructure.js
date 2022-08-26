@@ -204,7 +204,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
                             />
                             </div> 
                                 <input
-                                    required
+                                    
                                     id={`${subctg}-${i}`}
                                     onChange={handleInputChange(subctg)}
                                     type='number'
