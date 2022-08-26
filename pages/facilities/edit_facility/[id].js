@@ -18,8 +18,8 @@ import {
     handleInfrastructureSubmit,
     handleHrSubmit
 } from '../../../controllers/facility/addFacilitySubmitHandlers';
-
-// import { CheckCircleIcon, InformationCircleIcon, LockClosedIcon, XCircleIcon } from '@heroicons/react/solid'
+import FacilityContact from '../../../components/FacilityContact';
+import { PlusIcon } from '@heroicons/react/solid'
 // import { SetMealTwoTone } from '@mui/icons-material';
 // import facilityResponse from '../../../components/facilityDummyResponse.json'
 
@@ -130,41 +130,47 @@ const EditFacility = (props) => {
 
     } = props['19']?.data 
    
+    const {
+        gJSON,
+        centerCoordinates
+    } = props['20']?.geolocation
+
+  
     
 
     const [user, setUser] = useState(null)
 
     // Form field states
     const [_name, setName] = useState(name)
-    const [_officialName, setOfficialName] = useState(official_name)
-    const [_dateEstablished, setDateEstablished] = useState(date_established)
-    const [_ISOAccredited, setISOAccredited] = useState(accredited_lab_iso_15189)
-    const [_noOfBeds, setNoOfBeds] = useState(number_of_beds)
-    const [_noOfCots, setNoOfCots] = useState(number_of_cots)
-    const [_noOfCasualtyBeds, setNoOfCasualtyBeds] = useState(number_of_emergency_casualty_beds)
-    const [_noOfICUBeds, setNoOfICUBeds] = useState(number_of_icu_beds)
-    const [_noOfHDUBeds, setNoOfHDUBeds] = useState(number_of_hdu_beds)
-    const [_noOfMaternityBeds, setNoOfMaternityBeds] = useState(number_of_maternity_beds)
-    const [_noOfIsolationBeds, setNoOfIsolationBeds] = useState(number_of_isolation_beds)
-    const [_noOfMaternityTheaters, setNoOfMaternityTheaters] = useState(number_of_maternity_theatres)
-    const [_noOfGeneralTheaters, setNoOfGeneralTheaters] = useState(number_of_general_theatres)
-    const [_catchmentPopulation, setCatchmentPopulation] = useState(facility_catchment_population)
-    const [_isDHISReporting, setIsDHISReporting] = useState(reporting_in_dhis)
-    const [_isNHIFAccredited, setIsNHIFAccredited] = useState(nhif_accreditation)   
-    const [_isArmedForcesFct, setIsArmedForcesFct] = useState(is_classified)
-    const [_is24Hrs, setIs24Hrs] = useState(open_whole_day)
+    const [_officialName, setOfficialName] = useState(official_name ?? '')
+    const [_dateEstablished, setDateEstablished] = useState(date_established ?? '')
+    const [_ISOAccredited, setISOAccredited] = useState(accredited_lab_iso_15189 ?? false)
+    const [_noOfBeds, setNoOfBeds] = useState(number_of_beds ?? '')
+    const [_noOfCots, setNoOfCots] = useState(number_of_cots ?? '')
+    const [_noOfCasualtyBeds, setNoOfCasualtyBeds] = useState(number_of_emergency_casualty_beds ?? '')
+    const [_noOfICUBeds, setNoOfICUBeds] = useState(number_of_icu_beds ?? '')
+    const [_noOfHDUBeds, setNoOfHDUBeds] = useState(number_of_hdu_beds ?? '')
+    const [_noOfMaternityBeds, setNoOfMaternityBeds] = useState(number_of_maternity_beds ?? '')
+    const [_noOfIsolationBeds, setNoOfIsolationBeds] = useState(number_of_isolation_beds ?? '')
+    const [_noOfMaternityTheaters, setNoOfMaternityTheaters] = useState(number_of_maternity_theatres ?? '')
+    const [_noOfGeneralTheaters, setNoOfGeneralTheaters] = useState(number_of_general_theatres ?? '')
+    const [_catchmentPopulation, setCatchmentPopulation] = useState(facility_catchment_population ?? '')
+    const [_isDHISReporting, setIsDHISReporting] = useState(reporting_in_dhis ?? '')
+    const [_isNHIFAccredited, setIsNHIFAccredited] = useState(nhif_accreditation ?? '')   
+    const [_isArmedForcesFct, setIsArmedForcesFct] = useState(is_classified ?? '')
+    const [_is24Hrs, setIs24Hrs] = useState(open_whole_day ?? '')
     const [_isWeekends, setIsWeekends] = useState(open_weekends)
-    const [_isPublicHolidays, setIsPublciHolidays] = useState(open_public_holidays)
-    const [_isNormalDay, setIsNormalDay] = useState(open_normal_day)
-    const [_isLateNight, setIsLateNight] = useState(open_late_night)
-    const [_town, setTown] = useState(town_name)
-    const [_locationDesc, setLocationDesc] = useState(location_desc)
-    const [_plotNo, setPlotNo] = useState(plot_number)
-    const [_nearestLandMark, setNearestLandMark] = useState(nearest_landmark)
-    const [_checklistFile, setCheckListFile] = useState(facility_checklist_document)
-    const [_collectionDate, setCollectionDate] = useState(collection_date)
-    const [_lat, setLat] = useState(lat_long[0])
-    const [_long, setLong] = useState(lat_long[1])
+    const [_isPublicHolidays, setIsPublciHolidays] = useState(open_public_holidays ?? '')
+    const [_isNormalDay, setIsNormalDay] = useState(open_normal_day ?? '')
+    const [_isLateNight, setIsLateNight] = useState(open_late_night ?? '')
+    const [_town, setTown] = useState(town_name ?? '')
+    const [_locationDesc, setLocationDesc] = useState(location_desc ?? '')
+    const [_plotNo, setPlotNo] = useState(plot_number ?? '')
+    const [_nearestLandMark, setNearestLandMark] = useState(nearest_landmark ?? '')
+    const [_checklistFile, setCheckListFile] = useState(facility_checklist_document ?? '')
+    const [_collectionDate, setCollectionDate] = useState(collection_date ?? '')
+    const [_lat, setLat] = useState(lat_long[0] ?? '')
+    const [_long, setLong] = useState(lat_long[1] ?? '')
 
 
     // different form states
@@ -175,9 +181,10 @@ const EditFacility = (props) => {
 	const [hr, setHr] = useState([])
 	const [hrCount, setHrCount] = useState([])
     const [facilityId, setFacilityId] = useState('')
-    const [geoJSON, setGeoJSON] = useState(null)
-    const [center, setCenter] = useState(lat_long)
+    const [refreshMap, setRefreshMap] = useState(false)
     const [wardName, setWardName] = useState(ward_name)
+    const [contact, setContact] = useState('')
+  
 
 
 
@@ -228,12 +235,16 @@ const EditFacility = (props) => {
     const nearestLandMarkRef = useRef(null)
     const checklistFileRef = useRef(null)
     const locationDescRef = useRef(null)
+    const facilityContactRef = useRef(null)
+    const facilityContact2Ref = useRef(null)
+    const contactRef = useRef(null)
 
 
     
 
     useEffect(() => {
-        console.log(lat_long)
+       
+        
         if (typeof window !== 'undefined') {
             let usr = window.sessionStorage.getItem('user')
             if (usr && usr.length > 0) {
@@ -288,7 +299,140 @@ const EditFacility = (props) => {
         }
 
         
-    }, [])
+    }, [_lat, _long])
+
+
+    const handleAddContact = (event) => {
+        event.preventDefault();
+
+        const divContainer = facilityContactRef.current;
+
+        const dropDown = document.createElement('select');
+
+        dropDown.setAttribute(
+            'style',
+            `
+        width:100%; 
+        border: 1px solid hsl(0, 0%, 80%); 
+        border-radius: 4px; 
+        padding: 2px; 
+        background-color: hsl(0, 0%, 100%); 
+        display: grid; 
+        min-height: 38px;
+        `
+        );
+
+        dropDown.setAttribute(
+            'placeholder',
+            'Select Contact Type'
+        );
+
+        dropDown.setAttribute('name', 'dropdown_contact_types');
+
+        const option1 = document.createElement('option');
+        option1.innerText = 'Select Contact Type';
+        option1.value = 'Select Contact Type';
+
+        const option2 = document.createElement('option');
+        option2.innerText = 'POSTAL';
+        option2.value = 'POSTAL';
+
+        const option3 = document.createElement('option');
+        option3.innerText = 'FAX';
+        option3.value = 'FAX';
+
+        const option4 = document.createElement('option');
+        option4.innerText = 'LANDLINE';
+        option4.value = 'LANDLINE';
+
+        const option5 = document.createElement('option');
+        option5.innerText = 'MOBILE';
+        option5.value = 'MOBILE';
+
+        const option6 = document.createElement('option');
+        option6.innerText = 'EMAIL';
+        option6.value = 'EMAIL';
+
+        dropDown.appendChild(option1.getRootNode());
+        dropDown.appendChild(option2.getRootNode());
+        dropDown.appendChild(option3.getRootNode());
+        dropDown.appendChild(option4.getRootNode());
+        dropDown.appendChild(option5.getRootNode());
+        dropDown.appendChild(option6.getRootNode());
+
+        divContainer.appendChild(dropDown.getRootNode());
+        const input =
+            divContainer.childNodes[4].cloneNode(true);
+        input.setAttribute('name', 'contact_details_others');
+
+        divContainer.appendChild(input);
+    };
+
+    const handleAddContact2 = (event) => {
+        event.preventDefault();
+
+        const divContainer = facilityContact2Ref.current;
+
+        const dropDown = document.createElement('select');
+
+        dropDown.setAttribute(
+            'style',
+            `
+        width:100%; 
+        border: 1px solid hsl(0, 0%, 80%); 
+        border-radius: 4px; 
+        padding: 2px; 
+        background-color: hsl(0, 0%, 100%); 
+        display: grid; 
+        min-height: 38px;
+        `
+        );
+
+        dropDown.setAttribute(
+            'placeholder',
+            'Select Contact Type'
+        );
+
+        dropDown.setAttribute('name', 'dropdown_contact_types');
+
+        const option1 = document.createElement('option');
+        option1.innerText = 'Select Contact Type';
+        option1.value = 'Select Contact Type';
+
+        const option2 = document.createElement('option');
+        option2.innerText = 'POSTAL';
+        option2.value = 'POSTAL';
+
+        const option3 = document.createElement('option');
+        option3.innerText = 'FAX';
+        option3.value = 'FAX';
+
+        const option4 = document.createElement('option');
+        option4.innerText = 'LANDLINE';
+        option4.value = 'LANDLINE';
+
+        const option5 = document.createElement('option');
+        option5.innerText = 'MOBILE';
+        option5.value = 'MOBILE';
+
+        const option6 = document.createElement('option');
+        option6.innerText = 'EMAIL';
+        option6.value = 'EMAIL';
+
+        dropDown.appendChild(option1.getRootNode());
+        dropDown.appendChild(option2.getRootNode());
+        dropDown.appendChild(option3.getRootNode());
+        dropDown.appendChild(option4.getRootNode());
+        dropDown.appendChild(option5.getRootNode());
+        dropDown.appendChild(option6.getRootNode());
+
+        divContainer.appendChild(dropDown.getRootNode());
+        const input =
+            divContainer.childNodes[4].cloneNode(true);
+        input.setAttribute('name', 'contact_details_others');
+
+        divContainer.appendChild(input);
+    };
 
     return (
         <>
@@ -324,7 +468,7 @@ const EditFacility = (props) => {
                         </div>
                     </div>
                     <div className="col-span-1 md:col-span-4 flex flex-col items-center md:gap-3 gap-y-3 mt-4">
-                        <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root" defaultValue="basic_details">
+                        <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root" defaultValue="geolocation">
                             <Tabs.List className="list-none md:grid md:grid-cols-7 grid grid-cols-2 gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
                                 <Tabs.Tab value="basic_details" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     Basic Details
@@ -874,7 +1018,8 @@ const EditFacility = (props) => {
                                 </form>                              
                             </Tabs.Panel>
                             {/* Geolocation */}
-                            <Tabs.Panel value="geolocation" className="grow-1 py-1 px-4 tab-panel">
+                            <Tabs.Panel value="geolocation"
+                            className="grow-1 py-1 px-4 tab-panel">
                                 <form
                                     name='geolocation_form'
                                     className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
@@ -947,7 +1092,7 @@ const EditFacility = (props) => {
                                     <div className='w-full h-auto'>
                                            
                                         <div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-                                            <Map markerCoordinates={[_lat.length < 4 ? '0.000000' : _lat, _long.length < 4 ? '0.000000' : _long]} geoJSON={geoJSON} ward={wardName} center={center} />
+                                            <Map markerCoordinates={[_lat.length < 4 ? '0.000000' : _lat, _long.length < 4 ? '0.000000' : _long]} geoJSON={gJSON} ward={wardName} center={centerCoordinates} />
                                         </div>
               
                                     </div>
@@ -960,6 +1105,134 @@ const EditFacility = (props) => {
                             </Tabs.Panel>
                             {/* Facility contacts */}
                             <Tabs.Panel value="facility_contacts" className="grow-1 py-1 px-4 tab-panel">
+                            <form
+                                className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
+                                name='facility_contacts_form'
+                                onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId])}>
+                                {/* Contacts */}
+
+                                <div
+                                    className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
+                                    ref={facilityContactRef}>
+                                    {/* Contact Headers */}
+                                    <h3 className='text-medium font-semibold text-blue-900'>
+                                        Contact Type
+                                    </h3>
+                                    <h3 className='text-medium font-semibold text-blue-900'>
+                                        Contact Details
+                                    </h3>
+                                    <hr className='col-span-2' />
+
+                                    {/* Contact Type / Contact Details */}
+
+                                    <FacilityContact contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
+
+                                </div>
+
+                                <div className='w-full flex justify-end items-center'>
+                                    <button
+                                        onClick={handleAddContact}
+                                        className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                        <PlusIcon className='w-4 h-4 text-white' />
+                                        <p className='text-medium font-semibold text-white'>
+                                            Add
+                                        </p>
+                                    </button>
+                                </div>
+
+                                {/* Facility Officer In-charge Details */}
+
+                                <h5 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+                                    Facility Officer In-Charge Details
+                                </h5>
+                                <div className='flex flex-col items-start justify-start gap-1 w-full rounded h-auto'>
+                                    {/*  Name  */}
+                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                        <label
+                                            htmlFor='name'
+                                            className='text-gray-600 capitalize text-sm'>
+                                            Name
+                                            <span className='text-medium leading-12 font-semibold'>
+                                                {' '}
+                                                *
+                                            </span>
+                                        </label>
+                                        <input
+                                            required
+                                            type='text'
+                                            name='name'
+                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        />
+                                    </div>
+
+                                    {/*  Registration Number */}
+                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                        <label
+                                            htmlFor='reg_no'
+                                            className='text-gray-600 capitalize text-sm'>
+                                            Registration Number/License Number{' '}
+                                        </label>
+                                        <input
+                                            type='text'
+                                            name='reg_no'
+                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        />
+                                    </div>
+
+                                    {/* Job Title */}
+                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                        <label
+                                            htmlFor='title'
+                                            className='text-gray-600 capitalize text-sm'>
+                                            Job Title
+                                            <span className='text-medium leading-12 font-semibold'>
+                                                {' '}
+                                                *
+                                            </span>{' '}
+                                        </label>
+                                        <Select options={jobTitleOptions || []} 
+                                            required
+                                            placeholder="Select Job Title"																	
+                                            name="title" 
+                                            className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                    </div>
+
+                                    {/* Facility Officer Contact Type / Contact Details */}
+
+                                    <div
+                                        className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
+                                        ref={facilityContact2Ref}>
+                                        {/* Contact Headers */}
+                                        <h3 className='text-medium font-semibold text-blue-900'>
+                                            Contact Type
+                                        </h3>
+                                        <h3 className='text-medium font-semibold text-blue-900'>
+                                            Contact Details
+                                        </h3>
+                                        <hr className='col-span-2' />
+
+                                        {/* Contact Type / Contact Details */}
+
+                                        <FacilityContact contactTypeOptions={contactTypeOptions} contactRef={contactRef} setContact={setContact} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+
+                                    </div>
+
+                                    <div className='w-full flex justify-end items-center mt-2'>
+                                        <button
+                                            onClick={handleAddContact2}
+                                            className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                            <PlusIcon className='w-4 h-4 text-white' />
+                                            <p className='text-medium font-semibold text-white'>
+                                                Add
+                                            </p>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className=" w-full flex justify-end h-auto mr-3">
+                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                </div>
+                            </form>
                             </Tabs.Panel>
                             {/* Regulation */}
                             <Tabs.Panel value="regulation" className="grow-1 py-1 px-4 tab-panel">
@@ -1064,7 +1337,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									console.log(`Error fetching ${option}: `, err);
 									allOptions.push({
 										error: true,
-										err: err,
+										err: err.message,
 										facility_types: [],
 									});
 								}
@@ -1091,7 +1364,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									console.log(`Error fetching ${option}: `, err);
 									allOptions.push({
 										error: true,
-										err: err,
+										err: err.message,
 										facility_types: [],
 									});
 								}
@@ -1116,7 +1389,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									console.log(`Error fetching ${option}: `, err);
 									allOptions.push({
 										error: true,
-										err: err,
+										err: err.message,
 										owners: [],
 									});
 								}
@@ -1142,7 +1415,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,
-									err: err,
+									err: err.message,
 									owner_types: [],
 								})
 							}
@@ -1168,7 +1441,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,
-									err: err,
+									err: err.message,
 									keph: [],
 								})
 							}
@@ -1194,7 +1467,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,
-									err: err,
+									err: err.message,
 									facility_admission_status: [],
 								})
 							}
@@ -1220,7 +1493,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,
-									err: err,
+									err: err.message,
 									facility_admission_status: [],
 								})
 							}
@@ -1246,7 +1519,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,
-									err: err,
+									err: err.message,
 									facility_admission_status: [],
 								})
 							}
@@ -1273,7 +1546,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,
-									err: err,
+									err: err.message,
 									facility_depts: [],
 								})
 							}
@@ -1299,7 +1572,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,
-									err: err,
+									err: err.message,
 									regulating_bodies: [],
 								})
 							}
@@ -1325,7 +1598,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,
-									err: err,
+									err: err.message,
 									regulation_status: [],
 								})
 							}
@@ -1351,7 +1624,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,
-									err: err,
+									err: err.message,
 									service: [],
 								})
 							}
@@ -1378,7 +1651,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,	
-									err: err,
+									err: err.message,
 									service: [],
 								})
 							}
@@ -1404,8 +1677,8 @@ EditFacility.getInitialProps = async (ctx) => {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,	
-									err: err,
-									service: [],
+									err: err.message,
+									service: null,
 								})
 							}
 
@@ -1413,29 +1686,57 @@ EditFacility.getInitialProps = async (ctx) => {
 						break;
                     
                         case 'facility_data':
-                            url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}`;
 
 							try{
 		
 								const _data = await fetch(`/api/facility/get_facility/?path=facilities&id=${ctx.query.id}`) 
                            
+                                allOptions.push({data: (await _data.json())})
                                 // console.log({_data})
+                                if(_data){
+                                    console.log({allOptions})
 
-								allOptions.push({data: (await _data.json())})
+                                    try{
+		
+                                        const response = await fetch(`/api/facility/get_facility/?path=wards&id=${allOptions[19].data.ward}`)
+        
+                                        const _data = await response.json()
+               
+                                        const [lng, lat] = _data?.ward_boundary.properties.center.coordinates 
+        
+                                        allOptions.push({
+                                            geolocation: {
+                                                gJSON: JSON.parse(JSON.stringify(_data?.ward_boundary)), 
+                                                centerCoordinates: JSON.parse(JSON.stringify([lat, lng]))
+                                        }})
+                                        
+                                    }
+                                    catch(err) {
+                                        console.log(`Error fetching ${option}: `, err);
+                                        allOptions.push({
+                                            error: true,	
+                                            err: err.message,
+                                            geolocation: null,
+                                        })
+                                    }
+                                }
+
+								
 								
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
 									error: true,	
-									err: err,
-									data: [],
+									err: err.message,
+									data: null,
 								})
 							}
 
 
                         break;
 
+                      
 						default:
 								let fields = ''
 								let _obj = {}
@@ -1470,7 +1771,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									console.log(`Error fetching ${option}: `, err);
 									allOptions.push({
 										error: true,
-										err: err,
+										err: err.message,
 										data: []
 									});
 								}
@@ -1496,7 +1797,7 @@ EditFacility.getInitialProps = async (ctx) => {
         setTimeout(() => {
             return {
                 error: true,
-                err: err,
+                err: err.message,
                 data: [],
             }
         }, 1000);
