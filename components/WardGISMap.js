@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { MapContainer, Marker,TileLayer, GeoJSON } from 'react-leaflet'
+import { MapContainer, Marker, GeoJSON } from 'react-leaflet'
 import Alert from '@mui/material/Alert';
 
 
