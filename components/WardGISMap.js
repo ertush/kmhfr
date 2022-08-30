@@ -16,6 +16,7 @@ const WardGISMap = ({markerCoordinates, geoJSON, center, ward}) => {
     }
 
     useEffect(() => {
+        console.log({geoJSON, center})
       let lngs = [] 
       let lats = []
       

@@ -153,7 +153,7 @@ function AddFacility(props) {
 		}
 		
 		return _infrastructureOptions
-	 })(props['17'].infrastructure ?? [])
+	 })(props['16'].infrastructure ?? [])
 
 
 	 const hrOptions = ((_hr) => {
@@ -186,7 +186,7 @@ function AddFacility(props) {
 		}
 		
 		return _hrOptions
-	 })(props['18'].hr ?? [])
+	 })(props['17'].hr ?? [])
 
 
 	//  Refs
@@ -243,6 +243,7 @@ function AddFacility(props) {
 	const [refreshForm5, setRefreshForm5] = useState(false)
 	const [refreshForm6, setRefreshForm6] = useState(false)
 	const [_contactDetail, setContactDetail] = useState('')
+	const [_otherContactDetails, setOtherContactDetail] = useState('')
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
@@ -251,8 +252,9 @@ function AddFacility(props) {
 	
     useEffect(() => {
 
+		console.log({props})
+
         const formIdState = window.sessionStorage.getItem('formId');
-		
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
             window.sessionStorage.setItem('formId', 5); //0
@@ -1869,7 +1871,7 @@ function AddFacility(props) {
 
 																	{/* Contact Type / Contact Details */}
 
-																	<FacilityContact contactTypeOptions={contactTypeOptions} contactDetail={_contactDetail} setContactDetail={setContactDetail} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+																	<FacilityContact contactTypeOptions={contactTypeOptions} contactDetail={_otherContactDetails} setContactDetail={setOtherContactDetail} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
 
 																</div>
 
@@ -2422,7 +2424,6 @@ AddFacility.getInitialProps = async (ctx) => {
 		'regulating_bodies',
 		'regulation_status',
 		'services',
-		'contact_types',
 		'infrastructure',
 		'specialities'
 	]
