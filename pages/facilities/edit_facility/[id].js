@@ -126,6 +126,8 @@ const EditFacility = (props) => {
         facility_checklist_document,
         lat_long,
         collection_date,
+        officer_in_charge,
+        facility_contacts,
         ward_name
 
     } = props['19']?.data 
@@ -171,6 +173,10 @@ const EditFacility = (props) => {
     const [_collectionDate, setCollectionDate] = useState(collection_date ?? '')
     const [_lat, setLat] = useState(lat_long[0] ?? '')
     const [_long, setLong] = useState(lat_long[1] ?? '')
+    const [_contactDetail, setContactDetail] = useState(facility_contacts[0].contact ?? '')
+    const [_officerName, setOfficerName] = useState(officer_in_charge.name ?? '')
+    const [_regNo, setRegNo] = useState(officer_in_charge.reg_no ?? '')
+   
 
 
     // different form states
@@ -238,6 +244,9 @@ const EditFacility = (props) => {
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
     const contactRef = useRef(null)
+    const otherContactRef = useRef(null)
+    const jobTitleRef = useRef(null)
+   
 
 
     
@@ -297,6 +306,16 @@ const EditFacility = (props) => {
             
             wardRef.current.state.value = wardOptions.filter(({value}) => value === ward)[0] || ''
         }
+        if(contactRef.current !== null){
+            contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === facility_contacts[0].contact_type_name)[0] || ''
+        }
+        if(jobTitleRef.current !== null){
+            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === officer_in_charge.title)[0] || ''
+        }
+        
+
+
+       
 
         
     }, [_lat, _long])
@@ -1125,7 +1144,7 @@ const EditFacility = (props) => {
 
                                     {/* Contact Type / Contact Details */}
 
-                                    <FacilityContact contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
+                                    <FacilityContact  contactRef={contactRef} contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
 
                                 </div>
 
@@ -1161,6 +1180,8 @@ const EditFacility = (props) => {
                                             required
                                             type='text'
                                             name='name'
+                                            value={_officerName}
+                                            onChange={ev => setOfficerName(ev.target.value)}
                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                         />
                                     </div>
@@ -1175,6 +1196,8 @@ const EditFacility = (props) => {
                                         <input
                                             type='text'
                                             name='reg_no'
+                                            value={_regNo}
+                                            onChange={ev => setRegNo(ev.target.value)}
                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                         />
                                     </div>
@@ -1192,6 +1215,7 @@ const EditFacility = (props) => {
                                         </label>
                                         <Select options={jobTitleOptions || []} 
                                             required
+                                            ref={jobTitleRef}
                                             placeholder="Select Job Title"																	
                                             name="title" 
                                             className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
@@ -1213,7 +1237,7 @@ const EditFacility = (props) => {
 
                                         {/* Contact Type / Contact Details */}
 
-                                        <FacilityContact contactTypeOptions={contactTypeOptions} contactRef={contactRef} setContact={setContact} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+                                        <FacilityContact contactRef={otherContactRef} contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
 
                                     </div>
 
@@ -1278,13 +1302,10 @@ EditFacility.getInitialProps = async (ctx) => {
 		'facility_depts',
 		'regulating_bodies',
 		'regulation_status',
-		'services',
-		'contact_types',
+		'services', 
 		'infrastructure',
 		'specialities',
         'facility_data'
-
-	
 	]
 
 

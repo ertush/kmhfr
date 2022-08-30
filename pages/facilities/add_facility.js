@@ -242,6 +242,7 @@ function AddFacility(props) {
 	const [refreshForm4, setRefreshForm4] = useState(false)
 	const [refreshForm5, setRefreshForm5] = useState(false)
 	const [refreshForm6, setRefreshForm6] = useState(false)
+	const [_contactDetail, setContactDetail] = useState('')
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
@@ -275,9 +276,12 @@ function AddFacility(props) {
         
 
         return () => {
+			
             if(window.sessionStorage.getItem('formId') == '7'){
                 window.sessionStorage.setItem('formId', 0)
             }
+
+			
             
         }
     }, [facilityOfficialName, facilityOption, formId, refreshForm4, refreshForm5, refreshForm6, latitude, geoJSON, longitude])
@@ -1774,7 +1778,7 @@ function AddFacility(props) {
 
 																{/* Contact Type / Contact Details */}
 
-																<FacilityContact contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
+																<FacilityContact contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
 																
 
 																
@@ -1865,7 +1869,7 @@ function AddFacility(props) {
 
 																	{/* Contact Type / Contact Details */}
 
-																	<FacilityContact contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+																	<FacilityContact contactTypeOptions={contactTypeOptions} contactDetail={_contactDetail} setContactDetail={setContactDetail} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
 
 																</div>
 

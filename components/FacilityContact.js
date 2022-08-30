@@ -1,7 +1,14 @@
 import React from 'react'
 import Select from 'react-select'
 
-const FacilityContact = ({contactTypeOptions, names, id, contactRef, setContact}) => {
+const FacilityContact = ({
+  contactTypeOptions, 
+  names, 
+  id, 
+  contactRef, 
+  contactDetail, 
+  setContactDetail
+}) => {
 
   return (
   
@@ -12,9 +19,7 @@ const FacilityContact = ({contactTypeOptions, names, id, contactRef, setContact}
             options={contactTypeOptions || []} 
             required
             placeholder="Select Contact Type"
-            onChange={
-                ev => setContact(ev.value)
-            }
+          
             name={names[0]} 
 
             id={id}
@@ -22,7 +27,7 @@ const FacilityContact = ({contactTypeOptions, names, id, contactRef, setContact}
         
             {/* Contact Details */}
 
-            <input type="text" name={names[1]} id={id} className="flex-none col-start-2 w-full bg-gray-50 rounded flex-grow border-2 placeholder-gray-500 border-gray-200 px-2 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+            <input type="text" value={contactDetail} onChange={ev => setContactDetail(ev.target.value)} name={names[1]} id={id} className="flex-none col-start-2 w-full bg-gray-50 rounded flex-grow border-2 placeholder-gray-500 border-gray-200 px-2 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
         </>
   )
