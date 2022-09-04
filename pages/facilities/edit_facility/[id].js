@@ -20,6 +20,7 @@ import {
 } from '../../../controllers/facility/addFacilitySubmitHandlers';
 import FacilityContact from '../../../components/FacilityContact';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
+import TrasnferListServices from '../../../components/TrasnferListServices';
 // import { SetMealTwoTone } from '@mui/icons-material';
 // import facilityResponse from '../../../components/facilityDummyResponse.json'
 
@@ -37,7 +38,7 @@ const Map = React.memo(WardMap)
 
 const EditFacility = (props) => {
 
-    // console.log({props})
+    console.log({props})
 
     // Form drop down options
 
@@ -66,6 +67,40 @@ const EditFacility = (props) => {
     const facilityDeptOptions = props['12']?.facility_depts ?? []
     const regBodyOptions = props['13']?.regulating_bodies ?? []
     const regulationStateOptions = props['14']?.regulation_status ?? []
+    const serviceOptions = ((_services) => {
+		
+		const _serviceOptions = []
+		let _values = []
+		let _subCtgs = []
+
+		if(_services.length > 0){
+			_services.forEach(({category_name:ctg}) => {
+				let allOccurences = _services.filter(({category_name}) => category_name === ctg)
+				
+				allOccurences.forEach(({id, name}) => {
+					_subCtgs.push(name)
+					_values.push(id)
+				})
+				
+				if(_serviceOptions.map(({name}) => name).indexOf(ctg) === -1){
+					_serviceOptions.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+		return _serviceOptions
+	 })(props['15'].service ?? [])
+
+   
+    
     const operationStatusOptions = [
         {
             value: '190f470f-9678-47c3-a771-de7ceebfc53c',
@@ -128,7 +163,11 @@ const EditFacility = (props) => {
         collection_date,
         officer_in_charge,
         facility_contacts,
-        ward_name
+        ward_name,
+        regulatory_body,
+        regulation_status,
+        license_number,
+        regulatory_body_name
 
     } = props['18']?.data ?? {}
    
@@ -137,7 +176,19 @@ const EditFacility = (props) => {
         centerCoordinates
     } = props['19']?.geolocation ?? {}
 
-  
+    const serviceSelected = ((_services) => {
+        return _services.map(({category_name, service_name, service_id}) => ({
+                    name: category_name,
+                    subCategories: [
+                        service_name
+                    ],
+                    value:[
+                        service_id
+                    ]
+                    
+                })
+        )
+    })(facility_services || [])  
     
 
     const [user, setUser] = useState(null)
@@ -176,8 +227,9 @@ const EditFacility = (props) => {
     const [_contactDetail, setContactDetail] = useState(facility_contacts !== undefined ? (facility_contacts[0].contact ?? ''): '')
     const [_officerName, setOfficerName] = useState(officer_in_charge !== undefined ? (officer_in_charge.name ?? '') : '')
     const [_regNo, setRegNo] = useState(officer_in_charge !== undefined ? (officer_in_charge.reg_no ?? '') : '')
-    const [_regBody, setRegBody] = useState()
+    const [_regBody, setRegBody] = useState(regulatory_body_name)
     const [_file, setFile] = useState()
+    const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
 
 
     // different form states
@@ -191,6 +243,8 @@ const EditFacility = (props) => {
     const [refreshMap, setRefreshMap] = useState(false)
     const [wardName, setWardName] = useState(ward_name)
     const [contact, setContact] = useState('')
+    const [refreshForm4, setRefreshForm4] = useState()
+    const [selectedServiceRight, setSelectedServiceRight] = useState()
   
 
     const handleAddRegulatoryBody = (event) => {
@@ -366,13 +420,15 @@ const EditFacility = (props) => {
     const regulatoryBodyRef = useRef(null)
     const regulatoryStateRef = useRef(null)
     const facilityDeptNameRef = useRef(null)
-
+    const optionRefBody = useRef(null)
+    const serviceOptionRef = useRef(null)
+    const nameOptionRef = useRef(null)
 
     
 
     useEffect(() => {
        
-        
+        console.log({serviceSelected})
         if (typeof window !== 'undefined') {
             let usr = window.sessionStorage.getItem('user')
             if (usr && usr.length > 0) {
@@ -414,8 +470,6 @@ const EditFacility = (props) => {
             countyRef.current.state.value = countyOptions.filter(({value}) => value === county_id)[0] || ''
         }
         if(subCountyRef.current !== null){
-            
-           
             subCountyRef.current.state.value = subCountyOptions.filter(({value}) => value === sub_county_id)[0] || ''
         }
         if(constituencyRef.current !== null){
@@ -423,7 +477,6 @@ const EditFacility = (props) => {
             constituencyRef.current.state.value = constituencyOptions.filter(({value}) => value === constituency_id)[0] || ''
         }
         if(wardRef.current !== null){
-            
             wardRef.current.state.value = wardOptions.filter(({value}) => value === ward)[0] || ''
         }
         if(contactRef.current !== null){
@@ -432,13 +485,25 @@ const EditFacility = (props) => {
         if(jobTitleRef.current !== null){
             jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === officer_in_charge.title)[0] || ''
         }
+
+        if(regulatoryBodyRef.current !== null){
+            regulatoryBodyRef.current.state.value = regBodyOptions.filter(({value}) => value === regulatory_body)[0] || ''
+        }
+
+        if(regulatoryStateRef.current !== null){
+            regulatoryStateRef.current.state.value = regulationStateOptions.filter(({value}) => value === regulation_status)[0] || ''
+        }
+        
+        if(facilityDeptNameRef.current !== null){
+            facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
+        }
         
     }
 
        
 
         
-    }, [_lat, _long])
+    }, [_lat, _long, refreshForm4, services, selectedServiceRight])
 
 
     const handleAddContact = (event) => {
@@ -451,13 +516,13 @@ const EditFacility = (props) => {
         dropDown.setAttribute(
             'style',
             `
-        width:100%; 
-        border: 1px solid hsl(0, 0%, 80%); 
-        border-radius: 4px; 
-        padding: 2px; 
-        background-color: hsl(0, 0%, 100%); 
-        display: grid; 
-        min-height: 38px;
+            width:100%; 
+            border: 1px solid hsl(0, 0%, 80%); 
+            border-radius: 4px; 
+            padding: 2px; 
+            background-color: hsl(0, 0%, 100%); 
+            display: grid; 
+            min-height: 38px;
         `
         );
 
@@ -1387,7 +1452,7 @@ const EditFacility = (props) => {
                                     <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                             <label htmlFor="regulatory_body"  className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
                                             <Select 
-                                                 ref={regulatoryBodyRef} 
+                                                ref={regulatoryBodyRef} 
                                                 options={regBodyOptions || []} 
                                                 required
                                                 placeholder="Select Regulatory Body"
@@ -1411,21 +1476,21 @@ const EditFacility = (props) => {
                                     {/* License Number */} 
                                     <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                         <label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
-                                        <input type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        <input type="text" value={_licenseNo} onChange={ev => setLicenseNo(ev.target.value)} name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                     </div>
 
 
                                     {/* Registration Number */} 
                                     <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                         <label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number</label>
-                                        <input type="text" value={_regNo} onchange={ev => setRegNo(ev.target.value)} name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        <input type="text" value={_regNo} onChange={ev => setRegNo(ev.target.value)} name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                     </div>
 
                                     {/* check file upload */}
                                     <div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                             <label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
-                                            <input type="file" value={_file} name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            <input type="file" value={_file} onChange={ev => setFile(ev.target.value)} name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                         </div>
                                     </div>
 
@@ -1459,10 +1524,10 @@ const EditFacility = (props) => {
                                             className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                         
                                         {/* Regulatory Body */}
-                                        <input type="text" disabled value={_regBody} onChnage={ev => setRegBody(ev.target.name)} ref={regBodyRef} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        <input type="text" ref={regBodyRef} disabled value={_regBody} onChange={ev => setRegBody(ev.target.value)} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
                                         {/* License No. */}
-                                        <input type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        <input type="text"value={_licenseNo} onChange={ev => setLicenseNo(ev.target.value)} name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
                                         <div className='col-start-4 flex items-center space-x-2 w-full'>
                                             {/* Reg No. */}
@@ -1496,6 +1561,59 @@ const EditFacility = (props) => {
                             </Tabs.Panel>
                             {/* Services */}
                             <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
+                            <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices])}>
+															
+                                    {/* Transfer list Container */}
+                                    <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                    
+                                
+                                    <TrasnferListServices 
+                                        categories={serviceOptions}
+                                        setServices={setServices}
+                                        setRefreshForm4={setRefreshForm4}
+                                        refreshForm4={refreshForm4}
+                                        selectedRight={serviceSelected}
+                                        setSelectedServiceRight={setSelectedServiceRight}
+                                    />
+
+                                    </div>
+                                    {/* Service Category Table */}
+                                    <table className='w-full  h-auto my-4'>
+                                        <thead className='w-full'>
+                                            <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
+                                                <td className='text-lg font-semibold text-indigo-900 '>Name</td>
+                                                <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody ref={optionRefBody}>
+                                            {
+                                                selectedServiceRight  !== undefined && selectedServiceRight !== null ? 
+
+                                                selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
+                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                        <td ref={nameOptionRef}>{service}</td>
+                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                    </tr>
+                                                ))
+                                                :
+
+                                                services.map(({subctg}) => subctg).map((service, i) => (
+                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                        <td ref={nameOptionRef}>{service}</td>
+                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        
+                                        </tbody>
+                                    </table>
+                                    
+                                    {/* Save btn */}
+
+                                    <div className=" w-full flex justify-end h-auto mr-3">
+                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                    </div>
+                                </form>
                             </Tabs.Panel>
                             {/* Infrastructure */}
                             <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">

@@ -2181,6 +2181,7 @@ function AddFacility(props) {
 																setServices={setServices}
 																setRefreshForm4={setRefreshForm4}
 																refreshForm4={refreshForm4}
+																selectedRight={null}
 															/>
 
 															</div>
@@ -2201,7 +2202,6 @@ function AddFacility(props) {
 																			</tr>
 																		))
 																	}
-																
 																
 																</tbody>
 															</table>
