@@ -17,9 +17,7 @@ const approveRejectCHU = async (isApproved, setState, id) => {
 
             Authorization: "Bearer " + token,
           },
-          //   body: JSON.stringify({
-          //     is_approved: false,
-          //   }),
+    
         }).then((res) => console.log(res.json()));
       })
       .catch((err) => {

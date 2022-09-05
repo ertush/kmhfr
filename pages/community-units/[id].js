@@ -156,12 +156,8 @@ const CommUnit = (props) =>
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
                   <button
-                    onClick={() =>
-                      approveRejectCHU(
-                        cu.is_approved,
-                        setIsApproveReject,
-                        props.data.id
-                      )
+                    onClick={() => router.push("/community-units/approve/" + cu.id)
+                      //approveRejectCHU(cu.is_approved,setIsApproveReject,props.data.id)
                     }
                     className={
                       cu.is_approved
@@ -169,8 +165,8 @@ const CommUnit = (props) =>
                         : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
                     }
                   >
-                    {/* Dynamic Button Rendering */}
-                    {cu.is_approved ? "Reject" : "Approve"}
+                  {/* Dynamic Button Rendering */}
+                  {cu.is_approved ? "Reject" : "Approve"}
                   </button>
                   <button
                     onClick={() => console.log(cu.name)}

@@ -184,8 +184,9 @@ function AddCommUnit(props) {
 												elements.forEach(({ name, value }) => {
 													formData[name] = value;
 												});
-												console.log(formData);
 
+												console.log('this is the formdata',formData);
+												
 												// Posting CHU basic details 
 												try {
 													fetch('/api/common/submit_form_data/?path=CHUs', {
@@ -205,7 +206,7 @@ function AddCommUnit(props) {
 															if (resp) {
 																setchulId(_id) //setting the state to the current CHUL
 															}
-															console.log(_id);
+															
 														})
 												}
 
@@ -242,6 +243,7 @@ function AddCommUnit(props) {
 																</span>
 															</label>
 															<input
+																placeholder='Select the name of the CHU'
 
 																type='text'
 																name='name'
@@ -569,7 +571,6 @@ function AddCommUnit(props) {
 															break;
 													}
 												});
-												console.log(ChewData);
 
 												payload = {
 													health_unit_workers: [{
@@ -580,9 +581,6 @@ function AddCommUnit(props) {
 												}
 
 												console.log(payload);
-
-
-
 
 												try {
 

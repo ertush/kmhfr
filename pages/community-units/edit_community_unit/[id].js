@@ -25,28 +25,19 @@ import
   CheckCircleIcon,
   ChevronDoubleRightIcon,
 	ChevronDoubleLeftIcon,
-  ChevronRightIcon,
   InformationCircleIcon,
-  LocationMarkerIcon,
   LockClosedIcon,
   XCircleIcon,
 } from '@heroicons/react/solid';
 import Select from 'react-select';
+import { ContactPageSharp } from '@mui/icons-material';
 
 const CommUnit = (props) => {
   const facilities = props.facility_data.results;
-  const Map = dynamic(
-    () => import('../../../components/Map'), // replace '@components/map' with your component's location
-    {
-      loading: () => (
-        <div className='text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3'>
-          Loading&hellip;
-        </div>
-      ),
-      ssr: false, // This line is important. It's what prevents server-side render
-    }
-  );
+
   let cu = props.data;
+  let _id
+  _id = cu.id;
 
   // Changing the value of the linked facility and its locality
   const [selected_facility, setSelectedFacility] = useState('');
@@ -54,6 +45,7 @@ const CommUnit = (props) => {
 	const [subCountyValue, setSubCountyValue] = useState('');
 	const [constituencyValue, setConstituencyValue] = useState('');
 	const [wardValue, setWardValue] = useState('');
+  const [chulId, setchulId] = useState('');
 
   // Services states
   const [services, setServices] = useState([])
@@ -81,17 +73,144 @@ const CommUnit = (props) => {
     }
     return () =>
     {
+      setchulId(_id);
       setIsCHUDetails(true);
       setIsApproveReject(false);
     };
+    
   }, [facilities]);
 
-  const handleChange = (event) =>
-  {
+  let allData = {}; 
+
+  // const handleChange = (event) =>{
+  //   event.preventDefault();
+  //   let formData = {};
+  //   const elements = [...event.target];
+  //   elements.forEach(({ name, value }) => {
+  //     formData[name] = value;
+  //   });
+  //   allData = {...formData};
+  //   console.log(allData);
+  //   return allData;
+  // }
+
+  const handleBasicDetails = (event) => {
     event.preventDefault();
-    console.log(event.target.value);
+
+    let basicDetails = {};
+    let formData = {
+      name: cu.name,
+      facility: cu.facility,
+      status: cu.status,
+      date_established: cu.date_established,
+      date_operational: cu.date_operational,
+      households_monitored: cu.households_monitored,
+      number_of_chvs: cu.number_of_chvs,
+      facility_county: cu.facility_county,
+      facility_sub_county: cu.facility_sub_county,
+      facility_constituency: cu.facility_constituency,
+      facility_ward: cu.facility_ward,
+    };
+
+    const elements = [...event.target];
+
+    elements.forEach(({ name, value }) => {
+      basicDetails[name] = value;
+    });
+
+    console.log('elements', elements.name);
+    console.log('basicDetails', basicDetails);  
+
+    try{
+      fetch(`/api/common/submit_form_data/?path=chul_data&id=${_id}`, {
+        headers:{
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json;charset=utf-8'
+            
+        },
+        method:'PATCH',
+        body: JSON.stringify({basicDetails})
+      })
+
+    }
+    catch(e){
+      console.error('Unable to patch CHU edit details'. e.message)
+    }   
   }
 
+  const handleCHEWs = (event) => {
+    event.preventDefault();
+
+    let chewData = {};
+
+    const elements = [...event.target];
+
+    let payload = {}
+
+    elements.forEach(({ name, value }) => {
+      switch (name) {
+        case 'first_name':
+          chewData[name] = value
+          break;
+        case 'last_name':
+          chewData[name] = value
+          break;
+        case 'is_incharge':
+          chewData[name] = value
+          break;
+      }
+    });
+
+    payload = {
+      health_unit_workers: [{
+        first_name: chewData.first_name,
+        last_name: chewData.last_name,
+        is_incharge: true
+      }]
+    }
+
+    try{
+      fetch(`/api/common/submit_form_data/?path=edit_chul&id=${_id}`, {
+        headers:{
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json;charset=utf-8'
+          
+        },
+        method:'PATCH',
+        body: JSON.stringify({chewData})
+      })
+
+    }
+    catch(e){
+      console.error('Unable to patch CHU Chew details'. e.message)
+    }   
+  }
+
+  const handleServices = (event) =>
+  {
+    event.preventDefault();
+
+    const _payload = services.map(({value}) => ({service: value}))
+
+    _payload.forEach(obj => obj['health_unit'] = chulId)
+
+    try{
+      fetch(`/api/common/submit_form_data/?path=edit_chul&id=${_id}`, {
+        headers:{
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json;charset=utf-8'
+          
+        },
+        method:'PATCH',
+        body: JSON.stringify({aervices:_payload})
+      })
+
+    }
+    catch(e){
+      console.error('Unable to patch CHU edit service details'. e.message)
+    } 
+  }
+  
   // Define serviceCategories
   let serviceCategories = ((_services) => {
 		
@@ -114,19 +233,16 @@ const CommUnit = (props) => {
 						subCategories:_subCtgs,
 						value:_values
 					})
-				}
-				
+				}			
 				_values = []
 				_subCtgs = []
 	
 			})
-		}
-		
+		}		
 		return _serviceCategories
 	 })(props.service_categories.results ?? [])
 
   return (
-    console.log(props),
     <>
       <Head>
         <title>KMHFL - {cu?.name || cu?.official_name}</title>
@@ -220,11 +336,7 @@ const CommUnit = (props) => {
                   )}
                 </div>
               </div>
-              <div className='col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2'>
-                {/* {user && user?.id ? <a href={'/community-unit/edit/' + cu.id} className='bg-white border-2 border-black text-black hover:bg-black focus:bg-black-700 active:bg-black-700 font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center'>
-                                    Edit
-                                </a> : <a href='/auth/login'>Log in</a>} */}
-              </div>
+              <div className='col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2'>{}</div>
             </div>
           </div>
 
@@ -249,13 +361,15 @@ const CommUnit = (props) => {
 
               {/* Basic Details Panel */}
               <Tabs.Panel value='basic_details' className='grow-1 py-3 px-4 tab-panel'>
+                      
                 <>
-                  <form className='flex flex-col w-full items-start justify-start gap-3'>
+                  <form className='flex flex-col w-full items-start justify-start gap-3'
+                    onSubmit={handleBasicDetails}>
 
                     {/* CHU Name */}
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                       <label
-                        htmlFor='comm_unit_name'
+                        htmlFor='name'
                         className='text-gray-600 capitalize text-sm'>
                         Community Health Unit Official Name
                         <span className='text-medium leading-12 font-semibold'>
@@ -263,17 +377,16 @@ const CommUnit = (props) => {
                         </span>
                       </label>
                       <input
-                        required
                         type='text'
-                        name='comm_unit_name'
-                        value={cu?.official_name || cu?.name}
+                        name='name'
+                        placeholder= {cu?.official_name || cu?.name}
                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' />
                     </div>
 
                     {/* CHU Linked Facility */}
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                       <label
-                        htmlFor='comm_unit_facility'
+                        htmlFor='facility_name'
                         className='text-gray-600 capitalize text-sm'>
                         Community Health Unit Linked Facility{' '}
                         <span className='text-medium leading-12 font-semibold'>
@@ -304,9 +417,9 @@ const CommUnit = (props) => {
                           };
                         }
                         )}
-                        required
-                        placeholder={cu.facility_name || ' - '}
-                        name='comm_unit_facility'
+                        //value={cu.facility}
+                        placeholder={cu.facility}
+                        name='facility'
                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                       />
                     </div>
@@ -314,9 +427,9 @@ const CommUnit = (props) => {
                     {/* CHU Operational Status */}
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                       <label
-                        htmlFor='comm_unit_status'
+                        htmlFor='status_name'
                         className='text-gray-600 capitalize text-sm'>
-                        Operation Status{' '}
+                        Operation Status    
                         <span className='text-medium leading-12 font-semibold'>
                           {' '}
                           *
@@ -341,12 +454,11 @@ const CommUnit = (props) => {
                             label: 'Fully-functional',
                           },
                         ]}
-                        required
-                        placeholder={cu.status_name || ' - '}
-                        onChange={() => console.log('changed')}
-                        name='comm_unit_status'
-                        value={cu.status_name || ' - '}
-                        //value={cu.status_name}
+                        placeholder={cu.status}
+                        //onChange={console.log(cu.status)}
+              
+                        name='status'
+                        //value={cu.status}
                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                       />
                     </div>
@@ -367,10 +479,10 @@ const CommUnit = (props) => {
                               </span>
                             </label>
                             <input
-                              required
                               type='date'
                               name='date_established'
                               value={cu.date_established}
+                              placeholder={cu.date_established}
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                           </div>
@@ -389,10 +501,10 @@ const CommUnit = (props) => {
                               </span>
                             </label>
                             <input
-                              required
                               type='date'
                               name='date_operational'
                               value={cu.date_operational}
+                              placeholder={cu.date_operational}
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                           </div>
@@ -403,7 +515,7 @@ const CommUnit = (props) => {
                     {/* CHU Number of Monitored Households */}
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                       <label
-                        htmlFor='no_monitored_households'
+                        htmlFor='households_monitored'
                         className='text-gray-600 capitalize text-sm'>
                         Number of monitored households
                         <span className='text-medium leading-12 font-semibold'>
@@ -412,12 +524,11 @@ const CommUnit = (props) => {
                         </span>
                       </label>
                       <input
-                        required
                         type='number'
-                        name='no_monitored_households'
-                        placeholder='Number of households served by the unit'
-                        min={0}
+                        name='households_monitored'
                         value={cu.households_monitored}
+                        placeholder={cu.households_monitored}
+                        min={0}
                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                       />
                     </div>
@@ -425,7 +536,7 @@ const CommUnit = (props) => {
                     {/* CHU Number of CHVs */}
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                       <label
-                        htmlFor='no_chvs'
+                        htmlFor='number_of_chvs'
                         className='text-gray-600 capitalize text-sm'>
                         Number of CHVs
                         <span className='text-medium leading-12 font-semibold'>
@@ -434,12 +545,11 @@ const CommUnit = (props) => {
                         </span>
                       </label>
                       <input
-                        required
                         type='number'
-                        name='no_chvs'
-                        placeholder='Number of Community Health Volunteers in the unit'
-                        min={0}
+                        name='number_of_chvs'
                         value={cu.number_of_chvs}
+                        placeholder={cu.number_of_chvs}
+                        min={0}
                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                       />
                     </div>
@@ -452,7 +562,7 @@ const CommUnit = (props) => {
                         <div className='col-start-1 col-span-1'>
                           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                              htmlFor='linked_facility_county'
+                              htmlFor='facility_county'
                               className='text-gray-600 capitalize text-sm'>
                               County
                               <span className='text-medium leading-12 font-semibold'>
@@ -461,10 +571,10 @@ const CommUnit = (props) => {
                               </span>
                             </label>
                             <input
-                              value={countyValue}
+                              value={cu.facility_county}
                               placeholder = {cu.facility_county}
                               type='text'
-                              name='linked_facility_county'
+                              name='facility_county'
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                           </div>
@@ -475,7 +585,7 @@ const CommUnit = (props) => {
                         <div className='col-start-2 col-span-1'>
                           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                              htmlFor='keph_level'
+                              htmlFor='facility_subcounty'
                               className='text-gray-600 capitalize text-sm'>
                               Sub-county
                               <span className='text-medium leading-12 font-semibold'>
@@ -485,9 +595,9 @@ const CommUnit = (props) => {
                             </label>
                             <input
                               placeholder={cu.facility_subcounty}
-                              value={subCountyValue}
+                              value={cu.facility_subcounty}
                               type='text'
-                              name='linked_facility_sub_county'
+                              name='facility_subcounty'
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                           </div>
@@ -497,7 +607,7 @@ const CommUnit = (props) => {
                         <div className='col-start-3 col-span-1'>
                           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                              htmlFor='keph_level'
+                              htmlFor='facility_constituency'
                               className='text-gray-600 capitalize text-sm'>
                               Constituency
                               <span className='text-medium leading-12 font-semibold'>
@@ -507,9 +617,9 @@ const CommUnit = (props) => {
                             </label>
                             <input
                               placeholder={cu.facility_constituency}
-                              value={constituencyValue}
+                              value={cu.facility_constituency}
                               type='text'
-                              name='linked_facility_sub_county'
+                              name='facility_constituency'
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                           </div>
@@ -519,7 +629,7 @@ const CommUnit = (props) => {
                         <div className='col-start-4 col-span-1'>
                           <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                              htmlFor='keph_level'
+                              htmlFor='facility_ward'
                               className='text-gray-600 capitalize text-sm'>
                               Ward
                               <span className='text-medium leading-12 font-semibold'>
@@ -529,26 +639,129 @@ const CommUnit = (props) => {
                             </label>
                             <input
                               placeholder={cu.facility_ward}
-                              value={wardValue}
+                              value={cu.facility_ward}
                               type='text'
-                              name='linked_facility_sub_county'
+                              name='facility_ward'
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                           </div>
                         </div>
+
+                        {/* Cancel and Save Changes */}
+                        <div className='col-start-1 col-span-1'>
+                          <div className='flex justify-start items-center w-full flex mb-1 gap-1'>
+                            <button className='flex items-center justify-start space-x-2 p-1 bg-red-500 rounded p-2 px-6'>
+                              <ChevronDoubleLeftIcon className='w-4 h-4 text-white' />
+                              <span className='text-medium font-semibold text-white '>
+                                Cancel
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className='col-start-3  col-span-1'>
+                          <div className='flex justify-end items-center w-full mb-6'>
+                            <button
+                              type='submit'
+                              className='flex items-center justify-start space-x-2 bg-blue-500 rounded p-2 px-6'>
+                              <span className='text-medium font-semibold text-white'>
+                                Finish 
+                              </span>   
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className='col-start-4 col-span-1'>
+                          <div className='flex justify-end items-center flex-col w-full mb-6'>
+                            <button
+                              type='submit'
+                              className='flex items-center justify-start space-x-2 bg-green-500 rounded p-2 px-6'>
+                              <span className='text-medium font-semibold text-white'>
+                                Save & Continue 
+                              </span>
+                              <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-
                   </form>
                 </>
               </Tabs.Panel>
 
               {/* Chews Panel */}
-              <Tabs.Panel value='chews' className='grow-1 py-3 px-4 tab-panel'>
+              <Tabs.Panel value='chews' className='grow-1 py-3 px-4 tab-panel' >
                 <>
-                  <form className='flex flex-col w-full items-start justify-start gap-3'>
+                  <form className='flex flex-col w-full items-start justify-start gap-3'onSubmit={handleCHEWs}>
+                    <div className="bg-white w-full p-4 rounded">
+                      <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
+                        <span className="font-semibold">
+                          Health Unit workers
+                        </span>
+                      </h3>
+                      <ul>
+                        {cu?.health_unit_workers &&
+                          cu?.health_unit_workers.length > 0 ? (
+                          cu?.health_unit_workers.map((hr) => (
+                            <li
+                              key={hr.id}
+                              className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
+                            >
+                              <div>
+                                <p className="text-gray-800 text-base">
+                                  {hr.name}
+                                </p>
+                                {hr.is_incharge ? (
+                                  <small className="text-xs text-gray-500">
+                                    In charge
+                                  </small>
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                              {hr.active ? (
+                                <div className="flex flex-row gap-1 items-center">
+                                  <CheckCircleIcon className="h-6 w-6 text-green-500" />
+                                  <label className="text-sm text-gray-600">
+                                    Active
+                                  </label>
+                                </div>
+                              ) : (
+                                <div className="flex flex-row gap-1 items-center">
+                                  <XCircleIcon className="h-6 w-5 text-red-600" />
+                                  <label className="text-sm text-gray-600">
+                                    Active
+                                  </label>
+                                </div>
+                              )}
+                            </li>
+                          ))
+                          ) : (
+                            <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                              <p>No HR data listed for this cu.</p>
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+
+                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                      <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                        <label className="col-span-1 text-gray-600">
+                          Number of CHVs
+                        </label>
+                        <p className="col-span-2 text-black font-medium text-base">
+                          {cu.number_of_chvs || " - "}
+                        </p>
+                      </div>
+                    </div>
+
                     {/* Form labels */}
                     <div className='grid grid-cols-4 place-content-start gap-3 w-full'>
+                      <h4 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
+                        <span className="font-semibold">
+                          Edit the Health Unit Workers
+                        </span>
+                      </h4>                   
                       {/* First Name */}
                       <div className='col-start-1 col-span-1'>
                         <label
@@ -596,9 +809,9 @@ const CommUnit = (props) => {
                               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                 <input
                                   type='text'
-                                  name='fname'
-                                  value={worker.first_name}
-                                  onChange={handleChange}
+                                  name='first_name'
+                                  placeholder={worker.first_name}
+                                  //onChange={handleChange}
                                   className='flex-none w-75 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                 />
                               </div>
@@ -609,9 +822,9 @@ const CommUnit = (props) => {
                               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                 <input
                                   type='text'
-                                  name='sname'
-                                  value={worker.last_name}
-                                  onChange={handleChange}
+                                  name='last_name'
+                                  placeholder={worker.last_name}
+                                  //onChange={handleChange}
                                   className='flex-none w-75 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                 />
                               </div>
@@ -626,7 +839,7 @@ const CommUnit = (props) => {
                                   {...(worker.is_incharge === true
                                     ? { checked: true }
                                     : { checked: false })}
-                                  onChange={handleChange}
+                                  //onChange={handleChange}
                                   type='checkbox'
                                   className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
                                 />
@@ -649,6 +862,33 @@ const CommUnit = (props) => {
                           </>
                         ))
                       }
+                    </div>
+
+                    {/* Save Changes */}                  
+                    <div className='grid grid-cols-2 place-content-start gap-3 w-full'>
+                      <div className='col-start-1 col-span-1'>
+                        <div className='flex justify-start items-center w-full flex mb-1 gap-1'>
+                          <button className='flex items-center justify-start space-x-2 p-1 bg-red-500 rounded p-2 px-2'>
+                            <ChevronDoubleLeftIcon className='w-4 h-4 text-white' />
+                            <span className='text-medium font-semibold text-white '>
+                              Basic Details
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className='col-start-2 col-span-1'>
+                        <div className='flex justify-center items-center flex-col w-full mb-6'>
+                          <button
+                            type='submit'
+                            className='flex items-center justify-start space-x-2 bg-green-500 rounded p-2 px-2'>
+                            <span className='text-medium font-semibold text-white'>
+                              Save Changes
+                            </span>
+                            <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
 
@@ -708,6 +948,7 @@ const CommUnit = (props) => {
                   <form
                       name='chu_services_form'
                       className='flex flex-col w-full items-center justify-start gap-3'
+                      onSubmit={handleServices}
                     >
                       <h3 className='text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight'>
                         <span className='font-semibold'>Select New Services</span>
@@ -742,7 +983,6 @@ const CommUnit = (props) => {
                           }															
                         </tbody>
                       </table>
-
                       <div className='flex justify-between items-center w-full'>
                         <button
                           type='submit'
@@ -753,19 +993,11 @@ const CommUnit = (props) => {
                           <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
                         </button>
                       </div>
-
                     </form>
-
                 </>
               </Tabs.Panel>
-
-
-
             </Tabs.Root>
-
           </div>
-
-
         </div>
       </MainLayout >
     </>
@@ -815,7 +1047,6 @@ CommUnit.getInitialProps = async (ctx) => {
 				let facility_data = await response.json();
 				if (facility_data.error) {
 					throw new Error('Error fetching facility data');
-					window.location.reload();
 				}
 
         // Fetch the service options

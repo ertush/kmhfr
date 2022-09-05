@@ -47,6 +47,11 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
+                case 'edit_chul':
+                    url = `${API_URL}/chul/units/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
                 case 'chul_services':
                     url = `${API_URL}/chul/units/${req.query.id}/`;
                     method = 'PATCH';
@@ -92,8 +97,7 @@ export default async function submitFormData(req, res) {
                     
                     break;
             }
-             
- 
+              
             try {
                 console.log({url});
                 const resp = await fetch(url, {
@@ -117,9 +121,6 @@ export default async function submitFormData(req, res) {
                 }
             }
         }
-
-       
-        
 
     if (req.method === "POST") {
                                                                                     

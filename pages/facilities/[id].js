@@ -103,6 +103,8 @@ const Facility = (props) => {
                             </div>
                         </div>
                     </div>
+
+                    
                     {/* facility approval */}
                     {!isApproveReject ? (
 
