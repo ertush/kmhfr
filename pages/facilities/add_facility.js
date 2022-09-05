@@ -153,7 +153,7 @@ function AddFacility(props) {
 		}
 		
 		return _infrastructureOptions
-	 })(props['17'].infrastructure ?? [])
+	 })(props['16'].infrastructure ?? [])
 
 
 	 const hrOptions = ((_hr) => {
@@ -186,7 +186,7 @@ function AddFacility(props) {
 		}
 		
 		return _hrOptions
-	 })(props['18'].hr ?? [])
+	 })(props['17'].hr ?? [])
 
 
 	//  Refs
@@ -242,6 +242,8 @@ function AddFacility(props) {
 	const [refreshForm4, setRefreshForm4] = useState(false)
 	const [refreshForm5, setRefreshForm5] = useState(false)
 	const [refreshForm6, setRefreshForm6] = useState(false)
+	const [_contactDetail, setContactDetail] = useState('')
+	const [_otherContactDetails, setOtherContactDetail] = useState('')
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
@@ -250,8 +252,9 @@ function AddFacility(props) {
 	
     useEffect(() => {
 
+		console.log({props})
+
         const formIdState = window.sessionStorage.getItem('formId');
-		
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
             window.sessionStorage.setItem('formId', 5); //0
@@ -275,9 +278,12 @@ function AddFacility(props) {
         
 
         return () => {
+			
             if(window.sessionStorage.getItem('formId') == '7'){
                 window.sessionStorage.setItem('formId', 0)
             }
+
+			
             
         }
     }, [facilityOfficialName, facilityOption, formId, refreshForm4, refreshForm5, refreshForm6, latitude, geoJSON, longitude])
@@ -1581,8 +1587,13 @@ function AddFacility(props) {
 															{/* Ward Geo Map */}
 															<div className='w-full h-auto'>																		
 																<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																	<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
-																</div>
+																	{
+																		 geoJSON !== null &&
+
+																		<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
+																
+																	}	
+																	</div>
 															</div>
 
 															{/* Next/Previous Form  */}
@@ -1774,7 +1785,7 @@ function AddFacility(props) {
 
 																{/* Contact Type / Contact Details */}
 
-																<FacilityContact contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
+																<FacilityContact contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
 																
 
 																
@@ -1865,7 +1876,7 @@ function AddFacility(props) {
 
 																	{/* Contact Type / Contact Details */}
 
-																	<FacilityContact contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+																	<FacilityContact contactTypeOptions={contactTypeOptions} contactDetail={_otherContactDetails} setContactDetail={setOtherContactDetail} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
 
 																</div>
 
@@ -2175,6 +2186,8 @@ function AddFacility(props) {
 																setServices={setServices}
 																setRefreshForm4={setRefreshForm4}
 																refreshForm4={refreshForm4}
+																selectedRight={null}
+																setSelectedServiceRight={() => null}
 															/>
 
 															</div>
@@ -2195,7 +2208,6 @@ function AddFacility(props) {
 																			</tr>
 																		))
 																	}
-																
 																
 																</tbody>
 															</table>
@@ -2243,6 +2255,8 @@ function AddFacility(props) {
 															setRefreshForm5={setRefreshForm5}
 															refreshForm5={refreshForm5}
 															selectTitle='Infrastructure'
+															setSelectedInfraRight={() => null}
+															selectedInfraRight={null}
 															/>
 
 														</div>
@@ -2314,6 +2328,7 @@ function AddFacility(props) {
 															refreshForm6={refreshForm6}
 															setCount={setHrCount}
 															selectTitle='HR Specialities'
+
 														/>
 
 														</div>
@@ -2418,7 +2433,6 @@ AddFacility.getInitialProps = async (ctx) => {
 		'regulating_bodies',
 		'regulation_status',
 		'services',
-		'contact_types',
 		'infrastructure',
 		'specialities'
 	]

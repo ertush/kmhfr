@@ -19,10 +19,12 @@ import {
     handleHrSubmit
 } from '../../../controllers/facility/addFacilitySubmitHandlers';
 import FacilityContact from '../../../components/FacilityContact';
-import { PlusIcon } from '@heroicons/react/solid'
+import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
+import TrasnferListServices from '../../../components/TrasnferListServices';
+import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
+
 // import { SetMealTwoTone } from '@mui/icons-material';
 // import facilityResponse from '../../../components/facilityDummyResponse.json'
-
 
 
 const WardMap = dynamic(
@@ -51,21 +53,87 @@ const EditFacility = (props) => {
 		props['0']?.facility_types[25]  // MEDICAL CENTRE
 	]
 
-    const facilityTypeOptions = props['1']?.facility_type_details
-    const ownerOptions =  props['2']?.owners
-    const ownerTypeOptions =  props['3']?.owner_types
-    const kephOptions =  props['4']?.keph
+    const facilityTypeOptions = props['1']?.facility_type_details?? []
+    const ownerOptions =  props['2']?.owners ?? []
+    const ownerTypeOptions =  props['3']?.owner_types ?? []
+    const kephOptions =  props['4']?.keph ?? []
     const facilityAdmissionOptions =  props['5']?.facility_admission_status
-    const countyOptions =  props['6']?.counties
-    const subCountyOptions =  props['7']?.sub_counties
-    const constituencyOptions =  props['8']?.constituencies
-    const wardOptions =  props['9']?.wards
-    const jobTitleOptions = props['10']?.job_titles
-    const contactTypeOptions = props['11']?.contact_types
+    const countyOptions =  props['6']?.counties ?? []
+    const subCountyOptions =  props['7']?.sub_counties ?? []
+    const constituencyOptions =  props['8']?.constituencies ?? []
+    const wardOptions =  props['9']?.wards ?? []
+    const jobTitleOptions = props['10']?.job_titles ?? []
+    const contactTypeOptions = props['11']?.contact_types ?? []
+    const facilityDeptOptions = props['12']?.facility_depts ?? []
+    const regBodyOptions = props['13']?.regulating_bodies ?? []
+    const regulationStateOptions = props['14']?.regulation_status ?? []
+    const serviceOptions = ((_services) => {
+		
+		const _serviceOptions = []
+		let _values = []
+		let _subCtgs = []
 
-    const facilityDeptOptions = props['12']?.facility_depts
-    const regBodyOptions = props['13']?.regulating_bodies
-    const regulationStateOptions = props['14']?.regulation_status
+		if(_services.length > 0){
+			_services.forEach(({category_name:ctg}) => {
+				let allOccurences = _services.filter(({category_name}) => category_name === ctg)
+				
+				allOccurences.forEach(({id, name}) => {
+					_subCtgs.push(name)
+					_values.push(id)
+				})
+				
+				if(_serviceOptions.map(({name}) => name).indexOf(ctg) === -1){
+					_serviceOptions.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+		return _serviceOptions
+	 })(props['15'].service ?? [])
+
+
+     const infrastructureOption = ((_infrastructure) => {
+		
+		const _infrastructureOptions = []
+		let _values = []    
+		let _subCtgs = []
+
+		if(_infrastructure.length > 0){
+			_infrastructure.forEach(({category_name:ctg}) => {
+				let allOccurences = _infrastructure.filter(({category_name}) => category_name === ctg)
+				
+				allOccurences.forEach(({id, name}) => {
+					_subCtgs.push(name)
+					_values.push(id)
+				})
+				
+				if(_infrastructureOptions.map(({name}) => name).indexOf(ctg) === -1){
+					_infrastructureOptions.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+		return _infrastructureOptions
+	 })(props['16'].infrastructure ?? [])
+
+   
+    
     const operationStatusOptions = [
         {
             value: '190f470f-9678-47c3-a771-de7ceebfc53c',
@@ -126,18 +194,51 @@ const EditFacility = (props) => {
         facility_checklist_document,
         lat_long,
         collection_date,
-        ward_name
+        officer_in_charge,
+        facility_contacts,
+        ward_name,
+        regulatory_body,
+        regulation_status,
+        license_number,
+        regulatory_body_name
 
-    } = props['19']?.data 
+    } = props['18']?.data ?? {}
    
     const {
         gJSON,
         centerCoordinates
-    } = props['20']?.geolocation
+    } = props['19']?.geolocation ?? {}
 
-  
+    const serviceSelected = ((_services) => {
+        return _services.map(({category_name, service_name, service_id}) => ({
+                    name: category_name,
+                    subCategories: [
+                        service_name
+                    ],
+                    value:[
+                        service_id
+                    ]
+                    
+                })
+        )
+    })(facility_services || [])  
+
+    const infrastructureSelected = ((_infrastructure) => {
+        return _infrastructure.map(({infrastructure_name, infrastructure}) => ({
+                    name: '',
+                    subCategories: [
+                        infrastructure_name
+                    ],
+                    value:[
+                        infrastructure
+                    ]
+                    
+                })
+        )
+    })(facility_infrastructure || [])  
+
+
     
-
     const [user, setUser] = useState(null)
 
     // Form field states
@@ -169,8 +270,15 @@ const EditFacility = (props) => {
     const [_nearestLandMark, setNearestLandMark] = useState(nearest_landmark ?? '')
     const [_checklistFile, setCheckListFile] = useState(facility_checklist_document ?? '')
     const [_collectionDate, setCollectionDate] = useState(collection_date ?? '')
-    const [_lat, setLat] = useState(lat_long[0] ?? '')
-    const [_long, setLong] = useState(lat_long[1] ?? '')
+    const [_lat, setLat] = useState(lat_long !== undefined ? (lat_long[0] ?? '') : '')
+    const [_long, setLong] = useState(lat_long !== undefined ? (lat_long[1] ?? '') : '')
+    const [_contactDetail, setContactDetail] = useState(facility_contacts !== undefined ? (facility_contacts[0].contact ?? ''): '')
+    const [_officerName, setOfficerName] = useState(officer_in_charge || '')
+    const [_regNo, setRegNo] = useState('')
+    const [_regBody, setRegBody] = useState(regulatory_body_name)
+    const [_file, setFile] = useState()
+    const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
+    
 
 
     // different form states
@@ -184,9 +292,127 @@ const EditFacility = (props) => {
     const [refreshMap, setRefreshMap] = useState(false)
     const [wardName, setWardName] = useState(ward_name)
     const [contact, setContact] = useState('')
+    const [refreshForm4, setRefreshForm4] = useState()
+    const [selectedServiceRight, setSelectedServiceRight] = useState()
+    const [selectedInfraRight, setSelectedInfraRight] = useState()
+	const [refreshForm5, setRefreshForm5] = useState(false)
+
   
+    const handleAddRegulatoryBody = (event) => {
+        event.preventDefault();
 
+        const divContainer = facilityRegulatoryBodyRef.current;
 
+        const dropDownRgBody = document.createElement('select');
+
+        dropDownRgBody.setAttribute(
+            'style',
+            `
+        width:100%; 
+        border: 1px solid hsl(0, 0%, 80%); 
+        border-radius: 4px; 
+        padding: 2px; 
+        background-color: hsl(0, 0%, 100%); 
+        display: grid; 
+        min-height: 38px;
+        `
+        );
+
+        dropDownRgBody.setAttribute(
+            'placeholder',
+            'Select Service'
+        );
+
+        dropDownRgBody.setAttribute(
+            'name',
+            'dropdown_rgbody_name'
+        );
+
+        const option0 = document.createElement('option');
+        option0.innerText = 'Select Fcaility Department';
+        option0.value = 'Select Fcaility Department';
+
+        const option1 = document.createElement('option');
+        option1.innerText = 'Clinical Officers';
+        option1.value = 'Clinical Officers';
+
+        const option2 = document.createElement('option');
+        option2.innerText = 'Nurses and specialist';
+        option2.value = 'Nurses and specialist';
+
+        const option3 = document.createElement('option');
+        option3.innerText = 'Medical Officers';
+        option3.value = 'Medical Officers';
+
+        const option4 = document.createElement('option');
+        option4.innerText = 'Dental';
+        option4.value = 'Dental';
+
+        const option5 = document.createElement('option');
+        option5.innerText = 'Nutrition';
+        option5.value = 'Nutrition';
+
+        const option6 = document.createElement('option');
+        option6.innerText = 'Occupational Health';
+        option6.value = 'Occupational Health';
+
+        const option7 = document.createElement('option');
+        option7.innerText = 'Physiotherapy';
+        option7.value = 'Physiotherapy';
+
+        const option8 = document.createElement('option');
+        option8.innerText = 'X-Ray';
+        option8.value = 'X-Ray';
+
+        const option9 = document.createElement('option');
+        option9.innerText = 'Pharmacy';
+        option9.value = 'Pharmacy';
+
+        const option10 = document.createElement('option');
+        option10.innerText = 'Laboratory';
+        option10.value = 'Laboratory';
+
+        const option11 = document.createElement('option');
+        option11.innerText = 'Optical';
+        option11.value = 'Optical';
+
+        const inputRgBody =
+            divContainer.childNodes[6].cloneNode(true);
+        inputRgBody.setAttribute('name', 'regulatory_body');
+
+        const inputLicenseNo =
+            divContainer.childNodes[6].cloneNode(true);
+        inputLicenseNo.setAttribute('name', 'license_no');
+
+        const inputRegNo =
+            divContainer.childNodes[6].cloneNode(true);
+        inputRegNo.setAttribute('name', 'regulatory_no');
+
+        const delBtn = document.createElement('button');
+        delBtn.addEventListener('click', (ev) => {
+            ev.preventDefault();
+        });
+        delBtn.innerText = '';
+        delBtn.setAttribute(
+            'style',
+            `
+        padding: 1px;
+        border-radius: 2px;
+        background-color: rosered;
+        font-weight:400;
+        width:auto;
+        height:auto;
+
+        `)
+
+        
+        divContainer.appendChild(dropDownRgBody.getRootNode())
+        divContainer.appendChild(inputRgBody)
+        divContainer.appendChild(inputLicenseNo)
+        divContainer.appendChild(inputRegNo)
+        divContainer.appendChild(delBtn.getRootNode())
+
+    }
 
     
     const [facilityOption, setFacilityOption] = useState('')
@@ -238,13 +464,24 @@ const EditFacility = (props) => {
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
     const contactRef = useRef(null)
+    const otherContactRef = useRef(null)
+    const jobTitleRef = useRef(null)
+    const facilityRegulatoryBodyRef = useRef(null)
+    const regBodyRef = useRef(null)
+    const regulatoryBodyRef = useRef(null)
+    const regulatoryStateRef = useRef(null)
+    const facilityDeptNameRef = useRef(null)
+    const optionRefBody = useRef(null)
+    const serviceOptionRef = useRef(null)
+    const nameOptionRef = useRef(null)
+    const infrastructureBodyRef = useRef(null)
 
 
     
 
     useEffect(() => {
        
-        
+        console.log({serviceSelected, infrastructureSelected})
         if (typeof window !== 'undefined') {
             let usr = window.sessionStorage.getItem('user')
             if (usr && usr.length > 0) {
@@ -253,6 +490,7 @@ const EditFacility = (props) => {
         }
         
         // Pre-fetch values for drop down
+        if(facility_type !== undefined){
         if(facilityTypeRef.current !== null){
             // console.log({facility_type})
             facilityTypeRef.current.state.value = facilityOptions.filter(({value}) => value === facility_type)[0] || {label:facility_type_name, value:facility_type}
@@ -285,8 +523,6 @@ const EditFacility = (props) => {
             countyRef.current.state.value = countyOptions.filter(({value}) => value === county_id)[0] || ''
         }
         if(subCountyRef.current !== null){
-            
-           
             subCountyRef.current.state.value = subCountyOptions.filter(({value}) => value === sub_county_id)[0] || ''
         }
         if(constituencyRef.current !== null){
@@ -294,12 +530,33 @@ const EditFacility = (props) => {
             constituencyRef.current.state.value = constituencyOptions.filter(({value}) => value === constituency_id)[0] || ''
         }
         if(wardRef.current !== null){
-            
             wardRef.current.state.value = wardOptions.filter(({value}) => value === ward)[0] || ''
         }
+        if(contactRef.current !== null){
+            contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === (facility_contacts !== undefined ? facility_contacts[0].contact_type_name : ''))[0] || ''
+        }
+        if(jobTitleRef.current !== null){
+            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === officer_in_charge)[0] || ''
+        }
+
+        if(regulatoryBodyRef.current !== null){
+            regulatoryBodyRef.current.state.value = regBodyOptions.filter(({value}) => value === regulatory_body)[0] || ''
+        }
+
+        if(regulatoryStateRef.current !== null){
+            regulatoryStateRef.current.state.value = regulationStateOptions.filter(({value}) => value === regulation_status)[0] || ''
+        }
+        
+        if(facilityDeptNameRef.current !== null){
+            facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
+        }
+        
+    }
+
+       
 
         
-    }, [_lat, _long])
+    }, [_lat, _long, refreshForm4, services, selectedServiceRight])
 
 
     const handleAddContact = (event) => {
@@ -312,13 +569,13 @@ const EditFacility = (props) => {
         dropDown.setAttribute(
             'style',
             `
-        width:100%; 
-        border: 1px solid hsl(0, 0%, 80%); 
-        border-radius: 4px; 
-        padding: 2px; 
-        background-color: hsl(0, 0%, 100%); 
-        display: grid; 
-        min-height: 38px;
+            width:100%; 
+            border: 1px solid hsl(0, 0%, 80%); 
+            border-radius: 4px; 
+            padding: 2px; 
+            background-color: hsl(0, 0%, 100%); 
+            display: grid; 
+            min-height: 38px;
         `
         );
 
@@ -1125,7 +1382,7 @@ const EditFacility = (props) => {
 
                                     {/* Contact Type / Contact Details */}
 
-                                    <FacilityContact contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
+                                    <FacilityContact  contactRef={contactRef} contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
 
                                 </div>
 
@@ -1161,6 +1418,8 @@ const EditFacility = (props) => {
                                             required
                                             type='text'
                                             name='name'
+                                            value={_officerName}
+                                            onChange={ev => setOfficerName(ev.target.value)}
                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                         />
                                     </div>
@@ -1175,10 +1434,12 @@ const EditFacility = (props) => {
                                         <input
                                             type='text'
                                             name='reg_no'
+                                            value={_regNo}
+                                            onChange={ev => setRegNo(ev.target.value)}
                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                         />
                                     </div>
-
+                                
                                     {/* Job Title */}
                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                         <label
@@ -1192,6 +1453,7 @@ const EditFacility = (props) => {
                                         </label>
                                         <Select options={jobTitleOptions || []} 
                                             required
+                                            ref={jobTitleRef}
                                             placeholder="Select Job Title"																	
                                             name="title" 
                                             className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
@@ -1213,7 +1475,7 @@ const EditFacility = (props) => {
 
                                         {/* Contact Type / Contact Details */}
 
-                                        <FacilityContact contactTypeOptions={contactTypeOptions} contactRef={contactRef} setContact={setContact} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+                                        <FacilityContact contactRef={otherContactRef} contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
 
                                     </div>
 
@@ -1228,6 +1490,7 @@ const EditFacility = (props) => {
                                         </button>
                                     </div>
                                 </div>
+                                {/* Save btn */}
 
                                 <div className=" w-full flex justify-end h-auto mr-3">
                                          <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
@@ -1236,12 +1499,247 @@ const EditFacility = (props) => {
                             </Tabs.Panel>
                             {/* Regulation */}
                             <Tabs.Panel value="regulation" className="grow-1 py-1 px-4 tab-panel">
+                            <form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId])}>
+
+                                    {/* Regulatory Body */}
+                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="regulatory_body"  className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
+                                            <Select 
+                                                ref={regulatoryBodyRef} 
+                                                options={regBodyOptions || []} 
+                                                required
+                                                placeholder="Select Regulatory Body"
+                                                name='regulatory_body'
+                                                className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+
+                                    </div>
+
+                                    {/* Regulation Status */} 
+                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                        <label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
+                                        <Select 
+                                                ref={regulatoryStateRef}
+                                                options={regulationStateOptions || []} 
+                                                required
+                                                placeholder="Select Regulation Status"
+                                                name='regulation_status'
+                                                className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                    </div>
+
+                                    {/* License Number */} 
+                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                        <label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
+                                        <input type="text" value={_licenseNo} onChange={ev => setLicenseNo(ev.target.value)} name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                    </div>
+
+
+                                    {/* Registration Number */} 
+                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                        <label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number</label>
+                                        <input type="text" value={_regNo} onChange={ev => setRegNo(ev.target.value)} name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                    </div>
+
+                                    {/* check file upload */}
+                                    <div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
+                                            <input type="file" value={_file} onChange={ev => setFile(ev.target.value)} name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+                                    </div>
+
+                                    {/* Facility Departments Regulation  */}
+
+                                    <h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
+                                    <div className='grid grid-cols-4 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityRegulatoryBodyRef}>
+                                    {/* Contact Headers */}
+                                        <h3 className='text-medium font-semibold text-blue-900'>Name</h3>
+                                        <h3 className='text-medium font-semibold text-blue-900'>Regulatory Body</h3>
+                                        <h3 className='text-medium font-semibold text-blue-900'>License Number</h3>
+                                        <h3 className='text-medium font-semibold text-blue-900'>Reg. Number</h3>
+
+                                        <hr className='col-span-4'/>
+
+                                        
+                                        {/* Name */}
+                                        <Select options={facilityDeptOptions || []} 
+                                            required
+                                            placeholder="Select Name"
+                                            ref={facilityDeptNameRef}
+                                            onChange={
+                                                e => {
+                                                    if(regBodyRef.current !== null){
+                                                        console.log({regBody: facilityDeptOptions.filter(({label}) => label === e.label)})
+                                                        regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
+                                                    }
+                                                }
+                                            }
+                                            name="facility_dept_name" 
+                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        
+                                        {/* Regulatory Body */}
+                                        <input type="text" ref={regBodyRef} disabled value={_regBody} onChange={ev => setRegBody(ev.target.value)} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+
+                                        {/* License No. */}
+                                        <input type="text"value={_licenseNo} onChange={ev => setLicenseNo(ev.target.value)} name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+
+                                        <div className='col-start-4 flex items-center space-x-2 w-full'>
+                                            {/* Reg No. */}
+                                            <input type="text" value={_regNo} onChange={ev => setRegNo(ev.target.name)} name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        
+                                            {/* Delete Btn */}
+
+                                            <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+                                        </div>
+
+                                        {/* add other fields */}
+
+                                        
+                                    </div>
+
+
+                                    {/* Add btn */}
+                                    <div className='w-full flex justify-end items-center mt-2'>
+                                        <button onClick={handleAddRegulatoryBody} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                            <PlusIcon className='w-4 h-4 text-white'/>
+                                            <p className='text-medium font-semibold text-white'>Add</p>
+                                        </button>
+                                    </div>
+
+                                    {/* Save btn */}
+
+                                    <div className=" w-full flex justify-end h-auto mr-3">
+                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                    </div>
+                            </form>
                             </Tabs.Panel>
                             {/* Services */}
                             <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
+
+                            <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices])}>
+															
+                                    {/* Transfer list Container */}
+                                    <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                    
+                                
+                                    <TrasnferListServices 
+                                        categories={serviceOptions}
+                                        setServices={setServices}
+                                        setRefreshForm4={setRefreshForm4}
+                                        refreshForm4={refreshForm4}
+                                        selectedRight={serviceSelected}
+                                        setSelectedServiceRight={setSelectedServiceRight}
+                                    />
+
+                                    </div>
+                                    {/* Service Category Table */}
+                                    <table className='w-full  h-auto my-4'>
+                                        <thead className='w-full'>
+                                            <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
+                                                <td className='text-lg font-semibold text-indigo-900 '>Name</td>
+                                                <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody ref={optionRefBody}>
+                                            {
+                                                selectedServiceRight  !== undefined && selectedServiceRight !== null ? 
+
+                                                selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
+                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                        <td ref={nameOptionRef}>{service}</td>
+                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                    </tr>
+                                                ))
+                                                :
+                                                services.map(({subctg}) => subctg).map((service, i) => (
+                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                        <td ref={nameOptionRef}>{service}</td>
+                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        
+                                        </tbody>
+                                    </table>
+                                    
+                                    {/* Save btn */}
+
+                                    <div className=" w-full flex justify-end h-auto mr-3">
+                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                    </div>
+                                </form>
                             </Tabs.Panel>
                             {/* Infrastructure */}
                             <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
+                                <form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId])}  className='flex flex-col w-full items-start justify-start gap-3'>
+														
+                                    {/* Transfer list Container */}
+                                    <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                    
+                                    {/* Transfer List*/}
+                                    <TransferListInfrastructure 
+                                        categories={
+                                            infrastructureOption
+                                        } 
+                                        setState={setInfrastructure}
+                                        setCount={setInfrastructureCount}
+                                        setRefreshForm5={setRefreshForm5}
+                                        refreshForm5={refreshForm5}
+                                        selectedInfraRight={infrastructureSelected}
+                                        setSelectedInfraRight={setSelectedInfraRight}
+                                        selectTitle='Infrastructure'
+                                        />
+
+                                    </div>
+                                    {/* Service Category Table */}
+                                    <table className='w-full  h-auto my-4'>
+                                        <thead className='w-full'>
+                                            <tr className='grid grid-cols-4 place-content-end border-b-4 border-gray-300'>
+                                                <td className='text-lg font-semibold text-indigo-900'>Name</td>
+                                                <td className='text-lg font-semibold text-indigo-900'>Category</td>
+                                                <td className='text-lg font-semibold text-indigo-900'>Present</td>
+                                                <td className='text-lg font-semibold text-indigo-900'>Number</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody ref={infrastructureBodyRef}>
+                                            {
+                                                 selectedInfraRight  !== undefined && selectedInfraRight !== null ? 
+
+                                                 selectedInfraRight.map(({subctg}) => subctg).map((_infrastructure, i) => (
+                                                    
+                                                infrastructureOption !== undefined || infrastructureOption !== null && 
+                                                <tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
+                                                    <td className='text-lg text-black'>{_infrastructure}</td>
+                                                    <td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+                                                    <td className='text-lg text-black'>Yes</td>
+                                                    <td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
+                                                </tr>
+                                                    
+                                                  
+                                                ))
+
+                                                :
+
+                                                infrastructure.map(({subctg}) => subctg).map((_infrastructure, i) => (
+                                                    <tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
+                                                        <td className='text-lg text-black'>{_infrastructure}</td>
+                                                        <td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+                                                        <td className='text-lg text-black'>Yes</td>
+                                                        <td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        
+                                        
+                                        </tbody>
+                                    </table>
+                                    
+                                    {/* Save btn */}
+
+                                    <div className=" w-full flex justify-end h-auto mr-3">
+                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                    </div>
+ 
+								</form>
                             </Tabs.Panel>
                             {/* Human Resources */}
                             <Tabs.Panel value="human_resource" className="grow-1 py-1 px-4 tab-panel">
@@ -1278,13 +1776,10 @@ EditFacility.getInitialProps = async (ctx) => {
 		'facility_depts',
 		'regulating_bodies',
 		'regulation_status',
-		'services',
-		'contact_types',
+		'services', 
 		'infrastructure',
 		'specialities',
         'facility_data'
-
-	
 	]
 
 
@@ -1698,7 +2193,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
                                     try{
 		
-                                        const response = await fetch(`/api/facility/get_facility/?path=wards&id=${allOptions[19].data.ward}`)
+                                        const response = await fetch(`/api/facility/get_facility/?path=wards&id=${allOptions[18].data.ward}`)
         
                                         const _data = await response.json()
                
