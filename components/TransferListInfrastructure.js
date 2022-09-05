@@ -28,22 +28,25 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferListInfrastructure({categories, setState, setCount, setRefreshForm5, refreshForm5, selectTitle}) {
+export default function TransferListInfrastructure({categories, setState, setCount, setRefreshForm5, refreshForm5, selectTitle, selectedInfraRight, setSelectedInfraRight}) {
 
   const [checked, setChecked] = React.useState([]);
   const [newSelected, setNewSelected] = React.useState([])
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
   const [inputVal, setInputVal] = React.useState([])
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
-  const [right, setRight] = React.useState([]);
+  const [right, setRight] = React.useState((selectedInfraRight ? (() => selectedInfraRight.map(({name}) => name))() : []));
   const [checkAll, setCheckAll] = React.useState(false);
   const [selectedInfrastructure, setSelectedInfrastructure] =  React.useState({});
+ 
+
 
   let leftChecked = intersection(checked, left);
   let rightChecked = intersection(checked, right);
 
   useMemo(() => {
       
+      setSelectedInfraRight(selectedInfraRight)
       leftChecked = intersection(checked, left);
       rightChecked = intersection(checked, right);
     
@@ -147,6 +150,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
     setChecked(not(checked, rightChecked));
 
     setState(selectedInfrastructure)
+    setSelectedInfraRight(right)
   };
 
   const handleAllLeft = () => {
@@ -217,10 +221,10 @@ export default function TransferListInfrastructure({categories, setState, setCou
                   
                         <>
                             {
-                                (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                                 (selectedInfraRight !== null ? (selectedInfraRight.map(ctg => {ctg => ctg.subCategories[0]}).indexOf(subctg) !== -1 || checkAll) : checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
                                 <Checkbox
                                 key={i}
-                                checked={checkAll ? true : checkBoxChecked.indexOf(subctg) !== -1}
+                                checked={checkAll ? true : selectedInfraRight !== null ? (selectedInfraRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1) : (checkBoxChecked.indexOf(subctg) !== -1)}
                                 tabIndex={-1}
                                 disableRipple
                                 onChange={handleCheckBoxToggle(subctg)}
@@ -230,7 +234,8 @@ export default function TransferListInfrastructure({categories, setState, setCou
                                 />
                             }
                             {
-                            (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                              selectedInfraRight !== null &&
+                             (selectedInfraRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1 || checkAll) &&
                             <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
                             }
                         </>
@@ -281,8 +286,6 @@ export default function TransferListInfrastructure({categories, setState, setCou
                 />
               
               </ListItemIcon>
-             
-              
 
               {accordion(getCtgs(categories, _data), isRight)}
 

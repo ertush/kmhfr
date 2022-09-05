@@ -52,7 +52,7 @@ useMemo(() => {
      rightChecked = intersection(checked, right);
     
 
-  }, [left, right,])
+  }, [left, right])
 
   const handleToggle = (value) => () => {
   
@@ -147,7 +147,7 @@ useMemo(() => {
 
       const [_data] = data
 
-      const {name, subCategories, value} = _data
+      const {name, subCategories, value} = _data ?? {name:'Loading...', subCategories:[], value:[]}
 
       return (
         <Accordion sx={{flex:100, backgroundColor:'#f1f1f1', boxShadow:'none'}} >
@@ -199,7 +199,7 @@ useMemo(() => {
                           }
                           {/* {console.log({selectedRight: selectedRight.map(ctg => ctg.subCategories[0])})} */}
                           {
-
+                            selectedRight !== null &&
                             (selectedRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1 || checkAll) &&
                             <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
                           }

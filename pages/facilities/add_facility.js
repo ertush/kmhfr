@@ -1587,8 +1587,13 @@ function AddFacility(props) {
 															{/* Ward Geo Map */}
 															<div className='w-full h-auto'>																		
 																<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																	<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
-																</div>
+																	{
+																		 geoJSON !== null &&
+
+																		<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
+																
+																	}	
+																	</div>
 															</div>
 
 															{/* Next/Previous Form  */}
@@ -2182,6 +2187,7 @@ function AddFacility(props) {
 																setRefreshForm4={setRefreshForm4}
 																refreshForm4={refreshForm4}
 																selectedRight={null}
+																setSelectedServiceRight={() => null}
 															/>
 
 															</div>
@@ -2249,6 +2255,8 @@ function AddFacility(props) {
 															setRefreshForm5={setRefreshForm5}
 															refreshForm5={refreshForm5}
 															selectTitle='Infrastructure'
+															setSelectedInfraRight={() => null}
+															selectedInfraRight={null}
 															/>
 
 														</div>
@@ -2320,6 +2328,7 @@ function AddFacility(props) {
 															refreshForm6={refreshForm6}
 															setCount={setHrCount}
 															selectTitle='HR Specialities'
+
 														/>
 
 														</div>

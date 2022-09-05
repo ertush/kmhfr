@@ -21,9 +21,10 @@ import {
 import FacilityContact from '../../../components/FacilityContact';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import TrasnferListServices from '../../../components/TrasnferListServices';
+import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
+
 // import { SetMealTwoTone } from '@mui/icons-material';
 // import facilityResponse from '../../../components/facilityDummyResponse.json'
-
 
 
 const WardMap = dynamic(
@@ -63,7 +64,6 @@ const EditFacility = (props) => {
     const wardOptions =  props['9']?.wards ?? []
     const jobTitleOptions = props['10']?.job_titles ?? []
     const contactTypeOptions = props['11']?.contact_types ?? []
-
     const facilityDeptOptions = props['12']?.facility_depts ?? []
     const regBodyOptions = props['13']?.regulating_bodies ?? []
     const regulationStateOptions = props['14']?.regulation_status ?? []
@@ -98,6 +98,39 @@ const EditFacility = (props) => {
 		
 		return _serviceOptions
 	 })(props['15'].service ?? [])
+
+
+     const infrastructureOption = ((_infrastructure) => {
+		
+		const _infrastructureOptions = []
+		let _values = []    
+		let _subCtgs = []
+
+		if(_infrastructure.length > 0){
+			_infrastructure.forEach(({category_name:ctg}) => {
+				let allOccurences = _infrastructure.filter(({category_name}) => category_name === ctg)
+				
+				allOccurences.forEach(({id, name}) => {
+					_subCtgs.push(name)
+					_values.push(id)
+				})
+				
+				if(_infrastructureOptions.map(({name}) => name).indexOf(ctg) === -1){
+					_infrastructureOptions.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+		return _infrastructureOptions
+	 })(props['16'].infrastructure ?? [])
 
    
     
@@ -189,8 +222,23 @@ const EditFacility = (props) => {
                 })
         )
     })(facility_services || [])  
-    
 
+    const infrastructureSelected = ((_infrastructure) => {
+        return _infrastructure.map(({infrastructure_name, infrastructure}) => ({
+                    name: '',
+                    subCategories: [
+                        infrastructure_name
+                    ],
+                    value:[
+                        infrastructure
+                    ]
+                    
+                })
+        )
+    })(facility_infrastructure || [])  
+
+
+    
     const [user, setUser] = useState(null)
 
     // Form field states
@@ -225,11 +273,12 @@ const EditFacility = (props) => {
     const [_lat, setLat] = useState(lat_long !== undefined ? (lat_long[0] ?? '') : '')
     const [_long, setLong] = useState(lat_long !== undefined ? (lat_long[1] ?? '') : '')
     const [_contactDetail, setContactDetail] = useState(facility_contacts !== undefined ? (facility_contacts[0].contact ?? ''): '')
-    const [_officerName, setOfficerName] = useState(officer_in_charge !== undefined ? (officer_in_charge.name ?? '') : '')
-    const [_regNo, setRegNo] = useState(officer_in_charge !== undefined ? (officer_in_charge.reg_no ?? '') : '')
+    const [_officerName, setOfficerName] = useState(officer_in_charge || '')
+    const [_regNo, setRegNo] = useState('')
     const [_regBody, setRegBody] = useState(regulatory_body_name)
     const [_file, setFile] = useState()
     const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
+    
 
 
     // different form states
@@ -245,8 +294,10 @@ const EditFacility = (props) => {
     const [contact, setContact] = useState('')
     const [refreshForm4, setRefreshForm4] = useState()
     const [selectedServiceRight, setSelectedServiceRight] = useState()
-  
+    const [selectedInfraRight, setSelectedInfraRight] = useState()
+	const [refreshForm5, setRefreshForm5] = useState(false)
 
+  
     const handleAddRegulatoryBody = (event) => {
         event.preventDefault();
 
@@ -423,12 +474,14 @@ const EditFacility = (props) => {
     const optionRefBody = useRef(null)
     const serviceOptionRef = useRef(null)
     const nameOptionRef = useRef(null)
+    const infrastructureBodyRef = useRef(null)
+
 
     
 
     useEffect(() => {
        
-        console.log({serviceSelected})
+        console.log({serviceSelected, infrastructureSelected})
         if (typeof window !== 'undefined') {
             let usr = window.sessionStorage.getItem('user')
             if (usr && usr.length > 0) {
@@ -483,7 +536,7 @@ const EditFacility = (props) => {
             contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === (facility_contacts !== undefined ? facility_contacts[0].contact_type_name : ''))[0] || ''
         }
         if(jobTitleRef.current !== null){
-            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === officer_in_charge.title)[0] || ''
+            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === officer_in_charge)[0] || ''
         }
 
         if(regulatoryBodyRef.current !== null){
@@ -1561,6 +1614,7 @@ const EditFacility = (props) => {
                             </Tabs.Panel>
                             {/* Services */}
                             <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
+
                             <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices])}>
 															
                                     {/* Transfer list Container */}
@@ -1596,7 +1650,6 @@ const EditFacility = (props) => {
                                                     </tr>
                                                 ))
                                                 :
-
                                                 services.map(({subctg}) => subctg).map((service, i) => (
                                                     <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
                                                         <td ref={nameOptionRef}>{service}</td>
@@ -1617,6 +1670,76 @@ const EditFacility = (props) => {
                             </Tabs.Panel>
                             {/* Infrastructure */}
                             <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
+                                <form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId])}  className='flex flex-col w-full items-start justify-start gap-3'>
+														
+                                    {/* Transfer list Container */}
+                                    <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                    
+                                    {/* Transfer List*/}
+                                    <TransferListInfrastructure 
+                                        categories={
+                                            infrastructureOption
+                                        } 
+                                        setState={setInfrastructure}
+                                        setCount={setInfrastructureCount}
+                                        setRefreshForm5={setRefreshForm5}
+                                        refreshForm5={refreshForm5}
+                                        selectedInfraRight={infrastructureSelected}
+                                        setSelectedInfraRight={setSelectedInfraRight}
+                                        selectTitle='Infrastructure'
+                                        />
+
+                                    </div>
+                                    {/* Service Category Table */}
+                                    <table className='w-full  h-auto my-4'>
+                                        <thead className='w-full'>
+                                            <tr className='grid grid-cols-4 place-content-end border-b-4 border-gray-300'>
+                                                <td className='text-lg font-semibold text-indigo-900'>Name</td>
+                                                <td className='text-lg font-semibold text-indigo-900'>Category</td>
+                                                <td className='text-lg font-semibold text-indigo-900'>Present</td>
+                                                <td className='text-lg font-semibold text-indigo-900'>Number</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody ref={infrastructureBodyRef}>
+                                            {
+                                                 selectedInfraRight  !== undefined && selectedInfraRight !== null ? 
+
+                                                 selectedInfraRight.map(({subctg}) => subctg).map((_infrastructure, i) => (
+                                                    
+                                                infrastructureOption !== undefined || infrastructureOption !== null && 
+                                                <tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
+                                                    <td className='text-lg text-black'>{_infrastructure}</td>
+                                                    <td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+                                                    <td className='text-lg text-black'>Yes</td>
+                                                    <td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
+                                                </tr>
+                                                    
+                                                  
+                                                ))
+
+                                                :
+
+                                                infrastructure.map(({subctg}) => subctg).map((_infrastructure, i) => (
+                                                    <tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
+                                                        <td className='text-lg text-black'>{_infrastructure}</td>
+                                                        <td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+                                                        <td className='text-lg text-black'>Yes</td>
+                                                        <td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        
+                                        
+                                        </tbody>
+                                    </table>
+                                    
+                                    {/* Save btn */}
+
+                                    <div className=" w-full flex justify-end h-auto mr-3">
+                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                    </div>
+ 
+								</form>
                             </Tabs.Panel>
                             {/* Human Resources */}
                             <Tabs.Panel value="human_resource" className="grow-1 py-1 px-4 tab-panel">
