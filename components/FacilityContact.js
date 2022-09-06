@@ -20,7 +20,7 @@ const FacilityContact = ({
             required
             placeholder="Select Contact Type"
           
-            name={names[0]} 
+            name={names[0]}
 
             id={id}
             className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />

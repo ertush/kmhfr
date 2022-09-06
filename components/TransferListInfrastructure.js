@@ -30,17 +30,17 @@ function intersection(a, b) {
 
 export default function TransferListInfrastructure({categories, setState, setCount, setRefreshForm5, refreshForm5, selectTitle, selectedInfraRight, setSelectedInfraRight}) {
 
+ 
   const [checked, setChecked] = React.useState([]);
   const [newSelected, setNewSelected] = React.useState([])
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
   const [inputVal, setInputVal] = React.useState([])
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
-  const [right, setRight] = React.useState((selectedInfraRight ? (() => selectedInfraRight.map(({name}) => name))() : []));
+  const [right, setRight] = React.useState((selectedInfraRight ? selectedInfraRight.map(({name}) => name) : []));
   const [checkAll, setCheckAll] = React.useState(false);
   const [selectedInfrastructure, setSelectedInfrastructure] =  React.useState({});
  
-
-
+  console.log({selectedInfraRight})
   let leftChecked = intersection(checked, left);
   let rightChecked = intersection(checked, right);
 
@@ -136,7 +136,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
    
-    setState(checkBoxChecked)
+    // setState(checkBoxChecked)
     setCount(inputVal)
 
     setRefreshForm5(!refreshForm5)
@@ -149,7 +149,8 @@ export default function TransferListInfrastructure({categories, setState, setCou
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
 
-    setState(selectedInfrastructure)
+    // setState(selectedInfrastructure)
+    setState(right)
     setSelectedInfraRight(right)
   };
 
@@ -167,6 +168,8 @@ export default function TransferListInfrastructure({categories, setState, setCou
 
       const [_data] = data
 
+      // console.log({_data})
+
       const {name, subCategories, value} = _data ?? {name:'Loading...', subCategories:[], value:[]} 
  
       return (
@@ -182,6 +185,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
         </AccordionSummary>
         <AccordionDetails>
             <ListItem  key={1} component="div">
+
 
               <div className='flex-col items-start justify-start'>
               {
@@ -227,7 +231,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
                                 checked={checkAll ? true : selectedInfraRight !== null ? (selectedInfraRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1) : (checkBoxChecked.indexOf(subctg) !== -1)}
                                 tabIndex={-1}
                                 disableRipple
-                                onChange={handleCheckBoxToggle(subctg)}
+                                onChange={handleCheckBoxToggle({subctg, value:value[i]})}
                                 inputProps={{
                                     'aria-labelledby': 'options',
                                 }}
@@ -258,7 +262,9 @@ export default function TransferListInfrastructure({categories, setState, setCou
 
   const customList = (items, isRight) => (
     <Paper sx={{ width: 520, height: 300, overflow: 'auto', padding:1 }}>
-        
+      
+      {/* {console.log({items})} */}
+
       <List dense component="div" role="list">
         {items.map((_data, i) => {
 
@@ -275,7 +281,6 @@ export default function TransferListInfrastructure({categories, setState, setCou
               <ListItemIcon>
              
                 <Checkbox
-
                   checked={checked.indexOf(_data) !== -1} 
                   tabIndex={-1}
                   disableRipple
@@ -286,8 +291,11 @@ export default function TransferListInfrastructure({categories, setState, setCou
                 />
               
               </ListItemIcon>
+              {/* {_data !== '' && console.log({getCtgs: getCtgs(categories, _data)})} */}
+              {/* {_data !== '' && console.log({_data})} */}
 
-              {accordion(getCtgs(categories, _data), isRight)}
+
+              {_data !== '' && accordion(getCtgs(categories, _data), isRight)}
 
             </ListItem>
           );
@@ -354,6 +362,8 @@ export default function TransferListInfrastructure({categories, setState, setCou
       <Grid item>
           <Grid container direction="column"  justifyContent="start" alignItems="start">
           <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">{selectTitle}</h5>
+            { console.log({right})}
+
             {customList(right, true)}
           </Grid>
           </Grid>

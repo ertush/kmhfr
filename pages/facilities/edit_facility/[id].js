@@ -8,7 +8,6 @@ import MainLayout from '../../../components/MainLayout'
 import dynamic from 'next/dynamic'
 
 
-
 import { 
 	handleBasicDetailsSubmit,
     handleGeolocationSubmit,
@@ -22,9 +21,6 @@ import FacilityContact from '../../../components/FacilityContact';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import TrasnferListServices from '../../../components/TrasnferListServices';
 import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
-
-// import { SetMealTwoTone } from '@mui/icons-material';
-// import facilityResponse from '../../../components/facilityDummyResponse.json'
 
 
 const WardMap = dynamic(
@@ -174,6 +170,7 @@ const EditFacility = (props) => {
         number_of_general_theatres,
         number_of_maternity_theatres,
         facility_catchment_population,
+        facility_license_document,
         reporting_in_dhis,  
         nhif_accreditation,
         is_classified,
@@ -200,6 +197,7 @@ const EditFacility = (props) => {
         regulatory_body,
         regulation_status,
         license_number,
+        registration_number,
         regulatory_body_name
 
     } = props['18']?.data ?? {}
@@ -225,7 +223,9 @@ const EditFacility = (props) => {
 
     const infrastructureSelected = ((_infrastructure) => {
         return _infrastructure.map(({infrastructure_name, infrastructure}) => ({
-                    name: '',
+
+                    name: props['16']?.infrastructure.length > 0 ? props['16']?.infrastructure.filter(({id}) => id === infrastructure)[0].category_name : '',
+                  
                     subCategories: [
                         infrastructure_name
                     ],
@@ -238,7 +238,6 @@ const EditFacility = (props) => {
     })(facility_infrastructure || [])  
 
 
-    
     const [user, setUser] = useState(null)
 
     // Form field states
@@ -274,12 +273,13 @@ const EditFacility = (props) => {
     const [_long, setLong] = useState(lat_long !== undefined ? (lat_long[1] ?? '') : '')
     const [_contactDetail, setContactDetail] = useState(facility_contacts !== undefined ? (facility_contacts[0].contact ?? ''): '')
     const [_officerName, setOfficerName] = useState(officer_in_charge || '')
-    const [_regNo, setRegNo] = useState('')
-    const [_regBody, setRegBody] = useState(regulatory_body_name)
-    const [_file, setFile] = useState()
+    const [_regNo, setRegNo] = useState(registration_number ?? '')
+    const [_regBody, setRegBody] = useState(regulatory_body_name ?? '')
+    const [_file, setFile] = useState(facility_license_document ?? '')
     const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
+    const [_otherContactDetail, setOtherContactDetail] = useState()
     
-
+ 
 
     // different form states
     const [formId, setFormId] = useState(0)
@@ -536,7 +536,7 @@ const EditFacility = (props) => {
             contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === (facility_contacts !== undefined ? facility_contacts[0].contact_type_name : ''))[0] || ''
         }
         if(jobTitleRef.current !== null){
-            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === officer_in_charge)[0] || ''
+            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === officer_in_charge.title)[0] || ''
         }
 
         if(regulatoryBodyRef.current !== null){
@@ -550,6 +550,12 @@ const EditFacility = (props) => {
         if(facilityDeptNameRef.current !== null){
             facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
         }
+
+        if(otherContactRef.current !== null){
+            otherContactRef.current.state.value = _officerName.contacts.length > 0 ? _officerName.contacts[0].type : ''
+        }
+
+        setOtherContactDetail(_officerName.contacts.length > 0 ? _officerName.contacts[0].contact : '')
         
     }
 
@@ -1414,11 +1420,12 @@ const EditFacility = (props) => {
                                                 *
                                             </span>
                                         </label>
+                                        {/* {console.log({_officerName})} */}
                                         <input
                                             required
                                             type='text'
                                             name='name'
-                                            value={_officerName}
+                                            value={_officerName.name}
                                             onChange={ev => setOfficerName(ev.target.value)}
                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                         />
@@ -1434,7 +1441,7 @@ const EditFacility = (props) => {
                                         <input
                                             type='text'
                                             name='reg_no'
-                                            value={_regNo}
+                                            value={_officerName.reg_no}
                                             onChange={ev => setRegNo(ev.target.value)}
                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                         />
@@ -1475,7 +1482,7 @@ const EditFacility = (props) => {
 
                                         {/* Contact Type / Contact Details */}
 
-                                        <FacilityContact contactRef={otherContactRef} contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+                                        <FacilityContact contactRef={otherContactRef} contactDetail={_otherContactDetail} setContactDetail={setOtherContactDetail} contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
 
                                     </div>
 
@@ -1618,8 +1625,7 @@ const EditFacility = (props) => {
                             <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices])}>
 															
                                     {/* Transfer list Container */}
-                                    <div className='flex items-center w-full h-auto min-h-[300px]'>
-                                    
+                                    <div className='flex items-center w-full h-auto min-h-[300px]'>                                  
                                 
                                     <TrasnferListServices 
                                         categories={serviceOptions}
@@ -1676,6 +1682,7 @@ const EditFacility = (props) => {
                                     <div className='flex items-center w-full h-auto min-h-[300px]'>
                                     
                                     {/* Transfer List*/}
+
                                     <TransferListInfrastructure 
                                         categories={
                                             infrastructureOption
