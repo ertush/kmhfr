@@ -8,7 +8,6 @@ import MainLayout from '../../../components/MainLayout'
 import dynamic from 'next/dynamic'
 
 
-
 import { 
 	handleBasicDetailsSubmit,
     handleGeolocationSubmit,
@@ -21,10 +20,8 @@ import {
 import FacilityContact from '../../../components/FacilityContact';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import TrasnferListServices from '../../../components/TrasnferListServices';
+import TransferListHr from '../../../components/TransferListHr';
 import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
-
-// import { SetMealTwoTone } from '@mui/icons-material';
-// import facilityResponse from '../../../components/facilityDummyResponse.json'
 
 
 const WardMap = dynamic(
@@ -145,6 +142,38 @@ const EditFacility = (props) => {
         },
     ]
 
+    const hrOptions = ((_hr) => {
+		
+		const _hrOptions = []
+		let _values = []
+		let _subCtgs = []
+
+		if(_hr.length > 0){
+			_hr.forEach(({category_name:ctg}) => {
+				let allOccurences = _hr.filter(({category_name}) => category_name === ctg)
+				
+				allOccurences.forEach(({id, name}) => {
+					_subCtgs.push(name)
+					_values.push(id)
+				})
+				
+				if(_hrOptions.map(({name}) => name).indexOf(ctg) === -1){
+					_hrOptions.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+		return _hrOptions
+	 })(props['17'].hr ?? [])
+
     // Facility data
     const {
         name,
@@ -174,6 +203,7 @@ const EditFacility = (props) => {
         number_of_general_theatres,
         number_of_maternity_theatres,
         facility_catchment_population,
+        facility_license_document,
         reporting_in_dhis,  
         nhif_accreditation,
         is_classified,
@@ -200,6 +230,7 @@ const EditFacility = (props) => {
         regulatory_body,
         regulation_status,
         license_number,
+        registration_number,
         regulatory_body_name
 
     } = props['18']?.data ?? {}
@@ -225,7 +256,9 @@ const EditFacility = (props) => {
 
     const infrastructureSelected = ((_infrastructure) => {
         return _infrastructure.map(({infrastructure_name, infrastructure}) => ({
-                    name: '',
+
+                    name: props['16']?.infrastructure.length > 0 ? props['16']?.infrastructure.filter(({id}) => id === infrastructure)[0].category_name : '',
+                  
                     subCategories: [
                         infrastructure_name
                     ],
@@ -237,8 +270,23 @@ const EditFacility = (props) => {
         )
     })(facility_infrastructure || [])  
 
+    const hrSelected = ((_hr) => {
+        return _hr.map(({speciality_name, speciality}) => ({
 
-    
+                    name: props['17']?.hr.length > 0 ? props['17']?.hr.filter(({id}) => id === speciality)[0].category_name : '',
+                  
+                    subCategories: [
+                        speciality_name
+                    ],
+                    value:[
+                        speciality
+                    ]
+                    
+                })
+        )
+    })(facility_specialists || [])
+
+
     const [user, setUser] = useState(null)
 
     // Form field states
@@ -274,12 +322,13 @@ const EditFacility = (props) => {
     const [_long, setLong] = useState(lat_long !== undefined ? (lat_long[1] ?? '') : '')
     const [_contactDetail, setContactDetail] = useState(facility_contacts !== undefined ? (facility_contacts[0].contact ?? ''): '')
     const [_officerName, setOfficerName] = useState(officer_in_charge || '')
-    const [_regNo, setRegNo] = useState('')
-    const [_regBody, setRegBody] = useState(regulatory_body_name)
-    const [_file, setFile] = useState()
+    const [_regNo, setRegNo] = useState(registration_number ?? '')
+    const [_regBody, setRegBody] = useState(regulatory_body_name ?? '')
+    const [_file, setFile] = useState(facility_license_document ?? '')
     const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
+    const [_otherContactDetail, setOtherContactDetail] = useState()
     
-
+ 
 
     // different form states
     const [formId, setFormId] = useState(0)
@@ -295,7 +344,12 @@ const EditFacility = (props) => {
     const [refreshForm4, setRefreshForm4] = useState()
     const [selectedServiceRight, setSelectedServiceRight] = useState()
     const [selectedInfraRight, setSelectedInfraRight] = useState()
+    const [selectedHrRight, setSelectedHrRight] = useState()
+	const [geoJSON, setGeoJSON] = useState(null)
+    const [center, setCenter] = useState(null)
 	const [refreshForm5, setRefreshForm5] = useState(false)
+    const [refreshForm6, setRefreshForm6] = useState(false)
+    
 
   
     const handleAddRegulatoryBody = (event) => {
@@ -481,7 +535,7 @@ const EditFacility = (props) => {
 
     useEffect(() => {
        
-        console.log({serviceSelected, infrastructureSelected})
+        // console.log({serviceSelected, infrastructureSelected})
         if (typeof window !== 'undefined') {
             let usr = window.sessionStorage.getItem('user')
             if (usr && usr.length > 0) {
@@ -536,7 +590,7 @@ const EditFacility = (props) => {
             contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === (facility_contacts !== undefined ? facility_contacts[0].contact_type_name : ''))[0] || ''
         }
         if(jobTitleRef.current !== null){
-            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === officer_in_charge)[0] || ''
+            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === (officer_in_charge !== null ? officer_in_charge.title : ''))[0] || ''
         }
 
         if(regulatoryBodyRef.current !== null){
@@ -550,13 +604,19 @@ const EditFacility = (props) => {
         if(facilityDeptNameRef.current !== null){
             facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
         }
+
+        if(otherContactRef.current !== null){
+            otherContactRef.current.state.value = _officerName.contacts !==  undefined ? _officerName.contacts[0].type : ''
+        }
+
+        setOtherContactDetail(_officerName.contacts !== undefined ? _officerName.contacts[0].contact : '')
         
     }
 
        
 
         
-    }, [_lat, _long, refreshForm4, services, selectedServiceRight])
+    }, [_lat, _long, refreshForm4, services, selectedInfraRight, selectedHrRight, selectedServiceRight])
 
 
     const handleAddContact = (event) => {
@@ -751,7 +811,8 @@ const EditFacility = (props) => {
                             </Tabs.List>
                             {/* Basic Details */}
                             <Tabs.Panel value="basic_details" className="grow-1 py-1 px-4 tab-panel">                           
-                                <form className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'>
+															
+                                <form className='flex flex-col w-full items-start justify-start gap-3 md:mt-6' onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId], 'PATCH')}>
                                     {/* Facility Official Name */}
                                     <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                         <label htmlFor="official_name" className="text-gray-600 capitalize text-sm">Facility Official Name<span className='text-medium leading-12 font-semibold'> *</span></label>
@@ -1238,33 +1299,33 @@ const EditFacility = (props) => {
 
                                         {/* Nearest Town/Shopping Center */}
                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                    <label htmlFor="town_name" className="text-gray-600 capitalize text-sm">Nearest Town/Shopping Center<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                    <input required ref={townRef} value={_town}  onChange={ev => setTown(ev.target.value)} type="text" name="town_name" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    <label htmlFor="town_name" className="text-gray-600 capitalize text-sm">Nearest Town/Shopping Center<span className='text-medium leading-12 font-semibold'></span></label>
+                                                    <input  ref={townRef} value={_town}  onChange={ev => setTown(ev.target.value)} type="text" name="town_name" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                 </div>
 
                                                 {/* Plot Number */}
                                                 <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                    <label htmlFor="plot_number" className="text-gray-600 capitalize text-sm">Plot number<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                    <input required ref={plotNoRef} value={_plotNo}  onChange={ev => setPlotNo(ev.target.value)}  type="text" name="plot_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    <label htmlFor="plot_number" className="text-gray-600 capitalize text-sm">Plot number<span className='text-medium leading-12 font-semibold'></span></label>
+                                                    <input  ref={plotNoRef} value={_plotNo}  onChange={ev => setPlotNo(ev.target.value)}  type="text" name="plot_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                 </div>
 
                                                 {/* Nearest landmark */}
                                                 <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                    <label htmlFor="nearest_landmark" className="text-gray-600 capitalize text-sm">Nearest landmark<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                    <input required type="text" ref={nearestLandMarkRef} value={_nearestLandMark}  onChange={ev => setNearestLandMark(ev.target.value)}  name="nearest_landmark" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    <label htmlFor="nearest_landmark" className="text-gray-600 capitalize text-sm">Nearest landmark<span className='text-medium leading-12 font-semibold'></span></label>
+                                                    <input  type="text" ref={nearestLandMarkRef} value={_nearestLandMark}  onChange={ev => setNearestLandMark(ev.target.value)}  name="nearest_landmark" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                 </div>
 
                                                 {/* Location Description */}
                                                 <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                    <label htmlFor="location_desc" className="text-gray-600 capitalize text-sm">location description<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                    <input required type="text" ref={locationDescRef} value={_locationDesc}  onChange={ev => setLocationDesc(ev.target.value)}  name="location_desc" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    <label htmlFor="location_desc" className="text-gray-600 capitalize text-sm">location description<span className='text-medium leading-12 font-semibold'></span></label>
+                                                    <input  type="text" ref={locationDescRef} value={_locationDesc}  onChange={ev => setLocationDesc(ev.target.value)}  name="location_desc" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                 </div>
                                         </div>
 
                                     {/* check file upload */}
                                     <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto">
                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                            <label htmlFor="facility_checklist_document" className="text-gray-600 capitalize text-sm">checklist file upload<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <label htmlFor="facility_checklist_document" className="text-gray-600 capitalize text-sm">checklist file upload<span className='text-medium leading-12 font-semibold'></span></label>
                                             <input required type="file" ref={checklistFileRef} value={_checklistFile} onChange={ev => setCheckListFile(ev.target.value)} name="facility_checklist_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                         </div>
                                     </div>
@@ -1280,7 +1341,7 @@ const EditFacility = (props) => {
                                 <form
                                     name='geolocation_form'
                                     className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
-                                    onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId])}>
+                                    onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId], 'PATCH')}>
                                     {/* Collection Date */}
                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                         <label
@@ -1362,108 +1423,15 @@ const EditFacility = (props) => {
                             </Tabs.Panel>
                             {/* Facility contacts */}
                             <Tabs.Panel value="facility_contacts" className="grow-1 py-1 px-4 tab-panel">
-                            <form
-                                className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
-                                name='facility_contacts_form'
-                                onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId])}>
-                                {/* Contacts */}
-
-                                <div
-                                    className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
-                                    ref={facilityContactRef}>
-                                    {/* Contact Headers */}
-                                    <h3 className='text-medium font-semibold text-blue-900'>
-                                        Contact Type
-                                    </h3>
-                                    <h3 className='text-medium font-semibold text-blue-900'>
-                                        Contact Details
-                                    </h3>
-                                    <hr className='col-span-2' />
-
-                                    {/* Contact Type / Contact Details */}
-
-                                    <FacilityContact  contactRef={contactRef} contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
-
-                                </div>
-
-                                <div className='w-full flex justify-end items-center'>
-                                    <button
-                                        onClick={handleAddContact}
-                                        className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
-                                        <PlusIcon className='w-4 h-4 text-white' />
-                                        <p className='text-medium font-semibold text-white'>
-                                            Add
-                                        </p>
-                                    </button>
-                                </div>
-
-                                {/* Facility Officer In-charge Details */}
-
-                                <h5 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-                                    Facility Officer In-Charge Details
-                                </h5>
-                                <div className='flex flex-col items-start justify-start gap-1 w-full rounded h-auto'>
-                                    {/*  Name  */}
-                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                        <label
-                                            htmlFor='name'
-                                            className='text-gray-600 capitalize text-sm'>
-                                            Name
-                                            <span className='text-medium leading-12 font-semibold'>
-                                                {' '}
-                                                *
-                                            </span>
-                                        </label>
-                                        <input
-                                            required
-                                            type='text'
-                                            name='name'
-                                            value={_officerName}
-                                            onChange={ev => setOfficerName(ev.target.value)}
-                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                        />
-                                    </div>
-
-                                    {/*  Registration Number */}
-                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                        <label
-                                            htmlFor='reg_no'
-                                            className='text-gray-600 capitalize text-sm'>
-                                            Registration Number/License Number{' '}
-                                        </label>
-                                        <input
-                                            type='text'
-                                            name='reg_no'
-                                            value={_regNo}
-                                            onChange={ev => setRegNo(ev.target.value)}
-                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                        />
-                                    </div>
-                                
-                                    {/* Job Title */}
-                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                        <label
-                                            htmlFor='title'
-                                            className='text-gray-600 capitalize text-sm'>
-                                            Job Title
-                                            <span className='text-medium leading-12 font-semibold'>
-                                                {' '}
-                                                *
-                                            </span>{' '}
-                                        </label>
-                                        <Select options={jobTitleOptions || []} 
-                                            required
-                                            ref={jobTitleRef}
-                                            placeholder="Select Job Title"																	
-                                            name="title" 
-                                            className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                    </div>
-
-                                    {/* Facility Officer Contact Type / Contact Details */}
+                                <form
+                                    className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
+                                    name='facility_contacts_form'
+                                    onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId], 'PATCH')}>
+                                    {/* Contacts */}
 
                                     <div
                                         className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
-                                        ref={facilityContact2Ref}>
+                                        ref={facilityContactRef}>
                                         {/* Contact Headers */}
                                         <h3 className='text-medium font-semibold text-blue-900'>
                                             Contact Type
@@ -1475,13 +1443,13 @@ const EditFacility = (props) => {
 
                                         {/* Contact Type / Contact Details */}
 
-                                        <FacilityContact contactRef={otherContactRef} contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+                                        <FacilityContact  contactRef={contactRef} contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
 
                                     </div>
 
-                                    <div className='w-full flex justify-end items-center mt-2'>
+                                    <div className='w-full flex justify-end items-center'>
                                         <button
-                                            onClick={handleAddContact2}
+                                            onClick={handleAddContact}
                                             className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
                                             <PlusIcon className='w-4 h-4 text-white' />
                                             <p className='text-medium font-semibold text-white'>
@@ -1489,193 +1457,286 @@ const EditFacility = (props) => {
                                             </p>
                                         </button>
                                     </div>
-                                </div>
-                                {/* Save btn */}
 
-                                <div className=" w-full flex justify-end h-auto mr-3">
-                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
-                                </div>
-                            </form>
+                                    {/* Facility Officer In-charge Details */}
+
+                                    <h5 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+                                        Facility Officer In-Charge Details
+                                    </h5>
+                                    <div className='flex flex-col items-start justify-start gap-1 w-full rounded h-auto'>
+                                        {/*  Name  */}
+                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                            <label
+                                                htmlFor='name'
+                                                className='text-gray-600 capitalize text-sm'>
+                                                Name
+                                                <span className='text-medium leading-12 font-semibold'>
+                                                    {' '}
+                                                    *
+                                                </span>
+                                            </label>
+                                            {/* {console.log({_officerName})} */}
+                                            <input
+                                                required
+                                                type='text'
+                                                name='name'
+                                                value={_officerName.name}
+                                                onChange={ev => setOfficerName(ev.target.value)}
+                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                            />
+                                        </div>
+
+                                        {/*  Registration Number */}
+                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                            <label
+                                                htmlFor='reg_no'
+                                                className='text-gray-600 capitalize text-sm'>
+                                                Registration Number/License Number{' '}
+                                            </label>
+                                            <input
+                                                type='text'
+                                                name='reg_no'
+                                                value={_officerName.reg_no}
+                                                onChange={ev => setRegNo(ev.target.value)}
+                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                            />
+                                        </div>
+                                    
+                                        {/* Job Title */}
+                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                            <label
+                                                htmlFor='title'
+                                                className='text-gray-600 capitalize text-sm'>
+                                                Job Title
+                                                <span className='text-medium leading-12 font-semibold'>
+                                                    {' '}
+                                                    *
+                                                </span>{' '}
+                                            </label>
+                                            <Select options={jobTitleOptions || []} 
+                                                required
+                                                ref={jobTitleRef}
+                                                placeholder="Select Job Title"																	
+                                                name="title" 
+                                                className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        </div>
+
+                                        {/* Facility Officer Contact Type / Contact Details */}
+
+                                        <div
+                                            className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
+                                            ref={facilityContact2Ref}>
+                                            {/* Contact Headers */}
+                                            <h3 className='text-medium font-semibold text-blue-900'>
+                                                Contact Type
+                                            </h3>
+                                            <h3 className='text-medium font-semibold text-blue-900'>
+                                                Contact Details
+                                            </h3>
+                                            <hr className='col-span-2' />
+
+                                            {/* Contact Type / Contact Details */}
+
+                                            <FacilityContact contactRef={otherContactRef} contactDetail={_otherContactDetail} setContactDetail={setOtherContactDetail} contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+
+                                        </div>
+
+                                        <div className='w-full flex justify-end items-center mt-2'>
+                                            <button
+                                                onClick={handleAddContact2}
+                                                className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                <PlusIcon className='w-4 h-4 text-white' />
+                                                <p className='text-medium font-semibold text-white'>
+                                                    Add
+                                                </p>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {/* Save btn */}
+
+                                    <div className=" w-full flex justify-end h-auto mr-3">
+                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                    </div>
+                                </form>
                             </Tabs.Panel>
                             {/* Regulation */}
                             <Tabs.Panel value="regulation" className="grow-1 py-1 px-4 tab-panel">
-                            <form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId])}>
+                                <form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId], 'PATCH')}>
 
-                                    {/* Regulatory Body */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                            <label htmlFor="regulatory_body"  className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
-                                            <Select 
-                                                ref={regulatoryBodyRef} 
-                                                options={regBodyOptions || []} 
-                                                required
-                                                placeholder="Select Regulatory Body"
-                                                name='regulatory_body'
-                                                className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-
-                                    </div>
-
-                                    {/* Regulation Status */} 
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
-                                        <Select 
-                                                ref={regulatoryStateRef}
-                                                options={regulationStateOptions || []} 
-                                                required
-                                                placeholder="Select Regulation Status"
-                                                name='regulation_status'
-                                                className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                    </div>
-
-                                    {/* License Number */} 
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
-                                        <input type="text" value={_licenseNo} onChange={ev => setLicenseNo(ev.target.value)} name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-
-                                    {/* Registration Number */} 
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number</label>
-                                        <input type="text" value={_regNo} onChange={ev => setRegNo(ev.target.value)} name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* check file upload */}
-                                    <div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
+                                        {/* Regulatory Body */}
                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                            <label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
-                                            <input type="file" value={_file} onChange={ev => setFile(ev.target.value)} name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <label htmlFor="regulatory_body"  className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
+                                                <Select 
+                                                    ref={regulatoryBodyRef} 
+                                                    options={regBodyOptions || []} 
+                                                    required
+                                                    placeholder="Select Regulatory Body"
+                                                    name='regulatory_body'
+                                                    className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+
                                         </div>
-                                    </div>
 
-                                    {/* Facility Departments Regulation  */}
+                                        {/* Regulation Status */} 
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
+                                            <Select 
+                                                    ref={regulatoryStateRef}
+                                                    options={regulationStateOptions || []} 
+                                                    required
+                                                    placeholder="Select Regulation Status"
+                                                    name='regulation_status'
+                                                    className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        </div>
 
-                                    <h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
-                                    <div className='grid grid-cols-4 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityRegulatoryBodyRef}>
-                                    {/* Contact Headers */}
-                                        <h3 className='text-medium font-semibold text-blue-900'>Name</h3>
-                                        <h3 className='text-medium font-semibold text-blue-900'>Regulatory Body</h3>
-                                        <h3 className='text-medium font-semibold text-blue-900'>License Number</h3>
-                                        <h3 className='text-medium font-semibold text-blue-900'>Reg. Number</h3>
+                                        {/* License Number */} 
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
+                                            <input type="text" value={_licenseNo} onChange={ev => setLicenseNo(ev.target.value)} name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
 
-                                        <hr className='col-span-4'/>
 
-                                        
-                                        {/* Name */}
-                                        <Select options={facilityDeptOptions || []} 
-                                            required
-                                            placeholder="Select Name"
-                                            ref={facilityDeptNameRef}
-                                            onChange={
-                                                e => {
-                                                    if(regBodyRef.current !== null){
-                                                        console.log({regBody: facilityDeptOptions.filter(({label}) => label === e.label)})
-                                                        regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
+                                        {/* Registration Number */} 
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number</label>
+                                            <input type="text" value={_regNo} onChange={ev => setRegNo(ev.target.value)} name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* check file upload */}
+                                        <div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
+                                            <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                <label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
+                                                <input type="file" value={_file} onChange={ev => setFile(ev.target.value)} name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            </div>
+                                        </div>
+
+                                        {/* Facility Departments Regulation  */}
+
+                                        <h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
+                                        <div className='grid grid-cols-4 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityRegulatoryBodyRef}>
+                                        {/* Contact Headers */}
+                                            <h3 className='text-medium font-semibold text-blue-900'>Name</h3>
+                                            <h3 className='text-medium font-semibold text-blue-900'>Regulatory Body</h3>
+                                            <h3 className='text-medium font-semibold text-blue-900'>License Number</h3>
+                                            <h3 className='text-medium font-semibold text-blue-900'>Reg. Number</h3>
+
+                                            <hr className='col-span-4'/>
+
+                                            
+                                            {/* Name */}
+                                            <Select options={facilityDeptOptions || []} 
+                                                required
+                                                placeholder="Select Name"
+                                                ref={facilityDeptNameRef}
+                                                onChange={
+                                                    e => {
+                                                        if(regBodyRef.current !== null){
+                                                            console.log({regBody: facilityDeptOptions.filter(({label}) => label === e.label)})
+                                                            regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            name="facility_dept_name" 
-                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                        
-                                        {/* Regulatory Body */}
-                                        <input type="text" ref={regBodyRef} disabled value={_regBody} onChange={ev => setRegBody(ev.target.value)} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                name="facility_dept_name" 
+                                                className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                            
+                                            {/* Regulatory Body */}
+                                            <input type="text" ref={regBodyRef} disabled value={_regBody} onChange={ev => setRegBody(ev.target.value)} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
-                                        {/* License No. */}
-                                        <input type="text"value={_licenseNo} onChange={ev => setLicenseNo(ev.target.value)} name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            {/* License No. */}
+                                            <input type="text"value={_licenseNo} onChange={ev => setLicenseNo(ev.target.value)} name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
-                                        <div className='col-start-4 flex items-center space-x-2 w-full'>
-                                            {/* Reg No. */}
-                                            <input type="text" value={_regNo} onChange={ev => setRegNo(ev.target.name)} name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                        
-                                            {/* Delete Btn */}
+                                            <div className='col-start-4 flex items-center space-x-2 w-full'>
+                                                {/* Reg No. */}
+                                                <input type="text" value={_regNo} onChange={ev => setRegNo(ev.target.name)} name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            
+                                                {/* Delete Btn */}
 
-                                            <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+                                                <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+                                            </div>
+
+                                            {/* add other fields */}
+
+                                            
                                         </div>
 
-                                        {/* add other fields */}
 
-                                        
-                                    </div>
+                                        {/* Add btn */}
+                                        <div className='w-full flex justify-end items-center mt-2'>
+                                            <button onClick={handleAddRegulatoryBody} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                <PlusIcon className='w-4 h-4 text-white'/>
+                                                <p className='text-medium font-semibold text-white'>Add</p>
+                                            </button>
+                                        </div>
 
+                                        {/* Save btn */}
 
-                                    {/* Add btn */}
-                                    <div className='w-full flex justify-end items-center mt-2'>
-                                        <button onClick={handleAddRegulatoryBody} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
-                                            <PlusIcon className='w-4 h-4 text-white'/>
-                                            <p className='text-medium font-semibold text-white'>Add</p>
-                                        </button>
-                                    </div>
-
-                                    {/* Save btn */}
-
-                                    <div className=" w-full flex justify-end h-auto mr-3">
-                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
-                                    </div>
-                            </form>
+                                        <div className=" w-full flex justify-end h-auto mr-3">
+                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                        </div>
+                                </form>
                             </Tabs.Panel>
                             {/* Services */}
                             <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
-
-                            <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices])}>
-															
-                                    {/* Transfer list Container */}
-                                    <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices], 'PATCH')}>
+                                                                
+                                        {/* Transfer list Container */}
+                                        <div className='flex items-center w-full h-auto min-h-[300px]'>                                  
                                     
-                                
-                                    <TrasnferListServices 
-                                        categories={serviceOptions}
-                                        setServices={setServices}
-                                        setRefreshForm4={setRefreshForm4}
-                                        refreshForm4={refreshForm4}
-                                        selectedRight={serviceSelected}
-                                        setSelectedServiceRight={setSelectedServiceRight}
-                                    />
+                                        <TrasnferListServices 
+                                            categories={serviceOptions}
+                                            setServices={setServices}
+                                            setRefreshForm4={setRefreshForm4}
+                                            refreshForm4={refreshForm4}
+                                            selectedRight={serviceSelected}
+                                            setSelectedServiceRight={setSelectedServiceRight}
+                                        />
 
-                                    </div>
-                                    {/* Service Category Table */}
-                                    <table className='w-full  h-auto my-4'>
-                                        <thead className='w-full'>
-                                            <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
-                                                <td className='text-lg font-semibold text-indigo-900 '>Name</td>
-                                                <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody ref={optionRefBody}>
-                                            {
-                                                selectedServiceRight  !== undefined && selectedServiceRight !== null ? 
+                                        </div>
+                                        {/* Service Category Table */}
+                                        <table className='w-full  h-auto my-4'>
+                                            <thead className='w-full'>
+                                                <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
+                                                    <td className='text-lg font-semibold text-indigo-900 '>Name</td>
+                                                    <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody ref={optionRefBody}>
+                                                {
+                                                    selectedServiceRight  !== undefined && selectedServiceRight !== null ? 
 
-                                                selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
-                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-                                                        <td ref={nameOptionRef}>{service}</td>
-                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-                                                    </tr>
-                                                ))
-                                                :
-                                                services.map(({subctg}) => subctg).map((service, i) => (
-                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-                                                        <td ref={nameOptionRef}>{service}</td>
-                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-                                                    </tr>
-                                                ))
-                                            }
+                                                    selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
+                                                        <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                            <td ref={nameOptionRef}>{service}</td>
+                                                            <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                        </tr>
+                                                    ))
+                                                    :
+                                                    services.map(({subctg}) => subctg).map((service, i) => (
+                                                        <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                            <td ref={nameOptionRef}>{service}</td>
+                                                            <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                            
+                                            </tbody>
+                                        </table>
                                         
-                                        </tbody>
-                                    </table>
-                                    
-                                    {/* Save btn */}
+                                        {/* Save btn */}
 
-                                    <div className=" w-full flex justify-end h-auto mr-3">
-                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
-                                    </div>
+                                        <div className=" w-full flex justify-end h-auto mr-3">
+                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                        </div>
                                 </form>
                             </Tabs.Panel>
                             {/* Infrastructure */}
                             <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
-                                <form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId])}  className='flex flex-col w-full items-start justify-start gap-3'>
+                                <form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId], 'PATCH')}  className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 														
                                     {/* Transfer list Container */}
                                     <div className='flex items-center w-full h-auto min-h-[300px]'>
                                     
                                     {/* Transfer List*/}
+
                                     <TransferListInfrastructure 
                                         categories={
                                             infrastructureOption
@@ -1701,17 +1762,21 @@ const EditFacility = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody ref={infrastructureBodyRef}>
+                                        {/* { console.log({selectedInfraRight, infra: props['16'].infrastructure}) }    */}
                                             {
                                                  selectedInfraRight  !== undefined && selectedInfraRight !== null ? 
 
-                                                 selectedInfraRight.map(({subctg}) => subctg).map((_infrastructure, i) => (
-                                                    
-                                                infrastructureOption !== undefined || infrastructureOption !== null && 
-                                                <tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                    <td className='text-lg text-black'>{_infrastructure}</td>
-                                                    <td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+                                                 selectedInfraRight.map(({subCategories, value:vs}, i) => (
+                                                                                           
+                                                // infrastructureOption !== undefined || infrastructureOption !== null && 
+
+                                                <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
+                                                    {console.log({facility_infrastructure, infrastructureOption})}
+                                                    <td className='text-lg text-black'>{subCategories[0]}</td>
+                                                    <td className='text-lg text-black'>{infrastructureOption.filter(({value}) =>  value.includes(vs[0]))[0].name}</td>
+
                                                     <td className='text-lg text-black'>Yes</td>
-                                                    <td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
+                                                    <td className='text-lg  text-black'>{facility_infrastructure.filter(({infrastructure}) => infrastructure === vs[0])[0].count}</td>
                                                 </tr>
                                                     
                                                   
@@ -1743,6 +1808,78 @@ const EditFacility = (props) => {
                             </Tabs.Panel>
                             {/* Human Resources */}
                             <Tabs.Panel value="human_resource" className="grow-1 py-1 px-4 tab-panel">
+                                <form name="facility_services_form" onSubmit={ev => handleHrSubmit(ev, [hr, hrCount, facilityId, setFormId], 'PATCH')} className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                                                    
+                                                    {/* Transfer list Container */}
+                                                    <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                                    
+                                                    {/* Transfer List*/}
+                                                    
+                                                    <TransferListHr 
+                                                        categories={hrOptions} 
+                                                        setState={setHr}
+                                                        setRefreshForm6={setRefreshForm6}
+                                                        refreshForm6={refreshForm6}
+                                                        setCount={setHrCount}
+                                                        selectTitle='HR Specialities'
+                                                        setSelectedHrRight={setSelectedHrRight}
+														selectedHrRight={hrSelected}
+                                                       
+
+                                                    />
+
+                                                    </div>
+                                                    {/* Service Category Table */}
+                                                    <table className='w-full  h-auto my-4'>
+                                                        <thead className='w-full'>
+                                                            <tr className='grid grid-cols-3 place-content-end border-b-4 border-gray-300'>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Name</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Present</td>
+                                                                <td className='text-lg font-semibold text-indigo-900'>Number</td>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            {/* {console.log({hr})} */}
+                                                            {
+                                                                  selectedHrRight  !== undefined && selectedHrRight !== null ? 
+
+                                                                  selectedHrRight.map(({subCategories, value:vs}, i) => (
+                                                                                                            
+                                                                 // infrastructureOption !== undefined || infrastructureOption !== null && 
+                 
+                                                                 <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
+                                                                     {/* {console.log({facility_infrastructure, infrastructureOption})} */}
+                                                                     <td className='text-lg text-black'>{subCategories[0]}</td>
+                                                                     <td className='text-lg text-black'>{hrOptions.filter(({value}) =>  value.includes(vs[0]))[0].name}</td>
+                 
+                                                                     <td className='text-lg text-black'>Yes</td>
+                                                                     <td className='text-lg  text-black'>{facility_specialists.filter(({speciality}) => speciality === vs[0])[0].count}</td>
+                                                                 </tr>
+                                                                  ))
+                                                                :
+                                                                
+                                                                hr.map(({subctg}) => subctg).map((_hr, i) => (
+                                                                    <tr key={`${_hr}_${i}`} className='grid grid-cols-3 place-content-end border-b-2 border-gray-300'>
+                                                                        <td className='text-lg text-black'>{_hr}</td>
+                                                                        <td className='text-lg text-black'>Yes</td>
+                                                                        <td className='text-lg  text-black'>{hrCount.filter(({name}) => name == _hr)[0].val || 0}</td>
+                                                                    </tr>
+                                                                ))
+                                                            }
+                                                        
+                                                        
+                                                        </tbody>
+                                                    </table>
+
+                                                      {/* Save btn */}
+
+                                                    <div className=" w-full flex justify-end h-auto mr-3">
+                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                                    </div>
+                                                    
+                                                   
+                                </form> 
                             </Tabs.Panel>
                            
                         </Tabs.Root>
@@ -2244,8 +2381,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								
 								url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=${fields}&page_size=20000&page=1`;
 
-							
-								
 								try{
 			
 									const _data = await fetch(url, {

@@ -491,7 +491,7 @@ function AddFacility(props) {
 														<form
 															
 															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId])}>
+															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId], 'POST')}>
 															{/* Facility Official Name */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
@@ -688,7 +688,7 @@ function AddFacility(props) {
 																	]}
 																	required
 																	placeholder='Select an operation status...'
-																	name='opertaion_status'
+																	name='operation_status'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
 															</div>
@@ -1523,7 +1523,7 @@ function AddFacility(props) {
 														<form
 															name='geolocation_form'
 															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId])}>
+															onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId], 'POST')}>
 															{/* Collection Date */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
@@ -1768,7 +1768,7 @@ function AddFacility(props) {
 														<form
 															className='flex flex-col w-full items-start justify-start gap-3'
 															name='facility_contacts_form'
-															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId])}>
+															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId], 'POST')}>
 															{/* Contacts */}
 
 															<div
@@ -2043,7 +2043,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-														<form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId])}>
+														<form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId], 'POST')}>
 
 															{/* Regulatory Body */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -2175,7 +2175,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
-														<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices])}>
+														<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices], 'POST')}>
 															
 															{/* Transfer list Container */}
 															<div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2240,7 +2240,7 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
-													<form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId])}  className='flex flex-col w-full items-start justify-start gap-3'>
+													<form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId], 'POST')}  className='flex flex-col w-full items-start justify-start gap-3'>
 														
 														{/* Transfer list Container */}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2314,7 +2314,7 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human resources</h4>
-													<form name="facility_services_form" onSubmit={ev => handleHrSubmit(ev, [hr, hrCount, facilityId, setFormId])} className='flex flex-col w-full items-start justify-start gap-3'>
+													<form name="facility_services_form" onSubmit={ev => handleHrSubmit(ev, [hr, hrCount, facilityId, setFormId], 'POST')} className='flex flex-col w-full items-start justify-start gap-3'>
 														
 														{/* Transfer list Container */}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2328,6 +2328,8 @@ function AddFacility(props) {
 															refreshForm6={refreshForm6}
 															setCount={setHrCount}
 															selectTitle='HR Specialities'
+															setSelectedHrRight={() => null}
+															selectedHrRight={null}
 
 														/>
 
@@ -2343,7 +2345,7 @@ function AddFacility(props) {
 															</thead>
 
 															<tbody>
-																{console.log({hr})}
+																{/* {console.log({hr})} */}
 																{
 																	
 																	hr.map(({subctg}) => subctg).map((_hr, i) => (

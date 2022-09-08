@@ -28,14 +28,23 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferListHr({categories, setState, setCount, setRefreshForm6, refreshForm6, selectTitle}) {
+export default function TransferListHr({categories, setState, setCount, setRefreshForm6, refreshForm6, selectTitle, selectedHrRight, setSelectedHrRight}) {
 
   const [checked, setChecked] = React.useState([]);
   const [newSelected, setNewSelected] = React.useState([])
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
   const [inputVal, setInputVal] = React.useState([])
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
-  const [right, setRight] = React.useState([]);
+  const [right, setRight] = React.useState((selectedHrRight ? (() => {
+    const result = []
+
+    new Set(selectedHrRight.map(({name}) => name)).forEach(data => {
+        result.push(data)
+    })
+
+    return result
+  })() : []));
+
   const [checkAll, setCheckAll] = React.useState(false);
   const [selectedSpeciality, setSelectedSpeciality] =  React.useState({});
 
@@ -44,8 +53,9 @@ export default function TransferListHr({categories, setState, setCount, setRefre
 
   useMemo(() => {
       
-      leftChecked = intersection(checked, left);
-      rightChecked = intersection(checked, right);
+    setSelectedHrRight(selectedHrRight)
+    leftChecked = intersection(checked, left);
+    rightChecked = intersection(checked, right);
     
     }, [left])
 
@@ -65,7 +75,6 @@ export default function TransferListHr({categories, setState, setCount, setRefre
 
     setChecked(newChecked);
     
-
   };
 
   const handleCheckBoxToggle =  (speciality) => () => {
@@ -146,6 +155,9 @@ export default function TransferListHr({categories, setState, setCount, setRefre
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
+
+    setSelectedInfraRight(selectedHrRight.splice(selectedHrRight.indexOf(selectedHrRight.filter(({name}) => name === rightChecked[0])[0]), 1))
+    setRefreshForm5(!refreshForm6)
   };
 
   const handleAllLeft = () => {
@@ -215,10 +227,10 @@ export default function TransferListHr({categories, setState, setCount, setRefre
                   
                         <>
                             {
-                                (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                                (selectedHrRight !== null ? (selectedHrRight.map(ctg => {ctg => ctg.subCategories[0]}).indexOf(subctg) !== -1 || checkAll) : checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
                                 <Checkbox
                                 key={i}
-                                checked={checkAll ? true : checkBoxChecked.indexOf(subctg) !== -1}
+                                checked={checkAll ? true : selectedHrRight !== null ? (selectedHrRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1) : (checkBoxChecked.indexOf(subctg) !== -1)}
                                 tabIndex={-1}
                                 disableRipple
                                 onChange={handleCheckBoxToggle(subctg)}
@@ -228,7 +240,8 @@ export default function TransferListHr({categories, setState, setCount, setRefre
                                 />
                             }
                             {
-                            (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                             selectedHrRight !== null &&
+                             (selectedHrRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1 || checkAll) &&
                             <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
                             }
                         </>
