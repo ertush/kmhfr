@@ -33,7 +33,16 @@ export default function TrasnferListServices({categories, setServices, setRefres
   const [checked, setChecked] = React.useState([]);
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
-  const [right, setRight] = React.useState((selectedRight ? (() => selectedRight.map(({name}) => name))() : []));
+  const [right, setRight] = React.useState((selectedRight ? (() => {
+    const result = []
+
+    new Set(selectedRight.map(({name}) => name)).forEach(data => {
+      result.push(data)
+  })
+
+  return result
+  })() : []));
+  
   const [checkAll, setCheckAll] = React.useState(false);
   const [selectedService, setSelectedService] = React.useState({});
 
