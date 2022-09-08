@@ -1,6 +1,6 @@
 // handleBasicDetailsSubmit
 
-const handleBasicDetailsSubmit = async (event, stateSetters) => {
+const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
     const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId] = stateSetters
     event.preventDefault();
@@ -45,8 +45,8 @@ const handleBasicDetailsSubmit = async (event, stateSetters) => {
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method:'POST',
-            body: JSON.stringify(formData).replace(',"":""','')
+            method,
+            body: JSON.stringify(formData).replace(',"":""','').replace('on', 'true').replace('off', 'false')
         })
         // Post Checklist document
         .then(async resp => {
@@ -198,7 +198,7 @@ const handleGeolocationSubmit = (event, stateSetters) => {
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method:'POST',
+            method,
             body: JSON.stringify(geolocationData).replace(',"":""','')
         })
     }
@@ -252,7 +252,7 @@ const handleFacilityContactsSubmit = (event, stateSetters) => {
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method:'POST',
+            method,
             body: JSON.stringify(payload).replace(',"":""','')
         })
     }
@@ -364,7 +364,7 @@ const handleRegulationSubmit = (event, stateSetters) => {
                     'Content-Type': 'application/json;charset=utf-8'
                     
                 },
-                method:'POST',
+                method,
                 body: JSON.stringify(data)
             })
 
@@ -396,7 +396,7 @@ const handleServiceSubmit = async (event, stateSetters) => {
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method:'POST',
+            method,
             body: JSON.stringify({services:_payload})
         })
 
@@ -427,7 +427,7 @@ const handleInfrastructureSubmit = (event, stateSetters) => {
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method:'POST',
+            method,
             body: JSON.stringify({infrastructure:_payload})
         })
 
@@ -461,7 +461,7 @@ const handleHrSubmit = (event, stateSetters) => {
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method:'POST',
+            method,
             body: JSON.stringify({specialities:_payload})
         })
 

@@ -29,12 +29,20 @@ function intersection(a, b) {
 
 export default function TrasnferListServices({categories, setServices, setRefreshForm4, refreshForm4, selectedRight, setSelectedServiceRight}) {
 
- 
   const [newSelected, setNewSelected] = React.useState([])
   const [checked, setChecked] = React.useState([]);
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
-  const [right, setRight] = React.useState((selectedRight ? (() => selectedRight.map(({name}) => name))() : []));
+  const [right, setRight] = React.useState((selectedRight ? (() => {
+    const result = []
+
+    new Set(selectedRight.map(({name}) => name)).forEach(data => {
+      result.push(data)
+  })
+
+  return result
+  })() : []));
+  
   const [checkAll, setCheckAll] = React.useState(false);
   const [selectedService, setSelectedService] = React.useState({});
 
@@ -72,9 +80,7 @@ useMemo(() => {
   };
 
   const handleCheckBoxToggle =  (service) => () => {
-    // console.log({service})
-
-    
+ 
     const currentIndex = checkBoxChecked.indexOf(service.subctg);
   
     const crntIndex =  newSelected.indexOf(service)
@@ -104,22 +110,16 @@ useMemo(() => {
     setLeft([]);
     setCheckAll(true);
 
-    // console.log({categories})
-    // setServices((ctgs => {
-    //  return ctgs.map(({subCategories}) => subCategories)
-    // })(categories));
-
     setServices(selectedService)
  
   };
 
   const handleCheckedRight = () => {
-    // console.log({checkBoxChecked})
     setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
    
-    console.log({selectedService})
+    // console.log({selectedService})
     setRefreshForm4(!refreshForm4)
     setServices(selectedService)
     
