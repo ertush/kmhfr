@@ -536,7 +536,7 @@ const EditFacility = (props) => {
             contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === (facility_contacts !== undefined ? facility_contacts[0].contact_type_name : ''))[0] || ''
         }
         if(jobTitleRef.current !== null){
-            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === officer_in_charge.title)[0] || ''
+            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === (officer_in_charge !== null ? officer_in_charge.title : ''))[0] || ''
         }
 
         if(regulatoryBodyRef.current !== null){
@@ -552,10 +552,10 @@ const EditFacility = (props) => {
         }
 
         if(otherContactRef.current !== null){
-            otherContactRef.current.state.value = _officerName.contacts.length > 0 ? _officerName.contacts[0].type : ''
+            otherContactRef.current.state.value = _officerName.contacts[0] !== undefined ? _officerName.contacts[0].type : ''
         }
 
-        setOtherContactDetail(_officerName.contacts.length > 0 ? _officerName.contacts[0].contact : '')
+        setOtherContactDetail(_officerName.contacts[0] !== undefined ? _officerName.contacts[0].contact : '')
         
     }
 
@@ -1708,17 +1708,21 @@ const EditFacility = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody ref={infrastructureBodyRef}>
+                                        {/* { console.log({selectedInfraRight, infra: props['16'].infrastructure}) }    */}
                                             {
                                                  selectedInfraRight  !== undefined && selectedInfraRight !== null ? 
 
-                                                 selectedInfraRight.map(({subctg}) => subctg).map((_infrastructure, i) => (
-                                                    
-                                                infrastructureOption !== undefined || infrastructureOption !== null && 
-                                                <tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                    <td className='text-lg text-black'>{_infrastructure}</td>
-                                                    <td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+                                                 selectedInfraRight.map(({subCategories, value:vs}, i) => (
+                                                                                           
+                                                // infrastructureOption !== undefined || infrastructureOption !== null && 
+
+                                                <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
+                                                    {console.log({facility_infrastructure, infrastructureOption})}
+                                                    <td className='text-lg text-black'>{subCategories[0]}</td>
+                                                    <td className='text-lg text-black'>{infrastructureOption.filter(({value}) =>  value.includes(vs[0]))[0].name}</td>
+
                                                     <td className='text-lg text-black'>Yes</td>
-                                                    <td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
+                                                    <td className='text-lg  text-black'>{facility_infrastructure.filter(({infrastructure}) => infrastructure === vs[0])[0].count}</td>
                                                 </tr>
                                                     
                                                   

@@ -46,6 +46,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
 
   useMemo(() => {
       
+    console.log({right})
       setSelectedInfraRight(selectedInfraRight)
       leftChecked = intersection(checked, left);
       rightChecked = intersection(checked, right);
@@ -221,8 +222,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
                                 />
     
                       </div>
-                  :
-                  
+                  :               
                         <>
                             {
                                  (selectedInfraRight !== null ? (selectedInfraRight.map(ctg => {ctg => ctg.subCategories[0]}).indexOf(subctg) !== -1 || checkAll) : checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
