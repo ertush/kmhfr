@@ -2,6 +2,7 @@
 
 const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
+    console.log({event, stateSetters, method})
     const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId] = stateSetters
     event.preventDefault();
 
@@ -37,6 +38,12 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
         ]
     }
 
+    if(method === 'PATCH'){
+        formData['sub_county'] = formData['sub_county_id'];
+    }
+
+    console.log({formData})
+
     // Post Facility Basic Details
     try{
         fetch('/api/common/submit_form_data/?path=facilities', {
@@ -46,7 +53,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
                 
             },
             method,
-            body: JSON.stringify(formData).replace(',"":""','').replace('on', 'true').replace('off', 'false')
+            body: JSON.stringify(formData).replace(',"":""','').replace('on', true).replace('off', false)
         })
         // Post Checklist document
         .then(async resp => {
