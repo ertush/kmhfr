@@ -3,6 +3,7 @@
 const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
     const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates] = stateSetters
+
     event.preventDefault();
 
     let _ward;
@@ -37,6 +38,12 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
         ]
     }
 
+    if(method === 'PATCH'){
+        formData['sub_county'] = formData['sub_county_id'];
+    }
+
+    console.log({formData})
+
     // Post Facility Basic Details
     try{
         fetch('/api/common/submit_form_data/?path=facilities', {
@@ -46,7 +53,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
                 
             },
             method,
-            body: JSON.stringify(formData).replace(',"":""','').replace('on', 'true').replace('off', 'false')
+            body: JSON.stringify(formData).replace(',"":""','').replace('on', true).replace('off', false)
         })
         // Post Checklist document
         .then(async resp => {
@@ -142,7 +149,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 };
 
 // handleGeolocationSubmit
-const handleGeolocationSubmit = (event, stateSetters) => {
+const handleGeolocationSubmit = (event, stateSetters, method) => {
 
     const [setFormId, facilityId] = stateSetters
     
@@ -212,7 +219,7 @@ const handleGeolocationSubmit = (event, stateSetters) => {
 };
 
 // handleFacilityContactsSubmit
-const handleFacilityContactsSubmit = (event, stateSetters) => {
+const handleFacilityContactsSubmit = (event, stateSetters, method) => {
 
     const [setFormId, facilityId] = stateSetters
     event.preventDefault();
@@ -257,7 +264,7 @@ const handleFacilityContactsSubmit = (event, stateSetters) => {
         })
     }
     catch(e){
-        console.error('Unable to patch facility contacts details'. e.message)
+        console.error('Unable to patch facility contacts details', e.message)
     }
 
     window.sessionStorage.setItem('formId', 3);
@@ -287,7 +294,7 @@ const handleFacilityContactsSubmit = (event, stateSetters) => {
 };
 
 // handleRegulationSubmit
-const handleRegulationSubmit = (event, stateSetters) => {
+const handleRegulationSubmit = (event, stateSetters, method) => {
 
     const [setFormId, facilityId] = stateSetters
 
@@ -370,7 +377,7 @@ const handleRegulationSubmit = (event, stateSetters) => {
 
         }
         catch(e){
-            console.error('Unable to patch facility contacts details'. e.message)
+            console.error('Unable to patch facility contacts details', e.message)
         }
     })
 
@@ -383,7 +390,7 @@ const handleRegulationSubmit = (event, stateSetters) => {
 };
 
 // handleServiceSubmit
-const handleServiceSubmit = async (event, stateSetters) => {
+const handleServiceSubmit = async (event, stateSetters, method) => {
     event.preventDefault()
 
     const [services,facilityId, setFormId, setServices]  = stateSetters
@@ -402,7 +409,7 @@ const handleServiceSubmit = async (event, stateSetters) => {
 
     }
     catch(e){
-        console.error('Unable to patch facility contacts details'. e.message)
+        console.error('Unable to patch facility contacts details', e.message)
     }
 
     window.sessionStorage.setItem('formId', 5)
@@ -413,7 +420,7 @@ const handleServiceSubmit = async (event, stateSetters) => {
 }
 
 // handleInfrastructureSubmit
-const handleInfrastructureSubmit = (event, stateSetters) => {
+const handleInfrastructureSubmit = (event, stateSetters, method) => {
     event.preventDefault()
 
     const [infrastructure, infrastructureCount, setFormId, facilityId] = stateSetters
@@ -433,7 +440,7 @@ const handleInfrastructureSubmit = (event, stateSetters) => {
 
     }
     catch(e){
-        console.error('Unable to patch facility contacts details'. e.message)
+        console.error('Unable to patch facility contacts details', e.message)
     }
 
     window.sessionStorage.setItem('formId', 6)
@@ -445,7 +452,7 @@ const handleInfrastructureSubmit = (event, stateSetters) => {
 
 
 // handleHrSubmit
-const handleHrSubmit = (event, stateSetters) => {
+const handleHrSubmit = (event, stateSetters, method) => {
 
     const [hr, hrCount, facilityId, setFormId] = stateSetters
     event.preventDefault()
@@ -467,7 +474,7 @@ const handleHrSubmit = (event, stateSetters) => {
 
     }
     catch(e){
-        console.error('Unable to patch facility contacts details'. e.message)
+        console.error('Unable to patch facility contacts details', e.message)
     }
 
 
