@@ -62,23 +62,28 @@ export default async function submitFormData(req, res) {
                 case `edit`:
                     url = `${API_URL}/users/groups/${req.query.id}`
                     contentType = 'application/json;charset=utf-8';
-                    method = 'POST';
+                    method = 'PATCH';
                     break  
                 case `edit_user`:
                     url = `${API_URL}/users/${req.query.id}`
                     contentType = 'application/json;charset=utf-8';
-                    method = 'POST';
+                    method = 'PUT';
                     break
                 case `delete`:
                     url = `${API_URL}/users/groups/${req.query.id}`
                     contentType = 'application/json;charset=utf-8';
-                    method = 'POST';
+                    method = 'DELETE';
                     break 
                 case `delete_user`:
                     url = `${API_URL}/users/${req.query.id}`
                     contentType = 'application/json;charset=utf-8';
+                    method = 'DELETE';
+                    break
+                case `validate_facility`:
+                    url = `${API_URL}/facilities/facility_approvals/`
+                    contentType = 'application/json;charset=utf-8';
                     method = 'POST';
-                    break             
+                    break            
                 default:
                     
                     break;
@@ -112,7 +117,7 @@ export default async function submitFormData(req, res) {
        
         
 
-    if (req.method === "POST") {
+    if (req.method !== '' && req.method !== null) {
                                                                                     
         try {
             return checkToken(req, res).then(t => {
