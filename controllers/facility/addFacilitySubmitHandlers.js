@@ -2,7 +2,7 @@
 
 const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
-    const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId] = stateSetters
+    const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates] = stateSetters
     event.preventDefault();
 
     let _ward;
@@ -102,7 +102,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
                         _data = await response.json()
 
-
+                        setFacilityCoordinates(_data.ward_boundary.geometry.coordinates)
                         setGeoJSON(JSON.parse(JSON.stringify(_data?.ward_boundary)))
 
                         const [lng, lat] = _data?.ward_boundary.properties.center.coordinates 

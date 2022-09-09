@@ -5,7 +5,8 @@ import React, { useState, useEffect } from "react";
 import MainLayout from "../../components/MainLayout";
 import {
   approveRejectFacility,
-  rejectFacility,
+  validateFacility,
+  approveFacility,
 } from "../../controllers/facility/approveRejectFacility";
 import {
   CheckCircleIcon,
@@ -41,6 +42,8 @@ const Facility = (props) => {
   const [user, setUser] = useState(null);
   const [isFacDetails, setIsFacDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('')
+  let reject = ''
 
   useEffect(() => {
     console.log({ props });
@@ -172,14 +175,19 @@ const Facility = (props) => {
                         setIsApproveReject
                       )
                     }
+                    // className={
+                    //   facility.rejected
+                    //     ? "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+                    //     : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
+                    // }
                     className={
-                      facility.rejected
-                        ? "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
-                        : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
+                      "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+                       
                     }
                   >
                     {/* Dynamic Button Rendering */}
-                    {facility.rejected ? "Appreve" : "Reject"}
+                    {/* {facility.rejected ? "Appreve" : "Reject"} */}
+                    Approve/Reject Facility
                   </button>
 
                   <button
@@ -1014,7 +1022,7 @@ const Facility = (props) => {
 
               {/* Facility Approval Comment */}
 
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+              {/* <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
                 <label
                   htmlFor="approval-comment"
                   className="col-span-1 text-gray-900 font-semibold leading-16 text-medium"
@@ -1028,33 +1036,49 @@ const Facility = (props) => {
                 >
                   some approval comments
                 </p>
-              </div>
+              </div> */}
 
               {/* Facility Rejection Commment */}
 
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
                 <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-                  Reject this Facility
+                  Approval / Rejection comment
                 </h3>
+                {facility.is_approved}
                 <form
                   className="space-y-3"
-                  onSubmit={(e) =>
-                    rejectFacility(e, cu, cu.isApproveReject, e.target.value)
-                  }
+                  onSubmit = {facility.is_approved? (e) => approveFacility(e,facility.id, rejectionReason) : (e) => validateFacility(e, facility.id,reject, rejectionReason)}
+                  // onSubmit={(e) =>
+                  //   validateFacility(e, facility.id,reject, rejectionReason)
+                  // }
                 >
                   <label htmlFor="comment-text-area"></label>
                   <textarea
                     cols="70"
                     rows="auto"
                     className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
-                    placeholder="Enter a comment for rejecting community health unit"
+                    placeholder="Enter a comment"
+                    onChange={(e) => setRejectionReason(e.target.value)}
                   ></textarea>
+                  {/* <div className="flex flex-row"> */}
+                  <div className="flex flex-row justify-start items-center space-x-3 p-3">
+                  <button
+                    type="submit"
+                    className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
+                    onClick={(e) => reject = false}
+                    
+                  >
+                    {facility.is_approved ? "Approve Facility" : "Validate Facility"}
+                  </button>
                   <button
                     type="submit"
                     className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
+                    onClick={(e) => reject = true}
+                    
                   >
                     Reject Facility
                   </button>
+                  </div>
                 </form>
               </div>
             </div>

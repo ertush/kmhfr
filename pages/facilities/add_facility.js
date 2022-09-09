@@ -51,6 +51,8 @@ import {
 
 
 
+const turf = require('@turf/turf');
+const FormData = require('form-data');
 const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
@@ -233,6 +235,7 @@ function AddFacility(props) {
 	const [longitude, setLongitude] = useState('')
 	const [county, setCounty] = useState('')
 	const [facilityId, setFacilityId] = useState('')
+	const [facilityCoordinates, setFacilityCoordinates] = useState([])
 	
 
 	const [geoJSON, setGeoJSON] = useState(null)
@@ -248,6 +251,8 @@ function AddFacility(props) {
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
+	const [file, setFile]=useState([])
+	const [coordinatesError, setCoordinatesError] = useState(false)
 	
 	
     useEffect(() => {
@@ -361,6 +366,24 @@ function AddFacility(props) {
 		}
 	}
 
+	useEffect(() => {
+		isLatLngInRegion()
+	} , [longitude, latitude])
+
+	useEffect(() => {}, [coordinatesError])
+	
+	const isLatLngInRegion=()=> {
+		if(longitude.length > 1 && latitude.length > 1){
+			let point = turf.point([longitude, latitude]);
+			let polygon = turf.polygon(facilityCoordinates);
+			let found = turf.booleanPointInPolygon(point, polygon);
+			if(!found){
+				setCoordinatesError(true)
+			}else{
+				setCoordinatesError(false)
+			}
+		}
+	}
   return (
 	<>
 		 <Head>
@@ -489,9 +512,10 @@ function AddFacility(props) {
 															Facility Basic Details
 														</h4>
 														<form
-															
+															encType="multipart/form-data"
 															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId], 'POST')}>
+															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates], 'POST')}>
+
 															{/* Facility Official Name */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
@@ -1479,6 +1503,9 @@ function AddFacility(props) {
 																		required
 																		ref={checklistFileRef}
 																		type='file'
+																		onChange={(e)=>{
+																			setFile(e.target.files[0])
+																		}}
 																		name='facility_checklist_document'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
@@ -1582,6 +1609,7 @@ function AddFacility(props) {
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
+															<>{coordinatesError && <Alert severity="error" sx={{width:'100%'}}> Please enter the right coordinates</Alert>}</>
 															</div>
 
 															{/* Ward Geo Map */}
