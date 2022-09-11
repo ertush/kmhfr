@@ -38,7 +38,8 @@ const CommUnit = (props) => {
   let cu = props.data;
   let _id
   _id = cu.id;  
-  //console.log('this is the name',cu.health_unit_workers[0].last_name)
+  
+  console.log('this is the name',cu.services)
 
   // State of the different tabs
   const [chulId, setchulId] = useState('');
@@ -52,15 +53,7 @@ const CommUnit = (props) => {
   const [_noOfCHVs, setNoOfCHVs] = useState(cu.number_of_chvs ?? '')
   const [_firstName, setFirstName] = useState(cu.health_unit_workers[0].first_name); 
   const [_lastName, setLastName] = useState(cu.health_unit_workers[0].last_name);
-  // const [_name, setName] = useState(name)
-  // const [_officialName, setOfficialName] = useState(official_name ?? '')
-  // const [_dateEstablished, setDateEstablished] = useState(date_established ?? '')
-  // const [_ISOAccredited, setISOAccredited] = useState(accredited_lab_iso_15189 ?? false)
-  // const [_noOfBeds, setNoOfBeds] = useState(number_of_beds ?? '')
-  // const [_noOfCots, setNoOfCots] = useState(number_of_cots ?? '')
-  // const [_noOfCasualtyBeds, setNoOfCasualtyBeds] = useState(number_of_emergency_casualty_beds ?? '')
-  // const [_noOfICUBeds, setNoOfICUBeds] = useState(number_of_icu_beds ?? '')
-  // const [_noOfHDUBeds, setNoOfHDUBeds] = useState(number_of_hdu_beds ?? '')
+
 
   // Changing the value of the linked facility and its locality
   const [selected_facility, setSelectedFacility] = useState('');
@@ -86,13 +79,7 @@ const CommUnit = (props) => {
   const dateOperationalRef = useRef(null)
   const monitoredHouseholdsRef = useRef(null)
   const noOfCHVsRef = useRef(null)
-  // const firstNameRef = useRef(null)
-  // const lastNameRef = useRef(null)
 
-  // const countyRef = useRef(null)
-  // const subCountyRef = useRef(null)
-  // const constituencyRef = useRef(null)
-  // const wardRef = useRef(null)
 
  	// Reference hooks for the services section
 	const nameOptionRef = useRef();
@@ -121,21 +108,7 @@ const CommUnit = (props) => {
       setIsApproveReject(false);
     };
     
-  }, [facilities]);
-
-  let allData = {}; 
-
-  // const handleChange = (event) =>{
-  //   event.preventDefault();
-  //   let formData = {};
-  //   const elements = [...event.target];
-  //   elements.forEach(({ name, value }) => {
-  //     formData[name] = value;
-  //   });
-  //   allData = {...formData};
-  //   console.log(allData);
-  //   return allData;
-  // }
+  }, [cu, refreshForm, selectedServiceRight, services]);
 
   const handleBasicDetails = (event) => {
     event.preventDefault();
@@ -229,10 +202,10 @@ const CommUnit = (props) => {
     }   
   }
 
-  const handleServices = (event) =>
-  {
+  const handleServices = async(event, stateSetters, method) => {
     event.preventDefault();
 
+    const [services, _id, setFormId, setServices] = stateSetters
     const _payload = services.map(({value}) => ({service: value}))
 
     _payload.forEach(obj => obj['health_unit'] = chulId)
@@ -244,7 +217,7 @@ const CommUnit = (props) => {
           'Content-Type': 'application/json;charset=utf-8'
           
         },
-        method:'PATCH',
+        method,
         body: JSON.stringify({aervices:_payload})
       })
 
@@ -252,7 +225,13 @@ const CommUnit = (props) => {
     catch(e){
       console.error('Unable to patch CHU edit service details'. e.message)
     } 
+
+    window.sessionStorage.setItem('formId', 1)
+    setFormId(window.sessionStorage.getItem('formId'))
+    setServices([])
   }
+
+
   
   // Define serviceCategories
   let serviceCategories = ((_services) => {
@@ -282,18 +261,20 @@ const CommUnit = (props) => {
 	
 			})
 		}		
+    console.log('this is the serviceCategories im tryna see',_serviceCategories)
+
 		return _serviceCategories
 	 })(props.service_categories.results ?? [])
 
   const serviceSelected = ((_services) => {
     return _services.map(({ctg, _subCtgs, _values}) => ({
-          name: ctg,
-          subCategories: [
-              _subCtgs
-          ],
-          value:[
-              _values
-          ]
+        name: ctg,
+        subCategories: [
+            _subCtgs
+        ],
+        value:[
+            _values
+        ]
     }))
   })(services || []) 
 
@@ -980,15 +961,15 @@ const CommUnit = (props) => {
                     {cu?.services && cu?.services.length > 0 ? (
                       cu?.services.map((service) => (
                         <li
-                          key={service.service_id}
+                          key={service.id}
                           className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
                         >
                           <div>
                             <p className="text-gray-800 text-base">
-                              {service.service_name}
+                              {service.name}
                             </p>
                             <small className="text-xs text-gray-500">
-                              {service.category_name || ""}
+                              {service.name || ""}
                             </small>
                           </div>
                           <div>
@@ -1035,7 +1016,7 @@ const CommUnit = (props) => {
                             setRefreshForm={setRefreshForm}
                             refreshForm={refreshForm}
                             selectedRight={serviceSelected}
-                            setSelectedServiceRight={setSelectedServiceRight}
+                            setSelectedServiceRight={ setSelectedServiceRight}
                         />
                       </div>
 
@@ -1048,14 +1029,31 @@ const CommUnit = (props) => {
                           </tr>
                         </thead>
                         <tbody ref={optionRefBody}>
-                          {
+                          {/* {
                             services.map(({subctg}) => subctg).map((service_categories, i) => (
                               <tr key={`${service_categories}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
                                 <td ref={nameOptionRef}>{service_categories}</td>
                                 <td ref={serviceCategoriesRef} className='ml-12 text-base'>Yes</td>
                               </tr>
                             ))
-                          }															
+                          }                                             */}
+                          {
+                            selectedServiceRight  !== undefined && selectedServiceRight !== null 
+                            ? 
+                            selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
+                                <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                    <td ref={nameOptionRef}>{service}</td>
+                                    <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                </tr>
+                            ))
+                            :
+                            services.map(({subctg}) => subctg).map((service_categories, i) => (
+                                <tr key={`${service_categories}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                    <td ref={nameOptionRef}>{service_categories}</td>
+                                    <td ref={serviceCategoriesRef} className='ml-12 text-base'>Yes</td>
+                                </tr>
+                            ))
+                          }														
                         </tbody>
                       </table>
                       <div className='flex justify-between items-center w-full'>
