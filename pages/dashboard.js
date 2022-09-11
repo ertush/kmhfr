@@ -219,9 +219,9 @@ const Dash = (props) => {
                                                     }} />
                                             </div>
                                         ))}
-                                    {/* ~~~F L T R S~~~ */}
+                                        {/* ~~~F L T R S~~~ */}
 
-                                    {subcounty && Object.keys(subcounty).length > 0 &&
+                                        {/* {subcounty && Object.keys(subcounty).length > 0 &&
                                         Object.keys(subcounty).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
                                                 <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
@@ -272,10 +272,10 @@ const Dash = (props) => {
                                                     }} />
 
                                             </div>
-                                        ))}
+                                        ))} */}
                                         {/* subcounties */}
 
-                                        {wards && Object.keys(wards).length > 0 &&
+                                        {/* {wards && Object.keys(wards).length > 0 &&
                                         Object.keys(wards).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
                                                 <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
@@ -325,7 +325,7 @@ const Dash = (props) => {
                                                     }} />
 
                                             </div>
-                                        ))}
+                                        ))} */}
                                         {/* wards */}    
                                 </div>}
                                 {/* --- */}
