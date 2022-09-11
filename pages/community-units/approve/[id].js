@@ -39,26 +39,22 @@ const CommUnit = (props) => {
     } // This line is important. It's what prevents server-side render
   );
 
-  // const facilities = props.facility_data.results;
 
+  // Initiating the variables
   let cu = props.data;
   let _id
   _id = cu.id;
-
-  // Changing the value of the linked facility and its locality
-
 
   // Services states
   const [services, setServices] = useState([])
 	const [refreshForm, setRefreshForm] = useState(false)
 
  	// Reference hooks for the services section
-
-
   const [user, setUser] = useState(null);
   const [isCHULDetails, setIsCHULDetails] = useState(true);
   const [isCHUDetails, setIsCHUDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
+  const [appRejReason, setAppRejReason] = useState('')
   let reject = ''
 
   useEffect(() =>
@@ -73,10 +69,8 @@ const CommUnit = (props) => {
     }
     return () =>{};
     
-  }, [facilities]);
+  }, [cu]);
  
-  // Define serviceCategories
-
   return (
     <>
       <Head>
@@ -244,13 +238,12 @@ const CommUnit = (props) => {
                         </p>
                     </div>
                 )}
-
             </div>
 
 
             {/* CHU details hidden section */}
             <div className="grid grid-cols-2 w-full md:w-11/12 h-8 leading-none items-center">
-                <button className="flex bg-green-500 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto rounded-md" onClick={() => {
+                <button className="flex bg-blue-500 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto rounded-md" onClick={() => {
                     if (isCHULDetails) {
                         setIsCHULDetails(false)
                     } else {
@@ -268,102 +261,53 @@ const CommUnit = (props) => {
                 </button>
             </div>
 
+            {!isCHULDetails && (
+                <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
 
-            {
-                !isCHULDetails && (
-                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-
-                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                            <label className="col-span-1 text-gray-600">Sub County</label>
-                            <p className="col-span-2 text-black font-medium text-base">
-                                {cu.facility_subcounty || " - "}
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                            <label className="col-span-1 text-gray-600">
-                                Constituency
-                            </label>
-                            <p className="col-span-2 text-black font-medium text-base">
-                                {cu.facility_constituency || " - "}
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                            <label className="col-span-1 text-gray-600">
-                                Ward
-                            </label>
-                            <p className="col-span-2 text-black font-medium text-base">
-                                {cu.facility_ward || " - "}
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                            <label className="col-span-1 text-gray-600">
-                                Households Monitored
-                            </label>
-                            <p className="col-span-2 text-black font-medium text-base">
-                                {cu.households_monitored || " - "}
-                            </p>
-                        </div>
+                    <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                        <label className="col-span-1 text-gray-600">Sub County</label>
+                        <p className="col-span-2 text-black font-medium text-base">
+                            {cu.facility_subcounty || " - "}
+                        </p>
                     </div>
-                )
+                    <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                        <label className="col-span-1 text-gray-600">
+                            Constituency
+                        </label>
+                        <p className="col-span-2 text-black font-medium text-base">
+                            {cu.facility_constituency || " - "}
+                        </p>
+                    </div>
+                    <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                        <label className="col-span-1 text-gray-600">
+                            Ward
+                        </label>
+                        <p className="col-span-2 text-black font-medium text-base">
+                            {cu.facility_ward || " - "}
+                        </p>
+                    </div>
+                    <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                        <label className="col-span-1 text-gray-600">
+                            Households Monitored
+                        </label>
+                        <p className="col-span-2 text-black font-medium text-base">
+                            {cu.households_monitored || " - "}
+                        </p>
+                    </div>
+                </div>
+              )
             }
 
-
-            {/* CHU Approval Comment */}
-            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <label
-                htmlFor="approval-comment"
-                className="col-span-1 text-gray-900 font-semibold leading-16 text-medium"
-                >
-                {" "}
-                Approval comment:{" "}
-                </label>
-                <p
-                className="text-gray-400 text-medium text-left leading-16"
-                name="approval-comment"
-                >
-                some approval comments
-                </p>
-            </div>
-
-
-            {/* CHU Rejection Commment */}
-            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-                    Reject this Facility
-                </h3>
-                <form className="space-y-3"
-                    onSubmit={(e) =>
-                        rejectFacility(e, cu, cu.isApproveReject, e.target.value)
-                    }
-                    >
-                    <label htmlFor="comment-text-area"></label>
-                    <textarea
-                        cols="70"
-                        rows="auto"
-                        className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
-                        placeholder="Enter a comment for rejecting community health unit"
-                    ></textarea>
-                    <button
-                        type="submit"
-                        className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
-                    >
-                        Reject Facility
-                    </button>
-                </form>
-            </div>
-          <div/> 
-        </div>            
-        {/* end facility approval */}
-
-        {/* Facility Rejection Commment */}
+        {/* CHU Rejection Commment */}
         <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
           <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-            Approval / Rejection comment
+            {" "}
+            Approval comment:{" "}
           </h3>
           {cu.is_approved}
           <form
             className="space-y-3"
-            onSubmit = {cu.is_approved? (e) => approveCHU(e,cu.id, rejectionReason) : (e) => rejectCHUL(e, cu.id, rejectionReason)}
+            onSubmit = {reject? (e) => approveCHU(e,cu.id, appRejReason) : (e) => rejectCHUL(e, cu.id, appRejReason)}
           >
             <label htmlFor="comment-text-area"></label>
             <textarea
@@ -371,29 +315,42 @@ const CommUnit = (props) => {
               rows="auto"
               className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
               placeholder="Enter a comment"
-              onChange={(e) => setRejectionReason(e.target.value)}
+              onChange={(e) => setAppRejReason(e.target.value)}
             ></textarea>
+
             {/* <div className="flex flex-row"> */}
             <div className="flex flex-row justify-start items-center space-x-3 p-3">
             <button
               type="submit"
-              className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
-              onClick={(e) => reject = false}
-              
+              className={
+                cu.is_approved
+                  ? ''
+                  : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+              }
+              onClick={(e) => reject = true}
             >
-              {cu.is_approved ? "Approve Facility" : "Validate Facility"}
+              {cu.is_approved
+                ? "" 
+                : "Approve Community Health Unit"}
             </button>
             <button
               type="submit"
-              className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
-              onClick={(e) => reject = true}
+              className={
+                cu.is_rejected
+                  ? ''
+                  : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
+              }
+              onClick={(e) => reject = false}
             >
-              Reject Facility
+              {cu.is_rejected
+                ? "" 
+                : "Reject Community Health Unit"}
             </button>
             </div>
           </form>
         </div>
 
+        </div>
         </div>
       </MainLayout >
     </>
