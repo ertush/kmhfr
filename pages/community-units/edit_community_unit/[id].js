@@ -37,7 +37,30 @@ const CommUnit = (props) => {
 
   let cu = props.data;
   let _id
-  _id = cu.id;
+  _id = cu.id;  
+  //console.log('this is the name',cu.health_unit_workers[0].last_name)
+
+  // State of the different tabs
+  const [chulId, setchulId] = useState('');
+ 
+
+  // State of the different form fields
+  const [_name, setName] = useState(cu.name);
+  const [_dateEstablished, setDateEstablished] = useState(cu.date_established ?? '')
+  const [_dateOperational, setDateOperational] = useState(cu.date_operational ?? '')
+  const [_noOfMonitoredHouseholds, setNoOfMonitoredHouseholds] = useState(cu.households_monitored ?? '')
+  const [_noOfCHVs, setNoOfCHVs] = useState(cu.number_of_chvs ?? '')
+  const [_firstName, setFirstName] = useState(cu.health_unit_workers[0].first_name); 
+  const [_lastName, setLastName] = useState(cu.health_unit_workers[0].last_name);
+  // const [_name, setName] = useState(name)
+  // const [_officialName, setOfficialName] = useState(official_name ?? '')
+  // const [_dateEstablished, setDateEstablished] = useState(date_established ?? '')
+  // const [_ISOAccredited, setISOAccredited] = useState(accredited_lab_iso_15189 ?? false)
+  // const [_noOfBeds, setNoOfBeds] = useState(number_of_beds ?? '')
+  // const [_noOfCots, setNoOfCots] = useState(number_of_cots ?? '')
+  // const [_noOfCasualtyBeds, setNoOfCasualtyBeds] = useState(number_of_emergency_casualty_beds ?? '')
+  // const [_noOfICUBeds, setNoOfICUBeds] = useState(number_of_icu_beds ?? '')
+  // const [_noOfHDUBeds, setNoOfHDUBeds] = useState(number_of_hdu_beds ?? '')
 
   // Changing the value of the linked facility and its locality
   const [selected_facility, setSelectedFacility] = useState('');
@@ -45,11 +68,31 @@ const CommUnit = (props) => {
 	const [subCountyValue, setSubCountyValue] = useState('');
 	const [constituencyValue, setConstituencyValue] = useState('');
 	const [wardValue, setWardValue] = useState('');
-  const [chulId, setchulId] = useState('');
 
+  // Dropdown States
+  const [operationStatus, setOperationStatus] = useState([]);
+  const [linkedFacility, setLinkedFacility] = useState('');
+ 
   // Services states
   const [services, setServices] = useState([])
 	const [refreshForm, setRefreshForm] = useState(false)
+  const [selectedServiceRight, setSelectedServiceRight] = useState()
+
+  // Form Fields Ref
+  const nameRef = useRef();
+  const linkedFacilityRef = useRef(null)
+  const operationStatusRef = useRef(null)
+  const dateEstablishedRef = useRef(null)
+  const dateOperationalRef = useRef(null)
+  const monitoredHouseholdsRef = useRef(null)
+  const noOfCHVsRef = useRef(null)
+  // const firstNameRef = useRef(null)
+  // const lastNameRef = useRef(null)
+
+  // const countyRef = useRef(null)
+  // const subCountyRef = useRef(null)
+  // const constituencyRef = useRef(null)
+  // const wardRef = useRef(null)
 
  	// Reference hooks for the services section
 	const nameOptionRef = useRef();
@@ -242,6 +285,18 @@ const CommUnit = (props) => {
 		return _serviceCategories
 	 })(props.service_categories.results ?? [])
 
+  const serviceSelected = ((_services) => {
+    return _services.map(({ctg, _subCtgs, _values}) => ({
+          name: ctg,
+          subCategories: [
+              _subCtgs
+          ],
+          value:[
+              _values
+          ]
+    }))
+  })(services || []) 
+
   return (
     <>
       <Head>
@@ -364,7 +419,8 @@ const CommUnit = (props) => {
                       
                 <>
                   <form className='flex flex-col w-full items-start justify-start gap-3'
-                    onSubmit={handleBasicDetails}>
+                    //onSubmit={handleBasicDetails}>
+                    onSubmit={ev => handleBasicDetails(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId], 'PATCH')}>
 
                     {/* CHU Name */}
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -377,10 +433,13 @@ const CommUnit = (props) => {
                         </span>
                       </label>
                       <input
+                        ref={nameRef}
                         type='text'
                         name='name'
-                        placeholder= {cu?.official_name || cu?.name}
-                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' />
+                        value= {_name}
+                        onChange={ev => setName(ev.target.value)}
+                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' 
+                      />
                     </div>
 
                     {/* CHU Linked Facility */}
@@ -395,6 +454,7 @@ const CommUnit = (props) => {
                         </span>
                       </label>                    
                       <Select
+                        ref = {linkedFacilityRef}
                         onChange={(value) => {
                           setSelectedFacility(value);
                           
@@ -417,9 +477,12 @@ const CommUnit = (props) => {
                           };
                         }
                         )}
-                        //value={cu.facility}
-                        placeholder={cu.facility}
+
+                        placeholder={cu.facility_name}
                         name='facility'
+                        // onChange={
+                        //   (e) => setLinkedFacility(e.label) 
+                        // }
                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                       />
                     </div>
@@ -454,9 +517,11 @@ const CommUnit = (props) => {
                             label: 'Fully-functional',
                           },
                         ]}
-                        placeholder={cu.status}
-                        //onChange={console.log(cu.status)}
-              
+                        placeholder= {cu.status_name}
+                        ref = {operationStatusRef}
+                        onChange={
+                          (e) => setOperationStatus(e.label) 
+                        }
                         name='status'
                         //value={cu.status}
                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -479,9 +544,11 @@ const CommUnit = (props) => {
                               </span>
                             </label>
                             <input
+                              ref ={dateEstablishedRef}
                               type='date'
                               name='date_established'
-                              value={cu.date_established}
+                              value={_dateEstablished}
+                              onChange={ev => setDateEstablished(ev.target.value)}
                               placeholder={cu.date_established}
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
@@ -501,9 +568,11 @@ const CommUnit = (props) => {
                               </span>
                             </label>
                             <input
+                              ref={dateOperationalRef}
                               type='date'
                               name='date_operational'
-                              value={cu.date_operational}
+                              value={_dateOperational}
+                              onChange={ev => setDateOperational(ev.target.value)}
                               placeholder={cu.date_operational}
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
@@ -526,8 +595,10 @@ const CommUnit = (props) => {
                       <input
                         type='number'
                         name='households_monitored'
-                        value={cu.households_monitored}
-                        placeholder={cu.households_monitored}
+                        value={_noOfMonitoredHouseholds}
+                        ref={monitoredHouseholdsRef}
+                        onChange={ev => setNoOfMonitoredHouseholds(ev.target.value)}
+                        //placeholder={cu.households_monitored}
                         min={0}
                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                       />
@@ -547,8 +618,9 @@ const CommUnit = (props) => {
                       <input
                         type='number'
                         name='number_of_chvs'
-                        value={cu.number_of_chvs}
-                        placeholder={cu.number_of_chvs}
+                        value={_noOfCHVs}
+                        ref={noOfCHVsRef}
+                        onChange={ev => setNoOfCHVs(ev.target.value)}
                         min={0}
                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                       />
@@ -809,9 +881,10 @@ const CommUnit = (props) => {
                               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                 <input
                                   type='text'
+                                  //ref={firstNameRef}
                                   name='first_name'
-                                  placeholder={worker.first_name}
-                                  //onChange={handleChange}
+                                  value={_firstName}
+                                  onChange={ev => setFirstName(ev.target.value)}
                                   className='flex-none w-75 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                 />
                               </div>
@@ -823,8 +896,8 @@ const CommUnit = (props) => {
                                 <input
                                   type='text'
                                   name='last_name'
-                                  placeholder={worker.last_name}
-                                  //onChange={handleChange}
+                                  value={_lastName}
+                                  onChange={ev => setLastName(ev.target.value)}
                                   className='flex-none w-75 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                 />
                               </div>
@@ -948,7 +1021,7 @@ const CommUnit = (props) => {
                   <form
                       name='chu_services_form'
                       className='flex flex-col w-full items-center justify-start gap-3'
-                      onSubmit={handleServices}
+                      onSubmit={ev =>handleServices(ev, [chulId, services, setServices], PATCH)}
                     >
                       <h3 className='text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight'>
                         <span className='font-semibold'>Select New Services</span>
@@ -961,6 +1034,8 @@ const CommUnit = (props) => {
                             setServices={setServices}
                             setRefreshForm={setRefreshForm}
                             refreshForm={refreshForm}
+                            selectedRight={serviceSelected}
+                            setSelectedServiceRight={setSelectedServiceRight}
                         />
                       </div>
 

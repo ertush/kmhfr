@@ -9,6 +9,7 @@ import MainLayout from '../../../components/MainLayout';
 
 // Controller imports
 import { checkToken } from '../../../controllers/auth/auth';
+import { approveCHU, rejectCHUL, rejectCHU, approveRejectCHU } from '../../../controllers/chul/rejectApprove';
 
 // Heroicons imports
 
@@ -38,7 +39,7 @@ const CommUnit = (props) => {
     } // This line is important. It's what prevents server-side render
   );
 
-  const facilities = props.facility_data.results;
+  // const facilities = props.facility_data.results;
 
   let cu = props.data;
   let _id
@@ -58,6 +59,7 @@ const CommUnit = (props) => {
   const [isCHULDetails, setIsCHULDetails] = useState(true);
   const [isCHUDetails, setIsCHUDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
+  let reject = ''
 
   useEffect(() =>
   {
@@ -353,41 +355,44 @@ const CommUnit = (props) => {
         </div>            
         {/* end facility approval */}
 
-        <aside className="flex flex-col col-span-5 md:col-span-2 gap-4 mt-5">
-            <h3 className="text-2xl tracking-tight font-semibold leading-5">
-              Map
-            </h3>
-
-            {cu?.lat_long && cu?.lat_long.length > 0 ? (
-              <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
-                <Map
-                  operational={cu.status_name}
-                  code={cu?.code || "NO_CODE"}
-                  lat={cu?.lat_long[0]}
-                  long={cu?.lat_long[1]}
-                  name={cu.official_name || cu.name || ""}
-                />
-              </div>
-            ) : (
-              <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
-                <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-                  <p>No location data found for this cu.</p>
-                </div>
-              </div>
-            )}
-            <div className="flex flex-col gap-2 mt-3">
-              <h4 className="text-2xl text-gray-800">Recent activity</h4>
-              <ol className="list-decimal list-outside ml-4 flex flex-row gap-3">
-                <li className="bg-gray-50 w-full rounded-sm p-2">
-                  {cu?.latest_approval_or_rejection?.comment && (
-                    <p>{cu?.latest_approval_or_rejection?.comment}</p>
-                  )}
-                  {/* <small className="text-gray-500">{cu?.latest_approval_or_rejection?.id}</small> */}
-                </li>
-              </ol>
+        {/* Facility Rejection Commment */}
+        <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+          <h3 className="text-gray-900 font-semibold leading-16 text-medium">
+            Approval / Rejection comment
+          </h3>
+          {cu.is_approved}
+          <form
+            className="space-y-3"
+            onSubmit = {cu.is_approved? (e) => approveCHU(e,cu.id, rejectionReason) : (e) => rejectCHUL(e, cu.id, rejectionReason)}
+          >
+            <label htmlFor="comment-text-area"></label>
+            <textarea
+              cols="70"
+              rows="auto"
+              className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
+              placeholder="Enter a comment"
+              onChange={(e) => setRejectionReason(e.target.value)}
+            ></textarea>
+            {/* <div className="flex flex-row"> */}
+            <div className="flex flex-row justify-start items-center space-x-3 p-3">
+            <button
+              type="submit"
+              className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
+              onClick={(e) => reject = false}
+              
+            >
+              {cu.is_approved ? "Approve Facility" : "Validate Facility"}
+            </button>
+            <button
+              type="submit"
+              className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
+              onClick={(e) => reject = true}
+            >
+              Reject Facility
+            </button>
             </div>
-          </aside>
-
+          </form>
+        </div>
 
         </div>
       </MainLayout >
