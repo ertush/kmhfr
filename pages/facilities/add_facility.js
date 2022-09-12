@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { useState, Suspense, useEffect, useRef } from 'react';
 
 // Next imports
 import Head from 'next/head';
@@ -24,7 +24,7 @@ import StepLabel from '@mui/material/StepLabel';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-// import Alert from '@mui/material/Alert';
+import Alert from '@mui/material/Alert';
 
 // Heroicons imports
 import {
@@ -39,8 +39,20 @@ import Select from 'react-select';
 import LoadingAnimation from '../../components/LoadingAnimation';
 // import { useForkRef } from '@mui/material';
 
+import { 
+	handleBasicDetailsSubmit,
+    handleGeolocationSubmit,
+    handleFacilityContactsSubmit,
+    handleRegulationSubmit,
+    handleServiceSubmit,
+    handleInfrastructureSubmit,
+    handleHrSubmit
+} from '../../controllers/facility/addFacilitySubmitHandlers';
 
 
+
+const turf = require('@turf/turf');
+const FormData = require('form-data');
 const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
@@ -53,11 +65,9 @@ const Map = React.memo(WardMap)
 
 function AddFacility(props) {
 
-	
-
 	// Form drop down options
 
-     let facilityOptions = [
+     const facilityOptions = [
 		props['0']?.facility_types[0],  // STAND ALONE
 		props['0']?.facility_types[1],  // DISPENSARY 
 		props['0']?.facility_types[2],  // MEDICAL CLINIC
@@ -67,23 +77,23 @@ function AddFacility(props) {
 		props['0']?.facility_types[25]  // MEDICAL CENTRE
 	]
 
-	 let facilityTypeOptions = props['1']?.facility_type_details
-	 let ownerOptions =  props['2']?.owners
-	 let ownerTypeOptions =  props['3']?.owner_types
-	 let kephOptions =  props['4']?.keph
-	 let facilityAdmissionOptions =  props['5']?.facility_admission_status
-	 let countyOptions =  props['6']?.counties
-	 let subCountyOptions =  props['7']?.sub_counties
-	 let constituencyOptions =  props['8']?.constituencies
-	 let wardOptions =  props['9']?.wards
-	 let jobTitleOptions = props['10']?.job_titles
-	 let contactTypeOptions = props['11']?.contact_types
+	 const facilityTypeOptions = props['1']?.facility_type_details
+	 const ownerOptions =  props['2']?.owners
+	 const ownerTypeOptions =  props['3']?.owner_types
+	 const kephOptions =  props['4']?.keph
+	 const facilityAdmissionOptions =  props['5']?.facility_admission_status
+	 const countyOptions =  props['6']?.counties
+	 const subCountyOptions =  props['7']?.sub_counties
+	 const constituencyOptions =  props['8']?.constituencies
+	 const wardOptions =  props['9']?.wards
+	 const jobTitleOptions = props['10']?.job_titles
+	 const contactTypeOptions = props['11']?.contact_types
 
-	 let facilityDeptOptions = props['12']?.facility_depts
-	 let regBodyOptions = props['13']?.regulating_bodies
-	 let regulationStateOptions = props['14']?.regulation_status
+	 const facilityDeptOptions = props['12']?.facility_depts
+	 const regBodyOptions = props['13']?.regulating_bodies
+	 const regulationStateOptions = props['14']?.regulation_status
 
-	 let serviceOptions = ((_services) => {
+	 const serviceOptions = ((_services) => {
 		
 		const _serviceOptions = []
 		let _values = []
@@ -112,16 +122,76 @@ function AddFacility(props) {
 			})
 		}
 		
-
 		return _serviceOptions
 	 })(props['15'].service ?? [])
 
-	//  let kephLvl = {label:'', value:''}
+	 const infrastructureOption = ((_infrastructure) => {
+		
+		const _infrastructureOptions = []
+		let _values = []
+		let _subCtgs = []
+
+		if(_infrastructure.length > 0){
+			_infrastructure.forEach(({category_name:ctg}) => {
+				let allOccurences = _infrastructure.filter(({category_name}) => category_name === ctg)
+				
+				allOccurences.forEach(({id, name}) => {
+					_subCtgs.push(name)
+					_values.push(id)
+				})
+				
+				if(_infrastructureOptions.map(({name}) => name).indexOf(ctg) === -1){
+					_infrastructureOptions.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+		return _infrastructureOptions
+	 })(props['16'].infrastructure ?? [])
 
 
+	 const hrOptions = ((_hr) => {
+		
+		const _hrOptions = []
+		let _values = []
+		let _subCtgs = []
+
+		if(_hr.length > 0){
+			_hr.forEach(({category_name:ctg}) => {
+				let allOccurences = _hr.filter(({category_name}) => category_name === ctg)
+				
+				allOccurences.forEach(({id, name}) => {
+					_subCtgs.push(name)
+					_values.push(id)
+				})
+				
+				if(_hrOptions.map(({name}) => name).indexOf(ctg) === -1){
+					_hrOptions.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
 	
-	//  console.log({props}) 
-	
+			})
+		}
+		
+		return _hrOptions
+	 })(props['17'].hr ?? [])
+
+
+	//  Refs
 
     const nameOptionRef = useRef(null)
     const serviceOptionRef = useRef(null)
@@ -141,179 +211,8 @@ function AddFacility(props) {
         'Human resources'
     ];
 
-    const infrastractureCategories = [
-        {
-            name:'COLD CHAIN',
-            subCategories:[
-                'Cold room',
-                'Cool boxes',
-                'Freezers',
-                'Fridges'
-            ]        
-        },
-        {
-            name:'COMMUNICATIONS',
-            subCategories:[
-                'Land Line',
-                'Radio Call',
-                'Teleconfererncing Facility',
-                'TV Screen',
-                'Video Conferencing Facility',
-                'Video Conferencing Sapce',
-                'wireless Mobile'
-            ]
-        },
-        {
-            name:'ICT INFRASTRUCTURE',
-            subCategories:[
-                'LAN',
-                'Laptops',
-                'Printers',
-                'Routers',
-                'Scanners',
-                'Servers',
-                'WAN (Internet connectivity)',
-                'Wi-Fi'
-            ]
-        },
-        {
-            name:'MEDICAL EQUIPMENT',
-            subCategories:[
-                'Boiler',
-                'Cold chain vaccine carriers',
-                'CT Scan Machines',
-                'Dialysis machines',
-                'MRI Machines',
-                'Oxygen Plant',
-                'Ventilators',
-                'X-Ray Machines',
 
-            ]
-        },
-        {
-            name:'MEDICAL WASTE MANAGEMENT',
-            subCategories:[
-                'Dump without burning',
-                'Incinerator',
-                'Open burning',
-                'Remove offsite',
-                'Sewer system',
-            ]
-        },
-        {
-            name:'POWER SOURCE',
-            subCategories:[
-                'Battery  Backups',
-                'Bio-Gas',
-                'Gas',
-                 'Generator',
-                 'Main Grid',
-                 'Solar'
-            ]
-        },
-        {
-            name:'ROADS',
-            subCategories:[
-                'Earthen Road',
-                'Graded (Murrum)',
-                'Gravel',
-                'Tarmac'
-            ]
-        },
-        {
-            name:'WATER SOURCE',
-            subCategories:[
-                'Bore Hole',
-                'Donkey Cart / Vendor',
-                'Piped Water',
-                'Protected Wells / Springs',
-                ' River /Dam /Lake',
-                'Roof Harvested Water'                
-            ]
-        },
-        
-        
-    ]
-
-   
-	const hrCategories = [
-
-		{
-			name:'Clinical Officers',
-			subCategories:[
-				"Clinical Officer ENT/Audiology",
-				"Clinical Officer Lung & Skin",
-				"CO Dermatology/ Venereology",
-				"CO Oncology/Palli--ative Care",
-				"CO Ophthalmology/Cataract Surgery",
-				"CO Orthopaedics",
-				"CO Paediatrics",
-				"CO Psychiatry/Mental Health",
-				"CO Reproductive Health",
-				"General Clinical Officers(Diploma)"
-			]
-		},
-		{
-			name:'Clinical Psychology',
-			subCategories:[
-				"Clinical psychologists"
-			]
-		},
-		{
-			name:'Community Health Services ',
-			subCategories:[		
-				"Community Health Extension/Assistants",
-				"Community Health Volunteers(CHV)"
-			]
-		},
-		{
-			name:'Dental staff',
-			subCategories:[
-				"Community Oral Health Officers",
-				"Dental Officers",
-				"Dental Technologists",
-				"Oromaxillofacial Surgeon",
-				"Orthodontist",
-				"Paediatric Dentist"
-			]
-		},
-		{
-			name:'Diagnostics & Imaging',
-			subCategories:[
-				
-				"CT Scan /MRI Radiographer",
-				"Dental Radiographer",
-				"General Radiographer",
-				"Mammographer",
-				"Nuclear Medicine Technologist",
-				"Radiation Monitoring & Safety Officer",
-				"Therapy Radiographer",
-				"Ultrasonographer"
-			]
-		},
-		{
-			name:'Environmental Health ',
-			subCategories:[
-	
-			]
-		},
-		{
-			name:'General Support Staffs ',
-			subCategories:[
-	
-			]
-		},
-		{
-			name:'Health Administrative Staffs ',
-			subCategories:[
-	
-			]
-		}
-	
-	]
-
-	
-    const [formId, setFormId] = useState(5) //0
+    const [formId, setFormId] = useState(0) //0
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
@@ -336,27 +235,31 @@ function AddFacility(props) {
 	const [longitude, setLongitude] = useState('')
 	const [county, setCounty] = useState('')
 	const [facilityId, setFacilityId] = useState('')
+	const [facilityCoordinates, setFacilityCoordinates] = useState([])
 	
 
 	const [geoJSON, setGeoJSON] = useState(null)
     const [center, setCenter] = useState(null)
     const [wardName, setWardName] = useState('')
 	const [facilityTypeDetail, setFacilityTypeDetail] = useState('')
-	const [refreshForm, setRefreshForm] = useState(false)
-
-	// console.log({geolocationData})
+	const [refreshForm4, setRefreshForm4] = useState(false)
+	const [refreshForm5, setRefreshForm5] = useState(false)
+	const [refreshForm6, setRefreshForm6] = useState(false)
+	const [_contactDetail, setContactDetail] = useState('')
+	const [_otherContactDetails, setOtherContactDetail] = useState('')
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
+	const [file, setFile]=useState([])
+	const [coordinatesError, setCoordinatesError] = useState(false)
 	
-
+	
     useEffect(() => {
 
-        const formIdState = window.sessionStorage.getItem('formId');
-		
+		console.log({props})
 
-        console.log({services})
+        const formIdState = window.sessionStorage.getItem('formId');
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
             window.sessionStorage.setItem('formId', 5); //0
@@ -380,12 +283,15 @@ function AddFacility(props) {
         
 
         return () => {
+			
             if(window.sessionStorage.getItem('formId') == '7'){
                 window.sessionStorage.setItem('formId', 0)
             }
+
+			
             
         }
-    }, [facilityOfficialName, facilityOption, formId, refreshForm, latitude, geoJSON, longitude])
+    }, [facilityOfficialName, facilityOption, formId, refreshForm4, refreshForm5, refreshForm6, latitude, geoJSON, longitude])
       
 
 	const handleQuickFiltersClick = (link) => {
@@ -406,8 +312,16 @@ function AddFacility(props) {
 				
 				router.push({pathname:'/facilities', query:{qf:'updated_pending_validation', has_edits:true, pending_approval:true, id:'updated_pending_validation'} })
 				break;
-			case 'failed_validation_facilities':
+			case 'to_publish':
+			
+				router.push({pathname:'/facilities', query:{qf:'to_publish', to_publish:true, id:'to_publish'} })
+				break;
+			case 'dhis_synced_facilities':
 				
+				router.push({pathname:'/facilities', query:{qf:'dhis_synced_facilities', approved:true, approved_national_level:true, rejected:false, reporting_in_dhis:true, id:'dhis_synced_facilities'}})
+				break;
+			case 'failed_validation_facilities':
+			
 				router.push({pathname:'/facilities', query:{qf:'failed_validation', rejected:true, id:'failed_validation'}})
 				break;
 			case 'rejected_facilities':
@@ -425,7 +339,7 @@ function AddFacility(props) {
 		
 			default:
 				break;
-	}
+		}
 	}
 
 	if(facilityTypeDetail !== '' && kephLvlRef.current !== null){
@@ -452,6 +366,24 @@ function AddFacility(props) {
 		}
 	}
 
+	useEffect(() => {
+		isLatLngInRegion()
+	} , [longitude, latitude])
+
+	useEffect(() => {}, [coordinatesError])
+	
+	const isLatLngInRegion=()=> {
+		if(longitude.length > 1 && latitude.length > 1){
+			let point = turf.point([longitude, latitude]);
+			let polygon = turf.polygon(facilityCoordinates);
+			let found = turf.booleanPointInPolygon(point, polygon);
+			if(!found){
+				setCoordinatesError(true)
+			}else{
+				setCoordinatesError(false)
+			}
+		}
+	}
   return (
 	<>
 		 <Head>
@@ -509,6 +441,18 @@ function AddFacility(props) {
                                 <ListItemText primary="Updated Facilities Pending Validation"/>
                             </ListItemButton>
 
+							<ListItemButton 
+                            	 onClick={() => handleQuickFiltersClick('to_publish') }
+                            >
+                                <ListItemText primary="Facilities Pending Approval"/>
+                            </ListItemButton>
+
+							<ListItemButton 
+                            	 onClick={() => handleQuickFiltersClick('dhis_synced_facilities') }
+                            >
+                                <ListItemText primary="DHIS Synced Approved Facilities"/>
+                            </ListItemButton>
+
                             <ListItemButton 
                               	onClick={() => handleQuickFiltersClick('failed_validation_facilities') }
                             >
@@ -532,9 +476,7 @@ function AddFacility(props) {
                             >
                                 <ListItemText primary="Incomplete Facilities"/>
                             </ListItemButton>
-
-                           
-                                
+        
                         </List>
                     	</div>
 
@@ -562,155 +504,7 @@ function AddFacility(props) {
 										switch (parseInt(formId)) {
 											case 0:
 
-												const handleBasicDetailsSubmit = async (event) => {
-
-													event.preventDefault();
-
-													let _ward;
-													let _id;
-
-													const formData = {};
-
-													const elements = [...event.target];
-
-													elements.forEach(({ name, value }) => {
-														
-														formData[name] = value === "true" || value === "false" ? Boolean(value) : (() => {
-															// Accomodates format of facility checklist document
-															if (name === "facility_checklist_document") {
-																return {fileName: value.replace("C:\\fakepath\\", '')}
-															}
-
-															// check if value is alphanumeral and convert to number
-															return value.match(/^[0-9]$/) !== null ? Number(value) : value
-														})()
-													});
-
-													// Add officer in charge to payload8
-													formData['officer_in_charge'] = {
-														name:'',
-														reg_no:'',
-														contacts:[
-															{
-																type:'',
-																contact:''
-															}
-														]
-													}
-
-													// Post Facility Basic Details
-													try{
-														fetch('/api/common/submit_form_data/?path=facilities', {
-															headers:{
-																'Accept': 'application/json, text/plain, */*',
-																'Content-Type': 'application/json;charset=utf-8'
-																
-															},
-															method:'POST',
-															body: JSON.stringify(formData).replace(',"":""','')
-														})
-														// Post Checklist document
-														.then(async resp => {
-
-															const {id, ward} = (await resp.json())
-
-															_id = id
-															_ward = ward
-
-															const payload = {
-																name: `${formData['official_name']} Facility Checklist File`,
-																description: 'Facilities checklist file',
-																document_type: 'Facility_ChecKList',
-																facility_name:formData['official_name'],
-																fyl: {
-																	filename:formData['facility_checklist_document']
-																}
-
-
-															}
-
-															if(resp){
-
-																console.log({input: checklistFileRef.current})
-																
-																try {
-																	const resp = await fetch('/api/common/submit_form_data/?path=documents', {
-																		headers:{
-																			'Accept': 'application/json, text/plain, */*',
-																			
-																		},
-																		method:'POST',
-																		body: JSON.stringify(payload)
-																	})
-
-																	return (await resp.json())
-																}
-																catch(e){
-																	console.error('Unable to Post document')
-																}
-															}
-														})
-														//  fetch data for Geolocation form
-														.then(async (resp) => {
-															if(resp){
-
-																															
-																	setFacilityId(_id) //set facility Id
-																	
-																	let _data
-																													
-																	try{
-																		const response = await fetch(`/api/facility/get_facility/?path=wards&id=${_ward}`)
-
-																		_data = await response.json()
-
-
-																		setGeoJSON(JSON.parse(JSON.stringify(_data?.ward_boundary)))
-
-																		const [lng, lat] = _data?.ward_boundary.properties.center.coordinates 
-
-																		setCenter(JSON.parse(JSON.stringify([lat, lng])))
-																		setWardName(_data?.name)
-
-																		
-
-																		console.log({geoJSON, center, _ward})
-
-																		
-																	
-																	}catch(e){
-																		console.error(e.message)
-																		return {
-																			error:e.message,
-																			id:null
-																		}
-																	}
-																
-															}
-														}
-															
-														)
-
-														// console.log((await response.json()))
-
-													}catch(e){
-														console.error(e.message)
-														return {
-															error:e.message,
-															id:null
-														}
-													}
-
-													
-
-													// Change form Id
-													window.sessionStorage.setItem('formId', 1);
-
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
-
-
-
+												
 												// Basic Details form
 												return (
 													<>
@@ -718,9 +512,10 @@ function AddFacility(props) {
 															Facility Basic Details
 														</h4>
 														<form
-															
+															encType="multipart/form-data"
 															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={handleBasicDetailsSubmit}>
+															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates], 'POST')}>
+
 															{/* Facility Official Name */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
@@ -917,7 +712,7 @@ function AddFacility(props) {
 																	]}
 																	required
 																	placeholder='Select an operation status...'
-																	name='opertaion_status'
+																	name='operation_status'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
 															</div>
@@ -1278,7 +1073,7 @@ function AddFacility(props) {
 																		name='reporting_in_dhis'
 																		id='reporting_in_dhis_yes'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			
 																		}}
 																	/>
 																	<small className='text-gray-700'>Yes</small>
@@ -1291,7 +1086,7 @@ function AddFacility(props) {
 																		name='reporting_in_dhis'
 																		id='reporting_in_dhis_no'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																	
 																		}}
 																	/>
 																	<small className='text-gray-700'>No</small>
@@ -1334,7 +1129,7 @@ function AddFacility(props) {
 																		name='nhif_accreditation'
 																		id='nhif_accreditation_yes'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<small className='text-gray-700'>Yes</small>
@@ -1347,7 +1142,7 @@ function AddFacility(props) {
 																		name='nhif_accreditation'
 																		id='nhif_accreditation_no'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<small className='text-gray-700'>No</small>
@@ -1365,14 +1160,14 @@ function AddFacility(props) {
 																		type='checkbox'
 																		value={false}
 																		defaultChecked={false}
-																		name='open_whole_day'
+																		name='is_classified'
 																		id='is_armed_forces'
 																		onChange={(ev) => {
-																			console.log({ ev });
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
-																		htmlFor='is_armed_forces'
+																		htmlFor='is_classified'
 																		className='text-gray-700 capitalize text-sm flex-grow'>
 																		{' '}
 																		Is this an Armed Force facility?{' '}
@@ -1394,7 +1189,7 @@ function AddFacility(props) {
 																		name='open_whole_day'
 																		id='open_24hrs'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
@@ -1413,7 +1208,7 @@ function AddFacility(props) {
 																		name='open_late_night'
 																		id='open_late_night'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
@@ -1432,7 +1227,7 @@ function AddFacility(props) {
 																		name='open_public_holidays'
 																		id='open_public_holidays'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
@@ -1451,7 +1246,7 @@ function AddFacility(props) {
 																		name='open_weekends'
 																		id='open_weekends'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
@@ -1470,7 +1265,7 @@ function AddFacility(props) {
 																		name='open_normal_day'
 																		id='open_8_5'
 																		onChange={(ev) => {
-																			// console.log({ev})
+																			ev.preventDefault()
 																		}}
 																	/>
 																	<label
@@ -1623,11 +1418,11 @@ function AddFacility(props) {
 																		Nearest Town/Shopping Centre
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			*
+																			
 																		</span>
 																	</label>
 																	<input
-																		required
+																		
 																		type='text'
 																		name='town_name'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1642,11 +1437,11 @@ function AddFacility(props) {
 																		Plot number
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			*
+																			
 																		</span>
 																	</label>
 																	<input
-																		required
+																		
 																		type='text'
 																		name='plot_number'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1661,11 +1456,11 @@ function AddFacility(props) {
 																		Nearest landmark
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			*
+																			
 																		</span>
 																	</label>
 																	<input
-																		required
+																		
 																		type='text'
 																		name='nearest_landmark'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1680,11 +1475,11 @@ function AddFacility(props) {
 																		location description
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			*
+																			
 																		</span>
 																	</label>
 																	<input
-																		required
+																		
 																		type='text'
 																		name='location_desc'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1708,6 +1503,9 @@ function AddFacility(props) {
 																		required
 																		ref={checklistFileRef}
 																		type='file'
+																		onChange={(e)=>{
+																			setFile(e.target.files[0])
+																		}}
 																		name='facility_checklist_document'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
@@ -1735,73 +1533,7 @@ function AddFacility(props) {
 													</>
 												);
 											case 1:
-												// Geolocation form
-												const handleGeolocationSubmit = (event) => {
-													event.preventDefault();
-
-													const geolocationData = {};
-
-													const elements = [...event.target];
-
-													elements.forEach(({ name, value }) => {
-														
-														geolocationData[name] = (() => {
-															switch (name) {
-																case 'collection_date':
-																	return  new Date(value)
-																case 'latitude':
-																	return  value.match(/^\-$/) !== null ? 0.000000 : value
-																case 'longitude':
-																	return  value.match(/^\-$/) !== null ? 0.000000 : value
-																default:
-
-																	return value
-															}
-														})() 
-													});
-
-													
-
-													geolocationData['facility'] = facilityId ?? ''
-
-													// Convert the latitude/longitude from string to number
-
-													geolocationData['latitude'] = Number(geolocationData.latitude)
-													geolocationData['longitude'] = Number(geolocationData.longitude)
-
-													// Set missing geolocationData i.e coordinates & facility
-
-													geolocationData['coordinates'] = {
-														coordinates : [														
-															geolocationData.longitude,
-															geolocationData.latitude
-														],
-														type: 'Point'
-													}
-
-													// console.log({geolocationData})
-
-													// Post Geolocation Details
-
-													try{
-														fetch('/api/common/submit_form_data/?path=gis', {
-															headers:{
-																'Accept': 'application/json, text/plain, */*',
-																'Content-Type': 'application/json;charset=utf-8'
-																
-															},
-															method:'POST',
-															body: JSON.stringify(geolocationData).replace(',"":""','')
-														})
-													}
-													catch(e){
-														console.error('Unable to post geolocation details')
-													}
-
-													window.sessionStorage.setItem('formId', 2);
-
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
+												// Geolocation Form
 
 												const handleGeolocationPrevious = (event) => {
 													event.preventDefault();
@@ -1818,7 +1550,7 @@ function AddFacility(props) {
 														<form
 															name='geolocation_form'
 															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={handleGeolocationSubmit}>
+															onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId], 'POST')}>
 															{/* Collection Date */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
@@ -1877,26 +1609,19 @@ function AddFacility(props) {
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
+															<>{coordinatesError && <Alert severity="error" sx={{width:'100%'}}> Please enter the right coordinates</Alert>}</>
 															</div>
 
 															{/* Ward Geo Map */}
-															<div className='w-full h-auto'>
-																{
-																	 geoJSON !== null ? 
-																	//  <Suspense fallBack={<LoadingAnimation size={6} isLight={false}/>}>
-																		<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																			{/* [Number(latitude.match(/^\-$/) !== null ? 0.000000 : latitude).toFixed(6), Number(longitude.match(/^\-$/) !== null ? 0.000000 : longitude).toFixed(6)] */}
-																			<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
-																		</div>
-																	//  </Suspense> 
-																	
-																	:
-																	// <Alert severity="warning" sx={{width:'100%'}}> No location data found for this facility</Alert>
-																	<LoadingAnimation size={6} isLight={false}/>
+															<div className='w-full h-auto'>																		
+																<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
+																	{
+																		 geoJSON !== null &&
 
-																}
-															 
+																		<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
 																
+																	}	
+																	</div>
 															</div>
 
 															{/* Next/Previous Form  */}
@@ -1922,79 +1647,7 @@ function AddFacility(props) {
 													</>
 												);
 											case 2:
-												// Facility Contacts
-
-												const handleFacilityContactsSubmit = (event) => {
-													event.preventDefault();
-
-													const contactFormData = {};
-
-													const elements = [...event.target];
-
-													elements.forEach(({ name, value }) => {
-														// console.log({name, value});
-														contactFormData[name] = value 
-													});
-
-
-													const payload  = {
-														contacts: [
-															{
-																contact: contactFormData['contact'],
-																contact_type: contactFormData['contact_type']
-															}
-														],
-														officer_in_charge: {
-															name: contactFormData['name'],
-															reg_no: contactFormData['reg_no'],
-															title: contactFormData['title']
-
-														}
-													}
-
-												
-													try{
-
-														fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
-
-															headers:{
-																'Accept': 'application/json, text/plain, */*',
-																'Content-Type': 'application/json;charset=utf-8'
-																
-															},
-															method:'POST',
-															body: JSON.stringify(payload).replace(',"":""','')
-														})
-													}
-													catch(e){
-														console.error('Unable to patch facility contacts details'. e.message)
-													}
-
-													window.sessionStorage.setItem('formId', 3);
-
-													const dropDowns = document.getElementsByName(
-														'dropdown_contact_types'
-													);
-													const inputs = document.getElementsByName(
-														'contact_details_others'
-													);
-
-													// console.log(event.target);
-
-													if (dropDowns.length > 0) {
-														dropDowns.forEach((dropDown) => {
-															dropDown.remove();
-														});
-													}
-
-													if (inputs.length > 0) {
-														inputs.forEach((input) => {
-															input.remove();
-														});
-													}
-
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
+												// Facility Contacts Form
 
 												const handleFacilityContactsPrevious = (event) => {
 													event.preventDefault();
@@ -2143,7 +1796,7 @@ function AddFacility(props) {
 														<form
 															className='flex flex-col w-full items-start justify-start gap-3'
 															name='facility_contacts_form'
-															onSubmit={handleFacilityContactsSubmit}>
+															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId], 'POST')}>
 															{/* Contacts */}
 
 															<div
@@ -2160,7 +1813,7 @@ function AddFacility(props) {
 
 																{/* Contact Type / Contact Details */}
 
-																<FacilityContact contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
+																<FacilityContact contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
 																
 
 																
@@ -2230,10 +1883,7 @@ function AddFacility(props) {
 																	</label>
 																	<Select options={jobTitleOptions || []} 
 																		required
-																		placeholder="Select Job Title"
-																		onChange={
-																			() => console.log('changed')
-																		}
+																		placeholder="Select Job Title"																	
 																		name="title" 
             															className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 																</div>
@@ -2254,7 +1904,7 @@ function AddFacility(props) {
 
 																	{/* Contact Type / Contact Details */}
 
-																	<FacilityContact contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+																	<FacilityContact contactTypeOptions={contactTypeOptions} contactDetail={_otherContactDetails} setContactDetail={setOtherContactDetail} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
 
 																</div>
 
@@ -2292,97 +1942,7 @@ function AddFacility(props) {
 													</>
 												);
 											case 3:
-												// Regulation form
-												const handleRegulationSubmit = (event) => {
-													event.preventDefault();
-
-													// Post Facility Regulation Data
-
-													const facilityRegDataA = {};
-													const facilityRegDataB = {};
-
-
-													const elements = [...event.target];
-
-													const payload = []
-
-													elements.forEach(({ name, value }) => {
-														switch(name){
-															case 'license_number':
-																facilityRegDataA[name] = value
-																break;
-															case 'registration_number':
-																facilityRegDataA[name] = value
-																break;
-															case 'regulation_status':
-																facilityRegDataA[name] = value
-																break;
-															case 'regulatory_body':
-																facilityRegDataA[name] = value
-																break;
-															case 'facility_dept_name':
-																facilityRegDataB['0'] = {
-																	unit: value,
-																}
-																break;
-															case 'facility_regulatory_body':
-																facilityRegDataB['1'] = {
-																	regulation_body_name: value,
-																}
-																break;
-															case 'facility_registration_number':
-															facilityRegDataB['2'] = {
-																registration_number: value,
-															}
-															break;
-															case 'facility_license_number':
-															facilityRegDataB['3'] = {
-																license_number: value,
-															}
-															break;	
-
-
-														}
-														
-													});
-
-
-
-													payload.push(facilityRegDataA)
-													payload.push({units:[{
-														unit: facilityRegDataB['0'].unit, 
-														regulation_body_name:facilityRegDataB['1'].regulation_body_name,
-														registration_number:facilityRegDataB['2'].registration_number,
-														license_number:facilityRegDataB['3'].license_number
-													}]})
-													
-													// console.log({payload})
-
-													payload.forEach(data => {
-														try{
-															fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
-																headers:{
-																	'Accept': 'application/json, text/plain, */*',
-																	'Content-Type': 'application/json;charset=utf-8'
-																	
-																},
-																method:'POST',
-																body: JSON.stringify(data)
-															})
-	
-														}
-														catch(e){
-															console.error('Unable to patch facility contacts details'. e.message)
-														}
-													})
-
-													
-
-
-													window.sessionStorage.setItem('formId', 4);
-
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
+												// Regulation Form
 
 												const handleRegulationPrevious = (event) => {
 													event.preventDefault();
@@ -2511,7 +2071,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-														<form name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleRegulationSubmit}>
+														<form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId], 'POST')}>
 
 															{/* Regulatory Body */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -2630,36 +2190,8 @@ function AddFacility(props) {
 													</>
 												);
 											case 4:
-												// Services form
-												const handleServiceSubmit = async (event) => {
-													event.preventDefault()
-
-
-													const _payload = services.map(({value}) => ({service: value}))
-
-													try{
-														fetch(`/api/common/submit_form_data/?path=services&_id=${facilityId || '04ffd222-b511-4b31-ac76-c7f5d4505dde'}`, {
-															headers:{
-																'Accept': 'application/json, text/plain, */*',
-																'Content-Type': 'application/json;charset=utf-8'
-																
-															},
-															method:'POST',
-															body: JSON.stringify({services:_payload})
-														})
-
-													}
-													catch(e){
-														console.error('Unable to patch facility contacts details'. e.message)
-													}
-
-													window.sessionStorage.setItem('formId', 5)
-													
-													setFormId(window.sessionStorage.getItem('formId'))
-													setServices([])
-
-												}
-
+												// Services Form
+	
 												const handleServicePrevious = (event) => {
 													event.preventDefault()
 													window.sessionStorage.setItem('formId', 3)
@@ -2671,7 +2203,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
-														<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={handleServiceSubmit}>
+														<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices], 'POST')}>
 															
 															{/* Transfer list Container */}
 															<div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2680,8 +2212,10 @@ function AddFacility(props) {
 															<TrasnferListServices 
 																categories={serviceOptions}
 																setServices={setServices}
-																setRefreshForm={setRefreshForm}
-																refreshForm={refreshForm}
+																setRefreshForm4={setRefreshForm4}
+																refreshForm4={refreshForm4}
+																selectedRight={null}
+																setSelectedServiceRight={() => null}
 															/>
 
 															</div>
@@ -2703,7 +2237,6 @@ function AddFacility(props) {
 																		))
 																	}
 																
-																
 																</tbody>
 															</table>
 															
@@ -2722,16 +2255,7 @@ function AddFacility(props) {
 												)
 											case 5:
 												// Infrastructure form
-												const handleInfrastructureSubmit = (event) => {
-													event.preventDefault()
-
-													window.sessionStorage.setItem('formId', 6)
-													
-													// console.log({formId});
-													setFormId(window.sessionStorage.getItem('formId'))
-
-												}
-
+											
 												const handleInfrastructurePrevious = (event) => {
 													event.preventDefault()
 													window.sessionStorage.setItem('formId', 4)
@@ -2744,7 +2268,7 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
-													<form name="facility_infrastructure_form" className='flex flex-col w-full items-start justify-start gap-3'>
+													<form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId], 'POST')}  className='flex flex-col w-full items-start justify-start gap-3'>
 														
 														{/* Transfer list Container */}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2752,11 +2276,15 @@ function AddFacility(props) {
 														{/* Transfer List*/}
 														<TransferListInfrastructure 
 															categories={
-																infrastractureCategories.map((data) => data)
+																infrastructureOption
 															} 
 															setState={setInfrastructure}
 															setCount={setInfrastructureCount}
+															setRefreshForm5={setRefreshForm5}
+															refreshForm5={refreshForm5}
 															selectTitle='Infrastructure'
+															setSelectedInfraRight={() => null}
+															selectedInfraRight={null}
 															/>
 
 														</div>
@@ -2772,12 +2300,12 @@ function AddFacility(props) {
 															</thead>
 															<tbody ref={infrastructureBodyRef}>
 																{
-																	infrastructure.map((_infrastructure, i) => (
+																	infrastructure.map(({subctg}) => subctg).map((_infrastructure, i) => (
 																		<tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
 																			<td className='text-lg text-black'>{_infrastructure}</td>
-																			<td className='text-lg text-black'>{infrastractureCategories.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
+																			<td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
 																			<td className='text-lg text-black'>Yes</td>
-																			<td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val}</td>
+																			<td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
 																		</tr>
 																	))
 																}
@@ -2791,7 +2319,7 @@ function AddFacility(props) {
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
 																<span className='text-medium font-semibold text-black '>Services</span>
 															</button>
-															<button onClick={handleInfrastructureSubmit} className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+															<button type={'submit'} className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>Human resources</span>
 																<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
 															</button>
@@ -2801,16 +2329,7 @@ function AddFacility(props) {
 												)
 											case 6:
 												// Human resources form
-												const handleHrSubmit = (event) => {
-													
-													event.preventDefault()
-
-													window.sessionStorage.setItem('formId', 0)
-													
-													setFormId(window.sessionStorage.getItem('formId'))
-
-												}
-
+		
 												const handleHrPrevious = (event) => {
 													event.preventDefault()
 													window.sessionStorage.setItem('formId', 5)
@@ -2823,7 +2342,7 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human resources</h4>
-													<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3'>
+													<form name="facility_services_form" onSubmit={ev => handleHrSubmit(ev, [hr, hrCount, facilityId, setFormId], 'POST')} className='flex flex-col w-full items-start justify-start gap-3'>
 														
 														{/* Transfer list Container */}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2831,12 +2350,15 @@ function AddFacility(props) {
 														{/* Transfer List*/}
 														
 														<TransferListHr 
-															categories={
-																hrCategories.map((data) => data)
-															} 
+															categories={hrOptions} 
 															setState={setHr}
+															setRefreshForm6={setRefreshForm6}
+															refreshForm6={refreshForm6}
 															setCount={setHrCount}
 															selectTitle='HR Specialities'
+															setSelectedHrRight={() => null}
+															selectedHrRight={null}
+
 														/>
 
 														</div>
@@ -2851,12 +2373,14 @@ function AddFacility(props) {
 															</thead>
 
 															<tbody>
+																{/* {console.log({hr})} */}
 																{
-																	hr.map((_hr, i) => (
+																	
+																	hr.map(({subctg}) => subctg).map((_hr, i) => (
 																		<tr key={`${_hr}_${i}`} className='grid grid-cols-3 place-content-end border-b-2 border-gray-300'>
 																			<td className='text-lg text-black'>{_hr}</td>
 																			<td className='text-lg text-black'>Yes</td>
-																			<td className='text-lg  text-black'>{hrCount.filter(({name}) => name == _hr)[0].val}</td>
+																			<td className='text-lg  text-black'>{hrCount.filter(({name}) => name == _hr)[0].val || 0}</td>
 																		</tr>
 																	))
 																}
@@ -2870,7 +2394,7 @@ function AddFacility(props) {
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
 																<span className='text-medium font-semibold text-black '>Infrastracture</span>
 															</button>
-															<button onClick={handleHrSubmit} className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+															<button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>Finish</span>
 																<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
 															</button>
@@ -2921,6 +2445,7 @@ function AddFacility(props) {
 AddFacility.getInitialProps = async (ctx) => {
 
 	const allOptions = []
+
 	const options = [
 		'facility_types',
 		'facility_type_details',
@@ -2938,12 +2463,11 @@ AddFacility.getInitialProps = async (ctx) => {
 		'regulating_bodies',
 		'regulation_status',
 		'services',
-		'contact_types'
-
-	
+		'infrastructure',
+		'specialities'
 	]
 
-	// console.log('get initial props...')
+	
 
 	return checkToken(ctx.req, ctx.res)
 		.then(async (t) => {
@@ -2954,8 +2478,7 @@ AddFacility.getInitialProps = async (ctx) => {
 				let token = t.token;
 				let url = '';
 				
-				// console.log({ctx});
-
+				
 				for(let i = 0; i < options.length; i++) {
 					const option = options[i]
 					switch(option) {
@@ -2973,7 +2496,7 @@ AddFacility.getInitialProps = async (ctx) => {
 
 									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value:id, label:sub_division} : {value:id, label:name})
 
-									// console.log({results})
+									
 									allOptions.push({facility_types: results })
 									
 								}
@@ -2985,6 +2508,7 @@ AddFacility.getInitialProps = async (ctx) => {
 										facility_types: [],
 									});
 								}
+
 								break;
 							case 'facility_type_details':
 								url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_active=true&page_size=10000`;
@@ -3223,7 +2747,7 @@ AddFacility.getInitialProps = async (ctx) => {
 							break;
 
 						case 'regulation_status':
-							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/`;
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
 	
 						
 							try{
@@ -3250,8 +2774,6 @@ AddFacility.getInitialProps = async (ctx) => {
 
 						case 'services':
 
-						
-
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
 
 							try{
@@ -3274,12 +2796,62 @@ AddFacility.getInitialProps = async (ctx) => {
 									service: [],
 								})
 							}
-							
+	
+							break;
 
+						case 'infrastructure':
 
-							
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
+
+							try{
+		
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									}
+								})
+
+								allOptions.push({infrastructure: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,	
+									err: err,
+									service: [],
+								})
+							}
 
 							break;
+						
+						case 'specialities':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=2000&ordering=name`;
+
+							try{
+		
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									}
+								})
+
+								allOptions.push({hr: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name}))})
+								
+							}
+							catch(err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,	
+									err: err,
+									service: [],
+								})
+							}
+
+
+						break;
 
 						default:
 								let fields = ''
@@ -3307,7 +2879,7 @@ AddFacility.getInitialProps = async (ctx) => {
 			
 
 								allOptions.push(_obj)
-								// console.log({allOptions})
+								
 									
 								}
 								catch(err) {

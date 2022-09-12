@@ -22,6 +22,7 @@ import Alert from '@mui/material/Alert';
 import ListItemText from '@mui/material/ListItemText';
 import NativePickers from '../../components/date-picker'
 import { set } from 'nprogress'
+// import { set } from 'nprogress'
 
 
 const Home = (props) => {
@@ -32,8 +33,6 @@ const Home = (props) => {
     let fltrs = filters
     let [drillDown, setDrillDown] = useState({})
     let qf = props?.query?.qf || 'all'
-
-    // console.log({path: props?.path, current_url:props?.current_url});
    
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -86,6 +85,23 @@ const Home = (props) => {
             ],
         },
         {
+            name: 'Facilities pending approval',
+            id: 'to_publish',
+            filters: [
+                { id: "to_publish", value: true },
+            ],
+        },
+        {
+            name:'DHIS Synced Facilities',
+            id: 'dhis_synced_facilities',
+            filters: [
+                { id: "approved", value: true },
+                { id: "approved_national_level", value: true },
+                { id: "rejected", value: false },
+                { id: "reporting_in_dhis", value: true },
+            ]
+        },
+        {
             name: 'Failed Validation',
             id: 'failed_validation',
             filters: [
@@ -116,8 +132,6 @@ const Home = (props) => {
     ]
 
 
-
-  
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
     const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
@@ -134,6 +148,8 @@ const Home = (props) => {
     const [syncRegulatedFctsSelected, setSyncRegulatedFctsSelected] = useState(false);
     const [incompleteFctsSelected, setIncompleteFctsSelected] = useState(false);
     const [feedBackFctsSelected, setFeedBackFctsSelected] = useState(false);
+    const [facilitiesPendingApproval, setFacilitiesPendingApproval] = useState(false);
+    const [DHISSyncedFacilities, setDHISSyncedFacilities] = useState(false);
     const [khisSynched, setKhisSynched] = useState(false);
 
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
@@ -147,9 +163,7 @@ const Home = (props) => {
    
     
     useEffect(() => {
-        
-       
-      
+    
         let qry = props?.query
         
         delete qry.searchTerm
@@ -185,8 +199,10 @@ const Home = (props) => {
     if(filter_id !== 'khis_synched' && filter_id !== 'feedback') {
         
     const qfilter = quickFilters.filter(({id}) => id === filter_id).map(f => f.filters.map(({id, value}) => ({id, value})))
+
+    qfilter[0].forEach(({id, value}) => {filter[id] = value}) 
  
-    qfilter[0].forEach(({id, value}) => {filter[id] = value})
+    if (filter_id === 'new_pending_validation') filter['is_complete'] = true;
 
     }
 
@@ -210,7 +226,6 @@ const Home = (props) => {
 
                 setFacilityFeedBack(feedbackFacilities)
                
-
             }
             catch (err){
                 console.error(err.message);
@@ -220,10 +235,11 @@ const Home = (props) => {
         default:
             setFacilityFeedBack([])
             setKhisSynched(false)
+
+ 
             let robj = {pathname: '/facilities', query: {qf: filter_id, ...filter}}
             router.push(robj)
             break;
-
     }
         
 
@@ -499,6 +515,7 @@ const Home = (props) => {
                         aria-labelledby="nested-list-subheader"
                     
                         >	
+                            {/* All Facilities */}
                             <ListItemButton sx={{ backgroundColor: (allFctsSelected || pathId === 'all') ?  '#e7ebf0' : 'none' }} name="rt"
                                 onClick={(ev)=>{
                                     setTitle('Facilities')
@@ -507,6 +524,8 @@ const Home = (props) => {
                                     setApprovedFctsSelected(false)
                                     setNewFctsSelected(false)
                                     setUpdatedFctsSelected(false)
+                                    setFacilitiesPendingApproval(false)
+                                    setDHISSyncedFacilities(false)
                                     setFailedValidationFctsSelected(false)                                  
                                     setRejectedFctsSelected(false)
                                     setClosedFctsSelected(false)
@@ -515,20 +534,23 @@ const Home = (props) => {
                                     setFeedBackFctsSelected(false)
 
                                     handleQuickFiltersClick('all')
-                                    
                                 
                                 }}
                             >
                                 <ListItemText primary="All Facilities" />
                             </ListItemButton>
-                            <ListItemButton sx={{ backgroundColor: (approvedFctsSelected || pathId === 'new_pending_validation')  ?  '#e7ebf0' : 'none' }} 
+
+                            {/* Approved Facilities */}
+                            <ListItemButton sx={{ backgroundColor: (approvedFctsSelected || pathId === 'approved')  ?  '#e7ebf0' : 'none' }} 
                                 onClick={(ev)=>{
                                     setTitle('Approved Facilities')
                                     setAllFctsSelected(false)
-                                    setPathId('not_all')
+                                    setPathId('approved')
                                     setApprovedFctsSelected(true)
                                     setNewFctsSelected(false)
                                     setUpdatedFctsSelected(false)
+                                    setFacilitiesPendingApproval(false)
+                                    setDHISSyncedFacilities(false)
                                     setFailedValidationFctsSelected(false)                                   
                                     setRejectedFctsSelected(false)
                                     setClosedFctsSelected(false)
@@ -543,13 +565,18 @@ const Home = (props) => {
                             >
                                 <ListItemText primary="Approved Facilities" />
                             </ListItemButton>
+
+                            {/* New Facilities Pending Validation */}
                             <ListItemButton sx={{ backgroundColor: (newFtsSelected || pathId === 'new_pending_validation') ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('Validate New Facilities')
+                                setPathId('new_pending_validation')
                                 setAllFctsSelected(false)
                                 setApprovedFctsSelected(false)
                                 setNewFctsSelected(true)
                                 setUpdatedFctsSelected(false)
+                                setFacilitiesPendingApproval(false)
+                                setDHISSyncedFacilities(false)
                                 setFailedValidationFctsSelected(false)                              
                                 setRejectedFctsSelected(false)
                                 setClosedFctsSelected(false)
@@ -558,21 +585,24 @@ const Home = (props) => {
                                 setFeedBackFctsSelected(false)
 
                                 handleQuickFiltersClick('new_pending_validation')
-                                
-                            
+                                            
                             }}
                             >
                                 <ListItemText primary="New Facilities Pending Validation"/>
                             </ListItemButton>
 
+                            {/* Update Facilities Pending Validation */}
                             <ListItemButton sx={{ backgroundColor: (updatedFctsSelected  || pathId === 'updated_pending_validation') ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('Validate Updated Facilities')
+                                setPathId('updated_pending_validation')
                                 setAllFctsSelected(false)
                                 setApprovedFctsSelected(false)
                                 setNewFctsSelected(false)
                                 setUpdatedFctsSelected(true)
                                 setFailedValidationFctsSelected(false)
+                                setFacilitiesPendingApproval(false)
+                                setDHISSyncedFacilities(false)
                                 setRejectedFctsSelected(false)
                                 setClosedFctsSelected(false)
                                 setIncompleteFctsSelected(false)
@@ -586,14 +616,68 @@ const Home = (props) => {
                                 <ListItemText primary="Updated Facilities Pending Validation"/>
                             </ListItemButton>
 
+                            {/* Facilities Pending Approval  */}    
+                            <ListItemButton sx={{ backgroundColor: (facilitiesPendingApproval  || pathId === 'to_publish') ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle('Facilities Pending Approval')
+                                setPathId('to_publish')
+                                setAllFctsSelected(false)
+                                setApprovedFctsSelected(false)
+                                setNewFctsSelected(false)
+                                setUpdatedFctsSelected(false)
+                                setFacilitiesPendingApproval(true)
+                                setDHISSyncedFacilities(false)
+                                setFailedValidationFctsSelected(false)
+                                setRejectedFctsSelected(false)
+                                setClosedFctsSelected(false)
+                                setIncompleteFctsSelected(false)
+                                setSyncRegulatedFctsSelected(false)
+                                setFeedBackFctsSelected(false)
+                                
+                                handleQuickFiltersClick('to_publish')
+                            
+                            }}
+                            >
+                                <ListItemText primary="Facilities Pending Approval"/>
+                            </ListItemButton>
+
+                            {/* Approved DHIS Synced Facilities */}
+                            <ListItemButton sx={{ backgroundColor: (facilitiesPendingApproval  || pathId === 'dhis_synced_facilities') ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle('DHIS Synced Approved Facilities')
+                                setPathId('dhis_synced_facilities')
+                                setAllFctsSelected(false)
+                                setApprovedFctsSelected(false)
+                                setNewFctsSelected(false)
+                                setUpdatedFctsSelected(false)
+                                setFacilitiesPendingApproval(false)
+                                setDHISSyncedFacilities(true)
+                                setFailedValidationFctsSelected(false)
+                                setRejectedFctsSelected(false)
+                                setClosedFctsSelected(false)
+                                setIncompleteFctsSelected(false)
+                                setSyncRegulatedFctsSelected(false)
+                                setFeedBackFctsSelected(false)
+                                
+                                handleQuickFiltersClick('dhis_synced_facilities')
+                            
+                            }}
+                            >
+                                <ListItemText primary="Approved DHIS Synced Facilities"/>
+                            </ListItemButton>
+
+                              {/* Failed Validation Facilities */}
                             <ListItemButton sx={{ backgroundColor: (failedValidationFctsSelected || pathId === 'failed_validation')?  '#e7ebf0' : 'none'}}
                             onClick={()=>{
                                 setTitle('Rejected Facilities')
+                                setPathId('failed_validation')
                                 setAllFctsSelected(false)
                                 setApprovedFctsSelected(false)
                                 setNewFctsSelected(false)
                                 setUpdatedFctsSelected(false)
                                 setFailedValidationFctsSelected(true)
+                                setFacilitiesPendingApproval(false)
+                                setDHISSyncedFacilities(false)
                                 setRejectedFctsSelected(false)
                                 setClosedFctsSelected(false)
                                 setIncompleteFctsSelected(false)
@@ -606,36 +690,42 @@ const Home = (props) => {
                                 <ListItemText primary="Failed Validation Facilities"/>
                             </ListItemButton>
 
+                            {/* Rejected Facilities */}
                             <ListItemButton sx={{  backgroundColor: (rejectedFctsSelected || pathId === 'rejected') ?  '#e7ebf0' : 'none'}}
                             onClick={()=>{
                                 setTitle('Rejected Facilities')
+                                setPathId('rejected')
                                 setAllFctsSelected(false)
                                 setApprovedFctsSelected(false)
                                 setNewFctsSelected(false)
                                 setUpdatedFctsSelected(false)
                                 setFailedValidationFctsSelected(false)
+                                setFacilitiesPendingApproval(false)
+                                setDHISSyncedFacilities(false)
                                 setRejectedFctsSelected(true)
                                 setClosedFctsSelected(false)
                                 setIncompleteFctsSelected(false)
                                 setSyncRegulatedFctsSelected(false)
                                 setFeedBackFctsSelected(false)
-
                                 handleQuickFiltersClick('rejected')
-                                
-                            
+                                                  
                             }}
                             >
                                 <ListItemText primary="Rejected Facilities"/>
                             </ListItemButton>
 
+                            {/* Closed Facilities */}
                             <ListItemButton sx={{ backgroundColor: (closedFctsSelected || pathId == "closed") ?  '#e7ebf0' : 'none'}}
                             onClick={()=>{
                                 setTitle('Closed Facilities')
+                                setPathId('closed')
                                 setAllFctsSelected(false)
                                 setApprovedFctsSelected(false)
                                 setNewFctsSelected(false)
                                 setUpdatedFctsSelected(false)
                                 setFailedValidationFctsSelected(false)
+                                setFacilitiesPendingApproval(false)
+                                setDHISSyncedFacilities(false)
                                 setRejectedFctsSelected(false)
                                 setClosedFctsSelected(true)
                                 setIncompleteFctsSelected(false)
@@ -644,20 +734,23 @@ const Home = (props) => {
 
                                 handleQuickFiltersClick('closed')
                                 
-                            
                             }}
                             >
                                 <ListItemText primary="Closed Facilities "/>
                             </ListItemButton>
 
+                            {/* Incomplete Facilities */}
                             <ListItemButton sx={{  backgroundColor: (incompleteFctsSelected || pathId == "incomplete")  ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('Incomplete Facilities')
+                                setPathId('incomplete')
                                 setAllFctsSelected(false)
                                 setApprovedFctsSelected(false)
                                 setNewFctsSelected(false)
                                 setUpdatedFctsSelected(false)
                                 setFailedValidationFctsSelected(false)
+                                setFacilitiesPendingApproval(false)
+                                setDHISSyncedFacilities(false)
                                 setRejectedFctsSelected(false)
                                 setClosedFctsSelected(false)
                                 setIncompleteFctsSelected(true)
@@ -671,14 +764,18 @@ const Home = (props) => {
                                 <ListItemText primary="Incomplete Facilities"/>
                             </ListItemButton>
 
+                            {/* Synchronize Regulated Facilities */}
                             <ListItemButton sx={{ backgroundColor: (syncRegulatedFctsSelected || pathId == "khis_synched")  ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('Synchronize Regulated Facilities')
+                                setPathId('khis_synched')
                                 setAllFctsSelected(false)
                                 setApprovedFctsSelected(false)
                                 setNewFctsSelected(false)
                                 setUpdatedFctsSelected(false)
                                 setFailedValidationFctsSelected(false)
+                                setFacilitiesPendingApproval(false)
+                                setDHISSyncedFacilities(false)
                                 setRejectedFctsSelected(false)
                                 setClosedFctsSelected(false)
                                 setIncompleteFctsSelected(false)
@@ -692,15 +789,18 @@ const Home = (props) => {
                                 <ListItemText primary="Synchronize Regulated Facilities"/>
                             </ListItemButton>
 
-                            
+                            {/* Feedback on Facilities */}
                             <ListItemButton sx={{ backgroundColor: (feedBackFctsSelected || pathId == "feedback") ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('Facilities Feedback From Public')
+                                setPathId('feedback')
                                 setAllFctsSelected(false)
                                 setApprovedFctsSelected(false)
                                 setNewFctsSelected(false)
                                 setUpdatedFctsSelected(false)
                                 setFailedValidationFctsSelected(false)
+                                setFacilitiesPendingApproval(false)
+                                setDHISSyncedFacilities(false)
                                 setRejectedFctsSelected(false)
                                 setClosedFctsSelected(false)
                                 setIncompleteFctsSelected(false)
@@ -857,7 +957,6 @@ const Home = (props) => {
                     </div>
 
                   
-                   
                     {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
@@ -933,7 +1032,9 @@ Home.getInitialProps = async (ctx) => {
             "number_of_beds", 
             "number_of_cots", 
             "incomplete",
-            "open_whole_day", 
+            "open_whole_day",
+            "to_publish", 
+            "dhis_synced_facilities",
             "open_weekends",
             "approved",
             "reporting_in_dhis",
@@ -948,21 +1049,21 @@ Home.getInitialProps = async (ctx) => {
                 query[flt] = ctx?.query[flt]
                 url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
             }
+
+
+            // Remove approved field if fetching for Facilities pending approval
+            // if (flt === 'to_publish') url = url.replace('approved,', '')
+
+          
         })
-
-        // console.log({ctxAsPath: ctx.asPath});
-
-        // if(ctx?.query) {
-            
-        //     url = url.replace('/facilities/?', `${ctx?.asPath.replace(/qf=[a-z]*&/, '')}&`)
-         
-        // }
 
 
         let current_url = url + '&page_size=100'
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
+
+    
 
 
         return fetch(url, {

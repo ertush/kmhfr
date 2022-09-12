@@ -1,6 +1,3 @@
-
-
-import { sendStatusCode } from "next/dist/server/api-utils";
 import { checkToken } from "../../../controllers/auth/auth";
 
 export default async function submitFormData(req, res) {
@@ -57,9 +54,18 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;              
-                case 'services':
-                    const {_id} = req.query;
-                    url = `${API_URL}/facilities/facilities/${_id}/`;
+                case 'services':                 
+                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
+                case 'infrastructure':           
+                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
+                case 'hr':               
+                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
@@ -76,20 +82,25 @@ export default async function submitFormData(req, res) {
                 case `edit`:
                     url = `${API_URL}/users/groups/${req.query.id}`
                     contentType = 'application/json;charset=utf-8';
-                    method = 'POST';
+                    method = 'PATCH';
                     break  
                 case `edit_user`:
                     url = `${API_URL}/users/${req.query.id}`
                     contentType = 'application/json;charset=utf-8';
-                    method = 'POST';
+                    method = 'PUT';
                     break
                 case `delete`:
                     url = `${API_URL}/users/groups/${req.query.id}`
                     contentType = 'application/json;charset=utf-8';
-                    method = 'POST';
+                    method = 'DELETE';
                     break 
                 case `delete_user`:
                     url = `${API_URL}/users/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'DELETE';
+                    break
+                case `validate_facility`:
+                    url = `${API_URL}/facilities/facility_approvals/`
                     contentType = 'application/json;charset=utf-8';
                     method = 'POST';
                     break
@@ -102,7 +113,7 @@ export default async function submitFormData(req, res) {
                     url = `${API_URL}/chul/units/${req.query.id}/`
                     contentType = 'application/json;charset=utf-8';
                     method = 'PATCH';
-                    break             
+                    break            
                 default:
 
                     
@@ -121,7 +132,7 @@ export default async function submitFormData(req, res) {
                     body: JSON.stringify(req.body)
                 })
                 
-                return resp.status === 204 ?  sendStatusCode(resp, 204) : resp.json()
+                return resp.json()
             }
             catch(err) {
                 console.error('Error posting facility basic details: ', err)
@@ -133,7 +144,10 @@ export default async function submitFormData(req, res) {
             }
         }
 
-    if (req.method === "POST") {
+       
+        
+
+    if (req.method !== '' && req.method !== null) {
                                                                                     
         try {
             return checkToken(req, res).then(t => {

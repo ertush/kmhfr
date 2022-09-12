@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { MapContainer, Marker,TileLayer, GeoJSON } from 'react-leaflet'
+import { MapContainer, Marker, GeoJSON } from 'react-leaflet'
 import Alert from '@mui/material/Alert';
 
 
@@ -16,10 +16,12 @@ const WardGISMap = ({markerCoordinates, geoJSON, center, ward}) => {
     }
 
     useEffect(() => {
+        console.log({geoJSON, center})
       let lngs = [] 
       let lats = []
       
        if(geoJSON){
+        
         geoJSON.properties.bound.coordinates.forEach(([lng, lat]) => {
             lngs.push(lng)
             lats.push(lat)
@@ -38,11 +40,11 @@ const WardGISMap = ({markerCoordinates, geoJSON, center, ward}) => {
     },  [markerCoordinates, geoJSON])
 
 
-
+  
   return (
    
         <>
-
+           
             {/* Map title */}
             <h3 className='mb-1 ml-2 text-blue-900 font-normal float-left text-lg capitalize'>{String(ward).toLowerCase()}{" ward"}</h3>
             {isOutOfBound &&  <Alert severity="error" sx={{width:'100%'}}>The coordinates did not validate</Alert>}
@@ -52,7 +54,7 @@ const WardGISMap = ({markerCoordinates, geoJSON, center, ward}) => {
                 {/* <TileLayer attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' url='http://{s}.tile.osm.org/{z}/{x}/{y}.png' /> */}
                 <GeoJSON data={geoJSON} stylez={geoJsonStyles}/>
 
-                <Marker position= {markerCoordinates}></Marker>
+                <Marker position = {markerCoordinates}></Marker>
                         
             </MapContainer>
         </>

@@ -21,7 +21,8 @@ import { FixedSizeList } from 'react-window';
 
 
 // Heroicons imports
-import {
+import
+{
 	ChevronDoubleRightIcon,
 	ChevronDoubleLeftIcon,
 
@@ -99,18 +100,24 @@ function AddCommUnit(props) {
 	const [formId, setFormId] = useState(0);
 
 	// Define useEffect
-	useEffect(() => {
+	useEffect(() =>
+	{
+		// console.log(facilities.filter(({ county }) => county )[0])
+
 		const formIdState = window.sessionStorage.getItem('formId');
 
-		if (formIdState == undefined || formIdState == null || formIdState == '') {
+		if (formIdState == undefined || formIdState == null || formIdState == '')
+		{
 			window.sessionStorage.setItem('formId', 1);
 		}
 		// console.log(formId);
 
 		setFormId(window.sessionStorage.getItem('formId'));
 
-		return () => {
-			if (window.sessionStorage.getItem('formId') == '3') {
+		return () =>
+		{
+			if (window.sessionStorage.getItem('formId') == '3')
+			{
 				window.sessionStorage.setItem('formId', 0);
 			}
 		};
@@ -166,11 +173,14 @@ function AddCommUnit(props) {
 								className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50'
 								style={{ minHeight: '250px' }}>
 								{/* Form-changing switch statement */}
-								{(() => {
-									switch (parseInt(formId)) {
+								{(() =>
+								{
+									switch (parseInt(formId))
+									{
 										// Basic Details Case
 										case 0:
-											const handleBasicDetailsSubmit = (event) => {
+											const handleBasicDetailsSubmit = (event) =>
+											{
 												event.preventDefault();
 
 												let _id;
@@ -181,7 +191,8 @@ function AddCommUnit(props) {
 												// Loop through all the form elements and add them to the object
 												const elements = [...event.target];
 
-												elements.forEach(({ name, value }) => {
+												elements.forEach(({ name, value }) =>
+												{
 													formData[name] = value;
 												});
 
@@ -550,7 +561,8 @@ function AddCommUnit(props) {
 										// CHEWs Case
 										case 1:
 											// Handle CHEWs Case
-											const handleCHEWSubmit = (event) => {
+											const handleCHEWSubmit = (event) =>
+											{
 												event.preventDefault();
 
 												const ChewData = {};
@@ -605,12 +617,13 @@ function AddCommUnit(props) {
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
 
-											const handleCHEWPrevious = (event) => {
+											const handleCHEWPrevious = (event) =>
+											{
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 0);
 
-												console.log({ formId })
+												console.log({  formId  })
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -700,7 +713,7 @@ function AddCommUnit(props) {
 																			name='delete'
 																			type='button'
 																			className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 rounded border border-red-500 hover:border-transparent '
-																			onClick={() => { }}>
+																			onClick={() => {  }}>
 																			<TrashIcon class="w-7 h-7 text-red-500 group-hover:text-white" />
 																		</button>
 																	</div>
@@ -733,7 +746,8 @@ function AddCommUnit(props) {
 										// Services Case
 										case 2:
 											// Handle Service Form Submit
-											const handleServiceSubmit = (event) => {
+											const handleServiceSubmit = (event) =>
+											{
 												event.preventDefault();
 
 												const _payload = services.map(({value}) => ({service: value}))
@@ -763,7 +777,8 @@ function AddCommUnit(props) {
 												setServices([])
 											};
 
-											const handleServicesPrevious = (event) => {
+											const handleServicesPrevious = (event) =>
+											{
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 1);
@@ -884,7 +899,8 @@ AddCommUnit.getInitialProps = async (ctx) => {
 		.then(async (t) => {
 			if (t.error) {
 				throw new Error('Error checking token');
-			} else {
+			} else
+			{
 				let token = t.token;
 				console.log('token', token);
 
@@ -933,16 +949,21 @@ AddCommUnit.getInitialProps = async (ctx) => {
 
 			}
 		})
-		.catch((err) => {
+		.catch((err) =>
+		{
 			console.log('Error checking token: ' + err);
-			if (typeof window !== 'undefined' && window) {
-				if (ctx?.asPath) {
+			if (typeof window !== 'undefined' && window)
+			{
+				if (ctx?.asPath)
+				{
 					window.location.href = ctx?.asPath;
-				} else {
+				} else
+				{
 					window.location.href = '/facilities';
 				}
 			}
-			setTimeout(() => {
+			setTimeout(() =>
+			{
 				return {
 					error: true,
 					err: err,

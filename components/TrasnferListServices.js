@@ -27,14 +27,22 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TrasnferListServices({categories, setServices, setRefreshForm, refreshForm}) {
+export default function TrasnferListServices({categories, setServices, setRefreshForm4, refreshForm4, selectedRight, setSelectedServiceRight}) {
 
- 
   const [newSelected, setNewSelected] = React.useState([])
   const [checked, setChecked] = React.useState([]);
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
-  const [right, setRight] = React.useState([]);
+  const [right, setRight] = React.useState((selectedRight ? (() => {
+    const result = []
+
+    new Set(selectedRight.map(({name}) => name)).forEach(data => {
+      result.push(data)
+  })
+
+  return result
+  })() : []));
+  
   const [checkAll, setCheckAll] = React.useState(false);
   const [selectedService, setSelectedService] = React.useState({});
 
@@ -45,11 +53,14 @@ export default function TrasnferListServices({categories, setServices, setRefres
 
 useMemo(() => {
      
+    // console.log({selectedRight, right})
+
+     setSelectedServiceRight(selectedRight)
      leftChecked = intersection(checked, left);
      rightChecked = intersection(checked, right);
+    
 
-
-  }, [left])
+  }, [left, right])
 
   const handleToggle = (value) => () => {
   
@@ -69,9 +80,7 @@ useMemo(() => {
   };
 
   const handleCheckBoxToggle =  (service) => () => {
-    // console.log({service})
-
-    
+ 
     const currentIndex = checkBoxChecked.indexOf(service.subctg);
   
     const crntIndex =  newSelected.indexOf(service)
@@ -101,32 +110,27 @@ useMemo(() => {
     setLeft([]);
     setCheckAll(true);
 
-    // console.log({categories})
-    // setServices((ctgs => {
-    //  return ctgs.map(({subCategories}) => subCategories)
-    // })(categories));
-
     setServices(selectedService)
  
   };
 
   const handleCheckedRight = () => {
-    // console.log({checkBoxChecked})
     setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
    
-    console.log({selectedService})
-    setRefreshForm(!refreshForm)
+    // console.log({selectedService})
+    setRefreshForm4(!refreshForm4)
     setServices(selectedService)
+    
   };
 
   const handleCheckedLeft = () => {
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
-
-    setServices(selectedService)
+    setServices(right)
+    setSelectedServiceRight(right)
   };
 
   const handleAllLeft = () => {
@@ -143,87 +147,86 @@ useMemo(() => {
 
       const [_data] = data
 
-      const {name, subCategories, value} = _data
+      const {name, subCategories, value} = _data ?? {name:'Loading...', subCategories:[], value:[]}
 
-      // console.log({value})
- 
       return (
-       
         <Accordion sx={{flex:100, backgroundColor:'#f1f1f1', boxShadow:'none'}} >
-          
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography>{name}</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-            <ListItem  key={1} component="div">
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>{name}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+              <ListItem  key={1} component="div">
 
-              <div className='flex-col items-start justify-start'>
-              {
-                subCategories.map((subctg, i) => (
-                  
-                  <div key={i} className='flex items-center space-x-2'>
-                    {
-                      !isRight ?
-      
-                      <>
-                        {/* {(() => {console.log({checkBoxChecked})})()} */}
-                        <Checkbox
-                          checked={checkBoxChecked.indexOf(subctg) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          onChange={handleCheckBoxToggle({subctg, value:value[i]})}
-                          inputProps={{
-                            'aria-labelledby': 'options',
-                          }}
-                          />
-                          <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
-                      </>
-                  :
-                  
-                      <>
-                        {
-                          (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
-                          <Checkbox
-                          checked={checkAll ? true : checkBoxChecked.indexOf(subctg) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          onChange={handleCheckBoxToggle({subctg, value:value[i]})}
-                          inputProps={{
-                            'aria-labelledby': 'options',
-                          }}
-                        />
-                        }
-                        {
-                          (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
-                          <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
-                        }
-                      </>
-                    }
-                      </div>
+                <div className='flex-col items-start justify-start'>
+                {
+                  subCategories.map((subctg, i) => (
                     
-                ))
-              }
-             </div>
-           
-                       
-            </ListItem>
-        </AccordionDetails>
-  
-      </Accordion> 
+                    <div key={i} className='flex items-center space-x-2'>
+                      {
+                        !isRight ?
         
-                  
+                        <>
+                          {/* {(() => {console.log({checkBoxChecked})})()} */}
+                          <Checkbox
+                            checked={checkBoxChecked.indexOf(subctg) !== -1}
+                            tabIndex={-1}
+                            disableRipple
+                            onChange={handleCheckBoxToggle({subctg, value:value[i]})}
+                            inputProps={{
+                              'aria-labelledby': 'options',
+                            }}
+                            />
+                            <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
+                        </>
+                    :
+                    
+                        <>
+                          {
+                            (selectedRight !== null ? (selectedRight.map(ctg => {ctg => ctg.subCategories[0]}).indexOf(subctg) !== -1 || checkAll) : checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                            <Checkbox
+                            checked={checkAll ? true : selectedRight !== null ? (selectedRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1) : (checkBoxChecked.indexOf(subctg) !== -1)}
+                            tabIndex={-1}
+                            disableRipple
+                            onChange={handleCheckBoxToggle({subctg, value:value[i]})}
+                            inputProps={{
+                              'aria-labelledby': 'options',
+                            }}
+                          />
+                          }
+                          {/* {console.log({selectedRight: selectedRight.map(ctg => ctg.subCategories[0])})} */}
+                          {
+                            selectedRight !== null &&
+                            (selectedRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1 || checkAll) &&
+                            <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
+                          }
+                        </>
+                      }
+                        </div>
+                      
+                  ))
+                }
+              </div>
+            
+                        
+              </ListItem>
+          </AccordionDetails>
+    
+        </Accordion> 
+     
       )
   }
 
-  const customList = (items, isRight) => (
+  const customList = (items, _isRight) => (
     <Paper sx={{ width: 520, height: 300, overflow: 'auto', padding:1 }}>
         
       <List dense component="div" role="list">
-        {items.map((_data, i) => {
+        
+        {
+        items.map((_data, i) => {
 
           
           const labelId = `transfer-list-item-${_data}-label`;
@@ -241,22 +244,7 @@ useMemo(() => {
 
                   checked={
                     checked.indexOf(_data) !== -1
-                    /*(() => {
-                      
-                      const foundCtgs = Array.from(checkBoxChecked, subCtg => {
-                        return categories.filter(_subCtg => {for(let i = 0 ; i < _subCtg.subCategories.length; i++) if(_subCtg.subCategories[i] === subCtg) return _subCtg.subCategories[i] === subCtg})[0] || [] 
-                      }) 
-
-                      // console.log({foundCtgs})
-
-                      const _eval = Array.from(foundCtgs, ctg => {
-                        if(ctg === _data) return true
-                      }) || []
-
-                      console.log(_eval, _data)
-
-                    return _eval.length > 0 ? true : checked.indexOf(_data) !== -1
-                  })()*/} 
+                   } 
                   tabIndex={-1}
                   disableRipple
                   onChange={handleToggle(_data)}
@@ -269,11 +257,14 @@ useMemo(() => {
              
               
 
-              {accordion(getCtgs(categories, _data), isRight)}
+              {accordion(getCtgs(categories, _data), _isRight)}
 
             </ListItem>
           );
-        })}
+        })
+       
+
+        }
         <ListItem />
       </List>
     </Paper>
