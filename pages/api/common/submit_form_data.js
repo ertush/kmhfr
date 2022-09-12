@@ -19,21 +19,41 @@ export default async function submitFormData(req, res) {
                     method = 'POST';
                     contentType = 'application/json;charset=utf-8';
                     break;
+                case 'CHUs':
+                    url = `${API_URL}/chul/units/`
+                    method = 'POST';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
                 case 'gis':
                     url = `${API_URL}/gis/facility_coordinates/`
                     method = 'POST';
                     contentType = 'application/json;charset=utf-8';
-                    break
+                    break;
                 case 'documents':
                     url = `${API_URL}/common/documents/`;
                     method = 'POST';
                     contentType = 'multipart/form-data; boundary=---------------------------22584204591762068164170278481';
+                    break;
+                case 'chul_data':
+                    url = `${API_URL}/chul/units/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
                     break;
                 case 'facility_data':
                     url = `${API_URL}/facilities/facilities/${req.query.id}/`;
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
+                case 'edit_chul':
+                    url = `${API_URL}/chul/units/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
+                case 'chul_services':
+                    url = `${API_URL}/chul/units/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;              
                 case 'services':                 
                     url = `${API_URL}/facilities/facilities/${req.query.id}/`;
                     method = 'PATCH';
@@ -83,13 +103,23 @@ export default async function submitFormData(req, res) {
                     url = `${API_URL}/facilities/facility_approvals/`
                     contentType = 'application/json;charset=utf-8';
                     method = 'POST';
+                    break
+                case `approve_chul`:
+                    url = `${API_URL}/chul/updates/${req.query.id}/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'PATCH';
+                    break   
+                case `reject_chul`:
+                    url = `${API_URL}/chul/units/${req.query.id}/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'PATCH';
                     break            
                 default:
+
                     
                     break;
             }
-             
- 
+              
             try {
                 console.log({url});
                 const resp = await fetch(url, {
