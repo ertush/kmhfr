@@ -83,7 +83,57 @@ export default async function submitFormData(req, res) {
                     url = `${API_URL}/facilities/facility_approvals/`
                     contentType = 'application/json;charset=utf-8';
                     method = 'POST';
-                    break            
+                    break  
+                case `beds_cots`:
+                    url = `${API_URL}/reporting/?report_type=facility_count_by_county`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break  
+                case `facility_owners`:
+                    url = `${API_URL}/reporting/?report_type=facility_count_by_owner_category`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break 
+                case `owner_categories`:
+                    url = `${API_URL}/reporting/?report_type=facility_count_by_owner`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break   
+                case `facility_type`:
+                    url = `${API_URL}/reporting/?report_type=facility_count_by_facility_type`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break
+                case `keph_level`:
+                    url = `${API_URL}/reporting/?report_type=facility_keph_level_report`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break
+                case `facility_coordinates`:
+                    url = `${API_URL}/facilities/facilities/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break
+                case `officers_in_charge`:
+                    url = `${API_URL}/facilities/facility_officers/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break
+                case `admin_offices`:
+                    url = `${API_URL}/admin_offices/?report_type=county`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break  
+                case `chu_count`:
+                    url = `${API_URL}/reporting/chul/?report_type=county`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break 
+                case `chu_status`:
+                    url = `${API_URL}/reporting/chul/?report_type=status`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break          
                 default:
                     
                     break;
@@ -99,7 +149,7 @@ export default async function submitFormData(req, res) {
                         'Content-Type': contentType
                     },
                     method,
-                    body: JSON.stringify(req.body)
+                    body: method == 'GET' ? null:JSON.stringify(req.body)
                 })
                 
                 return resp.json()
