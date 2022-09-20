@@ -347,6 +347,7 @@ const EditFacility = (props) => {
     const [selectedHrRight, setSelectedHrRight] = useState()
 	const [geoJSON, setGeoJSON] = useState(null)
     const [center, setCenter] = useState(null)
+    const [operationStatus, setOperationStatus] = useState('')
 	const [refreshForm5, setRefreshForm5] = useState(false)
     const [refreshForm6, setRefreshForm6] = useState(false)
     
@@ -606,10 +607,10 @@ const EditFacility = (props) => {
         }
 
         if(otherContactRef.current !== null){
-            otherContactRef.current.state.value = _officerName.contacts !==  undefined ? _officerName.contacts[0].type : ''
+            otherContactRef.current.state.value = _officerName.contacts ?? _officerName.contacts[0].type ?? ''
         }
 
-        setOtherContactDetail(_officerName.contacts !== undefined ? _officerName.contacts[0].contact : '')
+        setOtherContactDetail(_officerName.contacts ?? _officerName.contacts ?? '')
         
     }
 
@@ -959,7 +960,9 @@ const EditFacility = (props) => {
                                         required
                                         placeholder="Select an operation status..."
                                         onChange={
-                                            ev => ev.preventDefault()
+                                          ev => {
+                                            setOperationStatus(ev.value) 
+                                          }
                                         }
                                         name="operation_status" 
                                         className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
