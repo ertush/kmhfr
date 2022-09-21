@@ -2,22 +2,13 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
-import moment from 'moment'
-import ListSubheader from '@mui/material/ListSubheader';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
-import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
+import Resources from './resources'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -36,7 +27,7 @@ const ByCounty = (props) => {
             ><a>{params.value}</a></Link>
         )}
 
-    let columnDefs= [
+    const [columns, setColumns]=useState([
         {headerName: "Sub County", field: "county_name",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
@@ -50,7 +41,7 @@ const ByCounty = (props) => {
             }}
             > View Facilities </button>
           },}
-    ]
+    ])
 
 	const [openHFR, setOpenHFR] = useState(false);
     const [gridApi, setGridApi] = useState(null);
@@ -84,31 +75,6 @@ const ByCounty = (props) => {
         setUsers(lnlst)
         updateData(lnlst)
     };
-console.log(users);
-    const handleClick =(params)=>{
-        console.log(params);
-        fetch(`/api/common/submit_form_data/?path=static_report&county=${params}`, {
-            headers:{
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
-                
-            },
-            method: 'GET' 
-        })
-        .then(res => res.json()).then(res=>{
-           const lnlst= res.results.map((sbcty_beds)=>{
-                return {
-                    ...sbcty_beds,
-                    county_name: sbcty_beds.sub_county_name,
-                    beds: sbcty_beds.beds,
-                    cots: sbcty_beds.cots,
-                    actions: (<a href="#">View</a>)
-                }
-                
-            })
-            setUsers(lnlst)}
-        )
-    }
 
     return (
         <div className="">
@@ -138,80 +104,9 @@ console.log(users);
                         </div>
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
-						
-                        <List
-                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                        subheader={
-                            <ListSubheader component="div" id="nested-list-subheader">
-                                Resources
-                            </ListSubheader>
-                        }
-                        >	
-                            {/* Health Facility Reports*/}
-							<ListItemButton onClick={handleHFRUnitsClick}>
-								<ListItemText primary="HealthFacility Reports" />
-								{openHFR ? <ExpandLess /> : <ExpandMore />}
-							</ListItemButton>
-							<Collapse in={openHFR} timeout="auto" unmountOnExit>
-								<List component="div" disablePadding>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Beds and Cots" />
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Facilities Count"/>
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Facilities by Owners" />
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Facilities by Owner Categories" />
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Keph Levels" />
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Facility Coordinates " />
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Officers In-charge" />
-									</ListItemButton>
-								</List>
-							</Collapse>
-
-							{/* Administrative Offices*/}
-							<ListItemButton onClick={handleHFRUnitsClick}>
-								<ListItemText primary="Administrative Offices" />
-								{openHFR ? <ExpandLess /> : <ExpandMore />}
-							</ListItemButton>
-							<Collapse in={openHFR} timeout="auto" unmountOnExit>
-								<List component="div" disablePadding>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Admin Offices" />
-									</ListItemButton>
-								</List>
-							</Collapse>
-                                {/* Administrative Offices*/}
-							<ListItemButton onClick={handleHFRUnitsClick}>
-								<ListItemText primary="Community Health Units" />
-								{openHFR ? <ExpandLess /> : <ExpandMore />}
-							</ListItemButton>
-							<Collapse in={openHFR} timeout="auto" unmountOnExit>
-								<List component="div" disablePadding>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Community Health Units Count" />
-									</ListItemButton>
-								</List>
-								<List component="div" disablePadding>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Community Health Units (Status)" />
-									</ListItemButton>
-								</List>
-							</Collapse>
-                            </List>
-                </div>
+                    {/* list */}
+                    <Resources  setColumns={setColumns} setUsers={setUsers}/>
+                    
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div className='mx-4'>
@@ -267,29 +162,12 @@ console.log(users);
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
                                     rowData={users}
-                                    columnDefs={columnDefs}
+                                    columnDefs={columns}
                                     frameworkComponents={{
                                         LinkCellRenderer
                                       }}
                                     />
                             </div>
-                            {/* <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
-                                <AgGridReact
-                                    rowStyle={{width: '100vw'}}
-                                    sideBar={true}
-                                    defaultColDef={{
-                                        sortable: true,
-                                        filter: true,
-                                    }}
-                                    enableCellTextSelection={true}
-                                    onGridReady={onGridReady}
-                                    rowData={users}
-                                    columnDefs={columnDefs}
-                                    frameworkComponents={{
-                                        LinkCellRenderer
-                                      }}
-                                    />
-                            </div> */}
                         </div>
                         {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
