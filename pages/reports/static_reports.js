@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
+import Select from 'react-select'; 
 import Resources from './resources'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -33,6 +34,7 @@ const Users = (props) => {
     const [users, setUsers]=useState([])
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
+    const [filterOption, setFilterOption] = useState('')
     const [columns, setColumns]=useState([
         {headerName: "County", field: "county_name",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Beds", field: "beds"},
@@ -87,7 +89,29 @@ const Users = (props) => {
     useEffect(() => {
         filter(searchTerm)
     }, [searchTerm])
-console.log(users)
+
+    useEffect(()=>{
+        switch (filterOption) {
+            case 'county':
+                router.push({
+                    pathname: `/reports/static_reports/`
+                })
+                break;
+            case 'sub-county':
+                router.push({
+                    pathname: `/reports/by_county/`
+                })
+                break;
+            case 'ward':
+                router.push({
+                    pathname: `/reports/by_ward/`
+                })
+                break;
+            default:
+                break;
+        }
+    },[filterOption])
+console.log(filterOption)
 
     return (
         <div className="">
@@ -159,6 +183,14 @@ console.log(users)
                            
                                     
                             </form>
+                            <Select
+                                options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
+                                required
+                                placeholder='Filter By:'
+                                onChange={(e) => setFilterOption(e.value)}
+                                name='filter_by'
+                                className='flex-none w-1/5 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
+                            />
                             <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
                             </h5>

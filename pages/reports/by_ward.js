@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
+import Select from 'react-select'; 
 import Resources from './resources'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -32,13 +33,21 @@ const ByWard = (props) => {
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-            return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold'> View Facilities </button>
+            return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+            onClick={() => {
+                router.push({
+                    pathname: `/reports/by_facility/`,
+                    query: { id: params.data.ward, level: 'ward' }
+                })
+            }}
+            > View Facilities </button>
           },}
     ])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
     const [filtered, setFiltered]=useState([])
+    const [filterOption, setFilterOption] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
     const onGridReady = (params) => {
      
@@ -77,6 +86,28 @@ const ByWard = (props) => {
     useEffect(() => {
         filter(searchTerm)
     }, [searchTerm])
+
+    useEffect(()=>{
+        switch (filterOption) {
+            case 'county':
+                router.push({
+                    pathname: `/reports/static_reports/`
+                })
+                break;
+            case 'sub-county':
+                router.push({
+                    pathname: `/reports/by_county/`
+                })
+                break;
+            case 'ward':
+                router.push({
+                    pathname: `/reports/by_ward/`
+                })
+                break;
+            default:
+                break;
+        }
+    },[filterOption])
 
     return (
         <div className="">
@@ -147,6 +178,14 @@ const ByWard = (props) => {
                            
                                     
                             </form>
+                            <Select
+                                options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
+                                required
+                                placeholder='Filter By:'
+                                onChange={(e) => setFilterOption(e.value)}
+                                name='filter_by'
+                                className='flex-none w-1/5 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
+                            />
                             <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
                             </h5>
@@ -215,8 +254,11 @@ ByWard.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
    
 // api/reporting/?report_type=beds_and_cots_by_county - number of beds and cots
-    const fetchData = (token) => {
-        let url = API_URL + `/reporting/?constituency=${ctx.query.id}&report_type=beds_and_cots_by_ward`
+    const fetchData = async (token) => {
+        let url = API_URL + `/reporting/?report_type=beds_and_cots_by_ward`
+        if (ctx.query.id) {
+             url = API_URL + `/reporting/?constituency=${ctx.query.id}&report_type=beds_and_cots_by_ward`
+        }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -245,28 +287,28 @@ ByWard.getInitialProps = async (ctx) => {
             url = `${url}&page=${ctx.query.page}`
         }
         
-        return fetch(url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                    return {
-                        data: json, query, token, path: ctx.asPath || '/users', current_url: current_url 
-                    }
-                
-            }).catch(err => {
-                console.log('Error fetching facilities: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    data: [],
-                    query: {},
-                    path: ctx.asPath || '/users',
-                    current_url: ''
+        try {
+            const r = await fetch(url, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
                 }
             })
+            const json = await r.json()
+            return {
+                data: json, query, token, path: ctx.asPath || '/users', current_url: current_url
+            }
+        } catch (err) {
+            console.log('Error fetching facilities: ', err)
+            return {
+                error: true,
+                err: err,
+                data: [],
+                query: {},
+                path: ctx.asPath || '/users',
+                current_url: ''
+            }
+        }
     }
 
     return checkToken(ctx.req, ctx.res).then(t => {
