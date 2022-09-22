@@ -6,16 +6,9 @@ import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
-import ListSubheader from '@mui/material/ListSubheader';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
+import Resources from './resources'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -34,21 +27,19 @@ const ByWard = (props) => {
             ><a>{params.value}</a></Link>
         )}
 
-    let columnDefs= [
+    const [columns, setColumns]=useState ([
         {headerName: "Facility Code", field: "facility_code"},
         {headerName: "Facility Name", field: "facility_name", cellRenderer: "LinkCellRenderer", cellStyle: {color: 'blue',maxWidth: 200, overflow: 'visible', }},
         {headerName: "No. of functional general beds", field: "beds"},
         {headerName: "No. of functional cots", field: "cots"},
-    ]
+    ])
 
-	const [openHFR, setOpenHFR] = useState(false);
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
+    const [filtered, setFiltered]=useState([])
+    const [searchTerm, setSearchTerm] = useState('')
 
-	const handleHFRUnitsClick = () => {
-		setOpenHFR(!openHFR);
-	}
      
     const onGridReady = (params) => {
      
@@ -64,15 +55,29 @@ const ByWard = (props) => {
                 beds: facility_beds.number_of_beds,
                 cots: facility_beds.number_of_cots,
             }
-            
         })
      
         setUsers(lnlst)
         updateData(lnlst)
     };
     
-console.log(users);
-
+    const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
+        const filter =(searchTerm)=>{
+            if (searchTerm !== '' && searchTerm.length > 3) {
+                const filteredData = users.filter((row) => {
+                    return Object.keys(row).some((field) => {
+                        return filterField(searchTerm, row[field]);
+                    });
+                });
+                setFiltered(filteredData);
+            } else {
+                setFiltered(users);
+            }
+                
+        }
+        useEffect(() => {
+            filter(searchTerm)
+        }, [searchTerm])
     return (
         <div className="">
             <Head>
@@ -101,80 +106,7 @@ console.log(users);
                         </div>
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
-						
-                        <List
-                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                        subheader={
-                            <ListSubheader component="div" id="nested-list-subheader">
-                                Resources
-                            </ListSubheader>
-                        }
-                        >	
-                            {/* Health Facility Reports*/}
-							<ListItemButton onClick={handleHFRUnitsClick}>
-								<ListItemText primary="HealthFacility Reports" />
-								{openHFR ? <ExpandLess /> : <ExpandMore />}
-							</ListItemButton>
-							<Collapse in={openHFR} timeout="auto" unmountOnExit>
-								<List component="div" disablePadding>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Beds and Cots" />
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Facilities Count"/>
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Facilities by Owners" />
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Facilities by Owner Categories" />
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Keph Levels" />
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Facility Coordinates " />
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Officers In-charge" />
-									</ListItemButton>
-								</List>
-							</Collapse>
-
-							{/* Administrative Offices*/}
-							<ListItemButton onClick={handleHFRUnitsClick}>
-								<ListItemText primary="Administrative Offices" />
-								{openHFR ? <ExpandLess /> : <ExpandMore />}
-							</ListItemButton>
-							<Collapse in={openHFR} timeout="auto" unmountOnExit>
-								<List component="div" disablePadding>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Admin Offices" />
-									</ListItemButton>
-								</List>
-							</Collapse>
-                                {/* Administrative Offices*/}
-							<ListItemButton onClick={handleHFRUnitsClick}>
-								<ListItemText primary="Community Health Units" />
-								{openHFR ? <ExpandLess /> : <ExpandMore />}
-							</ListItemButton>
-							<Collapse in={openHFR} timeout="auto" unmountOnExit>
-								<List component="div" disablePadding>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Community Health Units Count" />
-									</ListItemButton>
-								</List>
-								<List component="div" disablePadding>
-									<ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Community Health Units (Status)" />
-									</ListItemButton>
-								</List>
-							</Collapse>
-                            </List>
-                </div>
+                    <Resources setColumns={setColumns} setUsers={setUsers} search={searchTerm} setFiltered={setFiltered}/>
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div className='mx-4'>
@@ -187,6 +119,7 @@ console.log(users);
                                     id="search-input"
                                     className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                     type="search"
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                     // defaultValue={searchTerm}
                                     placeholder="Search anything ...."
                                 />
@@ -229,30 +162,13 @@ console.log(users);
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={users}
-                                    columnDefs={columnDefs}
+                                    rowData={filtered}
+                                    columnDefs={columns}
                                     frameworkComponents={{
                                         LinkCellRenderer
                                       }}
                                     />
                             </div>
-                            {/* <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
-                                <AgGridReact
-                                    rowStyle={{width: '100vw'}}
-                                    sideBar={true}
-                                    defaultColDef={{
-                                        sortable: true,
-                                        filter: true,
-                                    }}
-                                    enableCellTextSelection={true}
-                                    onGridReady={onGridReady}
-                                    rowData={users}
-                                    columnDefs={columnDefs}
-                                    frameworkComponents={{
-                                        LinkCellRenderer
-                                      }}
-                                    />
-                            </div> */}
                         </div>
                         {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">

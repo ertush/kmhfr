@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
@@ -42,18 +42,11 @@ const ByCounty = (props) => {
             > View Facilities </button>
           },}
     ])
-
-	const [openHFR, setOpenHFR] = useState(false);
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
-    const [usersTheme, setUsersTheme] = useState(true)
-    const [inactiveUsersTheme, setInactiveUsersTheme] = useState(false)
-    const [groupsTheme, setGroupsTheme] = useState(false)
-
-	const handleHFRUnitsClick = () => {
-		setOpenHFR(!openHFR);
-	}
+    const [filtered, setFiltered]=useState([])
+    const [searchTerm, setSearchTerm] = useState('')
      
     const onGridReady = (params) => {
      
@@ -76,6 +69,25 @@ const ByCounty = (props) => {
         updateData(lnlst)
     };
 
+    const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
+    const filter =(searchTerm)=>{
+        if (searchTerm !== '' && searchTerm.length > 3) {
+            const filteredData = users.filter((row) => {
+                return Object.keys(row).some((field) => {
+                    return filterField(searchTerm, row[field]);
+                });
+            });
+            setFiltered(filteredData);
+        } else {
+            setFiltered(users);
+        }
+            
+    }
+    useEffect(() => {
+        filter(searchTerm)
+    }, [searchTerm])
+
+    console.log(props.current_url);
     return (
         <div className="">
             <Head>
@@ -105,7 +117,7 @@ const ByCounty = (props) => {
                         </div>
                     </div>
                     {/* list */}
-                    <Resources  setColumns={setColumns} setUsers={setUsers}/>
+                    <Resources setColumns={setColumns} setUsers={setUsers} search={searchTerm} setFiltered={setFiltered}/>
                     
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
@@ -119,6 +131,7 @@ const ByCounty = (props) => {
                                     id="search-input"
                                     className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                     type="search"
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                     // defaultValue={searchTerm}
                                     placeholder="Search anything ...."
                                 />
@@ -132,8 +145,9 @@ const ByCounty = (props) => {
 
                                 <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
+                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
+                                                // router.push(dl_url, undefined, { shallow: true })
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
                                                 // window.location.href = dl_url
                                             }}
@@ -161,7 +175,7 @@ const ByCounty = (props) => {
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={users}
+                                    rowData={filtered}
                                     columnDefs={columns}
                                     frameworkComponents={{
                                         LinkCellRenderer
