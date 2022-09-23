@@ -21,10 +21,21 @@ const Users = (props) => {
     const router = useRouter()
 
     const LinkCellRenderer = (params) =>{
+        let reportType =''
+        let countyID = ''
+        if(params.data.hasOwnProperty('facilities')){
+            reportType = 'facility_count_by_county'
+            countyID = params.data.area_id
+        }
+        if(params.data.hasOwnProperty('beds')){
+            reportType = 'beds_and_cots_by_constituency'
+            countyID = params.data.county
+        }
+        console.log(countyID);
         return(
             <Link
             href={{ pathname: `/reports/by_county/`,
-            query: { id: params.data.county } }}
+            query: { id: countyID, report_type:reportType } }}
     
             ><a>{params.value}</a></Link>
         )}

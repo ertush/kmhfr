@@ -211,202 +211,202 @@ const Resources = ({setColumns, setUsers, search, setFiltered}) => {
     }, [search])
 
     return (
-                    <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
-						
-                        <List
-                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                        subheader={
-                            <ListSubheader component="div" id="nested-list-subheader">
-                                Resources
-                            </ListSubheader>
-                        }
-                        >	
-                            {/* Health Facility Reports*/}
-							<ListItemButton onClick={handleHFRUnitsClick}>
-								<ListItemText primary="HealthFacility Reports" />
-								{openHFR ? <ExpandLess /> : <ExpandMore />}
-							</ListItemButton>
-							<Collapse in={openHFR} timeout="auto" unmountOnExit>
-								<List component="div" disablePadding>
-                                    {/* <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county');}}>
-                                        <ListItemText primary="Counties" />
-                                    </ListItemButton> */}
-                                    <ListItemButton sx={{ ml: 8 }}>
-										<ListItemText primary="Beds and Cots"/>
-									</ListItemButton>
-									<ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('beds_cots'); setColumns([
-                                            {headerName: "County", field: "area_name",   cellRenderer: "LinkCellRenderer"},
-                                            {headerName: "Number of Facilities", field: "facilities"},
-                                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-                                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
-                                                onClick={() => {
-                                                    router.push({
-                                                        pathname: `/reports/by_facility/`,
-                                                        query: { id: params.data.county, level: 'county' }
-                                                    })
-                                                }}
-                                                > View Facilities </button>
-                                            },}])}}>
-										<ListItemText primary="Facilities Count" />
-									</ListItemButton>
-								
-                                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('facility_owners'); setColumns([
-                                            {headerName: "Owner", field: "owner",   cellRenderer: "LinkCellRenderer"},
-                                            {headerName: "Number of Facilities", field: "facilities"},
-                                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-                                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
-                                                onClick={() => {
-                                                    router.push({
-                                                        pathname: `/reports/by_facility/`,
-                                                        query: { id: params.data.county, level: 'county' }
-                                                    })
-                                                }}
-                                                > View Facilities </button>
-                                            },}])}}>
-										<ListItemText primary="Facilities by Owners" />
-									</ListItemButton>
+    <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
+        
+        <List
+        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+        component="nav"
+        aria-labelledby="nested-list-subheader"
+        subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+                Resources
+            </ListSubheader>
+        }
+        >	
+            {/* Health Facility Reports*/}
+            <ListItemButton onClick={handleHFRUnitsClick}>
+                <ListItemText primary="HealthFacility Reports" />
+                {openHFR ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={openHFR} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                    {/* <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county');}}>
+                        <ListItemText primary="Counties" />
+                    </ListItemButton> */}
+                    <ListItemButton sx={{ ml: 8 }}>
+                        <ListItemText primary="Beds and Cots"/>
+                    </ListItemButton>
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('beds_cots'); setColumns([
+                            {headerName: "County", field: "area_name",   cellRenderer: "LinkCellRenderer"},
+                            {headerName: "Number of Facilities", field: "facilities"},
+                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
+                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                                onClick={() => {
+                                    router.push({
+                                        pathname: `/reports/by_facility/`,
+                                        query: { id: params.data.county, level: 'county' }
+                                    })
+                                }}
+                                > View Facilities </button>
+                            },}])}}>
+                        <ListItemText primary="Facilities Count" />
+                    </ListItemButton>
+                
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('facility_owners'); setColumns([
+                            {headerName: "Owner", field: "owner",   cellRenderer: "LinkCellRenderer"},
+                            {headerName: "Number of Facilities", field: "facilities"},
+                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
+                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                                onClick={() => {
+                                    router.push({
+                                        pathname: `/reports/by_facility/`,
+                                        query: { id: params.data.county, level: 'county' }
+                                    })
+                                }}
+                                > View Facilities </button>
+                            },}])}}>
+                        <ListItemText primary="Facilities by Owners" />
+                    </ListItemButton>
 
-                                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('owner_categories'); setColumns([
-                                            {headerName: "Owner", field: "owner",   cellRenderer: "LinkCellRenderer"},
-                                            {headerName: "Number of Facilities", field: "facilities"},
-                                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-                                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
-                                                onClick={() => {
-                                                    router.push({
-                                                        pathname: `/reports/by_facility/`,
-                                                        query: { id: params.data.county, level: 'county' }
-                                                    })
-                                                }}
-                                                > View Facilities </button>
-                                            },}])}}>
-										<ListItemText primary="Facilities by Owner Categories" />
-									</ListItemButton>
-                                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('facility_type'); setColumns([
-                                            {headerName: "Facility Type", field: "facility_type",   cellRenderer: "LinkCellRenderer"},
-                                            {headerName: "Number of Facilities", field: "facilities"},
-                                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-                                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
-                                                onClick={() => {
-                                                    router.push({
-                                                        pathname: `/reports/by_facility/`,
-                                                        query: { id: params.data.county, level: 'county' }
-                                                    })
-                                                }}
-                                                > View Facilities </button>
-                                            },}])}}>
-										<ListItemText primary="Facilities by Facility Type" />
-									</ListItemButton>
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('owner_categories'); setColumns([
+                            {headerName: "Owner", field: "owner",   cellRenderer: "LinkCellRenderer"},
+                            {headerName: "Number of Facilities", field: "facilities"},
+                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
+                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                                onClick={() => {
+                                    router.push({
+                                        pathname: `/reports/by_facility/`,
+                                        query: { id: params.data.county, level: 'county' }
+                                    })
+                                }}
+                                > View Facilities </button>
+                            },}])}}>
+                        <ListItemText primary="Facilities by Owner Categories" />
+                    </ListItemButton>
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('facility_type'); setColumns([
+                            {headerName: "Facility Type", field: "facility_type",   cellRenderer: "LinkCellRenderer"},
+                            {headerName: "Number of Facilities", field: "facilities"},
+                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
+                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                                onClick={() => {
+                                    router.push({
+                                        pathname: `/reports/by_facility/`,
+                                        query: { id: params.data.county, level: 'county' }
+                                    })
+                                }}
+                                > View Facilities </button>
+                            },}])}}>
+                        <ListItemText primary="Facilities by Facility Type" />
+                    </ListItemButton>
 
-									<ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('keph_level'); setColumns([
-                                            {headerName: "Keph Level", field: "keph_level",   cellRenderer: "LinkCellRenderer"},
-                                            {headerName: "Number of Facilities", field: "facilities"},
-                                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-                                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
-                                                onClick={() => {
-                                                    router.push({
-                                                        pathname: `/reports/by_facility/`,
-                                                        query: { id: params.data.county, level: 'county' }
-                                                    })
-                                                }}
-                                                > View Facilities </button>
-                                            },}])}}>
-										<ListItemText primary="Keph Levels" />
-									</ListItemButton>
-                                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('facility_coordinates'); setColumns([
-                                            {headerName: "Code", field: "code",   cellRenderer: "LinkCellRenderer"},
-                                            {headerName: "Name", field: "name"},
-                                            {headerName: "County", field: "county"},
-                                            {headerName: "Sub County", field: "sub_county"},
-                                            {headerName: "Ward", field: "ward"},
-                                            {headerName: "Latitude", field: "lat"},
-                                            {headerName: "Longitude", field: "long"},
-                                           ])}}>
-										<ListItemText primary="Facility Coordinates" />
-									</ListItemButton>
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('keph_level'); setColumns([
+                            {headerName: "Keph Level", field: "keph_level",   cellRenderer: "LinkCellRenderer"},
+                            {headerName: "Number of Facilities", field: "facilities"},
+                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
+                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                                onClick={() => {
+                                    router.push({
+                                        pathname: `/reports/by_facility/`,
+                                        query: { id: params.data.county, level: 'county' }
+                                    })
+                                }}
+                                > View Facilities </button>
+                            },}])}}>
+                        <ListItemText primary="Keph Levels" />
+                    </ListItemButton>
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('facility_coordinates'); setColumns([
+                            {headerName: "Code", field: "code",   cellRenderer: "LinkCellRenderer"},
+                            {headerName: "Name", field: "name"},
+                            {headerName: "County", field: "county"},
+                            {headerName: "Sub County", field: "sub_county"},
+                            {headerName: "Ward", field: "ward"},
+                            {headerName: "Latitude", field: "lat"},
+                            {headerName: "Longitude", field: "long"},
+                            ])}}>
+                        <ListItemText primary="Facility Coordinates" />
+                    </ListItemButton>
 
-                                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('officers_in_charge'); setColumns([
-                                            {headerName: "Facility Name", field: "facility_name",   cellRenderer: "LinkCellRenderer"},
-                                            {headerName: "Officer Name", field: "officer_name"},
-                                            {headerName: "Job Title", field: "job_title"},
-                                            {headerName: "Contacts", field: "contacts"},
-                                           ])}}>
-										<ListItemText primary="Officers In-charge" />
-									</ListItemButton>
-								</List>
-							</Collapse>
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('officers_in_charge'); setColumns([
+                            {headerName: "Facility Name", field: "facility_name",   cellRenderer: "LinkCellRenderer"},
+                            {headerName: "Officer Name", field: "officer_name"},
+                            {headerName: "Job Title", field: "job_title"},
+                            {headerName: "Contacts", field: "contacts"},
+                            ])}}>
+                        <ListItemText primary="Officers In-charge" />
+                    </ListItemButton>
+                </List>
+            </Collapse>
 
-							{/* Administrative Offices*/}
-							<ListItemButton onClick={handleAdminClick}>
-								<ListItemText primary="Administrative Offices" />
-								{openAdmin ? <ExpandLess /> : <ExpandMore />}
-							</ListItemButton>
-							<Collapse in={openAdmin} timeout="auto" unmountOnExit>
-								<List component="div" disablePadding>
-                                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('admin_offices'); setColumns([
-                                            {headerName: "County", field: "county",   cellRenderer: "LinkCellRenderer"},
-                                            {headerName: "Sub County", field: "sub_county"},
-                                            {headerName: "Name", field: "first_name"},
-                                            {headerName: "National", field: "national"},
-                                            {headerName: "Phone Number", field: "phone_number"},
-                                            {headerName: "Email", field: "email"},
-                                           ])}}>
-										<ListItemText primary="Admin Offices" />
-									</ListItemButton>
-									
-								</List>
-							</Collapse>
-                            
-                                {/* Community Health Units*/}
-							<ListItemButton onClick={handleCHUClick}>
-								<ListItemText primary="Community Health Units" />
-								{openCHUs ? <ExpandLess /> : <ExpandMore />}
-							</ListItemButton>
-							<Collapse in={openCHUs} timeout="auto" unmountOnExit>
-								<List component="div" disablePadding>
-									
-                                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('chu_count'); setColumns([
-                                            {headerName: "County", field: "county",   cellRenderer: "LinkCellRenderer"},
-                                            {headerName: "Number of Community Health Units", field: "CHUs"},
-                                            {headerName: "Number of CHVs", field: "CHVs"},
-                                            {headerName: "Number of CHEWs", field: "CHEWs"},
-                                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-                                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
-                                                onClick={() => {
-                                                    router.push({
-                                                        pathname: `/reports/by_facility/`,
-                                                        query: { id: params.data.county, level: 'county' }
-                                                    })
-                                                }}
-                                                > View CHUs </button>
-                                            },}
-                                           ])}}>
-										<ListItemText primary="Community Health Units Count" />
-									</ListItemButton>
-								</List>
-								<List component="div" disablePadding>
-									
-                                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('chu_status'); setColumns([
-                                            {headerName: "Status", field: "status",   cellRenderer: "LinkCellRenderer"},
-                                            {headerName: "Number of Community Health Units", field: "CHUs"},
-                                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-                                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
-                                                onClick={() => {
-                                                    router.push({
-                                                        pathname: `/reports/by_facility/`,
-                                                        query: { id: params.data.county, level: 'county' }
-                                                    })
-                                                }}
-                                                > View CHUs </button>
-                                            },}
-                                           ])}}>
-										<ListItemText primary="Community Health Units (Status)" />
-									</ListItemButton>
-								</List>
-							</Collapse>
-                        </List>
-                    </div>
+            {/* Administrative Offices*/}
+            <ListItemButton onClick={handleAdminClick}>
+                <ListItemText primary="Administrative Offices" />
+                {openAdmin ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={openAdmin} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('admin_offices'); setColumns([
+                            {headerName: "County", field: "county",   cellRenderer: "LinkCellRenderer"},
+                            {headerName: "Sub County", field: "sub_county"},
+                            {headerName: "Name", field: "first_name"},
+                            {headerName: "National", field: "national"},
+                            {headerName: "Phone Number", field: "phone_number"},
+                            {headerName: "Email", field: "email"},
+                            ])}}>
+                        <ListItemText primary="Admin Offices" />
+                    </ListItemButton>
+                    
+                </List>
+            </Collapse>
+            
+                {/* Community Health Units*/}
+            <ListItemButton onClick={handleCHUClick}>
+                <ListItemText primary="Community Health Units" />
+                {openCHUs ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={openCHUs} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                    
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('chu_count'); setColumns([
+                            {headerName: "County", field: "county",   cellRenderer: "LinkCellRenderer"},
+                            {headerName: "Number of Community Health Units", field: "CHUs"},
+                            {headerName: "Number of CHVs", field: "CHVs"},
+                            {headerName: "Number of CHEWs", field: "CHEWs"},
+                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
+                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                                onClick={() => {
+                                    router.push({
+                                        pathname: `/reports/by_facility/`,
+                                        query: { id: params.data.county, level: 'county' }
+                                    })
+                                }}
+                                > View CHUs </button>
+                            },}
+                            ])}}>
+                        <ListItemText primary="Community Health Units Count" />
+                    </ListItemButton>
+                </List>
+                <List component="div" disablePadding>
+                    
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{handleClick('chu_status'); setColumns([
+                            {headerName: "Status", field: "status",   cellRenderer: "LinkCellRenderer"},
+                            {headerName: "Number of Community Health Units", field: "CHUs"},
+                            {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
+                                return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                                onClick={() => {
+                                    router.push({
+                                        pathname: `/reports/by_facility/`,
+                                        query: { id: params.data.county, level: 'county' }
+                                    })
+                                }}
+                                > View CHUs </button>
+                            },}
+                            ])}}>
+                        <ListItemText primary="Community Health Units (Status)" />
+                    </ListItemButton>
+                </List>
+            </Collapse>
+        </List>
+    </div>
     )
 }   
 
