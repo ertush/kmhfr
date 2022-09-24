@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
@@ -15,42 +15,22 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
-const Users = (props) => {
+const FacilitiesByOwnersCategories = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
-
     const LinkCellRenderer = (params) =>{
-        let reportType =''
-        let countyID = ''
-        // console.log(params.data);
-        if(params.data.hasOwnProperty('facilities')){
-            reportType = 'facility_count_by_county'
-            countyID = params.data.area_id
-        }
-        if(params.data.hasOwnProperty('beds')){
-            reportType = 'beds_and_cots_by_constituency'
-            countyID = params.data.county
-        }
-        // console.log(countyID);
         return(
             <Link
             href={{ pathname: `/reports/by_county/`,
-            query: { id: countyID, report_type:reportType } }}
+            query: { id: params.data.sub_county } }}
     
             ><a>{params.value}</a></Link>
         )}
 
-    const [gridApi, setGridApi] = useState(null);
-    const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
-    const [filtered, setFiltered]=useState([])
-    const [searchTerm, setSearchTerm] = useState('')
-    const [filterOption, setFilterOption] = useState('')
     const [columns, setColumns]=useState([
-        {headerName: "County", field: "county_name",   cellRenderer: "LinkCellRenderer"},
-        {headerName: "Beds", field: "beds"},
-        {headerName: "Cots", field: "cots"},
+        {headerName: "Owner", field: "owner",   cellRenderer: "LinkCellRenderer"},
+        {headerName: "Number of Facilities", field: "number_of_facilities"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
@@ -60,26 +40,21 @@ const Users = (props) => {
                 })
             }}
             > View Facilities </button>
-          },}
-    ])
-
-    const onGridReady = (params) => {
+        },}])
+    const [gridApi, setGridApi] = useState(null);
+    const [gridColumnApi, setGridColumnApi] = useState(null);
+    const [users, setUsers]=useState([])
+    const [filtered, setFiltered]=useState([])
+    const [filterOption, setFilterOption] = useState('')
+    const [searchTerm, setSearchTerm] = useState('')
      
+    const onGridReady = (params) => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst=  props.data.results.map((county_beds)=>{
-            return {
-                ...county_beds,
-                county_name: county_beds.county_name,
-                beds: county_beds.beds,
-                cots: county_beds.cots,
-                actions: (<a href="#">View</a>)
-            }
-            
-        })
-     
+        const lnlst = props.data.results.map(({owner, number_of_facilities})=>{return {owner, number_of_facilities,  actions: ''}})
+        
         setUsers(lnlst)
         updateData(lnlst)
     };
@@ -123,8 +98,7 @@ const Users = (props) => {
                 break;
         }
     },[filterOption])
-console.log(filterOption)
-
+    console.log(props.current_url);
     return (
         <div className="">
             <Head>
@@ -153,23 +127,23 @@ console.log(filterOption)
                         </div>
                         </div>
                     </div>
-                    <Resources setColumns={setColumns} setUsers={setUsers} search={searchTerm} setFiltered={setFiltered}/>
-
+                    {/* list */}
+                    <Resources />
+                    
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div className='mx-4'>
                             <form
                                 className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-                                //   action={ "/static_reports"}
-                                // onSubmit={()=> filter(searchTerm)}
+                                //   action={path || "/facilities"}
                                 >
                                 <input
-                                    // name="q"
+                                    name="q"
                                     id="search-input"
                                     className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                     type="search"
-                                    // defaultValue={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
+                                    // defaultValue={searchTerm}
                                     placeholder="Search anything ...."
                                 />
                                 <button
@@ -184,6 +158,7 @@ console.log(filterOption)
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
+                                                // router.push(dl_url, undefined, { shallow: true })
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
                                                 // window.location.href = dl_url
                                             }}
@@ -226,7 +201,6 @@ console.log(filterOption)
                                       }}
                                     />
                             </div>
-                           
                         </div>
                         {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
@@ -268,11 +242,19 @@ console.log(filterOption)
     )
 }   
 
-Users.getInitialProps = async (ctx) => {
+FacilitiesByOwnersCategories.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
+    
+    // const county_id= ctx.query.id
+    // console.log(ctx.query)
+    const fetchData = async (token) => {
+        let url = API_URL + `/reporting/?report_type=facility_count_by_owner`
 
-    const fetchData = (token) => {
-        let url = API_URL + '/reporting/?report_type=beds_and_cots_by_county'
+        // if(county_id){
+        //     url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}&report_level=county`
+        // }else{
+        //     url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
+        // }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -281,19 +263,6 @@ Users.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
-        // let other_posssible_filters = ["is_active"]
-
-        // other_posssible_filters.map(flt => {
-        //     console.log(flt);
-        //     if (ctx?.query[flt]) {
-        //         query[flt] = ctx?.query[flt]
-        //         if (url.includes('?')) {
-        //             url += `&${flt}=${ctx?.query[flt]}`
-        //         } else {
-        //             url += `?${flt}=${ctx?.query[flt]}`
-        //         }
-        //     }
-        // })
         
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
@@ -301,28 +270,28 @@ Users.getInitialProps = async (ctx) => {
             url = `${url}&page=${ctx.query.page}`
         }
         
-        return fetch(url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                    return {
-                        data: json, query, token, path: ctx.asPath || '/users', current_url: current_url 
-                    }
-                
-            }).catch(err => {
-                console.log('Error fetching facilities: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    data: [],
-                    query: {},
-                    path: ctx.asPath || '/users',
-                    current_url: ''
+        try {
+            const r = await fetch(url, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
                 }
             })
+            const json = await r.json()
+            return {
+                data: json, query, token, path: ctx.asPath || '/users', current_url: current_url
+            }
+        } catch (err) {
+            console.log('Error fetching facilities: ', err)
+            return {
+                error: true,
+                err: err,
+                data: [],
+                query: {},
+                path: ctx.asPath || '/users',
+                current_url: ''
+            }
+        }
     }
 
     return checkToken(ctx.req, ctx.res).then(t => {
@@ -355,4 +324,4 @@ Users.getInitialProps = async (ctx) => {
 
 }
 
-export default Users
+export default FacilitiesByOwnersCategories

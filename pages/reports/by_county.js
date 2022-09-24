@@ -51,21 +51,26 @@ const ByCounty = (props) => {
     const [searchTerm, setSearchTerm] = useState('')
      
     const onGridReady = (params) => {
-     
+         let lnlst =[]
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst=  props.data.results.map((county_beds)=>{
-            return {
-                ...county_beds,
-                county_name: county_beds.sub_county_name,
-                beds: county_beds.beds,
-                cots: county_beds.cots,
-                actions: (<a href="#">View</a>)
-            }
-            
-        })
+        if(props.data.results.hasOwnProperty('number_of_facilities')){
+          lnlst = props.data.results.map(({sub_county_name, beds, cots})=>{return {county_name: sub_county_name, beds: beds, cots: cots, actions: ''}})
+        }else{
+
+            lnlst=  props.data.results.map((county_beds)=>{
+               return {
+                   ...county_beds,
+                   county_name: county_beds.sub_county_name,
+                   beds: county_beds.beds,
+                   cots: county_beds.cots,
+                   actions: (<a href="#">View</a>)
+               }
+               
+           })
+        }
      
         setUsers(lnlst)
         updateData(lnlst)
@@ -263,7 +268,7 @@ ByCounty.getInitialProps = async (ctx) => {
         let url = ''
 
         if(county_id){
-            url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}`
+            url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}&report_level=county`
         }else{
             url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
         }
