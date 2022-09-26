@@ -128,6 +128,11 @@ export default async function submitFormData(req, res) {
                     url = `${API_URL}/reporting/chul/?report_type=county`
                     contentType = 'application/json;charset=utf-8';
                     method = 'GET';
+                    break            
+                case `facilities_count`:
+                    url =API_URL + `/reporting/?county=${req.query.id}&report_type=facility_count_by_county&report_level=county`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
                     break 
                 case `chu_status`:
                     url = `${API_URL}/reporting/chul/?report_type=status`

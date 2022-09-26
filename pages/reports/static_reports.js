@@ -36,7 +36,7 @@ const Users = (props) => {
         return(
             <Link
             href={{ pathname: `/reports/by_county/`,
-            query: { id: countyID, report_type:reportType } }}
+            query: { id: countyID, type:reportType } }}
     
             ><a>{params.value}</a></Link>
         )}

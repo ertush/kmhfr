@@ -20,19 +20,27 @@ const ByCounty = (props) => {
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
+        let query = null
+        props.path.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'sub_county' }  : query= {id: params.data.sub_county}
         return(
             <Link
             href={{ pathname: `/reports/by_ward/`,
-            query: { id: params.data.sub_county } }}
+            query: query }}
     
             ><a>{params.value}</a></Link>
         )}
-
+        const [gridApi, setGridApi] = useState(null);
+        const [gridColumnApi, setGridColumnApi] = useState(null);
+        const [users, setUsers]=useState([])
+        const [filtered, setFiltered]=useState([])
+        const [filterOption, setFilterOption] = useState('')
+        const [searchTerm, setSearchTerm] = useState('')
+         
     const [columns, setColumns]=useState([
         {headerName: "Sub County", field: "county_name",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
-        {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
+        {headerName: "Actions", cellRendererFramework: function(params) {
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
@@ -43,13 +51,7 @@ const ByCounty = (props) => {
             > View Facilities </button>
           },}
     ])
-    const [gridApi, setGridApi] = useState(null);
-    const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
-    const [filtered, setFiltered]=useState([])
-    const [filterOption, setFilterOption] = useState('')
-    const [searchTerm, setSearchTerm] = useState('')
-     
+  
     const onGridReady = (params) => {
          let lnlst =[]
         setGridApi(params.api);
@@ -57,7 +59,7 @@ const ByCounty = (props) => {
 
         const updateData = (data) => params.api.setRowData(data);
         if(props.data.results.hasOwnProperty('number_of_facilities')){
-          lnlst = props.data.results.map(({sub_county_name, beds, cots})=>{return {county_name: sub_county_name, beds: beds, cots: cots, actions: ''}})
+          lnlst = props.data.results.map(({area_id,area_name, number_of_facilities})=>{return {area_name, number_of_facilities,area_id }})
         }else{
 
             lnlst=  props.data.results.map((county_beds)=>{
@@ -92,7 +94,23 @@ const ByCounty = (props) => {
     }
     useEffect(() => {
         filter(searchTerm)
-    }, [searchTerm])
+        if(props.path.includes('level=county')){
+            setColumns([
+                {headerName: "Sub County", field: "area_name",   cellRenderer: "LinkCellRenderer"},
+                {headerName: "Number of Facilities", field: "number_of_facilities"},
+                {headerName: "Actions", cellRendererFramework: function(params) {
+                    return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                    onClick={() => {
+                        router.push({
+                            pathname: `/reports/by_facility/`,
+                            query: { id: params.data.sub_county, level: 'sub_county' }
+                        })
+                    }}
+                    > View Facilities </button>
+                  },}
+            ])
+           }
+    }, [searchTerm, props.path])
 
     useEffect(()=>{
         switch (filterOption) {
@@ -115,7 +133,7 @@ const ByCounty = (props) => {
                 break;
         }
     },[filterOption])
-    console.log(props.current_url);
+
     return (
         <div className="">
             <Head>
@@ -145,7 +163,7 @@ const ByCounty = (props) => {
                         </div>
                     </div>
                     {/* list */}
-                    <Resources setColumns={setColumns} setUsers={setUsers} search={searchTerm} setFiltered={setFiltered}/>
+                    <Resources />
                     
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
@@ -262,14 +280,19 @@ const ByCounty = (props) => {
 ByCounty.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     
-    const county_id= ctx.query.id
     console.log(ctx.query)
     const fetchData = async (token) => {
+        let county_id= ctx.query.id
+        let level = ctx.query.level
         let url = ''
 
-        if(county_id){
-            url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}&report_level=county`
-        }else{
+        if(county_id && level){
+            url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.type}&report_level=${level}`
+            
+        }else if(county_id && level == undefined){
+            url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.type}`
+
+        } else{
             url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
         }
         let query = { 'searchTerm': ''}
@@ -309,7 +332,7 @@ ByCounty.getInitialProps = async (ctx) => {
             })
             const json = await r.json()
             return {
-                data: json, query, token, path: ctx.asPath || '/users', current_url: current_url
+                data: json, query, level:level, token, path: ctx.asPath || '/users', current_url: current_url
             }
         } catch (err) {
             console.log('Error fetching facilities: ', err)

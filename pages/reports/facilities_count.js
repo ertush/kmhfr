@@ -20,10 +20,12 @@ const FacilitiesCount = (props) => {
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
+        let query = null
+        props.path.includes('facility_count_by_county') ? query = { id: id, type:'facility_count_by_county',level:'sub_county' }  : query= {id: params.data.sub_county}
         return(
             <Link
             href={{ pathname: `/reports/by_county/`,
-            query: { id: params.data.sub_county } }}
+            query: { id: params.data.area_id, type:'facility_count_by_county', level:'county'} }}
     
             ><a>{params.value}</a></Link>
         )}
@@ -51,9 +53,8 @@ const FacilitiesCount = (props) => {
     const onGridReady = (params) => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
-
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst = props.data.results.map(({area_name, number_of_facilities})=>{return {area_name, number_of_facilities,  actions: ''}})
+        const lnlst = props.data.results.map(({area_id,area_name, number_of_facilities})=>{return {area_name, number_of_facilities,area_id }})
         
         setUsers(lnlst)
         updateData(lnlst)
@@ -75,7 +76,7 @@ const FacilitiesCount = (props) => {
     }
     useEffect(() => {
         filter(searchTerm)
-    }, [searchTerm])
+    }, [searchTerm, users])
 
     useEffect(()=>{
         switch (filterOption) {
@@ -98,7 +99,7 @@ const FacilitiesCount = (props) => {
                 break;
         }
     },[filterOption])
-    console.log(props.current_url);
+    console.log(props.data);
     return (
         <div className="">
             <Head>
@@ -245,16 +246,10 @@ const FacilitiesCount = (props) => {
 FacilitiesCount.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     
-    // const county_id= ctx.query.id
     // console.log(ctx.query)
     const fetchData = async (token) => {
         let url = API_URL + `/reporting/?report_type=facility_count_by_county`
 
-        // if(county_id){
-        //     url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}&report_level=county`
-        // }else{
-        //     url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
-        // }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf

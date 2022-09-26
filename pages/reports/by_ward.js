@@ -20,16 +20,18 @@ const ByWard = (props) => {
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
+        let query = null
+        props.path.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' }  : query= {id: params.data.ward}
         return(
             <Link
             href={{ pathname: `/reports/by_facility/`,
-            query: { id: params.data.ward, level: 'ward' } }}
+            query: query}}
     
             ><a>{params.value}</a></Link>
         )}
 
     const [columns, setColumns]= useState([
-        {headerName: "Ward", field: "county_name",   cellRenderer: "LinkCellRenderer"},
+        {headerName: "Ward", field: "county_name"},
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
@@ -85,7 +87,23 @@ const ByWard = (props) => {
     }
     useEffect(() => {
         filter(searchTerm)
-    }, [searchTerm])
+        if(props.path.includes('level=sub_county')){
+            setColumns([
+                {headerName: "Ward", field: "area_name"},
+                {headerName: "Number of Facilities", field: "number_of_facilities"},
+                {headerName: "Actions", cellRendererFramework: function(params) {
+                    return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                    onClick={() => {
+                        router.push({
+                            pathname: `/reports/by_facility/`,
+                            query: { id: params.data.sub_county, level: 'sub_county' }
+                        })
+                    }}
+                    > View Facilities </button>
+                  },}
+            ])
+           }
+    }, [searchTerm, props.path])
 
     useEffect(()=>{
         switch (filterOption) {
@@ -255,18 +273,28 @@ ByWard.getInitialProps = async (ctx) => {
    
 // api/reporting/?report_type=beds_and_cots_by_county - number of beds and cots
     const fetchData = async (token) => {
-        let url = API_URL + `/reporting/?report_type=beds_and_cots_by_ward`
-        if (ctx.query.id) {
-             url = API_URL + `/reporting/?constituency=${ctx.query.id}&report_type=beds_and_cots_by_ward`
+        // let url = API_URL + `/reporting/?report_type=beds_and_cots_by_ward`
+        let county_id= ctx.query.id
+        let level = ctx.query.level
+        let url = ''
+
+        console.log(ctx.query);
+
+        if(county_id && level=='sub_county'){
+            url =API_URL + `/reporting/?sub_county=${county_id}&report_type=${ctx.query.type}&report_level=${level}&page=${ctx.query.page || 1}`
+        }else if (ctx.query.id && level == undefined){
+            url = API_URL + `/reporting/?constituency=${ctx.query.id}&report_type=beds_and_cots_by_ward`
+        }else{
+            url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
         }
         let query = { 'searchTerm': ''}
-        if (ctx?.query?.qf) {
-            query.qf = ctx.query.qf
-        }
-        if (ctx?.query?.q) {
-            query.searchTerm = ctx.query.q
-            url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
-        }
+        // if (ctx?.query?.qf) {
+        //     query.qf = ctx.query.qf
+        // }
+        // if (ctx?.query?.q) {
+        //     query.searchTerm = ctx.query.q
+        //     url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
+        // }
         // let other_posssible_filters = ["is_active"]
 
         // other_posssible_filters.map(flt => {
