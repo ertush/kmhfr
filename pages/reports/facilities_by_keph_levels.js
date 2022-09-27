@@ -44,8 +44,6 @@ const FacilitiesByKephLevel = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
-    const [filtered, setFiltered]=useState([])
-    const [filterOption, setFilterOption] = useState('')
     const [sub_counties, setSubcounties] = useState([])
     const [wards, setWards]=useState([])
      
@@ -102,29 +100,6 @@ const FacilitiesByKephLevel = (props) => {
            setWards({ward: results})
         }
     }, [drillDown])
-
-    useEffect(()=>{
-        switch (filterOption) {
-            case 'county':
-                router.push({
-                    pathname: `/reports/static_reports/`
-                })
-                break;
-            case 'sub-county':
-                router.push({
-                    pathname: `/reports/by_county/`
-                })
-                break;
-            case 'ward':
-                router.push({
-                    pathname: `/reports/by_ward/`
-                })
-                break;
-            default:
-                break;
-        }
-    },[filterOption])
-    console.log(props.current_url);
     return (
         <div className="">
             <Head>

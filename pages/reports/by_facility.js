@@ -225,9 +225,14 @@ ByWard.getInitialProps = async (ctx) => {
 // api/reporting/?report_type=beds_and_cots_by_county - number of beds and cots
     const fetchData = (token) => {
         let url = ''
+        let status = ctx.query.status || ''
+        let county = ctx.query.county || ''
+        let sub_county = ctx.query.sub_county || ''
+        let ward = ctx.query.ward || ''
+        console.log(ctx)
         if(ctx.query.type == 'status'){
-            url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&county=${ctx.query.id}&chu_list=true`
-        }else{
+            url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&county=${ctx.query.county}&sub_county=${ctx.query.sub_county}&ward=${ctx.query.ward}&status=${status}&chu_list=true`
+        } else{
             url = API_URL + `/reporting/?report_type=individual_facility_beds_and_cots&report_level=${ctx.query.level}&county=${ctx.query.id}`
         }
         let query = { 'searchTerm': ''}

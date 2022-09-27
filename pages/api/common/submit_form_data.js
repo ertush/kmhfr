@@ -126,6 +126,12 @@ export default async function submitFormData(req, res) {
                     contentType = 'application/json;charset=utf-8';
                     method = 'GET';
                     break
+                case `chu_status`:
+                    params= JSON.parse(req.query.drilldown)
+                    url = `${API_URL}/reporting/chul/?report_type=status&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break 
                 // case `beds_cots`:
                 //     url = `${API_URL}/reporting/?report_type=facility_count_by_county`
                 //     contentType = 'application/json;charset=utf-8';
@@ -161,11 +167,7 @@ export default async function submitFormData(req, res) {
                 //     contentType = 'application/json;charset=utf-8';
                 //     method = 'GET';
                 //     break            
-                // case `chu_status`:
-                //     url = `${API_URL}/reporting/chul/?report_type=status`
-                //     contentType = 'application/json;charset=utf-8';
-                //     method = 'GET';
-                //     break          
+                        
                 default:
                     
                     break;

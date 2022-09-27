@@ -59,19 +59,11 @@ const ByCounty = (props) => {
 
         const updateData = (data) => params.api.setRowData(data);
         if(props.data.results.hasOwnProperty('number_of_facilities')){
-          lnlst = props.data.results.map(({area_id,area_name, number_of_facilities})=>{return {area_name, number_of_facilities,area_id }})
-        }else{
-
-            lnlst=  props.data.results.map((county_beds)=>{
-               return {
-                   ...county_beds,
-                   county_name: county_beds.sub_county_name,
-                   beds: county_beds.beds,
-                   cots: county_beds.cots,
-                   actions: (<a href="#">View</a>)
-               }
-               
-           })
+            lnlst = props.data.results.map(({area_id,area_name, number_of_facilities})=>{return {area_name, number_of_facilities,area_id }})
+        }else if(props.data.results.hasOwnProperty('status')){
+            lnlst = props.data.results.map(({sub_county, number_of_units, chvs, chews})=>{return {sub_county, number_of_units, chvs, chews}})
+        } else{
+            lnlst = props.data.results.map(({sub_county, beds, cots})=>{return {sub_county, beds, cots }})
         }
      
         setUsers(lnlst)
@@ -110,6 +102,24 @@ const ByCounty = (props) => {
                   },}
             ])
            }
+        if(props.path.includes('status')){
+            setColumns([
+                {headerName: "Sub county", field: "sub_county",   cellRenderer: "LinkCellRenderer"},
+                {headerName: "Number of Community Health Units", field: "number_of_units"},
+                {headerName: "Number of CHVs", field: "chvs"},
+                {headerName: "Number of CHEWs", field: "chews"},
+                {headerName: "Actions", cellRendererFramework: function(params) {
+                    return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                    onClick={() => {
+                        router.push({
+                            pathname: `/reports/by_facility/`,
+                            query: { id: params.data.county, level: 'county' }
+                        })
+                    }}
+                    > View CHUs </button>
+                },}
+                ])
+        }
     }, [searchTerm, props.path])
 
     useEffect(()=>{
@@ -285,14 +295,16 @@ ByCounty.getInitialProps = async (ctx) => {
         let county_id= ctx.query.id
         let level = ctx.query.level
         let url = ''
-
+ ///api/reporting/chul/?report_type=status&county=49a83cf0-1067-4339-9c4a-6198c02b40e6&chu_list=true
         if(county_id && level){
             url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.type}&report_level=${level}`
             
         }else if(county_id && level == undefined){
             url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.type}`
 
-        } else{
+        }else if(ctx.query.type=='status'){
+            url =API_URL + `/reporting/?report_type=${ctx.query.type}&county=${county_id}&chu_list=true`
+        }else{
             url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
         }
         let query = { 'searchTerm': ''}

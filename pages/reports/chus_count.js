@@ -38,7 +38,7 @@ const CHUsCount = (props) => {
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.county_id, type: 'status' }
+                    query: { county: params.data.county_id, type: 'status' }
                 })
             }}
             > View CHUs </button>
