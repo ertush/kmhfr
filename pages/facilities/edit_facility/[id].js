@@ -17,6 +17,9 @@ import {
     handleInfrastructureSubmit,
     handleHrSubmit
 } from '../../../controllers/facility/addFacilitySubmitHandlers';
+
+
+
 import FacilityContact from '../../../components/FacilityContact';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import TrasnferListServices from '../../../components/TrasnferListServices';
@@ -607,7 +610,7 @@ const EditFacility = (props) => {
         }
 
         if(otherContactRef.current !== null){
-            otherContactRef.current.state.value = _officerName.contacts ?? _officerName.contacts[0].type ?? ''
+            otherContactRef.current.state.value = officer_in_charge.contacts ?? officer_in_charge.contacts[0].type ?? ''
         }
 
         setOtherContactDetail(_officerName.contacts ?? _officerName.contacts ?? '')
