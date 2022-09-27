@@ -132,7 +132,7 @@ export default async function submitFormData(req, res) {
                     body: JSON.stringify(req.body)
                 })
                 
-                return resp.json()
+                return await resp.json()
             }
             catch(err) {
                 console.error('Error posting facility basic details: ', err)
