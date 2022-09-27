@@ -23,7 +23,7 @@ const CHUsCount = (props) => {
         return(
             <Link
             href={{ pathname: `/reports/by_county/`,
-            query: { id: params.data.sub_county } }}
+            query: { id: params.data.sub_county,type: 'status' } }}
     
             ><a>{params.value}</a></Link>
         )}
@@ -38,7 +38,7 @@ const CHUsCount = (props) => {
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.county, level: 'county' }
+                    query: { id: params.data.county_id, type: 'status' }
                 })
             }}
             > View CHUs </button>
@@ -48,7 +48,6 @@ const CHUsCount = (props) => {
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
     const [filtered, setFiltered]=useState([])
-    const [filterOption, setFilterOption] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
      
     const onGridReady = (params) => {
@@ -56,7 +55,7 @@ const CHUsCount = (props) => {
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst = props.data.results.map(({county_name, number_of_units, chvs, chews})=>{return {county_name, number_of_units, chvs, chews}})
+        const lnlst = props.data.results.map(({county_name,county_id, number_of_units, id, chvs, chews})=>{return {county_name, county_id,number_of_units,id, chvs, chews}})
         
         setUsers(lnlst)
         updateData(lnlst)
@@ -80,27 +79,6 @@ const CHUsCount = (props) => {
         filter(searchTerm)
     }, [searchTerm])
 
-    useEffect(()=>{
-        switch (filterOption) {
-            case 'county':
-                router.push({
-                    pathname: `/reports/static_reports/`
-                })
-                break;
-            case 'sub-county':
-                router.push({
-                    pathname: `/reports/by_county/`
-                })
-                break;
-            case 'ward':
-                router.push({
-                    pathname: `/reports/by_ward/`
-                })
-                break;
-            default:
-                break;
-        }
-    },[filterOption])
     console.log(props.current_url);
     return (
         <div className="">
@@ -119,14 +97,8 @@ const CHUsCount = (props) => {
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 
-                                    {'Manage Users'}
+                                    {'Community Health Units'}
                                 </h2>
-                                <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/users/add_user')}} 
-                                >
-                                    {`Add User `}
-                                    <PlusIcon className='text-white ml-2 h-5 w-5'/>
-                                </button>
                         </div>
                         </div>
                     </div>
@@ -173,14 +145,7 @@ const CHUsCount = (props) => {
                            
                                     
                             </form>
-                            <Select
-                                options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
-                                required
-                                placeholder='Filter By:'
-                                onChange={(e) => setFilterOption(e.value)}
-                                name='filter_by'
-                                className='flex-none w-1/5 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
-                            />
+                            
                             <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
                             </h5>

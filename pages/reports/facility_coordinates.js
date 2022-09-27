@@ -32,7 +32,7 @@ const FacilitiesCoordinates = (props) => {
         {headerName: "Code", field: "code",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Name", field: "name"},
         {headerName: "County", field: "county_name"},
-        {headerName: "Sub County", field: "sub_county"},
+        {headerName: "Sub County", field: "sub_county_name"},
         {headerName: "Ward", field: "ward_name"},
         {headerName: "Latitude", field: "lat"},
         {headerName: "Longitude", field: "long"},
@@ -40,9 +40,11 @@ const FacilitiesCoordinates = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
-    const [filtered, setFiltered]=useState([])
-    const [filterOption, setFilterOption] = useState('')
-    const [searchTerm, setSearchTerm] = useState('')
+    const [sub_counties, setSubcounties] = useState([])
+    const [wards, setWards]=useState([])
+     
+    let filters_county = { county: props?.filters['county']}
+    let [drillDown, setDrillDown] = useState({county:'', sub_county:'', ward:''})
      
     const onGridReady = (params) => {
         setGridApi(params.api);
@@ -55,46 +57,47 @@ const FacilitiesCoordinates = (props) => {
         updateData(lnlst)
     };
 
-    const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
-    const filter =(searchTerm)=>{
-        if (searchTerm !== '' && searchTerm.length > 3) {
-            const filteredData = users.filter((row) => {
-                return Object.keys(row).some((field) => {
-                    return filterField(searchTerm, row[field]);
-                });
-            });
-            setFiltered(filteredData);
-        } else {
-            setFiltered(users);
+    const filter = (e) => {
+        e.preventDefault()
+        try {
+            fetch(`/api/common/submit_form_data/?path=facility_coordinates&drilldown=${JSON.stringify(drillDown)}`, {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json;charset=utf-8'
+					
+				},
+				method:'GET',
+			})
+			.then(resp =>resp.json())
+			.then(res => {
+                const results = res.results.map(({code, name, county_name, sub_county_name,ward_name, lat_long})=>{return {code, name, county_name, sub_county_name,ward_name, lat:lat_long !==null? lat_long[0]:'', long:lat_long !==null? lat_long[1]:''}})
+                setUsers(results)
+                
+			})
+			.catch(e=>console.log(e))
         }
-            
+        catch(err) {
+            console.error('Error posting facility basic details: ', err)
+            return {
+                error: true,
+                err: err.message,
+                api_url:API_URL
+            }
+        }
     }
+    
     useEffect(() => {
-        filter(searchTerm)
-    }, [searchTerm])
-
-    useEffect(()=>{
-        switch (filterOption) {
-            case 'county':
-                router.push({
-                    pathname: `/reports/static_reports/`
-                })
-                break;
-            case 'sub-county':
-                router.push({
-                    pathname: `/reports/by_county/`
-                })
-                break;
-            case 'ward':
-                router.push({
-                    pathname: `/reports/by_ward/`
-                })
-                break;
-            default:
-                break;
+        if(drillDown.county){
+            const results = props?.filters['sub_county'].filter(county => county.county == drillDown.county)
+            setSubcounties({sub_county: results})
         }
-    },[filterOption])
-    console.log(props.current_url);
+        if(drillDown.sub_county){
+           const results = props?.filters['ward'].filter(county => county.sub_county == drillDown.sub_county)
+           setWards({ward: results})
+        }
+    }, [drillDown])
+
+   
     return (
         <div className="">
             <Head>
@@ -128,31 +131,130 @@ const FacilitiesCoordinates = (props) => {
                     
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
-                          <div className='mx-4'>
-                            <form
-                                className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-                                //   action={path || "/facilities"}
-                                >
-                                <input
-                                    name="q"
-                                    id="search-input"
-                                    className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                                    type="search"
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    // defaultValue={searchTerm}
-                                    placeholder="Search anything ...."
-                                />
-                                <button
-                                    type="submit"
-                                    className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
-                                >
-                                    <SearchIcon className="w-5 h-5" />
-                                </button>
-                                <div className='text-white text-md'>
-
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
+                    <div className="w-full flex flex items-center justify-start space-x-3 mb-3">
+                            {filters_county && Object.keys(filters_county).length > 0 &&
+                                Object.keys(filters_county).map(ft => (
+                                    <div key={ft} className="w-1/5 max-w-xs flex flex-col items-start justify-start mb-3">
+                                        <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
+                                        <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                            options={
+                                                (() => {
+                                                    
+                                                        let opts = [...Array.from(filters_county[ft] || [],
+                                                            
+                                                            fltopt => {
+                                                                if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                    return {
+                                                                        value: fltopt.id, label: fltopt.name 
+                                                                    }
+                                                                }
+                                                            })]
+                                                        return opts
+                                                    
+                                                })()
+                                            }
+                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                            onChange={sl => {
+                                                let nf = {}
+                                                if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                    nf[ft] = sl.value
+                                                } else {
+                                                    delete nf[ft]
+                                                }
+                                                setDrillDown({ ...drillDown, ...nf })
+                                            }} />
+                                    </div>
+                                ))}
+                            
+                            {sub_counties && Object.keys(sub_counties).length > 0 &&
+                                Object.keys(sub_counties).map(ft => (
+                                    <div key={ft} className="w-1/5 max-w-xs flex flex-col items-start justify-start mb-3">
+                                        <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
+                                        <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                            options={
+                                                (() => {
+                                                    
+                                                        let opts = [...Array.from(sub_counties[ft] || [],
+                                                            
+                                                            fltopt => {
+                                                                if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                    return {
+                                                                        value: fltopt.id, label: fltopt.name 
+                                                                    }
+                                                                }
+                                                            })]
+                                                        return opts
+                                                    
+                                                })()
+                                            }
+                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                            onChange={sl => {
+                                                let nf = {}
+                                                if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                    nf[ft] = sl.value
+                                                } else {
+                                                    delete nf[ft]
+                                                }
+                                                setDrillDown({ ...drillDown, ...nf })
+                                            }} />
+                                    </div>
+                                ))}
+                            
+                            {wards && Object.keys(wards).length > 0 &&
+                                Object.keys(wards).map(ft => (
+                                    <div key={ft} className="w-1/5 max-w-xs flex flex-col items-start justify-start mb-3">
+                                        <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
+                                        <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                            options={
+                                                (() => {
+                                                    
+                                                        let opts = [...Array.from(wards[ft] || [],
+                                                            
+                                                            fltopt => {
+                                                                if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                    return {
+                                                                        value: fltopt.id, label: fltopt.name 
+                                                                    }
+                                                                }
+                                                            })]
+                                                        return opts
+                                                    
+                                                })()
+                                            }
+                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                            onChange={sl => {
+                                                let nf = {}
+                                                if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                    nf[ft] = sl.value
+                                                } else {
+                                                    delete nf[ft]
+                                                }
+                                                setDrillDown({ ...drillDown, ...nf })
+                                                let value = sl.value
+                                            }} />
+                                    </div>
+                                ))}
+                                 <button className="flex items-center bg-indigo-500 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
+                                                filter(e)
+                                            }}
+                                            >
+                                                <span>Filter</span>
+                                </button> 
+                                <button className="flex items-center bg-indigo-500 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
+                                                setDrillDown({county:'', sub_county:'', ward:''})
+                                                setUsers(props.data.results)
+                                                setSubcounties([])
+                                                setWards([])
+                                                
+                                            }}
+                                            >
+                                                
+                                                <span>Clear</span>
+                                </button> 
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
+                                                dl_url = dl_url.replace('facilities/facilities', 'facilities/material')
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` } else { dl_url += `?format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 // router.push(dl_url, undefined, { shallow: true })
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
@@ -162,22 +264,7 @@ const FacilitiesCoordinates = (props) => {
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
                                                 <span>Export</span>
                                 </button> 
-                                </div>
-                           
-                                    
-                            </form>
-                            <Select
-                                options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
-                                required
-                                placeholder='Filter By:'
-                                onChange={(e) => setFilterOption(e.value)}
-                                name='filter_by'
-                                className='flex-none w-1/5 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
-                            />
-                            <h5 className="text-lg font-medium text-gray-800 float-right">
-                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
-                            </h5>
-                          </div>
+                        </div>
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
                       
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
@@ -190,7 +277,7 @@ const FacilitiesCoordinates = (props) => {
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={filtered}
+                                    rowData={users}
                                     columnDefs={columns}
                                     frameworkComponents={{
                                         LinkCellRenderer
@@ -241,8 +328,27 @@ const FacilitiesCoordinates = (props) => {
 FacilitiesCoordinates.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     
-    // const county_id= ctx.query.id
-    // console.log(ctx.query)
+    const fetchFilters = async token => {
+        let filters_url = API_URL + '/common/filtering_summaries/?fields=county,sub_county,ward'
+        try {
+            const r = await fetch(filters_url, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
+                }
+            })
+            const jzon = await r.json()
+            return jzon
+        } catch (err) {
+            console.log('Error fetching filters: ', err)
+            return {
+                error: true,
+                err: err,
+                filters: [],
+                api_url: API_URL
+            }
+        }
+    }
     const fetchData = async (token) => {
         let url = API_URL + `/facilities/facilities/`
 
@@ -274,9 +380,11 @@ FacilitiesCoordinates.getInitialProps = async (ctx) => {
                 }
             })
             const json = await r.json()
-            return {
-                data: json, query, token, path: ctx.asPath || '/users', current_url: current_url
-            }
+            return fetchFilters(token).then(ft => {
+                return {
+                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/facilities_by_owners', current_url: url, api_url: API_URL
+                }
+            })
         } catch (err) {
             console.log('Error fetching facilities: ', err)
             return {

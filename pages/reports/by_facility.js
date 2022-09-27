@@ -19,20 +19,22 @@ const ByWard = (props) => {
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
+        let query = null
+        let pathname =''
+        props.path.includes('status') ? (query = { id: params.data.id }, pathname= '/community-units/[id]' ) : (query= {id: params.data.sub_county}, pathname= '/facilities/[id]/')
         return(
             <Link
-            href={{ pathname: `/facilities/[id]/`,
-            query: { id: params.data.facility_id } }}
+            href={{ pathname:pathname, query: query }}
     
             ><a>{params.value}</a></Link>
         )}
-
-    const [columns, setColumns]=useState ([
+    let initial =[
         {headerName: "Facility Code", field: "facility_code"},
         {headerName: "Facility Name", field: "facility_name", cellRenderer: "LinkCellRenderer", cellStyle: {color: 'blue',maxWidth: 200, overflow: 'visible', }},
         {headerName: "No. of functional general beds", field: "beds"},
         {headerName: "No. of functional cots", field: "cots"},
-    ])
+    ]
+    const [columns, setColumns]= useState([initial])
 
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
@@ -42,42 +44,49 @@ const ByWard = (props) => {
 
      
     const onGridReady = (params) => {
-     
+        let lnlst= []
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst=  props.data.results.map((facility_beds)=>{
-            return {
-                ...facility_beds,
-                facility_code: facility_beds.facility_code,
-                facility_name: facility_beds.facility_name,
-                beds: facility_beds.number_of_beds,
-                cots: facility_beds.number_of_cots,
-            }
-        })
+        
+        if(props.path.includes('status')){
+            setColumns([
+                {headerName: "Code", field: "code"},
+                {headerName: "Name", field: "name", cellRenderer: "LinkCellRenderer", cellStyle: {color: 'blue',maxWidth: 200, overflow: 'visible', }},
+                {headerName: "Facility", field: "facility_name"},
+                {headerName: "County", field: "county"},
+                {headerName: "Date Established", field: "date_established"},
+                {headerName: "Status", field: "status"},
+                {headerName: "CHVs", field: "number_of_chvs"},
+                ])
+        
+            lnlst = props.data.results.map(({code,name,facility_name,county,date_established,status,number_of_chvs,id})=>{return {code,name,facility_name,county,date_established,status,number_of_chvs,id}})
+        } else{
+            lnlst=  props.data.results.map(({facility_code,facility_name,id,number_of_beds,number_of_cots})=>{return {facility_code, facility_name, number_of_beds, number_of_cots,id }})
+        }
      
         setUsers(lnlst)
         updateData(lnlst)
     };
     
     const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
-        const filter =(searchTerm)=>{
-            if (searchTerm !== '' && searchTerm.length > 3) {
-                const filteredData = users.filter((row) => {
-                    return Object.keys(row).some((field) => {
-                        return filterField(searchTerm, row[field]);
-                    });
+    const filter =(searchTerm)=>{
+        if (searchTerm !== '' && searchTerm.length > 3) {
+            const filteredData = users.filter((row) => {
+                return Object.keys(row).some((field) => {
+                    return filterField(searchTerm, row[field]);
                 });
-                setFiltered(filteredData);
-            } else {
-                setFiltered(users);
-            }
-                
+            });
+            setFiltered(filteredData);
+        } else {
+            setFiltered(users);
         }
-        useEffect(() => {
-            filter(searchTerm)
-        }, [searchTerm])
+            
+    }
+    useEffect(() => {
+        filter(searchTerm)
+    }, [searchTerm])
     return (
         <div className="">
             <Head>
@@ -106,7 +115,7 @@ const ByWard = (props) => {
                         </div>
                         </div>
                     </div>
-                    <Resources setColumns={setColumns} setUsers={setUsers} search={searchTerm} setFiltered={setFiltered}/>
+                    <Resources />
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div className='mx-4'>
@@ -133,7 +142,7 @@ const ByWard = (props) => {
 
                                 <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
+                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
                                                 // window.location.href = dl_url
@@ -215,7 +224,12 @@ ByWard.getInitialProps = async (ctx) => {
    
 // api/reporting/?report_type=beds_and_cots_by_county - number of beds and cots
     const fetchData = (token) => {
-        let url = API_URL + `/reporting/?report_type=individual_facility_beds_and_cots&report_level=county&${ctx.query.level}=${ctx.query.id}`
+        let url = ''
+        if(ctx.query.type == 'status'){
+            url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&county=${ctx.query.id}&chu_list=true`
+        }else{
+            url = API_URL + `/reporting/?report_type=individual_facility_beds_and_cots&report_level=${ctx.query.level}&county=${ctx.query.id}`
+        }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf

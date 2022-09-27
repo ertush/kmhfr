@@ -114,6 +114,18 @@ export default async function submitFormData(req, res) {
                     contentType = 'application/json;charset=utf-8';
                     method = 'GET';
                     break
+                case `facility_coordinates`:
+                    params= JSON.parse(req.query.drilldown)
+                    url = `${API_URL}/facilities/facilities/?county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break
+                case `admin_offices`:
+                    params= JSON.parse(req.query.drilldown)
+                    url = `${API_URL}/admin_offices/?report_type=county&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break
                 // case `beds_cots`:
                 //     url = `${API_URL}/reporting/?report_type=facility_count_by_county`
                 //     contentType = 'application/json;charset=utf-8';
@@ -141,11 +153,6 @@ export default async function submitFormData(req, res) {
                 //     break
                 // case `officers_in_charge`:
                 //     url = `${API_URL}/facilities/facility_officers/`
-                //     contentType = 'application/json;charset=utf-8';
-                //     method = 'GET';
-                //     break
-                // case `admin_offices`:
-                //     url = `${API_URL}/admin_offices/?report_type=county`
                 //     contentType = 'application/json;charset=utf-8';
                 //     method = 'GET';
                 //     break  
