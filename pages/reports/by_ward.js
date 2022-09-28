@@ -21,7 +21,7 @@ const ByWard = (props) => {
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
         let query = null
-        props.path.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' }  : query= {id: params.data.ward}
+        props.path.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' } : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count'} : query= {id: params.data.ward}
         return(
             <Link
             href={{ pathname: `/reports/by_facility/`,
@@ -31,7 +31,7 @@ const ByWard = (props) => {
         )}
 
     const [columns, setColumns]= useState([
-        {headerName: "Ward", field: "county_name"},
+        {headerName: "Ward", field: "ward_name"},
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
@@ -52,21 +52,18 @@ const ByWard = (props) => {
     const [filterOption, setFilterOption] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
     const onGridReady = (params) => {
-     
+        let lnlst =[]
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst=  props.data.results.map((county_beds)=>{
-            return {
-                ...county_beds,
-                county_name: county_beds.ward_name,
-                beds: county_beds.beds,
-                cots: county_beds.cots,
-                actions: (<a href="#">View</a>)
-            }
-            
-        })
+        if(props.path.includes('level=sub_county')){
+            lnlst = props.data.results.map(({area_id,area_name, number_of_facilities})=>{return {area_name, number_of_facilities,area_id }})
+        }else if(props.current_url.includes('chu')){
+            lnlst = props.data.results.map(({ward_name,ward_id, number_of_units, chvs, chews})=>{return {ward_name,ward_id, number_of_units, chvs, chews}})
+        } else{
+            lnlst = props.data.results.map(({ward_name,ward, beds, cots})=>{return {ward_name,ward, beds, cots}})
+        }
      
         setUsers(lnlst)
         updateData(lnlst)
@@ -102,7 +99,26 @@ const ByWard = (props) => {
                     > View Facilities </button>
                   },}
             ])
-           }
+        }
+
+        if(props.current_url.includes('chu')){
+            setColumns([
+                {headerName: "Ward", field: "ward_name",   cellRenderer: "LinkCellRenderer"},
+                {headerName: "Number of Community Health Units", field: "number_of_units"},
+                {headerName: "Number of CHVs", field: "chvs"},
+                {headerName: "Number of CHEWs", field: "chews"},
+                {headerName: "Actions", cellRendererFramework: function(params) {
+                    return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+                    onClick={() => {
+                        router.push({
+                            pathname: `/reports/by_facility/`,
+                            query: { id: params.data.ward_id, type: 'chu_count' }
+                        })
+                    }}
+                    > View CHUs </button>
+                },}
+                ])
+        }
     }, [searchTerm, props.path])
 
     useEffect(()=>{
@@ -274,19 +290,22 @@ ByWard.getInitialProps = async (ctx) => {
 // api/reporting/?report_type=beds_and_cots_by_county - number of beds and cots
     const fetchData = async (token) => {
         // let url = API_URL + `/reporting/?report_type=beds_and_cots_by_ward`
-        let county_id= ctx.query.id
+        let sub_county_id= ctx.query.id
         let level = ctx.query.level
         let url = ''
 
-        console.log(ctx.query);
+        if(sub_county_id && level !==undefined){
+            url =API_URL + `/reporting/?sub_county=${sub_county_id}&report_type=${ctx.query.type}&report_level=${level}`
+            
+        }else if(ctx.query.type =='beds_and_cots_by_ward' && level == undefined){
+            url =API_URL + `/reporting/?constituency=${ctx.query.id}&report_type=${ctx.query.type}`
 
-        if(county_id && level=='sub_county'){
-            url =API_URL + `/reporting/?sub_county=${county_id}&report_type=${ctx.query.type}&report_level=${level}&page=${ctx.query.page || 1}`
-        }else if (ctx.query.id && level == undefined){
-            url = API_URL + `/reporting/?constituency=${ctx.query.id}&report_type=beds_and_cots_by_ward`
+        }else if(ctx.query.type == 'ward'){
+            url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&constituency=${sub_county_id}`
         }else{
-            url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
+            url = API_URL + `/reporting/?report_type=beds_and_cots_by_ward`
         }
+
         let query = { 'searchTerm': ''}
         // if (ctx?.query?.qf) {
         //     query.qf = ctx.query.qf

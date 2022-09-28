@@ -23,7 +23,7 @@ const CHUsCount = (props) => {
         return(
             <Link
             href={{ pathname: `/reports/by_county/`,
-            query: { id: params.data.sub_county,type: 'status' } }}
+            query: { id: params.data.county_id,type: 'sub_county' } }}
     
             ><a>{params.value}</a></Link>
         )}

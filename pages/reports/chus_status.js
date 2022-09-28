@@ -51,8 +51,6 @@ const CHUsStatus = (props) => { CHUsStatus
             > View CHUs </button>
         },}
         ])
-  
-    console.log(drill_down);
     const onGridReady = (params) => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);

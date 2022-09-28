@@ -50,8 +50,8 @@ const Resources = () => {
             </ListItemButton>
             <Collapse in={openHFR} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                    <ListItemButton sx={{ ml: 8 }}>
-                        <ListItemText primary="Beds and Cots"/>
+                    <ListItemButton sx={{ ml: 8 }} onClick={()=>{router.push('/reports/static_reports') }}>
+                        <ListItemText primary="Beds and Cots" />
                     </ListItemButton>
                     <ListItemButton sx={{ ml: 8 }} onClick={()=>{router.push('/reports/facilities_count') }}>
                         <ListItemText primary="Facilities Count" />

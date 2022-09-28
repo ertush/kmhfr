@@ -21,7 +21,7 @@ const ByWard = (props) => {
     const LinkCellRenderer = (params) =>{
         let query = null
         let pathname =''
-        props.path.includes('status') ? (query = { id: params.data.id }, pathname= '/community-units/[id]' ) : (query= {id: params.data.sub_county}, pathname= '/facilities/[id]/')
+        props.current_url.includes('chu') ? (query = { id: params.data.id }, pathname= '/community-units/[id]' ) : (query= {id: params.data.sub_county}, pathname= '/facilities/[id]/')
         return(
             <Link
             href={{ pathname:pathname, query: query }}
@@ -50,17 +50,7 @@ const ByWard = (props) => {
 
         const updateData = (data) => params.api.setRowData(data);
 
-        if(props.path.includes('status')){
-            setColumns([
-                {headerName: "Code", field: "code"},
-                {headerName: "Name", field: "name", cellRenderer: "LinkCellRenderer", cellStyle: {color: 'blue',maxWidth: 200, overflow: 'visible', }},
-                {headerName: "Facility", field: "facility_name"},
-                {headerName: "County", field: "county"},
-                {headerName: "Date Established", field: "date_established"},
-                {headerName: "Status", field: "status"},
-                {headerName: "CHVs", field: "number_of_chvs"},
-                ])
-        
+        if(props.current_url.includes('chu')){       
             lnlst = props.data.results.map(({code,name,facility_name,county,date_established,status,number_of_chvs,id})=>{return {code,name,facility_name,county,date_established,status,number_of_chvs,id}})
         } else{
             lnlst=  props.data.results.map(({facility_code,facility_name,id,number_of_beds,number_of_cots})=>{return {facility_code, facility_name, number_of_beds, number_of_cots,id }})
@@ -86,6 +76,17 @@ const ByWard = (props) => {
     }
     useEffect(() => {
         filter(searchTerm)
+        if(props.current_url.includes('chu')){
+            setColumns([
+                {headerName: "Code", field: "code"},
+                {headerName: "Name", field: "name", cellRenderer: "LinkCellRenderer", cellStyle: {color: 'blue',maxWidth: 200, overflow: 'visible', }},
+                {headerName: "Facility", field: "facility_name"},
+                {headerName: "County", field: "county"},
+                {headerName: "Date Established", field: "date_established"},
+                {headerName: "Status", field: "status"},
+                {headerName: "CHVs", field: "number_of_chvs"},
+                ])
+        }
     }, [searchTerm])
     return (
         <div className="">
@@ -229,7 +230,10 @@ ByWard.getInitialProps = async (ctx) => {
         let drill_down = JSON.parse(localStorage.getItem('drill_down')) || {}
         if(ctx.query.type == 'status'){
             url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&county=${drill_down.county}&sub_county=${drill_down.sub_county}&ward=${drill_down.ward}&status=${status}&chu_list=true`
-        } else{
+        } else if(ctx.query.type=='chu_count'){
+            url =API_URL + `/reporting/chul/?report_type=status&ward=${ctx.query.id}&chu_list=true`
+        }
+        else{
             url = API_URL + `/reporting/?report_type=individual_facility_beds_and_cots&report_level=${ctx.query.level}&county=${ctx.query.id}`
         }
         let query = { 'searchTerm': ''}

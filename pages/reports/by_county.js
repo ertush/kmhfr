@@ -21,7 +21,7 @@ const ByCounty = (props) => {
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
         let query = null
-        props.path.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'sub_county' }  : query= {id: params.data.sub_county}
+        props.path.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'sub_county' }  :  props.current_url.includes('chul')? query = { id: params.data.sub_county_id, type:'ward' }  :query= {id: params.data.sub_county, type:'beds_and_cots_by_ward'}
         return(
             <Link
             href={{ pathname: `/reports/by_ward/`,
@@ -37,7 +37,7 @@ const ByCounty = (props) => {
         const [searchTerm, setSearchTerm] = useState('')
          
     const [columns, setColumns]=useState([
-        {headerName: "Sub County", field: "county_name",   cellRenderer: "LinkCellRenderer"},
+        {headerName: "Sub County", field: "sub_county_name",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions", cellRendererFramework: function(params) {
@@ -58,12 +58,12 @@ const ByCounty = (props) => {
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        if(props.data.results.hasOwnProperty('number_of_facilities')){
+        if(props.path.includes('level=county')){
             lnlst = props.data.results.map(({area_id,area_name, number_of_facilities})=>{return {area_name, number_of_facilities,area_id }})
-        }else if(props.data.results.hasOwnProperty('status')){
-            lnlst = props.data.results.map(({sub_county, number_of_units, chvs, chews})=>{return {sub_county, number_of_units, chvs, chews}})
+        }else if(props.current_url.includes('chu')){
+            lnlst = props.data.results.map(({sub_county_name,sub_county_id, number_of_units, chvs, chews})=>{return {sub_county_name, sub_county_id, number_of_units, chvs, chews}})
         } else{
-            lnlst = props.data.results.map(({sub_county, beds, cots})=>{return {sub_county, beds, cots }})
+            lnlst = props.data.results.map(({sub_county_name,sub_county, beds, cots})=>{return {sub_county_name, sub_county,beds, cots }})
         }
      
         setUsers(lnlst)
@@ -102,9 +102,9 @@ const ByCounty = (props) => {
                   },}
             ])
            }
-        if(props.path.includes('status')){
+        if(props.current_url.includes('chu')){
             setColumns([
-                {headerName: "Sub county", field: "sub_county",   cellRenderer: "LinkCellRenderer"},
+                {headerName: "Sub county", field: "sub_county_name",   cellRenderer: "LinkCellRenderer"},
                 {headerName: "Number of Community Health Units", field: "number_of_units"},
                 {headerName: "Number of CHVs", field: "chvs"},
                 {headerName: "Number of CHEWs", field: "chews"},
@@ -113,7 +113,7 @@ const ByCounty = (props) => {
                     onClick={() => {
                         router.push({
                             pathname: `/reports/by_facility/`,
-                            query: { id: params.data.county, level: 'county' }
+                            query: { id: params.data.sub_county, level: 'sub_county' }
                         })
                     }}
                     > View CHUs </button>
@@ -295,15 +295,15 @@ ByCounty.getInitialProps = async (ctx) => {
         let county_id= ctx.query.id
         let level = ctx.query.level
         let url = ''
- ///api/reporting/chul/?report_type=status&county=49a83cf0-1067-4339-9c4a-6198c02b40e6&chu_list=true
-        if(county_id && level){
+
+        if(county_id && level !==undefined){
             url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.type}&report_level=${level}`
             
-        }else if(county_id && level == undefined){
+        }else if(ctx.query.type =='beds_and_cots_by_constituency' && level == undefined){
             url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.type}`
 
-        }else if(ctx.query.type=='status'){
-            url =API_URL + `/reporting/?report_type=${ctx.query.type}&county=${county_id}&chu_list=true`
+        }else if(ctx.query.type == 'sub_county'){
+            url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&county=${county_id}`
         }else{
             url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
         }
