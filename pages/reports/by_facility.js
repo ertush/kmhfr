@@ -49,7 +49,7 @@ const ByWard = (props) => {
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        
+
         if(props.path.includes('status')){
             setColumns([
                 {headerName: "Code", field: "code"},
@@ -226,12 +226,9 @@ ByWard.getInitialProps = async (ctx) => {
     const fetchData = (token) => {
         let url = ''
         let status = ctx.query.status || ''
-        let county = ctx.query.county || ''
-        let sub_county = ctx.query.sub_county || ''
-        let ward = ctx.query.ward || ''
-        console.log(ctx)
+        let drill_down = JSON.parse(localStorage.getItem('drill_down')) || {}
         if(ctx.query.type == 'status'){
-            url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&county=${ctx.query.county}&sub_county=${ctx.query.sub_county}&ward=${ctx.query.ward}&status=${status}&chu_list=true`
+            url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&county=${drill_down.county}&sub_county=${drill_down.sub_county}&ward=${drill_down.ward}&status=${status}&chu_list=true`
         } else{
             url = API_URL + `/reporting/?report_type=individual_facility_beds_and_cots&report_level=${ctx.query.level}&county=${ctx.query.id}`
         }

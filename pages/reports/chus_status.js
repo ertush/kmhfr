@@ -35,10 +35,6 @@ const CHUsStatus = (props) => { CHUsStatus
     const [wards, setWards]=useState([])
     let filters_county = { county: props?.filters['county']}
     const [drillDown, setDrillDown] = useState({county:'', sub_county:'', ward:''})
-    let drill_down = ''
-    if (typeof window !== 'undefined') {
-       drill_down = JSON.parse(localStorage.getItem('drill_down'))
-    }
     // console.log(drill_down);
     const [columns, setColumns]=useState([
         {headerName: "Status", field: "status_name",   cellRenderer: "LinkCellRenderer"},
@@ -48,9 +44,9 @@ const CHUsStatus = (props) => { CHUsStatus
             onClick={() => {
                 router.push({ 
                     pathname: `/reports/by_facility/`,
-                    query: { status: params.data.id,county: drill_down.county, sub_county: drill_down.sub_county, ward: drill_down.ward, type:'status' }
+                    query: { status: params.data.id, type:'status' }
                 })
-                localStorage.removeItem('drill_down')
+                
             }}
             > View CHUs </button>
         },}
