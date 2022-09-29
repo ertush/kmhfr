@@ -21,14 +21,14 @@ const ByWard = (props) => {
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
         let query = null
-        props.path.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' } 
+        props.current_url.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' } 
         : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count'} 
-        : props.current_url.includes('individual_facility_beds_and_cots') ?  query={ id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots' } 
+        : props.current_url.includes('beds_and_cots_by_ward') ?  query={ id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots' } 
         : query= {id: params.data.ward}
         return(
             <Link
             href={{ pathname: `/reports/by_facility/`,
-            query: { id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots' } }}
+            query: query}}
     
             ><a>{params.value}</a></Link>
         )}
@@ -145,7 +145,7 @@ const ByWard = (props) => {
                 break;
         }
     },[filterOption])
-
+console.log(props.current_url)
     return (
         <div className="">
             <Head>
@@ -200,9 +200,10 @@ const ByWard = (props) => {
                                 </button>
                                 <div className='text-white text-md'>
 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
+                                                e.preventDefault()  
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
+                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
                                                 // window.location.href = dl_url
