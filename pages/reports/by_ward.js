@@ -21,17 +21,20 @@ const ByWard = (props) => {
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
         let query = null
-        props.path.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' } : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count'} : query= {id: params.data.ward}
+        props.path.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' } 
+        : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count'} 
+        : props.current_url.includes('individual_facility_beds_and_cots') ?  query={ id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots' } 
+        : query= {id: params.data.ward}
         return(
             <Link
             href={{ pathname: `/reports/by_facility/`,
-            query: query}}
+            query: { id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots' } }}
     
             ><a>{params.value}</a></Link>
         )}
 
     const [columns, setColumns]= useState([
-        {headerName: "Ward", field: "ward_name"},
+        {headerName: "Ward", field: "ward_name", cellRenderer: "LinkCellRenderer"},
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
@@ -39,7 +42,7 @@ const ByWard = (props) => {
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.ward, level: 'ward' }
+                    query: { id: params.data.ward, level: 'ward', type: 'ndividual_facility_beds_and_cots' }
                 })
             }}
             > View Facilities </button>

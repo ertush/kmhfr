@@ -28,13 +28,13 @@ const ByWard = (props) => {
     
             ><a>{params.value}</a></Link>
         )}
-    let initial =[
+
+    const [columns, setColumns]= useState([
         {headerName: "Facility Code", field: "facility_code"},
         {headerName: "Facility Name", field: "facility_name", cellRenderer: "LinkCellRenderer", cellStyle: {color: 'blue',maxWidth: 200, overflow: 'visible', }},
-        {headerName: "No. of functional general beds", field: "beds"},
-        {headerName: "No. of functional cots", field: "cots"},
-    ]
-    const [columns, setColumns]= useState([initial])
+        {headerName: "No. of functional general beds", field: "number_of_beds"},
+        {headerName: "No. of functional cots", field: "number_of_cots"},
+    ])
 
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
@@ -232,9 +232,8 @@ ByWard.getInitialProps = async (ctx) => {
             url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&county=${drill_down.county}&sub_county=${drill_down.sub_county}&ward=${drill_down.ward}&status=${status}&chu_list=true`
         } else if(ctx.query.type=='chu_count'){
             url =API_URL + `/reporting/chul/?report_type=status&ward=${ctx.query.id}&chu_list=true`
-        }
-        else{
-            url = API_URL + `/reporting/?report_type=individual_facility_beds_and_cots&report_level=${ctx.query.level}&county=${ctx.query.id}`
+        } else{
+            url = API_URL + `/reporting/?report_type=individual_facility_beds_and_cots&report_level=county&${ctx.query.level}=${ctx.query.id}`
         }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {

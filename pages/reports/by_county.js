@@ -37,7 +37,7 @@ const ByCounty = (props) => {
         const [searchTerm, setSearchTerm] = useState('')
          
     const [columns, setColumns]=useState([
-        {headerName: "Sub County", field: "sub_county_name",   cellRenderer: "LinkCellRenderer"},
+        {headerName: "Sub County", field: "sub_county_name", cellRenderer: "LinkCellRenderer"},
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions", cellRendererFramework: function(params) {
@@ -45,7 +45,7 @@ const ByCounty = (props) => {
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.sub_county, level: 'sub_county' }
+                    query: { id: params.data.sub_county, level: 'sub_county', type: 'ndividual_facility_beds_and_cots' }
                 })
             }}
             > View Facilities </button>
@@ -63,7 +63,7 @@ const ByCounty = (props) => {
         }else if(props.current_url.includes('chu')){
             lnlst = props.data.results.map(({sub_county_name,sub_county_id, number_of_units, chvs, chews})=>{return {sub_county_name, sub_county_id, number_of_units, chvs, chews}})
         } else{
-            lnlst = props.data.results.map(({sub_county_name,sub_county, beds, cots})=>{return {sub_county_name, sub_county,beds, cots }})
+            lnlst = props.data.results.map(({sub_county_name,sub_county,beds,cots})=>{return {sub_county_name, sub_county,beds,cots }})
         }
      
         setUsers(lnlst)
