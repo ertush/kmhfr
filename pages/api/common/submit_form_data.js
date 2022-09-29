@@ -98,7 +98,7 @@ export default async function submitFormData(req, res) {
                     break 
                 case `filter_facilities_by_owners_category`:
                     params= JSON.parse(req.query.drilldown)
-                    url =API_URL + `/reporting/?report_type=facility_count_by_owner&county=${params.county}&sub_county=${params.sub_county}&ward=${parms.ward}`
+                    url =API_URL + `/reporting/?report_type=facility_count_by_owner&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
                     contentType = 'application/json;charset=utf-8';
                     method = 'GET';
                     break  

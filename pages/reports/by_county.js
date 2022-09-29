@@ -94,8 +94,8 @@ const ByCounty = (props) => {
                     return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
                     onClick={() => {
                         router.push({
-                            pathname: `/reports/by_facility/`,
-                            query: { id: params.data.sub_county, level: 'sub_county' }
+                            pathname: `/reports/dynamic_reports/`,
+                            query: { id: params.data.area_id, level: 'sub_county', type: 'facilities_count' }
                         })
                     }}
                     > View Facilities </button>

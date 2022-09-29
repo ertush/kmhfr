@@ -37,8 +37,8 @@ const FacilitiesCount = (props) => {
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
-                    pathname: `/reports/by_facility/`,
-                    query: { id: params.data.county, level: 'county' }
+                    pathname: `/reports/dynamic_reports/`,
+                    query: { id: params.data.area_id, level: 'county', type: 'facilities_count' }
                 })
             }}
             > View Facilities </button>
@@ -78,28 +78,6 @@ const FacilitiesCount = (props) => {
         filter(searchTerm)
     }, [searchTerm, users])
 
-    useEffect(()=>{
-        switch (filterOption) {
-            case 'county':
-                router.push({
-                    pathname: `/reports/static_reports/`
-                })
-                break;
-            case 'sub-county':
-                router.push({
-                    pathname: `/reports/by_county/`
-                })
-                break;
-            case 'ward':
-                router.push({
-                    pathname: `/reports/by_ward/`
-                })
-                break;
-            default:
-                break;
-        }
-    },[filterOption])
-    console.log(props.data);
     return (
         <div className="">
             <Head>
@@ -155,7 +133,8 @@ const FacilitiesCount = (props) => {
                                 </button>
                                 <div className='text-white text-md'>
 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
+                                                e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
@@ -171,14 +150,6 @@ const FacilitiesCount = (props) => {
                            
                                     
                             </form>
-                            <Select
-                                options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
-                                required
-                                placeholder='Filter By:'
-                                onChange={(e) => setFilterOption(e.value)}
-                                name='filter_by'
-                                className='flex-none w-1/5 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
-                            />
                             <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
                             </h5>

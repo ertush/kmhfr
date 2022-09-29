@@ -5,7 +5,7 @@ import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 import Select from 'react-select'; 
@@ -32,11 +32,12 @@ const FacilitiesByOwners = (props) => {
         {headerName: "Owner", field: "owner_category",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Number of Facilities", field: "number_of_facilities"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
+            console.log(params);
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
-                    pathname: `/reports/by_facility/`,
-                    query: { id: params.data.county, level: 'county' }
+                    pathname: `/reports/dynamic_reports/`,
+                    query: { id: params.data.id, level: 'owner_type', type:'facilities_by_owners' }
                 })
             }}
             > View Facilities </button>
@@ -44,8 +45,6 @@ const FacilitiesByOwners = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
-    const [filtered, setFiltered]=useState([])
-    const [filterOption, setFilterOption] = useState('')
     const [sub_counties, setSubcounties] = useState([])
     const [wards, setWards]=useState([])
      
@@ -56,7 +55,7 @@ const FacilitiesByOwners = (props) => {
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst = props.data.results.map(({owner_category, number_of_facilities})=>{return {owner_category, number_of_facilities,  actions: ''}})
+        const lnlst = props.data.results.map(({owner_category, id, number_of_facilities})=>{return {owner_category, number_of_facilities,id}})
         
         setUsers(lnlst)
         updateData(lnlst)
@@ -74,7 +73,7 @@ const FacilitiesByOwners = (props) => {
 			})
 			.then(resp =>resp.json())
 			.then(res => {
-                const results = res.results.map(({owner_category, number_of_facilities})=>{return {owner_category, number_of_facilities}})
+                const results = res.results.map(({owner_category,id, number_of_facilities})=>{return {owner_category,id, number_of_facilities}})
                 setUsers(results)
                 
 			})
@@ -99,29 +98,9 @@ const FacilitiesByOwners = (props) => {
            const results = props?.filters['ward'].filter(county => county.sub_county == drillDown.sub_county)
            setWards({ward: results})
         }
+        localStorage.setItem('dd_owners', JSON.stringify( drillDown));
     }, [drillDown])
 
-    useEffect(()=>{
-        switch (filterOption) {
-            case 'county':
-                router.push({
-                    pathname: `/reports/static_reports/`
-                })
-                break;
-            case 'sub-county':
-                router.push({
-                    pathname: `/reports/by_county/`
-                })
-                break;
-            case 'ward':
-                router.push({
-                    pathname: `/reports/by_ward/`
-                })
-                break;
-            default:
-                break;
-        }
-    },[filterOption])
     return (
         <div className="">
             <Head>
@@ -144,9 +123,7 @@ const FacilitiesByOwners = (props) => {
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
-                                                // router.push(dl_url, undefined, { shallow: true })
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />

@@ -101,7 +101,7 @@ const DynamicReports = (props) => {
 
 
     let headers = [
-        "code", "official_name", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_parent", "owner_name", "owner_type_name", "regulatory_body_name", "number_of_beds", "number_of_cots", "county_name", "constituency_name", "sub_county_name", "ward_name", "admission_status", "facility_services", "created", "closed",
+        "code", "official_name", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_parent", "owner_name", "owner_type_name", "regulatory_body_name", "number_of_beds", "number_of_cots", "county", "constituency_name", "sub_county_name", "ward_name", "admission_status", "facility_services", "created", "closed",
     ]
 
     let scoped_filters = [
@@ -787,12 +787,23 @@ const DynamicReports = (props) => {
                             </div>
                             {/* ((((((( dropdown options to download data */}
                             <div>
-                                <button className={"flex items-center justify-start rounded bg-green-600 text-center hover:bg-green-900 focus:bg-black text-white font-semibold active:bg-black py-2 px-4 uppercase text-base w-full"} onClick={() => {
+                                {/* <button className={"flex items-center justify-start rounded bg-green-600 text-center hover:bg-green-900 focus:bg-black text-white font-semibold active:bg-black py-2 px-4 uppercase text-base w-full"} onClick={() => {
                                     gridApi.exportDataAsCsv();
                                 }}>
                                     <DownloadIcon className="w-4 h-4 mr-1" />
                                     <span>Download Report</span>
-                                </button>
+                                </button> */}
+
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
+                                                let dl_url = props?.current_url
+                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
+                                                console.log('Downloading CSV. ' + dl_url || '')
+                                                window.open(dl_url, '_blank', 'noopener noreferrer')
+                                            }}
+                                            >
+                                                <DownloadIcon className="w-4 h-4 mr-1" />
+                                                <span>Export</span>
+                                </button> 
                             </div>
                             {/* ))))))) dropdown options to download data */}
 
@@ -944,6 +955,7 @@ const DynamicReports = (props) => {
 
 DynamicReports.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
+    console.log(ctx.query)
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
@@ -966,8 +978,15 @@ DynamicReports.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
+        let url= ''
+        let dr =JSON.parse(localStorage.getItem('dd_owners')) || {}
+        if(ctx.query.type =='facilities_count' || ctx.query.type =='facilities_by_owners' || ctx.query.type=='facilities_by_owner_categories'){
+            url = API_URL + `/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level&${ctx.query.level}=${ctx.query.id}&county=${dr.county}&sub_county=${dr.sub_county}&ward=${dr.ward}`
 
-        let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
+        }else{
+
+            url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
+        }
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -984,7 +1003,7 @@ DynamicReports.getInitialProps = async (ctx) => {
             }
         })
         // let current_url = url + '&page_size=25000' //change the limit on prod
-        let current_url = url + '&page_size=50'
+        let current_url = url + '&page_size=10000'
         if (ctx?.query?.page) {
             // console.log({page:ctx.query.page})
             url = `${url}&page=${ctx.query.page}`

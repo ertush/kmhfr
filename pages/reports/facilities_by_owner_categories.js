@@ -5,7 +5,7 @@ import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 import Select from 'react-select'; 
@@ -35,16 +35,15 @@ const FacilitiesByOwnersCategories = (props) => {
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
-                    pathname: `/reports/by_facility/`,
-                    query: { id: params.data.county, level: 'county' }
+                    pathname: `/reports/dynamic_reports/`,
+                    query: { id: params.data.id, level: 'owner', type:'facilities_by_owner_categories' }
                 })
             }}
             > View Facilities </button>
         },}])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
-    const [filterOption, setFilterOption] = useState('')
+    const [facilities, setFacilities]=useState([])
     const [sub_counties, setSubcounties] = useState([])
     const [wards, setWards]=useState([])
      
@@ -57,9 +56,9 @@ const FacilitiesByOwnersCategories = (props) => {
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst = props.data.results.map(({owner, number_of_facilities})=>{return {owner, number_of_facilities,  actions: ''}})
+        const lnlst = props.data.results.map(({owner,id,number_of_facilities})=>{return {owner,id,number_of_facilities}})
         
-        setUsers(lnlst)
+        setFacilities(lnlst)
         updateData(lnlst)
     };
 
@@ -70,20 +69,18 @@ const FacilitiesByOwnersCategories = (props) => {
 				headers:{
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json;charset=utf-8'
-					
 				},
 				method:'GET',
 			})
 			.then(resp =>resp.json())
 			.then(res => {
-                const results = res.results.map(({owner, number_of_facilities})=>{return {owner, number_of_facilities}})
-                setUsers(results)
-                
+                const results = res.results.map(({owner,id,number_of_facilities})=>{return {owner,id,number_of_facilities}})
+                setFacilities(results) 
 			})
 			.catch(e=>console.log(e))
         }
         catch(err) {
-            console.error('Error posting facility basic details: ', err)
+            console.error('Error fetching facilities by owner categories', err)
             return {
                 error: true,
                 err: err.message,
@@ -101,29 +98,9 @@ const FacilitiesByOwnersCategories = (props) => {
            const results = props?.filters['ward'].filter(county => county.sub_county == drillDown.sub_county)
            setWards({ward: results})
         }
+        localStorage.setItem('dd_owners', JSON.stringify( drillDown));
     }, [drillDown])
 
-    useEffect(()=>{
-        switch (filterOption) {
-            case 'county':
-                router.push({
-                    pathname: `/reports/static_reports/`
-                })
-                break;
-            case 'sub-county':
-                router.push({
-                    pathname: `/reports/by_county/`
-                })
-                break;
-            case 'ward':
-                router.push({
-                    pathname: `/reports/by_ward/`
-                })
-                break;
-            default:
-                break;
-        }
-    },[filterOption])
     return (
         <div className="">
             <Head>
@@ -136,19 +113,14 @@ const FacilitiesByOwnersCategories = (props) => {
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
-                                <span className="text-gray-500">Static Reports</span> 
+                                <span className="text-gray-500">Facilities by owner categories</span> 
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    <UsersIcon className='ml-2 h-5 w-5'/> 
-                                    {'Manage Users'}
+                                    
+                                    {'Facilities Report by Owner Categories'}
                                 </h2>
-                                <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/users/add_user')}} 
-                                >
-                                    {`Add User `}
-                                    <PlusIcon className='text-white ml-2 h-5 w-5'/>
-                                </button>
+                               
                         </div>
                         </div>
                     </div>
@@ -268,7 +240,7 @@ const FacilitiesByOwnersCategories = (props) => {
                                 </button> 
                                 <button className="flex items-center bg-indigo-500 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
                                                 setDrillDown({county:'', sub_county:'', ward:''})
-                                                setUsers(props.data.results)
+                                                setFacilities(props.data.results)
                                                 setSubcounties([])
                                                 setWards([])
                                                 
@@ -281,9 +253,7 @@ const FacilitiesByOwnersCategories = (props) => {
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += `&format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` } else { dl_url += `?format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
-                                                // router.push(dl_url, undefined, { shallow: true })
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -302,7 +272,7 @@ const FacilitiesByOwnersCategories = (props) => {
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={users}
+                                    rowData={facilities}
                                     columnDefs={columns}
                                     frameworkComponents={{
                                         LinkCellRenderer
@@ -310,7 +280,7 @@ const FacilitiesByOwnersCategories = (props) => {
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
@@ -377,12 +347,6 @@ FacilitiesByOwnersCategories.getInitialProps = async (ctx) => {
 
     const fetchData = async (token) => {
         let url = API_URL + `/reporting/?report_type=facility_count_by_owner`
-
-        // if(county_id){
-        //     url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}&report_level=county`
-        // }else{
-        //     url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
-        // }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -408,17 +372,17 @@ FacilitiesByOwnersCategories.getInitialProps = async (ctx) => {
             const json = await r.json()
             return fetchFilters(token).then(ft => {
                 return {
-                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/facilities_by_owners', current_url: url, api_url: API_URL
+                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/facilities_by_owner_categories', current_url: url, api_url: API_URL
                 }
             })
         } catch (err) {
-            console.log('Error fetching facilities: ', err)
+            console.log('Error fetching facilities by owner categories: ', err)
             return {
                 error: true,
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/users',
+                path: ctx.asPath || '/facilities_by_owner_categories',
                 current_url: ''
             }
         }
@@ -437,7 +401,7 @@ FacilitiesByOwnersCategories.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/users'
+                window.location.href = '/facilities_by_owner_categories'
             }
         }
         setTimeout(() => {
@@ -446,7 +410,7 @@ FacilitiesByOwnersCategories.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/users',
+                path: ctx.asPath || '/facilities_by_owner_categories',
                 current_url: ''
             }
         }, 1000);
