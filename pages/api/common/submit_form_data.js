@@ -108,6 +108,12 @@ export default async function submitFormData(req, res) {
                     contentType = 'application/json;charset=utf-8';
                     method = 'GET';
                     break 
+                case `facility_type_details`:
+                    params= JSON.parse(req.query.drilldown)
+                    url =API_URL + `/reporting/?report_type=facility_count_by_facility_type_details&parent=&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'GET';
+                    break 
                 case `keph_level`:
                     params= JSON.parse(req.query.drilldown)
                     url = `${API_URL}/reporting/?report_type=facility_keph_level_report&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`

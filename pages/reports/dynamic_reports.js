@@ -794,7 +794,8 @@ const DynamicReports = (props) => {
                                     <span>Download Report</span>
                                 </button> */}
 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
+                                                e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
@@ -980,7 +981,7 @@ DynamicReports.getInitialProps = async (ctx) => {
     const fetchData = (token) => {
         let url= ''
         let dr =JSON.parse(localStorage.getItem('dd_owners')) || {}
-        if(ctx.query.type =='facilities_count' || ctx.query.type =='facilities_by_owners' || ctx.query.type=='facilities_by_owner_categories'){
+        if(ctx.query.type =='facilities_count' || ctx.query.type =='facilities_by_owners' || ctx.query.type=='facilities_by_owner_categories' || ctx.query.type == 'facilities_details'){
             url = API_URL + `/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level&${ctx.query.level}=${ctx.query.id}&county=${dr.county}&sub_county=${dr.sub_county}&ward=${dr.ward}`
 
         }else{

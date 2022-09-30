@@ -5,7 +5,7 @@ import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { DotsHorizontalIcon,UsersIcon } from "@heroicons/react/solid";
+import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 import Select from 'react-select'; 
@@ -15,7 +15,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
-const FacilitiesByType = (props) => {
+const FacilityByTypeDetails = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
@@ -24,7 +24,6 @@ const FacilitiesByType = (props) => {
     const [facilities, setFacilities]=useState([])
     const [sub_counties, setSubcounties] = useState([])
     const [wards, setWards]=useState([])
-    const [individual_id, setIndividualId]=useState('')
      
     let filters_county = { county: props?.filters['county']}
     let [drillDown, setDrillDown] = useState({county:'', sub_county:'', ward:''})
@@ -44,11 +43,11 @@ const FacilitiesByType = (props) => {
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
-                    pathname: `/reports/facility_details/`,
-                    query: { id: params.data.id }
+                    pathname: `/reports/dynamic_reports/`,
+                    query: { id: params.data.id, level: 'facility_type', type:'facilities_details' }
                 })
             }}
-            > View Facility Details </button>
+            > View Facilities </button>
         },}])
      
     const onGridReady = (params) => {
@@ -64,10 +63,8 @@ const FacilitiesByType = (props) => {
     // console.log(isFacilityDetails,individual_id )
 
     const filter = () => {
-        // e.preventDefault()
-        let path = 'filter_facilities_by_type'
         try {
-            fetch(`/api/common/submit_form_data/?path=${path}&drilldown=${JSON.stringify(drillDown)}`, {
+            fetch(`/api/common/submit_form_data/?path=facility_type_details&drilldown=${JSON.stringify(drillDown)}`, {
 				headers:{
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json;charset=utf-8'
@@ -117,11 +114,11 @@ const FacilitiesByType = (props) => {
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
-                                <span className="text-gray-500">Facility Report by Type</span> 
+                                <span className="text-gray-500">Facility Report by Type Details</span> 
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                     {'Facility Report by Type'}
+                                  {'Facility Report by Type Details'}
                                 </h2>
                                 
                         </div>
@@ -252,7 +249,8 @@ const FacilitiesByType = (props) => {
                                                 
                                                 <span>Clear</span>
                                 </button> 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
+                                                e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += `&format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` } else { dl_url += `?format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
@@ -323,7 +321,7 @@ const FacilitiesByType = (props) => {
     )
 }   
 
-FacilitiesByType.getInitialProps = async (ctx) => {
+FacilityByTypeDetails.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     
     const fetchFilters = async token => {
@@ -349,7 +347,9 @@ FacilitiesByType.getInitialProps = async (ctx) => {
     }
 
     const fetchData = async (token) => {
-        let url = API_URL + `/reporting/?report_type=facility_count_by_facility_type`
+        // let url = API_URL + `/reporting/?report_type=facility_count_by_facility_type`
+        let url =API_URL + `/reporting/?report_type=facility_count_by_facility_type_details&parent=${ctx.query.id}&county=&sub_county=&ward=`
+
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -375,7 +375,7 @@ FacilitiesByType.getInitialProps = async (ctx) => {
             const json = await r.json()
             return fetchFilters(token).then(ft => {
                 return {
-                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/facilities_by_type', current_url: current_url, api_url: API_URL
+                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/facility_details', current_url: current_url, api_url: API_URL
                 }
             })
         } catch (err) {
@@ -385,7 +385,7 @@ FacilitiesByType.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/facilities_by_type',
+                path: ctx.asPath || '/facility_details',
                 current_url: ''
             }
         }
@@ -404,7 +404,7 @@ FacilitiesByType.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/facilities_by_type'
+                window.location.href = '/facility_details'
             }
         }
         setTimeout(() => {
@@ -413,7 +413,7 @@ FacilitiesByType.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/facilities_by_type',
+                path: ctx.asPath || '/facility_details',
                 current_url: ''
             }
         }, 1000);
@@ -421,4 +421,4 @@ FacilitiesByType.getInitialProps = async (ctx) => {
 
 }
 
-export default FacilitiesByType
+export default FacilityByTypeDetails 
