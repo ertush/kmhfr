@@ -25,6 +25,7 @@ import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import TrasnferListServices from '../../../components/TrasnferListServices';
 import TransferListHr from '../../../components/TransferListHr';
 import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
+import { isArray } from 'highcharts';
 
 
 const WardMap = dynamic(
@@ -235,7 +236,7 @@ const EditFacility = (props) => {
         license_number,
         registration_number,
         regulatory_body_name
-
+ 
     } = props['18']?.data ?? {}
    
     const {
@@ -321,9 +322,59 @@ const EditFacility = (props) => {
     const [_nearestLandMark, setNearestLandMark] = useState(nearest_landmark ?? '')
     const [_checklistFile, setCheckListFile] = useState(facility_checklist_document ?? '')
     const [_collectionDate, setCollectionDate] = useState(collection_date ?? '')
-    const [_lat, setLat] = useState(lat_long !== undefined ? (lat_long[0] ?? '') : '')
-    const [_long, setLong] = useState(lat_long !== undefined ? (lat_long[1] ?? '') : '')
-    const [_contactDetail, setContactDetail] = useState(facility_contacts !== undefined ? (facility_contacts[0].contact ?? ''): '')
+    const [_lat, setLat] = useState(((coordinates) => {
+   
+        let _lat 
+        if(lat_long !== null){
+            if(lat_long.length > 0){
+                _lat = coordinates[0]
+            }else{
+                _lat = ''
+            }
+        }else{
+            _lat = ''
+        }
+
+        return _lat
+
+    })(lat_long))
+    const [_long, setLong] = useState(((coordinates) => {
+   
+        let _lng 
+        if(lat_long !== null){
+            if(lat_long.length > 0){
+                _lng = coordinates[1]
+            }else{
+                _lng = ''
+            }
+        }else{
+            _lng = ''
+        }
+
+        return _lng
+
+    })(lat_long))
+    const [_contactDetail, setContactDetail] = useState(((facility_contacts) => {
+  
+
+        let _contactDetail 
+        if(facility_contacts !== null){
+            if(isArray(facility_contacts)){
+                if(facility_contacts.length > 0){
+                    _contactDetail = facility_contacts[0].contact
+                }else{
+                    _contactDetail = ''
+                }
+            }else{
+                _contactDetail = ''
+            }
+        }else{
+            _contactDetail = ''
+        }
+
+        return _contactDetail
+
+    })(facility_contacts))
     const [_officerName, setOfficerName] = useState(officer_in_charge || '')
     const [_regNo, setRegNo] = useState(registration_number ?? '')
     const [_regBody, setRegBody] = useState(regulatory_body_name ?? '')
@@ -553,7 +604,7 @@ const EditFacility = (props) => {
             // console.log({facility_type})
             facilityTypeRef.current.state.value = facilityOptions.filter(({value}) => value === facility_type)[0] || {label:facility_type_name, value:facility_type}
         }
-        if(facilityTypeDetailsRef.current !== null){
+        if(facilityTypeDetailsRef.current !== null){ // label === (facility_contac // label === (facility_contacts !== null ? facility_contacts[0].contact_type_name : '')ts !== null ? facility_contacts[0].contact_type_name : '')
             facilityTypeDetailsRef.current.state.value = facilityTypeOptions.filter(({value}) => value === facility_type)[0] || ''
         }
         if(operationStatusRef.current !== null){
@@ -591,7 +642,24 @@ const EditFacility = (props) => {
             wardRef.current.state.value = wardOptions.filter(({value}) => value === ward)[0] || ''
         }
         if(contactRef.current !== null){
-            contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === (facility_contacts !== undefined ? facility_contacts[0].contact_type_name : ''))[0] || ''
+            contactRef.current.state.value = contactTypeOptions.filter(({label}) => {
+                // label === (facility_contacts !== null ? facility_contacts[0].contact_type_name : '')
+                let f_contacts
+                if(facility_contacts !== null){
+                    if(isArray(facility_contacts)){
+                        if(facility_contacts.length > 0){
+                            f_contacts =  facility_contacts[0].contact_type_name
+                        }
+                    }else{
+                        f_contacts = ''
+                    }
+                }else{
+                    f_contacts = ''
+                }
+
+                return label === f_contacts
+
+            })[0] || ''
         }
         if(jobTitleRef.current !== null){
             jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === (officer_in_charge !== null ? officer_in_charge.title : ''))[0] || ''
@@ -610,7 +678,21 @@ const EditFacility = (props) => {
         }
 
         if(otherContactRef.current !== null){
-            otherContactRef.current.state.value = officer_in_charge.contacts ?? officer_in_charge.contacts[0].type ?? ''
+            console.log({officer_in_charge})
+
+            if(officer_in_charge !== null){
+                if(isArray(officer_in_charge.contacts)){
+                    if(officer_in_charge.contacts.lengt > 0){
+                        otherContactRef.current.state.value = officer_in_charge.contacts[0].type
+                    }
+                }else{
+                    otherContactRef.current.state.value = ''
+                }
+            }else{
+                otherContactRef.current.state.value = ''
+            }
+            
+            
         }
 
         setOtherContactDetail(_officerName.contacts ?? _officerName.contacts ?? '')
@@ -1416,6 +1498,7 @@ const EditFacility = (props) => {
                                     <div className='w-full h-auto'>
                                            
                                         <div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
+                                            { console.log({_lat, _long})}
                                             <Map markerCoordinates={[_lat.length < 4 ? '0.000000' : _lat, _long.length < 4 ? '0.000000' : _long]} geoJSON={gJSON} ward={wardName} center={centerCoordinates} />
                                         </div>
               
@@ -1968,7 +2051,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value:id, label:sub_division} : {value:id, label:name}) ?? [{value: '', label: ''}]
 
 									// console.log({results})
-									allOptions.push({facility_types: results })
+									allOptions.push({facility_types: results ?? null })
 									
 								}
 								catch(err) {
@@ -1994,7 +2077,7 @@ EditFacility.getInitialProps = async (ctx) => {
 		
 									let _results  = (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))
 
-									allOptions.push({facility_type_details: _results })
+									allOptions.push({facility_type_details: _results ?? null })
 									
 									
 								}
@@ -2020,7 +2103,7 @@ EditFacility.getInitialProps = async (ctx) => {
 										},
 									})
 		
-								allOptions.push({owners: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
+								allOptions.push({owners: (await _data.json()).results.map(({id, name }) => ({value:id, label:name})) ?? null})
 									
 								}
 								catch(err) {
@@ -2046,7 +2129,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 	
-								allOptions.push({owner_types: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
+								allOptions.push({owner_types: (await _data.json()).results.map(({id, name }) => ({value:id, label:name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2072,7 +2155,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 	
-								allOptions.push({keph: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
+								allOptions.push({keph: (await _data.json()).results.map(({id, name }) => ({value:id, label:name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2098,7 +2181,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 	
-								allOptions.push({facility_admission_status: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
+								allOptions.push({facility_admission_status: (await _data.json()).results.map(({id, name }) => ({value:id, label:name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2124,7 +2207,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 	
-								allOptions.push({job_titles: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
+								allOptions.push({job_titles: (await _data.json()).results.map(({id, name }) => ({value:id, label:name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2150,7 +2233,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 	
-								allOptions.push({contact_types: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
+								allOptions.push({contact_types: (await _data.json()).results.map(({id, name }) => ({value:id, label:name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2177,7 +2260,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 	
-								allOptions.push({facility_depts: (await _data.json()).results.map(({id, name, regulatory_body_name}) => ({value:id, label:name, reg_body_name: regulatory_body_name}))})
+								allOptions.push({facility_depts: (await _data.json()).results.map(({id, name, regulatory_body_name}) => ({value:id, label:name, reg_body_name: regulatory_body_name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2203,7 +2286,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 	
-								allOptions.push({regulating_bodies: (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))})
+								allOptions.push({regulating_bodies: (await _data.json()).results.map(({id, name}) => ({value:id, label:name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2229,7 +2312,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									},
 								})
 	
-								allOptions.push({regulation_status: (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))})
+								allOptions.push({regulation_status: (await _data.json()).results.map(({id, name}) => ({value:id, label:name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2255,7 +2338,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 								})
 	
-								allOptions.push({service: (await _data.json()).results.map(({id, name, category, category_name}) => ({id, name, category, category_name}))})
+								allOptions.push({service: (await _data.json()).results.map(({id, name, category, category_name}) => ({id, name, category, category_name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2282,7 +2365,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								allOptions.push({infrastructure: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name}))})
+								allOptions.push({infrastructure: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2308,7 +2391,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								allOptions.push({hr: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name}))})
+								allOptions.push({hr: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name})) ?? null})
 								
 							}
 							catch(err) {
@@ -2346,7 +2429,7 @@ EditFacility.getInitialProps = async (ctx) => {
                                             geolocation: {
                                                 gJSON: JSON.parse(JSON.stringify(_data?.ward_boundary)), 
                                                 centerCoordinates: JSON.parse(JSON.stringify([lat, lng]))
-                                        }})
+                                        } ?? null})
                                         
                                     }
                                     catch(err) {
@@ -2399,7 +2482,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									_obj[option] = (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))
 			
 
-								allOptions.push(_obj)
+								allOptions.push(_obj ?? null)
 								// console.log({allOptions})
 									
 								}
