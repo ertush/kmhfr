@@ -23,7 +23,7 @@ const ByWard = (props) => {
         let query = null
         props.current_url.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' } 
         : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count', level: 'ward'} 
-        : props.current_url.includes('beds_and_cots_by_ward') ?  query={ id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots' } 
+        : props.current_url.includes('beds_and_cots_by_ward') ?  query={ id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots', name: params.data.ward_name } 
         : query= {id: params.data.ward}
         return(
             <Link
@@ -42,7 +42,7 @@ const ByWard = (props) => {
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.ward, level: 'ward', type: 'ndividual_facility_beds_and_cots' }
+                    query: { id: params.data.ward, level: 'ward', type: 'ndividual_facility_beds_and_cots', name: params.data.ward_name }
                 })
             }}
             > View Facilities </button>
@@ -54,6 +54,8 @@ const ByWard = (props) => {
     const [filtered, setFiltered]=useState([])
     const [filterOption, setFilterOption] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
+    const [title, setTitle] = useState('Beds and Cots by Ward')
+
     const onGridReady = (params) => {
         let lnlst =[]
         setGridApi(params.api);
@@ -81,13 +83,14 @@ const ByWard = (props) => {
             });
             setFiltered(filteredData);
         } else {
-            setFiltered(users);
+            setFiltered(facilities);
         }
             
     }
     useEffect(() => {
         filter(searchTerm)
         if(props.path.includes('level=sub_county')){
+            setTitle('Facility Report by Ward')
             setColumns([
                 {headerName: "Ward", field: "area_name"},
                 {headerName: "Number of Facilities", field: "number_of_facilities"},
@@ -105,6 +108,7 @@ const ByWard = (props) => {
         }
 
         if(props.current_url.includes('chu')){
+            setTitle('Community Health Units Report by Ward')
             setColumns([
                 {headerName: "Ward", field: "ward_name",   cellRenderer: "LinkCellRenderer"},
                 {headerName: "Number of Community Health Units", field: "number_of_units"},
@@ -158,22 +162,21 @@ console.log(props.current_url)
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
-                                <span className="text-gray-500">Static Reports</span> 
+                                <span className="text-gray-500">{title}</span> 
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    {'Manage Users'}
+                                    {title}
                                 </h2>
                         </div>
                         </div>
                     </div>
                     <Resources />
-                    <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+                    <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> 
                         
                           <div className='mx-4'>
                             <form
                                 className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-                                //   action={path || "/facilities"}
                                 >
                                 <input
                                     name="q"
@@ -209,6 +212,7 @@ console.log(props.current_url)
                            
                                     
                             </form>
+                            {props.current_url.includes('beds_and_cots') &&
                             <Select
                                 options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
                                 required
@@ -216,7 +220,7 @@ console.log(props.current_url)
                                 onChange={(e) => setFilterOption(e.value)}
                                 name='filter_by'
                                 className='flex-none w-1/5 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
-                            />
+                            />}
                             <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
                             </h5>

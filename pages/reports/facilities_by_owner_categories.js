@@ -19,17 +19,9 @@ const FacilitiesByOwnersCategories = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
-    const LinkCellRenderer = (params) =>{
-        return(
-            <Link
-            href={{ pathname: `/reports/by_county/`,
-            query: { id: params.data.sub_county } }}
-    
-            ><a>{params.value}</a></Link>
-        )}
 
     const [columns, setColumns]=useState([
-        {headerName: "Owner", field: "owner",   cellRenderer: "LinkCellRenderer"},
+        {headerName: "Owner", field: "owner"},
         {headerName: "Number of Facilities", field: "number_of_facilities"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
@@ -274,9 +266,7 @@ const FacilitiesByOwnersCategories = (props) => {
                                     onGridReady={onGridReady}
                                     rowData={facilities}
                                     columnDefs={columns}
-                                    frameworkComponents={{
-                                        LinkCellRenderer
-                                      }}
+                                    pagination={true}
                                     />
                             </div>
                         </div>

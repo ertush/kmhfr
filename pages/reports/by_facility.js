@@ -18,6 +18,7 @@ const ByWard = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
+    console.log(router);
     const LinkCellRenderer = (params) =>{
         let query = null
         let pathname =''
@@ -41,6 +42,7 @@ const ByWard = (props) => {
     const [facilities, setFacilities]=useState([])
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
+    const [title, setTitle] = useState(`Facilities with beds and cots in ${router.query.name} Ward`)
 
      
     const onGridReady = (params) => {
@@ -104,7 +106,7 @@ const ByWard = (props) => {
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    {'Manage Users'}
+                                    {title}
                                 </h2>
                         </div>
                         </div>
