@@ -5,7 +5,7 @@ import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 import Select from 'react-select'; 
@@ -19,31 +19,23 @@ const FacilitiesByKephLevel = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
-    const LinkCellRenderer = (params) =>{
-        return(
-            <Link
-            href={{ pathname: `/reports/by_county/`,
-            query: { id: params.data.sub_county } }}
-    
-            ><a>{params.value}</a></Link>
-        )}
 
     const [columns, setColumns]=useState([
-        {headerName: "Keph Level", field: "keph_level",   cellRenderer: "LinkCellRenderer"},
+        {headerName: "Keph Level", field: "keph_level"},
         {headerName: "Number of Facilities", field: "number_of_facilities"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
-                    pathname: `/reports/by_facility/`,
-                    query: { id: params.data.county, level: 'county' }
+                    pathname: `/reports/dynamic_reports/`,
+                    query: { id: params.data.id, level: 'keph_level', type:'facilities_by_keph_levels' }
                 })
             }}
             > View Facilities </button>
         },}])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
+    const [facilities, setFacilities]=useState([])
     const [sub_counties, setSubcounties] = useState([])
     const [wards, setWards]=useState([])
      
@@ -55,9 +47,9 @@ const FacilitiesByKephLevel = (props) => {
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst = props.data.results.map(({keph_level, number_of_facilities})=>{return {keph_level, number_of_facilities,  actions: ''}})
+        const lnlst = props.data.results.map(({keph_level,id,number_of_facilities})=>{return {keph_level,id,number_of_facilities}})
         
-        setUsers(lnlst)
+        setFacilities(lnlst)
         updateData(lnlst)
     };
 
@@ -74,8 +66,8 @@ const FacilitiesByKephLevel = (props) => {
 			})
 			.then(resp =>resp.json())
 			.then(res => {
-                const results = res.results.map(({keph_level, number_of_facilities})=>{return {keph_level, number_of_facilities}})
-                setUsers(results)
+                const results = res.results.map(({keph_level,id,number_of_facilities})=>{return {keph_level,id,number_of_facilities}})
+                setFacilities(results)
                 
 			})
 			.catch(e=>console.log(e))
@@ -99,6 +91,7 @@ const FacilitiesByKephLevel = (props) => {
            const results = props?.filters['ward'].filter(county => county.sub_county == drillDown.sub_county)
            setWards({ward: results})
         }
+        localStorage.setItem('dd_owners', JSON.stringify( drillDown));
     }, [drillDown])
     return (
         <div className="">
@@ -116,15 +109,8 @@ const FacilitiesByKephLevel = (props) => {
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    <UsersIcon className='ml-2 h-5 w-5'/> 
-                                    {'Manage Users'}
+                                    {'Facilities By Keph Levels '}
                                 </h2>
-                                <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/users/add_user')}} 
-                                >
-                                    {`Add User `}
-                                    <PlusIcon className='text-white ml-2 h-5 w-5'/>
-                                </button>
                         </div>
                         </div>
                     </div>
@@ -278,15 +264,12 @@ const FacilitiesByKephLevel = (props) => {
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={users}
+                                    rowData={facilities}
                                     columnDefs={columns}
-                                    frameworkComponents={{
-                                        LinkCellRenderer
-                                      }}
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>

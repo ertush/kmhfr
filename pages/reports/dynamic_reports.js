@@ -981,7 +981,7 @@ DynamicReports.getInitialProps = async (ctx) => {
     const fetchData = (token) => {
         let url= ''
         let dr =JSON.parse(localStorage.getItem('dd_owners')) || {}
-        if(ctx.query.type =='facilities_count' || ctx.query.type =='facilities_by_owners' || ctx.query.type=='facilities_by_owner_categories' || ctx.query.type == 'facilities_details'){
+        if(ctx.query.type =='facilities_count' || ctx.query.type =='facilities_by_owners' || ctx.query.type=='facilities_by_owner_categories' || ctx.query.type == 'facilities_details' || ctx.query.type == 'facilities_by_keph_levels'){
             url = API_URL + `/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level&${ctx.query.level}=${ctx.query.id}&county=${dr.county}&sub_county=${dr.sub_county}&ward=${dr.ward}`
 
         }else{
