@@ -236,7 +236,7 @@ const FacilitiesCoordinates = (props) => {
                                 </button> 
                                 <button className="flex items-center bg-indigo-500 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
                                                 setDrillDown({county:'', sub_county:'', ward:''})
-                                                setUsers(props.data.results)
+                                                setFacilities(props.data.results)
                                                 setSubcounties([])
                                                 setWards([])
                                                 

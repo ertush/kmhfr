@@ -36,14 +36,17 @@ const Resources = () => {
        
             {/* Health Facility Reports*/}
            
-            
-                <List component="div" disablePadding
-                subheader={
-                    <ListSubheader component="div" id="nested-list-subheader">
-                    HealthFacility Reports
-                    </ListSubheader>
-                }
-                >
+                 <List
+                    sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                    component="nav"
+                    aria-labelledby="nested-list-subheader"
+                    subheader={
+                        <ListSubheader component="div" id="nested-list-subheader">
+                                Health Facility Reports
+                        </ListSubheader>
+                    }
+                  >	
+                
                     <ListItemButton sx={{ ml: 8 }} onClick={()=>{router.push('/reports/static_reports') }}>
                         <ListItemText primary="Beds and Cots" />
                     </ListItemButton>
@@ -109,8 +112,6 @@ const Resources = () => {
                     <ListItemButton sx={{ ml: 8 }} onClick={()=>{router.push('/reports/chus_count')}}>
                         <ListItemText primary="Community Health Units Count" />
                     </ListItemButton>
-               
-                    
                     <ListItemButton sx={{ ml: 8 }} onClick={()=>{router.push('/reports/chus_status')}}>
                         <ListItemText primary="Community Health Units (Status)" />
                     </ListItemButton>

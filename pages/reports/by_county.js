@@ -31,7 +31,7 @@ const ByCounty = (props) => {
         )}
         const [gridApi, setGridApi] = useState(null);
         const [gridColumnApi, setGridColumnApi] = useState(null);
-        const [users, setUsers]=useState([])
+        const [facilities, setFacilities]=useState([])
         const [filtered, setFiltered]=useState([])
         const [filterOption, setFilterOption] = useState('')
         const [searchTerm, setSearchTerm] = useState('')
@@ -66,7 +66,7 @@ const ByCounty = (props) => {
             lnlst = props.data.results.map(({sub_county_name,sub_county,beds,cots})=>{return {sub_county_name, sub_county,beds,cots }})
         }
      
-        setUsers(lnlst)
+        setFacilities(lnlst)
         updateData(lnlst)
     };
 
@@ -80,7 +80,7 @@ const ByCounty = (props) => {
             });
             setFiltered(filteredData);
         } else {
-            setFiltered(users);
+            setFiltered(facilities);
         }
             
     }
@@ -248,7 +248,7 @@ const ByCounty = (props) => {
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>

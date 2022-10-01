@@ -44,7 +44,7 @@ const FacilitiesByOwners = (props) => {
         },}])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
+    const [facilities, setFacilities]=useState([])
     const [sub_counties, setSubcounties] = useState([])
     const [wards, setWards]=useState([])
      
@@ -57,7 +57,7 @@ const FacilitiesByOwners = (props) => {
         const updateData = (data) => params.api.setRowData(data);
         const lnlst = props.data.results.map(({owner_category, id, number_of_facilities})=>{return {owner_category, number_of_facilities,id}})
         
-        setUsers(lnlst)
+        setFacilities(lnlst)
         updateData(lnlst)
     };
     const filter = (e) => {
@@ -74,7 +74,7 @@ const FacilitiesByOwners = (props) => {
 			.then(resp =>resp.json())
 			.then(res => {
                 const results = res.results.map(({owner_category,id, number_of_facilities})=>{return {owner_category,id, number_of_facilities}})
-                setUsers(results)
+                setFacilities(results)
                 
 			})
 			.catch(e=>console.log(e))
@@ -119,16 +119,6 @@ const FacilitiesByOwners = (props) => {
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Facility Report by Owner'}
                                 </h2>
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
-                                                console.log('Downloading CSV. ' + dl_url || '')
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
-                                            }}
-                                            >
-                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>Export</span>
-                                </button> 
                         </div>
                         </div>
                     </div>
@@ -252,7 +242,7 @@ const FacilitiesByOwners = (props) => {
                                 </button> 
                                 <button className="flex items-center bg-indigo-500 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
                                                 setDrillDown({county:'', sub_county:'', ward:''})
-                                                setUsers(props.data.results)
+                                                setFacilities(props.data.results)
                                                 setSubcounties([])
                                                 setWards([])
                                                 
@@ -274,58 +264,6 @@ const FacilitiesByOwners = (props) => {
                                                 <span>Export</span>
                                 </button> 
                         </div>
-                        
-                          {/* <div className='mx-4'>
-                            <form
-                                className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-                                //   action={path || "/facilities"}
-                                >
-                                <input
-                                    name="q"
-                                    id="search-input"
-                                    className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                                    type="search"
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    // defaultValue={searchTerm}
-                                    placeholder="Search anything ...."
-                                />
-                                <button
-                                    type="submit"
-                                    className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
-                                >
-                                    <SearchIcon className="w-5 h-5" />
-                                </button>
-                                <div className='text-white text-md'>
-
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
-                                                console.log('Downloading CSV. ' + dl_url || '')
-                                                // router.push(dl_url, undefined, { shallow: true })
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
-                                            }}
-                                            >
-                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>Export</span>
-                                </button> 
-                                </div>
-                           
-                                    
-                            </form>
-                            <Select
-                                options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
-                                required
-                                placeholder='Filter By:'
-                                onChange={(e) => setFilterOption(e.value)}
-                                name='filter_by'
-                                className='flex-none w-1/5 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
-                            />
-                            <h5 className="text-lg font-medium text-gray-800 float-right">
-                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
-                            </h5>
-                          </div> */}
-
 
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
                       
@@ -339,7 +277,7 @@ const FacilitiesByOwners = (props) => {
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={users}
+                                    rowData={facilities}
                                     columnDefs={columns}
                                     frameworkComponents={{
                                         LinkCellRenderer
@@ -347,7 +285,7 @@ const FacilitiesByOwners = (props) => {
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>

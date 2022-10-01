@@ -50,7 +50,7 @@ const ByWard = (props) => {
     ])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
+    const [facilities, setFacilities]=useState([])
     const [filtered, setFiltered]=useState([])
     const [filterOption, setFilterOption] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
@@ -68,7 +68,7 @@ const ByWard = (props) => {
             lnlst = props.data.results.map(({ward_name,ward, beds, cots})=>{return {ward_name,ward, beds, cots}})
         }
      
-        setUsers(lnlst)
+        setFacilities(lnlst)
         updateData(lnlst)
     };
     const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
@@ -162,19 +162,12 @@ console.log(props.current_url)
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    <UsersIcon className='ml-2 h-5 w-5'/> 
                                     {'Manage Users'}
                                 </h2>
-                                <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/users/add_user')}} 
-                                >
-                                    {`Add User `}
-                                    <PlusIcon className='text-white ml-2 h-5 w-5'/>
-                                </button>
                         </div>
                         </div>
                     </div>
-                    <Resources setColumns={setColumns} setUsers={setUsers} search={searchTerm} setFiltered={setFiltered}/>
+                    <Resources />
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div className='mx-4'>
@@ -248,7 +241,7 @@ console.log(props.current_url)
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
