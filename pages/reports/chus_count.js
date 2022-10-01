@@ -5,10 +5,9 @@ import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { SearchIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
-import Select from 'react-select'; 
 import Resources from './resources'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -38,7 +37,7 @@ const CHUsCount = (props) => {
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { county: params.data.county_id, type: 'status' }
+                    query: { id: params.data.county_id, level: 'county', type:'chu_count' }
                 })
             }}
             > View CHUs </button>
@@ -46,7 +45,7 @@ const CHUsCount = (props) => {
         ])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
+    const [facilities, setFacilities]=useState([])
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
      
@@ -57,7 +56,7 @@ const CHUsCount = (props) => {
         const updateData = (data) => params.api.setRowData(data);
         const lnlst = props.data.results.map(({county_name,county_id, number_of_units, id, chvs, chews})=>{return {county_name, county_id,number_of_units,id, chvs, chews}})
         
-        setUsers(lnlst)
+        setFacilities(lnlst)
         updateData(lnlst)
     };
 
@@ -71,7 +70,7 @@ const CHUsCount = (props) => {
             });
             setFiltered(filteredData);
         } else {
-            setFiltered(users);
+            setFiltered(facilities);
         }
             
     }
@@ -92,11 +91,10 @@ const CHUsCount = (props) => {
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
-                                <span className="text-gray-500">Static Reports</span> 
+                                <span className="text-gray-500">Community Health Units</span> 
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    <UsersIcon className='ml-2 h-5 w-5'/> 
                                     {'Community Health Units'}
                                 </h2>
                         </div>
@@ -129,13 +127,12 @@ const CHUsCount = (props) => {
                                 </button>
                                 <div className='text-white text-md'>
 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
+                                                e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
-                                                // router.push(dl_url, undefined, { shallow: true })
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -170,7 +167,7 @@ const CHUsCount = (props) => {
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {filtered && filtered.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>

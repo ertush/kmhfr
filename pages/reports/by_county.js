@@ -98,7 +98,7 @@ const ByCounty = (props) => {
                             query: { id: params.data.area_id, level: 'sub_county', type: 'facilities_count' }
                         })
                     }}
-                    > View Facilities </button>
+                    > View Facilities </button> 
                   },}
             ])
            }
@@ -113,7 +113,7 @@ const ByCounty = (props) => {
                     onClick={() => {
                         router.push({
                             pathname: `/reports/by_facility/`,
-                            query: { id: params.data.sub_county, level: 'sub_county' }
+                            query: { id: params.data.sub_county_id, level: 'sub_county', type:'chu_count' }
                         })
                     }}
                     > View CHUs </button>

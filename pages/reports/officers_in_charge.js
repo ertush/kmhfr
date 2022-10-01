@@ -36,9 +36,8 @@ const OfficersInCharge = (props) => { OfficersInCharge
         ])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
+    const [Officers, setOfficers]=useState([])
     const [filtered, setFiltered]=useState([])
-    const [filterOption, setFilterOption] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
      
     const onGridReady = (params) => {
@@ -48,7 +47,7 @@ const OfficersInCharge = (props) => { OfficersInCharge
         const updateData = (data) => params.api.setRowData(data);
         const lnlst = props.data.results.map(({facility_name, officer_name, job_title, contacts})=>{return {facility_name, officer_name,  job_title, contacts: contacts.map(c=>{return c.contact_type +': ' + c.contact}).join(',')}})
         
-        setUsers(lnlst)
+        setOfficers(lnlst)
         updateData(lnlst)
     };
 
@@ -62,7 +61,7 @@ const OfficersInCharge = (props) => { OfficersInCharge
             });
             setFiltered(filteredData);
         } else {
-            setFiltered(users);
+            setFiltered(Officers);
         }
             
     }
@@ -70,28 +69,6 @@ const OfficersInCharge = (props) => { OfficersInCharge
         filter(searchTerm)
     }, [searchTerm])
 
-    useEffect(()=>{
-        switch (filterOption) {
-            case 'county':
-                router.push({
-                    pathname: `/reports/static_reports/`
-                })
-                break;
-            case 'sub-county':
-                router.push({
-                    pathname: `/reports/by_county/`
-                })
-                break;
-            case 'ward':
-                router.push({
-                    pathname: `/reports/by_ward/`
-                })
-                break;
-            default:
-                break;
-        }
-    },[filterOption])
-    console.log(props.current_url);
     return (
         <div className="">
             <Head>
@@ -104,7 +81,7 @@ const OfficersInCharge = (props) => { OfficersInCharge
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
-                                <span className="text-gray-500">Static Reports</span> 
+                                <span className="text-gray-500">Facility Officers</span> 
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
@@ -181,7 +158,7 @@ const OfficersInCharge = (props) => { OfficersInCharge
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {Officers && Officers.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>

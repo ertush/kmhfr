@@ -22,7 +22,7 @@ const ByWard = (props) => {
     const LinkCellRenderer = (params) =>{
         let query = null
         props.current_url.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' } 
-        : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count'} 
+        : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count', level: 'ward'} 
         : props.current_url.includes('beds_and_cots_by_ward') ?  query={ id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots' } 
         : query= {id: params.data.ward}
         return(
@@ -115,7 +115,7 @@ const ByWard = (props) => {
                     onClick={() => {
                         router.push({
                             pathname: `/reports/by_facility/`,
-                            query: { id: params.data.ward_id, type: 'chu_count' }
+                            query: { id: params.data.ward_id, type: 'chu_count', level:'ward' }
                         })
                     }}
                     > View CHUs </button>
@@ -124,7 +124,7 @@ const ByWard = (props) => {
         }
     }, [searchTerm, props.path])
 
-    useEffect(()=>{
+    useEffect(()=>{ 
         switch (filterOption) {
             case 'county':
                 router.push({

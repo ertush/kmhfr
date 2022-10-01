@@ -104,15 +104,8 @@ const ByWard = (props) => {
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    <UsersIcon className='ml-2 h-5 w-5'/> 
                                     {'Manage Users'}
                                 </h2>
-                                <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/users/add_user')}} 
-                                >
-                                    {`Add User `}
-                                    <PlusIcon className='text-white ml-2 h-5 w-5'/>
-                                </button>
                         </div>
                         </div>
                     </div>
@@ -233,7 +226,7 @@ console.log(ctx.query)
         if(ctx.query.type == 'status'){
             url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&county=${drill_down.county}&sub_county=${drill_down.sub_county}&ward=${drill_down.ward}&status=${status}&chu_list=true`
         } else if(ctx.query.type=='chu_count'){
-            url =API_URL + `/reporting/chul/?report_type=status&ward=${ctx.query.id}&chu_list=true`
+            url =API_URL + `/reporting/chul/?report_type=status&${ctx.query.level}=${ctx.query.id}&chu_list=true`
         } else{
             url = API_URL + `/reporting/?report_type=individual_facility_beds_and_cots&report_level=county&${ctx.query.level}=${ctx.query.id}`
         }

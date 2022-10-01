@@ -33,23 +33,17 @@ const Resources = () => {
     return (
     <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
         
-        <List
-        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-        component="nav"
-        aria-labelledby="nested-list-subheader"
-        subheader={
-            <ListSubheader component="div" id="nested-list-subheader">
-                Resources
-            </ListSubheader>
-        }
-        >	
+       
             {/* Health Facility Reports*/}
-            <ListItemButton onClick={handleHFRUnitsClick}>
-                <ListItemText primary="HealthFacility Reports" />
-                {openHFR ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={openHFR} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
+           
+            
+                <List component="div" disablePadding
+                subheader={
+                    <ListSubheader component="div" id="nested-list-subheader">
+                    HealthFacility Reports
+                    </ListSubheader>
+                }
+                >
                     <ListItemButton sx={{ ml: 8 }} onClick={()=>{router.push('/reports/static_reports') }}>
                         <ListItemText primary="Beds and Cots" />
                     </ListItemButton>
@@ -79,42 +73,50 @@ const Resources = () => {
                         <ListItemText primary="Officers In-charge" />
                     </ListItemButton>
                 </List>
-            </Collapse>
+            
 
             {/* Administrative Offices*/}
-            <ListItemButton onClick={handleAdminClick}>
-                <ListItemText primary="Administrative Offices" />
-                {openAdmin ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={openAdmin} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
+            
+                <List
+                sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                component="nav"
+                aria-labelledby="nested-list-subheader"
+                subheader={
+                    <ListSubheader component="div" id="nested-list-subheader">
+                        Administrative Offices
+                    </ListSubheader>
+                }
+                >	
                     <ListItemButton sx={{ ml: 8 }} onClick={()=>{router.push('/reports/admin_offices') }}>
                         <ListItemText primary="Admin Offices" />
                     </ListItemButton>
                     
                 </List>
-            </Collapse>
+          
             
                 {/* Community Health Units*/}
-            <ListItemButton onClick={handleCHUClick}>
-                <ListItemText primary="Community Health Units" />
-                {openCHUs ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={openCHUs} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
+                <List
+                sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                component="nav"
+                aria-labelledby="nested-list-subheader"
+                subheader={
+                    <ListSubheader component="div" id="nested-list-subheader">
+                    Community Health Units                    
+                    </ListSubheader>
+                }
+                >	
                     
                     <ListItemButton sx={{ ml: 8 }} onClick={()=>{router.push('/reports/chus_count')}}>
                         <ListItemText primary="Community Health Units Count" />
                     </ListItemButton>
-                </List>
-                <List component="div" disablePadding>
+               
                     
                     <ListItemButton sx={{ ml: 8 }} onClick={()=>{router.push('/reports/chus_status')}}>
                         <ListItemText primary="Community Health Units (Status)" />
                     </ListItemButton>
                 </List>
-            </Collapse>
-        </List>
+            
+        
     </div>
     )
 }   

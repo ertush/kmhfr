@@ -39,7 +39,7 @@ const FacilitiesCoordinates = (props) => {
         ])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
+    const [facilities, setFacilities]=useState([])
     const [sub_counties, setSubcounties] = useState([])
     const [wards, setWards]=useState([])
      
@@ -53,7 +53,7 @@ const FacilitiesCoordinates = (props) => {
         const updateData = (data) => params.api.setRowData(data);
         const lnlst = props.data.results.map(({code, name, county_name, sub_county_name,ward_name, lat_long})=>{return {code, name, county_name, sub_county_name,ward_name, lat:lat_long !==null? lat_long[0]:'', long:lat_long !==null? lat_long[1]:''}})
         
-        setUsers(lnlst)
+        setFacilities(lnlst)
         updateData(lnlst)
     };
 
@@ -71,7 +71,7 @@ const FacilitiesCoordinates = (props) => {
 			.then(resp =>resp.json())
 			.then(res => {
                 const results = res.results.map(({code, name, county_name, sub_county_name,ward_name, lat_long})=>{return {code, name, county_name, sub_county_name,ward_name, lat:lat_long !==null? lat_long[0]:'', long:lat_long !==null? lat_long[1]:''}})
-                setUsers(results)
+                setFacilities(results)
                 
 			})
 			.catch(e=>console.log(e))
@@ -95,6 +95,7 @@ const FacilitiesCoordinates = (props) => {
            const results = props?.filters['ward'].filter(county => county.sub_county == drillDown.sub_county)
            setWards({ward: results})
         }
+        localStorage.setItem('dd_owners', JSON.stringify( drillDown));
     }, [drillDown])
 
    
@@ -110,19 +111,12 @@ const FacilitiesCoordinates = (props) => {
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
-                                <span className="text-gray-500">Static Reports</span> 
+                                <span className="text-gray-500">Facilities Coordinates</span> 
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    <UsersIcon className='ml-2 h-5 w-5'/> 
-                                    {'Manage Users'}
+                                    {'Facilities Coordinates'}
                                 </h2>
-                                <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/users/add_user')}} 
-                                >
-                                    {`Add User `}
-                                    <PlusIcon className='text-white ml-2 h-5 w-5'/>
-                                </button>
                         </div>
                         </div>
                     </div>
@@ -251,14 +245,13 @@ const FacilitiesCoordinates = (props) => {
                                                 
                                                 <span>Clear</span>
                                 </button> 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
+                                                e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 dl_url = dl_url.replace('facilities/facilities', 'facilities/material')
                                                 if (dl_url.includes('?')) { dl_url += `&format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` } else { dl_url += `?format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
-                                                // router.push(dl_url, undefined, { shallow: true })
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -277,7 +270,7 @@ const FacilitiesCoordinates = (props) => {
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={users}
+                                    rowData={facilities}
                                     columnDefs={columns}
                                     frameworkComponents={{
                                         LinkCellRenderer
@@ -285,7 +278,7 @@ const FacilitiesCoordinates = (props) => {
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
