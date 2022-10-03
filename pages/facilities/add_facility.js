@@ -249,13 +249,6 @@ function AddFacility(props) {
 	const [_contactDetail, setContactDetail] = useState('')
 	const [_otherContactDetails, setOtherContactDetail] = useState('')
 
-	// const [_open24hrs, setOpen24hrs] = useState(false)
-	// const [_openLateNight, setOpenLateNight] = useState(false)
-	// const [_openWeekends, setOpenWeekends] = useState(false)
-	// const [_openNormalDay, setOpenNormalDay] = useState(false)
-	// const [_openPublicHolidays, setOpenPublicHolidays] = useState(false) 
-	// const [_isArmedForces, setIsArmedForces] = useState(false)
-
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
