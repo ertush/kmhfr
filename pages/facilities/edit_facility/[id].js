@@ -27,12 +27,20 @@ import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import TrasnferListServices from '../../../components/TrasnferListServices';
 import TransferListHr from '../../../components/TransferListHr';
 import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
-import { isArray } from 'highcharts';
 
-import { useInput } from '../../../hooks';
+
+// import { useInput } from '../../../hooks';
 
 const _ = require('underscore') 
 
+const isArray = (_arr) => {
+    let isArray
+    if(_arr !== undefined && _arr !== null){
+        isArray = _arr.hasOwnProperty('length')
+    }
+
+    return isArray
+}
 
 const WardMap = dynamic(
 	() => import('../../../components/WardGISMap'), // replace '@components/map' with your component's location
