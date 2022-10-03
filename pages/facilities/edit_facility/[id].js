@@ -4,7 +4,7 @@ import { checkToken } from '../../../controllers/auth/auth'
 import React, { useState, useEffect, useRef } from 'react';
 import Select from 'react-select'
 import MainLayout from '../../../components/MainLayout'
-
+import { Formik, Field, Form } from "formik"; 
 import dynamic from 'next/dynamic'
 
 
@@ -15,6 +15,8 @@ import {
     handleRegulationSubmit,
     handleServiceSubmit,
     handleInfrastructureSubmit,
+    handleGeolocationDataUpdate,
+    handleBasicDetailsUpdate, 
     handleHrSubmit
 } from '../../../controllers/facility/addFacilitySubmitHandlers';
 
@@ -26,6 +28,10 @@ import TrasnferListServices from '../../../components/TrasnferListServices';
 import TransferListHr from '../../../components/TransferListHr';
 import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
 import { isArray } from 'highcharts';
+
+import { useInput } from '../../../hooks';
+
+const _ = require('underscore') 
 
 
 const WardMap = dynamic(
@@ -180,6 +186,7 @@ const EditFacility = (props) => {
 
     // Facility data
     const {
+        id,
         name,
         official_name,
         code,
@@ -225,6 +232,7 @@ const EditFacility = (props) => {
         location_desc,
         plot_number,
         nearest_landmark,
+        coordinates,
         facility_checklist_document,
         lat_long,
         collection_date,
@@ -232,13 +240,161 @@ const EditFacility = (props) => {
         facility_contacts,
         ward_name,
         regulatory_body,
-        regulation_status,
+        regulatory_status_name,
         license_number,
         registration_number,
         regulatory_body_name
  
     } = props['18']?.data ?? {}
+
+    const basicDetailsData =   {
+        official_name,
+        name,
+        facility_type,
+        date_established,
+        accredited_lab_iso_15189,
+        number_of_beds,
+        number_of_cots,
+        number_of_emergency_casualty_beds,
+        number_of_general_theatres,
+        number_of_hdu_beds,
+        number_of_icu_beds,
+        number_of_isolation_beds,
+        number_of_maternity_beds,
+        number_of_maternity_theatres,
+        facility_catchment_population,
+        reporting_in_dhis,
+        nhif_accreditation,
+        is_classified,
+        open_whole_day,
+        open_weekends,
+        open_public_holidays,
+        open_normal_day,
+        open_late_night,
+        town_name,
+        location_desc,
+        plot_number,
+        nearest_landmark,
+        constituency_id,
+        county_id,
+        sub_county_id,
+        facility_catchment_population,
+        keph_level,
+        nearest_landmark,
+        official_name,
+        operation_status,
+        owner,
+        owner_type,
+        plot_number,
+        reporting_in_dhis,
+        town_name,
+        ward
+    }
+
+	
+    const facilityContactsData = {
+
+
+        contact:  ((facility_contacts) => {
+  
+            let _contactDetail 
+            if(facility_contacts !== null){
+                if(isArray(facility_contacts)){
+                    if(facility_contacts.length > 0){
+                        _contactDetail = facility_contacts[0].contact
+                    }else{
+                        _contactDetail = ''
+                    }
+                }else{
+                    _contactDetail = ''
+                }
+            }else{
+                _contactDetail = ''
+            }
+    
+            return _contactDetail
+    
+        })(facility_contacts),
+        contact_type : ((facility_contacts) => {
+  
+            let _contactDetail 
+            if(facility_contacts !== null){
+                if(isArray(facility_contacts)){
+                    if(facility_contacts.length > 0){
+                        _contactDetail = facility_contacts[0].contact_type
+                    }else{
+                        _contactDetail = ''
+                    }
+                }else{
+                    _contactDetail = ''
+                }
+            }else{
+                _contactDetail = ''
+            }
+    
+            return _contactDetail
+    
+        })(facility_contacts),
+        name : ((facility_contacts) => {
+  
+            let _contactDetail 
+            if(facility_contacts !== null){
+                if(isArray(facility_contacts)){
+                    if(facility_contacts.length > 0){
+                        _contactDetail = facility_contacts[0].name
+                    }else{
+                        _contactDetail = ''
+                    }
+                }else{
+                    _contactDetail = ''
+                }
+            }else{
+                _contactDetail = ''
+            }
+    
+            return _contactDetail
+    
+        })(facility_contacts),
+
+        reg_no : registration_number,
+    }
+    
+    const geolocationData = {
+        collection_date,
+        longitude : ((coordinates) => {
    
+        let _lng 
+        if(lat_long !== null){
+            if(lat_long.length > 0){
+                _lng = coordinates[1]
+            }else{
+                _lng = ''
+            }
+        }else{
+            _lng = ''
+        }
+
+        return _lng
+
+    })(lat_long),
+        latitude : ((coordinates) => {
+   
+            let _lng 
+            if(lat_long !== null){
+                if(lat_long.length > 0){
+                    _lng = coordinates[0]
+                }else{
+                    _lng = ''
+                }
+            }else{
+                _lng = ''
+            }
+    
+            return _lng
+    
+        })(lat_long)
+    } 
+
     const {
         gJSON,
         centerCoordinates
@@ -356,7 +512,6 @@ const EditFacility = (props) => {
     })(lat_long))
     const [_contactDetail, setContactDetail] = useState(((facility_contacts) => {
   
-
         let _contactDetail 
         if(facility_contacts !== null){
             if(isArray(facility_contacts)){
