@@ -197,6 +197,7 @@ function AddFacility(props) {
     const serviceOptionRef = useRef(null)
     const optionRefBody = useRef(null)
     const infrastructureBodyRef = useRef(null)
+	const basicDetailsRef = useRef(null)
 	const kephLvlRef = useRef(null)
 	const regBodyRef = useRef(null)
 
@@ -247,6 +248,13 @@ function AddFacility(props) {
 	const [refreshForm6, setRefreshForm6] = useState(false)
 	const [_contactDetail, setContactDetail] = useState('')
 	const [_otherContactDetails, setOtherContactDetail] = useState('')
+
+	// const [_open24hrs, setOpen24hrs] = useState(false)
+	// const [_openLateNight, setOpenLateNight] = useState(false)
+	// const [_openWeekends, setOpenWeekends] = useState(false)
+	// const [_openNormalDay, setOpenNormalDay] = useState(false)
+	// const [_openPublicHolidays, setOpenPublicHolidays] = useState(false) 
+	// const [_isArmedForces, setIsArmedForces] = useState(false)
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
@@ -513,8 +521,9 @@ function AddFacility(props) {
 														</h4>
 														<form
 															encType="multipart/form-data"
+															ref={basicDetailsRef}
 															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates], 'POST')}>
+															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef], 'POST')}>
 
 															{/* Facility Official Name */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1072,9 +1081,7 @@ function AddFacility(props) {
 																		defaultChecked={true}
 																		name='reporting_in_dhis'
 																		id='reporting_in_dhis_yes'
-																		onChange={(ev) => {
-																			
-																		}}
+																		
 																	/>
 																	<small className='text-gray-700'>Yes</small>
 																</span>
@@ -1085,9 +1092,7 @@ function AddFacility(props) {
 																		defaultChecked={false}
 																		name='reporting_in_dhis'
 																		id='reporting_in_dhis_no'
-																		onChange={(ev) => {
-																	
-																		}}
+																		
 																	/>
 																	<small className='text-gray-700'>No</small>
 																</span>
@@ -1128,9 +1133,7 @@ function AddFacility(props) {
 																		defaultChecked={true}
 																		name='nhif_accreditation'
 																		id='nhif_accreditation_yes'
-																		onChange={(ev) => {
-																			ev.preventDefault()
-																		}}
+																	
 																	/>
 																	<small className='text-gray-700'>Yes</small>
 																</span>
@@ -1141,9 +1144,7 @@ function AddFacility(props) {
 																		defaultChecked={false}
 																		name='nhif_accreditation'
 																		id='nhif_accreditation_no'
-																		onChange={(ev) => {
-																			ev.preventDefault()
-																		}}
+																	
 																	/>
 																	<small className='text-gray-700'>No</small>
 																</span>
@@ -1158,13 +1159,10 @@ function AddFacility(props) {
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
 																		type='checkbox'
-																		value={false}
-																		defaultChecked={false}
+																		defaultValue={true}
 																		name='is_classified'
 																		id='is_armed_forces'
-																		onChange={(ev) => {
-																			ev.preventDefault()
-																		}}
+
 																	/>
 																	<label
 																		htmlFor='is_classified'
@@ -1183,14 +1181,12 @@ function AddFacility(props) {
 																</h4>
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
-																		type='checkbox'
-																		value={false}
-																		defaultChecked={false}
+																		type='checkbox'	
 																		name='open_whole_day'
 																		id='open_24hrs'
-																		onChange={(ev) => {
-																			ev.preventDefault()
-																		}}
+																		defaultValue={true}
+																		
+																		
 																	/>
 																	<label
 																		htmlFor='open_24hrs'
@@ -1202,14 +1198,12 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
-																		type='checkbox'
-																		value={false}
-																		defaultChecked={false}
+																		type='checkbox'		
 																		name='open_late_night'
 																		id='open_late_night'
-																		onChange={(ev) => {
-																			ev.preventDefault()
-																		}}
+																		defaultValue={true}
+																		
+																		
 																	/>
 																	<label
 																		htmlFor='open_late_night'
@@ -1222,13 +1216,11 @@ function AddFacility(props) {
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
 																		type='checkbox'
-																		value={false}
-																		defaultChecked={false}
 																		name='open_public_holidays'
 																		id='open_public_holidays'
-																		onChange={(ev) => {
-																			ev.preventDefault()
-																		}}
+																		defaultValue={true}
+																		
+																		
 																	/>
 																	<label
 																		htmlFor='open_public_holidays'
@@ -1240,14 +1232,11 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
-																		type='checkbox'
-																		value={false}
-																		defaultChecked={false}
+																		type='checkbox'	
 																		name='open_weekends'
 																		id='open_weekends'
-																		onChange={(ev) => {
-																			ev.preventDefault()
-																		}}
+																		defaultValue={true}
+																	
 																	/>
 																	<label
 																		htmlFor='open_weekends'
@@ -1259,14 +1248,11 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
-																		type='checkbox'
-																		value={false}
-																		defaultChecked={false}
+																		type='checkbox'	
 																		name='open_normal_day'
 																		id='open_8_5'
-																		onChange={(ev) => {
-																			ev.preventDefault()
-																		}}
+																		defaultValue={true}
+																		
 																	/>
 																	<label
 																		htmlFor='open_normal_day'

@@ -2,32 +2,41 @@
 
 const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
-    const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates] = stateSetters
+    const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef] = stateSetters
 
     event.preventDefault();
 
-    let _ward;
-    let _id;
+    let _id, _ward
 
-    const formData = {};
+    const formData = new FormData(basicDetailsRef.current)
 
-    const elements = [...event.target];
+    const _payload = {};
 
-    elements.forEach(({ name, value }) => {
+    // console.log({keys: [...formData.keys()], values: [...formData.values()]})
+
+    formData.forEach((v, k) => {
         
-        formData[name] = value === "true" || value === "false" ? Boolean(value) : (() => {
+        _payload [k] = (() => {
             // Accomodates format of facility checklist document
-            if (name === "facility_checklist_document") {
-                return {fileName: value.replace("C:\\fakepath\\", '')}
+            if (k === "facility_checklist_document") {
+                return {fileName: v.name}
+            }
+
+            if(v.match(/^true$/) !== null) {
+                return Boolean(v)
+            }
+
+            if(v.match(/^false$/) !== null) {
+                return Boolean(false)
             }
 
             // check if value is alphanumeral and convert to number
-            return value.match(/^[0-9]$/) !== null ? Number(value) : value
+            return v.match(/^[0-9]$/) !== null ? Number(v) : v
         })()
-    });
+    })
 
     // Add officer in charge to payload8
-    formData['officer_in_charge'] = {
+    _payload['officer_in_charge'] = {
         name:'',
         reg_no:'',
         contacts:[
@@ -38,11 +47,16 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
         ]
     }
 
+    // console.log({_payload})
+
     if(method === 'PATCH'){
-        formData['sub_county'] = formData['sub_county_id'];
+        _payload['sub_county'] = formData.get('sub_county_id');
     }
 
-    console.log({formData})
+    // console.log({formData, keys: [...formData.keys()], values: [...formData.values()]})
+
+    
+
 
     // Post Facility Basic Details
     try{
@@ -53,7 +67,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
                 
             },
             method,
-            body: JSON.stringify(formData).replace(',"":""','').replace('on', true).replace('off', false)
+            body: JSON.stringify(_payload)
         })
         // Post Checklist document
         .then(async resp => {
@@ -64,12 +78,12 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
             _ward = ward
 
             const payload = {
-                name: `${formData['official_name']} Facility Checklist File`,
+                name: `${_payload['official_name']} Facility Checklist File`,
                 description: 'Facilities checklist file',
                 document_type: 'Facility_ChecKList',
-                facility_name:formData['official_name'],
+                facility_name:_payload['official_name'],
                 fyl: {
-                    filename:formData['facility_checklist_document']
+                    filename:_payload['facility_checklist_document']
                 }
 
 
@@ -143,7 +157,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
     
 
     // Change form Id
-    window.sessionStorage.setItem('formId', 1);
+    window.sessionStorage.setItem('formId', 1); 
 
     setFormId(window.sessionStorage.getItem('formId'));
 };
