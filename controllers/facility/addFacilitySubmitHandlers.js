@@ -1,5 +1,5 @@
-// handleBasicDetailsSubmit
 
+// handleBasicDetailsSubmit
 const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
     const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef] = stateSetters
@@ -468,12 +468,14 @@ const handleInfrastructureSubmit = (event, stateSetters, method) => {
 // handleHrSubmit
 const handleHrSubmit = (event, stateSetters, method) => {
 
-    const [hr, hrCount, facilityId, setFormId] = stateSetters
+    const [hr, hrCount, facilityId, setFormId, alert] = stateSetters
     event.preventDefault()
 
     const _payload = hr.map(({value}, i) => ({count: i < hrCount.length ? Number(hrCount[i]['val'] ?? 0) : 0 , speciality: value}))
 
     console.log({specialities:_payload})
+
+    alert.success("Facility Created successfully")
 
     try{
         fetch(`/api/common/submit_form_data/?path=hr&id=${facilityId}`, {

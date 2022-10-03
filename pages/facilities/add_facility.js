@@ -1,5 +1,7 @@
 // React imports
 import React, { useState, Suspense, useEffect, useRef } from 'react';
+import { useAlert } from "react-alert";
+
 
 // Next imports
 import Head from 'next/head';
@@ -64,6 +66,8 @@ const WardMap = dynamic(
 const Map = React.memo(WardMap)
 
 function AddFacility(props) {
+
+	const alert = useAlert();
 
 	// Form drop down options
 
@@ -2321,7 +2325,7 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human resources</h4>
-													<form name="facility_services_form" onSubmit={ev => handleHrSubmit(ev, [hr, hrCount, facilityId, setFormId], 'POST')} className='flex flex-col w-full items-start justify-start gap-3'>
+													<form name="facility_services_form" onSubmit={ev => handleHrSubmit(ev, [hr, hrCount, facilityId, setFormId, alert], 'POST')} className='flex flex-col w-full items-start justify-start gap-3'>
 														
 														{/* Transfer list Container */}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
