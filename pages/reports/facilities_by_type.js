@@ -62,7 +62,6 @@ const FacilitiesByType = (props) => {
         setFacilities(lnlst)
         updateData(lnlst)
     };
-    // console.log(isFacilityDetails,individual_id )
 
     const filter = () => {
         // e.preventDefault()

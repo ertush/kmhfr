@@ -2,13 +2,12 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,ChevronDoubleLeftIcon,ChevronDoubleRightIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
-// import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, UserGroupIcon, PlusIcon} from '@heroicons/react/solid';
 import Resources from './resources'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -37,43 +36,21 @@ const OfficersInCharge = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [Officers, setOfficers]=useState([])
-    const [filtered, setFiltered]=useState([])
-    const [searchTerm, setSearchTerm] = useState('')
-    const [currPage, setCurrPage] = useState(props?.data?.current_page || 1)
-    const [page, setPage] = useState(currPage)
     let label = 'officers_in_charge'
 
      
+    const lnlst = props.data.results.map(({facility_name, officer_name, job_title, contacts})=>{return {facility_name, officer_name,  job_title, contacts: contacts.map(c=>{return c.contact_type +': ' + c.contact}).join(',')}})
     const onGridReady = (params) => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst = props.data.results.map(({facility_name, officer_name, job_title, contacts})=>{return {facility_name, officer_name,  job_title, contacts: contacts.map(c=>{return c.contact_type +': ' + c.contact}).join(',')}})
         
         setOfficers(lnlst)
         updateData(lnlst)
     };
+   gridApi?.setRowData(lnlst)
 
-    const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
-    const filter =(searchTerm)=>{
-        if (searchTerm !== '' && searchTerm.length > 3) {
-            const filteredData = users.filter((row) => {
-                return Object.keys(row).some((field) => {
-                    return filterField(searchTerm, row[field]);
-                });
-            });
-            setFiltered(filteredData);
-        } else {
-            setFiltered(Officers);
-        }
-            
-    }
-    useEffect(() => {
-        filter(searchTerm)
-    }, [searchTerm])
-
-    console.log({path: props.path, current_page: props?.data?.current_page, page: page})
     return (
         <div className="">
             <Head>
@@ -103,32 +80,14 @@ const OfficersInCharge = (props) => {
                           <div className='mx-4'>
                             <form
                                 className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-                                //   action={path || "/facilities"}
                                 >
-                                <input
-                                    name="q"
-                                    id="search-input"
-                                    className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                                    type="search"
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    // defaultValue={searchTerm}
-                                    placeholder="Search anything ...."
-                                />
-                                <button
-                                    type="submit"
-                                    className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
-                                >
-                                    <SearchIcon className="w-5 h-5" />
-                                </button>
                                 <div className='text-white text-md'>
 
                                 <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
-                                                // router.push(dl_url, undefined, { shallow: true })
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -155,76 +114,35 @@ const OfficersInCharge = (props) => {
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={filtered}
+                                    rowData={Officers}
                                     columnDefs={columns}
                                     frameworkComponents={{
                                         LinkCellRenderer
                                       }}
-                                    serverSideStoreType={'partial'}
-                                    pagination={true}
-                                    // paginationPageSize={10}
-                                    // cacheBlockSize={10}
                                     />
                             </div>
                         </div>
-                        {/* {Officers && Officers.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {Officers && Officers.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '/?page=') + props?.data?.current_page}>
-                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{'Page' + ' '+ props?.data?.current_page + ' '+ 'of' + ' ' +props?.data.total_pages}</a>
+                                        <a className="text-gray p-2 hover:underline active:underline focus:underline">{'Page' + ' '+ props?.data?.current_page + ' '+ 'of' + ' ' +props?.data.total_pages}</a>
                                     </Link>
                                 </li>
                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
                                     <li key={page} className="text-base text-gray-600">
-                                        <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
+                                        <Link href={(props.path.includes('?') ?(props.path.includes('page=')? props?.path.replace(/page=\d+/, 'page=' + (page)): null) : props.path + `?page=${page}`)}>
                                             <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
                                         </Link>
                                     </li>
                                 ))}
-                                <button className='flex items-center justify-start space-x-2 p-1 border-2  rounded px-2'>
-                                    <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-                                    <span className='text-medium font-semibold text-black '>
-                                        Prev..
-                                    </span>
-                                </button>
-                                <button className='flex items-center justify-start space-x-2 p-1 border-2 rounded px-2' onClick={()=>{
-                                    setPage
-                                    router.push(props.path + (props.path.includes('?') ? '&page=' : '?page=') + `${page+1}` )
-                                }}>
-                                    <ChevronDoubleRightIcon className='w-4 h-4 text-black' />
-                                    <span className='text-medium font-semibold text-black '>
-                                        Next..
-                                    </span>
-                                </button>
+                                
                                 <li className="text-sm text-gray-400 flex">
                                     <DotsHorizontalIcon className="h-3" />
                                 </li>
                             
-                        </ul>} */}
-
-                        {Officers && Officers.length >0 && <ul className="flex flex-row gap-7 list-none items-center justify-center">
-                            {(page > 1) ? <li className={"py-6 px-10 flex items-center bg-primary text-white"} style={{cursor: 'pointer'}} onClick={() => {
-                                setCurrPage(currPage-1)
-                                router.push(props.path + (props.path.includes('?') ? '&page=' : '?page=') + `${page}` )
-                                } }>
-                                &larr; Prev
-                            </li> : <span style={{margin: '4px 1.2em'}}>&nbsp;</span>}
-                            <li className={"py-6 px-10 flex items-center bg-white border-white font-bold text-grey "} style={{cursor: 'default'}} >
-                               Page {page} of {props?.data?.total_pages} pages
-                            </li>
-                            {  <li className={"py-6 px-10 flex items-center bg-primary"} style={{cursor: 'pointer'}} onClick={() =>{
-                                setCurrPage(currPage+1)
-                                router.push(props.path + (props.path.includes('?') ? '&page=' : '?page=') + `${page}` )
-
-                            }
-                            }>
-                                Next &rarr;
-                            </li>}
                         </ul>}
 
                     </main>
-
-
-
 
                     {/* (((((( Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
@@ -245,16 +163,9 @@ const OfficersInCharge = (props) => {
 OfficersInCharge.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     
-    // const county_id= ctx.query.id
-    // console.log(ctx.query)
     const fetchData = async (token) => {
         let url = API_URL + `/facilities/facility_officers/`
 
-        // if(county_id){
-        //     url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}&report_level=county`
-        // }else{
-        //     url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
-        // }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -267,7 +178,7 @@ OfficersInCharge.getInitialProps = async (ctx) => {
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
             console.log({page:ctx.query.page})
-            url = `${url}&page=${ctx.query.page}`
+            url = `${url}?page=${ctx.query.page}`
         }
         
         try {
@@ -279,7 +190,7 @@ OfficersInCharge.getInitialProps = async (ctx) => {
             })
             const json = await r.json()
             return {
-                data: json, query, token, path: ctx.asPath || '/officers_in_charge', current_url: current_url
+                data: json, query, token, path: ctx.asPath || '/reports/officers_in_charge', current_url: current_url
             }
         } catch (err) {
             console.log('Error fetching facilities: ', err)
@@ -288,7 +199,7 @@ OfficersInCharge.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/users',
+                path: ctx.asPath || '/reports/officers_in_charge',
                 current_url: ''
             }
         }
@@ -307,7 +218,7 @@ OfficersInCharge.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/officers_in_charge'
+                window.location.href = '/reports/officers_in_charge'
             }
         }
         setTimeout(() => {
@@ -316,7 +227,7 @@ OfficersInCharge.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/officers_in_charge',
+                path: ctx.asPath || '/reports/officers_in_charge',
                 current_url: ''
             }
         }, 1000);

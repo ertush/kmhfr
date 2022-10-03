@@ -47,16 +47,17 @@ const FacilitiesCoordinates = (props) => {
     let [drillDown, setDrillDown] = useState({county:'', sub_county:'', ward:''})
     let label ='facilities_coordinates'
      
+    const lnlst = props.data.results.map(({code, name, county_name, sub_county_name,ward_name, lat_long})=>{return {code, name, county_name, sub_county_name,ward_name, lat:lat_long !==null? lat_long[0]:'', long:lat_long !==null? lat_long[1]:''}})
     const onGridReady = (params) => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst = props.data.results.map(({code, name, county_name, sub_county_name,ward_name, lat_long})=>{return {code, name, county_name, sub_county_name,ward_name, lat:lat_long !==null? lat_long[0]:'', long:lat_long !==null? lat_long[1]:''}})
         
         setFacilities(lnlst)
         updateData(lnlst)
     };
+    gridApi?.setRowData(lnlst)
 
     const filter = (e) => {
         e.preventDefault()
@@ -281,22 +282,23 @@ const FacilitiesCoordinates = (props) => {
                         </div>
                         {facilities && facilities.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
-                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
+                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '/?page=') + props?.data?.current_page}>
+                                        <a className="text-gray p-2 hover:underline active:underline focus:underline">{'Page' + ' '+ props?.data?.current_page + ' '+ 'of' + ' ' +props?.data.total_pages}</a>
                                     </Link>
                                 </li>
                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
                                     <li key={page} className="text-base text-gray-600">
-                                        <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
+                                        <Link href={(props.path.includes('?') ?(props.path.includes('page=')? props?.path.replace(/page=\d+/, 'page=' + (page)): null) : props.path + `?page=${page}`)}>
                                             <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
                                         </Link>
                                     </li>
                                 ))}
+                                
                                 <li className="text-sm text-gray-400 flex">
                                     <DotsHorizontalIcon className="h-3" />
                                 </li>
-
-                            </ul>}
+                            
+                        </ul>}
 
                     </main>
 
@@ -363,7 +365,7 @@ FacilitiesCoordinates.getInitialProps = async (ctx) => {
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
             console.log({page:ctx.query.page})
-            url = `${url}&page=${ctx.query.page}`
+            url = `${url}?page=${ctx.query.page}`
         }
         
         try {
@@ -376,7 +378,7 @@ FacilitiesCoordinates.getInitialProps = async (ctx) => {
             const json = await r.json()
             return fetchFilters(token).then(ft => {
                 return {
-                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/facilities_by_owners', current_url: url, api_url: API_URL
+                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/reports/facilities_by_owners', current_url: current_url, api_url: API_URL
                 }
             })
         } catch (err) {
@@ -386,7 +388,7 @@ FacilitiesCoordinates.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/users',
+                path: ctx.asPath || '/reports/facilities_by_owners',
                 current_url: ''
             }
         }
@@ -405,7 +407,7 @@ FacilitiesCoordinates.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/users'
+                window.location.href = '/reports/facilities_by_owners'
             }
         }
         setTimeout(() => {
@@ -414,7 +416,7 @@ FacilitiesCoordinates.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/users',
+                path: ctx.asPath || '/reports/facilities_by_owners',
                 current_url: ''
             }
         }, 1000);

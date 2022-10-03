@@ -55,6 +55,7 @@ const ByWard = (props) => {
     const [filterOption, setFilterOption] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
     const [title, setTitle] = useState('Beds and Cots by Ward')
+    const [label, setLabel]=useState('beds_cots')
 
     const onGridReady = (params) => {
         let lnlst =[]
@@ -76,7 +77,7 @@ const ByWard = (props) => {
     const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
     const filter =(searchTerm)=>{
         if (searchTerm !== '' && searchTerm.length > 3) {
-            const filteredData = users.filter((row) => {
+            const filteredData = facilities.filter((row) => {
                 return Object.keys(row).some((field) => {
                     return filterField(searchTerm, row[field]);
                 });
@@ -91,6 +92,7 @@ const ByWard = (props) => {
         filter(searchTerm)
         if(props.path.includes('level=sub_county')){
             setTitle('Facility Report by Ward')
+            setLabel('facilities_count')
             setColumns([
                 {headerName: "Ward", field: "area_name"},
                 {headerName: "Number of Facilities", field: "number_of_facilities"},
@@ -109,6 +111,7 @@ const ByWard = (props) => {
 
         if(props.current_url.includes('chu')){
             setTitle('Community Health Units Report by Ward')
+            setLabel('chus_count')
             setColumns([
                 {headerName: "Ward", field: "ward_name",   cellRenderer: "LinkCellRenderer"},
                 {headerName: "Number of Community Health Units", field: "number_of_units"},
@@ -149,7 +152,7 @@ const ByWard = (props) => {
                 break;
         }
     },[filterOption])
-console.log(props.current_url)
+    
     return (
         <div className="">
             <Head>
@@ -171,7 +174,7 @@ console.log(props.current_url)
                         </div>
                         </div>
                     </div>
-                    <Resources />
+                    <Resources label={label}/>
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> 
                         
                           <div className='mx-4'>
@@ -202,7 +205,6 @@ console.log(props.current_url)
                                                 if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />

@@ -5,7 +5,7 @@ import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { SearchIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 import Resources from './resources'
@@ -43,6 +43,7 @@ const ByWard = (props) => {
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
     const [title, setTitle] = useState(`Facilities with beds and cots in ${router.query.name} Ward`)
+    const [label, setLabel]=useState('beds_cots')
 
      
     const onGridReady = (params) => {
@@ -65,7 +66,7 @@ const ByWard = (props) => {
     const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
     const filter =(searchTerm)=>{
         if (searchTerm !== '' && searchTerm.length > 3) {
-            const filteredData = users.filter((row) => {
+            const filteredData = facilities.filter((row) => {
                 return Object.keys(row).some((field) => {
                     return filterField(searchTerm, row[field]);
                 });
@@ -79,6 +80,8 @@ const ByWard = (props) => {
     useEffect(() => {
         filter(searchTerm)
         if(props.current_url.includes('chu')){
+            setTitle('Community Health Units')
+            setLabel('chus_count')
             setColumns([
                 {headerName: "Code", field: "code"},
                 {headerName: "Name", field: "name", cellRenderer: "LinkCellRenderer", cellStyle: {color: 'blue',maxWidth: 200, overflow: 'visible', }},
@@ -111,7 +114,7 @@ const ByWard = (props) => {
                         </div>
                         </div>
                     </div>
-                    <Resources />
+                    <Resources label={label}/>
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div className='mx-4'>

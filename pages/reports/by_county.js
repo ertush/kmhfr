@@ -38,6 +38,7 @@ const ByCounty = (props) => {
     const [filterOption, setFilterOption] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
     const [title, setTitle]=useState('Beds and Cots by Sub County')
+    const [label, setLabel]=useState('beds_cots')
          
     const [columns, setColumns]=useState([
         {headerName: "Sub County", field: "sub_county_name", cellRenderer: "LinkCellRenderer"},
@@ -56,7 +57,7 @@ const ByCounty = (props) => {
     ])
   
     const onGridReady = (params) => {
-         let lnlst =[]
+        let lnlst =[]
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
@@ -76,7 +77,7 @@ const ByCounty = (props) => {
     const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
     const filter =(searchTerm)=>{
         if (searchTerm !== '' && searchTerm.length > 3) {
-            const filteredData = users.filter((row) => {
+            const filteredData = facilities.filter((row) => {
                 return Object.keys(row).some((field) => {
                     return filterField(searchTerm, row[field]);
                 });
@@ -91,6 +92,7 @@ const ByCounty = (props) => {
         filter(searchTerm)
         if(props.path.includes('level=county')){
             setTitle('Facility Report by Sub County')
+            setLabel('facilities_count')
             setColumns([
                 {headerName: "Sub County", field: "area_name",   cellRenderer: "LinkCellRenderer"},
                 {headerName: "Number of Facilities", field: "number_of_facilities"},
@@ -108,6 +110,7 @@ const ByCounty = (props) => {
            }
         if(props.current_url.includes('chu')){
             setTitle('Community Health Units Report by Sub-County')
+            setLabel('chus_count')
             setColumns([
                 {headerName: "Sub county", field: "sub_county_name",   cellRenderer: "LinkCellRenderer"},
                 {headerName: "Number of Community Health Units", field: "number_of_units"},
@@ -171,14 +174,13 @@ const ByCounty = (props) => {
                         </div>
                     </div>
                     {/* list */}
-                    <Resources />
+                    <Resources label={label}/>
                     
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div className='mx-4'>
                             <form
                                 className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-                                //   action={path || "/facilities"}
                                 >
                                 <input
                                     name="q"
@@ -186,7 +188,6 @@ const ByCounty = (props) => {
                                     className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                     type="search"
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    // defaultValue={searchTerm}
                                     placeholder="Search anything ...."
                                 />
                                 <button

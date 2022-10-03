@@ -267,7 +267,6 @@ const FacilitiesByOwnersCategories = (props) => {
                                     onGridReady={onGridReady}
                                     rowData={facilities}
                                     columnDefs={columns}
-                                    pagination={true}
                                     />
                             </div>
                         </div>

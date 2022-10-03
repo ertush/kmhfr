@@ -19,14 +19,6 @@ const CHUsStatus = (props) => { CHUsStatus
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
-    const LinkCellRenderer = (params) =>{
-        return(
-            <Link
-            href={{ pathname: `/reports/by_county/`,
-            query: { id: params.data.sub_county } }}
-    
-            ><a>{params.value}</a></Link>
-        )}
 
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
@@ -38,7 +30,7 @@ const CHUsStatus = (props) => { CHUsStatus
     let label ='chus_status'
     // console.log(drill_down);
     const [columns, setColumns]=useState([
-        {headerName: "Status", field: "status_name",   cellRenderer: "LinkCellRenderer"},
+        {headerName: "Status", field: "status_name"},
         {headerName: "Number of Community Health Units", field: "number_of_units"},
         {headerName: "Actions", cellRendererFramework: function(params) {
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
@@ -276,9 +268,6 @@ const CHUsStatus = (props) => { CHUsStatus
                                     onGridReady={onGridReady}
                                     rowData={facilities}
                                     columnDefs={columns}
-                                    frameworkComponents={{
-                                        LinkCellRenderer
-                                      }}
                                     />
                             </div>
                         </div>
@@ -349,11 +338,6 @@ CHUsStatus.getInitialProps = async (ctx) => {
     const fetchData = async (token) => {
         let url = API_URL + `/reporting/chul/?report_type=status`
 
-        // if(county_id){
-        //     url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}&report_level=county`
-        // }else{
-        //     url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
-        // }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -379,7 +363,7 @@ CHUsStatus.getInitialProps = async (ctx) => {
             const json = await r.json()
             return fetchFilters(token).then(ft => {
                 return {
-                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/facilities_by_owners', current_url: url, api_url: API_URL
+                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/facilities_by_owners', current_url: current_url, api_url: API_URL
                 }
             })
         } catch (err) {

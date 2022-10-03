@@ -61,7 +61,6 @@ const FacilityByTypeDetails = (props) => {
         setFacilities(lnlst)
         updateData(lnlst)
     };
-    // console.log(isFacilityDetails,individual_id )
 
     const filter = () => {
         try {
@@ -348,7 +347,6 @@ FacilityByTypeDetails.getInitialProps = async (ctx) => {
     }
 
     const fetchData = async (token) => {
-        // let url = API_URL + `/reporting/?report_type=facility_count_by_facility_type`
         let url =API_URL + `/reporting/?report_type=facility_count_by_facility_type_details&parent=${ctx.query.id}&county=&sub_county=&ward=`
 
         let query = { 'searchTerm': ''}

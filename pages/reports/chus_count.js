@@ -64,7 +64,7 @@ const CHUsCount = (props) => {
     const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
     const filter =(searchTerm)=>{
         if (searchTerm !== '' && searchTerm.length > 3) {
-            const filteredData = users.filter((row) => {
+            const filteredData = facilities.filter((row) => {
                 return Object.keys(row).some((field) => {
                     return filterField(searchTerm, row[field]);
                 });
