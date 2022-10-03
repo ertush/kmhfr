@@ -465,7 +465,7 @@ const Dash = (props) => {
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
                         <BarChart
                             title="Facilities & CHUs by county"
-                            categories={Array.from(props?.data?.county_summary, cs => cs.name) || []}
+                            categories={Array?.from(props?.data?.county_summary, cs => cs.name) || []}
                             tooltipsuffix="#"
                             xaxistitle="County"
                             yaxistitle="Number"

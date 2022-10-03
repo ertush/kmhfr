@@ -5,17 +5,17 @@ import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { SearchIcon, DotsHorizontalIcon,ChevronDoubleLeftIcon,ChevronDoubleRightIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
-import Select from 'react-select'; 
+// import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, UserGroupIcon, PlusIcon} from '@heroicons/react/solid';
 import Resources from './resources'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
-const OfficersInCharge = (props) => { OfficersInCharge
+const OfficersInCharge = (props) => { 
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
@@ -33,12 +33,16 @@ const OfficersInCharge = (props) => { OfficersInCharge
         {headerName: "Officer Name", field: "officer_name"},
         {headerName: "Job Title", field: "job_title"},
         {headerName: "Contacts", field: "contacts"},
-        ])
+     ])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [Officers, setOfficers]=useState([])
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
+    const [currPage, setCurrPage] = useState(props?.data?.current_page || 1)
+    const [page, setPage] = useState(currPage)
+    let label = 'officers_in_charge'
+
      
     const onGridReady = (params) => {
         setGridApi(params.api);
@@ -69,6 +73,7 @@ const OfficersInCharge = (props) => { OfficersInCharge
         filter(searchTerm)
     }, [searchTerm])
 
+    console.log({path: props.path, current_page: props?.data?.current_page, page: page})
     return (
         <div className="">
             <Head>
@@ -91,7 +96,7 @@ const OfficersInCharge = (props) => { OfficersInCharge
                         </div>
                     </div>
                     {/* list */}
-                    <Resources />
+                    <Resources label={label}/>
                     
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
@@ -155,13 +160,17 @@ const OfficersInCharge = (props) => { OfficersInCharge
                                     frameworkComponents={{
                                         LinkCellRenderer
                                       }}
+                                    serverSideStoreType={'partial'}
+                                    pagination={true}
+                                    // paginationPageSize={10}
+                                    // cacheBlockSize={10}
                                     />
                             </div>
                         </div>
-                        {Officers && Officers.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {/* {Officers && Officers.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
-                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
+                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '/?page=') + props?.data?.current_page}>
+                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{'Page' + ' '+ props?.data?.current_page + ' '+ 'of' + ' ' +props?.data.total_pages}</a>
                                     </Link>
                                 </li>
                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
@@ -171,11 +180,46 @@ const OfficersInCharge = (props) => { OfficersInCharge
                                         </Link>
                                     </li>
                                 ))}
+                                <button className='flex items-center justify-start space-x-2 p-1 border-2  rounded px-2'>
+                                    <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
+                                    <span className='text-medium font-semibold text-black '>
+                                        Prev..
+                                    </span>
+                                </button>
+                                <button className='flex items-center justify-start space-x-2 p-1 border-2 rounded px-2' onClick={()=>{
+                                    setPage
+                                    router.push(props.path + (props.path.includes('?') ? '&page=' : '?page=') + `${page+1}` )
+                                }}>
+                                    <ChevronDoubleRightIcon className='w-4 h-4 text-black' />
+                                    <span className='text-medium font-semibold text-black '>
+                                        Next..
+                                    </span>
+                                </button>
                                 <li className="text-sm text-gray-400 flex">
                                     <DotsHorizontalIcon className="h-3" />
                                 </li>
+                            
+                        </ul>} */}
 
-                            </ul>}
+                        {Officers && Officers.length >0 && <ul className="flex flex-row gap-7 list-none items-center justify-center">
+                            {(page > 1) ? <li className={"py-6 px-10 flex items-center bg-primary text-white"} style={{cursor: 'pointer'}} onClick={() => {
+                                setCurrPage(currPage-1)
+                                router.push(props.path + (props.path.includes('?') ? '&page=' : '?page=') + `${page}` )
+                                } }>
+                                &larr; Prev
+                            </li> : <span style={{margin: '4px 1.2em'}}>&nbsp;</span>}
+                            <li className={"py-6 px-10 flex items-center bg-white border-white font-bold text-grey "} style={{cursor: 'default'}} >
+                               Page {page} of {props?.data?.total_pages} pages
+                            </li>
+                            {  <li className={"py-6 px-10 flex items-center bg-primary"} style={{cursor: 'pointer'}} onClick={() =>{
+                                setCurrPage(currPage+1)
+                                router.push(props.path + (props.path.includes('?') ? '&page=' : '?page=') + `${page}` )
+
+                            }
+                            }>
+                                Next &rarr;
+                            </li>}
+                        </ul>}
 
                     </main>
 
@@ -235,7 +279,7 @@ OfficersInCharge.getInitialProps = async (ctx) => {
             })
             const json = await r.json()
             return {
-                data: json, query, token, path: ctx.asPath || '/users', current_url: current_url
+                data: json, query, token, path: ctx.asPath || '/officers_in_charge', current_url: current_url
             }
         } catch (err) {
             console.log('Error fetching facilities: ', err)
@@ -263,7 +307,7 @@ OfficersInCharge.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/users'
+                window.location.href = '/officers_in_charge'
             }
         }
         setTimeout(() => {
@@ -272,7 +316,7 @@ OfficersInCharge.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/users',
+                path: ctx.asPath || '/officers_in_charge',
                 current_url: ''
             }
         }, 1000);

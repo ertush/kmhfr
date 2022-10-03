@@ -48,6 +48,7 @@ const FacilitiesCount = (props) => {
     const [facilities, setFacilities]=useState([])
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
+    let label = 'facilities_count'
      
     const onGridReady = (params) => {
         setGridApi(params.api);
@@ -99,7 +100,7 @@ const FacilitiesCount = (props) => {
                         </div>
                     </div>
                     {/* list */}
-                    <Resources />
+                    <Resources label={label}/>
                     
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         

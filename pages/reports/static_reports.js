@@ -47,6 +47,7 @@ const Users = (props) => {
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
     const [filterOption, setFilterOption] = useState('')
+    let label = 'beds_cots'
     const [columns, setColumns]=useState([
         {headerName: "County", field: "county_name",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Beds", field: "beds"},
@@ -147,7 +148,7 @@ console.log(filterOption)
                         </div>
                         </div>
                     </div>
-                    <Resources setColumns={setColumns} setUsers={setUsers} search={searchTerm} setFiltered={setFiltered}/>
+                    <Resources label={label}/>
 
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         

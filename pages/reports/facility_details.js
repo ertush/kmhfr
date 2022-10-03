@@ -27,6 +27,7 @@ const FacilityByTypeDetails = (props) => {
      
     let filters_county = { county: props?.filters['county']}
     let [drillDown, setDrillDown] = useState({county:'', sub_county:'', ward:''})
+    let label = 'facility_details'
     const LinkCellRenderer = (params) =>{
         return(
             <Link
@@ -125,7 +126,7 @@ const FacilityByTypeDetails = (props) => {
                         </div>
                     </div>
                     {/* list */}
-                    <Resources />
+                    <Resources label ={label} />
                     
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         

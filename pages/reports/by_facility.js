@@ -18,11 +18,11 @@ const ByWard = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
-    console.log(router);
     const LinkCellRenderer = (params) =>{
         let query = null
         let pathname =''
-        props.current_url.includes('chu') ? (query = { id: params.data.id }, pathname= '/community-units/[id]' ) : (query= {id: params.data.sub_county}, pathname= '/facilities/[id]/')
+        console.log(params);
+        props.current_url.includes('chu') ? (query = { id: params.data.id }, pathname= '/community-units/[id]' ) : (query= {id: params.data.facility_id}, pathname= '/facilities/[id]/')
         return(
             <Link
             href={{ pathname:pathname, query: query }}
@@ -55,7 +55,7 @@ const ByWard = (props) => {
         if(props.current_url.includes('chu')){       
             lnlst = props.data.results.map(({code,name,facility_name,county,date_established,status,number_of_chvs,id})=>{return {code,name,facility_name,county,date_established,status,number_of_chvs,id}})
         } else{
-            lnlst=  props.data.results.map(({facility_code,facility_name,id,number_of_beds,number_of_cots})=>{return {facility_code, facility_name, number_of_beds, number_of_cots,id }})
+            lnlst=  props.data.results.map(({facility_code,facility_name,facility_id,number_of_beds,number_of_cots})=>{return {facility_code, facility_name, number_of_beds, number_of_cots,facility_id }})
         }
      
         setFacilities(lnlst)
