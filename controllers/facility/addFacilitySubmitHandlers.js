@@ -501,7 +501,80 @@ const handleHrSubmit = (event, stateSetters, method) => {
 }
 
 
+// handleBasicDetailsUpdate
+const handleBasicDetailsUpdate = async (formData, facility_id) => {
+
+    try{
+       const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method:'POST',
+            body: JSON.stringify(formData)
+        })
+
+        console.log({resp})
+
+    return resp
+
+    }
+    catch(e){
+        console.error('Error msg:', e.message)
+    }
+}
+
+// handleGeolocationDataUpdate
+const handleGeolocationDataUpdate = async (formData, coordinates_id) => {
+    // console.log({formData, coordinates_id})
+    try{
+       const resp =  await fetch(`/api/common/submit_form_data/?path=geolocation_update&id=${coordinates_id}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method:'POST',
+            body: JSON.stringify(formData)
+        })
+
+        console.log({resp: await resp.json()})
+
+    return resp
+
+    }
+    catch(e){
+        console.error('Error msg:', e.message)
+    }
+}
+
+// handleFacilityContactUpdates
+const handleFacilityContactUpdates = async (formData, facility_id) => {
+    // console.log({formData, coordinates_id})
+    try{
+       const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method:'POST',
+            body: JSON.stringify(formData)
+        })
+
+        console.log({resp: await resp.json()})
+
+    return resp
+
+    }
+    catch(e){
+        console.error('Error msg:', e.message)
+    }
+}
+
+
+
 export {
+    handleGeolocationDataUpdate,
+    handleBasicDetailsUpdate,
     handleBasicDetailsSubmit,
     handleGeolocationSubmit,
     handleFacilityContactsSubmit,
