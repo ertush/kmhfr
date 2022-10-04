@@ -758,6 +758,8 @@ const EditFacility = (props) => {
                 console.error(err.message)
             }
 
+            console.log({response: await response})
+
             return response.collection_date
         }
 
