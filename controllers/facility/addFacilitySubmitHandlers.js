@@ -312,6 +312,7 @@ const handleRegulationSubmit = (event, stateSetters, method) => {
 
     const [setFormId, facilityId] = stateSetters
 
+
     event.preventDefault();
     
 
@@ -325,6 +326,7 @@ const handleRegulationSubmit = (event, stateSetters, method) => {
 
     const payload = []
 
+   
     elements.forEach(({ name, value }) => {
         switch(name){
             case 'license_number':
@@ -376,6 +378,7 @@ const handleRegulationSubmit = (event, stateSetters, method) => {
     }]})
     
 
+    console.log({payload})
 
     payload.forEach(data => {
         try{
@@ -575,6 +578,7 @@ const handleFacilityContactUpdates = async (formData, facility_id) => {
 export {
     handleGeolocationDataUpdate,
     handleBasicDetailsUpdate,
+    handleFacilityContactUpdates,
     handleBasicDetailsSubmit,
     handleGeolocationSubmit,
     handleFacilityContactsSubmit,

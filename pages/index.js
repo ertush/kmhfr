@@ -2,16 +2,10 @@ import Head from 'next/head'
 import Link from 'next/link'
 import router from 'next/router'
 import MainLayout from '../components/MainLayout'
-import { positions, Provider } from "react-alert";
-import AlertTemplate from "react-alert-template-basic";
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 
-const options = {
-    timeout: 5000,
-    position: positions.TOP_RIGHT
-  };
-  
+
 
 const Home = (props) => {
     const router = useRouter()
@@ -45,7 +39,7 @@ const Home = (props) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
            
-            <Provider template={AlertTemplate} {...options}>
+            
                 <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
                     <div className="w-full grid grid-cols-2 gap-6 px-3 md:px-4 p-4 my-4 max-w-screen-lg mx-auto">
                         <div className="col-span-2 p-2 md:p-4 flex flex-col gap-4 items-center justify-center">
@@ -100,7 +94,7 @@ const Home = (props) => {
                         </div>
                     </div>
                 </MainLayout>
-            </Provider>
+     
          
         </>
     )

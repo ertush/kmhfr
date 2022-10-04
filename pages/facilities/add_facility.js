@@ -1796,7 +1796,7 @@ function AddFacility(props) {
 
 																{/* Contact Type / Contact Details */}
 
-																<FacilityContact contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
+																<FacilityContact contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} contact={''} names={['contact_type', 'contact']} id={'facility'} />
 																
 
 																
