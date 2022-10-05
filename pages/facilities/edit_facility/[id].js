@@ -683,11 +683,7 @@ const EditFacility = (props) => {
     const ownerTypeOptionsRef = useRef(null)
     const ownerDetailsRef = useRef(null)
     const kephLvlRef = useRef(null)    
-    // const isDHISReportingYesRef = useRef(null)
-    // const isDHISReportingNoRef = useRef(null)
     const facilityAdmissionRef = useRef(null)
-    // const isNHIFAccreditedYesRef = useRef(null)
-    // const isNHIFAccreditedNoRef = useRef(null)
     const countyRef = useRef(null)
     const subCountyRef = useRef(null)
     const constituencyRef = useRef(null)
@@ -695,31 +691,19 @@ const EditFacility = (props) => {
     const checklistFileRef = useRef(null)
 
 
-    // Geolocation Refs
-
-    // const collectonDateRef = useRef(null)
-    // const longRef = useRef(null)
-    // const latRef = useRef(null)
-
     // Facility Contacts Refs
 
     const contactRef = useRef(null)
-    // const contactDetailsRef = useRef(null)
-    // const officerNameRef = useRef(null)
-    // const officerRegNoRef = useRef(null)
     const jobTitleRef = useRef(null)
     const otherContactRef = useRef(null)
-    // const otherContactDetailsRef = useRef(null)
+ 
 
     // Regulation Refs
 
     const regulatoryBodyRef = useRef(null)
     const regulatoryStateRef = useRef(null)
- 
-
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
-   
     const facilityRegulatoryBodyRef = useRef(null)
     const regBodyRef = useRef(null)
     const facilityDeptNameRef = useRef(null)
@@ -1251,16 +1235,6 @@ const EditFacility = (props) => {
 
                                         {/* Is Facility accredited */}
                                         <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                            {/* <label htmlFor="accredited_lab_iso_15189" className="text-gray-700 capitalize text-sm flex-grow">*Is the facility accredited Lab ISO 15189? </label>
-                                            <span className="flex items-center gap-x-1">
-                                                <Field type="radio" name="accredited_lab_iso_15189" id="facility_accredited_yes" />
-                                                <small className="text-gray-700">Yes</small>
-                                            </span>
-                                            <span className="flex items-center gap-x-1">
-                                                <Field type="radio" name="accredited_lab_iso_15189" id="facility_accredited_no"  />
-
-                                                <small className="text-gray-700">No</small>
-                                            </span> */}
                                             <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
                                                 <Field type="checkbox" name="accredited_lab_iso_15189" id="accredited_lab_iso_15189" />
                                                 <label htmlFor="accredited_lab_iso_15189" className="text-gray-700 capitalize text-sm flex-grow"> *Is the facility accredited Lab ISO 15189?</label>    
@@ -1420,16 +1394,7 @@ const EditFacility = (props) => {
 
                                         {/* Is Reporting DHIS2 */}
                                         <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                            {/* <label htmlFor="reporting_in_dhis" className="text-gray-700 capitalize text-sm flex-grow">*Should this facility have reporting in DHIS2?  </label>
-                                            <span className="flex items-center gap-x-1">
-                                                <Field type="radio" name="reporting_in_dhis" id="facility_reporting_yes"/>
-                                                <small className="text-gray-700">Yes</small>
-                                            </span>
-                                            <span className="flex items-center gap-x-1">
-                                                <Field type="radio" name="reporting_in_dhis" id="facility_reporting_no"/>
-                                                <small className="text-gray-700">No</small>
-                                            </span> */}
-
+                                        
                                             <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
                                                 <Field type="checkbox" name="reporting_in_dhis" id="reporting_in_dhis" />
                                                 <label htmlFor="reporting_in_dhis" className="text-gray-700 capitalize text-sm flex-grow">  *Should this facility have reporting in DHIS2?</label>    
@@ -1453,15 +1418,7 @@ const EditFacility = (props) => {
 
                                         {/* Is NHIF accredited */}
                                         <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                            {/* <label htmlFor="nhif_accreditation" className="text-gray-700 capitalize text-sm flex-grow"> *Does this facility have NHIF accreditation?   </label>
-                                            <span className="flex items-center gap-x-1">
-                                                <Field type="checkbox" name="nhif_accreditation" id="nhif_accredited_yes" />
-                                                <small className="text-gray-700">Yes</small>
-                                            </span>
-                                            <span className="flex items-center gap-x-1">
-                                                <input type="radio" checked={!_isNHIFAccredited} ref={isNHIFAccreditedNoRef} onChange={setIsNHIFAccredited} name="nhif_accreditation" id="nhif_accredited_no" />
-                                                <small className="text-gray-700">No</small>
-                                            </span> */}
+                                          
                                             <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
                                                 <Field type="checkbox" name="nhif_accreditation" id="is_armed_forces" />
                                                 <label htmlFor="nhif_accreditation" className="text-gray-700 capitalize text-sm flex-grow">  *Does this facility have NHIF accreditation?</label>    
@@ -1714,7 +1671,7 @@ const EditFacility = (props) => {
 
                                         {/* Ward Geo Map */}
                                         <div className='w-full h-auto'>
-                                            
+                                                       
                                             <div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
                                                 <Map markerCoordinates={[_lat.length < 4 ? '0.000000' : _lat, _long.length < 4 ? '0.000000' : _long]} geoJSON={gJSON} ward={wardName} center={centerCoordinates} />
                                             </div>
