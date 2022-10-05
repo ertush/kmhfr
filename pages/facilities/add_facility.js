@@ -49,7 +49,7 @@ import {
     handleServiceSubmit,
     handleInfrastructureSubmit,
     handleHrSubmit
-} from '../../controllers/facility/addFacilitySubmitHandlers';
+} from '../../controllers/facility/facilityHandlers';
 
 
 

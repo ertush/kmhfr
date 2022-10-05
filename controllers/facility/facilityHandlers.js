@@ -505,7 +505,7 @@ const handleHrSubmit = (event, stateSetters, method) => {
 
 
 // handleBasicDetailsUpdate
-const handleBasicDetailsUpdate = async (formData, facility_id) => {
+const handleBasicDetailsUpdates = async (formData, facility_id) => {
 
     try{
        const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
@@ -528,7 +528,7 @@ const handleBasicDetailsUpdate = async (formData, facility_id) => {
 }
 
 // handleGeolocationDataUpdate
-const handleGeolocationDataUpdate = async (formData, coordinates_id) => {
+const handleGeolocationUpdates = async (formData, coordinates_id) => {
     // console.log({formData, coordinates_id})
     try{
        const resp =  await fetch(`/api/common/submit_form_data/?path=geolocation_update&id=${coordinates_id}`, {
@@ -551,7 +551,7 @@ const handleGeolocationDataUpdate = async (formData, coordinates_id) => {
 }
 
 // handleFacilityContactUpdates
-const handleFacilityContactUpdates = async (formData, facility_id) => {
+const handleFacilityContactsUpdates = async (formData, facility_id) => {
     // console.log({formData, coordinates_id})
     try{
        const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
@@ -573,17 +573,41 @@ const handleFacilityContactUpdates = async (formData, facility_id) => {
     }
 }
 
+// handleRegulationUpdate
+const handleRegulationUpdates = async () => {
+
+}
+
+// handleServiceUpdates
+const handleServiceUpdates = async () => {
+
+}
+
+// handleInfrastructureUpdates
+const handleInfrastructureUpdates = async () => {
+
+}
+
+
+// handleHrUpdates
+const handleHrUpdates = async () => {
+
+}
 
 
 export {
-    handleGeolocationDataUpdate,
-    handleBasicDetailsUpdate,
-    handleFacilityContactUpdates,
     handleBasicDetailsSubmit,
     handleGeolocationSubmit,
     handleFacilityContactsSubmit,
     handleRegulationSubmit,
     handleServiceSubmit,
     handleInfrastructureSubmit,
-    handleHrSubmit
+    handleHrSubmit,
+    handleBasicDetailsUpdates,
+    handleGeolocationUpdates,
+    handleFacilityContactsUpdates,
+    handleRegulationUpdates,
+    handleServiceUpdates,
+    handleInfrastructureUpdates,
+    handleHrUpdates,
 }

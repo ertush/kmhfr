@@ -9,16 +9,14 @@ import dynamic from 'next/dynamic'
 
 
 import { 
-	handleBasicDetailsSubmit,
-    handleGeolocationSubmit,
-    handleFacilityContactsSubmit,
-    handleRegulationSubmit,
-    handleServiceSubmit,
-    handleInfrastructureSubmit,
-    handleGeolocationDataUpdate,
-    handleBasicDetailsUpdate, 
-    handleHrSubmit
-} from '../../../controllers/facility/addFacilitySubmitHandlers';
+    handleBasicDetailsUpdates,
+    handleGeolocationUpdates,
+    handleFacilityContactsUpdates,
+    handleRegulationUpdates,
+    handleServiceUpdates,
+    handleInfrastructureUpdates,
+    handleHrUpdates
+} from '../../../controllers/facility/facilityHandlers';
 
 
 
@@ -87,6 +85,7 @@ const EditFacility = (props) => {
 		const _serviceOptions = []
 		let _values = []
 		let _subCtgs = []
+        
 
 		if(_services.length > 0){
 			_services.forEach(({category_name:ctg}) => {
@@ -243,7 +242,6 @@ const EditFacility = (props) => {
         coordinates,
         facility_checklist_document,
         lat_long,
-        collection_date,
         officer_in_charge,
         facility_contacts,
         ward_name,
@@ -408,6 +406,8 @@ const EditFacility = (props) => {
         centerCoordinates
     } = props['19']?.geolocation ?? {}
 
+    const collection_date = props['20']?.collection_date.replace(/T.*$/, '') ?? ''
+
     const serviceSelected = ((_services) => {
         return _services.map(({category_name, service_name, service_id}) => ({
                     name: category_name,
@@ -435,7 +435,7 @@ const EditFacility = (props) => {
                     ]
                     
                 })
-        )
+        )   
     })(facility_infrastructure || [])  
 
     const hrSelected = ((_hr) => {
@@ -467,8 +467,6 @@ const EditFacility = (props) => {
     // Form field states
    
     const [_checklistFile, setCheckListFile] = useState(facility_checklist_document ?? '')
-    // const [_collectionDate, setCollectionDate] = useState(collection_date ?? '')
-    const [collectionDate, setCollectionDate] = useState(null) 
     const [_lat, setLat] = useState(((coordinates) => {
    
         let _lat 
@@ -729,8 +727,7 @@ const EditFacility = (props) => {
     const serviceOptionRef = useRef(null)
     const nameOptionRef = useRef(null)
     const infrastructureBodyRef = useRef(null)
-
-
+  
 
     
     useEffect(() => {
@@ -745,25 +742,7 @@ const EditFacility = (props) => {
             }
         }
 
-        // Prefetch Gis Collection Date
-
-        const getGisCollectionDate = async () => {
-
-            let response
-
-            console.log({id})
-
-            try{
-                response = (await fetch(`/api/facility/get_facility/?path=facility_coordinates&id=${id}`)).json()
-            }
-            catch(err) {
-                console.error(err.message)
-            }
-
-            console.log({response: await response, id})
-
-            return response.collection_date
-        }
+    
 
         // Pre-fetch values for drop down
         if(facility_type !== undefined){
@@ -835,9 +814,7 @@ const EditFacility = (props) => {
             regBodyRef.current.value = facility_units[0]?.regulating_body_name ?? ''
         } 
 
-        setCollectionDate(getGisCollectionDate())
-
-
+    
         // setOtherContactDetail(_officerName.contacts ?? _officerName.contacts ?? '')
         
     }
@@ -966,7 +943,7 @@ const EditFacility = (props) => {
         option6.value = 'EMAIL';
 
         dropDown.appendChild(option1.getRootNode());
-        dropDown.appendChild(option2.getRootNode());
+        dropDown.appendChild(option2.getRootNode());    
         dropDown.appendChild(option3.getRootNode());
         dropDown.appendChild(option4.getRootNode());
         dropDown.appendChild(option5.getRootNode());
@@ -1107,7 +1084,7 @@ const EditFacility = (props) => {
                                             }
 
                                            
-                                         await handleBasicDetailsUpdate(payload, id)
+                                         await handleBasicDetailsUpdates(payload, id)
 
                                     
                                         }}
@@ -1651,7 +1628,7 @@ const EditFacility = (props) => {
                             className="grow-1 py-1 px-4 tab-panel">
                                 <Formik
                                     initialValues={{
-                                        collection_date: collectionDate ?? '',
+                                        collection_date: collection_date ?? '',
                                         latitude: lat_long !== undefined && lat_long !== null ? lat_long[0] ?? '' : '',
                                         longitude: lat_long !== undefined && lat_long !== null ? lat_long[1] ?? '' : ''
                                     }}
@@ -1671,7 +1648,7 @@ const EditFacility = (props) => {
                                         console.log({payload, id})
 
 
-                                        await handleGeolocationDataUpdate(payload, coordinates)
+                                        await handleGeolocationUpdates(payload, coordinates)
                                     }}
                                 >
                                     <Form
@@ -1690,7 +1667,6 @@ const EditFacility = (props) => {
                                                 </span>
                                             </label>
                                             <Field
-                                                
                                                 type='date'
                                                 name='collection_date'
                                                 className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1793,7 +1769,13 @@ const EditFacility = (props) => {
                                             <hr className='col-span-2' />
 
                                             {/* Contact Type / Contact Details */}
-                                            <FacilityContact contactRef={contactRef} contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'} contact={facility_contacts !== null ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  ''}/>
+                                            <FacilityContact 
+                                            contactRef={contactRef} 
+                                            contactTypeOptions={contactTypeOptions} 
+                                            names={['contact_type', 'contact']} 
+                                            id={'facility'} 
+                                            contact={facility_contacts !== null ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  ''}
+                                            />
 
                                         </div>
 
@@ -1883,7 +1865,12 @@ const EditFacility = (props) => {
 
                                                 {/* Contact Type / Contact Details */}
 
-                                                <FacilityContact contactRef={otherContactRef} contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'}  contact={officer_in_charge !== null ? officer_in_charge.length > 0 ?  officer_in_charge[0].contact : '' :  ''}/>
+                                                <FacilityContact 
+                                                contactRef={otherContactRef} 
+                                                contactTypeOptions={contactTypeOptions} 
+                                                names={['facility_details_contact_type', 'faciliity_details_contact']} 
+                                                id={'facility_officer'}  
+                                                contact={officer_in_charge !== null ? officer_in_charge.length > 0 ?  officer_in_charge[0].contact : '' :  ''}/>
 
                                             </div>
 
@@ -2251,8 +2238,12 @@ const EditFacility = (props) => {
 
 EditFacility.getInitialProps = async (ctx) => {
 
+    console.log({ctx})
+
+
     const allOptions = []
 	const options = [
+      
 		'facility_types',
 		'facility_type_details',
 		'owners',
@@ -2271,7 +2262,8 @@ EditFacility.getInitialProps = async (ctx) => {
 		'services', 
 		'infrastructure',
 		'specialities',
-        'facility_data'
+        'facility_data',
+        'collection_date',
 	]
 
 
@@ -2301,6 +2293,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
 				for(let i = 0; i < options.length; i++) {
 					const option = options[i]
+                
 					switch(option) {
 						case 'facility_types':
 						url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
@@ -2672,7 +2665,31 @@ EditFacility.getInitialProps = async (ctx) => {
 
 						break;
 
-            
+                        case 'collection_date':
+                        
+                            try{
+                               const response = await fetch(`/api/facility/get_facility/?path=facility_coordinates&id=${ctx.query.id}`)
+
+                               const [_result] = (await response.json()).results
+                    
+                               console.log({collection_date: _result['collection_date']})
+                       
+                                
+                               allOptions.push({collection_date: _result['collection_date']})
+                            }
+                            catch(err) {
+                                console.log(`Error fetching ${option}: `, err);
+                                        allOptions.push({
+                                            error: true,	
+                                            err: err.message,
+                                            collection_date: null,
+                                        })
+                            }
+                    
+                        
+
+                        break;       
+
                         case 'facility_data':
 
 							try{
@@ -2697,6 +2714,7 @@ EditFacility.getInitialProps = async (ctx) => {
                                                 gJSON: JSON.parse(JSON.stringify(_data?.ward_boundary)), 
                                                 centerCoordinates: JSON.parse(JSON.stringify([lat, lng]))
                                         }})
+                                        
                                         
                                     }
                                     catch(err) {
