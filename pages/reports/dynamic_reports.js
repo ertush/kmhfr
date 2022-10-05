@@ -34,18 +34,9 @@ const DynamicReports = (props) => {
   
     // const { data, query, path, current_url } = props
     const router = useRouter()
-    
     // Temporary fix folty Kirinyaga id
-    let filters = (() => {
-        let filters = props?.filters
-        filters.county[0].id = 'ecbf61a6-cd6d-4806-99d8-9340572c0015' // correct Kirinyaga county id
+    let filters = props?.filters
 
-        return filters
-    })()
-
-
-
-    console.log({filters});
     let fltrs = filters
 
     const formRef = useRef(null)
@@ -70,8 +61,6 @@ const DynamicReports = (props) => {
     const [isLoading, setIsLoading] = useState(false)
 
 
-
-    // console.log({fltrs, filters})
 
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -98,7 +87,6 @@ const DynamicReports = (props) => {
     let [drillDown, setDrillDown] = useState({})
     let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
    
-
 
     let headers = [
         "code", "official_name", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_parent", "owner_name", "owner_type_name", "regulatory_body_name", "number_of_beds", "number_of_cots", "county", "constituency_name", "sub_county_name", "ward_name", "admission_status", "facility_services", "created", "closed",
@@ -149,23 +137,25 @@ const DynamicReports = (props) => {
     const [toDate, setToDate] = useState('');
 
 
+    const lnlst = Array.from(props?.data?.results, row => {
+        let dtpnt = {}
+        headers.forEach(col => {
+            dtpnt[col] = row[col]
+        })
+        return dtpnt
+    })
     const onGridReady = (params) => {
-        console.log({api: params.api});
+        // console.log({api: params.api});
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
 
-        const lnlst = Array.from(props?.data?.results, row => {
-            let dtpnt = {}
-            headers.forEach(col => {
-                dtpnt[col] = row[col]
-            })
-            return dtpnt
-        })
         setlinelist(lnlst)
         updateData(lnlst)
     };
+
+    gridApi?.setRowData(lnlst)
 
     useEffect(()=>{
         if( fromDate !=='' && toDate !==''){
@@ -185,12 +175,72 @@ const DynamicReports = (props) => {
         }
         
     }
+    let drill = {}
+    useEffect(()=>{
+        let org_level=JSON.parse(localStorage.getItem('dd_owners'))
+        if(router.query !== undefined && router.query !== null){
+            drill[router.query.level] = router.query.id
+             setDrillDown({...drillDown, ...drill})
+             if(org_level['county']!== '' || org_level['sub_county'] !== '' || org_level['ward'] !== ''){
+     
+                 Object.keys(org_level).forEach(key => {
+                    drill[key] = org_level[key]
+                     setDrillDown({...drillDown, ...drill})
+                 })
+             }
+         }
+ 
+     },[])
+     
+
+//  console.log(drillDown)
+    let dr ='' 
+    if (typeof window !== 'undefined') {
+        dr =JSON.parse(localStorage.getItem('dd_owners'))
+    }
+    useEffect(async()=>{
+        // setting sub-county options based on county drill_down
+        if(dr.county !== ''){
+            
+            const drilldownData =  await fetch(`/api/filters/subcounty/?county=${dr.county}`)
+            drilldownData.json().then(r => {
+                    const optionsSubCounty = []
+        
+        
+                    r.results.forEach(({id, name}) => {
+                        optionsSubCounty.push({
+                            value: id,
+                            label: name
+                        })  
+                    } )   
+        
+                setSubCountyOptions(optionsSubCounty)
+        })
+        }
+        // setting ward options based on sub-county drill_down
+        if(dr.sub_county !== ''){
+            
+            const drilldownData =  await fetch(`/api/filters/ward/?sub_county=${dr.sub_county}`)
+            drilldownData.json().then(r => {
+                const optionsWard = []
+             
+                r.results.forEach(({id, name}) => {
+                    optionsWard.push({
+                        value: id,
+                        label: name
+                    })  
+                } )  
+
+           setWardOptions(optionsWard)
+        })
+        }
+
+    }, [])
 
     useEffect(() => {
         // setIsAccordionExpanded(true)
        
     }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate, isConstituencyOptionsUpdate, isWardOptionsUpdate, linelist, isLoading])
-
 
 
     return (
@@ -247,25 +297,22 @@ const DynamicReports = (props) => {
                                                 const fields = 'code,official_name,operation_status,approved,keph_level,facility_type_name,facility_type_parent,owner,owner_type,regulation_body,number_of_beds,number_of_cots,county,constituency,sub_county,ward,admission_status,facility_services,created,closed'
                                                 if (Object.keys(drillDown).length > 0) {
                                                     let qry = Object.keys(drillDown).map(function (key) {
-                                                        let er = ''
-                                                        if (props.path && !props.path.includes(key + '=')) {
-                                                            er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
-                                                        }
+                                                        let er = (key) + '=' + (drillDown[key]);
                                                         return er
-                                                    }).join('&')
+                                                     }).join('&')
                                                     let op = '?'
-                                                    if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                   
+
+                                                    // if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
                                                     // setDrillDown({})
                                                     if (router || typeof window == 'undefined') {
                                                   
-                                                        const filterQuery = `${op}${qry}&fields=${fields}`
+                                                        const filterQuery = `${qry}&fields=${fields}`
 
                                                         try{
 
                                                           
-                                                            const data = await fetch(`/api/filters/filter/?filter_query=${filterQuery}`)
-                                                           data.json().then(r => {
+                                                            const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${fields}`)
+                                                             data.json().then(r => {
 
                                                                 const _lnlst = Array.from(r?.results, row => {
                                                                     let dtpnt = {}
@@ -343,7 +390,6 @@ const DynamicReports = (props) => {
                                                                                             })  
                                                                                        } )  
 
-                                                                                       console.log({options});
 
                                                                                        setServiceOptions(options)
                                                                                        setIsServiceOptionUpdate(!isServiceOptionsUpdate)
@@ -488,7 +534,6 @@ const DynamicReports = (props) => {
                                                                                    
                                                                                 }
 
-
                                                                                 return (
                                                                                     <Select 
                                                                                     id={ft}
@@ -506,6 +551,13 @@ const DynamicReports = (props) => {
                                                                                         })
                                                                                     }
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                    value={
+                                                                                       
+                                                                                        {
+                                                                                            value: drillDown[ft] || dr.county || '',
+                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr.county)?.name || ''
+                                                                                        }
+                                                                                    }
                                                                                     onChange={handleCountyCategoryChange}
                                                                                     
                                                                                     />
@@ -522,6 +574,13 @@ const DynamicReports = (props) => {
                                                                                     className="w-full p-1 rounded bg-gray-50 col-start-1"
                                                                                   
                                                                                     options={subCountyOptions}
+                                                                                    value={
+                                                                                       
+                                                                                        {
+                                                                                            value: drillDown[ft] || dr.sub_county || '', 
+                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr.sub_county)?.name || ''
+                                                                                        }
+                                                                                    }
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                     onChange={ev => {
                                                                                        
@@ -592,7 +651,13 @@ const DynamicReports = (props) => {
                                                                                        
                                                                                         className="w-full p-1 rounded bg-gray-50 col-start-1"
                                                                                         options={subCountyOptions}
+                                                                                        value={
                                                                                        
+                                                                                            {
+                                                                                                value: drillDown[ft] || dr.sub_county || '', 
+                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr.sub_county)?.name || ''
+                                                                                            }
+                                                                                        }
                                                                                         placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                         onChange={handleConstituencyChange}
                                                                                       
@@ -609,7 +674,13 @@ const DynamicReports = (props) => {
                                                                                            
                                                                                             className="w-full p-1 rounded bg-gray-50 col-start-1"
                                                                                             options={wardOptions}
-                                                                                           
+                                                                                            value={
+                                                                                       
+                                                                                                {
+                                                                                                    value: drillDown[ft] || dr.ward || '',
+                                                                                                    label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr.ward)?.name || ''
+                                                                                                }
+                                                                                            }
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                             onChange={sl => {
                                                                                                 let nf = {}
@@ -640,6 +711,13 @@ const DynamicReports = (props) => {
                                                                                                     label: fltopt.name
                                                                                                 }
                                                                                             })
+                                                                                    }
+                                                                                    value={
+                                                                                       
+                                                                                        {
+                                                                                            value: drillDown[ft] || router?.query?.id || '', 
+                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== router?.query?.id)?.name || ''
+                                                                                        }
                                                                                     }
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                     onChange={sl => {
@@ -754,15 +832,14 @@ const DynamicReports = (props) => {
                                                     'Filter'
                                                 }
                                                     </button>
-                                                <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
+                                                <button  className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
                                                        ev.preventDefault()
-                                                    //    router.push('/reports/dynamic_reports')
-                                                       router.reload()
-
-                                                    //    fields.current.forEach(field => {
-                                                           
-                                                    //    })
-                                                    //    router.push('/reports/dynamic_reports')
+                                                        setDrillDown({})
+                                                        setSubCountyOptions([])
+                                                        setWardOptions([])
+                                                        localStorage.setItem('dd_owners', JSON.stringify({county: '', sub_county:'', ward: ''}));
+                                                        router.push('/reports/dynamic_reports')
+                                                        // router.reload()
                                                                                                     
                                                     }}>Clear filters</button>
                                                 </div>
@@ -866,7 +943,7 @@ const DynamicReports = (props) => {
                                                     }).join('&')
                                                     let op = '?'
                                                     if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                    console.log(props.path)
+                                                    // console.log(props.path)
                                                     // setDrillDown({})
                                                     if (router || typeof window == 'undefined') {
                                                         router.push(props.path + op + qry)
@@ -980,11 +1057,14 @@ DynamicReports.getInitialProps = async (ctx) => {
 
     const fetchData = (token) => {
         let url= ''
-        let dr =JSON.parse(localStorage.getItem('dd_owners')) || {}
-        if( ctx.query.type =='facilities_by_owners' || ctx.query.type=='facilities_by_owner_categories' || ctx.query.type == 'facilities_details' || ctx.query.type == 'facilities_by_keph_levels'){
+        let dr ='' 
+        if (typeof window !== 'undefined') {
+            dr =JSON.parse(localStorage.getItem('dd_owners'))
+          }
+        if( ctx?.query?.type =='facilities_by_owners' || ctx?.query?.type=='facilities_by_owner_categories' || ctx?.query?.type == 'facilities_details' || ctx?.query?.type == 'facilities_by_keph_levels'){
             url = API_URL + `/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level&${ctx.query.level}=${ctx.query.id}&county=${dr.county}&sub_county=${dr.sub_county}&ward=${dr.ward}`
 
-        }else if(ctx.query.type =='facilities_count'){
+        }else if(ctx?.query?.type =='facilities_count'){
             url = API_URL + `/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level&${ctx.query.level}=${ctx.query.id}`
 
         }
