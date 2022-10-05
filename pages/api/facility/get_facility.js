@@ -24,8 +24,12 @@ export default async function fetchFacilityData(req, res) {
 
                 case 'facilities':
                     url = `${API_URL}/facilities/${path}/${id}/`
-                break
-              
+                break;
+
+                case 'facility_coordinates': 
+                    url = `${API_URL}/gis/${path}/${id}/`
+                break;
+
                 default:
                 break;
             }

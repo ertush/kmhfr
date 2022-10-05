@@ -751,6 +751,8 @@ const EditFacility = (props) => {
 
             let response
 
+            console.log({id})
+
             try{
                 response = (await fetch(`/api/facility/get_facility/?path=facility_coordinates&id=${id}`)).json()
             }
@@ -758,7 +760,7 @@ const EditFacility = (props) => {
                 console.error(err.message)
             }
 
-            console.log({response: await response})
+            console.log({response: await response, id})
 
             return response.collection_date
         }
