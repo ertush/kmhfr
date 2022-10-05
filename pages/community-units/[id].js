@@ -141,28 +141,24 @@ const CommUnit = (props) => {
           </div>
 
           {/* Left side */}
-          {!isApproveReject ? (
-            // Tab Section
             <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
               {/* Approve/Reject, Edit Buttons */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
                   <button
-                    onClick={() =>
-                      approveRejectCHU(
-                        cu.is_approved,
-                        setIsApproveReject,
-                        props.data.id
-                      )
+                    onClick={() => router.push("/community-units/approve/" + cu.id)
+                      //approveRejectCHU(cu.is_approved,setIsApproveReject,props.data.id)
                     }
                     className={
-                      cu.is_approved
-                        ? "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
+                      cu.is_approved || cu.is_rejected
+                        ? ''
                         : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
                     }
                   >
-                    {/* Dynamic Button Rendering */}
-                    {cu.is_approved ? "Reject" : "Approve"}
+                  {/* Dynamic Button Rendering */}
+                  {cu.is_approved || cu.is_rejected
+                  ? "" 
+                  : "Approve/Reject"}
                   </button>
                   <button
                     onClick={() => console.log(cu.name)}
@@ -667,191 +663,6 @@ const CommUnit = (props) => {
                 </Tabs.Panel>
               </Tabs.Root>
             </div>
-          ) : (
-            // Approval Rejection Section
-            <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4 mx-3">
-              <h3 className="text-2xl tracking-tight font-semibold leading-5">
-                Approve/Reject Community Health Unit
-              </h3>
-              {/* CHU details */}
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Functionality status
-                  </label>
-                  <p className="text-black font-medium text-base flex">
-                    {cu.status_name.toLocaleLowerCase().includes("fully-") ? (
-                      <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
-                        <CheckCircleIcon className="h-4 w-4" />
-                        {cu?.status_name || "Yes"}
-                      </span>
-                    ) : cu?.status_name.toLocaleLowerCase().includes("semi") ? (
-                      <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
-                        <CheckCircleIcon className="h-4 w-4" />
-                        {cu?.status_name || "Yes"}
-                      </span>
-                    ) : (
-                      <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                        <XCircleIcon className="h-4 w-4" />
-                        {cu?.status_name || "No"}
-                      </span>
-                    )}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Linked facility
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {cu.facility_name || " - "}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Households monitored
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {cu.households_monitored || " - "}
-                  </p>
-                </div>
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Number of CHVs
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {cu.number_of_chvs || " - "}
-                  </p>
-                </div>
-
-                {cu.date_established && (
-                  <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                      Date established
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {new Date(cu.date_established).toLocaleDateString(
-                        "en-GB",
-                        { year: "numeric", month: "long", day: "numeric" }
-                      ) || " - "}
-                    </p>
-                  </div>
-                )}
-                {cu.date_operational && (
-                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                      Date operational
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {new Date(cu.date_operational).toLocaleDateString(
-                        "en-GB",
-                        { year: "numeric", month: "long", day: "numeric" }
-                      ) || " - "}
-                    </p>
-                  </div>
-                )}
-              </div>
-              {/* CHU details hidden section */}
-              <div className="grid grid-cols-2 w-full md:w-11/12 h-8 leading-none items-center">
-                <button
-                  className="flex bg-green-500 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto rounded-md"
-                  onClick={() => {
-                    if (isCHUDetails) {
-                      setIsCHUDetails(false);
-                    } else {
-                      setIsCHUDetails(true);
-                    }
-                  }}
-                >
-                  View More Community Health Unit Details
-                  {isCHUDetails ? (
-                    <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
-                  ) : (
-                    <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" />
-                  )}
-                </button>
-              </div>
-
-              {!isCHUDetails && (
-                <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                    <label className="col-span-1 text-gray-600">Ward</label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {cu.facility_ward || " - "}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                      Constituency
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {cu.facility_constituency || " - "}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                      Sub-county
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {cu.facility_subcounty || " - "}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                    <label className="col-span-1 text-gray-600">County</label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {cu.facility_county || " - "}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* CHU Approval Comment */}
-
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <label
-                  htmlFor="approval-comment"
-                  className="col-span-1 text-gray-900 font-semibold leading-16 text-medium"
-                >
-                  {" "}
-                  Approval comment:{" "}
-                </label>
-                <p
-                  className="text-gray-400 text-medium text-left leading-16"
-                  name="approval-comment"
-                >
-                  some approval comments
-                </p>
-              </div>
-
-              {/* CHU Rejection Commment */}
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-                  Reject this Community Unit
-                </h3>
-                <form
-                  className="space-y-3"
-                  onSubmit={(e) =>
-                    rejectCHU(e, cu, cu.isApproveReject, e.target.value)
-                  }
-                >
-                  <label htmlFor="comment-text-area"></label>
-                  <textarea
-                    cols="70"
-                    rows="auto"
-                    className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
-                    placeholder="Enter a comment for rejecting community health unit"
-                  ></textarea>
-                  <button
-                    type="submit"
-                    className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
-                  >
-                    Reject Community Health Unit
-                  </button>
-                </form>
-              </div>
-            </div>
-          )}
           {/* End of approval or reject validation */}
 
           {/* Aside / Right Side  */}

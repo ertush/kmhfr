@@ -41,7 +41,6 @@ const GISMap = ({ data }) => {
     layer.properties = feature.properties;
   };
   if (data && data.length > 0) {
-    console.log("Facility data", data);
     return (
       <>
         <MapContainer
@@ -70,7 +69,6 @@ const GISMap = ({ data }) => {
             onEachFeature={onEachFeature}
           />
           {data.map((facility, i) => {
-            console.log(facility);
             if (
               facility &&
               facility?.lat_long &&
