@@ -6,6 +6,7 @@ import Select from 'react-select'
 import MainLayout from '../../../components/MainLayout'
 import { Formik, Field, Form } from "formik"; 
 import dynamic from 'next/dynamic'
+import { useAlert } from "react-alert";
 
 
 import { 
@@ -52,7 +53,10 @@ const Map = React.memo(WardMap)
 
 const EditFacility = (props) => {
 
-    console.log({props})
+    // Alert 
+    const alert = useAlert();
+
+  
 
     // Form drop down options
 
@@ -366,7 +370,7 @@ const EditFacility = (props) => {
     }
     
     const geolocationData = {
-        collection_date,
+        collection_date: collection_date ?? '',
         longitude : ((coordinates) => {
    
         let _lng 
@@ -439,7 +443,7 @@ const EditFacility = (props) => {
     })(facility_infrastructure || [])  
 
     const hrSelected = ((_hr) => {
-        console.log({_hr})
+      
         return _hr.map(({speciality_name, speciality}) => { 
 
             const hrFilter = props['17']?.hr.filter(({id}) => id === speciality)
@@ -716,9 +720,8 @@ const EditFacility = (props) => {
     
     useEffect(() => {
 
-        console.log({props})
+        console.log({props}) 
 
-        // console.log({serviceSelected, infrastructureSelected})
         if (typeof window !== 'undefined') {
             let usr = window.sessionStorage.getItem('user')
             if (usr && usr.length > 0) {
@@ -799,12 +802,11 @@ const EditFacility = (props) => {
         } 
 
     
-        // setOtherContactDetail(_officerName.contacts ?? _officerName.contacts ?? '')
+       
         
     }
 
        
-    // console.log('Reloaded page .... useEffect running')
         
     }, [])
 
@@ -1068,7 +1070,7 @@ const EditFacility = (props) => {
                                             }
 
                                            
-                                         await handleBasicDetailsUpdates(payload, id)
+                                         await handleBasicDetailsUpdates(payload, id, alert)
 
                                     
                                         }}
@@ -1310,9 +1312,6 @@ const EditFacility = (props) => {
                                             } 
                                             required
                                             placeholder="Select an owner.."
-                                            onChange={
-                                                () => console.log('changed')
-                                            }
                                             name="owner" 
                                             className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                         </div>
@@ -1409,9 +1408,7 @@ const EditFacility = (props) => {
                                                 options={facilityAdmissionOptions || []} 
                                                 required
                                                 placeholder="Select an admission status.."
-                                                onChange={
-                                                    () => console.log('changed')
-                                                } 
+                                              
                                                 name="admission_status" 
                                                 className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                         </div>
@@ -1479,9 +1476,6 @@ const EditFacility = (props) => {
                                                             ref={countyRef}
                                                             required
                                                             placeholder="Select County"
-                                                            onChange={
-                                                                () => console.log('changed')
-                                                            }
                                                             name="county_id" 
                                                             className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                         </div>
@@ -1496,9 +1490,6 @@ const EditFacility = (props) => {
                                                             ref={subCountyRef}
                                                             required
                                                             placeholder="Select Sub County"
-                                                            onChange={
-                                                                () => console.log('changed')
-                                                            }
                                                             name="sub_county_id" 
                                                             className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                         </div>
@@ -1513,9 +1504,6 @@ const EditFacility = (props) => {
                                                             options={subCountyOpt ?? constituencyOptions} 
                                                             required
                                                             placeholder="Select Constituency"
-                                                            onChange={
-                                                                () => console.log('changed')
-                                                            }
                                                             name="constituency_id" 
                                                             className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                         </div>
@@ -1530,9 +1518,6 @@ const EditFacility = (props) => {
                                                             options={wardOpt ?? wardOptions} 
                                                             required
                                                             placeholder="Select Ward"
-                                                            onChange={
-                                                                () => console.log('changed')
-                                                            }
                                                             name="ward" 
                                                             className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                         </div>
@@ -1591,7 +1576,7 @@ const EditFacility = (props) => {
                                     }}
 
                                     onSubmit={async formData => {
-                                        console.log({formData})
+                                        
 
                                         // setLat(formData.coordinates.coordinates[0])
                                         // setLong(formData.coordinates.coordinates[1])
@@ -1601,11 +1586,11 @@ const EditFacility = (props) => {
                                            
                                         payload = {..._payload, facility: id, coordinates:{coordinates:[lat_long[1], lat_long[0]], type:'point'}}
 
-                                        delete payload.collection_date
-                                        console.log({payload, id})
+                                        payload['collection_date'] = new Date(payload.collection_date)
+                                    
 
 
-                                        await handleGeolocationUpdates(payload, coordinates)
+                                        await handleGeolocationUpdates(payload, coordinates, alert)
                                     }}
                                 >
                                     <Form
@@ -1699,9 +1684,13 @@ const EditFacility = (props) => {
                                         let payload = {}
                                         const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
                                            
-                                        payload = {..._payload, officer_in_charge, contacts:[]}
+                                        Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
+
+                                        payload = {officer_in_charge, contacts:[]}
 
                                         console.log({payload})
+
+                                        await handleFacilityContactsUpdates(payload, id, alert)
 
                                         
                                     }}
@@ -1710,7 +1699,7 @@ const EditFacility = (props) => {
                                     <Form
                                         className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
                                         name='facility_contacts_form'
-                                        onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId], 'PATCH')}>
+                                        >
                                         {/* Contacts */}
 
                                         <div
@@ -1764,7 +1753,7 @@ const EditFacility = (props) => {
                                                         *
                                                     </span>
                                                 </label>
-                                                {/* {console.log({_officerName})} */}
+                                                
                                                 <Field
                                                     required
                                                     type='text'
@@ -1930,7 +1919,7 @@ const EditFacility = (props) => {
                                                 onChange={
                                                     e => {
                                                         if(regBodyRef.current !== null){
-                                                            console.log({regBody: facilityDeptOptions.filter(({label}) => label === e.label)})
+                                                        
                                                             regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
                                                         }
                                                     }
@@ -2064,7 +2053,7 @@ const EditFacility = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody ref={infrastructureBodyRef}>
-                                        {/* { console.log({selectedInfraRight, infra: props['16'].infrastructure}) }    */}
+                                        
                                             {
                                                 selectedInfraRight  !== undefined && selectedInfraRight !== null && selectedInfraRight.length > 0 ? 
 
@@ -2073,7 +2062,7 @@ const EditFacility = (props) => {
                                                 // infrastructureOption !== undefined || infrastructureOption !== null && 
 
                                                 <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                    {/* {console.log({facility_infrastructure, infrastructureOption})} */}
+                                                  
                                                     <td className='text-lg text-black'>{subCategories[0]}</td>
                                                     <td className='text-lg text-black'>{infrastructureOption.filter(({value}) =>  value.includes(vs[0]))[0].name}</td>
 
@@ -2151,7 +2140,7 @@ const EditFacility = (props) => {
                                                                 // infrastructureOption !== undefined || infrastructureOption !== null && 
 
                                                                 <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                                    {/* {console.log({facility_infrastructure, infrastructureOption})} */}
+                                                                  
                                                                     <td className='text-lg text-black'>{subCategories[0]}</td>
                                                                     <td className='text-lg text-black'>{hrOptions.filter(({value}) =>  value.includes(vs[0]))[0].name}</td>
 
@@ -2195,8 +2184,7 @@ const EditFacility = (props) => {
 
 EditFacility.getInitialProps = async (ctx) => {
 
-    console.log({ctx})
-
+ 
 
     const allOptions = []
 	const options = [
@@ -2266,7 +2254,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
 									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value:id, label:sub_division} : {value:id, label:name}) ?? [{value: '', label: ''}]
 
-									// console.log({results})
+							
 									allOptions.push({facility_types: results })
 									
 								}
@@ -2628,9 +2616,7 @@ EditFacility.getInitialProps = async (ctx) => {
                                const response = await fetch(`/api/facility/get_facility/?path=facility_coordinates&id=${ctx.query.id}`)
 
                                const [_result] = (await response.json()).results
-                    
-                               console.log({collection_date: _result['collection_date']})
-                       
+  
                                 
                                allOptions.push({collection_date: _result['collection_date']})
                             }
@@ -2654,9 +2640,9 @@ EditFacility.getInitialProps = async (ctx) => {
 								const _data = await fetch(`/api/facility/get_facility/?path=facilities&id=${ctx.query.id}`) 
                            
                                 allOptions.push({data: (await _data.json())})
-                                // console.log({_data})
+                             
                                 if(_data){
-                                    console.log({allOptions})
+                            
 
                                     try{
 		
@@ -2725,7 +2711,7 @@ EditFacility.getInitialProps = async (ctx) => {
 			
 
 								allOptions.push(_obj)
-								// console.log({allOptions})
+						
 									
 								}
 								catch(err) {

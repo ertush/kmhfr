@@ -38,8 +38,7 @@ import { XCircleIcon } from '@heroicons/react/outline';
 
 // Package imports
 import Select from 'react-select';
-import LoadingAnimation from '../../components/LoadingAnimation';
-// import { useForkRef } from '@mui/material';
+
 
 import { 
 	handleBasicDetailsSubmit,
@@ -2120,7 +2119,7 @@ function AddFacility(props) {
 																	onChange={
 																		e => {
 																			if(regBodyRef.current !== null){
-																				console.log({regBody: facilityDeptOptions.filter(({label}) => label === e.label)})
+																			
 																				regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
 																			}
 																		}
@@ -2356,7 +2355,7 @@ function AddFacility(props) {
 															</thead>
 
 															<tbody>
-																{/* {console.log({hr})} */}
+															
 																{
 																	
 																	hr.map(({subctg}) => subctg).map((_hr, i) => (

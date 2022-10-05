@@ -12,7 +12,6 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
     const _payload = {};
 
-    // console.log({keys: [...formData.keys()], values: [...formData.values()]})
 
     formData.forEach((v, k) => {
         
@@ -47,13 +46,13 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
         ]
     }
 
-    // console.log({_payload})
+
 
     if(method === 'PATCH'){
         _payload['sub_county'] = formData.get('sub_county_id');
     }
 
-    // console.log({formData, keys: [...formData.keys()], values: [...formData.values()]})
+
 
     
 
@@ -378,8 +377,6 @@ const handleRegulationSubmit = (event, stateSetters, method) => {
     }]})
     
 
-    console.log({payload})
-
     payload.forEach(data => {
         try{
             fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
@@ -476,9 +473,12 @@ const handleHrSubmit = (event, stateSetters, method) => {
 
     const _payload = hr.map(({value}, i) => ({count: i < hrCount.length ? Number(hrCount[i]['val'] ?? 0) : 0 , speciality: value}))
 
-    console.log({specialities:_payload})
-
-    alert.success("Facility Created successfully")
+    if(_payload){
+        alert.success("Facility Created successfully")
+    }else {
+        alert.danger("Unable to create facility")
+    }
+    
 
     try{
         fetch(`/api/common/submit_form_data/?path=hr&id=${facilityId}`, {
@@ -505,7 +505,13 @@ const handleHrSubmit = (event, stateSetters, method) => {
 
 
 // handleBasicDetailsUpdate
-const handleBasicDetailsUpdates = async (formData, facility_id) => {
+const handleBasicDetailsUpdates = async (formData, facility_id, alert) => {
+
+    if(formData){
+        alert.success("Facility Geolocation successfully updated")
+    } else {
+        alert.danger("Unable to update facility geolocation data")
+    }
 
     try{
        const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
@@ -517,7 +523,7 @@ const handleBasicDetailsUpdates = async (formData, facility_id) => {
             body: JSON.stringify(formData)
         })
 
-        console.log({resp})
+   
 
     return resp
 
@@ -528,8 +534,15 @@ const handleBasicDetailsUpdates = async (formData, facility_id) => {
 }
 
 // handleGeolocationDataUpdate
-const handleGeolocationUpdates = async (formData, coordinates_id) => {
-    // console.log({formData, coordinates_id})
+const handleGeolocationUpdates = async (formData, coordinates_id, alert) => {
+   
+    if(formData){
+        alert.success("Facility Geolocation successfully updated")
+    } else {
+        alert.danger("Unable to update facility geolocation data")
+    }
+
+
     try{
        const resp =  await fetch(`/api/common/submit_form_data/?path=geolocation_update&id=${coordinates_id}`, {
             headers:{
@@ -540,7 +553,7 @@ const handleGeolocationUpdates = async (formData, coordinates_id) => {
             body: JSON.stringify(formData)
         })
 
-        console.log({resp: await resp.json()})
+     
 
     return resp
 
@@ -551,8 +564,13 @@ const handleGeolocationUpdates = async (formData, coordinates_id) => {
 }
 
 // handleFacilityContactUpdates
-const handleFacilityContactsUpdates = async (formData, facility_id) => {
-    // console.log({formData, coordinates_id})
+const handleFacilityContactsUpdates = async (formData, facility_id, alert) => {
+    if(formData){
+        alert.success("Facility Geolocation successfully updated")
+    } else {
+        alert.danger("Unable to update facility geolocation data")
+    }
+ 
     try{
        const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
             headers:{
@@ -563,7 +581,7 @@ const handleFacilityContactsUpdates = async (formData, facility_id) => {
             body: JSON.stringify(formData)
         })
 
-        console.log({resp: await resp.json()})
+    
 
     return resp
 

@@ -104,6 +104,7 @@ export default async function submitFormData(req, res) {
                     url = `${API_URL}/facilities/facility_approvals/`
                     contentType = 'application/json;charset=utf-8';
                     method = 'POST';
+<<<<<<< HEAD
                     break  
                 case `facilities_count`:
                     url =API_URL + `/reporting/?county=${req.query.id}&report_type=facility_count_by_county&report_level=county`
@@ -170,6 +171,21 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     break            
 
+=======
+                    break
+                case 'basic_details_update':      
+                    
+                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
+                case 'geolocation_update':      
+                    console.log({coordinates: req.query.id})     
+                    url = `${API_URL}/gis/facility_coordinates/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;              
+>>>>>>> Modified edit form up to Facility Contacts Form
                 default:
 
                     
