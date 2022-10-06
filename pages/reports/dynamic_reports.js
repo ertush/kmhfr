@@ -181,14 +181,15 @@ const DynamicReports = (props) => {
         if(router.query !== undefined && router.query !== null){
             drill[router.query.level] = router.query.id
              setDrillDown({...drillDown, ...drill})
-             if(org_level['county']!== '' || org_level['sub_county'] !== '' || org_level['ward'] !== ''){
-     
-                 Object.keys(org_level).forEach(key => {
-                    drill[key] = org_level[key]
-                     setDrillDown({...drillDown, ...drill})
-                 })
-             }
-         }
+             if(org_level !== null && org_level !== undefined){
+                if(org_level['county']!== '' || org_level['sub_county'] !== '' || org_level['ward'] !== ''){
+        
+                    Object.keys(org_level).forEach(key => {
+                        drill[key] = org_level[key]
+                        setDrillDown({...drillDown, ...drill})
+                    })
+                }
+         }}
  
      },[])
      
@@ -199,40 +200,43 @@ const DynamicReports = (props) => {
         dr =JSON.parse(localStorage.getItem('dd_owners'))
     }
     useEffect(async()=>{
-        // setting sub-county options based on county drill_down
-        if(dr.county !== ''){
+        if(dr !== null && dr !== undefined){
             
-            const drilldownData =  await fetch(`/api/filters/subcounty/?county=${dr.county}`)
-            drilldownData.json().then(r => {
-                    const optionsSubCounty = []
-        
-        
+            // setting sub-county options based on county drill_down
+            if(dr?.county !== ''){
+                
+                const drilldownData =  await fetch(`/api/filters/subcounty/?county=${dr.county}`)
+                drilldownData.json().then(r => {
+                        const optionsSubCounty = []
+            
+            
+                        r.results.forEach(({id, name}) => {
+                            optionsSubCounty.push({
+                                value: id,
+                                label: name
+                            })  
+                        } )   
+            
+                    setSubCountyOptions(optionsSubCounty)
+            })
+            }
+            // setting ward options based on sub-county drill_down
+            if(dr?.sub_county !== ''){
+                
+                const drilldownData =  await fetch(`/api/filters/ward/?sub_county=${dr.sub_county}`)
+                drilldownData.json().then(r => {
+                    const optionsWard = []
+                 
                     r.results.forEach(({id, name}) => {
-                        optionsSubCounty.push({
+                        optionsWard.push({
                             value: id,
                             label: name
                         })  
-                    } )   
-        
-                setSubCountyOptions(optionsSubCounty)
-        })
-        }
-        // setting ward options based on sub-county drill_down
-        if(dr.sub_county !== ''){
-            
-            const drilldownData =  await fetch(`/api/filters/ward/?sub_county=${dr.sub_county}`)
-            drilldownData.json().then(r => {
-                const optionsWard = []
-             
-                r.results.forEach(({id, name}) => {
-                    optionsWard.push({
-                        value: id,
-                        label: name
-                    })  
-                } )  
-
-           setWardOptions(optionsWard)
-        })
+                    } )  
+    
+               setWardOptions(optionsWard)
+            })
+            }
         }
 
     }, [])
@@ -554,8 +558,8 @@ const DynamicReports = (props) => {
                                                                                     value={
                                                                                        
                                                                                         {
-                                                                                            value: drillDown[ft] || dr.county || '',
-                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr.county)?.name || ''
+                                                                                            value: drillDown[ft] || dr?.county || '',
+                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.county)?.name || ''
                                                                                         }
                                                                                     }
                                                                                     onChange={handleCountyCategoryChange}
@@ -577,8 +581,8 @@ const DynamicReports = (props) => {
                                                                                     value={
                                                                                        
                                                                                         {
-                                                                                            value: drillDown[ft] || dr.sub_county || '', 
-                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr.sub_county)?.name || ''
+                                                                                            value: drillDown[ft] || dr?.sub_county || '', 
+                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
                                                                                         }
                                                                                     }
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -654,8 +658,8 @@ const DynamicReports = (props) => {
                                                                                         value={
                                                                                        
                                                                                             {
-                                                                                                value: drillDown[ft] || dr.sub_county || '', 
-                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr.sub_county)?.name || ''
+                                                                                                value: drillDown[ft] || dr?.sub_county || '', 
+                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
                                                                                             }
                                                                                         }
                                                                                         placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -677,8 +681,8 @@ const DynamicReports = (props) => {
                                                                                             value={
                                                                                        
                                                                                                 {
-                                                                                                    value: drillDown[ft] || dr.ward || '',
-                                                                                                    label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr.ward)?.name || ''
+                                                                                                    value: drillDown[ft] || dr?.ward || '',
+                                                                                                    label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.ward)?.name || ''
                                                                                                 }
                                                                                             }
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}

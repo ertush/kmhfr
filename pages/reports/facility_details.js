@@ -28,17 +28,9 @@ const FacilityByTypeDetails = (props) => {
     let filters_county = { county: props?.filters['county']}
     let [drillDown, setDrillDown] = useState({county:'', sub_county:'', ward:''})
     let label = 'facility_details'
-    const LinkCellRenderer = (params) =>{
-        return(
-            <Link
-            href={{ pathname: `/reports/by_county/`,
-            query: { id: params.data.sub_county } }}
-    
-            ><a>{params.value}</a></Link>
-        )}
 
     const [columns, setColumns]=useState([
-        {headerName: "Facility Type", field: "type_category",   cellRenderer: "LinkCellRenderer"},
+        {headerName: "Facility Type", field: "type_category"},
         {headerName: "Number of Facilities", field: "number_of_facilities"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
@@ -275,9 +267,6 @@ const FacilityByTypeDetails = (props) => {
                                     onGridReady={onGridReady}
                                     rowData={facilities}
                                     columnDefs={columns}
-                                    frameworkComponents={{
-                                        LinkCellRenderer
-                                      }}
                                     />
                             </div>
                         </div>
