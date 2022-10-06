@@ -1577,10 +1577,6 @@ const EditFacility = (props) => {
 
                                     onSubmit={async formData => {
                                         
-
-                                        // setLat(formData.coordinates.coordinates[0])
-                                        // setLong(formData.coordinates.coordinates[1])
-
                                         let payload = {}
                                         const _payload = _.omit(formData, function (v, k) { return geolocationData[k] === v})
                                            
