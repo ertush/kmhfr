@@ -2,10 +2,10 @@ import Head from 'next/head'
 import Link from 'next/link'
 import router from 'next/router'
 import MainLayout from '../components/MainLayout'
-// import { DotsHorizontalIcon, PencilIcon } from '@heroicons/react/solid'
-// import { checkToken } from '../controllers/auth/auth'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+
+
 
 const Home = (props) => {
     const router = useRouter()
@@ -39,6 +39,7 @@ const Home = (props) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
            
+            
                 <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
                     <div className="w-full grid grid-cols-2 gap-6 px-3 md:px-4 p-4 my-4 max-w-screen-lg mx-auto">
                         <div className="col-span-2 p-2 md:p-4 flex flex-col gap-4 items-center justify-center">
@@ -93,6 +94,7 @@ const Home = (props) => {
                         </div>
                     </div>
                 </MainLayout>
+     
          
         </>
     )

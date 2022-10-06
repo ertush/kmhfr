@@ -34,18 +34,9 @@ const DynamicReports = (props) => {
   
     // const { data, query, path, current_url } = props
     const router = useRouter()
-    
     // Temporary fix folty Kirinyaga id
-    let filters = (() => {
-        let filters = props?.filters
-        filters.county[0].id = 'ecbf61a6-cd6d-4806-99d8-9340572c0015' // correct Kirinyaga county id
+    let filters = props?.filters
 
-        return filters
-    })()
-
-
-
-    console.log({filters});
     let fltrs = filters
 
     const formRef = useRef(null)
@@ -70,8 +61,6 @@ const DynamicReports = (props) => {
     const [isLoading, setIsLoading] = useState(false)
 
 
-
-    // console.log({fltrs, filters})
 
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -99,9 +88,8 @@ const DynamicReports = (props) => {
     let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
    
 
-
     let headers = [
-        "code", "official_name", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_parent", "owner_name", "owner_type_name", "regulatory_body_name", "number_of_beds", "number_of_cots", "county_name", "constituency_name", "sub_county_name", "ward_name", "admission_status", "facility_services", "created", "closed",
+        "code", "official_name", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_parent", "owner_name", "owner_type_name", "regulatory_body_name", "number_of_beds", "number_of_cots", "county", "constituency_name", "sub_county_name", "ward_name", "admission_status", "facility_services", "created", "closed",
     ]
 
     let scoped_filters = [
@@ -149,23 +137,25 @@ const DynamicReports = (props) => {
     const [toDate, setToDate] = useState('');
 
 
+    const lnlst = Array.from(props?.data?.results, row => {
+        let dtpnt = {}
+        headers.forEach(col => {
+            dtpnt[col] = row[col]
+        })
+        return dtpnt
+    })
     const onGridReady = (params) => {
-        console.log({api: params.api});
+        // console.log({api: params.api});
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
 
-        const lnlst = Array.from(props?.data?.results, row => {
-            let dtpnt = {}
-            headers.forEach(col => {
-                dtpnt[col] = row[col]
-            })
-            return dtpnt
-        })
         setlinelist(lnlst)
         updateData(lnlst)
     };
+
+    gridApi?.setRowData(lnlst)
 
     useEffect(()=>{
         if( fromDate !=='' && toDate !==''){
@@ -185,12 +175,76 @@ const DynamicReports = (props) => {
         }
         
     }
+    let drill = {}
+    useEffect(()=>{
+        let org_level=JSON.parse(localStorage.getItem('dd_owners'))
+        if(router.query !== undefined && router.query !== null){
+            drill[router.query.level] = router.query.id
+             setDrillDown({...drillDown, ...drill})
+             if(org_level !== null && org_level !== undefined){
+                if(org_level['county']!== '' || org_level['sub_county'] !== '' || org_level['ward'] !== ''){
+        
+                    Object.keys(org_level).forEach(key => {
+                        drill[key] = org_level[key]
+                        setDrillDown({...drillDown, ...drill})
+                    })
+                }
+         }}
+ 
+     },[])
+     
+
+//  console.log(drillDown)
+    let dr ='' 
+    if (typeof window !== 'undefined') {
+        dr =JSON.parse(localStorage.getItem('dd_owners'))
+    }
+    useEffect(async()=>{
+        if(dr !== null && dr !== undefined){
+            
+            // setting sub-county options based on county drill_down
+            if(dr?.county !== ''){
+                
+                const drilldownData =  await fetch(`/api/filters/subcounty/?county=${dr.county}`)
+                drilldownData.json().then(r => {
+                        const optionsSubCounty = []
+            
+            
+                        r.results.forEach(({id, name}) => {
+                            optionsSubCounty.push({
+                                value: id,
+                                label: name
+                            })  
+                        } )   
+            
+                    setSubCountyOptions(optionsSubCounty)
+            })
+            }
+            // setting ward options based on sub-county drill_down
+            if(dr?.sub_county !== ''){
+                
+                const drilldownData =  await fetch(`/api/filters/ward/?sub_county=${dr.sub_county}`)
+                drilldownData.json().then(r => {
+                    const optionsWard = []
+                 
+                    r.results.forEach(({id, name}) => {
+                        optionsWard.push({
+                            value: id,
+                            label: name
+                        })  
+                    } )  
+    
+               setWardOptions(optionsWard)
+            })
+            }
+        }
+
+    }, [])
 
     useEffect(() => {
         // setIsAccordionExpanded(true)
        
     }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate, isConstituencyOptionsUpdate, isWardOptionsUpdate, linelist, isLoading])
-
 
 
     return (
@@ -247,25 +301,22 @@ const DynamicReports = (props) => {
                                                 const fields = 'code,official_name,operation_status,approved,keph_level,facility_type_name,facility_type_parent,owner,owner_type,regulation_body,number_of_beds,number_of_cots,county,constituency,sub_county,ward,admission_status,facility_services,created,closed'
                                                 if (Object.keys(drillDown).length > 0) {
                                                     let qry = Object.keys(drillDown).map(function (key) {
-                                                        let er = ''
-                                                        if (props.path && !props.path.includes(key + '=')) {
-                                                            er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
-                                                        }
+                                                        let er = (key) + '=' + (drillDown[key]);
                                                         return er
-                                                    }).join('&')
+                                                     }).join('&')
                                                     let op = '?'
-                                                    if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                   
+
+                                                    // if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
                                                     // setDrillDown({})
                                                     if (router || typeof window == 'undefined') {
                                                   
-                                                        const filterQuery = `${op}${qry}&fields=${fields}`
+                                                        const filterQuery = `${qry}&fields=${fields}`
 
                                                         try{
 
                                                           
-                                                            const data = await fetch(`/api/filters/filter/?filter_query=${filterQuery}`)
-                                                           data.json().then(r => {
+                                                            const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${fields}`)
+                                                             data.json().then(r => {
 
                                                                 const _lnlst = Array.from(r?.results, row => {
                                                                     let dtpnt = {}
@@ -343,7 +394,6 @@ const DynamicReports = (props) => {
                                                                                             })  
                                                                                        } )  
 
-                                                                                       console.log({options});
 
                                                                                        setServiceOptions(options)
                                                                                        setIsServiceOptionUpdate(!isServiceOptionsUpdate)
@@ -488,7 +538,6 @@ const DynamicReports = (props) => {
                                                                                    
                                                                                 }
 
-
                                                                                 return (
                                                                                     <Select 
                                                                                     id={ft}
@@ -506,6 +555,13 @@ const DynamicReports = (props) => {
                                                                                         })
                                                                                     }
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                    value={
+                                                                                       
+                                                                                        {
+                                                                                            value: drillDown[ft] || dr?.county || '',
+                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.county)?.name || ''
+                                                                                        }
+                                                                                    }
                                                                                     onChange={handleCountyCategoryChange}
                                                                                     
                                                                                     />
@@ -522,6 +578,13 @@ const DynamicReports = (props) => {
                                                                                     className="w-full p-1 rounded bg-gray-50 col-start-1"
                                                                                   
                                                                                     options={subCountyOptions}
+                                                                                    value={
+                                                                                       
+                                                                                        {
+                                                                                            value: drillDown[ft] || dr?.sub_county || '', 
+                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
+                                                                                        }
+                                                                                    }
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                     onChange={ev => {
                                                                                        
@@ -592,7 +655,13 @@ const DynamicReports = (props) => {
                                                                                        
                                                                                         className="w-full p-1 rounded bg-gray-50 col-start-1"
                                                                                         options={subCountyOptions}
+                                                                                        value={
                                                                                        
+                                                                                            {
+                                                                                                value: drillDown[ft] || dr?.sub_county || '', 
+                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
+                                                                                            }
+                                                                                        }
                                                                                         placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                         onChange={handleConstituencyChange}
                                                                                       
@@ -609,7 +678,13 @@ const DynamicReports = (props) => {
                                                                                            
                                                                                             className="w-full p-1 rounded bg-gray-50 col-start-1"
                                                                                             options={wardOptions}
-                                                                                           
+                                                                                            value={
+                                                                                       
+                                                                                                {
+                                                                                                    value: drillDown[ft] || dr?.ward || '',
+                                                                                                    label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.ward)?.name || ''
+                                                                                                }
+                                                                                            }
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                             onChange={sl => {
                                                                                                 let nf = {}
@@ -641,6 +716,13 @@ const DynamicReports = (props) => {
                                                                                                 }
                                                                                             })
                                                                                     }
+                                                                                    value={
+                                                                                       
+                                                                                        {
+                                                                                            value: drillDown[ft] || router?.query?.id || '', 
+                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== router?.query?.id)?.name || ''
+                                                                                        }
+                                                                                    }
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                     onChange={sl => {
                                                                                         
@@ -664,11 +746,11 @@ const DynamicReports = (props) => {
                                                   
                                                 <div  className="col-md-2" >
                                                     <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">From date:<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                    <input required type="date" name="from_date" onChange={(e)=>setFromDate(e.target.value)} value={fromDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    <input  type="date" name="from_date" onChange={(e)=>setFromDate(e.target.value)} value={fromDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                 </div>
                                                 <div  className="col-md-2" >
                                                     <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                    <input required type="date" name="to_date" onChange={(e)=>setToDate(e.target.value)} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    <input  type="date" name="to_date" onChange={(e)=>setToDate(e.target.value)} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                 </div>
                                                 <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                         <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has edits</label>
@@ -754,15 +836,14 @@ const DynamicReports = (props) => {
                                                     'Filter'
                                                 }
                                                     </button>
-                                                <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
+                                                <button  className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
                                                        ev.preventDefault()
-                                                    //    router.push('/reports/dynamic_reports')
-                                                       router.reload()
-
-                                                    //    fields.current.forEach(field => {
-                                                           
-                                                    //    })
-                                                    //    router.push('/reports/dynamic_reports')
+                                                        setDrillDown({})
+                                                        setSubCountyOptions([])
+                                                        setWardOptions([])
+                                                        localStorage.setItem('dd_owners', JSON.stringify({county: '', sub_county:'', ward: ''}));
+                                                        router.push('/reports/dynamic_reports')
+                                                        // router.reload()
                                                                                                     
                                                     }}>Clear filters</button>
                                                 </div>
@@ -787,12 +868,24 @@ const DynamicReports = (props) => {
                             </div>
                             {/* ((((((( dropdown options to download data */}
                             <div>
-                                <button className={"flex items-center justify-start rounded bg-green-600 text-center hover:bg-green-900 focus:bg-black text-white font-semibold active:bg-black py-2 px-4 uppercase text-base w-full"} onClick={() => {
+                                {/* <button className={"flex items-center justify-start rounded bg-green-600 text-center hover:bg-green-900 focus:bg-black text-white font-semibold active:bg-black py-2 px-4 uppercase text-base w-full"} onClick={() => {
                                     gridApi.exportDataAsCsv();
                                 }}>
                                     <DownloadIcon className="w-4 h-4 mr-1" />
                                     <span>Download Report</span>
-                                </button>
+                                </button> */}
+
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
+                                                e.preventDefault()
+                                                let dl_url = props?.current_url
+                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
+                                                console.log('Downloading CSV. ' + dl_url || '')
+                                                window.open(dl_url, '_blank', 'noopener noreferrer')
+                                            }}
+                                            >
+                                                <DownloadIcon className="w-4 h-4 mr-1" />
+                                                <span>Export</span>
+                                </button> 
                             </div>
                             {/* ))))))) dropdown options to download data */}
 
@@ -854,7 +947,7 @@ const DynamicReports = (props) => {
                                                     }).join('&')
                                                     let op = '?'
                                                     if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                    console.log(props.path)
+                                                    // console.log(props.path)
                                                     // setDrillDown({})
                                                     if (router || typeof window == 'undefined') {
                                                         router.push(props.path + op + qry)
@@ -944,6 +1037,7 @@ const DynamicReports = (props) => {
 
 DynamicReports.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
+    console.log(ctx.query)
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 
@@ -966,8 +1060,22 @@ DynamicReports.getInitialProps = async (ctx) => {
     }
 
     const fetchData = (token) => {
+        let url= ''
+        let dr ='' 
+        if (typeof window !== 'undefined') {
+            dr =JSON.parse(localStorage.getItem('dd_owners'))
+          }
+        if( ctx?.query?.type =='facilities_by_owners' || ctx?.query?.type=='facilities_by_owner_categories' || ctx?.query?.type == 'facilities_details' || ctx?.query?.type == 'facilities_by_keph_levels'){
+            url = API_URL + `/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level&${ctx.query.level}=${ctx.query.id}&county=${dr.county}&sub_county=${dr.sub_county}&ward=${dr.ward}`
 
-        let url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
+        }else if(ctx?.query?.type =='facilities_count'){
+            url = API_URL + `/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level&${ctx.query.level}=${ctx.query.id}`
+
+        }
+        else{
+
+            url = API_URL + '/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,approved,rejected,keph_level'
+        }
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -984,7 +1092,7 @@ DynamicReports.getInitialProps = async (ctx) => {
             }
         })
         // let current_url = url + '&page_size=25000' //change the limit on prod
-        let current_url = url + '&page_size=50'
+        let current_url = url + '&page_size=10000'
         if (ctx?.query?.page) {
             // console.log({page:ctx.query.page})
             url = `${url}&page=${ctx.query.page}`

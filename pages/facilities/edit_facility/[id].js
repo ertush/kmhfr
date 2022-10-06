@@ -4,25 +4,42 @@ import { checkToken } from '../../../controllers/auth/auth'
 import React, { useState, useEffect, useRef } from 'react';
 import Select from 'react-select'
 import MainLayout from '../../../components/MainLayout'
-
+import { Formik, Field, Form } from "formik"; 
 import dynamic from 'next/dynamic'
+import { useAlert } from "react-alert";
 
 
 import { 
-	handleBasicDetailsSubmit,
-    handleGeolocationSubmit,
-    handleFacilityContactsSubmit,
-    handleRegulationSubmit,
-    handleServiceSubmit,
-    handleInfrastructureSubmit,
-    handleHrSubmit
-} from '../../../controllers/facility/addFacilitySubmitHandlers';
+    handleBasicDetailsUpdates,
+    handleGeolocationUpdates,
+    handleFacilityContactsUpdates,
+    handleRegulationUpdates,
+    handleServiceUpdates,
+    handleInfrastructureUpdates,
+    handleHrUpdates
+} from '../../../controllers/facility/facilityHandlers';
+
+
+
 import FacilityContact from '../../../components/FacilityContact';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import TrasnferListServices from '../../../components/TrasnferListServices';
 import TransferListHr from '../../../components/TransferListHr';
 import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
 
+
+// import { useInput } from '../../../hooks';
+
+const _ = require('underscore') 
+
+const isArray = (_arr) => {
+    let isArray
+    if(_arr !== undefined && _arr !== null){
+        isArray = _arr.hasOwnProperty('length')
+    }
+
+    return isArray
+}
 
 const WardMap = dynamic(
 	() => import('../../../components/WardGISMap'), // replace '@components/map' with your component's location
@@ -36,7 +53,10 @@ const Map = React.memo(WardMap)
 
 const EditFacility = (props) => {
 
-    console.log({props})
+    // Alert 
+    const alert = useAlert();
+
+  
 
     // Form drop down options
 
@@ -69,6 +89,7 @@ const EditFacility = (props) => {
 		const _serviceOptions = []
 		let _values = []
 		let _subCtgs = []
+        
 
 		if(_services.length > 0){
 			_services.forEach(({category_name:ctg}) => {
@@ -176,6 +197,7 @@ const EditFacility = (props) => {
 
     // Facility data
     const {
+        id,
         name,
         official_name,
         code,
@@ -221,24 +243,174 @@ const EditFacility = (props) => {
         location_desc,
         plot_number,
         nearest_landmark,
+        coordinates,
         facility_checklist_document,
         lat_long,
-        collection_date,
         officer_in_charge,
         facility_contacts,
         ward_name,
         regulatory_body,
-        regulation_status,
+        regulatory_status_name,
         license_number,
         registration_number,
         regulatory_body_name
-
+ 
     } = props['18']?.data ?? {}
+
+    const basicDetailsData =   {
+        official_name,
+        name,
+        facility_type,
+        date_established,
+        accredited_lab_iso_15189,
+        number_of_beds,
+        number_of_cots,
+        number_of_emergency_casualty_beds,
+        number_of_general_theatres,
+        number_of_hdu_beds,
+        number_of_icu_beds,
+        number_of_isolation_beds,
+        number_of_maternity_beds,
+        number_of_maternity_theatres,
+        facility_catchment_population,
+        reporting_in_dhis,
+        nhif_accreditation,
+        is_classified,
+        open_whole_day,
+        open_weekends,
+        open_public_holidays,
+        open_normal_day,
+        open_late_night,
+        town_name,
+        location_desc,
+        plot_number,
+        nearest_landmark,
+        constituency_id,
+        county_id,
+        sub_county_id,
+        facility_catchment_population,
+        keph_level,
+        nearest_landmark,
+        official_name,
+        operation_status,
+        owner,
+        owner_type,
+        plot_number,
+        reporting_in_dhis,
+        town_name,
+        ward
+    }
+
+	
+    const facilityContactsData = {
+
+
+        contact:  ((facility_contacts) => {
+  
+            let _contactDetail 
+            if(facility_contacts !== null){
+                if(isArray(facility_contacts)){
+                    if(facility_contacts.length > 0){
+                        _contactDetail = facility_contacts[0].contact
+                    }else{
+                        _contactDetail = ''
+                    }
+                }else{
+                    _contactDetail = ''
+                }
+            }else{
+                _contactDetail = ''
+            }
+    
+            return _contactDetail
+    
+        })(facility_contacts),
+        contact_type : ((facility_contacts) => {
+  
+            let _contactDetail 
+            if(facility_contacts !== null){
+                if(isArray(facility_contacts)){
+                    if(facility_contacts.length > 0){
+                        _contactDetail = facility_contacts[0].contact_type
+                    }else{
+                        _contactDetail = ''
+                    }
+                }else{
+                    _contactDetail = ''
+                }
+            }else{
+                _contactDetail = ''
+            }
+    
+            return _contactDetail
+    
+        })(facility_contacts),
+        name : ((facility_contacts) => {
+  
+            let _contactDetail 
+            if(facility_contacts !== null){
+                if(isArray(facility_contacts)){
+                    if(facility_contacts.length > 0){
+                        _contactDetail = facility_contacts[0].name
+                    }else{
+                        _contactDetail = ''
+                    }
+                }else{
+                    _contactDetail = ''
+                }
+            }else{
+                _contactDetail = ''
+            }
+    
+            return _contactDetail
+    
+        })(facility_contacts),
+
+        reg_no : registration_number,
+    }
+    
+    const geolocationData = {
+        collection_date: collection_date ?? '',
+        longitude : ((coordinates) => {
    
+        let _lng 
+        if(lat_long !== null){
+            if(lat_long.length > 0){
+                _lng = coordinates[1]
+            }else{
+                _lng = ''
+            }
+        }else{
+            _lng = ''
+        }
+
+        return _lng
+
+    })(lat_long),
+        latitude : ((coordinates) => {
+   
+            let _lng 
+            if(lat_long !== null){
+                if(lat_long.length > 0){
+                    _lng = coordinates[0]
+                }else{
+                    _lng = ''
+                }
+            }else{
+                _lng = ''
+            }
+    
+            return _lng
+    
+        })(lat_long)
+    } 
+
     const {
         gJSON,
         centerCoordinates
     } = props['19']?.geolocation ?? {}
+
+    const collection_date = props['20']?.collection_date.replace(/T.*$/, '') ?? ''
 
     const serviceSelected = ((_services) => {
         return _services.map(({category_name, service_name, service_id}) => ({
@@ -267,22 +439,29 @@ const EditFacility = (props) => {
                     ]
                     
                 })
-        )
+        )   
     })(facility_infrastructure || [])  
 
     const hrSelected = ((_hr) => {
-        return _hr.map(({speciality_name, speciality}) => ({
+      
+        return _hr.map(({speciality_name, speciality}) => { 
 
-                    name: props['17']?.hr.length > 0 ? props['17']?.hr.filter(({id}) => id === speciality)[0].category_name : '',
-                  
-                    subCategories: [
-                        speciality_name
-                    ],
-                    value:[
-                        speciality
-                    ]
-                    
-                })
+            const hrFilter = props['17']?.hr.filter(({id}) => id === speciality)
+
+            const resultHr = {
+
+                name: props['17']?.hr.length > 0 ? (hrFilter.length > 0 ? hrFilter[0].category_name : '') : '',
+              
+                subCategories: [
+                    speciality_name
+                ],
+                value:[
+                    speciality
+                ]
+                
+            }
+            return resultHr.name !== '' ? resultHr : []
+            }
         )
     })(facility_specialists || [])
 
@@ -290,43 +469,68 @@ const EditFacility = (props) => {
     const [user, setUser] = useState(null)
 
     // Form field states
-    const [_name, setName] = useState(name)
-    const [_officialName, setOfficialName] = useState(official_name ?? '')
-    const [_dateEstablished, setDateEstablished] = useState(date_established ?? '')
-    const [_ISOAccredited, setISOAccredited] = useState(accredited_lab_iso_15189 ?? false)
-    const [_noOfBeds, setNoOfBeds] = useState(number_of_beds ?? '')
-    const [_noOfCots, setNoOfCots] = useState(number_of_cots ?? '')
-    const [_noOfCasualtyBeds, setNoOfCasualtyBeds] = useState(number_of_emergency_casualty_beds ?? '')
-    const [_noOfICUBeds, setNoOfICUBeds] = useState(number_of_icu_beds ?? '')
-    const [_noOfHDUBeds, setNoOfHDUBeds] = useState(number_of_hdu_beds ?? '')
-    const [_noOfMaternityBeds, setNoOfMaternityBeds] = useState(number_of_maternity_beds ?? '')
-    const [_noOfIsolationBeds, setNoOfIsolationBeds] = useState(number_of_isolation_beds ?? '')
-    const [_noOfMaternityTheaters, setNoOfMaternityTheaters] = useState(number_of_maternity_theatres ?? '')
-    const [_noOfGeneralTheaters, setNoOfGeneralTheaters] = useState(number_of_general_theatres ?? '')
-    const [_catchmentPopulation, setCatchmentPopulation] = useState(facility_catchment_population ?? '')
-    const [_isDHISReporting, setIsDHISReporting] = useState(reporting_in_dhis ?? '')
-    const [_isNHIFAccredited, setIsNHIFAccredited] = useState(nhif_accreditation ?? '')   
-    const [_isArmedForcesFct, setIsArmedForcesFct] = useState(is_classified ?? '')
-    const [_is24Hrs, setIs24Hrs] = useState(open_whole_day ?? '')
-    const [_isWeekends, setIsWeekends] = useState(open_weekends)
-    const [_isPublicHolidays, setIsPublciHolidays] = useState(open_public_holidays ?? '')
-    const [_isNormalDay, setIsNormalDay] = useState(open_normal_day ?? '')
-    const [_isLateNight, setIsLateNight] = useState(open_late_night ?? '')
-    const [_town, setTown] = useState(town_name ?? '')
-    const [_locationDesc, setLocationDesc] = useState(location_desc ?? '')
-    const [_plotNo, setPlotNo] = useState(plot_number ?? '')
-    const [_nearestLandMark, setNearestLandMark] = useState(nearest_landmark ?? '')
+   
     const [_checklistFile, setCheckListFile] = useState(facility_checklist_document ?? '')
-    const [_collectionDate, setCollectionDate] = useState(collection_date ?? '')
-    const [_lat, setLat] = useState(lat_long !== undefined ? (lat_long[0] ?? '') : '')
-    const [_long, setLong] = useState(lat_long !== undefined ? (lat_long[1] ?? '') : '')
-    const [_contactDetail, setContactDetail] = useState(facility_contacts !== undefined ? (facility_contacts[0].contact ?? ''): '')
+    const [_lat, setLat] = useState(((coordinates) => {
+   
+        let _lat 
+        if(lat_long !== null){
+            if(lat_long.length > 0){
+                _lat = coordinates[0]
+            }else{
+                _lat = ''
+            }
+        }else{
+            _lat = ''
+        }
+
+        return _lat
+
+    })(lat_long))
+    const [_long, setLong] = useState(((coordinates) => {
+   
+        let _lng 
+        if(lat_long !== null){
+            if(lat_long.length > 0){
+                _lng = coordinates[1]
+            }else{
+                _lng = ''
+            }
+        }else{
+            _lng = ''
+        }
+
+        return _lng
+
+    })(lat_long))
+
+    // const [_contactDetail, setContactDetail] = useState(((facility_contacts) => {
+  
+    //     let _contactDetail 
+    //     if(facility_contacts !== null){
+    //         if(isArray(facility_contacts)){
+    //             if(facility_contacts.length > 0){
+    //                 _contactDetail = facility_contacts[0].contact
+    //             }else{
+    //                 _contactDetail = ''
+    //             }
+    //         }else{
+    //             _contactDetail = ''
+    //         }
+    //     }else{
+    //         _contactDetail = ''
+    //     }
+
+    //     return _contactDetail
+
+    // })(facility_contacts))
+
     const [_officerName, setOfficerName] = useState(officer_in_charge || '')
     const [_regNo, setRegNo] = useState(registration_number ?? '')
     const [_regBody, setRegBody] = useState(regulatory_body_name ?? '')
     const [_file, setFile] = useState(facility_license_document ?? '')
     const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
-    const [_otherContactDetail, setOtherContactDetail] = useState()
+    // const [_otherContactDetail, setOtherContactDetail] = useState()
     
  
 
@@ -476,78 +680,65 @@ const EditFacility = (props) => {
     const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
 
-    // Form Field Refs
-    const kephLvlRef = useRef(null)  
+    // Basic Details Refs
+
+   
     const facilityTypeRef = useRef(null)
     const facilityTypeDetailsRef = useRef(null)
-    const operationStatusRef = useRef(null)  
-    const dateEstablishedRef = useRef(null)
-    const accreditationISOYesRef = useRef(null)
-    const accreditationISONoRef = useRef(null)
+    const operationStatusRef = useRef(null)    
     const ownerTypeOptionsRef = useRef(null)
     const ownerDetailsRef = useRef(null)
-    const noOfBedsRef = useRef(null)
-    const noOfCotsRef = useRef(null)
-    const noOfCasualtyBedsRef = useRef(null)
-    const noOfICUBedsRef = useRef(null)
-    const noOfHDUBedsRef = useRef(null)
-    const noOfMaternityBedsRef = useRef(null)
-    const noOfIsolationBedsRef = useRef(null)
-    const noOfGeneralTheatersRef = useRef(null)
-    const noOfMaternityTheatersRef = useRef(null)
-    const catchmentPopulationRef = useRef(null)
-    const isDHISReportingYesRef = useRef(null)
-    const isDHISReportingNoRef = useRef(null)
-    const isNHIFAccreditedYesRef = useRef(null)
-    const isNHIFAccreditedNoRef = useRef(null)
-    const isArmedForcesFctRef = useRef(null)
-    const is24HrsRef = useRef(null)
-    const isLateNightRef = useRef(null)
-    const isPublicHolidaysRef = useRef(null)
-    const isWeekendsRef = useRef(null)
-    const isNormalDayRef = useRef(null)
+    const kephLvlRef = useRef(null)    
+    const facilityAdmissionRef = useRef(null)
     const countyRef = useRef(null)
     const subCountyRef = useRef(null)
     const constituencyRef = useRef(null)
     const wardRef = useRef(null)
-    const facilityAdmissionRef = useRef(null)
-    const townRef = useRef(null)
-    const plotNoRef = useRef(null)
-    const nearestLandMarkRef = useRef(null)
     const checklistFileRef = useRef(null)
-    const locationDescRef = useRef(null)
-    const facilityContactRef = useRef(null)
-    const facilityContact2Ref = useRef(null)
+
+
+    // Facility Contacts Refs
+
     const contactRef = useRef(null)
-    const otherContactRef = useRef(null)
     const jobTitleRef = useRef(null)
-    const facilityRegulatoryBodyRef = useRef(null)
-    const regBodyRef = useRef(null)
+    const otherContactRef = useRef(null)
+    const facilityContactDetailRef = useRef(null)
+    const officerInchargeContactDetailRef = useRef(null)
+ 
+
+    // Regulation Refs
+
     const regulatoryBodyRef = useRef(null)
     const regulatoryStateRef = useRef(null)
+    const facilityContactRef = useRef(null)
+    const facilityContact2Ref = useRef(null)
+    const facilityRegulatoryBodyRef = useRef(null)
+    const regBodyRef = useRef(null)
     const facilityDeptNameRef = useRef(null)
     const optionRefBody = useRef(null)
     const serviceOptionRef = useRef(null)
     const nameOptionRef = useRef(null)
     const infrastructureBodyRef = useRef(null)
-
+  
 
     
-
     useEffect(() => {
-       
-        // console.log({serviceSelected, infrastructureSelected})
+
+        console.log({props}) 
+
         if (typeof window !== 'undefined') {
             let usr = window.sessionStorage.getItem('user')
             if (usr && usr.length > 0) {
                 setUser(JSON.parse(usr))
             }
         }
-        
+
+    
+
         // Pre-fetch values for drop down
         if(facility_type !== undefined){
         if(facilityTypeRef.current !== null){
-            // console.log({facility_type})
+          
             facilityTypeRef.current.state.value = facilityOptions.filter(({value}) => value === facility_type)[0] || {label:facility_type_name, value:facility_type}
         }
         if(facilityTypeDetailsRef.current !== null){
@@ -588,7 +779,7 @@ const EditFacility = (props) => {
             wardRef.current.state.value = wardOptions.filter(({value}) => value === ward)[0] || ''
         }
         if(contactRef.current !== null){
-            contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === (facility_contacts !== undefined ? facility_contacts[0].contact_type_name : ''))[0] || ''
+            contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === (facility_contacts.length > 0 && facility_contacts !== null ? facility_contacts[0].contact_type_name : ''))[0] || ''
         }
         if(jobTitleRef.current !== null){
             jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === (officer_in_charge !== null ? officer_in_charge.title : ''))[0] || ''
@@ -599,7 +790,7 @@ const EditFacility = (props) => {
         }
 
         if(regulatoryStateRef.current !== null){
-            regulatoryStateRef.current.state.value = regulationStateOptions.filter(({value}) => value === regulation_status)[0] || ''
+            regulatoryStateRef.current.state.value = regulationStateOptions.filter(({label}) => label === regulatory_status_name)[0] || ''
         }
         
         if(facilityDeptNameRef.current !== null){
@@ -607,17 +798,21 @@ const EditFacility = (props) => {
         }
 
         if(otherContactRef.current !== null){
-            otherContactRef.current.state.value = _officerName.contacts ?? _officerName.contacts[0].type ?? ''
+            otherContactRef.current.state.value = _officerName.contacts !== undefined && _officerName.contacts.length > 0 ? _officerName?.contacts[0].type : ''
         }
 
-        setOtherContactDetail(_officerName.contacts ?? _officerName.contacts ?? '')
+        if(regBodyRef.current !== null){
+            regBodyRef.current.value = facility_units[0]?.regulating_body_name ?? ''
+        } 
+
+    
+       
         
     }
 
        
-
         
-    }, [_lat, _long, refreshForm4, services, selectedInfraRight, selectedHrRight, selectedServiceRight])
+    }, [])
 
 
     const handleAddContact = (event) => {
@@ -738,7 +933,7 @@ const EditFacility = (props) => {
         option6.value = 'EMAIL';
 
         dropDown.appendChild(option1.getRootNode());
-        dropDown.appendChild(option2.getRootNode());
+        dropDown.appendChild(option2.getRootNode());    
         dropDown.appendChild(option3.getRootNode());
         dropDown.appendChild(option4.getRootNode());
         dropDown.appendChild(option5.getRootNode());
@@ -811,724 +1006,728 @@ const EditFacility = (props) => {
                                 </Tabs.Tab>
                             </Tabs.List>
                             {/* Basic Details */}
-                            <Tabs.Panel value="basic_details" className="grow-1 py-1 px-4 tab-panel">                           
-															
-                                <form className='flex flex-col w-full items-start justify-start gap-3 md:mt-6' onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId], 'PATCH')}>
-                                    {/* Facility Official Name */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="official_name" className="text-gray-600 capitalize text-sm">Facility Official Name<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required type="text" name="official_name" value={_name} onChange={ev => setName(ev.target.value)} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-                                    {/* Facility Unique Name  */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="name" className="text-gray-600 capitalize text-sm">Facility Unique Name<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required type="text" name="name" value={_officialName} onChange={ev => setOfficialName(ev.target.value)} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-                                    {/* Facility Type */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Facility Type <span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <Select
-                                        ref={facilityTypeRef} 
-                                        options={facilityOptions || []}
-                                        required
-                                        placeholder="Select a facility type..."
-                                    
-                                        onChange={
-                                            (e) => setFacilityOption(e.label)
-                                        }
-                                        name="facility_type" 
-                                        
-                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                    </div>
+                            <Tabs.Panel value="basic_details" className="grow-1 py-1 px-4 tab-panel">   
 
-                                    {/* Facility Type Details */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                    <label
-                                                htmlFor='facility_type_details'
-                                                className='text-gray-600 capitalize text-sm'>
-                                                Facility Type Details
-                                                <span className='text-medium leading-12 font-semibold'>
-                                                    {' '}
-                                                    *
-                                                </span>
-                                            </label>
-                                            <Select
-                                                ref={facilityTypeDetailsRef}
-                                                options={
-                                                    (() => {
-                                                        
-                                                        switch(facilityOption){
-                                                            case 'STAND ALONE':
-
-                                                                if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
-
-                                                                return [
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Drug and Substance abuse")[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Nutrition and Dietetics')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Dialysis Center')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Physiotherapy, Orthopaedic & Occupational Therapy")[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'VCT')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Farewell Home')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Laboratory')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Radiology Clinic')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Pharmacy')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Regional Blood Transfusion Centre')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Ophthalmology')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Dental Clinic')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Blood Bank')[0] || {},
-
-                                                                        ] 
-                                                                
-                                                            case 'DISPENSARY':
-                                                                if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
-                                                                return  facilityTypeOptions.filter(({label}) => label == 'DISPENSARY') || []
-                                                                
-
-                                                            case 'MEDICAL CLINIC':
-                                                                if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
-                                                                return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
-                                                                
-                                                            case 'NURSING HOME':
-                                                                if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
-                                                                
-                                                                return [
-                                                                        facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
-                                                                        facilityTypeOptions.filter(({label}) => label == 'Nursing Homes')[0] || {}
-                                                                        ]
-
-                                                            case 'HOSPITALS':
-                                        
-                                                                return [
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Specialized & Tertiary Referral hospitals')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Secondary care hospitals')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Comprehensive Teaching & Tertiary Referral Hospital')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Primary care hospitals')[0] || {}
-                                                                    ] 
-                                                        
-                                                            case 'HEALTH CENTRE':
-                                                                if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
-                                                                return [
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
-                                                                    facilityTypeOptions.filter(({label}) => label == 'Comprehensive health Centre')[0] || {}
-                                                                    ]
-
-                                                            case 'MEDICAL CENTRE':
-                                                                if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
-
-                                                                return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
-                                                            
-                                                        }
-                                                    })()
-                                                }
-                                                required
-                                                placeholder='Select a facility type details...'
-                                                onChange={ev => {
-                                                    switch(ev.label){
-                                                        case 'Comprehensive Teaching & Tertiary Referral Hospital':
-                                                            setFacilityTypeDetail('Comprehensive Teaching & Tertiary Referral Hospital')
-                                                            
-                                                            
-                                                            break;
-                                                        case 'Specialized & Tertiary Referral hospitals':
-                                                            setFacilityTypeDetail('Specialized & Tertiary Referral hospitals')
-                                                            
-                                                            break;
-                                                        case 'Secondary care hospitals':
-                                                            setFacilityTypeDetail('Secondary care hospitals')
-                                                        
-                                                                
-                                                            break;
-                                                        case 'Primary care hospitals':
-                                                            setFacilityTypeDetail('Primary care hospitals')
-                                                            
-                                                            break;
-                                                        
-                                                    }
-                                                }}
-                                                name='facility_type_details'
-                                                className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-                                            />
-                                    </div>
-
-                                    {/* Operation Status */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="operation_status" className="text-gray-600 capitalize text-sm">Operation Status <span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <Select 
-                                        ref={operationStatusRef}
-                                        options={operationStatusOptions || []} 
-                                        required
-                                        placeholder="Select an operation status..."
-                                        onChange={
-                                          ev => {
-                                            setOperationStatus(ev.value) 
-                                          }
-                                        }
-                                        name="operation_status" 
-                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                    </div>
-
-                                    {/* Date Established */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="date_established" className="text-gray-600 capitalize text-sm">Date Established<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input ref={dateEstablishedRef} value={_dateEstablished} onChange={ev => setDateEstablished(ev.target.value)} required type="date" name="date_established" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* Is Facility accredited */}
-                                    <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                        <label htmlFor="accredited_lab_iso_15189" className="text-gray-700 capitalize text-sm flex-grow">*Is the facility accredited Lab ISO 15189? </label>
-                                        <span className="flex items-center gap-x-1">
-                                            <input type="radio" ref={accreditationISOYesRef}  checked={_ISOAccredited} name="accredited_lab_iso_15189" id="facility_accredited_yes" onChange={ev => {
-                                                    setISOAccredited(Boolean(ev.target.value))
-                                            }} />
-                                            <small className="text-gray-700">Yes</small>
-                                        </span>
-                                        <span className="flex items-center gap-x-1">
-                                            <input type="radio" ref={accreditationISONoRef} checked={!_ISOAccredited}  name="accredited_lab_iso_15189" id="facility_accredited_no" onChange={ev => {
-                                                setISOAccredited(Boolean(ev.target.value))
-                                            }} />
-
-                                            <small className="text-gray-700">No</small>
-                                        </span>
-                                    </div>
-
-                                    {/* Owner Category */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="owner_type" className="text-gray-600 capitalize text-sm">Owner Category<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <Select 
-                                            ref={ownerTypeOptionsRef}
-                                            options={ownerTypeOptions || []} 
-                                            required
-                                            placeholder="Select owner.."
-                                            onChange={
-                                                (e) => setOwnerTypeOption(e.label) 
-                                            }
-                                            name="owner_type" 
-                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                    </div>
-
-                                    {/* Owner Details */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="owner" className="text-gray-600 capitalize text-sm">Owner Details<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <Select 
-                                        ref={ownerDetailsRef}
-                                        options={
-                                            (() => {
-                                                
-                                                switch(ownerTypeOption){
-                                                    case "Private Practice":
-
-
-                                                        return [
-                                                            ownerOptions.filter(({label}) => label == "Private Practice- Pharmacist")[0] || {},
-                                                            ownerOptions.filter(({label}) => label == "Private Practice - Private Company")[0] || {},
-                                                            ownerOptions.filter(({label}) => label == "Private Practice Lab Technician/Technologist")[0] || {},
-                                                            ownerOptions.filter(({label}) => label == "Private Practice - Nurse / Midwifery")[0] || {},
-                                                            ownerOptions.filter(({label}) => label == "Private Practice - Medical Specialist")[0] || {},
-                                                            ownerOptions.filter(({label}) => label == "Private Practice - General Practitioner")[0] || {},
-                                                            ownerOptions.filter(({label}) => label == "Private Practice - Clinical Officer")[0] || {},
-                                                            ownerOptions.filter(({label}) => label == "Private Practice - Private Institution Academic")[0] || {}
-                                                        
-                                                                ] 
-                                                        
-                                                    case 'Non-Governmental Organizations':
-                                                        return  ownerOptions.filter(({label}) => label == 'Non-Governmental Organizations') || []
-                                                        
-
-                                                    case 'Ministry of Health':
-                                        
-                                                        return [
-                                                            ownerOptions.filter(({label}) => label == "Public Institution - Parastatal")[0] || {},
-                                                            ownerOptions.filter(({label}) => label == 'Ministry of Health')[0] || {},
-                                                            ownerOptions.filter(({label}) => label == 'Armed Forces')[0] || {},
-                                                            ownerOptions.filter(({label}) => label == 'Public Institution - Academic')[0] || {},
-                                                        ]																				
-                                                        
-                                                    case 'Faith Based Organization':																		
-
-                                                        return [
-                                                                    ownerOptions.filter(({label}) => label == 'Seventh Day Adventist')[0] || {},
-                                                                    ownerOptions.filter(({label}) => label == 'Supreme Council for Kenya Muslims')[0] || {},
-                                                                    ownerOptions.filter(({label}) => label == 'Other Faith Based')[0] || {},
-                                                                    ownerOptions.filter(({label}) => label == 'Seventh Day Adventist')[0] || {},
-                                                                    ownerOptions.filter(({label}) => label == 'Kenya Episcopal Conference-Catholic Secretariat')[0] || {},
-                                                                    ownerOptions.filter(({label}) => label == 'Christian Health Association of Kenya')[0] || {},
-                                                                ]
-
-                                                    
-                                                }
-                                            })() ?? ownerTypeOptions 
-                                        } 
-                                        required
-                                        placeholder="Select an owner.."
-                                        onChange={
-                                            () => console.log('changed')
-                                        }
-                                        name="owner" 
-                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                    </div>
-
-                                    {/* KEPH Level */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">KEPH Level</label>
-                                        <Select 
-                                        ref={kephLvlRef}
-                                        options={kephOptions ?? []}
-
-                                        placeholder="Select a KEPH Level.."
-                                        onChange={
-                                            ev => ev.preventDefault()
-                                        }
-                                        name="keph_level" 
-                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                    </div>
-
-                                    {/* No. Functional general Beds */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="number_of_beds" className="text-gray-600 capitalize text-sm">Number of functional general beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required value={_noOfBeds} ref={noOfBedsRef} onChange={ev => setNoOfBeds(ev.target.value)} type="number" name="number_of_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* No. Functional cots */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="number_of_cots" className="text-gray-600 capitalize text-sm">Number of functional cots<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required value={_noOfCots} ref={noOfCotsRef} onChange={ev => setNoOfCots(ev.target.value)} type="number" name="number_of_cots" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* No. Emergency Casulty Beds */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="number_of_emergency_casualty_beds" className="text-gray-600 capitalize text-sm">Number of Emergency Casulty Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required value={_noOfCasualtyBeds} ref={noOfCasualtyBedsRef} onChange={ev => setNoOfCasualtyBeds(ev.target.value)}  type="number" name="number_of_emergency_casualty_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* No. Intensive Care Unit Beds */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="number_of_icu_beds" className="text-gray-600 capitalize text-sm">Number of Intensive Care Unit (ICU) Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required value={_noOfICUBeds} ref={noOfICUBedsRef} onChange={ev => setNoOfICUBeds(ev.target.value)} type="number" name="number_of_icu_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* No. High Dependency Unit HDU */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="number_of_hdu_beds" className="text-gray-600 capitalize text-sm">Number of High Dependency Unit (HDU) Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required value={_noOfHDUBeds} ref={noOfHDUBedsRef} onChange={ev => setNoOfHDUBeds(ev.target.value)} type="number" name="number_of_hdu_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* No. of maternity beds */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="number_of_maternity_beds" className="text-gray-600 capitalize text-sm">Number of maternity beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required value={_noOfMaternityBeds} ref={noOfMaternityBedsRef} onChange={ev => setNoOfMaternityBeds(ev.target.value)} type="number" name="number_of_maternity_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* No. of isolation beds */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="number_of_isolation_beds" className="text-gray-600 capitalize text-sm">Number of isolation beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required value={_noOfIsolationBeds} ref={noOfIsolationBedsRef} onChange={ev => setNoOfIsolationBeds(ev.target.value)} type="number" name="number_of_isolation_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* No. of General Theatres */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="number_of_general_theatres" className="text-gray-600 capitalize text-sm">Number of General Theatres<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required value={_noOfGeneralTheaters} ref={noOfGeneralTheatersRef} onChange={ev => setNoOfGeneralTheaters(ev.target.value)} type="number" name="number_of_general_theatres" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* No. of Maternity Theatres */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="number_of_maternity_theatres" className="text-gray-600 capitalize text-sm">Number of Maternity Theatres<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required value={_noOfMaternityTheaters} ref={noOfMaternityTheatersRef} onChange={ev => setNoOfMaternityTheaters(ev.target.value)} type="number" name="number_of_maternity_theatres" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* Facility Catchment Population */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="facility_catchment_population" className="text-gray-600 capitalize text-sm">Facility Catchment Population<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <input required value={_catchmentPopulation} ref={catchmentPopulationRef} onChange={ev => setCatchmentPopulation(ev.target.value)} type="number" name="facility_catchment_population" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                    </div>
-
-                                    {/* Is Reporting DHIS2 */}
-                                    <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                        <label htmlFor="reporting_in_dhis" className="text-gray-700 capitalize text-sm flex-grow">*Should this facility have reporting in DHIS2?  </label>
-                                        <span className="flex items-center gap-x-1">
-                                            <input type="radio" checked={_isDHISReporting} ref={isDHISReportingYesRef} onChange={ev => setIsDHISReporting(ev.target.value)} name="reporting_in_dhis" id="facility_reporting_yes"/>
-                                            <small className="text-gray-700">Yes</small>
-                                        </span>
-                                        <span className="flex items-center gap-x-1">
-                                            <input type="radio" checked={!_isDHISReporting}  ref={isDHISReportingNoRef} onChange={ev => setIsDHISReporting(ev.target.value)} name="reporting_in_dhis" id="facility_reporting_no"/>
-                                            <small className="text-gray-700">No</small>
-                                        </span>
-                                    </div>
-
-                                    {/* Facility Admissions */}
-                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                        <label htmlFor="admission_status" className="text-gray-600 capitalize text-sm">Facility admissions<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                        <Select 
-                                            ref={facilityAdmissionRef}
-                                            options={facilityAdmissionOptions || []} 
-                                            required
-                                            placeholder="Select an admission status.."
-                                            onChange={
-                                                () => console.log('changed')
-                                            }
-                                            name="admission_status" 
-                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                    </div>
-
-                                    {/* Is NHIF accredited */}
-                                    <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                        <label htmlFor="nhif_accreditation" className="text-gray-700 capitalize text-sm flex-grow"> *Does this facility have NHIF accreditation?   </label>
-                                        <span className="flex items-center gap-x-1">
-                                            <input type="radio" checked={_isNHIFAccredited} ref={isNHIFAccreditedYesRef} onChange={ev => setIsNHIFAccredited(ev.target.value)} name="nhif_accreditation" id="nhif_accredited_yes" />
-                                            <small className="text-gray-700">Yes</small>
-                                        </span>
-                                        <span className="flex items-center gap-x-1">
-                                            <input type="radio" checked={!_isNHIFAccredited} ref={isNHIFAccreditedNoRef} onChange={ev => setIsNHIFAccredited(ev.target.value)} name="nhif_accreditation" id="nhif_accredited_no" />
-                                            <small className="text-gray-700">No</small>
-                                        </span>
-                                    </div>
-
-                                    {/* Armed Forces Facilities */}
-
-                                    <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto" >
-                                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Armed Forces Facilities</h4>
-                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                            <input type="checkbox" checked={_isArmedForcesFct} ref={isArmedForcesFctRef} onChange={ev => setIsArmedForcesFct(ev.target.value)} name="is_classified" id="is_armed_forces" />
-                                            <label htmlFor="is_classified" className="text-gray-700 capitalize text-sm flex-grow"> Is this an Armed Force facility? </label>    
-                                        </div>
-                                    </div>
-
-                                    {/* Hours/Days of Operation */}
-
-                                    <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto" >
-                                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Hours/Days of Operation</h4>
-                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                            <input type="checkbox" checked={_is24Hrs} ref={is24HrsRef} onChange={ev => setIs24Hrs(ev.target.value)} name="open_whole_day" id="open_24hrs" />
-                                            <label htmlFor="open_whole_day" className="text-gray-700 capitalize text-sm flex-grow"> Open 24 hours</label>    
-                                        </div>
-
-                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                            <input type="checkbox" checked={_isLateNight} ref={isLateNightRef} onChange={ev => setIsLateNight(ev.target.value)} name="open_late_night" id="open_late_night" />
-                                            <label htmlFor="open_late_night" className="text-gray-700 capitalize text-sm flex-grow"> Open Late Night</label>    
-                                        </div>
-
-                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                            <input type="checkbox" checked={_isPublicHolidays} ref={isPublicHolidaysRef} onChange={ev => setIsPublciHolidays(ev.target.value)} name="open_public_holidays" id="open_public_holidays" />
-                                            <label htmlFor="open_public_holidays" className="text-gray-700 capitalize text-sm flex-grow"> Open on public holidays</label>    
-                                        </div>
-
-                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                            <input type="checkbox" checked={_isWeekends} ref={isWeekendsRef} onChange={ev => setIsWeekends(ev.target.value)} name="open_weekends" id="open_weekends" />
-                                            <label htmlFor="open_weekends" className="text-gray-700ds capitalize text-sm flex-grow"> Open during weekends</label>    
-                                        </div>
-
-                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                                            <input type="checkbox" checked={_isNormalDay} ref={isNormalDayRef} onChange={ev => setIsNormalDay(ev.target.value)} name="open_normal_day" id="open_8_5" />
-                                            <label htmlFor="open_normal_day" className="text-gray-700 capitalize text-sm flex-grow"> Open from 8am to 5pm</label>    
-                                        </div>
-                                    </div>
-
-
-                                    {/* Location Details */}
-                                    <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto" >
-                                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Location Details</h4>
-                                        <div className="grid grid-cols-4 place-content-start gap-3 w-full">
-                                                {/* County  */}
-                                                <div className="col-start-1 col-span-1">
-                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                        <label htmlFor="county_id" className="text-gray-600 capitalize text-sm">County<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                        <Select 
-                                                        options={countyOptions || []} 
-                                                        ref={countyRef}
-                                                        required
-                                                        placeholder="Select County"
-                                                        onChange={
-                                                            () => console.log('changed')
-                                                        }
-                                                        name="county_id" 
-                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                                    </div>
-                                                </div>
-
-                                                {/* Sub-county */}
-                                                <div className="col-start-2 col-span-1">
-                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                        <label htmlFor="sub_county_id" className="text-gray-600 capitalize text-sm">Sub-county<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                        <Select 
-                                                        options={subCountyOpt ?? subCountyOptions} 
-                                                        ref={subCountyRef}
-                                                        required
-                                                        placeholder="Select Sub County"
-                                                        onChange={
-                                                            () => console.log('changed')
-                                                        }
-                                                        name="sub_county_id" 
-                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                                    </div>
-                                                </div>
-
-                                                {/* Constituency */}
-                                                <div className="col-start-3 col-span-1">
-                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                        <label htmlFor="constituency_id" className="text-gray-600 capitalize text-sm">Constituency<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                        <Select 
-                                                        ref={constituencyRef}
-                                                        options={subCountyOpt ?? constituencyOptions} 
-                                                        required
-                                                        placeholder="Select Constituency"
-                                                        onChange={
-                                                            () => console.log('changed')
-                                                        }
-                                                        name="constituency_id" 
-                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                                    </div>
-                                                </div>
-
-                                                {/* Ward */}
-                                                <div className="col-start-4 col-span-1">
-                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                        <label htmlFor="ward" className="text-gray-600 capitalize text-sm">Ward<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                        <Select 
-                                                        ref={wardRef}
-                                                        options={wardOpt ?? wardOptions} 
-                                                        required
-                                                        placeholder="Select Ward"
-                                                        onChange={
-                                                            () => console.log('changed')
-                                                        }
-                                                        name="ward" 
-                                                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                                    </div>
-                                                </div>
+                                 <Formik
+                                        initialValues={{ 
+                                            official_name: official_name ?? '',  
+                                            name: official_name ?? '', 
+                                            facility_type: '',
+                                            date_established: date_established ?? '',
+                                            accredited_lab_iso_15189: accredited_lab_iso_15189 ?? false,
+                                            number_of_beds: number_of_beds ?? '',
+                                            number_of_cots: number_of_cots ?? '',
+                                            number_of_emergency_casualty_beds: number_of_emergency_casualty_beds ?? '',
+                                            number_of_general_theatres: number_of_general_theatres ?? '',
+                                            number_of_hdu_beds: number_of_hdu_beds ?? '',
+                                            number_of_icu_beds: number_of_icu_beds ?? '',
+                                            number_of_isolation_beds: number_of_isolation_beds ?? '',
+                                            number_of_maternity_beds: number_of_maternity_beds ?? '',
+                                            number_of_maternity_theatres: number_of_maternity_theatres ?? '',
+                                            facility_catchment_population: facility_catchment_population ?? '',
+                                            reporting_in_dhis: reporting_in_dhis ?? '',
+                                            nhif_accreditation: nhif_accreditation ?? '',
+                                            is_classified: is_classified ?? '',
+                                            open_whole_day: open_whole_day ?? '',
+                                            open_weekends: open_weekends ?? '',
+                                            open_public_holidays: open_public_holidays ?? '',
+                                            open_normal_day: open_normal_day ?? '',
+                                            open_late_night: open_late_night ?? '',
+                                            town_name: town_name ?? '',
+                                            location_desc: location_desc ?? '',
+                                            plot_number: plot_number ?? '',
+                                            nearest_landmark: nearest_landmark ?? '',
+                                        }}
+                                        onSubmit={ async (values) => {
+                                             
+                                            let formData = values
+                                            formData['facility_type'] = facilityTypeRef.current.state.value.value
+                                            formData['operation_status'] = operationStatusRef.current.state.value.value
+                                            formData['owner_type'] = ownerTypeOptionsRef.current.state.value.value
+                                            formData['owner'] = ownerDetailsRef.current.state.value.value
+                                            formData['keph_level'] = kephLvlRef.current.state.value.value
+                                            formData['county_id'] = countyRef.current.state.value.value
+                                            formData['sub_county_id'] = subCountyRef.current.state.value.value
+                                            formData['constituency_id'] = constituencyRef.current.state.value.value
+                                            formData['ward'] = wardRef.current.state.value.value
 
                                             
-                                        </div>
 
-                                        {/* Nearest Town/Shopping Center */}
+                                            let payload = {}
+
+                                            const _payload = _.omit(formData, function (v, k) { return basicDetailsData[k] === v})
+                                            if(officer_in_charge !== null) {
+                                                payload = {..._payload, officer_in_charge}
+                                            }
+                                            else{
+                                                payload = {..._payload, 
+                                                    officer_in_charge: {
+                                                        contacts: [],
+                                                        id_number: null,
+                                                        name: "",
+                                                        reg_no: "",
+                                                        title: "",
+                                                        title_name: ""
+                                                    }
+                                                }
+                                            
+                                            }
+
+                                           
+                                         await handleBasicDetailsUpdates(payload, id, alert)
+
+                                    
+                                        }}
+                                        >							
+                                    <Form className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'>
+                                        {/* Facility Official Name */}
                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                    <label htmlFor="town_name" className="text-gray-600 capitalize text-sm">Nearest Town/Shopping Center<span className='text-medium leading-12 font-semibold'></span></label>
-                                                    <input  ref={townRef} value={_town}  onChange={ev => setTown(ev.target.value)} type="text" name="town_name" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                                </div>
-
-                                                {/* Plot Number */}
-                                                <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                    <label htmlFor="plot_number" className="text-gray-600 capitalize text-sm">Plot number<span className='text-medium leading-12 font-semibold'></span></label>
-                                                    <input  ref={plotNoRef} value={_plotNo}  onChange={ev => setPlotNo(ev.target.value)}  type="text" name="plot_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                                </div>
-
-                                                {/* Nearest landmark */}
-                                                <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                    <label htmlFor="nearest_landmark" className="text-gray-600 capitalize text-sm">Nearest landmark<span className='text-medium leading-12 font-semibold'></span></label>
-                                                    <input  type="text" ref={nearestLandMarkRef} value={_nearestLandMark}  onChange={ev => setNearestLandMark(ev.target.value)}  name="nearest_landmark" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                                </div>
-
-                                                {/* Location Description */}
-                                                <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                    <label htmlFor="location_desc" className="text-gray-600 capitalize text-sm">location description<span className='text-medium leading-12 font-semibold'></span></label>
-                                                    <input  type="text" ref={locationDescRef} value={_locationDesc}  onChange={ev => setLocationDesc(ev.target.value)}  name="location_desc" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                                </div>
+                                            <label htmlFor="official_name" className="text-gray-600 capitalize text-sm">Facility Official Name<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required type="text" name="official_name" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                         </div>
-
-                                    {/* check file upload */}
-                                    <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto">
+                                        {/* Facility Unique Name  */}
                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                            <label htmlFor="facility_checklist_document" className="text-gray-600 capitalize text-sm">checklist file upload<span className='text-medium leading-12 font-semibold'></span></label>
-                                            <input required type="file" ref={checklistFileRef} value={_checklistFile} onChange={ev => setCheckListFile(ev.target.value)} name="facility_checklist_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            <label htmlFor="name" className="text-gray-600 capitalize text-sm">Facility Unique Name<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required type="text" name="name" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                         </div>
-                                    </div>
+                                        {/* Facility Type */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Facility Type <span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Select
+                                            ref={facilityTypeRef} 
+                                            options={facilityOptions || []}
+                                            required
+                                            placeholder="Select a facility type..."
+                                            onChange={
+                                                (e) => setFacilityOption(e.label)
+                                            }
+                                            name="facility_type" 
+                                            
+                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        </div>
 
-                                    <div className=" w-full flex justify-end h-auto mr-3">
-                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
-                                    </div>
-                                </form>                              
+                                        {/* Facility Type Details */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                        <label
+                                                    htmlFor='facility_type_details'
+                                                    className='text-gray-600 capitalize text-sm'>
+                                                    Facility Type Details
+                                                    <span className='text-medium leading-12 font-semibold'>
+                                                        {' '}
+                                                        *
+                                                    </span>
+                                                </label>
+                                                <Select
+                                                    ref={facilityTypeDetailsRef}
+                                                    options={
+                                                        (() => {
+                                                            
+                                                            switch(facilityOption){
+                                                                case 'STAND ALONE':
+
+                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+
+                                                                    return [
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Drug and Substance abuse")[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Nutrition and Dietetics')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Dialysis Center')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == "Rehab. Center - Physiotherapy, Orthopaedic & Occupational Therapy")[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'VCT')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Farewell Home')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Laboratory')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Radiology Clinic')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Pharmacy')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Regional Blood Transfusion Centre')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Ophthalmology')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Dental Clinic')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Blood Bank')[0] || {},
+
+                                                                            ] 
+                                                                    
+                                                                case 'DISPENSARY':
+                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+                                                                    return  facilityTypeOptions.filter(({label}) => label == 'DISPENSARY') || []
+                                                                    
+
+                                                                case 'MEDICAL CLINIC':
+                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+                                                                    return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
+                                                                    
+                                                                case 'NURSING HOME':
+                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+                                                                    
+                                                                    return [
+                                                                            facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
+                                                                            facilityTypeOptions.filter(({label}) => label == 'Nursing Homes')[0] || {}
+                                                                            ]
+
+                                                                case 'HOSPITALS':
+                                            
+                                                                    return [
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Specialized & Tertiary Referral hospitals')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Secondary care hospitals')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Comprehensive Teaching & Tertiary Referral Hospital')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Primary care hospitals')[0] || {}
+                                                                        ] 
+                                                            
+                                                                case 'HEALTH CENTRE':
+                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
+                                                                    return [
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
+                                                                        facilityTypeOptions.filter(({label}) => label == 'Comprehensive health Centre')[0] || {}
+                                                                        ]
+
+                                                                case 'MEDICAL CENTRE':
+                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
+
+                                                                    return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
+                                                                
+                                                            }
+                                                        })()
+                                                    }
+                                                    required
+                                                    placeholder='Select a facility type details...'
+                                                    onChange={ev => {
+                                                        switch(ev.label){
+                                                            case 'Comprehensive Teaching & Tertiary Referral Hospital':
+                                                                setFacilityTypeDetail('Comprehensive Teaching & Tertiary Referral Hospital')
+                                                                
+                                                                
+                                                                break;
+                                                            case 'Specialized & Tertiary Referral hospitals':
+                                                                setFacilityTypeDetail('Specialized & Tertiary Referral hospitals')
+                                                                
+                                                                break;
+                                                            case 'Secondary care hospitals':
+                                                                setFacilityTypeDetail('Secondary care hospitals')
+                                                            
+                                                                    
+                                                                break;
+                                                            case 'Primary care hospitals':
+                                                                setFacilityTypeDetail('Primary care hospitals')
+                                                                
+                                                                break;
+                                                            
+                                                        }
+                                                    }}
+                                                    name='facility_type_details'
+                                                    className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                />
+                                        </div>
+
+                                        {/* Operation Status */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="operation_status" className="text-gray-600 capitalize text-sm">Operation Status <span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Select 
+                                            ref={operationStatusRef}
+                                            options={operationStatusOptions || []} 
+                                            required
+                                            placeholder="Select an operation status..."
+                                            onChange={
+                                            ev => {
+                                                setOperationStatus(ev.value) 
+                                            }
+                                            }
+                                            name="operation_status" 
+                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        </div>
+
+                                        {/* Date Established */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="date_established" className="text-gray-600 capitalize text-sm">Date Established<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required type="date" name="date_established" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* Is Facility accredited */}
+                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                            <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
+                                                <Field type="checkbox" name="accredited_lab_iso_15189" id="accredited_lab_iso_15189" />
+                                                <label htmlFor="accredited_lab_iso_15189" className="text-gray-700 capitalize text-sm flex-grow"> *Is the facility accredited Lab ISO 15189?</label>    
+                                            </div>
+                                        </div>
+
+                                        {/* Owner Category */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="owner_type" className="text-gray-600 capitalize text-sm">Owner Category<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Select 
+                                                ref={ownerTypeOptionsRef}
+                                                options={ownerTypeOptions || []} 
+                                                required
+                                                placeholder="Select owner.."
+                                                onChange={
+                                                    (e) => setOwnerTypeOption(e.label) 
+                                                }
+                                                name="owner_type" 
+                                                className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        </div>
+
+                                        {/* Owner Details */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="owner" className="text-gray-600 capitalize text-sm">Owner Details<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Select 
+                                            ref={ownerDetailsRef}
+                                            options={
+                                                (() => {
+                                                    
+                                                    switch(ownerTypeOption){
+                                                        case "Private Practice":
+
+
+                                                            return [
+                                                                ownerOptions.filter(({label}) => label == "Private Practice- Pharmacist")[0] || {},
+                                                                ownerOptions.filter(({label}) => label == "Private Practice - Private Company")[0] || {},
+                                                                ownerOptions.filter(({label}) => label == "Private Practice Lab Technician/Technologist")[0] || {},
+                                                                ownerOptions.filter(({label}) => label == "Private Practice - Nurse / Midwifery")[0] || {},
+                                                                ownerOptions.filter(({label}) => label == "Private Practice - Medical Specialist")[0] || {},
+                                                                ownerOptions.filter(({label}) => label == "Private Practice - General Practitioner")[0] || {},
+                                                                ownerOptions.filter(({label}) => label == "Private Practice - Clinical Officer")[0] || {},
+                                                                ownerOptions.filter(({label}) => label == "Private Practice - Private Institution Academic")[0] || {}
+                                                            
+                                                                    ] 
+                                                            
+                                                        case 'Non-Governmental Organizations':
+                                                            return  ownerOptions.filter(({label}) => label == 'Non-Governmental Organizations') || []
+                                                            
+
+                                                        case 'Ministry of Health':
+                                            
+                                                            return [
+                                                                ownerOptions.filter(({label}) => label == "Public Institution - Parastatal")[0] || {},
+                                                                ownerOptions.filter(({label}) => label == 'Ministry of Health')[0] || {},
+                                                                ownerOptions.filter(({label}) => label == 'Armed Forces')[0] || {},
+                                                                ownerOptions.filter(({label}) => label == 'Public Institution - Academic')[0] || {},
+                                                            ]																				
+                                                            
+                                                        case 'Faith Based Organization':																		
+
+                                                            return [
+                                                                        ownerOptions.filter(({label}) => label == 'Seventh Day Adventist')[0] || {},
+                                                                        ownerOptions.filter(({label}) => label == 'Supreme Council for Kenya Muslims')[0] || {},
+                                                                        ownerOptions.filter(({label}) => label == 'Other Faith Based')[0] || {},
+                                                                        ownerOptions.filter(({label}) => label == 'Seventh Day Adventist')[0] || {},
+                                                                        ownerOptions.filter(({label}) => label == 'Kenya Episcopal Conference-Catholic Secretariat')[0] || {},
+                                                                        ownerOptions.filter(({label}) => label == 'Christian Health Association of Kenya')[0] || {},
+                                                                    ]
+
+                                                        
+                                                    }
+                                                })() ?? ownerTypeOptions 
+                                            } 
+                                            required
+                                            placeholder="Select an owner.."
+                                            name="owner" 
+                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        </div>
+
+                                        {/* KEPH Level */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">KEPH Level</label>
+                                            <Select 
+                                            ref={kephLvlRef}
+                                            options={kephOptions ?? []}
+
+                                            placeholder="Select a KEPH Level.."
+                                            onChange={
+                                                ev => ev.preventDefault()
+                                            }
+                                            name="keph_level" 
+                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        </div>
+
+                                        {/* No. Functional general Beds */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="number_of_beds" className="text-gray-600 capitalize text-sm">Number of functional general beds<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required  type="number" name="number_of_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* No. Functional cots */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="number_of_cots" className="text-gray-600 capitalize text-sm">Number of functional cots<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required  type="number" name="number_of_cots" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* No. Emergency Casulty Beds */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="number_of_emergency_casualty_beds" className="text-gray-600 capitalize text-sm">Number of Emergency Casulty Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required  type="number" name="number_of_emergency_casualty_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* No. Intensive Care Unit Beds */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="number_of_icu_beds" className="text-gray-600 capitalize text-sm">Number of Intensive Care Unit (ICU) Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required  type="number" name="number_of_icu_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* No. High Dependency Unit HDU */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="number_of_hdu_beds" className="text-gray-600 capitalize text-sm">Number of High Dependency Unit (HDU) Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required  type="number" name="number_of_hdu_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* No. of maternity beds */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="number_of_maternity_beds" className="text-gray-600 capitalize text-sm">Number of maternity beds<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required  type="number" name="number_of_maternity_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* No. of isolation beds */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="number_of_isolation_beds" className="text-gray-600 capitalize text-sm">Number of isolation beds<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required  type="number" name="number_of_isolation_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* No. of General Theatres */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="number_of_general_theatres" className="text-gray-600 capitalize text-sm">Number of General Theatres<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required  type="number" name="number_of_general_theatres" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* No. of Maternity Theatres */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="number_of_maternity_theatres" className="text-gray-600 capitalize text-sm">Number of Maternity Theatres<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required  type="number" name="number_of_maternity_theatres" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* Facility Catchment Population */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="facility_catchment_population" className="text-gray-600 capitalize text-sm">Facility Catchment Population<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Field required  type="number" name="facility_catchment_population" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                        </div>
+
+                                        {/* Is Reporting DHIS2 */}
+                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                        
+                                            <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
+                                                <Field type="checkbox" name="reporting_in_dhis" id="reporting_in_dhis" />
+                                                <label htmlFor="reporting_in_dhis" className="text-gray-700 capitalize text-sm flex-grow">  *Should this facility have reporting in DHIS2?</label>    
+                                            </div>
+                                        </div>
+
+                                        {/* Facility Admissions */}
+                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                            <label htmlFor="admission_status" className="text-gray-600 capitalize text-sm">Facility admissions<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                            <Select 
+                                                ref={facilityAdmissionRef}
+                                                options={facilityAdmissionOptions || []} 
+                                                required
+                                                placeholder="Select an admission status.."
+                                              
+                                                name="admission_status" 
+                                                className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        </div>
+
+                                        {/* Is NHIF accredited */}
+                                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                          
+                                            <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
+                                                <Field type="checkbox" name="nhif_accreditation" id="is_armed_forces" />
+                                                <label htmlFor="nhif_accreditation" className="text-gray-700 capitalize text-sm flex-grow">  *Does this facility have NHIF accreditation?</label>    
+                                            </div>
+                                        </div>
+
+                                        {/* Armed Forces Facilities */}
+
+                                        <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto" >
+                                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Armed Forces Facilities</h4>
+                                            <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
+                                                <Field type="checkbox" name="is_classified" id="is_armed_forces" />
+                                                <label htmlFor="is_classified" className="text-gray-700 capitalize text-sm flex-grow"> Is this an Armed Force facility? </label>    
+                                            </div>
+                                        </div>
+
+                                        {/* Hours/Days of Operation */}
+
+                                        <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto" >
+                                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Hours/Days of Operation</h4>
+                                            <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                <Field type="checkbox" name="open_whole_day" id="open_24hrs" />
+                                                <label htmlFor="open_whole_day" className="text-gray-700 capitalize text-sm flex-grow"> Open 24 hours</label>    
+                                            </div>
+
+                                            <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                <Field type="checkbox" name="open_late_night" id="open_late_night" />
+                                                <label htmlFor="open_late_night" className="text-gray-700 capitalize text-sm flex-grow"> Open Late Night</label>    
+                                            </div>
+
+                                            <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                <Field type="checkbox" name="open_public_holidays" id="open_public_holidays" />
+                                                <label htmlFor="open_public_holidays" className="text-gray-700 capitalize text-sm flex-grow"> Open on public holidays</label>    
+                                            </div>
+
+                                            <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                <Field type="checkbox" name="open_weekends" id="open_weekends" />
+                                                <label htmlFor="open_weekends" className="text-gray-700ds capitalize text-sm flex-grow"> Open during weekends</label>    
+                                            </div>
+
+                                            <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                                                <Field type="checkbox" name="open_normal_day" id="open_8_5" />
+                                                <label htmlFor="open_normal_day" className="text-gray-700 capitalize text-sm flex-grow"> Open from 8am to 5pm</label>    
+                                            </div>
+                                        </div>
+
+
+                                        {/* Location Details */}
+                                        <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto" >
+                                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Location Details</h4>
+                                            <div className="grid grid-cols-4 place-content-start gap-3 w-full">
+                                                    {/* County  */}
+                                                    <div className="col-start-1 col-span-1">
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                            <label htmlFor="county_id" className="text-gray-600 capitalize text-sm">County<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                            <Select 
+                                                            options={countyOptions || []} 
+                                                            ref={countyRef}
+                                                            required
+                                                            placeholder="Select County"
+                                                            name="county_id" 
+                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Sub-county */}
+                                                    <div className="col-start-2 col-span-1">
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                            <label htmlFor="sub_county_id" className="text-gray-600 capitalize text-sm">Sub-county<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                            <Select 
+                                                            options={subCountyOpt ?? subCountyOptions} 
+                                                            ref={subCountyRef}
+                                                            required
+                                                            placeholder="Select Sub County"
+                                                            name="sub_county_id" 
+                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Constituency */}
+                                                    <div className="col-start-3 col-span-1">
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                            <label htmlFor="constituency_id" className="text-gray-600 capitalize text-sm">Constituency<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                            <Select 
+                                                            ref={constituencyRef}
+                                                            options={subCountyOpt ?? constituencyOptions} 
+                                                            required
+                                                            placeholder="Select Constituency"
+                                                            name="constituency_id" 
+                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Ward */}
+                                                    <div className="col-start-4 col-span-1">
+                                                        <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                            <label htmlFor="ward" className="text-gray-600 capitalize text-sm">Ward<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                            <Select 
+                                                            ref={wardRef}
+                                                            options={wardOpt ?? wardOptions} 
+                                                            required
+                                                            placeholder="Select Ward"
+                                                            name="ward" 
+                                                            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                        </div>
+                                                    </div>
+
+                                                
+                                            </div>
+
+                                            {/* Nearest Town/Shopping Center */}
+                                            <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                        <label htmlFor="town_name" className="text-gray-600 capitalize text-sm">Nearest Town/Shopping Center<span className='text-medium leading-12 font-semibold'></span></label>
+                                                        <Field  type="text" name="town_name" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    </div>
+
+                                                    {/* Plot Number */}
+                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                        <label htmlFor="plot_number" className="text-gray-600 capitalize text-sm">Plot number<span className='text-medium leading-12 font-semibold'></span></label>
+                                                        <Field type="text" name="plot_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    </div>
+
+                                                    {/* Nearest landmark */}
+                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                        <label htmlFor="nearest_landmark" className="text-gray-600 capitalize text-sm">Nearest landmark<span className='text-medium leading-12 font-semibold'></span></label>
+                                                        <Field  type="text" name="nearest_landmark" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    </div>
+
+                                                    {/* Location Description */}
+                                                    <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                        <label htmlFor="location_desc" className="text-gray-600 capitalize text-sm">location description<span className='text-medium leading-12 font-semibold'></span></label>
+                                                        <Field  type="text"  name="location_desc" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    </div>
+                                        </div>
+
+                                        {/* check file upload */}
+                                        <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto">
+                                            <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                <label htmlFor="facility_checklist_document" className="text-gray-600 capitalize text-sm">checklist file upload<span className='text-medium leading-12 font-semibold'></span></label>
+                                                <Field type="file" ref={checklistFileRef} value={_checklistFile} onChange={setCheckListFile} name="facility_checklist_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            </div>
+                                        </div>
+
+                                        <div className=" w-full flex justify-end h-auto mr-3">
+                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                        </div>
+                                    </Form>      
+                                </Formik>                        
                             </Tabs.Panel>
                             {/* Geolocation */}
                             <Tabs.Panel value="geolocation"
                             className="grow-1 py-1 px-4 tab-panel">
-                                <form
-                                    name='geolocation_form'
-                                    className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
-                                    onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId], 'PATCH')}>
-                                    {/* Collection Date */}
-                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                        <label
-                                            htmlFor='collection_date'
-                                            className='text-gray-600 capitalize text-sm'>
-                                            Collection date:
-                                            <span className='text-medium leading-12 font-semibold'>
-                                                {' '}
-                                                *
-                                            </span>
-                                        </label>
-                                        <input
-                                            required
-                                            value={_collectionDate}
-                                            onChange={ev => setCollectionDate(ev.target.value)}
-                                            type='date'
-                                            name='collection_date'
-                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                        />
-                                   </div>
+                                <Formik
+                                    initialValues={{
+                                        collection_date: collection_date ?? '',
+                                        latitude: lat_long !== undefined && lat_long !== null ? lat_long[0] ?? '' : '',
+                                        longitude: lat_long !== undefined && lat_long !== null ? lat_long[1] ?? '' : ''
+                                    }}
 
-                                    {/* Lon/Lat */}
-                                    <div className='grid grid-cols-2 gap-4 place-content-start w-full'>
-                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
-                                            <label
-                                                htmlFor='longitude'
-                                                className='text-gray-600 capitalize text-sm'>
-                                                Longitude
-                                                <span className='text-medium leading-12 font-semibold'>
-                                                    {' '}
-                                                    *
-                                                </span>
-                                            </label>
-                                            <input
-                                                required
-                                                value={_long}
-                                                type='decimal'
-                                                name='longitude'
-                                                onChange={ev => setLong(ev.target.value)}
-                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                            />
-                                        </div>
-
-                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
-                                            <label
-                                                htmlFor='latitude'
-                                                className='text-gray-600 capitalize text-sm'>
-                                                Latitude
-                                                <span className='text-medium leading-12 font-semibold'>
-                                                    {' '}
-                                                    *
-                                                </span>
-                                            </label>
-                                            <input
-                                                required
-                                                value={_lat}
-                                                type='decimal'
-                                                name='latitude'
-                                                onChange={ev => setLat(ev.target.value)}
-                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Ward Geo Map */}
-                                    <div className='w-full h-auto'>
+                                    onSubmit={async formData => {
+                                        
+                                        let payload = {}
+                                        const _payload = _.omit(formData, function (v, k) { return geolocationData[k] === v})
                                            
-                                        <div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-                                            <Map markerCoordinates={[_lat.length < 4 ? '0.000000' : _lat, _long.length < 4 ? '0.000000' : _long]} geoJSON={gJSON} ward={wardName} center={centerCoordinates} />
-                                        </div>
-              
+                                        payload = {..._payload, facility: id, coordinates:{coordinates:[lat_long[1], lat_long[0]], type:'point'}}
+
+                                        payload['collection_date'] = new Date(payload.collection_date)
+                                    
+
+
+                                        await handleGeolocationUpdates(payload, coordinates, alert)
+                                    }}
+                                >
+                                    <Form
+                                        name='geolocation_form'
+                                        className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
+                                    >
+                                        {/* Collection Date */}
+                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                            <label
+                                                htmlFor='collection_date'
+                                                className='text-gray-600 capitalize text-sm'>
+                                                Collection date:
+                                                <span className='text-medium leading-12 font-semibold'>
+                                                    {' '}
+                                                    *
+                                                </span>
+                                            </label>
+                                            <Field
+                                                type='date'
+                                                name='collection_date'
+                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                            />
                                     </div>
 
-                                    {/* Next/Previous Form  */}
-                                    <div className=" w-full flex justify-end h-auto mr-3">
-                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
-                                    </div>
-                                </form>
+                                        {/* Lon/Lat */}
+                                        <div className='grid grid-cols-2 gap-4 place-content-start w-full'>
+                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
+                                                <label
+                                                    htmlFor='longitude'
+                                                    className='text-gray-600 capitalize text-sm'>
+                                                    Longitude
+                                                    <span className='text-medium leading-12 font-semibold'>
+                                                        {' '}
+                                                        *
+                                                    </span>
+                                                </label>
+                                                <Field
+                                                    required
+                                                    type='decimal'
+                                                    name='longitude'                                           
+                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                />
+                                            </div>
+
+                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
+                                                <label
+                                                    htmlFor='latitude'
+                                                    className='text-gray-600 capitalize text-sm'>
+                                                    Latitude
+                                                    <span className='text-medium leading-12 font-semibold'>
+                                                        {' '}
+                                                        *
+                                                    </span>
+                                                </label>
+                                                <Field
+                                                    required
+                                                    type='decimal'
+                                                    name='latitude'
+                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Ward Geo Map */}
+                                        <div className='w-full h-auto'>
+                                                       
+                                            <div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
+                                                <Map markerCoordinates={[_lat.length < 4 ? '0.000000' : _lat, _long.length < 4 ? '0.000000' : _long]} geoJSON={gJSON} ward={wardName} center={centerCoordinates} />
+                                            </div>
+                
+                                        </div>
+
+                                        {/* Next/Previous Form  */}
+                                        <div className=" w-full flex justify-end h-auto mr-3">
+                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                        </div>
+                                    </Form>
+                                </Formik>
+                                
                             </Tabs.Panel>
                             {/* Facility contacts */}
                             <Tabs.Panel value="facility_contacts" className="grow-1 py-1 px-4 tab-panel">
-                                <form
-                                    className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
-                                    name='facility_contacts_form'
-                                    onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId], 'PATCH')}>
-                                    {/* Contacts */}
+                                <Formik
+                                    initialValues={{
+                                        name: officer_in_charge !== null ? officer_in_charge.name : '',
+                                        reg_no: officer_in_charge !== null ? officer_in_charge.reg_no : '',
+                                        contact: facility_contacts !== null ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  ''
+                                    }}
 
-                                    <div
-                                        className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
-                                        ref={facilityContactRef}>
-                                        {/* Contact Headers */}
-                                        <h3 className='text-medium font-semibold text-blue-900'>
-                                            Contact Type
-                                        </h3>
-                                        <h3 className='text-medium font-semibold text-blue-900'>
-                                            Contact Details
-                                        </h3>
-                                        <hr className='col-span-2' />
+                                    onSubmit={async formData => {
+                                        let payload = {}
 
-                                        {/* Contact Type / Contact Details */}
+                                        const contact = officerInchargeContactDetailRef.current !== null ? officerInchargeContactDetailRef.current.value : ''
 
-                                        <FacilityContact  contactRef={contactRef} contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} names={['contact_type', 'contact']} id={'facility'}/>
+                                        const contactType = contactRef.current !== null ? contactRef.current.state.value.value : ''
 
-                                    </div>
+                                        const contactTypeName = contactRef.current !== null ? contactRef.current.state.value.label : ''
 
-                                    <div className='w-full flex justify-end items-center'>
-                                        <button
-                                            onClick={handleAddContact}
-                                            className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
-                                            <PlusIcon className='w-4 h-4 text-white' />
-                                            <p className='text-medium font-semibold text-white'>
-                                                Add
-                                            </p>
-                                        </button>
-                                    </div>
+                                        const jobTitle = jobTitleRef.current !== null ? jobTitleRef.current.state.value.value : ''
 
-                                    {/* Facility Officer In-charge Details */}
+                                        const jobTitleName = jobTitleRef.current !== null ? jobTitleRef.current.state.value.label : ''
 
-                                    <h5 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-                                        Facility Officer In-Charge Details
-                                    </h5>
-                                    <div className='flex flex-col items-start justify-start gap-1 w-full rounded h-auto'>
-                                        {/*  Name  */}
-                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                            <label
-                                                htmlFor='name'
-                                                className='text-gray-600 capitalize text-sm'>
-                                                Name
-                                                <span className='text-medium leading-12 font-semibold'>
-                                                    {' '}
-                                                    *
-                                                </span>
-                                            </label>
-                                            {/* {console.log({_officerName})} */}
-                                            <input
-                                                required
-                                                type='text'
-                                                name='name'
-                                                value={_officerName.name}
-                                                onChange={ev => setOfficerName(ev.target.value)}
-                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                            />
-                                        </div>
+                                        const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
+                                           
+                                        Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
 
-                                        {/*  Registration Number */}
-                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                            <label
-                                                htmlFor='reg_no'
-                                                className='text-gray-600 capitalize text-sm'>
-                                                Registration Number/License Number{' '}
-                                            </label>
-                                            <input
-                                                type='text'
-                                                name='reg_no'
-                                                value={_officerName.reg_no}
-                                                onChange={ev => setRegNo(ev.target.value)}
-                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                            />
-                                        </div>
-                                    
-                                        {/* Job Title */}
-                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                            <label
-                                                htmlFor='title'
-                                                className='text-gray-600 capitalize text-sm'>
-                                                Job Title
-                                                <span className='text-medium leading-12 font-semibold'>
-                                                    {' '}
-                                                    *
-                                                </span>{' '}
-                                            </label>
-                                            <Select options={jobTitleOptions || []} 
-                                                required
-                                                ref={jobTitleRef}
-                                                placeholder="Select Job Title"																	
-                                                name="title" 
-                                                className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                        </div>
+                                        _payload['title'] = jobTitle
 
-                                        {/* Facility Officer Contact Type / Contact Details */}
+                                        _payload['titleName'] = jobTitleName
+
+                                        _payload['contacts'] = [{
+                                            contact,
+                                            contact_id: facility_contacts[0]?.contact_id,
+                                            contact_type_name: contactTypeName,
+                                            official_contact_id:facility_contacts[0]?.id,
+                                            type: contactType
+                                        }]
+
+                                        payload = {officer_in_charge:_payload, contacts:[]}
+
+                                        console.log({payload})
+
+                                        await handleFacilityContactsUpdates(payload, id, alert)
+
+                                        
+                                    }}
+                                >
+                                
+                                    <Form
+                                        className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
+                                        name='facility_contacts_form'
+                                        >
+                                        {/* Contacts */}
 
                                         <div
                                             className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
-                                            ref={facilityContact2Ref}>
+                                            >
                                             {/* Contact Headers */}
                                             <h3 className='text-medium font-semibold text-blue-900'>
                                                 Contact Type
@@ -1539,14 +1738,21 @@ const EditFacility = (props) => {
                                             <hr className='col-span-2' />
 
                                             {/* Contact Type / Contact Details */}
-
-                                            <FacilityContact contactRef={otherContactRef} contactDetail={_otherContactDetail} setContactDetail={setOtherContactDetail} contactTypeOptions={contactTypeOptions} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+                                            <FacilityContact 
+                                            contactRef={contactRef} 
+                                            inputContactRef={facilityContactDetailRef}
+                                            setContactDetail={null} 
+                                            contactTypeOptions={contactTypeOptions} 
+                                            names={['contact_type', 'contact']} 
+                                            id={'facility'} 
+                                            contact={facility_contacts !== null ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  ''}
+                                            />
 
                                         </div>
 
-                                        <div className='w-full flex justify-end items-center mt-2'>
+                                        <div className='w-full flex justify-end items-center'>
                                             <button
-                                                onClick={handleAddContact2}
+                                                onClick={handleAddContact}
                                                 className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
                                                 <PlusIcon className='w-4 h-4 text-white' />
                                                 <p className='text-medium font-semibold text-white'>
@@ -1554,17 +1760,124 @@ const EditFacility = (props) => {
                                                 </p>
                                             </button>
                                         </div>
-                                    </div>
-                                    {/* Save btn */}
 
-                                    <div className=" w-full flex justify-end h-auto mr-3">
-                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
-                                    </div>
-                                </form>
+                                        {/* Facility Officer In-charge Details */}
+
+                                        <h5 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+                                            Facility Officer In-Charge Details
+                                        </h5>
+                                        <div className='flex flex-col items-start justify-start gap-1 w-full rounded h-auto'>
+                                            {/*  Name  */}
+                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                <label
+                                                    htmlFor='name'
+                                                    className='text-gray-600 capitalize text-sm'>
+                                                    Name
+                                                    <span className='text-medium leading-12 font-semibold'>
+                                                        {' '}
+                                                        *
+                                                    </span>
+                                                </label>
+                                                
+                                                <Field
+                                                    required
+                                                    type='text'
+                                                    name='name'
+                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                />
+                                            </div>
+
+                                            {/*  Registration Number */}
+                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                <label
+                                                    htmlFor='reg_no'
+                                                    className='text-gray-600 capitalize text-sm'>
+                                                    Registration Number/License Number{' '}
+                                                </label>
+                                                <Field
+                                                    type='text'
+                                                    name='reg_no'
+                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                />
+                                            </div>
+                                        
+                                            {/* Job Title */}
+                                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                <label
+                                                    htmlFor='title'
+                                                    className='text-gray-600 capitalize text-sm'>
+                                                    Job Title
+                                                    <span className='text-medium leading-12 font-semibold'>
+                                                        {' '}
+                                                        *
+                                                    </span>{' '}
+                                                </label>
+                                                <Select options={jobTitleOptions || []} 
+                                                    required
+                                                    ref={jobTitleRef}
+                                                    placeholder="Select Job Title"																	
+                                                    name="title" 
+                                                    className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                            </div>
+
+                                            {/* Facility Officer Contact Type / Contact Details */}
+
+                                            <div
+                                                className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
+                                                ref={facilityContact2Ref}>
+                                                {/* Contact Headers */}
+                                                <h3 className='text-medium font-semibold text-blue-900'>
+                                                    Contact Type
+                                                </h3>
+                                                <h3 className='text-medium font-semibold text-blue-900'>
+                                                    Contact Details
+                                                </h3>
+                                                <hr className='col-span-2' />
+
+                                                {/* Contact Type / Contact Details */}
+
+                                                <FacilityContact 
+                                                contactRef={otherContactRef} 
+                                                setContactDetail={null} 
+                                                inputContactRef={officerInchargeContactDetailRef}
+                                                contactTypeOptions={contactTypeOptions} 
+                                                names={['facility_details_contact_type', 'faciliity_details_contact']} 
+                                                id={'facility_officer'}  
+                                                contact={officer_in_charge !== null ? officer_in_charge.length > 0 ?  officer_in_charge[0].contact : '' :  ''}/>
+
+                                            </div>
+
+                                            <div className='w-full flex justify-end items-center mt-2'>
+                                                <button
+                                                    onClick={handleAddContact2}
+                                                    className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                    <PlusIcon className='w-4 h-4 text-white' />
+                                                    <p className='text-medium font-semibold text-white'>
+                                                        Add
+                                                    </p>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {/* Save btn */}
+
+                                        <div className=" w-full flex justify-end h-auto mr-3">
+                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                        </div>
+                                    </Form>
+                                </Formik>
                             </Tabs.Panel>
                             {/* Regulation */}
                             <Tabs.Panel value="regulation" className="grow-1 py-1 px-4 tab-panel">
-                                <form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId], 'PATCH')}>
+                                <Formik
+                                    initialValues={{
+                                        facility_license_number: facility_units[0]?.license_number ?? '',
+                                        registration_number: registration_number ?? '',
+                                        license_document: facility_license_document ?? '',
+                                        facility_registration_number: registration_number ?? '',
+                                        license_number: license_number ?? ''
+                                    }}
+                                >
+                                    <Form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId], 'PATCH')}>
 
                                         {/* Regulatory Body */}
                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -1594,21 +1907,21 @@ const EditFacility = (props) => {
                                         {/* License Number */} 
                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                             <label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
-                                            <input type="text" value={_licenseNo} onChange={ev => setLicenseNo(ev.target.value)} name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            <Field type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                         </div>
 
 
                                         {/* Registration Number */} 
                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                             <label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number</label>
-                                            <input type="text" value={_regNo} onChange={ev => setRegNo(ev.target.value)} name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            <Field type="text" name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                         </div>
 
                                         {/* check file upload */}
                                         <div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
-                                                <input type="file" value={_file} onChange={ev => setFile(ev.target.value)} name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
                                         </div>
 
@@ -1633,7 +1946,7 @@ const EditFacility = (props) => {
                                                 onChange={
                                                     e => {
                                                         if(regBodyRef.current !== null){
-                                                            console.log({regBody: facilityDeptOptions.filter(({label}) => label === e.label)})
+                                                        
                                                             regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
                                                         }
                                                     }
@@ -1642,14 +1955,14 @@ const EditFacility = (props) => {
                                                 className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                             
                                             {/* Regulatory Body */}
-                                            <input type="text" ref={regBodyRef} disabled value={_regBody} onChange={ev => setRegBody(ev.target.value)} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            <input type="text" ref={regBodyRef} disabled name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
                                             {/* License No. */}
-                                            <input type="text"value={_licenseNo} onChange={ev => setLicenseNo(ev.target.value)} name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                            <Field type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
                                             <div className='col-start-4 flex items-center space-x-2 w-full'>
                                                 {/* Reg No. */}
-                                                <input type="text" value={_regNo} onChange={ev => setRegNo(ev.target.name)} name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             
                                                 {/* Delete Btn */}
 
@@ -1675,7 +1988,9 @@ const EditFacility = (props) => {
                                         <div className=" w-full flex justify-end h-auto mr-3">
                                             <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
                                         </div>
-                                </form>
+                                    </Form>
+                                </Formik>
+                              
                             </Tabs.Panel>
                             {/* Services */}
                             <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
@@ -1704,7 +2019,7 @@ const EditFacility = (props) => {
                                             </thead>
                                             <tbody ref={optionRefBody}>
                                                 {
-                                                    selectedServiceRight  !== undefined && selectedServiceRight !== null ? 
+                                                    selectedServiceRight  !== undefined && selectedServiceRight !== null && selectedServiceRight.length > 0 ? 
 
                                                     selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
                                                         <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
@@ -1734,7 +2049,7 @@ const EditFacility = (props) => {
                             {/* Infrastructure */}
                             <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
                                 <form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId], 'PATCH')}  className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
-														
+                                                        
                                     {/* Transfer list Container */}
                                     <div className='flex items-center w-full h-auto min-h-[300px]'>
                                     
@@ -1765,16 +2080,16 @@ const EditFacility = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody ref={infrastructureBodyRef}>
-                                        {/* { console.log({selectedInfraRight, infra: props['16'].infrastructure}) }    */}
+                                        
                                             {
-                                                 selectedInfraRight  !== undefined && selectedInfraRight !== null ? 
+                                                selectedInfraRight  !== undefined && selectedInfraRight !== null && selectedInfraRight.length > 0 ? 
 
-                                                 selectedInfraRight.map(({subCategories, value:vs}, i) => (
-                                                                                           
+                                                selectedInfraRight.map(({subCategories, value:vs}, i) => (
+                                                                                        
                                                 // infrastructureOption !== undefined || infrastructureOption !== null && 
 
                                                 <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                    {console.log({facility_infrastructure, infrastructureOption})}
+                                                  
                                                     <td className='text-lg text-black'>{subCategories[0]}</td>
                                                     <td className='text-lg text-black'>{infrastructureOption.filter(({value}) =>  value.includes(vs[0]))[0].name}</td>
 
@@ -1782,7 +2097,7 @@ const EditFacility = (props) => {
                                                     <td className='text-lg  text-black'>{facility_infrastructure.filter(({infrastructure}) => infrastructure === vs[0])[0].count}</td>
                                                 </tr>
                                                     
-                                                  
+                                                
                                                 ))
 
                                                 :
@@ -1804,10 +2119,10 @@ const EditFacility = (props) => {
                                     {/* Save btn */}
 
                                     <div className=" w-full flex justify-end h-auto mr-3">
-                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
                                     </div>
- 
-								</form>
+
+                                </form>
                             </Tabs.Panel>
                             {/* Human Resources */}
                             <Tabs.Panel value="human_resource" className="grow-1 py-1 px-4 tab-panel">
@@ -1826,8 +2141,8 @@ const EditFacility = (props) => {
                                                         setCount={setHrCount}
                                                         selectTitle='HR Specialities'
                                                         setSelectedHrRight={setSelectedHrRight}
-														selectedHrRight={hrSelected}
-                                                       
+                                                        selectedHrRight={hrSelected}
+                                                    
 
                                                     />
 
@@ -1843,23 +2158,23 @@ const EditFacility = (props) => {
                                                         </thead>
 
                                                         <tbody>
-                                                            {/* {console.log({hr})} */}
+                                                           
                                                             {
-                                                                  selectedHrRight  !== undefined && selectedHrRight !== null ? 
+                                                                selectedHrRight  !== undefined && selectedHrRight !== null ? 
 
-                                                                  selectedHrRight.map(({subCategories, value:vs}, i) => (
+                                                                selectedHrRight?.map(({subCategories, value:vs}, i) => (
                                                                                                             
-                                                                 // infrastructureOption !== undefined || infrastructureOption !== null && 
-                 
-                                                                 <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                                     {/* {console.log({facility_infrastructure, infrastructureOption})} */}
-                                                                     <td className='text-lg text-black'>{subCategories[0]}</td>
-                                                                     <td className='text-lg text-black'>{hrOptions.filter(({value}) =>  value.includes(vs[0]))[0].name}</td>
-                 
-                                                                     <td className='text-lg text-black'>Yes</td>
-                                                                     <td className='text-lg  text-black'>{facility_specialists.filter(({speciality}) => speciality === vs[0])[0].count}</td>
-                                                                 </tr>
-                                                                  ))
+                                                                // infrastructureOption !== undefined || infrastructureOption !== null && 
+
+                                                                <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
+                                                                  
+                                                                    <td className='text-lg text-black'>{subCategories[0]}</td>
+                                                                    <td className='text-lg text-black'>{hrOptions.filter(({value}) =>  value.includes(vs[0]))[0].name}</td>
+
+                                                                    <td className='text-lg text-black'>Yes</td>
+                                                                    <td className='text-lg  text-black'>{facility_specialists.filter(({speciality}) => speciality === vs[0])[0].count}</td>
+                                                                </tr>
+                                                                ))
                                                                 :
                                                                 
                                                                 hr.map(({subctg}) => subctg).map((_hr, i) => (
@@ -1875,32 +2190,32 @@ const EditFacility = (props) => {
                                                         </tbody>
                                                     </table>
 
-                                                      {/* Save btn */}
+                                                    {/* Save btn */}
 
                                                     <div className=" w-full flex justify-end h-auto mr-3">
                                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
                                                     </div>
                                                     
-                                                   
+                                                
                                 </form> 
                             </Tabs.Panel>
-                           
+          
                         </Tabs.Root>
                     </div>                   
                 </div>
             </MainLayout>
-            
 
-            
-        
         </>
     )
 }
 
 EditFacility.getInitialProps = async (ctx) => {
 
+ 
+
     const allOptions = []
 	const options = [
+      
 		'facility_types',
 		'facility_type_details',
 		'owners',
@@ -1919,7 +2234,8 @@ EditFacility.getInitialProps = async (ctx) => {
 		'services', 
 		'infrastructure',
 		'specialities',
-        'facility_data'
+        'facility_data',
+        'collection_date',
 	]
 
 
@@ -1949,6 +2265,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
 				for(let i = 0; i < options.length; i++) {
 					const option = options[i]
+                
 					switch(option) {
 						case 'facility_types':
 						url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
@@ -1964,7 +2281,7 @@ EditFacility.getInitialProps = async (ctx) => {
 
 									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value:id, label:sub_division} : {value:id, label:name}) ?? [{value: '', label: ''}]
 
-									// console.log({results})
+							
 									allOptions.push({facility_types: results })
 									
 								}
@@ -2319,7 +2636,30 @@ EditFacility.getInitialProps = async (ctx) => {
 
 
 						break;
+
+                        case 'collection_date':
+                        
+                            try{
+                               const response = await fetch(`/api/facility/get_facility/?path=facility_coordinates&id=${ctx.query.id}`)
+
+                               const [_result] = (await response.json()).results
+  
+                                
+                               allOptions.push({collection_date: _result['collection_date']})
+                            }
+                            catch(err) {
+                                console.log(`Error fetching ${option}: `, err);
+                                        allOptions.push({
+                                            error: true,	
+                                            err: err.message,
+                                            collection_date: null,
+                                        })
+                            }
                     
+                        
+
+                        break;       
+
                         case 'facility_data':
 
 							try{
@@ -2327,9 +2667,9 @@ EditFacility.getInitialProps = async (ctx) => {
 								const _data = await fetch(`/api/facility/get_facility/?path=facilities&id=${ctx.query.id}`) 
                            
                                 allOptions.push({data: (await _data.json())})
-                                // console.log({_data})
+                             
                                 if(_data){
-                                    console.log({allOptions})
+                            
 
                                     try{
 		
@@ -2344,6 +2684,7 @@ EditFacility.getInitialProps = async (ctx) => {
                                                 gJSON: JSON.parse(JSON.stringify(_data?.ward_boundary)), 
                                                 centerCoordinates: JSON.parse(JSON.stringify([lat, lng]))
                                         }})
+                                        
                                         
                                     }
                                     catch(err) {
@@ -2397,7 +2738,7 @@ EditFacility.getInitialProps = async (ctx) => {
 			
 
 								allOptions.push(_obj)
-								// console.log({allOptions})
+						
 									
 								}
 								catch(err) {

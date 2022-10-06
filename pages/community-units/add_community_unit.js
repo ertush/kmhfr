@@ -1,12 +1,12 @@
 // React imports
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Next imports
 import Head from 'next/head';
 
 // Component imports
 import MainLayout from '../../components/MainLayout';
-import TransferListServices from '../../components/TrasnferListServices';
+import TrasnferListServices from '../../components/TrasnferListServices';
 import { renderMenuItem } from '../../components/renderMenuItem';
 
 // Controller imports
@@ -34,16 +34,28 @@ import
 import Select from 'react-select';
 
 
-function AddCommUnit(props)
-{
+function AddCommUnit(props) {
 
 	const facilities = props.facility_data.results;
+	const serviceCtg = props.service_categories.results;
+
+	// Reference hooks for the services section
+	const nameOptionRef = useRef();
+	const serviceCategoriesRef = useRef();
+	const optionRefBody = useRef();
 
 	const [selected_facility, setSelectedFacility] = useState(null);
 	const [countyValue, setCountyValue] = useState('');
 	const [subCountyValue, setSubCountyValue] = useState('');
 	const [constituencyValue, setConstituencyValue] = useState('');
 	const [wardValue, setWardValue] = useState('');
+	const [chulId, setchulId] = useState('');
+
+	// Services state
+	const [services, setServices] = useState([])
+	const [refreshForm, setRefreshForm] = useState(false)
+
+
 	// Define registration steps
 	const steps = [
 		'Basic Details',
@@ -52,112 +64,37 @@ function AddCommUnit(props)
 	];
 
 	// Define serviceCategories
-	const serviceCategories = [
-		{
-			name: 'ACCIDENT AND EMERGENCY CASUALTY SERVICES',
-			subCategories: [
-				'Accident and Emergency casualty Services',
-				'General Emergency Services',
-			],
-		},
-		{
-			name: 'AMBULATORY SERVICES',
-			subCategories: ['Ambulatory Services'],
-		},
-		{
-			name: 'ANTENATAL CARE',
-			subCategories: ['Focused Antenatal Care'],
-		},
-		{
-			name: 'BLOOD TRANSFUSION SERVICES',
-			subCategories: [
-				'Blood Bank',
-				'Facility offering Blood Transfusion Service',
-				'Satellite Blood Transfusion service',
-			],
-		},
-		{
-			name: 'CANCER SCREENING',
-			subCategories: [
-				'Breast',
-				'Coloreactal',
-				'Pap smear',
-				'Prostrate',
-				'Screening using VIA/VILI',
-			],
-		},
-		{
-			name: 'CURATIVE SERVICES',
-			subCategories: ['Inpatient', 'Outpatient'],
-		},
-		{
-			name: 'DELTED HDU',
-			subCategories: ['High dependency Services'],
-		},
-		{
-			name: 'EMERGENCY PREPAREDNESS',
-			subCategories: [
-				'Basic Emergency Preparedness',
-				'Comprehensive Emergency Preparedness',
-			],
-		},
-		{
-			name: 'FAMILY PLANNING',
-			subCategories: ['Long Term', 'Natural', 'Permanent'],
-		},
-		{
-			name: 'FORENSIC SERVICES',
-			subCategories: ['Long Term', 'Natural', 'Permanent'],
-		},
-		{
-			name: 'HIV TREATMENT',
-			subCategories: ['HIV treatment and care'],
-		},
-		{
-			name: 'HIV/AIDS Prevention,Care and Treatment Services',
-			subCategories: [
-				'Condom Distribution & STI Prevention',
-				'Elimination of Mother to Child transmission of HIV',
-				'HEI - HIV exposed infants',
-				'HIV preventive Package',
-				'HIV risk reduction for Key populations',
-				'HIV risk reduction services for prioity populations and geographies',
-				'HIV Testing Services',
-				'Infection Prevention and control to mitigate HIV infection in the work place',
-				'Management of Sexually Transmitted Illness (STI)',
-				'Nutrition assessment ,counselling and support ( The NACS process) for PLHIVs',
-				'Post-Exposure Prophylaxis (PEP)',
-			],
-		},
-		{
-			name: 'HOSPICE SERVICE',
-			subCategories: [],
-		},
-		{
-			name: 'IMMUNISATION',
-			subCategories: [],
-		},
-		{
-			name: 'INTEGRATED MANAGEMENT OF CHILDHOOD ILLNESS',
-			subCategories: [],
-		},
-		{
-			name: 'LABORATORY SERVICES',
-			subCategories: [],
-		},
-		{
-			name: 'LEPROSY DIAGNOSIS',
-			subCategories: [],
-		},
-		{
-			name: 'LEPROSY TREATMENT',
-			subCategories: [],
-		},
-		{
-			name: 'MATERNITY SERVICES',
-			subCategories: [],
-		},
-	];
+	let serviceCategories = ((_services) => {
+		
+		const _serviceCategories = []
+		let _values = []
+		let _subCtgs = []
+
+		if(_services.length > 0){
+			_services.forEach(({name:ctg}) => {
+				let allOccurences = _services.filter(({name}) => name === ctg)
+				
+				allOccurences.forEach(({id, description}) => {
+					_subCtgs.push(description)
+					_values.push(id)
+				})
+				
+				if(_serviceCategories.map(({name}) => name).indexOf(ctg) === -1){
+					_serviceCategories.push({
+						name: ctg,
+						subCategories:_subCtgs,
+						value:_values
+					})
+				}
+				
+				_values = []
+				_subCtgs = []
+	
+			})
+		}
+		
+		return _serviceCategories
+	 })(props.service_categories.results ?? [])
 
 	// Define state
 	const [formId, setFormId] = useState(0);
@@ -184,7 +121,7 @@ function AddCommUnit(props)
 				window.sessionStorage.setItem('formId', 0);
 			}
 		};
-	}, [formId, facilities]);
+	}, [formId, facilities, serviceCtg]);
 	// console.log(formId);
 
 	return (
@@ -246,6 +183,8 @@ function AddCommUnit(props)
 											{
 												event.preventDefault();
 
+												let _id;
+
 												// An empty object of the form data
 												const formData = {};
 
@@ -256,7 +195,35 @@ function AddCommUnit(props)
 												{
 													formData[name] = value;
 												});
-												console.log(formData);
+
+												console.log('this is the formdata',formData);
+												
+												// Posting CHU basic details 
+												try {
+													fetch('/api/common/submit_form_data/?path=CHUs', {
+														headers: {
+															'Accept': 'application/json, text/plain, */*',
+															'Content-Type': 'application/json;charset=utf-8'
+
+														},
+														method: 'POST',
+														body: JSON.stringify(formData).replace(',"":""', '')
+													})
+
+														.then(async (resp) => {
+															const { id } = (await resp.json())
+															_id = id;
+
+															if (resp) {
+																setchulId(_id) //setting the state to the current CHUL
+															}
+															
+														})
+												}
+
+												catch (e) {
+													console.error('Unable to post basic details')
+												}
 
 												// Set the formId to the next step
 												window.sessionStorage.setItem('formId', 1);
@@ -274,6 +241,7 @@ function AddCommUnit(props)
 													<form
 														className='flex flex-col w-full items-start justify-start gap-3'
 														onSubmit={handleBasicDetailsSubmit}>
+
 														{/* CHU name */}
 														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 															<label
@@ -286,9 +254,10 @@ function AddCommUnit(props)
 																</span>
 															</label>
 															<input
-																required
+																placeholder='Select the name of the CHU'
+
 																type='text'
-																name='comm_unit_name'
+																name='name'
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -305,16 +274,12 @@ function AddCommUnit(props)
 																</span>
 															</label>
 															<Select
-																onChange={(value) =>
-																{
+																onChange={(value) => {
 																	setSelectedFacility(value);
-																	console.log('value', value.value);
-
+																	
 																	// list the facilities and their counties
-																	facilities.map((facility) =>
-																	{
-																		if (facility.id === value.value)
-																		{
+																	facilities.map((facility) => {
+																		if (facility.id === value.value) {
 																			setCountyValue(facility.county);
 																			setSubCountyValue(facility.sub_county_name);
 																			setConstituencyValue(facility.constituency);
@@ -324,52 +289,56 @@ function AddCommUnit(props)
 																	);
 																	console.log(countyValue);
 																}}
-																options={facilities.map((facility) =>
-																{
+
+																options={facilities.map((facility) => {
 																	return {
 																		value: facility.id,
 																		label: facility.name,
 																	};
 																}
 																)}
+
+																placeholder='Select linked facility...'
+																name='facility'
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															/>
 														</div>
 
 														{/* CHU Status */}
+
 														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 															<label
-																htmlFor='comm_unit_status'
+																htmlFor="comm_unit_status"
 																className='text-gray-600 capitalize text-sm'>
-																Operation Status{' '}
+																Operation Status
 																<span className='text-medium leading-12 font-semibold'>
 																	{' '}
 																	*
 																</span>
 															</label>
+
 															<Select
 																options={[
 																	{
-																		value: 'closed',
+																		value: '2943e6c1-a581-461e-85a4-b9f25a2674ab',
 																		label: 'Closed',
 																	},
 																	{
-																		value: 'non-functional',
+																		value: 'bac8ab50-1dad-4f96-ab96-a18a4e420871',
 																		label: 'Non-functional',
 																	},
 																	{
-																		value: 'semi-functional',
+																		value: 'fbc7fce5-3328-4dad-af70-0ec3d8f5ad80',
 																		label: 'Semi-functional',
 																	},
 																	{
-																		value: 'fully-functional',
+																		value: '50ef43f0-887c-44e2-9b09-cfa7a7090deb',
 																		label: 'Fully-functional',
 																	},
 																]}
 																required
 																placeholder='Select an operation status ...'
-																onChange={() => console.log('changed')}
-																name='comm_unit_status'
+																name='status'
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															/>
 														</div>
@@ -596,6 +565,53 @@ function AddCommUnit(props)
 											{
 												event.preventDefault();
 
+												const ChewData = {};
+
+												const elements = [...event.target];
+												let payload = {}
+
+												elements.forEach(({ name, value }) => {
+													switch (name) {
+														case 'first_name':
+															ChewData[name] = value
+															break;
+														case 'last_name':
+															ChewData[name] = value
+															break;
+														case 'is_incharge':
+															ChewData[name] = value
+															break;
+													}
+												});
+
+												payload = {
+													health_unit_workers: [{
+														first_name: ChewData.first_name,
+														last_name: ChewData.last_name,
+														is_incharge: true
+													}]
+												}
+
+												console.log(payload);
+
+												try {
+
+													fetch(`/api/common/submit_form_data/?path=chul_data&id=${chulId}`, {
+
+														headers: {
+															'Accept': 'application/json, text/plain, */*',
+															'Content-Type': 'application/json;charset=utf-8'
+
+														},
+														method: 'POST',
+														body: JSON.stringify(payload)
+													})
+												}
+												catch (e) {
+													console.error('Unable to patch facility contacts details'.e.message)
+												}
+
+
 												window.sessionStorage.setItem('formId', 2);
 
 												setFormId(window.sessionStorage.getItem('formId'));
@@ -607,7 +623,7 @@ function AddCommUnit(props)
 
 												window.sessionStorage.setItem('formId', 0);
 
-												console.log({ formId })
+												console.log({  formId  })
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -626,7 +642,7 @@ function AddCommUnit(props)
 																{/* First Name */}
 																<div className='col-start-1 col-span-1'>
 																	<label
-																		htmlFor='fname' start
+																		htmlFor='first_name' start
 																		className='block text-sm font-medium text-gray-700'>
 																		First Name
 																	</label>
@@ -634,7 +650,7 @@ function AddCommUnit(props)
 																{/* Second Name */}
 																<div className='col-start-2 col-span-1'>
 																	<label
-																		htmlFor='sname'
+																		htmlFor='last_name'
 																		className='block text-sm font-medium text-gray-700'>
 																		Second Name
 																	</label>
@@ -642,7 +658,7 @@ function AddCommUnit(props)
 																{/* In charge */}
 																<div className='col-start-3 col-span-1'>
 																	<label
-																		htmlFor='incharge'
+																		htmlFor='is_incharge'
 																		className='block text-sm font-medium text-gray-700'>
 																		In Charge
 																	</label>
@@ -665,7 +681,7 @@ function AddCommUnit(props)
 																	<input
 																		required
 																		type='text'
-																		name='fname'
+																		name='first_name'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -674,7 +690,7 @@ function AddCommUnit(props)
 																	<input
 																		required
 																		type='text'
-																		name='sname'
+																		name='last_name'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -682,7 +698,7 @@ function AddCommUnit(props)
 																<div className='col-span-1'>
 																	<div className='flex items-center py-3'>
 																		<input
-																			name='incharge'
+																			name='is_incharge'
 																			type='checkbox'
 																			className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
 																		/>
@@ -697,7 +713,7 @@ function AddCommUnit(props)
 																			name='delete'
 																			type='button'
 																			className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 rounded border border-red-500 hover:border-transparent '
-																			onClick={() => { }}>
+																			onClick={() => {  }}>
 																			<TrashIcon class="w-7 h-7 text-red-500 group-hover:text-white" />
 																		</button>
 																	</div>
@@ -734,9 +750,31 @@ function AddCommUnit(props)
 											{
 												event.preventDefault();
 
+												const _payload = services.map(({value}) => ({service: value}))
+
+												_payload.forEach(obj => obj['health_unit'] = chulId)
+	
+												try{
+													fetch(`/api/common/submit_form_data/?path=chul_services&id=${chulId}`, {
+														headers:{
+															'Accept': 'application/json, text/plain, */*',
+															'Content-Type': 'application/json;charset=utf-8'
+															
+														},
+														method:'POST',
+														body: JSON.stringify({services:_payload})
+													})
+
+												}
+												catch(e){
+													console.error('Unable to patch CHU service details'. e.message)
+												}
+												
+
 												window.sessionStorage.setItem('formId', 3);
 
-												setFormId(window.sessionStorage.getItem('formId'));
+												setFormId(window.sessionStorage.getItem('formId'))
+												setServices([])
 											};
 
 											const handleServicesPrevious = (event) =>
@@ -760,13 +798,33 @@ function AddCommUnit(props)
 														{/* Transfer list Container */}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
 															{/* serviceCategories.map(ctg => ctg.name) */}
-															<TransferListServices
-																categories={serviceCategories.map(
-																	(data) => data
-																)}
-																setServices={() => null}
+															<TrasnferListServices
+																categories={serviceCategories}
+																setServices={setServices}
+																setRefreshForm={setRefreshForm}
+																refreshForm={refreshForm}
 															/>
 														</div>
+																												
+														{/* Service Category Table */}
+														<table className='w-full  h-auto my-4'>
+															<thead className='w-full'>
+																<tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
+																	<td className='text-lg font-semibold text-indigo-900 '>Name</td>
+																	<td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
+																</tr>
+															</thead>
+															<tbody ref={optionRefBody}>
+																{
+																	services.map(({subctg}) => subctg).map((service_categories, i) => (
+																		<tr key={`${service_categories}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+																			<td ref={nameOptionRef}>{service_categories}</td>
+																			<td ref={serviceCategoriesRef} className='ml-12 text-base'>Yes</td>
+																		</tr>
+																	))
+																}															
+															</tbody>
+														</table>
 
 														<div className='flex justify-between items-center w-full'>
 															<button
@@ -779,6 +837,7 @@ function AddCommUnit(props)
 															</button>
 															<button
 																type='submit'
+																
 																className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>
 																	Save
@@ -834,21 +893,19 @@ function AddCommUnit(props)
 	);
 }
 
-AddCommUnit.getInitialProps = async (ctx) =>
-{
+AddCommUnit.getInitialProps = async (ctx) => {
 
 	return checkToken(ctx.req, ctx.res)
-		.then(async (t) =>
-		{
-			if (t.error)
-			{
+		.then(async (t) => {
+			if (t.error) {
 				throw new Error('Error checking token');
 			} else
 			{
 				let token = t.token;
 				console.log('token', token);
 
-				let url = `${ process.env.NEXT_PUBLIC_API_URL }/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
+				// Prefetch the facility data details
+				let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
 				console.log('url', url);
 				const response = await fetch(url, {
 					headers: {
@@ -856,19 +913,38 @@ AddCommUnit.getInitialProps = async (ctx) =>
 						Accept: 'application/json',
 					},
 				})
+
 				let facility_data = await response.json();
 				console.log(url)
 				console.log(facility_data);
 
-				if (facility_data.error)
-				{
+				if (facility_data.error) {
 					throw new Error('Error fetching facility data');
 					window.location.reload();
+				}
+
+				// Fetch the service options
+				let service_url = `${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=100&ordering=name`;
+
+				const service_response = await fetch(service_url,
+					{
+						headers: {
+							Authorization: 'Bearer ' + token,
+							Accept: 'application/json',
+						},
+					})
+
+				let service_categories = await service_response.json();
+				console.log('Service Categories', service_categories)
+
+				if (service_categories.error){
+					throw new Error('Error fetching the service categories');
 				}
 
 				return {
 					token: token,
 					facility_data: facility_data,
+					service_categories: service_categories,
 				};
 
 			}
