@@ -1682,9 +1682,20 @@ const EditFacility = (props) => {
 
                                     onSubmit={async formData => {
                                         let payload = {}
+
+                                        const contactType = contactRef.current !== null ? contactRef.current : ''
+
+                                        const jobTitle = jobTitleRef.current !== null ? jobTitleRef.current : ''
+
+                                        // const jobTitleName = jobTitleRef.current !== null ? jobTitleRef.current.value.label : ''
+
                                         const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
                                            
                                         Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
+
+                                        console.log({_payload, facilityContactsData, formData, jobTitle, contactType})
+
+                                        // const title_name = jobTitleOptions.filter(({value}) => value === _payload['title'])[0]
 
                                         payload = {officer_in_charge, contacts:[]}
 
