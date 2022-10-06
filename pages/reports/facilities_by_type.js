@@ -32,8 +32,8 @@ const FacilitiesByType = (props) => {
     const LinkCellRenderer = (params) =>{
         return(
             <Link
-            href={{ pathname: `/reports/by_county/`,
-            query: { id: params.data.sub_county } }}
+            href={{ pathname: `/reports/facility_details/`,
+            query: { id: params.data.id }}}
     
             ><a>{params.value}</a></Link>
         )}
