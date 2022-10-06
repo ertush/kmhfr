@@ -642,7 +642,7 @@ const Home = (props) => {
                             </ListItemButton>
 
                             {/* Approved DHIS Synced Facilities */}
-                            <ListItemButton sx={{ backgroundColor: (facilitiesPendingApproval  || pathId === 'dhis_synced_facilities') ?  '#e7ebf0' : 'none' }}
+                            <ListItemButton sx={{ backgroundColor: (DHISSyncedFacilities  || pathId === 'dhis_synced_facilities') ?  '#e7ebf0' : 'none' }}
                             onClick={()=>{
                                 setTitle('DHIS Synced Approved Facilities')
                                 setPathId('dhis_synced_facilities')

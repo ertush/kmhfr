@@ -1,33 +1,41 @@
-// handleBasicDetailsSubmit
 
+// handleBasicDetailsSubmit
 const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
-    const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates] = stateSetters
+    const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef] = stateSetters
 
     event.preventDefault();
 
-    let _ward;
-    let _id;
+    let _id, _ward
 
-    const formData = {};
+    const formData = new FormData(basicDetailsRef.current)
 
-    const elements = [...event.target];
+    const _payload = {};
 
-    elements.forEach(({ name, value }) => {
+
+    formData.forEach((v, k) => {
         
-        formData[name] = value === "true" || value === "false" ? Boolean(value) : (() => {
+        _payload [k] = (() => {
             // Accomodates format of facility checklist document
-            if (name === "facility_checklist_document") {
-                return {fileName: value.replace("C:\\fakepath\\", '')}
+            if (k === "facility_checklist_document") {
+                return {fileName: v.name}
+            }
+
+            if(v.match(/^true$/) !== null) {
+                return Boolean(v)
+            }
+
+            if(v.match(/^false$/) !== null) {
+                return Boolean(false)
             }
 
             // check if value is alphanumeral and convert to number
-            return value.match(/^[0-9]$/) !== null ? Number(value) : value
+            return v.match(/^[0-9]$/) !== null ? Number(v) : v
         })()
-    });
+    })
 
     // Add officer in charge to payload8
-    formData['officer_in_charge'] = {
+    _payload['officer_in_charge'] = {
         name:'',
         reg_no:'',
         contacts:[
@@ -38,11 +46,16 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
         ]
     }
 
+
+
     if(method === 'PATCH'){
-        formData['sub_county'] = formData['sub_county_id'];
+        _payload['sub_county'] = formData.get('sub_county_id');
     }
 
-    console.log({formData})
+
+
+    
+
 
     // Post Facility Basic Details
     try{
@@ -53,7 +66,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
                 
             },
             method,
-            body: JSON.stringify(formData).replace(',"":""','').replace('on', true).replace('off', false)
+            body: JSON.stringify(_payload)
         })
         // Post Checklist document
         .then(async resp => {
@@ -64,12 +77,12 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
             _ward = ward
 
             const payload = {
-                name: `${formData['official_name']} Facility Checklist File`,
+                name: `${_payload['official_name']} Facility Checklist File`,
                 description: 'Facilities checklist file',
                 document_type: 'Facility_ChecKList',
-                facility_name:formData['official_name'],
+                facility_name:_payload['official_name'],
                 fyl: {
-                    filename:formData['facility_checklist_document']
+                    filename:_payload['facility_checklist_document']
                 }
 
 
@@ -143,7 +156,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
     
 
     // Change form Id
-    window.sessionStorage.setItem('formId', 1);
+    window.sessionStorage.setItem('formId', 1); 
 
     setFormId(window.sessionStorage.getItem('formId'));
 };
@@ -298,6 +311,7 @@ const handleRegulationSubmit = (event, stateSetters, method) => {
 
     const [setFormId, facilityId] = stateSetters
 
+
     event.preventDefault();
     
 
@@ -311,6 +325,7 @@ const handleRegulationSubmit = (event, stateSetters, method) => {
 
     const payload = []
 
+   
     elements.forEach(({ name, value }) => {
         switch(name){
             case 'license_number':
@@ -361,7 +376,6 @@ const handleRegulationSubmit = (event, stateSetters, method) => {
         license_number:facilityRegDataB['3'].license_number
     }]})
     
-
 
     payload.forEach(data => {
         try{
@@ -454,12 +468,17 @@ const handleInfrastructureSubmit = (event, stateSetters, method) => {
 // handleHrSubmit
 const handleHrSubmit = (event, stateSetters, method) => {
 
-    const [hr, hrCount, facilityId, setFormId] = stateSetters
+    const [hr, hrCount, facilityId, setFormId, alert] = stateSetters
     event.preventDefault()
 
     const _payload = hr.map(({value}, i) => ({count: i < hrCount.length ? Number(hrCount[i]['val'] ?? 0) : 0 , speciality: value}))
 
-    console.log({specialities:_payload})
+    if(_payload){
+        alert.success("Facility Created successfully")
+    }else {
+        alert.danger("Unable to create facility")
+    }
+    
 
     try{
         fetch(`/api/common/submit_form_data/?path=hr&id=${facilityId}`, {
@@ -485,6 +504,115 @@ const handleHrSubmit = (event, stateSetters, method) => {
 }
 
 
+// handleBasicDetailsUpdate
+const handleBasicDetailsUpdates = async (formData, facility_id, alert) => {
+
+    if(formData){
+        alert.success("Facility Geolocation successfully updated")
+    } else {
+        alert.danger("Unable to update facility geolocation data")
+    }
+
+    try{
+       const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method:'POST',
+            body: JSON.stringify(formData)
+        })
+
+   
+
+    return resp
+
+    }
+    catch(e){
+        console.error('Error msg:', e.message)
+    }
+}
+
+// handleGeolocationDataUpdate
+const handleGeolocationUpdates = async (formData, coordinates_id, alert) => {
+   
+    if(formData){
+        alert.success("Facility Geolocation successfully updated")
+    } else {
+        alert.danger("Unable to update facility geolocation data")
+    }
+
+
+    try{
+       const resp =  await fetch(`/api/common/submit_form_data/?path=geolocation_update&id=${coordinates_id}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method:'POST',
+            body: JSON.stringify(formData)
+        })
+
+     
+
+    return resp
+
+    }
+    catch(e){
+        console.error('Error msg:', e.message)
+    }
+}
+
+// handleFacilityContactUpdates
+const handleFacilityContactsUpdates = async (formData, facility_id, alert) => {
+    if(formData){
+        alert.success("Facility Geolocation successfully updated")
+    } else {
+        alert.danger("Unable to update facility geolocation data")
+    }
+ 
+    try{
+       const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method:'POST',
+            body: JSON.stringify(formData)
+        })
+
+    
+
+    return resp
+
+    }
+    catch(e){
+        console.error('Error msg:', e.message)
+    }
+}
+
+// handleRegulationUpdate
+const handleRegulationUpdates = async () => {
+
+}
+
+// handleServiceUpdates
+const handleServiceUpdates = async () => {
+
+}
+
+// handleInfrastructureUpdates
+const handleInfrastructureUpdates = async () => {
+
+}
+
+
+// handleHrUpdates
+const handleHrUpdates = async () => {
+
+}
+
+
 export {
     handleBasicDetailsSubmit,
     handleGeolocationSubmit,
@@ -492,5 +620,12 @@ export {
     handleRegulationSubmit,
     handleServiceSubmit,
     handleInfrastructureSubmit,
-    handleHrSubmit
+    handleHrSubmit,
+    handleBasicDetailsUpdates,
+    handleGeolocationUpdates,
+    handleFacilityContactsUpdates,
+    handleRegulationUpdates,
+    handleServiceUpdates,
+    handleInfrastructureUpdates,
+    handleHrUpdates,
 }

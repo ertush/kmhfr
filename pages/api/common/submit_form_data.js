@@ -170,6 +170,18 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     break            
 
+                case 'basic_details_update':      
+                    
+                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
+                case 'geolocation_update':      
+                    console.log({coordinates: req.query.id})     
+                    url = `${API_URL}/gis/facility_coordinates/${req.query.id}/`;
+                    method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;              
                 default:
 
                     
