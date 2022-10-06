@@ -1795,7 +1795,14 @@ function AddFacility(props) {
 
 																{/* Contact Type / Contact Details */}
 
-																<FacilityContact contactDetail={_contactDetail} setContactDetail={setContactDetail} contactTypeOptions={contactTypeOptions} contact={''} names={['contact_type', 'contact']} id={'facility'} />
+																<FacilityContact 
+																contactDetail={_contactDetail}
+																inputContactRef={null} 
+																setContactDetail={setContactDetail} 
+																contactTypeOptions={contactTypeOptions} 
+																contact={''} 
+																names={['contact_type', 'contact']} 
+																id={'facility'} />
 																
 
 																
@@ -1886,7 +1893,13 @@ function AddFacility(props) {
 
 																	{/* Contact Type / Contact Details */}
 
-																	<FacilityContact contactTypeOptions={contactTypeOptions} contactDetail={_otherContactDetails} setContactDetail={setOtherContactDetail} names={['facility_details_contact_type', 'faciliity_details_contact']} id={'facility_officer'} />
+																	<FacilityContact 
+																	contactTypeOptions={contactTypeOptions} 
+																	contactDetail={_otherContactDetails} 
+																	setContactDetail={setOtherContactDetail} 
+																	inputContactRef={null}
+																	names={['facility_details_contact_type', 'faciliity_details_contact']} 
+																	id={'facility_officer'} />
 
 																</div>
 

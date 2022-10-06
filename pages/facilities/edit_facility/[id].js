@@ -503,32 +503,34 @@ const EditFacility = (props) => {
         return _lng
 
     })(lat_long))
-    const [_contactDetail, setContactDetail] = useState(((facility_contacts) => {
+
+    // const [_contactDetail, setContactDetail] = useState(((facility_contacts) => {
   
-        let _contactDetail 
-        if(facility_contacts !== null){
-            if(isArray(facility_contacts)){
-                if(facility_contacts.length > 0){
-                    _contactDetail = facility_contacts[0].contact
-                }else{
-                    _contactDetail = ''
-                }
-            }else{
-                _contactDetail = ''
-            }
-        }else{
-            _contactDetail = ''
-        }
+    //     let _contactDetail 
+    //     if(facility_contacts !== null){
+    //         if(isArray(facility_contacts)){
+    //             if(facility_contacts.length > 0){
+    //                 _contactDetail = facility_contacts[0].contact
+    //             }else{
+    //                 _contactDetail = ''
+    //             }
+    //         }else{
+    //             _contactDetail = ''
+    //         }
+    //     }else{
+    //         _contactDetail = ''
+    //     }
 
-        return _contactDetail
+    //     return _contactDetail
 
-    })(facility_contacts))
+    // })(facility_contacts))
+
     const [_officerName, setOfficerName] = useState(officer_in_charge || '')
     const [_regNo, setRegNo] = useState(registration_number ?? '')
     const [_regBody, setRegBody] = useState(regulatory_body_name ?? '')
     const [_file, setFile] = useState(facility_license_document ?? '')
     const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
-    const [_otherContactDetail, setOtherContactDetail] = useState()
+    // const [_otherContactDetail, setOtherContactDetail] = useState()
     
  
 
@@ -700,6 +702,8 @@ const EditFacility = (props) => {
     const contactRef = useRef(null)
     const jobTitleRef = useRef(null)
     const otherContactRef = useRef(null)
+    const facilityContactDetailRef = useRef(null)
+    const officerInchargeContactDetailRef = useRef(null)
  
 
     // Regulation Refs
@@ -1679,21 +1683,33 @@ const EditFacility = (props) => {
                                     onSubmit={async formData => {
                                         let payload = {}
 
-                                        const contactType = contactRef.current !== null ? contactRef.current : ''
+                                        const contact = officerInchargeContactDetailRef.current !== null ? officerInchargeContactDetailRef.current.value : ''
 
-                                        const jobTitle = jobTitleRef.current !== null ? jobTitleRef.current : ''
+                                        const contactType = contactRef.current !== null ? contactRef.current.state.value.value : ''
 
-                                        // const jobTitleName = jobTitleRef.current !== null ? jobTitleRef.current.value.label : ''
+                                        const contactTypeName = contactRef.current !== null ? contactRef.current.state.value.label : ''
+
+                                        const jobTitle = jobTitleRef.current !== null ? jobTitleRef.current.state.value.value : ''
+
+                                        const jobTitleName = jobTitleRef.current !== null ? jobTitleRef.current.state.value.label : ''
 
                                         const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
                                            
                                         Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
 
-                                        console.log({_payload, facilityContactsData, formData, jobTitle, contactType})
+                                        _payload['title'] = jobTitle
 
-                                        // const title_name = jobTitleOptions.filter(({value}) => value === _payload['title'])[0]
+                                        _payload['titleName'] = jobTitleName
 
-                                        payload = {officer_in_charge, contacts:[]}
+                                        _payload['contacts'] = [{
+                                            contact,
+                                            contact_id: facility_contacts[0]?.contact_id,
+                                            contact_type_name: contactTypeName,
+                                            official_contact_id:facility_contacts[0]?.id,
+                                            type: contactType
+                                        }]
+
+                                        payload = {officer_in_charge:_payload, contacts:[]}
 
                                         console.log({payload})
 
@@ -1724,6 +1740,8 @@ const EditFacility = (props) => {
                                             {/* Contact Type / Contact Details */}
                                             <FacilityContact 
                                             contactRef={contactRef} 
+                                            inputContactRef={facilityContactDetailRef}
+                                            setContactDetail={null} 
                                             contactTypeOptions={contactTypeOptions} 
                                             names={['contact_type', 'contact']} 
                                             id={'facility'} 
@@ -1820,6 +1838,8 @@ const EditFacility = (props) => {
 
                                                 <FacilityContact 
                                                 contactRef={otherContactRef} 
+                                                setContactDetail={null} 
+                                                inputContactRef={officerInchargeContactDetailRef}
                                                 contactTypeOptions={contactTypeOptions} 
                                                 names={['facility_details_contact_type', 'faciliity_details_contact']} 
                                                 id={'facility_officer'}  

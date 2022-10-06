@@ -1,3 +1,4 @@
+import { set } from 'nprogress'
 import React,{useEffect, useRef} from 'react'
 import Select from 'react-select'
 // import { Field } from 'formik'
@@ -7,15 +8,18 @@ const FacilityContact = ({
   names, 
   id, 
   contactRef, 
-  contact
+  setContactDetail, 
+  contact,
+  inputContactRef
 
 }) => {
 
-  const inputContactRef = useRef(null)
-
+  
   useEffect( () => {
     if(inputContactRef.current !== null) inputContactRef.current.value = contact
   }, [])
+
+
   return (
   
         <>
@@ -31,7 +35,7 @@ const FacilityContact = ({
         
             {/* Contact Details */}
 
-            <input type="text" ref={inputContactRef} name={names[1]} id={id} className="flex-none col-start-2 w-full bg-gray-50 rounded flex-grow border-2 placeholder-gray-500 border-gray-200 px-2 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+            <input type="text" ref={inputContactRef} onChange={ev => { if(typeof(setContactDetail) === 'function')setContactDetail(ev.target.value) }} name={names[1]} id={id} className="flex-none col-start-2 w-full bg-gray-50 rounded flex-grow border-2 placeholder-gray-500 border-gray-200 px-2 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
         </>
   )
