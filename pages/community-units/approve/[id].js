@@ -9,7 +9,7 @@ import MainLayout from '../../../components/MainLayout';
 
 // Controller imports
 import { checkToken } from '../../../controllers/auth/auth';
-import { approveCHU, rejectCHUL, rejectCHU, approveRejectCHU } from '../../../controllers/chul/rejectApprove';
+import { approveCHU, rejectCHUL} from '../../../controllers/chul/rejectApprove';
 
 // Heroicons imports
 
