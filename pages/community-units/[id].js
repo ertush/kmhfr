@@ -3,8 +3,8 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect } from "react";
 import MainLayout from "../../components/MainLayout";
-import { approveRejectCHU, rejectCHU } from "../../controllers/reject";
-import { ChevronDownIcon } from "@heroicons/react/solid";
+// import { approveRejectCHU, rejectCHU } from "../../controllers/reject";
+// import { ChevronDownIcon } from "@heroicons/react/solid";
 import router from "next/router";
 
 import {
