@@ -464,9 +464,9 @@ const CommUnit = (props) => {
                       </h3>
                       {cu.contacts &&
                         cu.contacts.length > 0 &&
-                        cu.contacts.map((contact) => (
+                        cu.contacts.map((contact, i) => (
                           <div
-                            key={contact.id}
+                            key={i}
                             className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
                           >
                             <label className="col-span-1 text-gray-600 capitalize">
@@ -493,9 +493,9 @@ const CommUnit = (props) => {
                       )}
                       {cu.officer_in_charge &&
                         cu.officer_in_charge.contacts.length > 0 &&
-                        cu.officer_in_charge.contacts.map((contact) => (
+                        cu.officer_in_charge.contacts.map((contact, i) => (
                           <div
-                            key={contact.contact_id}
+                            key={i}
                             className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
                           >
                             <label className="col-span-1 text-gray-600 capitalize">
@@ -534,9 +534,9 @@ const CommUnit = (props) => {
                       </h3>
                       <ul>
                         {cu?.services && cu?.services.length > 0 ? (
-                          cu?.services.map((service) => (
+                          cu?.services.map((service, i) => (
                             <li
-                              key={service.service_id}
+                              key={i}
                               className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
                             >
                               <div>
@@ -608,9 +608,9 @@ const CommUnit = (props) => {
                       <ul>
                         {cu?.health_unit_workers &&
                         cu?.health_unit_workers.length > 0 ? (
-                          cu?.health_unit_workers.map((hr) => (
+                          cu?.health_unit_workers.map((hr, i) => (
                             <li
-                              key={hr.id}
+                              key={i}
                               className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
                             >
                               <div>
