@@ -17,7 +17,9 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 const ByWard = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
-    const router = useRouter()
+    // const router = useRouter()
+    
+
     const LinkCellRenderer = (params) =>{
         let query = null
         let pathname =''
@@ -42,7 +44,7 @@ const ByWard = (props) => {
     const [facilities, setFacilities]=useState([])
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
-    const [title, setTitle] = useState(`Facilities with beds and cots in ${router.query.name} Ward`)
+    const [title, setTitle] = useState(`Facilities with beds and cots in ${props?.query?.ward} Ward`)
     const [label, setLabel]=useState('beds_cots')
 
      
@@ -223,7 +225,7 @@ ByWard.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
    
 // api/reporting/?report_type=beds_and_cots_by_county - number of beds and cots
-console.log(ctx.query)
+// console.log(ctx.query)
     const fetchData = (token) => {
         let url = ''
         let status = ctx.query.status || ''
@@ -239,24 +241,16 @@ console.log(ctx.query)
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
         }
+
+        if(ctx?.query?.ward){
+            query['ward'] = ctx?.query?.ward
+        }
+
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
-        // let other_posssible_filters = ["is_active"]
-
-        // other_posssible_filters.map(flt => {
-        //     console.log(flt);
-        //     if (ctx?.query[flt]) {
-        //         query[flt] = ctx?.query[flt]
-        //         if (url.includes('?')) {
-        //             url += `&${flt}=${ctx?.query[flt]}`
-        //         } else {
-        //             url += `?${flt}=${ctx?.query[flt]}`
-        //         }
-        //     }
-        // })
-        
+   
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
             console.log({page:ctx.query.page})

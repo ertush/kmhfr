@@ -34,7 +34,7 @@ const _ = require('underscore')
 
 const isArray = (_arr) => {
     let isArray
-    if(_arr !== undefined && _arr !== null){
+    if(_arr){
         isArray = _arr.hasOwnProperty('length')
     }
 
@@ -301,14 +301,15 @@ const EditFacility = (props) => {
         ward
     }
 
-	
+    const collection_date = props['20']?.collection_date ?  (props['20']?.collection_date.replace(/T.*$/, '') ?? '') : ''
+
     const facilityContactsData = {
 
 
         contact:  ((facility_contacts) => {
   
             let _contactDetail 
-            if(facility_contacts !== null){
+            if(facility_contacts){
                 if(isArray(facility_contacts)){
                     if(facility_contacts.length > 0){
                         _contactDetail = facility_contacts[0].contact
@@ -328,7 +329,7 @@ const EditFacility = (props) => {
         contact_type : ((facility_contacts) => {
   
             let _contactDetail 
-            if(facility_contacts !== null){
+            if(facility_contacts){
                 if(isArray(facility_contacts)){
                     if(facility_contacts.length > 0){
                         _contactDetail = facility_contacts[0].contact_type
@@ -348,7 +349,7 @@ const EditFacility = (props) => {
         name : ((facility_contacts) => {
   
             let _contactDetail 
-            if(facility_contacts !== null){
+            if(facility_contacts){
                 if(isArray(facility_contacts)){
                     if(facility_contacts.length > 0){
                         _contactDetail = facility_contacts[0].name
@@ -374,7 +375,7 @@ const EditFacility = (props) => {
         longitude : ((coordinates) => {
    
         let _lng 
-        if(lat_long !== null){
+        if(lat_long){
             if(lat_long.length > 0){
                 _lng = coordinates[1]
             }else{
@@ -390,7 +391,7 @@ const EditFacility = (props) => {
         latitude : ((coordinates) => {
    
             let _lng 
-            if(lat_long !== null){
+            if(lat_long){
                 if(lat_long.length > 0){
                     _lng = coordinates[0]
                 }else{
@@ -410,7 +411,7 @@ const EditFacility = (props) => {
         centerCoordinates
     } = props['19']?.geolocation ?? {}
 
-    const collection_date = props['20']?.collection_date.replace(/T.*$/, '') ?? ''
+  
 
     const serviceSelected = ((_services) => {
         return _services.map(({category_name, service_name, service_id}) => ({
@@ -474,7 +475,7 @@ const EditFacility = (props) => {
     const [_lat, setLat] = useState(((coordinates) => {
    
         let _lat 
-        if(lat_long !== null){
+        if(lat_long){
             if(lat_long.length > 0){
                 _lat = coordinates[0]
             }else{
@@ -490,7 +491,7 @@ const EditFacility = (props) => {
     const [_long, setLong] = useState(((coordinates) => {
    
         let _lng 
-        if(lat_long !== null){
+        if(lat_long){
             if(lat_long.length > 0){
                 _lng = coordinates[1]
             }else{
@@ -507,7 +508,7 @@ const EditFacility = (props) => {
     // const [_contactDetail, setContactDetail] = useState(((facility_contacts) => {
   
     //     let _contactDetail 
-    //     if(facility_contacts !== null){
+    //     if(facility_contacts){
     //         if(isArray(facility_contacts)){
     //             if(facility_contacts.length > 0){
     //                 _contactDetail = facility_contacts[0].contact
@@ -736,72 +737,72 @@ const EditFacility = (props) => {
     
 
         // Pre-fetch values for drop down
-        if(facility_type !== undefined){
-        if(facilityTypeRef.current !== null){
+        if(facility_type){
+        if(facilityTypeRef.current ){
           
             facilityTypeRef.current.state.value = facilityOptions.filter(({value}) => value === facility_type)[0] || {label:facility_type_name, value:facility_type}
         }
-        if(facilityTypeDetailsRef.current !== null){
+        if(facilityTypeDetailsRef.current ){
             facilityTypeDetailsRef.current.state.value = facilityTypeOptions.filter(({value}) => value === facility_type)[0] || ''
         }
-        if(operationStatusRef.current !== null){
+        if(operationStatusRef.current ){
             
             operationStatusRef.current.state.value = operationStatusOptions.filter(({value}) => value === operation_status)[0] || ''
         }
-        if(ownerTypeOptionsRef.current !== null){
+        if(ownerTypeOptionsRef.current ){
             
             ownerTypeOptionsRef.current.state.value = ownerTypeOptions.filter(({value}) => value === owner_type)[0] || ''
         }
-        if(ownerDetailsRef.current !== null){
+        if(ownerDetailsRef.current ){
             
             ownerDetailsRef.current.state.value = ownerOptions.filter(({value}) => value === owner)[0] || ''
         }
-        if(kephLvlRef.current !== null){
+        if(kephLvlRef.current ){
             
             kephLvlRef.current.state.value = kephOptions.filter(({value}) => value === keph_level)[0] || ''
         }
-        if(facilityAdmissionRef.current !== null){
+        if(facilityAdmissionRef.current ){
             
             facilityAdmissionRef.current.state.value = facilityAdmissionOptions.filter(({value}) => value === admission_status)[0] || ''
         }
-        if(countyRef.current !== null){
+        if(countyRef.current ){
             
             countyRef.current.state.value = countyOptions.filter(({value}) => value === county_id)[0] || ''
         }
-        if(subCountyRef.current !== null){
+        if(subCountyRef.current ){
             subCountyRef.current.state.value = subCountyOptions.filter(({value}) => value === sub_county_id)[0] || ''
         }
-        if(constituencyRef.current !== null){
+        if(constituencyRef.current ){
             
             constituencyRef.current.state.value = constituencyOptions.filter(({value}) => value === constituency_id)[0] || ''
         }
-        if(wardRef.current !== null){
+        if(wardRef.current ){
             wardRef.current.state.value = wardOptions.filter(({value}) => value === ward)[0] || ''
         }
-        if(contactRef.current !== null){
-            contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === (facility_contacts.length > 0 && facility_contacts !== null ? facility_contacts[0].contact_type_name : ''))[0] || ''
+        if(contactRef.current ){
+            contactRef.current.state.value = contactTypeOptions.filter(({label}) => label === (facility_contacts.length > 0 && facility_contacts  ? facility_contacts[0].contact_type_name : ''))[0] || ''
         }
-        if(jobTitleRef.current !== null){
-            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === (officer_in_charge !== null ? officer_in_charge.title : ''))[0] || ''
+        if(jobTitleRef.current ){
+            jobTitleRef.current.state.value = jobTitleOptions.filter(({value}) => value === (officer_in_charge  ? officer_in_charge.title : ''))[0] || ''
         }
 
-        if(regulatoryBodyRef.current !== null){
+        if(regulatoryBodyRef.current ){
             regulatoryBodyRef.current.state.value = regBodyOptions.filter(({value}) => value === regulatory_body)[0] || ''
         }
 
-        if(regulatoryStateRef.current !== null){
+        if(regulatoryStateRef.current ){
             regulatoryStateRef.current.state.value = regulationStateOptions.filter(({label}) => label === regulatory_status_name)[0] || ''
         }
         
-        if(facilityDeptNameRef.current !== null){
+        if(facilityDeptNameRef.current ){
             facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
         }
 
-        if(otherContactRef.current !== null){
-            otherContactRef.current.state.value = _officerName.contacts !== undefined && _officerName.contacts.length > 0 ? _officerName?.contacts[0].type : ''
+        if(otherContactRef.current ){
+            otherContactRef.current.state.value = _officerName.contacts && _officerName.contacts.length > 0 ? _officerName?.contacts[0].type : ''
         }
 
-        if(regBodyRef.current !== null){
+        if(regBodyRef.current ){
             regBodyRef.current.value = facility_units[0]?.regulating_body_name ?? ''
         } 
 
@@ -1056,7 +1057,7 @@ const EditFacility = (props) => {
                                             let payload = {}
 
                                             const _payload = _.omit(formData, function (v, k) { return basicDetailsData[k] === v})
-                                            if(officer_in_charge !== null) {
+                                            if(officer_in_charge ) {
                                                 payload = {..._payload, officer_in_charge}
                                             }
                                             else{
@@ -1125,7 +1126,7 @@ const EditFacility = (props) => {
                                                             switch(facilityOption){
                                                                 case 'STAND ALONE':
 
-                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+                                                                    if(kephLvlRef.current ) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 
                                                                     return [
                                                                         facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
@@ -1146,16 +1147,16 @@ const EditFacility = (props) => {
                                                                             ] 
                                                                     
                                                                 case 'DISPENSARY':
-                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+                                                                    if(kephLvlRef.current ) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
                                                                     return  facilityTypeOptions.filter(({label}) => label == 'DISPENSARY') || []
                                                                     
 
                                                                 case 'MEDICAL CLINIC':
-                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+                                                                    if(kephLvlRef.current ) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
                                                                     return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
                                                                     
                                                                 case 'NURSING HOME':
-                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+                                                                    if(kephLvlRef.current ) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
                                                                     
                                                                     return [
                                                                             facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
@@ -1172,14 +1173,14 @@ const EditFacility = (props) => {
                                                                         ] 
                                                             
                                                                 case 'HEALTH CENTRE':
-                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
+                                                                    if(kephLvlRef.current ) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
                                                                     return [
                                                                         facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
                                                                         facilityTypeOptions.filter(({label}) => label == 'Comprehensive health Centre')[0] || {}
                                                                         ]
 
                                                                 case 'MEDICAL CENTRE':
-                                                                    if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
+                                                                    if(kephLvlRef.current ) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 
                                                                     return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
                                                                 
@@ -1575,8 +1576,8 @@ const EditFacility = (props) => {
                                 <Formik
                                     initialValues={{
                                         collection_date: collection_date ?? '',
-                                        latitude: lat_long !== undefined && lat_long !== null ? lat_long[0] ?? '' : '',
-                                        longitude: lat_long !== undefined && lat_long !== null ? lat_long[1] ?? '' : ''
+                                        latitude: lat_long ? lat_long[0] ?? '' : '',
+                                        longitude: lat_long ? lat_long[1] ?? '' : ''
                                     }}
 
                                     onSubmit={async formData => {
@@ -1675,27 +1676,27 @@ const EditFacility = (props) => {
                             <Tabs.Panel value="facility_contacts" className="grow-1 py-1 px-4 tab-panel">
                                 <Formik
                                     initialValues={{
-                                        name: officer_in_charge !== null ? officer_in_charge.name : '',
-                                        reg_no: officer_in_charge !== null ? officer_in_charge.reg_no : '',
-                                        contact: facility_contacts !== null ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  ''
+                                        name: officer_in_charge  ? officer_in_charge.name : '',
+                                        reg_no: officer_in_charge  ? officer_in_charge.reg_no : '',
+                                        contact: facility_contacts  ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  ''
                                     }}
 
                                     onSubmit={async formData => {
                                         let payload = {}
+                                    
+                                        const contact = facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
 
-                                        const contact = officerInchargeContactDetailRef.current !== null ? officerInchargeContactDetailRef.current.value : ''
+                                        const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
 
-                                        const contactType = contactRef.current !== null ? contactRef.current.state.value.value : ''
+                                        const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
 
-                                        const contactTypeName = contactRef.current !== null ? contactRef.current.state.value.label : ''
+                                        const jobTitle = jobTitleRef.current  ? jobTitleRef.current.state.value.value : ''
 
-                                        const jobTitle = jobTitleRef.current !== null ? jobTitleRef.current.state.value.value : ''
-
-                                        const jobTitleName = jobTitleRef.current !== null ? jobTitleRef.current.state.value.label : ''
+                                        const jobTitleName = jobTitleRef.current  ? jobTitleRef.current.state.value.label : ''
 
                                         const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
-                                           
-                                        Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
+
+                                        if(officer_in_charge ) Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
 
                                         _payload['title'] = jobTitle
 
@@ -1708,6 +1709,8 @@ const EditFacility = (props) => {
                                             official_contact_id:facility_contacts[0]?.id,
                                             type: contactType
                                         }]
+
+                                        console.log({_payload})
 
                                         payload = {officer_in_charge:_payload, contacts:[]}
 
@@ -1745,7 +1748,7 @@ const EditFacility = (props) => {
                                             contactTypeOptions={contactTypeOptions} 
                                             names={['contact_type', 'contact']} 
                                             id={'facility'} 
-                                            contact={facility_contacts !== null ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  ''}
+                                            contact={facility_contacts ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  ''}
                                             />
 
                                         </div>
@@ -1843,7 +1846,7 @@ const EditFacility = (props) => {
                                                 contactTypeOptions={contactTypeOptions} 
                                                 names={['facility_details_contact_type', 'faciliity_details_contact']} 
                                                 id={'facility_officer'}  
-                                                contact={officer_in_charge !== null ? officer_in_charge.length > 0 ?  officer_in_charge[0].contact : '' :  ''}/>
+                                                contact={officer_in_charge ? officer_in_charge.length > 0 ?  officer_in_charge[0].contact : '' :  ''}/>
 
                                             </div>
 
@@ -1870,7 +1873,7 @@ const EditFacility = (props) => {
                             <Tabs.Panel value="regulation" className="grow-1 py-1 px-4 tab-panel">
                                 <Formik
                                     initialValues={{
-                                        facility_license_number: facility_units[0]?.license_number ?? '',
+                                        facility_license_number: facility_units ? facility_units[0]?.license_number ?? '' : '',
                                         registration_number: registration_number ?? '',
                                         license_document: facility_license_document ?? '',
                                         facility_registration_number: registration_number ?? '',
@@ -1945,7 +1948,7 @@ const EditFacility = (props) => {
                                                 ref={facilityDeptNameRef}
                                                 onChange={
                                                     e => {
-                                                        if(regBodyRef.current !== null){
+                                                        if(regBodyRef.current){
                                                         
                                                             regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
                                                         }
@@ -2019,7 +2022,7 @@ const EditFacility = (props) => {
                                             </thead>
                                             <tbody ref={optionRefBody}>
                                                 {
-                                                    selectedServiceRight  !== undefined && selectedServiceRight !== null && selectedServiceRight.length > 0 ? 
+                                                    selectedServiceRight && selectedServiceRight.length > 0 ? 
 
                                                     selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
                                                         <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
@@ -2082,11 +2085,11 @@ const EditFacility = (props) => {
                                         <tbody ref={infrastructureBodyRef}>
                                         
                                             {
-                                                selectedInfraRight  !== undefined && selectedInfraRight !== null && selectedInfraRight.length > 0 ? 
+                                                selectedInfraRight && selectedInfraRight.length > 0 ? 
 
                                                 selectedInfraRight.map(({subCategories, value:vs}, i) => (
                                                                                         
-                                                // infrastructureOption !== undefined || infrastructureOption !== null && 
+                                               
 
                                                 <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
                                                   
@@ -2160,12 +2163,11 @@ const EditFacility = (props) => {
                                                         <tbody>
                                                            
                                                             {
-                                                                selectedHrRight  !== undefined && selectedHrRight !== null ? 
+                                                                selectedHrRight ? 
 
                                                                 selectedHrRight?.map(({subCategories, value:vs}, i) => (
                                                                                                             
-                                                                // infrastructureOption !== undefined || infrastructureOption !== null && 
-
+                                                                
                                                                 <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
                                                                   
                                                                     <td className='text-lg text-black'>{subCategories[0]}</td>
@@ -2279,7 +2281,7 @@ EditFacility.getInitialProps = async (ctx) => {
 										},
 									})
 
-									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value:id, label:sub_division} : {value:id, label:name}) ?? [{value: '', label: ''}]
+									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division  ? {value:id, label:sub_division} : {value:id, label:name}) ?? [{value: '', label: ''}]
 
 							
 									allOptions.push({facility_types: results })

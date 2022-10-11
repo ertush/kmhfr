@@ -33,11 +33,13 @@ const Facility = (props) => {
       ssr: false,
     } // This line is important. It's what prevents server-side render
   );
-
-  let facility = props["0"].data;
-  let center = props["1"].geoLocation.center;
-  let geoLocationData = props["1"].geoLocation;
-  let wardName = props["0"].data.ward_name;
+  
+  console.log({ props_1: props["1"]})
+  
+  let facility = props["0"]?.data;
+  let center = props["1"]?.geoLocation.center;
+  let geoLocationData = props["1"]?.geoLocation;
+  let wardName = props["0"]?.data.ward_name;
 
   const [user, setUser] = useState(null);
   const [isFacDetails, setIsFacDetails] = useState(true);
@@ -61,7 +63,7 @@ const Facility = (props) => {
   return (
     <>
       <Head>
-        <title>KMHFL - {facility.official_name ?? ""}</title>
+        <title>KMHFL - {facility?.official_name ?? ""}</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="/assets/css/leaflet.css" />
       </Head>
@@ -79,38 +81,38 @@ const Facility = (props) => {
               </a>{" "}
               {">"}
               <span className="text-gray-500">
-                {facility.official_name ?? ""} ( #
-                <i className="text-black">{facility.code || "NO_CODE"}</i> )
+                {facility?.official_name ?? ""} ( #
+                <i className="text-black">{facility?.code || "NO_CODE"}</i> )
               </span>
             </div>
             <div
               className={
                 "col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                (facility.is_approved ? "border-green-600" : "border-red-600")
+                (facility?.is_approved ? "border-green-600" : "border-red-600")
               }
             >
               <div className="col-span-6 md:col-span-3">
                 <h1 className="text-4xl tracking-tight font-bold leading-tight">
-                  {facility.official_name}
+                  {facility?.official_name}
                 </h1>
                 <div className="flex gap-2 items-center w-full justify-between">
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (facility.code ? "text-green-900" : "text-gray-400")
+                      (facility?.code ? "text-green-900" : "text-gray-400")
                     }
                   >
-                    #{facility.code || "NO_CODE"}
+                    #{facility?.code || "NO_CODE"}
                   </span>
                   <p className="text-gray-600 leading-tight">
-                    {facility.keph_level_name &&
-                      "KEPH " + facility.keph_level_name}
+                    {facility?.keph_level_name &&
+                      "KEPH " + facility?.keph_level_name}
                   </p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
-                  {facility.operational || facility.operation_status_name ? (
+                  {facility?.operational || facility?.operation_status_name ? (
                     <span
                       className={
                         "leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"
@@ -122,7 +124,7 @@ const Facility = (props) => {
                   ) : (
                     ""
                   )}
-                  {facility.is_approved ? (
+                  {facility?.is_approved ? (
                     <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       Approved
@@ -133,13 +135,13 @@ const Facility = (props) => {
                       Not approved
                     </span>
                   )}
-                  {facility.has_edits && (
+                  {facility?.has_edits && (
                     <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
                     </span>
                   )}
-                  {facility.is_complete ? (
+                  {facility?.is_complete ? (
                     <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       Completed{" "}
@@ -150,7 +152,7 @@ const Facility = (props) => {
                       Incomplete{" "}
                     </span>
                   )}
-                  {facility.closed && (
+                  {facility?.closed && (
                     <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <LockClosedIcon className="h-4 w-4" />
                       Closed
@@ -171,12 +173,12 @@ const Facility = (props) => {
                   <button
                     onClick={() =>
                       approveRejectFacility(
-                        facility.rejected,
+                        facility?.rejected,
                         setIsApproveReject
                       )
                     }
                     // className={
-                    //   facility.rejected
+                    //   facility?.rejected
                     //     ? "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
                     //     : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
                     // }
@@ -186,7 +188,7 @@ const Facility = (props) => {
                     }
                   >
                     {/* Dynamic Button Rendering */}
-                    {/* {facility.rejected ? "Appreve" : "Reject"} */}
+                    {/* {facility?.rejected ? "Appreve" : "Reject"} */}
                     Approve/Reject Facility
                   </button>
 
@@ -197,7 +199,7 @@ const Facility = (props) => {
                     Print
                   </button>
                   <button
-                    onClick={() => router.push(`edit_facility/${facility.id}`)}
+                    onClick={() => router.push(`edit_facility/${facility?.id}`)}
                     className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                   >
                     Edit
@@ -280,9 +282,9 @@ const Facility = (props) => {
                             Facility closed
                           </label>
                           <p className="text-black font-medium text-base flex">
-                            {facility.closed ? (
+                            {facility?.closed ? (
                               <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
-                                Closed {facility.closed_date || ""}
+                                Closed {facility?.closed_date || ""}
                               </span>
                             ) : (
                               <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
@@ -291,16 +293,16 @@ const Facility = (props) => {
                             )}
                           </p>
                         </div>
-                        {facility.closed && (
+                        {facility?.closed && (
                           <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                             <label className=" text-gray-600">
                               Facility closure reason
                             </label>
                             <p className="text-black font-medium text-base">
-                              {facility.closed_date && (
-                                <>{facility.closed_date}. </>
+                              {facility?.closed_date && (
+                                <>{facility?.closed_date}. </>
                               )}{" "}
-                              {facility.closing_reason || ""}
+                              {facility?.closing_reason || ""}
                             </p>
                           </div>
                         )}
@@ -309,7 +311,7 @@ const Facility = (props) => {
                             KHIS reporting
                           </label>
                           <p className="text-black font-medium text-base flex">
-                            {facility.reporting_in_dhis ? (
+                            {facility?.reporting_in_dhis ? (
                               <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 Yes
@@ -327,7 +329,7 @@ const Facility = (props) => {
                             NHIF accreditation
                           </label>
                           <p className="text-black font-medium text-base flex">
-                            {facility.nhif_accreditation ? (
+                            {facility?.nhif_accreditation ? (
                               <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 Yes
@@ -345,7 +347,7 @@ const Facility = (props) => {
                             Open 24 hours
                           </label>
                           <p className="text-black font-medium text-base flex">
-                            {facility.open_normal_day ? (
+                            {facility?.open_normal_day ? (
                               <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 Yes
@@ -363,7 +365,7 @@ const Facility = (props) => {
                             Open weekends
                           </label>
                           <p className="text-black font-medium text-base flex">
-                            {facility.open_weekends ? (
+                            {facility?.open_weekends ? (
                               <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 Yes
@@ -381,7 +383,7 @@ const Facility = (props) => {
                             Open late night
                           </label>
                           <p className="text-black font-medium text-base flex">
-                            {facility.open_late_night ? (
+                            {facility?.open_late_night ? (
                               <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 Yes
@@ -399,7 +401,7 @@ const Facility = (props) => {
                             Facility classified
                           </label>
                           <p className="text-black font-medium text-base flex">
-                            {facility.is_classified ? (
+                            {facility?.is_classified ? (
                               <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 Yes
@@ -415,7 +417,7 @@ const Facility = (props) => {
                         <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                           <label className=" text-gray-600">Published</label>
                           <p className="text-black font-medium text-base flex">
-                            {facility.is_published ? (
+                            {facility?.is_published ? (
                               <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 Yes
@@ -433,14 +435,14 @@ const Facility = (props) => {
                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                           Regulation:
                         </h3>
-                        {facility.date_established && (
+                        {facility?.date_established && (
                           <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                             <label className="col-span-1 text-gray-600">
                               Date established
                             </label>
                             <p className="col-span-2 text-black font-medium text-base">
                               {new Date(
-                                facility.date_established
+                                facility?.date_established
                               ).toLocaleDateString("en-GB", {
                                 year: "numeric",
                                 month: "long",
@@ -449,14 +451,14 @@ const Facility = (props) => {
                             </p>
                           </div>
                         )}
-                        {facility.date_requested && (
+                        {facility?.date_requested && (
                           <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                             <label className="col-span-1 text-gray-600">
                               Date requested
                             </label>
                             <p className="col-span-2 text-black font-medium text-base">
                               {new Date(
-                                facility.date_requested
+                                facility?.date_requested
                               ).toLocaleDateString("en-GB", {
                                 year: "numeric",
                                 month: "long",
@@ -465,14 +467,14 @@ const Facility = (props) => {
                             </p>
                           </div>
                         )}
-                        {facility.date_approved && (
+                        {facility?.date_approved && (
                           <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                             <label className="col-span-1 text-gray-600">
                               Date approved
                             </label>
                             <p className="col-span-2 text-black font-medium text-base">
                               {new Date(
-                                facility.date_approved
+                                facility?.date_approved
                               ).toLocaleDateString("en-GB", {
                                 year: "numeric",
                                 month: "long",
@@ -486,7 +488,7 @@ const Facility = (props) => {
                             Regulated
                           </label>
                           <p className="col-span-2 text-black font-medium text-base flex">
-                            {facility.regulated ? (
+                            {facility?.regulated ? (
                               <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                                 <CheckCircleIcon className="h-4 w-4" />
                                 Yes
@@ -504,7 +506,7 @@ const Facility = (props) => {
                             Regulation status
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.regulatory_status_name || " - "}
+                            {facility?.regulatory_status_name || " - "}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -512,10 +514,10 @@ const Facility = (props) => {
                             Regulating body
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.facility_units < 1
+                            {facility?.facility_units < 1
                               ? " - "
-                              : facility.facility_units[0]
-                                  .regulating_body_name || " - "}
+                              : facility?.facility_units !== undefined ? (facility?.facility_units[0].regulating_body_name || " - ") : ' - '}
+                            
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -523,10 +525,10 @@ const Facility = (props) => {
                             Registration number
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.facility_units < 1
+                            {facility?.facility_units < 1
                               ? " - "
-                              : facility.facility_units[0]
-                                  .registration_number || " - "}
+                              : facility?.facility_units !== undefined ? (facility?.facility_units[0].registration_number || " - ") : ' - '}
+                              
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -534,10 +536,10 @@ const Facility = (props) => {
                             License number
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.facility_units < 1
+                            {facility?.facility_units < 1
                               ? " - "
-                              : facility.facility_units[0].license_number ||
-                                " - "}
+                              : facility?.facility_units !== undefined ? (facility?.facility_units[0].license_number || " - ") : ' - '}
+                              
                           </p>
                         </div>
                       </div>
@@ -550,7 +552,7 @@ const Facility = (props) => {
                             Category
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.owner_type_name || " - "}
+                            {facility?.owner_type_name || " - "}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -558,7 +560,7 @@ const Facility = (props) => {
                             Owner
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.owner_name || " - "}
+                            {facility?.owner_name || " - "}
                           </p>
                         </div>
                       </div>
@@ -571,7 +573,7 @@ const Facility = (props) => {
                             Town
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.town_name || " - "}
+                            {facility?.town_name || " - "}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -579,7 +581,7 @@ const Facility = (props) => {
                             Description
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.location_desc || " - "}
+                            {facility?.location_desc || " - "}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -587,7 +589,7 @@ const Facility = (props) => {
                             Nearest landmark
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.nearest_landmark || " - "}
+                            {facility?.nearest_landmark || " - "}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -595,7 +597,7 @@ const Facility = (props) => {
                             Plot number
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.plot_number || " - "}
+                            {facility?.plot_number || " - "}
                           </p>
                         </div>
                       </div>
@@ -608,7 +610,7 @@ const Facility = (props) => {
                             Beds
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.number_of_beds}
+                            {facility?.number_of_beds}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -616,7 +618,7 @@ const Facility = (props) => {
                             Cots
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.number_of_cots}
+                            {facility?.number_of_cots}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -624,7 +626,7 @@ const Facility = (props) => {
                             Emergency casualty beds
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.number_of_emergency_casualty_beds}
+                            {facility?.number_of_emergency_casualty_beds}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -632,7 +634,7 @@ const Facility = (props) => {
                             ICU beds
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.number_of_icu_beds}
+                            {facility?.number_of_icu_beds}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -640,7 +642,7 @@ const Facility = (props) => {
                             HDU beds
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.number_of_hdu_beds}
+                            {facility?.number_of_hdu_beds}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -648,7 +650,7 @@ const Facility = (props) => {
                             General theatres
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.number_of_general_theatres}
+                            {facility?.number_of_general_theatres}
                           </p>
                         </div>
                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -656,7 +658,7 @@ const Facility = (props) => {
                             Maternity theatres
                           </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            {facility.number_of_maternity_theatres}
+                            {facility?.number_of_maternity_theatres}
                           </p>
                         </div>
                       </div>
@@ -664,9 +666,9 @@ const Facility = (props) => {
                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                           Contacts:
                         </h3>
-                        {facility.facility_contacts &&
-                          facility.facility_contacts.length > 0 &&
-                          facility.facility_contacts.map((contact) => (
+                        {facility?.facility_contacts &&
+                          facility?.facility_contacts.length > 0 &&
+                          facility?.facility_contacts.map((contact) => (
                             <div
                               key={contact.contact_id}
                               className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
@@ -682,20 +684,20 @@ const Facility = (props) => {
                               </p>
                             </div>
                           ))}
-                        {facility.officer_in_charge && (
+                        {facility?.officer_in_charge && (
                           <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                             <label className="col-span-1 text-gray-600 capitalize">
-                              {facility.officer_in_charge.title_name ||
+                              {facility?.officer_in_charge.title_name ||
                                 "Officer in charge"}
                             </label>
                             <p className="col-span-2 text-black font-medium text-base">
-                              {facility.officer_in_charge.name || " - "}
+                              {facility?.officer_in_charge.name || " - "}
                             </p>
                           </div>
                         )}
-                        {facility.officer_in_charge &&
-                          facility.officer_in_charge.contacts.length > 0 &&
-                          facility.officer_in_charge.contacts.map((contact) => (
+                        {facility?.officer_in_charge &&
+                          facility?.officer_in_charge.contacts.length > 0 &&
+                          facility?.officer_in_charge.contacts.map((contact) => (
                             <div
                               key={contact.contact_id}
                               className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
@@ -723,7 +725,7 @@ const Facility = (props) => {
                       <div className="bg-white w-full p-4 rounded">
                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                           <span className="font-semibold">Services</span>
-                          {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
+                          {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
                         </h3>
                         <ul>
                           {facility?.facility_services &&
@@ -760,7 +762,7 @@ const Facility = (props) => {
                             ))
                           ) : (
                             <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                              <p>No services listed for this facility.</p>
+                              <p>No services listed for this facility?.</p>
                             </li>
                           )}
                         </ul>
@@ -774,7 +776,7 @@ const Facility = (props) => {
                     <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left px-1 py-4">
                       <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                         <span className="font-semibold">Infrastructure</span>
-                        {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#infrastructure"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit infrastructure</a> : ""} */}
+                        {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#infrastructure"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit infrastructure</a> : ""} */}
                       </h3>
                       <div className="bg-white w-full p-4 rounded flex flex-col">
                         <ul>
@@ -803,7 +805,7 @@ const Facility = (props) => {
                             <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                               <p>
                                 No other infrastructure data listed for this
-                                facility.
+                                facility?.
                               </p>
                             </li>
                           )}
@@ -819,7 +821,7 @@ const Facility = (props) => {
                       <div className="bg-white w-full p-4 rounded">
                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                           <span className="font-semibold">Human Resources</span>
-                          {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#hr"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a> : ""} */}
+                          {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#hr"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a> : ""} */}
                         </h3>
                         <ul>
                           {facility?.facility_specialists &&
@@ -845,7 +847,7 @@ const Facility = (props) => {
                             ))
                           ) : (
                             <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-                              <p>No HR data listed for this facility.</p>
+                              <p>No HR data listed for this facility?.</p>
                             </li>
                           )}
                         </ul>
@@ -860,7 +862,7 @@ const Facility = (props) => {
                       <div className="bg-white w-full p-4 rounded">
                         <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                           <span className="font-semibold">Facility units</span>
-                          {/* {user && user?.id ? <a href={"/facility/edit/"+facility.id+"#units"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}
+                          {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#units"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}
                         </h3>
                         <ul>
                           {facility?.facility_units &&
@@ -888,7 +890,7 @@ const Facility = (props) => {
                             ))
                           ) : (
                             <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-                              <p>No units in this facility.</p>
+                              <p>No units in this facility?.</p>
                             </li>
                           )}
                         </ul>
@@ -913,21 +915,21 @@ const Facility = (props) => {
                     Functional Status
                   </label>
                   <p className="col-span-2 text-black font-medium text-base">
-                    {facility.operation_status_name || " - "}
+                    {facility?.operation_status_name || " - "}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                   <label className="col-span-1 text-gray-600">Keph Level</label>
                   <p className="col-span-2 text-black font-medium text-base">
-                    {facility.keph_level_name || " - "}
+                    {facility?.keph_level_name || " - "}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                   <label className="col-span-1 text-gray-600">Admission</label>
                   <p className="col-span-2 text-black font-medium text-base">
-                    {facility.admission_status_name || " - "}
+                    {facility?.admission_status_name || " - "}
                   </p>
                 </div>
                 <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
@@ -935,7 +937,7 @@ const Facility = (props) => {
                     Facility Type
                   </label>
                   <p className="col-span-2 text-black font-medium text-base">
-                    {facility.facility_type_name || " - "}
+                    {facility?.facility_type_name || " - "}
                   </p>
                 </div>
 
@@ -943,18 +945,18 @@ const Facility = (props) => {
                 <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                   <label className="col-span-1 text-gray-600">County</label>
                   <p className="col-span-2 text-black font-medium text-base">
-                    {facility.county || " - "}
+                    {facility?.county || " - "}
                   </p>
                 </div>
 
 
-                {facility.date_established && (
+                {facility?.date_established && (
                   <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                     <label className="col-span-1 text-gray-600">
                       Date established
                     </label>
                     <p className="col-span-2 text-black font-medium text-base">
-                      {new Date(facility.date_established).toLocaleDateString(
+                      {new Date(facility?.date_established).toLocaleDateString(
                         "en-GB",
                         { year: "numeric", month: "long", day: "numeric" }
                       ) || " - "}
@@ -992,7 +994,7 @@ const Facility = (props) => {
                       Sub County
                     </label>
                     <p className="col-span-2 text-black font-medium text-base">
-                      {facility.ward_name || " - "}
+                      {facility?.ward_name || " - "}
                     </p>
                   </div>
                   <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
@@ -1000,13 +1002,13 @@ const Facility = (props) => {
                       Constituency
                     </label>
                     <p className="col-span-2 text-black font-medium text-base">
-                      {facility.constituency || " - "}
+                      {facility?.constituency || " - "}
                     </p>
                   </div>
                   <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
                     <label className="col-span-1 text-gray-600">Town</label>
                     <p className="col-span-2 text-black font-medium text-base">
-                      {facility.town_name || " - "}
+                      {facility?.town_name || " - "}
                     </p>
                   </div>
                   <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
@@ -1014,7 +1016,7 @@ const Facility = (props) => {
                       Location Description
                     </label>
                     <p className="col-span-2 text-black font-medium text-base">
-                      {facility.location_desc || " - "}
+                      {facility?.location_desc || " - "}
                     </p>
                   </div>
                 </div>
@@ -1044,12 +1046,12 @@ const Facility = (props) => {
                 <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                   Approval / Rejection comment
                 </h3>
-                {facility.is_approved}
+                {facility?.is_approved}
                 <form
                   className="space-y-3"
-                  onSubmit = {facility.is_approved? (e) => approveFacility(e,facility.id, rejectionReason) : (e) => validateFacility(e, facility.id,reject, rejectionReason)}
+                  onSubmit = {facility?.is_approved? (e) => approveFacility(e,facility?.id, rejectionReason) : (e) => validateFacility(e, facility?.id,reject, rejectionReason)}
                   // onSubmit={(e) =>
-                  //   validateFacility(e, facility.id,reject, rejectionReason)
+                  //   validateFacility(e, facility?.id,reject, rejectionReason)
                   // }
                 >
                   <label htmlFor="comment-text-area"></label>
@@ -1068,7 +1070,7 @@ const Facility = (props) => {
                     onClick={(e) => reject = false}
                     
                   >
-                    {facility.is_approved ? "Approve Facility" : "Validate Facility"}
+                    {facility?.is_approved ? "Approve Facility" : "Validate Facility"}
                   </button>
                   <button
                     type="submit"
@@ -1095,20 +1097,20 @@ const Facility = (props) => {
                 <Map
                   ward_name={wardName}
                   operational={
-                    facility.operational ?? facility.operation_status_name ?? ""
+                    facility?.operational ?? facility?.operation_status_name ?? ""
                   }
                   code={facility?.code || "NO_CODE"}
                   lat={facility?.lat_long[0]}
                   center={center}
                   geoJSON={geoLocationData}
                   long={facility?.lat_long[1]}
-                  name={facility.official_name || facility.name || ""}
+                  name={facility?.official_name || facility?.name || ""}
                 />
               </div>
             ) : (
               <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
                 <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-                  <p>No location data found for this facility.</p>
+                  <p>No location data found for this facility?.</p>
                 </div>
               </div>
             )}
@@ -1129,7 +1131,7 @@ const Facility = (props) => {
   );
 };
 
-Facility.getInitialProps = async (ctx) => {
+Facility?.getInitialProps = async (ctx) => {
   const allOptions = [];
 
   if (ctx.query.q) {

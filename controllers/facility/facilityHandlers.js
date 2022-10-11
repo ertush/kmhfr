@@ -566,16 +566,15 @@ const handleGeolocationUpdates = async (formData, coordinates_id, alert) => {
 // handleFacilityContactUpdates
 const handleFacilityContactsUpdates = async (formData, facility_id, alert) => {
     if(formData){
-        alert.success("Facility Geolocation successfully updated")
+        alert.success("Facility Contacts successfully updated")
     } else {
-        alert.danger("Unable to update facility geolocation data")
+        alert.danger("Unable to update facility contacts data")
     }
  
     try{
        const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
             headers:{
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8;*/*'
             },
             method:'POST',
             body: JSON.stringify(formData)
