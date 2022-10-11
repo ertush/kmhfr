@@ -346,26 +346,26 @@ function AddFacility(props) {
 		}
 	}
 
-	if(facilityTypeDetail !== '' && kephLvlRef.current !== null){
+	if(facilityTypeDetail !== '' && kephLvlRef.current){
 		switch(facilityTypeDetail){
 			case 'Comprehensive Teaching & Tertiary Referral Hospital':
 				
-				if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 6')[0]
+				if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 6')[0]
 				
 				break;
 			case 'Specialized & Tertiary Referral hospitals':
 				
-				if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 6')[0]
+				if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 6')[0]
 				
 				break;
 			case 'Secondary care hospitals':
 			
-				if(kephLvlRef.current !== null) kephLvlRef.current.state.value =   kephOptions.filter(({label}) => label === 'Level 5')[0]
+				if(kephLvlRef.current) kephLvlRef.current.state.value =   kephOptions.filter(({label}) => label === 'Level 5')[0]
 					
 				break;
 			case 'Primary care hospitals':
 				
-				if(kephLvlRef.current !== null) kephLvlRef.current.state.value =  kephOptions.filter(({label}) => label === 'Level 4')[0]
+				if(kephLvlRef.current) kephLvlRef.current.state.value =  kephOptions.filter(({label}) => label === 'Level 4')[0]
 				break;
 		}
 	}
@@ -601,7 +601,7 @@ function AddFacility(props) {
 																			switch(facilityOption){
 																				case 'STAND ALONE':
 			
-																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 
 																					return [
 																						facilityTypeOptions.filter(({label}) => label == 'Dermatology')[0] || {},
@@ -622,16 +622,16 @@ function AddFacility(props) {
 																						 ] 
 																					
 																				case 'DISPENSARY':
-																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 																					return  facilityTypeOptions.filter(({label}) => label == 'DISPENSARY') || []
 																					
 
 																				case 'MEDICAL CLINIC':
-																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
 																					
 																				case 'NURSING HOME':
-																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
+																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 																					
 																					return [
 																							facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
@@ -648,14 +648,14 @@ function AddFacility(props) {
 																						] 
 																			
 																				case 'HEALTH CENTRE':
-																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
+																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 																					return [
 																						facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
 																						facilityTypeOptions.filter(({label}) => label == 'Comprehensive health Centre')[0] || {}
 																						]
 
 																				case 'MEDICAL CENTRE':
-																					if(kephLvlRef.current !== null) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
+																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
 																				
@@ -1598,7 +1598,7 @@ function AddFacility(props) {
 															<div className='w-full h-auto'>																		
 																<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
 																	{
-																		 geoJSON !== null &&
+																		 geoJSON &&
 
 																		<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
 																
@@ -2131,7 +2131,7 @@ function AddFacility(props) {
 																	placeholder="Select Name"
 																	onChange={
 																		e => {
-																			if(regBodyRef.current !== null){
+																			if(regBodyRef.current){
 																			
 																				regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
 																			}
@@ -2489,7 +2489,7 @@ AddFacility.getInitialProps = async (ctx) => {
 										},
 									})
 
-									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division !== null ? {value:id, label:sub_division} : {value:id, label:name})
+									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division ? {value:id, label:sub_division} : {value:id, label:name})
 
 									
 									allOptions.push({facility_types: results })
