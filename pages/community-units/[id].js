@@ -9,18 +9,22 @@ import router from "next/router";
 
 import {
   CheckCircleIcon,
-  ChevronRightIcon,
   InformationCircleIcon,
-  LocationMarkerIcon,
   LockClosedIcon,
   XCircleIcon,
 } from "@heroicons/react/solid";
-import { ArrowsExpandIcon } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
 
 const CommUnit = (props) => {
   const Map = dynamic(
-    () => import("../../components/Map"), // replace '@components/map' with your component's location
+    () => import("../../components/Map"), 
     {
       loading: () => (
         <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
@@ -35,7 +39,39 @@ const CommUnit = (props) => {
   const [user, setUser] = useState(null);
   const [isCHUDetails, setIsCHUDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
+  const [viewLog, setViewLog] = useState(false);
+  const [columns, setColumns] = useState([
+    { id: 'updated_on', label: 'Date', minWidth: 100 },
+    { id: 'updated_by', label: 'User', minWidth: 100},
+    { id: 'updates',label: 'Updates',minWidth: 100, }
+  ]);
+  const [rows, setRows] = useState([])  
 
+  const fetchChangeLogs = async () => {
+    fetch(`/api/chus/data?path=changelog&id=${props?.data.id}`,{
+      headers:{
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json;charset=utf-8'
+        
+      },
+      method:'GET',
+    }).then(res => res.json()).then(data=>{
+     const res = data.revisions.map((item, ky)=>{
+
+          return {
+          updated_on: item.updated_on,
+          updated_by: item.updated_by,
+          updates: (item.updates.map((item, i)=> (
+            <div className={"stretch"}>
+            <span className={"font-bold text-2x"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-green-600'} key={item.new}>{item.new + ''}</span>
+           </div>
+      )))
+        }
+      })
+      setRows(res)
+    }).catch(err=>{console.log(err)})
+  }
+console.log(rows)
   useEffect(() => {
     if (typeof window !== "undefined") {
       let usr = window.sessionStorage.getItem("user");
@@ -511,6 +547,78 @@ const CommUnit = (props) => {
                           </div>
                         ))}
                     </div>
+                    {/* <div> */}
+                       
+                    {/* </div> */}
+                    <div className='flex justify-between items-center w-full mt-5'>
+															<button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'
+                              onClick={() => {
+                                setViewLog(!viewLog);
+                                fetchChangeLogs()
+                              }}
+                              >
+																<span className='text-medium font-semibold text-black '>
+                                  {!viewLog ? 'View Changelog': 'Hide Changelog' }  
+																</span>
+															</button>
+                    </div>
+                    {viewLog && (
+
+                    <div className='col-span-4 w-full h-auto'>
+                              <TableContainer sx={{ maxHeight: 440 }}>
+                                    <Table stickyHeader aria-label="sticky table">
+                                    <TableHead>
+                                        <TableRow>
+                                        {columns.map((column,i) => (
+                                            <TableCell
+                                            key={i}
+                                            align={column.align}
+                                            style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                            >
+                                            {column.label}
+                                            </TableCell>
+                                        ))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody sx={{paddingX: 4}}>
+                                        {rows
+                                        // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((row) => {
+                                            return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                                {columns.map((column, i) => {
+                                                const value = row[column.id];
+                                                return (
+                                                    <TableCell key={column.id} align={column.align}>
+                                                        {
+                                                        column.id === 'action' ?
+                                                            
+                                                                <button className='bg-indigo-500 rounded p-2 text-white font-semibold'>{
+                                                                    resourceCategory === "HealthInfrastructure" || resourceCategory === "HR" ?
+                                                                    'Edit' : 'View'
+                                                                }</button>
+                                                            
+                                                            :
+                                                                column.format && typeof value === 'boolean'
+                                                                    ? value.toString()
+                                                                    :  column.format && typeof value === 'number'
+                                                                    ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+                                                        
+                                                        }
+                                                    </TableCell>
+                                                    
+                                                );
+                                                })}
+                                            </TableRow>
+                                            );
+                                        })}
+                                    </TableBody>
+                                    </Table>
+                                </TableContainer>
+                    </div>
+                    )}
+
+
                     <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
                       <summary>All data</summary>
                       <pre
