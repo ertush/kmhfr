@@ -3,12 +3,11 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect } from "react";
 import MainLayout from "../../components/MainLayout";
-import { approveRejectCHU, rejectCHU } from "../../controllers/reject";
-import { ChevronDownIcon } from "@heroicons/react/solid";
-import router from 'next/router';
+// import { approveRejectCHU, rejectCHU } from "../../controllers/reject";
+// import { ChevronDownIcon } from "@heroicons/react/solid";
+import router from "next/router";
 
-import
-{
+import {
   CheckCircleIcon,
   ChevronRightIcon,
   InformationCircleIcon,
@@ -19,8 +18,7 @@ import
 import { ArrowsExpandIcon } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
 
-const CommUnit = (props) =>
-{
+const CommUnit = (props) => {
   const Map = dynamic(
     () => import("../../components/Map"), // replace '@components/map' with your component's location
     {
@@ -38,18 +36,14 @@ const CommUnit = (props) =>
   const [isCHUDetails, setIsCHUDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
 
-  useEffect(() =>
-  {
-    if (typeof window !== "undefined")
-    {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
       let usr = window.sessionStorage.getItem("user");
-      if (usr && usr.length > 0)
-      {
+      if (usr && usr.length > 0) {
         setUser(JSON.parse(usr));
       }
     }
-    return () =>
-    {
+    return () => {
       setIsCHUDetails(true);
       setIsApproveReject(false);
     };
@@ -142,35 +136,29 @@ const CommUnit = (props) =>
                   )}
                 </div>
               </div>
-              <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
-               
-              </div>
+              <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
             </div>
           </div>
 
           {/* Left side */}
-          {!isApproveReject ? (
-            // Tab Section
             <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
               {/* Approve/Reject, Edit Buttons */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
                   <button
-                    onClick={() =>
-                      approveRejectCHU(
-                        cu.is_approved,
-                        setIsApproveReject,
-                        props.data.id
-                      )
+                    onClick={() => router.push("/community-units/approve/" + cu.id)
+                      //approveRejectCHU(cu.is_approved,setIsApproveReject,props.data.id)
                     }
                     className={
-                      cu.is_approved
-                        ? "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
+                      cu.is_approved || cu.is_rejected
+                        ? ''
                         : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
                     }
                   >
-                    {/* Dynamic Button Rendering */}
-                    {cu.is_approved ? "Reject" : "Approve"}
+                  {/* Dynamic Button Rendering */}
+                  {cu.is_approved || cu.is_rejected
+                  ? "" 
+                  : "Approve/Reject"}
                   </button>
                   <button
                     onClick={() => console.log(cu.name)}
@@ -179,7 +167,11 @@ const CommUnit = (props) =>
                     Print
                   </button>
                   <button
-                    onClick={() => router.push("/community-units/edit_community_unit/" + cu.id)}
+                    onClick={() =>
+                      router.push(
+                        "/community-units/edit_community_unit/" + cu.id
+                      )
+                    }
                     className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                   >
                     Edit
@@ -217,7 +209,6 @@ const CommUnit = (props) =>
                 </Tabs.List>
                 {/*End of the vertical tabs  */}
 
-
                 <Tabs.Panel
                   value="overview"
                   className="grow-1 py-1 px-4 tab-panel"
@@ -240,8 +231,8 @@ const CommUnit = (props) =>
                               {cu?.status_name || "Yes"}
                             </span>
                           ) : cu.status_name
-                            ?.toLocaleLowerCase()
-                            .includes("semi") ? (
+                              ?.toLocaleLowerCase()
+                              .includes("semi") ? (
                             <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                               <CheckCircleIcon className="h-4 w-4" />
                               {cu?.status_name || "Yes"}
@@ -473,9 +464,9 @@ const CommUnit = (props) =>
                       </h3>
                       {cu.contacts &&
                         cu.contacts.length > 0 &&
-                        cu.contacts.map((contact) => (
+                        cu.contacts.map((contact, i) => (
                           <div
-                            key={contact.id}
+                            key={i}
                             className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
                           >
                             <label className="col-span-1 text-gray-600 capitalize">
@@ -502,9 +493,9 @@ const CommUnit = (props) =>
                       )}
                       {cu.officer_in_charge &&
                         cu.officer_in_charge.contacts.length > 0 &&
-                        cu.officer_in_charge.contacts.map((contact) => (
+                        cu.officer_in_charge.contacts.map((contact, i) => (
                           <div
-                            key={contact.contact_id}
+                            key={i}
                             className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
                           >
                             <label className="col-span-1 text-gray-600 capitalize">
@@ -540,13 +531,12 @@ const CommUnit = (props) =>
                       <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                         <span className="font-semibold">Services</span>
                         <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
-                       
                       </h3>
                       <ul>
                         {cu?.services && cu?.services.length > 0 ? (
-                          cu?.services.map((service) => (
+                          cu?.services.map((service, i) => (
                             <li
-                              key={service.service_id}
+                              key={i}
                               className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
                             >
                               <div>
@@ -614,14 +604,13 @@ const CommUnit = (props) =>
                         <span className="font-semibold">
                           Health Unit workers
                         </span>
-                       
                       </h3>
                       <ul>
                         {cu?.health_unit_workers &&
-                          cu?.health_unit_workers.length > 0 ? (
-                          cu?.health_unit_workers.map((hr) => (
+                        cu?.health_unit_workers.length > 0 ? (
+                          cu?.health_unit_workers.map((hr, i) => (
                             <li
-                              key={hr.id}
+                              key={i}
                               className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
                             >
                               <div>
@@ -674,196 +663,6 @@ const CommUnit = (props) =>
                 </Tabs.Panel>
               </Tabs.Root>
             </div>
-          ) : (
-
-
-            // Approval Rejection Section
-            <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4 mx-3">
-              <h3 className="text-2xl tracking-tight font-semibold leading-5">
-                Approve/Reject Community Health Unit
-              </h3>
-              {/* CHU details */}
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Functionality status
-                  </label>
-                  <p className="text-black font-medium text-base flex">
-                    {cu.status_name.toLocaleLowerCase().includes("fully-") ? (
-                      <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
-                        <CheckCircleIcon className="h-4 w-4" />
-                        {cu?.status_name || "Yes"}
-                      </span>
-                    ) : cu?.status_name.toLocaleLowerCase().includes("semi") ? (
-                      <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
-                        <CheckCircleIcon className="h-4 w-4" />
-                        {cu?.status_name || "Yes"}
-                      </span>
-                    ) : (
-                      <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                        <XCircleIcon className="h-4 w-4" />
-                        {cu?.status_name || "No"}
-                      </span>
-                    )}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Linked facility
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {cu.facility_name || " - "}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Households monitored
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {cu.households_monitored || " - "}
-                  </p>
-                </div>
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Number of CHVs
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {cu.number_of_chvs || " - "}
-                  </p>
-                </div>
-
-                {cu.date_established && (
-                  <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                      Date established
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {new Date(cu.date_established).toLocaleDateString(
-                        "en-GB",
-                        { year: "numeric", month: "long", day: "numeric" }
-                      ) || " - "}
-                    </p>
-                  </div>
-                )}
-                {cu.date_operational && (
-                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                      Date operational
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {new Date(cu.date_operational).toLocaleDateString(
-                        "en-GB",
-                        { year: "numeric", month: "long", day: "numeric" }
-                      ) || " - "}
-                    </p>
-                  </div>
-                )}
-              </div>
-              {/* CHU details hidden section */}
-              <div className="grid grid-cols-2 w-full md:w-11/12 h-8 leading-none items-center">
-                <button
-                  className="flex bg-green-500 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto rounded-md"
-                  onClick={() =>
-                  {
-                    if (isCHUDetails)
-                    {
-                      setIsCHUDetails(false);
-                    } else
-                    {
-                      setIsCHUDetails(true);
-                    }
-                  }}
-                >
-                  View More Community Health Unit Details
-                  {isCHUDetails ? (
-                    <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
-                  ) : (
-                    <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" />
-                  )}
-                </button>
-              </div>
-
-              {!isCHUDetails && (
-                <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                    <label className="col-span-1 text-gray-600">Ward</label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {cu.facility_ward || " - "}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                      Constituency
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {cu.facility_constituency || " - "}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                      Sub-county
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {cu.facility_subcounty || " - "}
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                    <label className="col-span-1 text-gray-600">County</label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {cu.facility_county || " - "}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* CHU Approval Comment */}
-
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <label
-                  htmlFor="approval-comment"
-                  className="col-span-1 text-gray-900 font-semibold leading-16 text-medium"
-                >
-                  {" "}
-                  Approval comment:{" "}
-                </label>
-                <p
-                  className="text-gray-400 text-medium text-left leading-16"
-                  name="approval-comment"
-                >
-                  some approval comments
-                </p>
-              </div>
-
-              {/* CHU Rejection Commment */}
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-                  Reject this Community Unit
-                </h3>
-                <form
-                  className="space-y-3"
-                  onSubmit={(e) =>
-                    rejectCHU(e, cu, cu.isApproveReject, e.target.value)
-                  }
-                >
-                  <label htmlFor="comment-text-area"></label>
-                  <textarea
-                    cols="70"
-                    rows="auto"
-                    className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
-                    placeholder="Enter a comment for rejecting community health unit"
-                  ></textarea>
-                  <button
-                    type="submit"
-                    className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
-                  >
-                    Reject Community Health Unit
-                  </button>
-                </form>
-              </div>
-            </div>
-          )}
           {/* End of approval or reject validation */}
 
           {/* Aside / Right Side  */}
@@ -880,6 +679,7 @@ const CommUnit = (props) =>
                   lat={cu?.lat_long[0]}
                   long={cu?.lat_long[1]}
                   name={cu.official_name || cu.name || ""}
+                  constituency={cu?.constituency}
                 />
               </div>
             ) : (
@@ -907,19 +707,14 @@ const CommUnit = (props) =>
   );
 };
 
-CommUnit.getInitialProps = async (ctx) =>
-{
-  if (ctx.query.q)
-  {
+CommUnit.getInitialProps = async (ctx) => {
+  if (ctx.query.q) {
     const query = ctx.query.q;
 
-    if (typeof window !== "undefined" && query.length > 2)
-    {
-      window.location.href = `/community-units?q=${ query }`;
-    } else
-    {
-      if (ctx.res)
-      {
+    if (typeof window !== "undefined" && query.length > 2) {
+      window.location.href = `/community-units?q=${query}`;
+    } else {
+      if (ctx.res) {
         ctx.res.writeHead(301, {
           Location: "/community-units?q=" + query,
         });
@@ -929,13 +724,10 @@ CommUnit.getInitialProps = async (ctx) =>
     }
   }
   return checkToken(ctx.req, ctx.res)
-    .then((t) =>
-    {
-      if (t.error)
-      {
+    .then((t) => {
+      if (t.error) {
         throw new Error("Error checking token");
-      } else
-      {
+      } else {
         let token = t.token;
         let url =
           process.env.NEXT_PUBLIC_API_URL + "/chul/units/" + ctx.query.id + "/";
@@ -947,14 +739,12 @@ CommUnit.getInitialProps = async (ctx) =>
           },
         })
           .then((r) => r.json())
-          .then((json) =>
-          {
+          .then((json) => {
             return {
               data: json,
             };
           })
-          .catch((err) =>
-          {
+          .catch((err) => {
             console.log("Error fetching facilities: ", err);
             return {
               error: true,
@@ -964,16 +754,12 @@ CommUnit.getInitialProps = async (ctx) =>
           });
       }
     })
-    .catch((err) =>
-    {
+    .catch((err) => {
       console.log("Error checking token: ", err);
-      if (typeof window !== "undefined" && window)
-      {
-        if (ctx?.asPath)
-        {
+      if (typeof window !== "undefined" && window) {
+        if (ctx?.asPath) {
           window.location.href = ctx?.asPath;
-        } else
-        {
+        } else {
           let token = t.token;
           let url =
             process.env.NEXT_PUBLIC_API_URL +
@@ -987,15 +773,13 @@ CommUnit.getInitialProps = async (ctx) =>
             },
           })
             .then((r) => r.json())
-            .then((json) =>
-            {
+            .then((json) => {
               console.log(json);
               return {
                 data: json,
               };
             })
-            .catch((err) =>
-            {
+            .catch((err) => {
               console.log("Error fetching facilities: ", err);
               return {
                 error: true,

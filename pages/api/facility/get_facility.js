@@ -21,7 +21,15 @@ export default async function fetchFacilityData(req, res) {
                 case 'wards':
                     url = `${API_URL}/common/${path}/${id}/` 
                 break;
-              
+
+                case 'facilities':
+                    url = `${API_URL}/facilities/${path}/${id}/`
+                break;
+
+                case 'facility_coordinates': 
+                    url = `${API_URL}/gis/${path}/?facility=${id}`
+                break;
+
                 default:
                 break;
             }
@@ -42,7 +50,7 @@ export default async function fetchFacilityData(req, res) {
                     console.error('Error fetching facility data: ', err)
                     return {
                         error: true,
-                        err: err,
+                        err: err.message,
                         api_url:API_URL
                     }
             }

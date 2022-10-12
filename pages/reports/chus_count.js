@@ -2,100 +2,76 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { SearchIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
-import Select from 'react-select'; 
 import Resources from './resources'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
-const Users = (props) => {
+const CHUsCount = (props) => { 
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
-
     const LinkCellRenderer = (params) =>{
-        let reportType =''
-        let countyID = ''
-        // console.log(params.data);
-        if(params.data.hasOwnProperty('facilities')){
-            reportType = 'facility_count_by_county'
-            countyID = params.data.area_id
-        }
-        if(params.data.hasOwnProperty('beds')){
-            reportType = 'beds_and_cots_by_constituency'
-            countyID = params.data.county
-        }
-        // console.log(countyID);
         return(
             <Link
             href={{ pathname: `/reports/by_county/`,
-            query: { id: countyID, type:reportType } }}
+            query: { id: params.data.county_id,type: 'sub_county' } }}
     
             ><a>{params.value}</a></Link>
         )}
 
-    const [gridApi, setGridApi] = useState(null);
-    const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
-    const [filtered, setFiltered]=useState([])
-    const [searchTerm, setSearchTerm] = useState('')
-    const [filterOption, setFilterOption] = useState('')
-    let label = 'beds_cots'
     const [columns, setColumns]=useState([
         {headerName: "County", field: "county_name",   cellRenderer: "LinkCellRenderer"},
-        {headerName: "Beds", field: "beds"},
-        {headerName: "Cots", field: "cots"},
-        {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
+        {headerName: "Number of Community Health Units", field: "number_of_units"},
+        {headerName: "Number of CHVs", field: "chvs"},
+        {headerName: "Number of CHEWs", field: "chews"},
+        {headerName: "Actions", cellRendererFramework: function(params) {
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.county, level: 'county', type: 'ndividual_facility_beds_and_cots', ward: 'Test Ward' }
+                    query: { id: params.data.county_id, level: 'county', type:'chu_count' }
                 })
             }}
-            > View Facilities </button>
-          },}
-    ])
-
-    const onGridReady = (params) => {
+            > View CHUs </button>
+        },}
+        ])
+    const [gridApi, setGridApi] = useState(null);
+    const [gridColumnApi, setGridColumnApi] = useState(null);
+    const [facilities, setFacilities]=useState([])
+    const [filtered, setFiltered]=useState([])
+    const [searchTerm, setSearchTerm] = useState('')
+    let label ='chus_count'
      
+    const onGridReady = (params) => {
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst=  props.data.results.map((county_beds)=>{
-            return {
-                ...county_beds,
-                county_name: county_beds.county_name,
-                beds: county_beds.beds,
-                cots: county_beds.cots,
-                actions: (<a href="#">View</a>)
-            }
-            
-        })
-     
-        setUsers(lnlst)
+        const lnlst = props.data.results.map(({county_name,county_id, number_of_units, id, chvs, chews})=>{return {county_name, county_id,number_of_units,id, chvs, chews}})
+        
+        setFacilities(lnlst)
         updateData(lnlst)
     };
 
     const filterField = (search, value) => value?.toString().toLowerCase().includes(search.toLowerCase());
     const filter =(searchTerm)=>{
         if (searchTerm !== '' && searchTerm.length > 3) {
-            const filteredData = users.filter((row) => {
+            const filteredData = facilities.filter((row) => {
                 return Object.keys(row).some((field) => {
                     return filterField(searchTerm, row[field]);
                 });
             });
             setFiltered(filteredData);
         } else {
-            setFiltered(users);
+            setFiltered(facilities);
         }
             
     }
@@ -103,29 +79,7 @@ const Users = (props) => {
         filter(searchTerm)
     }, [searchTerm])
 
-    useEffect(()=>{
-        switch (filterOption) {
-            case 'county':
-                router.push({
-                    pathname: `/reports/static_reports/`
-                })
-                break;
-            case 'sub-county':
-                router.push({
-                    pathname: `/reports/by_county/`
-                })
-                break;
-            case 'ward':
-                router.push({
-                    pathname: `/reports/by_ward/`
-                })
-                break;
-            default:
-                break;
-        }
-    },[filterOption])
-console.log(filterOption)
-
+    console.log(props.current_url);
     return (
         <div className="">
             <Head>
@@ -138,33 +92,32 @@ console.log(filterOption)
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
-                                <span className="text-gray-500">Static Reports</span> 
+                                <span className="text-gray-500">Community Health Units</span> 
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    {'Beds and Cots Report by County'}
+                                    {'Community Health Units'}
                                 </h2>
-                                
                         </div>
                         </div>
                     </div>
-                    <Resources label={label}/>
-
+                    {/* list */}
+                    <Resources label ={label} />
+                    
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div className='mx-4'>
                             <form
                                 className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-                                //   action={ "/static_reports"}
-                                // onSubmit={()=> filter(searchTerm)}
+                                //   action={path || "/facilities"}
                                 >
                                 <input
-                                    // name="q"
+                                    name="q"
                                     id="search-input"
                                     className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                     type="search"
-                                    // defaultValue={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
+                                    // defaultValue={searchTerm}
                                     placeholder="Search anything ...."
                                 />
                                 <button
@@ -175,12 +128,12 @@ console.log(filterOption)
                                 </button>
                                 <div className='text-white text-md'>
 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
+                                                e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -190,14 +143,7 @@ console.log(filterOption)
                            
                                     
                             </form>
-                            <Select
-                                options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
-                                required
-                                placeholder='Filter By:'
-                                onChange={(e) => setFilterOption(e.value)}
-                                name='filter_by'
-                                className='flex-none w-1/5 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
-                            />
+                            
                             <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
                             </h5>
@@ -221,9 +167,8 @@ console.log(filterOption)
                                       }}
                                     />
                             </div>
-                           
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                        {filtered && filtered.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
                                         <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
@@ -263,11 +208,19 @@ console.log(filterOption)
     )
 }   
 
-Users.getInitialProps = async (ctx) => {
+CHUsCount.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
+    
+    // const county_id= ctx.query.id
+    // console.log(ctx.query)
+    const fetchData = async (token) => {
+        let url = API_URL + `/reporting/chul/?report_type=county`
 
-    const fetchData = (token) => {
-        let url = API_URL + '/reporting/?report_type=beds_and_cots_by_county'
+        // if(county_id){
+        //     url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}&report_level=county`
+        // }else{
+        //     url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
+        // }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
@@ -276,19 +229,6 @@ Users.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
-        // let other_posssible_filters = ["is_active"]
-
-        // other_posssible_filters.map(flt => {
-        //     console.log(flt);
-        //     if (ctx?.query[flt]) {
-        //         query[flt] = ctx?.query[flt]
-        //         if (url.includes('?')) {
-        //             url += `&${flt}=${ctx?.query[flt]}`
-        //         } else {
-        //             url += `?${flt}=${ctx?.query[flt]}`
-        //         }
-        //     }
-        // })
         
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
@@ -296,28 +236,28 @@ Users.getInitialProps = async (ctx) => {
             url = `${url}&page=${ctx.query.page}`
         }
         
-        return fetch(url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(json => {
-                    return {
-                        data: json, query, token, path: ctx.asPath || '/users', current_url: current_url 
-                    }
-                
-            }).catch(err => {
-                console.log('Error fetching facilities: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    data: [],
-                    query: {},
-                    path: ctx.asPath || '/users',
-                    current_url: ''
+        try {
+            const r = await fetch(url, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
                 }
             })
+            const json = await r.json()
+            return {
+                data: json, query, token, path: ctx.asPath || '/users', current_url: current_url
+            }
+        } catch (err) {
+            console.log('Error fetching facilities: ', err)
+            return {
+                error: true,
+                err: err,
+                data: [],
+                query: {},
+                path: ctx.asPath || '/users',
+                current_url: ''
+            }
+        }
     }
 
     return checkToken(ctx.req, ctx.res).then(t => {
@@ -350,4 +290,4 @@ Users.getInitialProps = async (ctx) => {
 
 }
 
-export default Users
+export default CHUsCount

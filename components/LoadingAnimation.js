@@ -1,5 +1,6 @@
 import React from 'react'
 
+
 function LoadingAnimation({size, isLight}) {
     return (
         <div className="flex flex-col items-center justify-center leading-none bg-transparent relative p-1 px-2">
@@ -8,5 +9,6 @@ function LoadingAnimation({size, isLight}) {
 
     )
 }
+
 
 export default LoadingAnimation

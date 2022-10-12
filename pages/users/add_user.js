@@ -87,7 +87,7 @@ const AddUser = (props)=> {
 	const handleBasicDetailsSubmit = async (event)=>{
 		event.preventDefault()
 		let url=''
-		editMode ? url=`/api/common/post_form_data/?path=edit_user&id=${person_details.id}`: url ='/api/common/post_form_data/?path=users'
+		editMode ? url=`/api/common/submit_form_data/?path=edit_user&id=${person_details.id}`: url ='/api/common/submit_form_data/?path=users'
 		try{
 			 fetch(url, {
 				headers:{
@@ -125,8 +125,7 @@ const AddUser = (props)=> {
 		try {
 			fetch(`/api/common/post_form_data/?path=delete_user&id=${person_details.id}`, {
 				headers:{
-					'Content-Type': 'application/json;charset=utf-8'
-					
+					'Content-Type': 'application/json;charset=utf-8'	
 				},
 				method:'DELETE',
 			})
@@ -575,14 +574,14 @@ const AddUser = (props)=> {
 														
 														</div>
 
-														{selectedGroups?.map((grp)=>{
+														{selectedGroups?.map((grp, i)=>{
 															return (
 																<>
 																{(()=>{
 																	if(grp.id==1 || grp.id== 12|| grp.id ==2){
 																		return(
 																			// Administrative area 
-																		<div className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
+																		<div key={i} className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
 																			<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 																				Administrative Areas
 																			</h4>
