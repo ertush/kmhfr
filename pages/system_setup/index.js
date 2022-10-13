@@ -31,7 +31,7 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import { PermissionContext } from '../../providers/permissions';
-import { hasPermission } from '../../utils/checkPermissions';
+import { hasSystemSetupPermissions } from '../../utils/checkPermissions';
 
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
@@ -81,7 +81,7 @@ const system_setup = (props) => {
     const uid = useId();
 
     useEffect(() => {
-        if(!hasPermission(/^system_setup.view_.*$/, userPermissions)){
+        if(!hasSystemSetupPermissions(/^system_setup.view_.*$/, userPermissions)){
             router.push('/unauthorized')
         }
     },[])

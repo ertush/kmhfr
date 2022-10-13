@@ -12,7 +12,7 @@ import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
 import { PermissionContext } from "../providers/permissions";
-import { hasPermission } from "../utils/checkPermissions"
+import { hasAdminOfficesPermissions, hasSystemSetupPermissions, hasUsersPermission } from "../utils/checkPermissions"
 
 const DelayedLoginButton = () => {
 
@@ -64,7 +64,9 @@ export default function HeaderLayout({
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [subCountyLevel, setSubcountyLevel]=useState(false)
+  const [hideUserMenu, setHideUserMenu] = useState(false)
+  const [hideSystemSetupMenu, setHideSystemSetupMenu] = useState(false)
+  const [hideAdminOfficesMenu, setHideAdminOfficesMenu] = useState(false)
   const [user, setUser] = useState(null);
   let API_URL = process.env.NEXT_PUBLIC_API_URL; // || "http://localhost:8000/api";
   if (
@@ -87,7 +89,7 @@ export default function HeaderLayout({
 
   useEffect(() => {
 
-  
+    console.log({userPermissions})
     let mtd = true;
     if (mtd) {
       let is_user_logged_in =
@@ -120,21 +122,25 @@ export default function HeaderLayout({
               setUser(usr);
 
               // Users View Permission  Check
+              let user_perm_1 = hasUsersPermission(/^users.view_mfluser$/, userPermissions)
+              let user_perm_2 = hasUsersPermission(/^users\..*$/, userPermissions)
 
-              if(!hasPermission(/^users.view_mfluser$/, userPermissions)){
-                setSubcountyLevel(true)
+              console.log({user_perm_1, user_perm_2})
+
+              if(user_perm_1 || user_perm_2){
+                setHideUserMenu(false)
               }
 
               // System Setup View Permission Check
 
-              if(!hasPermission(/^system_setup.view_.*$/, userPermissions)){
-                setSubcountyLevel(true)
+              if(!hasSystemSetupPermissions(/^system_setup.view_.*$/, userPermissions)){
+                setHideSystemSetupMenu(false)
               }
 
               // Admin Offices Permission Check
 
-              if(!hasPermission(/^admin_offices.view_.*$/, userPermissions)){
-                setSubcountyLevel(true)
+              if(!hasAdminOfficesPermissions(/^admin_offices.view_.*$/, userPermissions)){
+                setHideAdminOfficesMenu(false)
               }
             }
           }
@@ -144,6 +150,7 @@ export default function HeaderLayout({
         // router.push('/auth/login')
       }
     }
+    // console.log({userPermissions, hideMenu})
     return () => {
       mtd = false;
     };
@@ -215,7 +222,8 @@ export default function HeaderLayout({
               </Link>
             </li>
             {/* Users */}
-            {!subCountyLevel && 
+            {console.log({hideUserMenu})}
+            {!hideUserMenu && 
             <li className="flex-wrap font-semibold">
               <Link href="/users">
                 <a
@@ -246,7 +254,7 @@ export default function HeaderLayout({
             </li>
             {/* System setup */}
             {
-              !subCountyLevel && 
+              !hideSystemSetupMenu && 
             <li className="flex-wrap font-semibold">
               <Link href="/system_setup">
                 <a
@@ -315,7 +323,7 @@ export default function HeaderLayout({
           </Menu>
           
           {/* Admin Offices */}
-          {!subCountyLevel && 
+          {!hideAdminOfficesMenu && 
           <li className="flex-wrap font-semibold">
             <Link href="/admin_offices">
               <a
