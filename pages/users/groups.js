@@ -2,13 +2,14 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
-
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
@@ -40,6 +41,7 @@ const Groups = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [groups, setGroups]=useState([])
+    const [show, setShow]=useState(false)
         
     const onGridReady = (params) => {
         // console.log({api: params.api});
@@ -58,6 +60,12 @@ const Groups = (props) => {
         updateData(lnlst)
     };
 
+    useEffect(()=>{
+        if( Object.keys(router.query).length > 0){
+            setShow(true)
+        }
+    },[])
+
     return (
         <div className="">
             <Head>
@@ -70,9 +78,11 @@ const Groups = (props) => {
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'>'}
-                                <a className="text-green-700" href="/users">Users</a> {'>'}
+                                <a className="text-green-700" href="/users/">Users</a> {'>'}
                                 <span className="text-gray-500">Groups</span> 
                             </div>
+                            
+                            <Collapse in={show}>{Object.keys(router.query).length > 0 ? <div><Alert severity={router?.query.status} sx={{width:'100%'}} onClose={()=> setShow(false)}>{router?.query.message}</Alert></div>: null}</Collapse>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 

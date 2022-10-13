@@ -13,17 +13,19 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
-
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
 const Users = (props) => {
-    // require('ag-grid-enterprise')
+
     LicenseManager.setLicenseKey("test");
- 
-    // const { data, query, path, current_url } = props
+
     const router = useRouter()
+    console.log(router.query.status);
+    console.log(Object.keys(router.query).length)
     const LinkCellRenderer = (params) =>{
     return(
         <Link
@@ -48,8 +50,8 @@ const Users = (props) => {
     const [usersTheme, setUsersTheme] = useState(true)
     const [inactiveUsersTheme, setInactiveUsersTheme] = useState(false)
     const [groupsTheme, setGroupsTheme] = useState(false)
-
- 
+    const [show, setShow]=useState(false)
+    const [showGroup, setShowGroup]=useState(false)
         
     const onGridReady = (params) => {
      
@@ -88,11 +90,22 @@ const Users = (props) => {
             }
             
         })
-        // console.log(lnlst);
-     
         setUsers(lnlst)
-    },[props.data.results])
+        if( Object.keys(router.query).length > 0 && router.query.status !== undefined){
+            setShow(true)
+        }
 
+    },[props.data.results, router.query])
+
+    useEffect(()=>{
+        if (typeof window !== 'undefined') { //auth.add_group
+            let usr =JSON.parse( window.sessionStorage.getItem('user'))
+
+            if(usr.all_permissions.find((r)=> r === 'auth.add_group') == undefined){
+                setShowGroup(true)
+            }
+        }
+    },[])
     return (
         <div className="">
             <Head>
@@ -107,6 +120,10 @@ const Users = (props) => {
                                 <a className="text-green-700" href="/">Home</a> {'>'}
                                 <span className="text-gray-500">Users</span> 
                             </div>
+                        </div>
+                            
+                           <Collapse in={show}>{Object.keys(router.query).length > 0 ? <div><Alert severity={router?.query.status} sx={{width:'100%'}} onClose={()=> setShow(false)}>{router?.query.message}</Alert></div>: null}</Collapse>
+                            
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 
@@ -118,7 +135,7 @@ const Users = (props) => {
                                     {`Add User `}
                                     <PlusIcon className='text-white ml-2 h-5 w-5'/>
                                 </button>
-                        </div>
+                        
                         </div>
                     </div>
                     <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
@@ -138,7 +155,7 @@ const Users = (props) => {
                                     setUsersTheme(true)
                                     setInactiveUsersTheme(false)
                                     setGroupsTheme(false)
-                                    router.push('/users?is_active=' + true)
+                                    router.push('/users?is_active=true')
                                 
                                 }}
                             >
@@ -149,23 +166,24 @@ const Users = (props) => {
                                     setUsersTheme(false)
                                     setInactiveUsersTheme(true)
                                     setGroupsTheme(false)
-                                    router.push('/users?is_active=' + false)
+                                    router.push('/users?is_active=false')
                                 
                                 }}
                             >
                                 <ListItemText primary="InActive Users" />
                             </ListItemButton>
+                            {!showGroup && 
                             <ListItemButton sx={{ backgroundColor: groupsTheme ? '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setUsersTheme(false)
-                                setInactiveUsersTheme(false)
-                                setGroupsTheme(true)
-                                router.push('/users/groups')
-                            
-                            }}
+                                onClick={()=>{
+                                    setUsersTheme(false)
+                                    setInactiveUsersTheme(false)
+                                    setGroupsTheme(true)
+                                    router.push('/users/groups')
+                                
+                                }}
                             >
                                 <ListItemText primary="Groups"/>
-                            </ListItemButton>
+                            </ListItemButton>}
                                 
                         </List>
                 </div>

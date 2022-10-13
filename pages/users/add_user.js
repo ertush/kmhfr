@@ -19,9 +19,9 @@ const AddUser = (props)=> {
 	let person_details =props[5]?.person_details 
 	const [contactList, setContactList]=useState([{}])
 	const [status, setStatus]=useState(null)
-	// let usr = JSON.parse( window.sessionStorage.getItem('user'))
+	const [showErrorMessage, setShowErrorMessage] = useState(false);
+    const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
 
-	// console.log(usr)
 
 	const [userData, setUserData]=useState({
 		first_name:'',
@@ -31,6 +31,7 @@ const AddUser = (props)=> {
 		employee_number: '',
 		job_title:'',
 		password: '',
+		conf_password: '',
 		contacts: [{contact_type: '', contact_text: ''}],
 		groups: [],
 		user_counties: [],
@@ -44,7 +45,7 @@ const AddUser = (props)=> {
 			return [...s, {contact_type: '', contact_text: ''}]
 		})
 	};
-// console.log(person_details.contacts.length);
+
 	const handleOnChange =(val)=>{
 		if (val.target && val.target != undefined && val.target != null) {
 				const newObj = {}
@@ -79,8 +80,8 @@ const AddUser = (props)=> {
 		return{ id: ft.id}
 	})
 
-	console.log(userData);
-	console.log(person_details);
+	// console.log(userData);
+	// console.log(person_details);
 	// Object.keys(userData).map(fd => console.log(fd))
 
 	const handleBasicDetailsSubmit = async (event)=>{
@@ -97,12 +98,17 @@ const AddUser = (props)=> {
 				method:(editMode ? 'PUT':'POST'),
 				body: JSON.stringify(userData).replace(',"":""','')
 			})
-			.then(resp =>resp)
+			.then(resp =>resp.json())
 			.then(res =>{ 
 				
-				// console.log(res.json)
-				if(res.status==200){
-					router.push('/users')
+				if(res.id !==undefined ){
+
+					router.push({pathname:'/users',
+					 query:{status: 'success', message: editMode? 'Updated successfully':'Added successfully'}
+					 
+					}, '/users')
+				}else{
+					setStatus({status:'error', message: res})
 				}
 			})
 			.catch(e=>{
@@ -111,30 +117,22 @@ const AddUser = (props)=> {
 		}catch (e){
 
 			setStatus({status:'error', message: e})
-			console.error(e)
 		}
 	}
 
 	const deleteUser=(event)=>{
 		event.preventDefault()
 		try {
-			fetch(`/api/common/submit_form_data/?path=delete_user&id=${person_details.id}`, {
-				// headers:{
-				// 	// 'Accept': 'application/json, text/plain, */*',
-				// 	'Content-Type': 'application/json;charset=utf-8'
-					
-				// },
+			fetch(`/api/common/post_form_data/?path=delete_user&id=${person_details.id}`, {
+				headers:{
+					'Content-Type': 'application/json;charset=utf-8'	
+				},
 				method:'DELETE',
-				// body: JSON.stringify(groupData).replace(',"":""','')
 			})
 			.then(resp =>resp)
 			.then(res => {
 				
-				// console.log(res)
-				// if(res.status==200){
 					router.push('/users/')
-				// }
-				
 			})
 			
 		} catch (error) {
@@ -146,13 +144,10 @@ const AddUser = (props)=> {
 	useEffect(()=>{
 	if (!person_details.detail)	{
 		setEditMode(true)
-		Object.keys(person_details).map((pd, pd_ky)=>{
-			// (person_details).(pd)
-		// console.log(person_details[`${pd}`]),
+		Object.keys(person_details).map((pd)=>{
 			Object.keys(userData).map(ud => {
 				if (ud === pd) {
 					let newObj_i = {}
-					// newObj_i[pd] = pd
 					if(pd=='user_counties'){
 						newObj_i[pd]=[{id: person_details[`${pd}`][0]?.county, name: person_details[`${pd}`][0]?.county_name }]
 					}else if(pd=='user_sub_counties'){
@@ -172,8 +167,6 @@ const AddUser = (props)=> {
 			})
 		}
 		)
-		// setUserData(prevState => ({ ...prevState, ...person_details}));
-		// setUserData(person_details)
 	}
 	if(person_details.contacts !== null && person_details.contacts !== undefined && person_details.contacts !== ''){	
 		for(let i =0; i<person_details?.contacts?.length; i ++){
@@ -184,7 +177,17 @@ const AddUser = (props)=> {
 	}
 
 	},[person_details?.contacts, person_details])
-	// console.log(editMode);
+	// console.log(status);
+
+	useEffect(() => {
+        if (isCPasswordDirty) {
+            if (userData.password === userData.conf_password) {
+                setShowErrorMessage(false);
+            } else {
+                setShowErrorMessage(true)
+            }
+        }
+    }, [userData.conf_password])
 
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
@@ -197,7 +200,7 @@ const AddUser = (props)=> {
 						<span className="text-gray-500">{editMode? 'Edit user' : 'Add user'}</span>
 					</div>
 				</div>
-				{status && <Alert severity={status.status} sx={{width:'100%'}}>{status.message}</Alert>}
+				<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password}</Alert>}</div>
 				<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
 						<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 							
@@ -394,13 +397,12 @@ const AddUser = (props)=> {
 																type='password'
 																name='password'
 																onChange={ev => {
-																
 																	handleOnChange(
 																		ev
 																	)
+																	setIsCPasswordDirty(true);
 																}}
 																value={userData.password || ''}
-
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -419,8 +421,16 @@ const AddUser = (props)=> {
 																required
 																type='password'
 																name='conf_password'
+																onChange={ev => {
+																	handleOnChange(
+																		ev
+																	)
+																}}
+																value={userData.conf_password || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
+															 {showErrorMessage && isCPasswordDirty ? <div> <p className='text-blue-900'>Passwords did not match</p> </div> : ''}
+
 														</div>
 														
 														{editMode && <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
