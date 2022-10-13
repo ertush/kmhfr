@@ -1,5 +1,7 @@
-import React from 'react'
-
+import React, { useContext, useEffect } from 'react'
+import { PermissionContext } from '../providers/permissions'
+import { hasPermission } from '../utils/checkPermissions'
+import router from 'next/router'
 
 // next imports
 import Head from 'next/dist/shared/lib/head'
@@ -7,7 +9,17 @@ import Head from 'next/dist/shared/lib/head'
 // components imports
 import MainLayout from '../components/MainLayout'
 
+
 const admin_offices = () => {
+
+    const userPermissions = useContext(PermissionContext)
+
+    useEffect(() => {
+        if(!hasPermission(/^admin_offices.view_.*$/, userPermissions)){
+            router.push('/unauthorized')
+        }
+    }, [])
+
   return (
     <>
         <Head>

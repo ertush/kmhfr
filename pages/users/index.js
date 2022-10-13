@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
@@ -17,11 +17,16 @@ import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import { PermissionContext } from '../../providers/permissions'
+import { hasPermission } from '../../utils/checkPermissions'
 
 
 const Users = (props) => {
 
     LicenseManager.setLicenseKey("test");
+
+
+    const userPermissions = useContext(PermissionContext)
 
     const router = useRouter()
     console.log(router.query.status);
@@ -78,6 +83,11 @@ const Users = (props) => {
     };
 
     useEffect(()=>{
+
+        if(!hasPermission(/^users.view_mfluser$/, userPermissions)){
+            router.push('/unauthorized')
+        }
+        
         const lnlst=  props.data?.results.map((user)=>{
             return {
                 ...user,

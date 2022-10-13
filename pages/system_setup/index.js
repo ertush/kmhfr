@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 
 // component / controllers imports
 import MainLayout from '../../components/MainLayout'
@@ -30,11 +30,14 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
+import { PermissionContext } from '../../providers/permissions';
+import { hasPermission } from '../../utils/checkPermissions';
 
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
 
 import useId from 'react-use-uuid';
+import router from 'next/router';
 
 
 
@@ -42,6 +45,7 @@ import useId from 'react-use-uuid';
 const system_setup = (props) => {
 
 
+    const userPermissions = useContext(PermissionContext)
     const [title, setTitle] = useState('Counties')
     const [addBtnLabel, setAddBtnLabel] = useState('County')
     
@@ -73,8 +77,14 @@ const system_setup = (props) => {
     const inputsContainerRef2 = useRef(null)
     const contactTypeRef = useRef(null)
     const contactDetailRef = useRef(null)
-   
+
     const uid = useId();
+
+    useEffect(() => {
+        if(!hasPermission(/^system_setup.view_.*$/, userPermissions)){
+            router.push('/unauthorized')
+        }
+    },[])
    
     const fetchDataCategory = async () => {
   
