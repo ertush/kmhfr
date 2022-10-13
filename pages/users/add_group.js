@@ -7,11 +7,12 @@ import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
+import Alert from '@mui/material/Alert';
 
 
 const AddGroup = (props)=> {
 	const [selPermissions, setselPermissions] = useState([])
-
+	const [status, setStatus]=useState(null)
 	let permissions = props?.data?.results
 
 	const [groupData, setGroupData]=useState({
@@ -48,23 +49,30 @@ const AddGroup = (props)=> {
 				headers:{
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json;charset=utf-8'
-					
 				},
 				method:'POST',
 				body: JSON.stringify(groupData).replace(',"":""','')
 			})
-			.then(resp =>resp)
+			.then(resp =>resp.json())
 			.then(res => {
-				// console.log(res)
-				if(res.status==200){
-					router.push('/users/groups')
+				if(res.id !==undefined ){
+
+					router.push({pathname:'/users/groups',
+					 query:{status: 'success', message: 'Added successfully'}
+					 
+					}, '/users/groups')
+				}else{
+					setStatus({status:'error', message: res})
 				}
 			})
-			.catch(e=>console.log(e))
+			.catch(e=>{
+				setStatus({status:'error', message: e})
+			})
 		}catch (e){
-			console.error(e)
+			setStatus({status:'error', message: e})
 		}
 	}
+
 // console.log(groupData);
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
@@ -77,6 +85,7 @@ const AddGroup = (props)=> {
                                 <span className="text-gray-500">Add group</span>
                             </div>
                         </div>
+						<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message.detail}</Alert>}</div>
                         <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                    <UserGroupIcon className='text-black ml-2 h-5 w-5'/>

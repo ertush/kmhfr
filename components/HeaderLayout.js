@@ -7,13 +7,10 @@ import {
   SearchIcon,
 } from "@heroicons/react/solid";
 import { UserCircleIcon } from "@heroicons/react/outline";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
-// import List from '@mui/material/List';
-// import ListItem from '@mui/material/ListItem';
-// import ListItemText from '@mui/material/ListItemText';
 
 const DelayedLoginButton = () => {
   const [delayed, setDelayed] = useState(false);
@@ -48,11 +45,7 @@ const DelayedLoginButton = () => {
 };
 
 export default function HeaderLayout({
-  children,
-  isLoading,
   searchTerm,
-  isFullWidth,
-  classes,
 }) {
   const router = useRouter();
   const activeClasses =
@@ -114,7 +107,7 @@ export default function HeaderLayout({
             } else {
               setIsLoggedIn(true);
               setUser(usr);
-              if(usr.user_groups.is_sub_county_level){
+              if(usr.all_permissions.find((r)=> r === 'users.view_mfluser') == undefined){
                 setSubcountyLevel(true)
               }
             }
