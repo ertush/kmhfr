@@ -3,10 +3,8 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect } from "react";
 import MainLayout from "../../components/MainLayout";
-// import { approveRejectCHU, rejectCHU } from "../../controllers/reject";
-// import { ChevronDownIcon } from "@heroicons/react/solid";
 import router from "next/router";
-
+import moment from 'moment'
 import {
   CheckCircleIcon,
   InformationCircleIcon,
@@ -19,7 +17,6 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 const CommUnit = (props) => {
@@ -59,11 +56,11 @@ const CommUnit = (props) => {
      const res = data.revisions.map((item, ky)=>{
 
           return {
-          updated_on: item.updated_on,
+          updated_on: moment(item.updated_on).format('ddd, Do MMM YYYY, h:mm a'),
           updated_by: item.updated_by,
           updates: (item.updates.map((item, i)=> (
-            <div className={"stretch"}>
-            <span className={"font-bold text-2x"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-green-600'} key={item.new}>{item.new + ''}</span>
+            <div className={"self-start"}>
+            <span className={"font-bold text-2x self-start"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600 self-start'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-green-600 self-start'} key={item.new}>{item.new + ''}</span>
            </div>
       )))
         }
@@ -71,19 +68,29 @@ const CommUnit = (props) => {
       setRows(res)
     }).catch(err=>{console.log(err)})
   }
-console.log(rows)
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      let usr = window.sessionStorage.getItem("user");
-      if (usr && usr.length > 0) {
-        setUser(JSON.parse(usr));
-      }
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     let usr = window.sessionStorage.getItem("user");
+  //     if (usr && usr.length > 0) {
+  //       setUser(JSON.parse(usr));
+  //     }
+  //   }
+  //   return () => {
+  //     setIsCHUDetails(true);
+  //     setIsApproveReject(false);
+  //   };
+  // }, []);
+
+  useEffect(()=>{
+    if (typeof window !== 'undefined') { //auth.add_group
+        let usr =JSON.parse( window.sessionStorage.getItem('user'))
+
+        if(usr.all_permissions.find((r)=> r === 'chul.can_approve_chu') !== undefined){
+          setIsApproveReject(true)
+        }
     }
-    return () => {
-      setIsCHUDetails(true);
-      setIsApproveReject(false);
-    };
-  }, []);
+  },[])
   return (
     <>
       <Head>
@@ -181,21 +188,15 @@ console.log(rows)
               {/* Approve/Reject, Edit Buttons */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
-                  <button
-                    onClick={() => router.push("/community-units/approve/" + cu.id)
-                      //approveRejectCHU(cu.is_approved,setIsApproveReject,props.data.id)
-                    }
-                    className={
-                      cu.is_approved || cu.is_rejected
-                        ? ''
-                        : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
-                    }
+                  {isApproveReject &&<button
+                    onClick={() => {
+                      router.push("/community-units/approve/" + cu.id)
+                    }}
+                    className={"p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
                   >
                   {/* Dynamic Button Rendering */}
-                  {cu.is_approved || cu.is_rejected
-                  ? "" 
-                  : "Approve/Reject"}
-                  </button>
+                  {"Approve/Reject"}
+                  </button>}
                   <button
                     onClick={() => console.log(cu.name)}
                     className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
