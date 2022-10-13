@@ -7,14 +7,19 @@ import {
   SearchIcon,
 } from "@heroicons/react/solid";
 import { UserCircleIcon } from "@heroicons/react/outline";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
+import { PermissionContext } from "../providers/permissions";
+import { hasPermission } from "../utils/checkPermissions"
 
 const DelayedLoginButton = () => {
+
+
   const [delayed, setDelayed] = useState(false);
   useEffect(() => {
+    // console.log({userCanViewUsers})
     let mtd = true;
     setTimeout(() => {
       if (mtd === true) {
@@ -47,6 +52,11 @@ const DelayedLoginButton = () => {
 export default function HeaderLayout({
   searchTerm,
 }) {
+
+  const userPermissions = useContext(PermissionContext)
+
+  // const userCanViewUsers = hasPermission(/^users.view_.*$/, userPermissions)
+  
   const router = useRouter();
   const activeClasses =
     "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4  border-green-600";
@@ -76,6 +86,8 @@ export default function HeaderLayout({
   // console.log('path::: ', path)
 
   useEffect(() => {
+
+  
     let mtd = true;
     if (mtd) {
       let is_user_logged_in =
@@ -96,8 +108,7 @@ export default function HeaderLayout({
         session_token !== null
       ) {
         console.log("active session found");
-        // getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
-          // console.log({session_token: session_token.token, url: `${API_URL}/rest-auth/user`})
+  
         getUserDetails(session_token.token, API_URL + "/rest-auth/user/").then(
           (usr) => {
             // console.log({usr})
@@ -107,7 +118,22 @@ export default function HeaderLayout({
             } else {
               setIsLoggedIn(true);
               setUser(usr);
-              if(usr.all_permissions.find((r)=> r === 'users.view_mfluser') == undefined){
+
+              // Users View Permission  Check
+
+              if(!hasPermission(/^users.view_mfluser$/, userPermissions)){
+                setSubcountyLevel(true)
+              }
+
+              // System Setup View Permission Check
+
+              if(!hasPermission(/^system_setup.view_.*$/, userPermissions)){
+                setSubcountyLevel(true)
+              }
+
+              // Admin Offices Permission Check
+
+              if(!hasPermission(/^admin_offices.view_.*$/, userPermissions)){
                 setSubcountyLevel(true)
               }
             }
@@ -219,6 +245,8 @@ export default function HeaderLayout({
               </Link>
             </li>
             {/* System setup */}
+            {
+              !subCountyLevel && 
             <li className="flex-wrap font-semibold">
               <Link href="/system_setup">
                 <a
@@ -233,6 +261,7 @@ export default function HeaderLayout({
                 </a>
               </Link>
             </li>
+            }
            {/* Reports */}
               
               <Menu as="div" className="relative ">
@@ -286,7 +315,7 @@ export default function HeaderLayout({
           </Menu>
           
           {/* Admin Offices */}
-           
+          {!subCountyLevel && 
           <li className="flex-wrap font-semibold">
             <Link href="/admin_offices">
               <a
@@ -299,6 +328,7 @@ export default function HeaderLayout({
               </a>
             </Link>
           </li>
+          }
           
           </ul>
         </div>

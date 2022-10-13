@@ -1,13 +1,13 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import router from 'next/router'
 import MainLayout from '../components/MainLayout'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 
 
 
 const Home = (props) => {
+
     const router = useRouter()
     let is_user_logged_in =
     (typeof window !== "undefined" &&
@@ -18,6 +18,8 @@ const Home = (props) => {
     // const [userLoggedIn, setUserLoggedIn] =  useState()
 
     useEffect(() => {
+
+    
         let mtd = true
        
 

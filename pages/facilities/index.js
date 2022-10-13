@@ -4,7 +4,7 @@ import MainLayout from '../../components/MainLayout'
 import { DotsHorizontalIcon, DownloadIcon, PencilIcon, PlusIcon } from '@heroicons/react/solid'
 
 import { checkToken } from '../../controllers/auth/auth'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon } from '@heroicons/react/outline'
@@ -21,12 +21,14 @@ import Alert from '@mui/material/Alert';
 
 import ListItemText from '@mui/material/ListItemText';
 import NativePickers from '../../components/date-picker'
-import { set } from 'nprogress'
+import { PermissionContext } from '../../providers/permissions'
 // import { set } from 'nprogress'
 
 
 const Home = (props) => {
     const router = useRouter()
+
+    const permissions = useContext(PermissionContext)
    
     let facilities = props?.data?.results
     let filters = props?.filters
@@ -164,6 +166,7 @@ const Home = (props) => {
     
     useEffect(() => {
     
+        console.log({permissions})
         let qry = props?.query
         
         delete qry.searchTerm
@@ -1006,6 +1009,7 @@ Home.getInitialProps = async (ctx) => {
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
+        
         }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
