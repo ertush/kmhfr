@@ -57,7 +57,7 @@ const Users = (props) => {
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.county, level: 'county', type: 'ndividual_facility_beds_and_cots' }
+                    query: { id: params.data.county, level: 'county', type: 'ndividual_facility_beds_and_cots', ward: 'Test Ward' }
                 })
             }}
             > View Facilities </button>

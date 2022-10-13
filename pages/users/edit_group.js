@@ -17,6 +17,7 @@ const EditGroup=(props)=> {
     let permissions = props?.permissions[0].params.results
 	let group_details = props?.data
 	const [groupData, setGroupData]=useState(props.data)
+	const [status, setStatus]=useState(null)
 	// console.log(groupData);
 
 	const handleOnChange =(val)=>{
@@ -48,38 +49,34 @@ const EditGroup=(props)=> {
 				method:'PATCH',
 				body: JSON.stringify(groupData).replace(',"":""','')
 			})
-			.then(resp =>resp)
+			.then(resp =>resp.json())
 			.then(res => {
-				
-				// console.log(res)
-				if(res.status==200){
-					router.push('/users/groups')
+				if(res.id !==undefined ){
+
+					router.push({pathname:'/users/groups',
+					 query:{status: 'success', message: 'Updated successfully'}
+					 
+					}, '/users/groups')
+				}else{
+					setStatus({status:'error', message: res})
 				}
-				
 			})
 		}catch (e){
-			console.error(e)
+			setStatus({status:'error', message: res})
 		}
 	}
 	const deleteGroup =(event)=>{
 		event.preventDefault()
 		try {
-			fetch(`/api/common/submit_form_data/?path=delete&id=${props.data.id}`, {
-				// headers:{
-				// 	// 'Accept': 'application/json, text/plain, */*',
-				// 	'Content-Type': 'application/json;charset=utf-8'
-					
-				// },
+			fetch(`/api/common/post_form_data/?path=delete&id=${props.data.id}`, {
+				headers:{
+					'Content-Type': 'application/json;charset=utf-8'
+				},
 				method:'DELETE',
-				// body: JSON.stringify(groupData).replace(',"":""','')
 			})
 			.then(resp =>resp)
 			.then(res => {
-				
-				// console.log(res)
-				// if(res.status==200){
 					router.push('/users/groups')
-				// }
 				
 			})
 			
@@ -101,6 +98,8 @@ const EditGroup=(props)=> {
                                 <span className="text-gray-500">Edit group</span>
                             </div>
                         </div>
+			        	<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password}</Alert>}</div>
+
                         <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <PencilAltIcon className='ml-2 h-5 w-5' />

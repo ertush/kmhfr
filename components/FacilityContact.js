@@ -16,7 +16,9 @@ const FacilityContact = ({
 
   
   useEffect( () => {
-    if(inputContactRef.current !== null) inputContactRef.current.value = contact
+    if(inputContactRef !== null){
+       if(inputContactRef.current !== null) inputContactRef.current.value = contact
+    }
   }, [])
 
 
