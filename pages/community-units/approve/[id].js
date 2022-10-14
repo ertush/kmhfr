@@ -1,28 +1,16 @@
-// React imports
 import React, { useState, useEffect } from 'react';
-
-// Next imports
 import Head from 'next/head';
-
-// Components imports
 import MainLayout from '../../../components/MainLayout';
-
-// Controller imports
 import { checkToken } from '../../../controllers/auth/auth';
 import { approveCHU} from '../../../controllers/chul/rejectApprove';
-
-// Heroicons imports
-
-// Package imports
 import { ChevronDownIcon } from '@heroicons/react/solid';
-import
-{
-  CheckCircleIcon,
-  ChevronRightIcon,
-  InformationCircleIcon,
-  LockClosedIcon,
-  XCircleIcon,
-} from '@heroicons/react/solid';
+import {CheckCircleIcon,ChevronRightIcon,InformationCircleIcon,LockClosedIcon,XCircleIcon} from '@heroicons/react/solid';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import dynamic from "next/dynamic";
 
 const CommUnit = (props) => {
@@ -55,8 +43,14 @@ const CommUnit = (props) => {
   const [isCHUDetails, setIsCHUDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
   const [appRejReason, setAppRejReason] = useState('')
-  let reject = ''
+  const [columns, setColumns] = useState([
+    { id: 'households_monitored', label: 'Field', minWidth: 100 },
+    { id: 'households_monitored', label: 'Old Value', minWidth: 100},
+    { id: 'households_monitored',label: 'New Value',minWidth: 100, }
+  ]);
+  const [rows, setRows] = useState([])  
 
+  let reject = ''
   useEffect(() =>
   {
     if (typeof window !== 'undefined')
@@ -298,57 +292,255 @@ const CommUnit = (props) => {
               )
             }
 
-        {/* CHU Rejection Commment */}
-        <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-          <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-            {" "}
-            Approval comment:{" "}
-          </h3>
-          {cu.is_approved}
-          <form
-            className="space-y-3"
-            onSubmit = {reject? (e) => approveCHU(e,cu.id, appRejReason) : (e) => rejectCHUL(e, cu.id, appRejReason)}
-          >
-            <label htmlFor="comment-text-area"></label>
-            <textarea
-              cols="70"
-              rows="auto"
-              className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
-              placeholder="Enter a comment"
-              onChange={(e) => setAppRejReason(e.target.value)}
-            ></textarea>
+            {/* Pending updates approval */}
+            {cu.pending_updates && Object.keys(cu.pending_updates).length > 0 && (
+            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+              <h3 className="text-gray-900 font-semibold leading-16 text-medium">
+                Pending Updates
+              </h3>
+              <form
+                className="space-y-3"
+                onSubmit = {reject? (e) => approveCHU(e,cu.id, appRejReason) : (e) => rejectCHUL(e, cu.id, appRejReason)}
+              >
+                  <div className='col-span-4 w-full h-auto'>
+                                {
+                                  Object.keys(cu.pending_updates).reverse().map((key, index) => {
+                                    if(key == 'basic'){
+                                      return ( 
+                                        <>
+                                        
+                                        <h5 className='col-span-1 text-gray-900 italic font-semibold leading-16 text-medium mt-5'>{'Basic :'}</h5>
+                                        <TableContainer sx={{ maxHeight: 440 }}>
+                                        <Table stickyHeader aria-label="sticky table">
+                                        <TableHead>
+                                            <TableRow>
+                                            {columns.map((column,i) => (
+                                                <TableCell
+                                                key={i}
+                                                align={column.align}
+                                                style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                                >
+                                                {column.label}
+                                                </TableCell>
+                                            ))}
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody sx={{paddingX: 4}}>
+                                              {/* basic name */}
+                                              {
+                                                  cu.pending_updates?.basic.name !== undefined &&
+                                                    (
 
-            {/* <div className="flex flex-row"> */}
-            <div className="flex flex-row justify-start items-center space-x-3 p-3">
-            <button
-              type="submit"
-              className={
-                cu.is_approved
-                  ? ''
-                  : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
-              }
-              onClick={(e) => reject = true}
-            >
-              {cu.is_approved
-                ? "" 
-                : "Approve Community Health Unit"}
-            </button>
-            <button
-              type="submit"
-              className={
-                cu.is_rejected
-                  ? ''
-                  : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
-              }
-              onClick={(e) => reject = false}
-            >
-              {cu.is_rejected
-                ? "" 
-                : "Reject Community Health Unit"}
-            </button>
+                                                      <TableRow hover role="checkbox" tabIndex={-1}>
+
+                                                        <TableCell align="left">{'Name'}</TableCell>
+                                                        <TableCell align="left">{cu.name}</TableCell>
+                                                        <TableCell align="left">{cu.pending_updates.basic.name}</TableCell>
+
+                                                      </TableRow>
+                                                    )}
+                                                {/* basic status */}
+                                                {  cu.pending_updates?.basic.status !== undefined &&
+                                                    (
+
+                                                      <TableRow hover role="checkbox" tabIndex={-1}>
+
+                                                        <TableCell align="left">{'Status'}</TableCell>
+                                                        <TableCell align="left">{cu.status_name}</TableCell>
+                                                        <TableCell align="left">{cu.pending_updates.basic.status.status_name}</TableCell>
+
+                                                      </TableRow>
+                                                    )
+                                                }
+                                                {/* facility name */}
+                                                {  cu.pending_updates?.basic.facility !== undefined &&
+                                                    (
+
+                                                      <TableRow hover role="checkbox" tabIndex={-1}>
+
+                                                        <TableCell align="left">{'Facility'}</TableCell>
+                                                        <TableCell align="left">{cu.facility_name}</TableCell>
+                                                        <TableCell align="left">{cu.pending_updates.basic.facility.facility_name}</TableCell>
+
+                                                      </TableRow>
+                                                    )
+                                                } 
+                                                {/* Households monitored */}
+                                                {  cu.pending_updates?.basic.households_monitored !== undefined &&
+                                                    (
+
+                                                      <TableRow hover role="checkbox" tabIndex={-1}>
+
+                                                        <TableCell align="left">{'Households Monitored'}</TableCell>
+                                                        <TableCell align="left">{cu.households_monitored}</TableCell>
+                                                        <TableCell align="left">{cu.pending_updates.basic.households_monitored}</TableCell>
+
+                                                      </TableRow>
+                                                    )
+                                                }
+                                                {/* CHVs */}
+                                                {  cu.pending_updates?.basic.number_of_chvs !== undefined &&
+                                                    (
+
+                                                      <TableRow hover role="checkbox" tabIndex={-1}>
+
+                                                        <TableCell align="left">{'Number of CHVs '}</TableCell>
+                                                        <TableCell align="left">{cu.number_of_chvs}</TableCell>
+                                                        <TableCell align="left">{cu.pending_updates.basic.number_of_chvs}</TableCell>
+
+                                                      </TableRow>
+                                                    )
+                                                }
+                                                {/* Location */}
+                                                {  cu.pending_updates?.basic.location !== undefined &&
+                                                    (
+
+                                                      <TableRow hover role="checkbox" tabIndex={-1}>
+
+                                                        <TableCell align="left">{'Location'}</TableCell>
+                                                        <TableCell align="left">{cu.location}</TableCell>
+                                                        <TableCell align="left">{cu.pending_updates.basic.location}</TableCell>
+
+                                                      </TableRow>
+                                                    )
+                                                }
+                                                {/* Date established */} 
+                                                {  cu.pending_updates?.basic.date_etablished !== undefined &&
+                                                    (
+
+                                                      <TableRow hover role="checkbox" tabIndex={-1}>
+
+                                                        <TableCell align="left">{'Date Established'}</TableCell>
+                                                        <TableCell align="left">{cu.date_etablished}</TableCell>
+                                                        <TableCell align="left">{cu.pending_updates.basic.date_etablished}</TableCell>
+
+                                                      </TableRow>
+                                                    )
+                                                }
+                                                {/* date_operational */} 
+                                                {  cu.pending_updates?.basic.date_operational !== undefined &&
+                                                    (
+
+                                                      <TableRow hover role="checkbox" tabIndex={-1}>
+
+                                                        <TableCell align="left">{'Date Operational'}</TableCell>
+                                                        <TableCell align="left">{cu.date_operational}</TableCell>
+                                                        <TableCell align="left">{cu.pending_updates.basic.date_operational}</TableCell>
+
+                                                      </TableRow>
+                                                    )
+                                                }
+                                      
+                                            
+                                        </TableBody>
+                                        </Table>
+                                        </TableContainer> 
+                                        </>
+                                      )
+                                    }
+                                    if(key == 'services'){
+                              
+                                      const services = cu.pendingWorkers_updates['services'].map((item)=> {
+                                      return <div className='col-span-4 w-full h-auto ml-7 mt-2' >
+                                         <div className='grid grid-cols-2 w-full'>
+                                        <p className='col-span-2 text-gray-600 font-medium text-base'>{item.name}</p>
+                                         </div>
+                                        </div>
+                                      })
+                                      return <><h5 className='col-span-1 text-gray-900 italic font-semibold leading-16 text-medium mt-5'>{'Services :'}</h5><hr/>{services}</>
+                                        
+                                    }
+                                    if(key == 'workers'){
+                                      const contacts = cu.pending_updates['workers'].map((item)=> {
+                                        return <div className='col-span-4 w-full h-auto ml-7 mt-2' >
+                                           <div className='grid grid-cols-2 w-full'>
+                                          <p className='col-span-2 text-gray-600 font-medium text-base'>{item.name}</p>
+                                           </div>
+                                          </div>
+                                        })
+                                        return <><h5 className='col-span-1 text-gray-900 italic font-semibold leading-16 text-medium mt-5'>{'Workers :'}</h5><hr/>{contacts}</>
+                                    }
+
+                                      
+                                    })
+                                   
+                                  }
+                  </div>
+                {/* submit buttons */}
+                <div className="flex flex-row justify-start items-center space-x-3 p-3">
+                    <button
+                      type="submit"
+                      className={"p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
+                      onClick={(e) => reject = true}
+                    >
+                      {"Approve CHU Updates"}
+                    </button>
+                    <button
+                      type="submit"
+                      className={"p-2 text-center rounded-md font-semibold text-base text-white bg-red-500" }
+                      onClick={(e) => reject = false}
+                    >
+                      {"Reject CHU Updates"}
+                    </button>
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
+            )}
+        
+            {/* CHU Rejection Commment */}
+            {cu.pending_updates && Object.keys(cu.pending_updates).length == 0 && (
+
+              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+                <h3 className="text-gray-900 font-semibold leading-16 text-medium">
+                  {" "}
+                  Approval comment:{" "}
+                </h3>
+                {cu.is_approved}
+                <form
+                  className="space-y-3"
+                  onSubmit = {reject? (e) => approveCHU(e,cu.id, appRejReason) : (e) => rejectCHUL(e, cu.id, appRejReason)}
+                >
+                  <label htmlFor="comment-text-area"></label>
+                  <textarea
+                    cols="70"
+                    rows="auto"
+                    className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
+                    placeholder="Enter a comment"
+                    onChange={(e) => setAppRejReason(e.target.value)}
+                  ></textarea>
+
+                  {/* <div className="flex flex-row"> */}
+                  <div className="flex flex-row justify-start items-center space-x-3 p-3">
+                  <button
+                    type="submit"
+                    className={
+                      cu.is_approved
+                        ? ''
+                        : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+                    }
+                    onClick={(e) => reject = true}
+                  >
+                    {cu.is_approved
+                      ? "" 
+                      : "Approve Community Health Unit"}
+                  </button>
+                  <button
+                    type="submit"
+                    className={
+                      cu.is_rejected
+                        ? ''
+                        : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
+                    }
+                    onClick={(e) => reject = false}
+                  >
+                    {cu.is_rejected
+                      ? "" 
+                      : "Reject Community Health Unit"}
+                  </button>
+                  </div>
+                </form>
+              </div>
+            )}
 
         </div>
         </div>
