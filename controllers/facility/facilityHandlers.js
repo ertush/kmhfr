@@ -591,8 +591,30 @@ const handleFacilityContactsUpdates = async (formData, facility_id, alert) => {
 }
 
 // handleRegulationUpdate
-const handleRegulationUpdates = async () => {
+const handleRegulationUpdates = async (formData, facility_id, alert, alert_message) => {
+    if(formData){
+        alert.success(alert_message)
+    } else {
+        alert.danger("Unable to update facility regulation")
+    }
+ 
+    try{
+       const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+            headers:{
+                'Content-Type': 'application/json;charset=utf-8;*/*'
+            },
+            method:'POST',
+            body: JSON.stringify(formData)
+        })
 
+    
+
+    return resp
+
+    }
+    catch(e){
+        console.error('Error msg:', e.message)
+    }
 }
 
 // handleServiceUpdates

@@ -56,10 +56,7 @@ const EditFacility = (props) => {
     // Alert 
     const alert = useAlert();
 
-  
-
     // Form drop down options
-
     const facilityOptions = [
 		props['0']?.facility_types[0],  // STAND ALONE
 		props['0']?.facility_types[1],  // DISPENSARY 
@@ -86,33 +83,33 @@ const EditFacility = (props) => {
     const regulationStateOptions = props['14']?.regulation_status ?? []
     const serviceOptions = ((_services) => {
 		
-		const _serviceOptions = []
-		let _values = []
-		let _subCtgs = []
-        
+    const _serviceOptions = []
+    let _values = []
+    let _subCtgs = []
+    
 
-		if(_services.length > 0){
-			_services.forEach(({category_name:ctg}) => {
-				let allOccurences = _services.filter(({category_name}) => category_name === ctg)
-				
-				allOccurences.forEach(({id, name}) => {
-					_subCtgs.push(name)
-					_values.push(id)
-				})
-				
-				if(_serviceOptions.map(({name}) => name).indexOf(ctg) === -1){
-					_serviceOptions.push({
-						name: ctg,
-						subCategories:_subCtgs,
-						value:_values
-					})
-				}
-				
-				_values = []
-				_subCtgs = []
-	
-			})
-		}
+    if(_services.length > 0){
+        _services.forEach(({category_name:ctg}) => {
+            let allOccurences = _services.filter(({category_name}) => category_name === ctg)
+            
+            allOccurences.forEach(({id, name}) => {
+                _subCtgs.push(name)
+                _values.push(id)
+            })
+            
+            if(_serviceOptions.map(({name}) => name).indexOf(ctg) === -1){
+                _serviceOptions.push({
+                    name: ctg,
+                    subCategories:_subCtgs,
+                              value:_values
+      })
+            }
+            
+            _values = []
+            _subCtgs = []
+
+        })
+    }
 		
 		return _serviceOptions
 	 })(props['15'].service ?? [])
@@ -505,35 +502,14 @@ const EditFacility = (props) => {
 
     })(lat_long))
 
-    // const [_contactDetail, setContactDetail] = useState(((facility_contacts) => {
-  
-    //     let _contactDetail 
-    //     if(facility_contacts){
-    //         if(isArray(facility_contacts)){
-    //             if(facility_contacts.length > 0){
-    //                 _contactDetail = facility_contacts[0].contact
-    //             }else{
-    //                 _contactDetail = ''
-    //             }
-    //         }else{
-    //             _contactDetail = ''
-    //         }
-    //     }else{
-    //         _contactDetail = ''
-    //     }
 
-    //     return _contactDetail
-
-    // })(facility_contacts))
 
     const [_officerName, setOfficerName] = useState(officer_in_charge || '')
     const [_regNo, setRegNo] = useState(registration_number ?? '')
     const [_regBody, setRegBody] = useState(regulatory_body_name ?? '')
     const [_file, setFile] = useState(facility_license_document ?? '')
     const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
-    // const [_otherContactDetail, setOtherContactDetail] = useState()
-    
- 
+
 
     // different form states
     const [formId, setFormId] = useState(0)
@@ -683,7 +659,6 @@ const EditFacility = (props) => {
 
     // Basic Details Refs
 
-   
     const facilityTypeRef = useRef(null)
     const facilityTypeDetailsRef = useRef(null)
     const operationStatusRef = useRef(null)    
@@ -734,7 +709,6 @@ const EditFacility = (props) => {
             }
         }
 
-    
 
         // Pre-fetch values for drop down
         if(facility_type){
@@ -1879,8 +1853,40 @@ const EditFacility = (props) => {
                                         facility_registration_number: registration_number ?? '',
                                         license_number: license_number ?? ''
                                     }}
+
+                                    onSubmit={async formData => {
+                                        
+
+                                        const regulatoryBody = regulatoryBodyRef.current  ? regulatoryBodyRef.current.state.value.value : ''
+                                        const regulationStatus = regulatoryStateRef.current ? regulatoryStateRef.current.state.value.value : ''
+                                        const facilityRegulatingBody = regBodyRef.current ? regBodyRef.current.value : ''
+                                        const facilityUnit =  facilityDeptNameRef.current  ? facilityDeptNameRef.current.state.value.value : ''
+
+                                        const payload = {...formData, regulatory_body:regulatoryBody, regulation_status:regulationStatus}
+
+                                        delete payload['license_document']
+                                        delete payload['facility_license_number']
+                                        delete payload['facility_registration_number']
+
+                                       handleRegulationUpdates(payload, id, alert, "Facility Regulation updated successfully")
+                                       .then(async ({statusText}) => {
+
+                                            const _payload = {units:[{
+                                                license_number: formData['facility_license_number'],
+                                                registration_number: formData['facility_registration_number'],
+                                                regulatory_body_name: facilityRegulatingBody,
+                                                unit: facilityUnit
+                                            }]}
+
+
+                                            if(statusText == 'OK'){
+                                                await handleRegulationUpdates(_payload, id, alert, "Facility regulation units updated successfully")
+                                            }
+                                       })
+                                    }
+                                        }
                                 >
-                                    <Form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId], 'PATCH')}>
+                                    <Form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
                                         {/* Regulatory Body */}
                                         <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">

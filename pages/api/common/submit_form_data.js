@@ -169,9 +169,7 @@ export default async function submitFormData(req, res) {
                     contentType = 'application/json;charset=utf-8';
                     method = 'PATCH';
                     break            
-
-                case 'basic_details_update':      
-                    
+                case 'basic_details_update':        
                     url = `${API_URL}/facilities/facilities/${req.query.id}/`;
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
@@ -181,15 +179,12 @@ export default async function submitFormData(req, res) {
                     url = `${API_URL}/gis/facility_coordinates/${req.query.id}/`;
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
-                    break;              
-                default:
+                    break;    
 
-                    
-                    break;
             }
               
             try {
-                console.log({url});
+                console.log({url, body: JSON.stringify(req.body)});
                 const resp = await fetch(url, {
                     headers: {
                         'Authorization': 'Bearer ' + token,
@@ -197,7 +192,7 @@ export default async function submitFormData(req, res) {
                         'Content-Type': contentType
                     },
                     method,
-                    body: method == 'GET' ? null:JSON.stringify(req.body)
+                    body: method == 'GET' ? null : JSON.stringify(req.body)
                 })
                 
                 return await resp.json()
