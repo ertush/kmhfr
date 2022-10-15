@@ -81,8 +81,14 @@ const system_setup = (props) => {
     const uid = useId();
 
     useEffect(() => {
-        if(!hasSystemSetupPermissions(/^system_setup.view_.*$/, userPermissions)){
+        if(!hasSystemSetupPermissions(/^common.add_county$/, userPermissions)){
             router.push('/unauthorized')
+        }
+
+        return () => {
+            setFields(null)
+            setIsAddForm(null)
+            setRows(null)
         }
     },[])
    
@@ -430,6 +436,7 @@ const system_setup = (props) => {
   <>
             <Head>
                 <title>KMHFL - System Setup</title>
+                <metadata zoomAndPan='100'></metadata>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
