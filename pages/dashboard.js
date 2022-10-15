@@ -1,21 +1,14 @@
 import Head from 'next/head'
-// import Link from 'next/link'
 import MainLayout from '../components/MainLayout'
-// import { DotsHorizontalIcon, DownloadIcon, PencilIcon } from '@heroicons/react/solid'
 import { checkToken } from '../controllers/auth/auth'
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useRouter } from 'next/router'
-// import { Menu } from '@headlessui/react'
-// import { ChevronDownIcon } from '@heroicons/react/outline'
 import BarChart from '../components/BarChart'
 import Select from 'react-select'
 import Download from '../components/Download'
 
 const Dash = (props) => {
     const router = useRouter()
-    // console.log('props:::', props)
-    // console.log('props:::', Object.keys(props))
-    // console.log('props.data:::', Object.keys(props?.data))
 
     let filters = props?.filters
     let [drillDown, setDrillDown] = useState({})
@@ -26,11 +19,10 @@ const Dash = (props) => {
     let sessToken =props?.tok
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-    const {owner_link, types_link, summary_link, chu_link, keph_link} = useRef()
+    const {owner_link, types_link, summary_link, chu_link, keph_link} = useRef(null)
 
     useEffect(() => {
 
-        // console.log({data: props?.data})
         let mtd = true
         if (mtd) {
             if (filters && Object.keys(filters).length > 0) {
@@ -337,7 +329,7 @@ const Dash = (props) => {
 
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility owners </h4> 
-                        <Download csvHeaders={csvHeaders} filename={'Facility_owners'} data={props?.data?.owner_types?.map((ot)=>{return {metric: ot.name, value:ot.count}})} csvLink={owner_link}/>
+                        <Download {...csvHeaders} filename={'Facility_owners'} data={props?.data?.owner_types?.map((ot)=>{return {metric: ot.name, value:ot.count}})} csvLink={owner_link}/>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>

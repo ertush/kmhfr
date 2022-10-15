@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo, useContext } from "react";
 
 // Next imports
 import Head from "next/head";
@@ -17,11 +17,14 @@ import Select from "react-select";
 
 // Components imports
 import MainLayout from "../components/MainLayout";
-// import LoadingAnimation from '../../components/LoadingAnimation'
 
-const Gis = (props) => {
-  // const { data, query, path, current_url } = props
+import { hasGISPermissions } from "../utils/checkPermissions";
+import { PermissionContext } from "../providers/permissions";
+
+const Gis = (props) => { 
   const router = useRouter();
+
+  const userPermissions = useContext(PermissionContext)
 
   // Temporary fix faulty Kirinyaga id
   let filters = (() => {
@@ -83,8 +86,8 @@ const Gis = (props) => {
 
   let qf = props?.query?.qf || "all";
   // let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
-  let [drillDown, setDrillDown] = useState({});
-  let multiFilters = [
+  const [drillDown, setDrillDown] = useState({});
+  const multiFilters = [
     "service_category",
     "service",
     "county",
@@ -93,7 +96,7 @@ const Gis = (props) => {
     "constituency",
   ];
 
-  let headers = [
+  const headers = [
     "code",
     "official_name",
     "operation_status_name",
@@ -116,7 +119,7 @@ const Gis = (props) => {
     "closed",
   ];
 
-  let scoped_filters = [
+  const scoped_filters = [
     { name: "keph_level_name", options: [] },
     { name: "facility_type_name", options: [] },
     { name: "facility_type_category", options: [] },
@@ -183,6 +186,11 @@ const Gis = (props) => {
   };
 
   useEffect(() => {
+
+    if(!hasGISPermissions(/^mfl_gis.view_.*$/, userPermissions)){
+      router.push('/unauthorized')
+  }
+
     if (fromDate !== "" && toDate !== "") {
       const results = linelist2
         ?.filter(
