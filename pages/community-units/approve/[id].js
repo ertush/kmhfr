@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import MainLayout from '../../../components/MainLayout';
 import { checkToken } from '../../../controllers/auth/auth';
-import { approveCHU} from '../../../controllers/chul/rejectApprove';
+import { approveCHU, approveCHUUpdates} from '../../../controllers/chul/rejectApprove';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import {CheckCircleIcon,ChevronRightIcon,InformationCircleIcon,LockClosedIcon,XCircleIcon} from '@heroicons/react/solid';
 import Table from '@mui/material/Table';
@@ -11,44 +11,36 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import dynamic from "next/dynamic";
+import { useRouter } from 'next/router'
+
 
 const CommUnit = (props) => {
 
-  const Map = dynamic(
-    () => import("../../../components/Map"), // replace '@components/map' with your component's location
-    {
-      loading: () => (
-        <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
-          Loading&hellip;
-        </div>
-      ),
-      ssr: false,
-    } // This line is important. It's what prevents server-side render
-  );
-
-
-  // Initiating the variables
+  const router = useRouter()
   let cu = props.data;
-  let _id
-  _id = cu.id;
-
-  // Services states
-  const [services, setServices] = useState([])
-	const [refreshForm, setRefreshForm] = useState(false)
-
  	// Reference hooks for the services section
   const [user, setUser] = useState(null);
   const [isCHULDetails, setIsCHULDetails] = useState(true);
-  const [isCHUDetails, setIsCHUDetails] = useState(true);
-  const [isApproveReject, setIsApproveReject] = useState(false);
   const [appRejReason, setAppRejReason] = useState('')
-  const [columns, setColumns] = useState([
-    { id: 'households_monitored', label: 'Field', minWidth: 100 },
-    { id: 'households_monitored', label: 'Old Value', minWidth: 100},
-    { id: 'households_monitored',label: 'New Value',minWidth: 100, }
-  ]);
-  const [rows, setRows] = useState([])  
+  const columns = [
+    {  label: 'Field', minWidth: 100 },
+    {  label: 'Old Value', minWidth: 100},
+    {  label: 'New Value',minWidth: 100, }
+  ];
+ const CHULDetails =[
+  { value: `${cu.facility_subcounty}`, label: 'Sub County ' },
+  { value: `${cu.facility_constituency}`, label: 'Constituency'},
+  { value: `${cu.facility_constituency}`, label: 'Constituency'},
+  { value: `${cu.facility_ward}`, label: 'Ward'},
+  {value: `${cu.households_monitored}`, label: 'Households Monitored'},
+ ]
+ const CHU_MainDetails =[
+  { value: `${cu.status_name}`, label: 'Functional Status' },
+  { value: `${cu.code}`, label: 'CHU Code'},
+  { value: `${cu.number_of_chvs}`, label: 'Number of CHVs'},
+  { value: `${cu.facility_name}`, label: 'Linked Facility'},
+  {value: `${cu.facility_county}`, label: 'County'},
+ ]
 
   let reject = ''
   useEffect(() =>
@@ -63,7 +55,7 @@ const CommUnit = (props) => {
     }
     return () =>{};
     
-  }, [cu]);
+  }, [cu, reject]);
  
   return (
     <>
@@ -95,24 +87,12 @@ const CommUnit = (props) => {
 
             {/* Header snippet */}
             <div
-              className={
-                'col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 ' +
-                (cu.active ? 'border-green-600' : 'border-red-600')
-              }
+              className={'col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 ' + (cu.active ? 'border-green-600' : 'border-red-600')}   
             >
               <div className='col-span-6 md:col-span-3'>
-                <h1 className='text-4xl tracking-tight font-bold leading-tight'>
-                  {cu.name}
-                </h1>
+                <h1 className='text-4xl tracking-tight font-bold leading-tight'> {cu.name} </h1>
                 <div className='flex gap-2 items-center w-full justify-between'>
-                  <span
-                    className={
-                      'font-bold text-2xl ' +
-                      (cu.code ? 'text-green-900' : 'text-gray-400')
-                    }
-                  >
-                    #{cu.code || 'NO_CODE'}
-                  </span>
+                  <span className={'font-bold text-2xl ' + (cu.code ? 'text-green-900' : 'text-gray-400')}> #{cu.code || 'NO_CODE'} </span>
                   <p className='text-gray-600 leading-tight'>
                     {cu.keph_level_name && 'KEPH ' + cu.keph_level_name}
                   </p>
@@ -122,15 +102,9 @@ const CommUnit = (props) => {
               {/* Info snippet */}
               <div className='flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2'>
                 <div className='flex flex-wrap gap-3 w-full items-center justify-start md:justify-center'>
-                  {cu.is_approved ? (
-                    <span className='bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1'>
-                      <CheckCircleIcon className='h-4 w-4' />
-                      CHU Approved
-                    </span>
-                  ) : (
-                    <span className='bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1'>
-                      <XCircleIcon className='h-4 w-4' />
-                      Not approved
+                  {cu.is_approved && (
+                    <span className={'p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1' +' '+ (cu.is_approved ? 'bg-green-200 text-green-900' : 'bg-red-200 text-red-900')}>
+                      {cu.is_approved ? <>  <CheckCircleIcon className='h-4 w-4' />CHU Approved</>: <><XCircleIcon className='h-4 w-4' />Not approved </>}
                     </span>
                   )}
                   {cu.is_closed &&  (
@@ -164,8 +138,6 @@ const CommUnit = (props) => {
             </div>
           </div>
             
-        {isApproveReject}
-
         <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4 mx-3">
             <h3 className="text-2xl tracking-tight font-semibold leading-5">
                 Approve/Reject Community Unit
@@ -173,51 +145,17 @@ const CommUnit = (props) => {
 
             {/* CHU details */}
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                
+              {CHU_MainDetails.map((dt)=>(
 
                 <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                     <label className="col-span-1 text-gray-600">
-                        Functional Status
+                        {dt.label}
                     </label>
                     <p className="col-span-2 text-black font-medium text-base">
-                        {cu.status_name || " - "}
+                        {dt.value || " - "}
                     </p>
                 </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                        CHU Code
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                        {cu.code || " - "}
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                        Number of CHVs 
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                        {cu.number_of_chvs || " - "}
-                    </p>
-                </div>
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                        Linked Facility
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                        {cu.facility_name || " - "}
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                        County
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                        {cu.facility_county || " - "}
-                    </p>
-                </div>
+              ))}
 
                 {cu.date_established && (
                     <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
@@ -257,37 +195,14 @@ const CommUnit = (props) => {
 
             {!isCHULDetails && (
                 <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-
-                    <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                        <label className="col-span-1 text-gray-600">Sub County</label>
-                        <p className="col-span-2 text-black font-medium text-base">
-                            {cu.facility_subcounty || " - "}
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                        <label className="col-span-1 text-gray-600">
-                            Constituency
-                        </label>
-                        <p className="col-span-2 text-black font-medium text-base">
-                            {cu.facility_constituency || " - "}
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                        <label className="col-span-1 text-gray-600">
-                            Ward
-                        </label>
-                        <p className="col-span-2 text-black font-medium text-base">
-                            {cu.facility_ward || " - "}
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
-                        <label className="col-span-1 text-gray-600">
-                            Households Monitored
-                        </label>
-                        <p className="col-span-2 text-black font-medium text-base">
-                            {cu.households_monitored || " - "}
-                        </p>
-                    </div>
+                    {CHULDetails.map((dt)=>(
+                        <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
+                            <label className="col-span-1 text-gray-600">{dt.label}</label>
+                            <p className="col-span-2 text-black font-medium text-base">
+                                {dt.value || " - "}
+                            </p>
+                        </div>
+                    ))}
                 </div>
               )
             }
@@ -300,7 +215,6 @@ const CommUnit = (props) => {
               </h3>
               <form
                 className="space-y-3"
-                onSubmit = {reject? (e) => approveCHU(e,cu.id, appRejReason) : (e) => rejectCHUL(e, cu.id, appRejReason)}
               >
                   <div className='col-span-4 w-full h-auto'>
                                 {
@@ -327,8 +241,7 @@ const CommUnit = (props) => {
                                         </TableHead>
                                         <TableBody sx={{paddingX: 4}}>
                                               {/* basic name */}
-                                              {
-                                                  cu.pending_updates?.basic.name !== undefined &&
+                                              { cu.pending_updates?.basic.name !== undefined &&
                                                     (
 
                                                       <TableRow hover role="checkbox" tabIndex={-1}>
@@ -471,14 +384,14 @@ const CommUnit = (props) => {
                     <button
                       type="submit"
                       className={"p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
-                      onClick={(e) => reject = true}
+                      onClick={(e) => approveCHUUpdates(e,cu.latest_update, router) }
                     >
                       {"Approve CHU Updates"}
                     </button>
                     <button
                       type="submit"
                       className={"p-2 text-center rounded-md font-semibold text-base text-white bg-red-500" }
-                      onClick={(e) => reject = false}
+                      onSubmit={(e) => rejectCHUUpdates(e,cu.id) }
                     >
                       {"Reject CHU Updates"}
                     </button>
@@ -491,10 +404,7 @@ const CommUnit = (props) => {
             {cu.pending_updates && Object.keys(cu.pending_updates).length == 0 && (
 
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-                  {" "}
-                  Approval comment:{" "}
-                </h3>
+                <h3 className="text-gray-900 font-semibold leading-16 text-medium">Approval comment: </h3>
                 {cu.is_approved}
                 <form
                   className="space-y-3"
@@ -513,29 +423,17 @@ const CommUnit = (props) => {
                   <div className="flex flex-row justify-start items-center space-x-3 p-3">
                   <button
                     type="submit"
-                    className={
-                      cu.is_approved
-                        ? ''
-                        : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
-                    }
+                    className={ cu.is_approved ? ''  : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
                     onClick={(e) => reject = true}
                   >
-                    {cu.is_approved
-                      ? "" 
-                      : "Approve Community Health Unit"}
+                    {cu.is_approved ? "": "Approve Community Health Unit"}
                   </button>
                   <button
                     type="submit"
-                    className={
-                      cu.is_rejected
-                        ? ''
-                        : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
-                    }
+                    className={  cu.is_rejected ? '' : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"}
                     onClick={(e) => reject = false}
                   >
-                    {cu.is_rejected
-                      ? "" 
-                      : "Reject Community Health Unit"}
+                    {cu.is_rejected ? "" : "Reject Community Health Unit"}
                   </button>
                   </div>
                 </form>

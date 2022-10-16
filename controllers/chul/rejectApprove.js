@@ -40,7 +40,36 @@ const rejectCHU = (e, ctx, state, comment) => {
     console.log({ comment });
 };
 
-
+const approveCHUUpdates= async (e,id, router)=>{
+  e.preventDefault();
+  let url=`/api/common/submit_form_data/?path=approve_chul_updates&latest_updates=${id}`
+  try{
+       await fetch(url, {
+          headers:{
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json;charset=utf-8'
+              
+          },
+          method: 'PATCH',
+          body: JSON.stringify({is_approved:true})
+      })
+      .then(resp =>resp.json())
+      .then(res =>{ 
+          router.push({
+            pathname: '/community-units',
+            query: {has_edits: false, pending_approval: true}
+          })
+          console.log(res)
+      })
+      .catch(e=>{
+        setStatus({status:'error', message: e})
+      })
+  }catch (e){
+      
+        setStatus({status:'error', message: e})
+        console.error(e)
+  }
+}
 const approveCHU = (e, id, comment) => {
     e.preventDefault();
 
@@ -113,6 +142,7 @@ const rejectChul = (e, id, comment) => {
 
 export {
     approveRejectCHU,
+    approveCHUUpdates,
     approveCHU,
     rejectCHU,
     rejectChul
