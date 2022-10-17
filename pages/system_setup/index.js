@@ -31,7 +31,7 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import { PermissionContext } from '../../providers/permissions';
-import { hasPermission } from '../../utils/checkPermissions';
+import { hasSystemSetupPermissions } from '../../utils/checkPermissions';
 
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
@@ -81,8 +81,14 @@ const system_setup = (props) => {
     const uid = useId();
 
     useEffect(() => {
-        if(!hasPermission(/^system_setup.view_.*$/, userPermissions)){
+        if(!hasSystemSetupPermissions(/^common.add_county$/, userPermissions)){
             router.push('/unauthorized')
+        }
+
+        return () => {
+            setFields(null)
+            setIsAddForm(null)
+            setRows(null)
         }
     },[])
    
@@ -430,6 +436,7 @@ const system_setup = (props) => {
   <>
             <Head>
                 <title>KMHFL - System Setup</title>
+                <metadata zoomAndPan='100'></metadata>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>

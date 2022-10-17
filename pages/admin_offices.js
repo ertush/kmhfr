@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { PermissionContext } from '../providers/permissions'
-import { hasPermission } from '../utils/checkPermissions'
+import { hasAdminOfficesPermissions } from '../utils/checkPermissions'
 import router from 'next/router'
 
 // next imports
@@ -15,7 +15,7 @@ const admin_offices = () => {
     const userPermissions = useContext(PermissionContext)
 
     useEffect(() => {
-        if(!hasPermission(/^admin_offices.view_.*$/, userPermissions)){
+        if(!hasAdminOfficesPermissions(/^admin_offices.view_.*$/, userPermissions)){
             router.push('/unauthorized')
         }
     }, [])
