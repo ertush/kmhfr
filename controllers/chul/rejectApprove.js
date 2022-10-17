@@ -70,14 +70,22 @@ const approveCHUUpdates= async (e,id, router)=>{
         console.error(e)
   }
 }
-const approveCHU = (e, id, comment) => {
+const approveCHU = (e, id, comment,state, router) => {
     e.preventDefault();
-
-    const payload ={
-        approval_comment: comment,
-        is_rejected: false, 
-        is_approved: true
+    let payload ={}
+   if(state == true){
+     payload ={
+          approval_comment: comment,
+          is_rejected: false, 
+          is_approved: true
+      }
+   }else{
+      payload ={
+        rejection_reason: comment,
+        is_rejected: true, 
+        is_approved: false
     }
+   }
     console.log(JSON.stringify(payload))
     let url=`/api/common/submit_form_data/?path=approve_chul&id=${id}`
     try{
@@ -92,41 +100,10 @@ const approveCHU = (e, id, comment) => {
         })
         .then(resp =>resp)
         .then(res =>{ 
-            
-            console.log(res)
-        })
-        .catch(e=>{
-          setStatus({status:'error', message: e})
-        })
-    }catch (e){
-
-        setStatus({status:'error', message: e})
-        console.error(e)
-    }
-    console.log({comment})
-}
-
-const rejectChul = (e, id, comment) => {
-    e.preventDefault();
-
-    const payload ={
-        rejection_reason: comment,
-        is_rejected: true, 
-        is_approved: false
-    }
-    let url=`/api/common/submit_form_data/?path=approve_chul&id=${id}`
-    try{
-         fetch(url, {
-            headers:{
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
-                
-            },
-            method: 'PATCH',
-            body: JSON.stringify(payload)
-        })
-        .then(resp =>resp)
-        .then(res =>{ 
+          router.push({
+            pathname: '/community-units',
+            query: { }
+          })
             
             console.log(res)
         })
@@ -145,5 +122,4 @@ export {
     approveCHUUpdates,
     approveCHU,
     rejectCHU,
-    rejectChul
 }

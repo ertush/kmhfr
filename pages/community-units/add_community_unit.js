@@ -1,36 +1,15 @@
-// React imports
 import React, { useState, useEffect, useRef } from 'react';
-
-// Next imports
 import Head from 'next/head';
-
-// Component imports
 import MainLayout from '../../components/MainLayout';
 import TrasnferListServices from '../../components/TrasnferListServices';
 import { renderMenuItem } from '../../components/renderMenuItem';
-
-// Controller imports
 import { checkToken } from '../../controllers/auth/auth';
-
-// MUI imports
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import { FixedSizeList } from 'react-window';
-
-
-// Heroicons imports
-import
-{
-	ChevronDoubleRightIcon,
-	ChevronDoubleLeftIcon,
-
-	TrashIcon
-} from '@heroicons/react/solid';
-
-
-// Package imports
+import{ChevronDoubleRightIcon,ChevronDoubleLeftIcon,TrashIcon} from '@heroicons/react/solid';
 import Select from 'react-select';
 
 
@@ -102,7 +81,6 @@ function AddCommUnit(props) {
 	// Define useEffect
 	useEffect(() =>
 	{
-		// console.log(facilities.filter(({ county }) => county )[0])
 
 		const formIdState = window.sessionStorage.getItem('formId');
 
@@ -110,7 +88,6 @@ function AddCommUnit(props) {
 		{
 			window.sessionStorage.setItem('formId', 1);
 		}
-		// console.log(formId);
 
 		setFormId(window.sessionStorage.getItem('formId'));
 
@@ -122,7 +99,6 @@ function AddCommUnit(props) {
 			}
 		};
 	}, [formId, facilities, serviceCtg]);
-	// console.log(formId);
 
 	return (
 		<>
@@ -185,10 +161,8 @@ function AddCommUnit(props) {
 
 												let _id;
 
-												// An empty object of the form data
 												const formData = {};
 
-												// Loop through all the form elements and add them to the object
 												const elements = [...event.target];
 
 												elements.forEach(({ name, value }) =>
@@ -255,7 +229,6 @@ function AddCommUnit(props) {
 															</label>
 															<input
 																placeholder='Select the name of the CHU'
-
 																type='text'
 																name='name'
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -404,7 +377,7 @@ function AddCommUnit(props) {
 															<input
 																required
 																type='number'
-																name='no_monitored_households'
+																name='households_monitored'
 																placeholder='Number of households served by the unit'
 																min={0}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -425,7 +398,7 @@ function AddCommUnit(props) {
 															<input
 																required
 																type='number'
-																name='no_chvs'
+																name='number_of_chvs'
 																placeholder='Number of Community Health Volunteers in the unit'
 																min={0}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -450,7 +423,7 @@ function AddCommUnit(props) {
 																		<input
 																			value={countyValue}
 																			type='text'
-																			name='linked_facility_county'
+																			name='facility_county'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
@@ -471,7 +444,7 @@ function AddCommUnit(props) {
 																		<input
 																			value={subCountyValue}
 																			type='text'
-																			name='linked_facility_sub_county'
+																			name='facility_sub_county'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
@@ -492,7 +465,7 @@ function AddCommUnit(props) {
 																		<input
 																			value={constituencyValue}
 																			type='text'
-																			name='linked_facility_sub_county'
+																			name='facility_constituency'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
@@ -513,7 +486,7 @@ function AddCommUnit(props) {
 																		<input
 																			value={wardValue}
 																			type='text'
-																			name='linked_facility_sub_county'
+																			name='facility_ward'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
@@ -531,7 +504,7 @@ function AddCommUnit(props) {
 															<input
 																required
 																type='number'
-																name='area_of_coverage'
+																name='location'
 																placeholder='Description of the area of coverage'
 																min={0}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -603,7 +576,7 @@ function AddCommUnit(props) {
 															'Content-Type': 'application/json;charset=utf-8'
 
 														},
-														method: 'POST',
+														method: 'PATCH',
 														body: JSON.stringify(payload)
 													})
 												}
@@ -801,8 +774,10 @@ function AddCommUnit(props) {
 															<TrasnferListServices
 																categories={serviceCategories}
 																setServices={setServices}
-																setRefreshForm={setRefreshForm}
-																refreshForm={refreshForm}
+																setRefreshForm4={setRefreshForm}
+																selectedRight={null}
+																setSelectedServiceRight={() => null}
+																refreshForm4={refreshForm}
 															/>
 														</div>
 																												

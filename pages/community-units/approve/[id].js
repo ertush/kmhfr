@@ -22,6 +22,7 @@ const CommUnit = (props) => {
   const [user, setUser] = useState(null);
   const [isCHULDetails, setIsCHULDetails] = useState(true);
   const [appRejReason, setAppRejReason] = useState('')
+  const [isApproveReject, setIsApproveReject] = useState(false);
   const columns = [
     {  label: 'Field', minWidth: 100 },
     {  label: 'Old Value', minWidth: 100},
@@ -408,7 +409,7 @@ const CommUnit = (props) => {
                 {cu.is_approved}
                 <form
                   className="space-y-3"
-                  onSubmit = {reject? (e) => approveCHU(e,cu.id, appRejReason) : (e) => rejectCHUL(e, cu.id, appRejReason)}
+                  onSubmit = { (e) => approveCHU(e,cu.id, appRejReason, isApproveReject, router) }
                 >
                   <label htmlFor="comment-text-area"></label>
                   <textarea
@@ -424,14 +425,14 @@ const CommUnit = (props) => {
                   <button
                     type="submit"
                     className={ cu.is_approved ? ''  : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
-                    onClick={(e) => reject = true}
+                    onClick={(e) => setIsApproveReject(true)}
                   >
                     {cu.is_approved ? "": "Approve Community Health Unit"}
                   </button>
                   <button
                     type="submit"
                     className={  cu.is_rejected ? '' : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"}
-                    onClick={(e) => reject = false}
+                    onClick={(e) => setIsApproveReject(false) }
                   >
                     {cu.is_rejected ? "" : "Reject Community Health Unit"}
                   </button>
