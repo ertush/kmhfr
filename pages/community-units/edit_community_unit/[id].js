@@ -43,6 +43,7 @@ const CommUnit = (props) => {
 
   // State of the different tabs
   const [chulId, setchulId] = useState('');
+  const [formData, setFormData] = useState({})
  
 
   // State of the different form fields
@@ -83,6 +84,7 @@ const CommUnit = (props) => {
 
  	// Reference hooks for the services section
 	const nameOptionRef = useRef();
+  const serviceOptionRef = useRef();
 	const serviceCategoriesRef = useRef();
 	const optionRefBody = useRef();
 
@@ -110,32 +112,22 @@ const CommUnit = (props) => {
     
   }, [cu, refreshForm, selectedServiceRight, services]);
 
+  const handleChange =(e)=>{
+   
+        const newObj = {}
+				newObj[e.target.name] = {}
+				newObj[e.target.name] = e.target.name
+				newObj[e.target.name] = e.target.value
+				setFormData({ ...formData, ...newObj })
+
+  }
+
   const handleBasicDetails = (event) => {
     event.preventDefault();
 
-    let basicDetails = {};
-    let formData = {
-      name: cu.name,
-      facility: cu.facility,
-      status: cu.status,
-      date_established: cu.date_established,
-      date_operational: cu.date_operational,
-      households_monitored: cu.households_monitored,
-      number_of_chvs: cu.number_of_chvs,
-      facility_county: cu.facility_county,
-      facility_sub_county: cu.facility_sub_county,
-      facility_constituency: cu.facility_constituency,
-      facility_ward: cu.facility_ward,
-    };
-
-    const elements = [...event.target];
-
-    elements.forEach(({ name, value }) => {
-      basicDetails[name] = value;
-    });
-
-    console.log('elements', elements.name);
-    console.log('basicDetails', basicDetails);  
+    let  payload = {
+      basic: formData, ...formData
+    }
 
     try{
       fetch(`/api/common/submit_form_data/?path=chul_data&id=${_id}`, {
@@ -145,7 +137,12 @@ const CommUnit = (props) => {
             
         },
         method:'PATCH',
-        body: JSON.stringify({basicDetails})
+        body: JSON.stringify(payload)
+      }).then((res) => res.json()).then((res) => {
+        console.log(res)
+        // if(res.status === 200){
+          alert('Data updated successfully')
+        // }
       })
 
     }
@@ -193,8 +190,14 @@ const CommUnit = (props) => {
           
         },
         method:'PATCH',
-        body: JSON.stringify({chewData})
+        body: JSON.stringify({...formData})
+      }).then((res) => res.json()).then((res) => {
+        console.log(res)
+        // if(res.status === 200){
+          alert('Data updated successfully')
+        // }
       })
+
 
     }
     catch(e){
@@ -202,13 +205,13 @@ const CommUnit = (props) => {
     }   
   }
 
-  const handleServices = async(event, stateSetters, method) => {
+  const handleServices = async(event, _id, method) => {
     event.preventDefault();
 
-    const [services, _id, setFormId, setServices] = stateSetters
     const _payload = services.map(({value}) => ({service: value}))
 
-    _payload.forEach(obj => obj['health_unit'] = chulId)
+    _payload.forEach(obj => obj['health_unit'] = _id)
+    console.log(_payload)
 
     try{
       fetch(`/api/common/submit_form_data/?path=edit_chul&id=${_id}`, {
@@ -218,7 +221,7 @@ const CommUnit = (props) => {
           
         },
         method,
-        body: JSON.stringify({aervices:_payload})
+        body: JSON.stringify({services:_payload})
       })
 
     }
@@ -227,7 +230,7 @@ const CommUnit = (props) => {
     } 
 
     window.sessionStorage.setItem('formId', 1)
-    setFormId(window.sessionStorage.getItem('formId'))
+    // setFormId(window.sessionStorage.getItem('formId'))
     setServices([])
   }
 
@@ -401,7 +404,7 @@ const CommUnit = (props) => {
                 <>
                   <form className='flex flex-col w-full items-start justify-start gap-3'
                     //onSubmit={handleBasicDetails}>
-                    onSubmit={ev => handleBasicDetails(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId], 'PATCH')}>
+                    onSubmit={ev => handleBasicDetails(ev)}>
 
                     {/* CHU Name */}
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -417,8 +420,8 @@ const CommUnit = (props) => {
                         ref={nameRef}
                         type='text'
                         name='name'
-                        value= {_name}
-                        onChange={ev => setName(ev.target.value)}
+                        defaultValue= {_name}
+                        onChange={ev => handleChange(ev)}
                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' 
                       />
                     </div>
@@ -437,6 +440,7 @@ const CommUnit = (props) => {
                       <Select
                         ref = {linkedFacilityRef}
                         onChange={(value) => {
+                          handleChange({target: {name:'facility' , value: value.value}})
                           setSelectedFacility(value);
                           
                           // list the facilities and their counties
@@ -500,9 +504,7 @@ const CommUnit = (props) => {
                         ]}
                         placeholder= {cu.status_name}
                         ref = {operationStatusRef}
-                        onChange={
-                          (e) => setOperationStatus(e.label) 
-                        }
+                        onChange={(value)=> handleChange({target: {name:'status' , value: value.value}})}
                         name='status'
                         //value={cu.status}
                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -528,8 +530,8 @@ const CommUnit = (props) => {
                               ref ={dateEstablishedRef}
                               type='date'
                               name='date_established'
-                              value={_dateEstablished}
-                              onChange={ev => setDateEstablished(ev.target.value)}
+                              defaultValue={_dateEstablished}
+                              onChange={ev => handleChange(ev)}
                               placeholder={cu.date_established}
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
@@ -552,8 +554,8 @@ const CommUnit = (props) => {
                               ref={dateOperationalRef}
                               type='date'
                               name='date_operational'
-                              value={_dateOperational}
-                              onChange={ev => setDateOperational(ev.target.value)}
+                              defaultValue={_dateOperational}
+                              onChange={ev => handleChange(ev)}
                               placeholder={cu.date_operational}
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
@@ -576,9 +578,10 @@ const CommUnit = (props) => {
                       <input
                         type='number'
                         name='households_monitored'
-                        value={_noOfMonitoredHouseholds}
+                        defaultValue={_noOfMonitoredHouseholds}
                         ref={monitoredHouseholdsRef}
-                        onChange={ev => setNoOfMonitoredHouseholds(ev.target.value)}
+                        onChange={ev => handleChange(ev)}
+                        // onChange={ev => setNoOfMonitoredHouseholds(ev.target.value)}
                         //placeholder={cu.households_monitored}
                         min={0}
                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -599,9 +602,10 @@ const CommUnit = (props) => {
                       <input
                         type='number'
                         name='number_of_chvs'
-                        value={_noOfCHVs}
+                        defaultValue={_noOfCHVs}
                         ref={noOfCHVsRef}
-                        onChange={ev => setNoOfCHVs(ev.target.value)}
+                        onChange={ev => handleChange(ev)}
+                        // onChange={ev => setNoOfCHVs(ev.target.value)}
                         min={0}
                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                       />
@@ -624,7 +628,8 @@ const CommUnit = (props) => {
                               </span>
                             </label>
                             <input
-                              value={cu.facility_county}
+                              readOnly
+                              defaultValue={cu.facility_county}
                               placeholder = {cu.facility_county}
                               type='text'
                               name='facility_county'
@@ -647,8 +652,9 @@ const CommUnit = (props) => {
                               </span>
                             </label>
                             <input
+                              readOnly
                               placeholder={cu.facility_subcounty}
-                              value={cu.facility_subcounty}
+                              defaultValue={cu.facility_subcounty}
                               type='text'
                               name='facility_subcounty'
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -669,8 +675,9 @@ const CommUnit = (props) => {
                               </span>
                             </label>
                             <input
+                              readOnly
                               placeholder={cu.facility_constituency}
-                              value={cu.facility_constituency}
+                              defaultValue={cu.facility_constituency}
                               type='text'
                               name='facility_constituency'
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -691,8 +698,9 @@ const CommUnit = (props) => {
                               </span>
                             </label>
                             <input
+                              readOnly
                               placeholder={cu.facility_ward}
-                              value={cu.facility_ward}
+                              defaultValue={cu.facility_ward}
                               type='text'
                               name='facility_ward'
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -864,8 +872,10 @@ const CommUnit = (props) => {
                                   type='text'
                                   //ref={firstNameRef}
                                   name='first_name'
-                                  value={_firstName}
-                                  onChange={ev => setFirstName(ev.target.value)}
+                                  defaultValue={_firstName}
+                                  // onChange={ev => setFirstName(ev.target.value)}
+                                  onChange={ev => handleChange(ev)}
+
                                   className='flex-none w-75 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                 />
                               </div>
@@ -877,8 +887,8 @@ const CommUnit = (props) => {
                                 <input
                                   type='text'
                                   name='last_name'
-                                  value={_lastName}
-                                  onChange={ev => setLastName(ev.target.value)}
+                                  defaultValue={_lastName}
+                                  onChange={ev => handleChange(ev)}
                                   className='flex-none w-75 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                 />
                               </div>
@@ -1002,7 +1012,7 @@ const CommUnit = (props) => {
                   <form
                       name='chu_services_form'
                       className='flex flex-col w-full items-center justify-start gap-3'
-                      onSubmit={ev =>handleServices(ev, [chulId, services, setServices], PATCH)}
+                      onSubmit={ev =>handleServices(ev, chulId, 'PATCH')}
                     >
                       <h3 className='text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight'>
                         <span className='font-semibold'>Select New Services</span>
@@ -1013,8 +1023,8 @@ const CommUnit = (props) => {
                         <TrasnferListServices
                             categories={serviceCategories}
                             setServices={setServices}
-                            setRefreshForm={setRefreshForm}
-                            refreshForm={refreshForm}
+                            setRefreshForm4={setRefreshForm}
+                            refreshForm4={refreshForm}
                             selectedRight={serviceSelected}
                             setSelectedServiceRight={ setSelectedServiceRight}
                         />

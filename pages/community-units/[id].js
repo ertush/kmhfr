@@ -171,7 +171,7 @@ const CommUnit = (props) => {
                       CHU Active
                     </span>
                   )}
-                  {cu.has_fffedits && (
+                  {cu.has_edits && (
                     <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes

@@ -354,7 +354,7 @@ const CommUnit = (props) => {
                                     }
                                     if(key == 'services'){
                               
-                                      const services = cu.pendingWorkers_updates['services'].map((item)=> {
+                                      const services = cu.pending_updates['services'].map((item)=> {
                                       return <div className='col-span-4 w-full h-auto ml-7 mt-2' >
                                          <div className='grid grid-cols-2 w-full'>
                                         <p className='col-span-2 text-gray-600 font-medium text-base'>{item.name}</p>
