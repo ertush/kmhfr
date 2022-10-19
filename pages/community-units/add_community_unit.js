@@ -801,8 +801,11 @@ function AddCommUnit(props) {
 															<TrasnferListServices
 																categories={serviceCategories}
 																setServices={setServices}
-																setRefreshForm={setRefreshForm}
-																refreshForm={refreshForm}
+																setRefreshForm4={setRefreshForm}
+																refreshForm4={refreshForm}
+																selectedRight={null}
+																setSelectedServiceRight={() => null}
+														
 															/>
 														</div>
 																												
