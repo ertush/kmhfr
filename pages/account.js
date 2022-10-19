@@ -1,12 +1,13 @@
 import Head from 'next/head'
 import * as Tabs from '@radix-ui/react-tabs';
 import { checkToken, getUserContacts } from '../controllers/auth/auth'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import MainLayout from '../components/MainLayout'
 import { CheckCircleIcon, InformationCircleIcon, LocationMarkerIcon, LockClosedIcon, XCircleIcon, XIcon } from '@heroicons/react/solid'
 import { ArrowsExpandIcon } from '@heroicons/react/outline'
 import dynamic from 'next/dynamic'
 import { Dialog, Transition } from '@headlessui/react'
+import { UserContext } from '../providers/user';
 
 const Account = (props) => {
     const [user, setUser] = useState(null)
@@ -22,25 +23,27 @@ const Account = (props) => {
     const [onames, setOnames] = useState("")
     const [email, setEmail] = useState("")
     const [username, setUsername] = useState("")
+
+
+    const userCtx = useContext(UserContext)
     //check if a session cookie is set
 
     useEffect(() => {
         let user_id
-        if (typeof window !== 'undefined') {
-            let usr = window.sessionStorage.getItem('user')
-            if (usr && usr.length > 0) {
-                let s_r = JSON.parse(usr)
-                user_id = s_r?.id
-                setUser(s_r)
-                if (s_r) {
-                    setFname(s_r.first_name)
-                    setLname(s_r.last_name)
-                    setOnames(s_r.other_names)
-                    setEmail(s_r.email)
-                    setUsername(s_r.username)
-                }
+        
+        if (userCtx) {
+            let s_r = userCtx
+            user_id = s_r?.id
+            setUser(s_r)
+            if (s_r) {
+                setFname(s_r.first_name)
+                setLname(s_r.last_name)
+                setOnames(s_r.other_names)
+                setEmail(s_r.email)
+                setUsername(s_r.username)
             }
         }
+        
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
         let session_token = null

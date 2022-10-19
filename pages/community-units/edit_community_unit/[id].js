@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 
 // Next imports
 import Head from 'next/head';
@@ -31,6 +31,7 @@ import
 } from '@heroicons/react/solid';
 import Select from 'react-select';
 import { ContactPageSharp } from '@mui/icons-material';
+import { UserContext } from '../../../providers/user';
 
 const CommUnit = (props) => {
   const facilities = props.facility_data.results;
@@ -93,16 +94,12 @@ const CommUnit = (props) => {
   const [isCHUDetails, setIsCHUDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
 
+  const userCtx = useContext(UserContext)
+
   useEffect(() =>
   {
-    if (typeof window !== 'undefined')
-    {
-      let usr = window.sessionStorage.getItem('user');
-      if (usr && usr.length > 0)
-      {
-        setUser(JSON.parse(usr));
-      }
-    }
+    if (userCtx) setUser(userCtx);
+
     return () =>
     {
       setchulId(_id);

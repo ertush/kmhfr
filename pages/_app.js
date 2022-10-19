@@ -4,6 +4,7 @@ import NProgress from 'nprogress';
 import { Router } from 'next/router';
 import { positions, Provider } from "react-alert";
 import { PermissionContext } from '../providers/permissions';
+import { UserContext } from '../providers/user';
 import AlertTemplate from "react-alert-template-basic";
 
 
@@ -21,16 +22,26 @@ function MyApp({ Component, pageProps }) {
   return (
     
     <Provider template={AlertTemplate} {...options}>
-      <PermissionContext.Provider value={(() => {
-        let userPermissions
-        if (typeof window !== "undefined") {
-               userPermissions = JSON.parse(window.sessionStorage.getItem('user'))?.all_permissions
-       }
-       return userPermissions
-       
-      })()}>
-        <Component {...pageProps} />
-      </PermissionContext.Provider>
+      <UserContext.Provider value={(() => {
+          let user
+          if (typeof window !== "undefined") {
+                user = JSON.parse(window.sessionStorage.getItem('user'))
+        }
+        return user
+        
+        })()}>
+        <PermissionContext.Provider value={(() => {
+          let userPermissions
+          if (typeof window !== "undefined") {
+                userPermissions = JSON.parse(window.sessionStorage.getItem('user'))?.all_permissions
+        }
+        return userPermissions
+        
+        })()}>
+          <Component {...pageProps} />
+        </PermissionContext.Provider>
+      </UserContext.Provider>
+     
     </Provider>
   )
   

@@ -1,14 +1,18 @@
 import Head from 'next/head'
 import MainLayout from '../components/MainLayout'
 import { checkToken } from '../controllers/auth/auth'
-import React, { useState, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
 import BarChart from '../components/BarChart'
 import Select from 'react-select'
 import Download from '../components/Download'
+import { UserContext } from '../providers/user'
 
 const Dash = (props) => {
     const router = useRouter()
+
+    const userCtx = useContext(UserContext)
+
 
     let filters = props?.filters
     let [drillDown, setDrillDown] = useState({})
@@ -22,6 +26,7 @@ const Dash = (props) => {
     const {owner_link, types_link, summary_link, chu_link, keph_link} = useRef(null)
 
     useEffect(() => {
+
 
         let mtd = true
         if (mtd) {
@@ -39,12 +44,9 @@ const Dash = (props) => {
                     }
                 })
             }
-            if (typeof window !== 'undefined') {
-                let usr = window.sessionStorage.getItem('user')
-                if (usr && usr.length > 0) {
-                    setUser(JSON.parse(usr))
-                }
-            }
+           
+            if (userCtx) setUser(userCtx)
+        
         }
         return () => { mtd = false }
     }, [filters, subcounty])
@@ -458,7 +460,7 @@ const Dash = (props) => {
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
                         <BarChart
                             title="Facilities & CHUs by county"
-                            categories={Array?.from(props?.data?.county_summary, cs => cs.name) || []}
+                            categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
                             tooltipsuffix="#"
                             xaxistitle="County"
                             yaxistitle="Number"
@@ -466,11 +468,11 @@ const Dash = (props) => {
                                 let data = [];
                                 data.push({
                                     name: 'Facilities',
-                                    data: Array.from(props?.data?.county_summary, cs => parseFloat(cs.count)) || []
+                                    data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.count)) || []
                                 });
                                 data.push({
                                     name: 'CHUs',
-                                    data: Array.from(props?.data?.county_summary, cs => parseFloat(cs.chu_count)) || []
+                                    data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.chu_count)) || []
                                 });
                                 return data;
                             })() || []} />
@@ -480,12 +482,12 @@ const Dash = (props) => {
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility owners</h4>
                         <BarChart
                             title="Facility owners"
-                            categories={Array.from(props?.data?.owner_types, ot => ot.name) || []}
+                            categories={Array.from(props?.data?.owner_types ?? [], ot => ot.name) || []}
                             tooltipsuffix="#"
                             xaxistitle="Owner"
                             yaxistitle="Number"
                             data={(() => {
-                                return [{ name: "Owner", data: Array.from(props?.data?.owner_types, ot => parseFloat(ot.count)) || [] }];
+                                return [{ name: "Owner", data: Array.from(props?.data?.owner_types  ?? [], ot => parseFloat(ot.count)) || [] }];
                             })() || []} />
                     </div>
                     {/* Facility types - national summary - FILTERABLE (bar) 1/2 */}
@@ -493,12 +495,12 @@ const Dash = (props) => {
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility types</h4>
                         <BarChart
                             title="Facility types"
-                            categories={Array.from(props?.data?.types_summary, ts => ts.name) || []}
+                            categories={Array.from(props?.data?.types_summary ?? [], ts => ts.name) || []}
                             tooltipsuffix="#"
                             xaxistitle="Type"
                             yaxistitle="Number"
                             data={(() => {
-                                return [{ name: "Type", data: Array.from(props?.data?.types_summary, ts => parseFloat(ts.count)) || [] }];
+                                return [{ name: "Type", data: Array.from(props?.data?.types_summary ?? [], ts => parseFloat(ts.count)) || [] }];
                             })() || []} />
                     </div>
 

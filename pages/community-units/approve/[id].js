@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Head from 'next/head';
 import MainLayout from '../../../components/MainLayout';
 import { checkToken } from '../../../controllers/auth/auth';
@@ -12,6 +12,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useRouter } from 'next/router'
+import dynamic from "next/dynamic";
+import { UserContext } from '../../../providers/user';
 
 
 const CommUnit = (props) => {
@@ -43,18 +45,17 @@ const CommUnit = (props) => {
   {value: `${cu.facility_county}`, label: 'County'},
  ]
 
+  const userCtx = useContext(UserContext)
+
   let reject = ''
   useEffect(() =>
   {
-    if (typeof window !== 'undefined')
-    {
-      let usr = window.sessionStorage.getItem('user');
-      if (usr && usr.length > 0)
-      {
-        setUser(JSON.parse(usr));
-      }
-    }
-    return () =>{};
+    
+    
+   if (userCtx) setUser(userCtx);
+      
+    
+    return () => {};
     
   }, [cu, reject]);
  
