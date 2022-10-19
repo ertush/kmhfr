@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import * as Tabs from '@radix-ui/react-tabs';
 import { checkToken } from '../../../controllers/auth/auth'
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import Select from 'react-select'
 import MainLayout from '../../../components/MainLayout'
 import { Formik, Field, Form } from "formik"; 
@@ -27,6 +27,8 @@ import TrasnferListServices from '../../../components/TrasnferListServices';
 import TransferListHr from '../../../components/TransferListHr';
 import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+
+import { UserContext } from '../../../providers/user';
 
 
 // import { useInput } from '../../../hooks';
@@ -713,17 +715,14 @@ const EditFacility = (props) => {
     } = facilityUpdateData ?? {updated: new Date(), updated_by: '', facility_updated_json: [], created_by_name: ''}
 
 
+    // User Context 
+    const userCtx = useContext(UserContext)
     
     useEffect(() => {
 
         // console.log({props}) 
 
-        if (typeof window !== 'undefined') {
-            let usr = window.sessionStorage.getItem('user')
-            if (usr && usr.length > 0) {
-                setUser(JSON.parse(usr))
-            }
-        }
+        if (userCtx) setUser(userCtx)
 
         // Pre-fetch values for drop down
         if(facility_type){

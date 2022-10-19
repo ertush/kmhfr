@@ -1,7 +1,7 @@
 import Head from "next/head";
 import * as Tabs from "@radix-ui/react-tabs";
 import { checkToken } from "../../controllers/auth/auth";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import MainLayout from "../../components/MainLayout";
 import {
   approveRejectFacility,
@@ -20,6 +20,7 @@ import { ChevronDownIcon } from "@heroicons/react/solid";
 
 import dynamic from "next/dynamic";
 import router from "next/router";
+import { UserContext } from "../../providers/user";
 
 const Facility = (props) => {
   const Map = dynamic(
@@ -45,16 +46,14 @@ const Facility = (props) => {
   const [isFacDetails, setIsFacDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('')
+
+  const userCtx = useContext(UserContext)
   let reject = ''
 
   useEffect(() => {
     console.log({ props });
-    if (typeof window !== "undefined") {
-      let usr = window.sessionStorage.getItem("user");
-      if (usr && usr.length > 0) {
-        setUser(JSON.parse(usr));
-      }
-    }
+    if (userCtx) setUser(userCtx);
+    
     return () => {
       setIsFacDetails(true);
       setIsApproveReject(false);

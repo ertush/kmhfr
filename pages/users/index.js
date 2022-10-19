@@ -108,13 +108,10 @@ const Users = (props) => {
     },[props.data.results, router.query])
 
     useEffect(()=>{
-        if (typeof window !== 'undefined') { //auth.add_group
-            let usr =JSON.parse( window.sessionStorage.getItem('user'))
-
-            if(usr.all_permissions.find((r)=> r === 'auth.add_group') == undefined){
-                setShowGroup(true)
-            }
-        }
+      
+    if(userPermissions.find((r)=> r === 'auth.add_group') == undefined) setShowGroup(true)
+    
+        
     },[])
     return (
         <div className="">

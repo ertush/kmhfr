@@ -8,18 +8,19 @@ import { useRouter } from 'next/router'
 
 const Home = (props) => {
 
+
     const router = useRouter()
+
     let is_user_logged_in =
     (typeof window !== "undefined" &&
       window.document.cookie.indexOf("access_token=") > -1) ||
     false;
 
-    if(is_user_logged_in) router.push('/dashboard')
-    // const [userLoggedIn, setUserLoggedIn] =  useState()
-
-    useEffect(() => {
-
     
+    if(is_user_logged_in) router.push('/dashboard')
+  
+
+    useEffect(() => {    
         let mtd = true
        
 

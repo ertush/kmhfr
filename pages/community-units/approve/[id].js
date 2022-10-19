@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 // Next imports
 import Head from 'next/head';
@@ -24,6 +24,7 @@ import
   XCircleIcon,
 } from '@heroicons/react/solid';
 import dynamic from "next/dynamic";
+import { UserContext } from '../../../providers/user';
 
 const CommUnit = (props) => {
 
@@ -55,19 +56,19 @@ const CommUnit = (props) => {
   const [isCHUDetails, setIsCHUDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
   const [appRejReason, setAppRejReason] = useState('')
+
+  const userCtx = useContext(UserContext)
+  
   let reject = ''
 
   useEffect(() =>
   {
-    if (typeof window !== 'undefined')
-    {
-      let usr = window.sessionStorage.getItem('user');
-      if (usr && usr.length > 0)
-      {
-        setUser(JSON.parse(usr));
-      }
-    }
-    return () =>{};
+    
+    
+   if (userCtx) setUser(userCtx);
+      
+    
+    return () => {};
     
   }, [cu]);
  
