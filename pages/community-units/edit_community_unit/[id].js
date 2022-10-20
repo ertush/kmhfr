@@ -1,25 +1,9 @@
-// React imports
 import React, { useState, useEffect, useRef, useContext } from 'react';
-
-// Next imports
 import Head from 'next/head';
-import dynamic from 'next/dynamic';
-import Link from 'next/link';
-
-// Components imports
 import MainLayout from '../../../components/MainLayout';
 import TrasnferListServices from '../../../components/TrasnferListServices';
-
-// Controller imports
-import { approveRejectCHU, rejectCHU } from '../../../controllers/reject';
 import { checkToken } from '../../../controllers/auth/auth';
-
-// Heroicons imports
-import { ArrowsExpandIcon } from '@heroicons/react/outline';
-
-// Package imports
 import * as Tabs from '@radix-ui/react-tabs';
-import { ChevronDownIcon } from '@heroicons/react/solid';
 import
 {
   CheckCircleIcon,
@@ -30,7 +14,6 @@ import
   XCircleIcon,
 } from '@heroicons/react/solid';
 import Select from 'react-select';
-import { ContactPageSharp } from '@mui/icons-material';
 import { UserContext } from '../../../providers/user';
 
 const CommUnit = (props) => {
@@ -40,22 +23,11 @@ const CommUnit = (props) => {
   let _id
   _id = cu.id;  
   
-  console.log('this is the name',cu.services)
+  // console.log('this is the name',cu.services)
 
   // State of the different tabs
   const [chulId, setchulId] = useState('');
   const [formData, setFormData] = useState({})
- 
-
-  // State of the different form fields
-  const [_name, setName] = useState(cu.name);
-  const [_dateEstablished, setDateEstablished] = useState(cu.date_established ?? '')
-  const [_dateOperational, setDateOperational] = useState(cu.date_operational ?? '')
-  const [_noOfMonitoredHouseholds, setNoOfMonitoredHouseholds] = useState(cu.households_monitored ?? '')
-  const [_noOfCHVs, setNoOfCHVs] = useState(cu.number_of_chvs ?? '')
-  const [_firstName, setFirstName] = useState(cu.health_unit_workers[0].first_name); 
-  const [_lastName, setLastName] = useState(cu.health_unit_workers[0].last_name);
-
 
   // Changing the value of the linked facility and its locality
   const [selected_facility, setSelectedFacility] = useState('');
@@ -63,10 +35,6 @@ const CommUnit = (props) => {
 	const [subCountyValue, setSubCountyValue] = useState('');
 	const [constituencyValue, setConstituencyValue] = useState('');
 	const [wardValue, setWardValue] = useState('');
-
-  // Dropdown States
-  const [operationStatus, setOperationStatus] = useState([]);
-  const [linkedFacility, setLinkedFacility] = useState('');
  
   // Services states
   const [services, setServices] = useState([])
@@ -74,21 +42,8 @@ const CommUnit = (props) => {
   const [selectedServiceRight, setSelectedServiceRight] = useState()
 
   // Form Fields Ref
-  const nameRef = useRef();
-  const linkedFacilityRef = useRef(null)
-  const operationStatusRef = useRef(null)
-  const dateEstablishedRef = useRef(null)
-  const dateOperationalRef = useRef(null)
-  const monitoredHouseholdsRef = useRef(null)
-  const noOfCHVsRef = useRef(null)
-
-
- 	// Reference hooks for the services section
-	const nameOptionRef = useRef();
-  const serviceOptionRef = useRef();
-	const serviceCategoriesRef = useRef();
-	const optionRefBody = useRef();
-
+  const {nameRef,nameOptionRef,serviceOptionRef,serviceCategoriesRef, optionRefBody } = useRef();
+  const {linkedFacilityRef, operationStatusRef, dateEstablishedRef, dateOperationalRef, monitoredHouseholdsRef, noOfCHVsRef} = useRef(null)
 
   const [user, setUser] = useState(null);
   const [isCHUDetails, setIsCHUDetails] = useState(true);
@@ -121,10 +76,7 @@ const CommUnit = (props) => {
 
   const handleBasicDetails = (event) => {
     event.preventDefault();
-
-    let  payload = {
-      basic: formData, ...formData
-    }
+    let  payload = {basic: formData, ...formData}
 
     try{
       fetch(`/api/common/submit_form_data/?path=chul_data&id=${_id}`, {
@@ -136,10 +88,7 @@ const CommUnit = (props) => {
         method:'PATCH',
         body: JSON.stringify(payload)
       }).then((res) => res.json()).then((res) => {
-        console.log(res)
-        // if(res.status === 200){
           alert('Data updated successfully')
-        // }
       })
 
     }
@@ -151,34 +100,12 @@ const CommUnit = (props) => {
   const handleCHEWs = (event) => {
     event.preventDefault();
 
-    let chewData = {};
+    const results= cu.health_unit_workers.map(({active, created, created_by, deleted, first_name,id,is_incharge,last_name,name, search,updated, updated_by}) => {
+      return {active, created, created_by, deleted, first_name,id,is_incharge,last_name,name, search,updated, updated_by}
+    })
 
-    const elements = [...event.target];
-
-    let payload = {}
-
-    elements.forEach(({ name, value }) => {
-      switch (name) {
-        case 'first_name':
-          chewData[name] = value
-          break;
-        case 'last_name':
-          chewData[name] = value
-          break;
-        case 'is_incharge':
-          chewData[name] = value
-          break;
-      }
-    });
-
-    payload = {
-      health_unit_workers: [{
-        first_name: chewData.first_name,
-        last_name: chewData.last_name,
-        is_incharge: true
-      }]
-    }
-
+    Object.keys(results).forEach(entry => {setFormData({...formData, ...results[entry]})})
+    let payload  = {...formData}
     try{
       fetch(`/api/common/submit_form_data/?path=edit_chul&id=${_id}`, {
         headers:{
@@ -187,14 +114,10 @@ const CommUnit = (props) => {
           
         },
         method:'PATCH',
-        body: JSON.stringify({...formData})
+        body: JSON.stringify({health_unit_workers:[payload]})
       }).then((res) => res.json()).then((res) => {
-        console.log(res)
-        // if(res.status === 200){
           alert('Data updated successfully')
-        // }
       })
-
 
     }
     catch(e){
@@ -208,7 +131,7 @@ const CommUnit = (props) => {
     const _payload = services.map(({value}) => ({service: value}))
 
     _payload.forEach(obj => obj['health_unit'] = _id)
-    console.log(_payload)
+    // console.log(_payload)
 
     try{
       fetch(`/api/common/submit_form_data/?path=edit_chul&id=${_id}`, {
@@ -261,7 +184,6 @@ const CommUnit = (props) => {
 	
 			})
 		}		
-    console.log('this is the serviceCategories im tryna see',_serviceCategories)
 
 		return _serviceCategories
 	 })(props.service_categories.results ?? [])
@@ -277,7 +199,8 @@ const CommUnit = (props) => {
         ]
     }))
   })(services || []) 
-
+ 
+  console.log(formData);
   return (
     <>
       <Head>
@@ -417,7 +340,7 @@ const CommUnit = (props) => {
                         ref={nameRef}
                         type='text'
                         name='name'
-                        defaultValue= {_name}
+                        defaultValue= {cu.name}
                         onChange={ev => handleChange(ev)}
                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' 
                       />
@@ -527,7 +450,7 @@ const CommUnit = (props) => {
                               ref ={dateEstablishedRef}
                               type='date'
                               name='date_established'
-                              defaultValue={_dateEstablished}
+                              defaultValue={cu.date_established}
                               onChange={ev => handleChange(ev)}
                               placeholder={cu.date_established}
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -551,7 +474,7 @@ const CommUnit = (props) => {
                               ref={dateOperationalRef}
                               type='date'
                               name='date_operational'
-                              defaultValue={_dateOperational}
+                              defaultValue={cu.date_operational}
                               onChange={ev => handleChange(ev)}
                               placeholder={cu.date_operational}
                               className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -575,7 +498,7 @@ const CommUnit = (props) => {
                       <input
                         type='number'
                         name='households_monitored'
-                        defaultValue={_noOfMonitoredHouseholds}
+                        defaultValue={cu.households_monitored}
                         ref={monitoredHouseholdsRef}
                         onChange={ev => handleChange(ev)}
                         // onChange={ev => setNoOfMonitoredHouseholds(ev.target.value)}
@@ -599,7 +522,7 @@ const CommUnit = (props) => {
                       <input
                         type='number'
                         name='number_of_chvs'
-                        defaultValue={_noOfCHVs}
+                        defaultValue={cu.number_of_chvs || 0}
                         ref={noOfCHVsRef}
                         onChange={ev => handleChange(ev)}
                         // onChange={ev => setNoOfCHVs(ev.target.value)}
@@ -860,7 +783,8 @@ const CommUnit = (props) => {
                       {
                         cu.health_unit_workers &&
                         cu.health_unit_workers.length > 0 &&
-                        cu.health_unit_workers.map((worker) => (
+                        cu.health_unit_workers.map((worker) => {
+                          return (
                           <>
                             {/* First Name */}
                             <div className='col-start-1 col-span-1'>
@@ -869,7 +793,7 @@ const CommUnit = (props) => {
                                   type='text'
                                   //ref={firstNameRef}
                                   name='first_name'
-                                  defaultValue={_firstName}
+                                  defaultValue={worker.first_name}
                                   // onChange={ev => setFirstName(ev.target.value)}
                                   onChange={ev => handleChange(ev)}
 
@@ -884,7 +808,7 @@ const CommUnit = (props) => {
                                 <input
                                   type='text'
                                   name='last_name'
-                                  defaultValue={_lastName}
+                                  defaultValue={worker.last_name}
                                   onChange={ev => handleChange(ev)}
                                   className='flex-none w-75 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                 />
@@ -898,8 +822,8 @@ const CommUnit = (props) => {
                                   name='incharge'
                                   // check if the worker is incharge then checked else unchecked
                                   {...(worker.is_incharge === true
-                                    ? { checked: true }
-                                    : { checked: false })}
+                                    ? { defaultChecked: true }
+                                    : { defaultChecked: false })}
                                   //onChange={handleChange}
                                   type='checkbox'
                                   className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
@@ -921,7 +845,8 @@ const CommUnit = (props) => {
                               </div>
                             </div>
                           </>
-                        ))
+                        )
+                      })
                       }
                     </div>
 
@@ -1036,14 +961,6 @@ const CommUnit = (props) => {
                           </tr>
                         </thead>
                         <tbody ref={optionRefBody}>
-                          {/* {
-                            services.map(({subctg}) => subctg).map((service_categories, i) => (
-                              <tr key={`${service_categories}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-                                <td ref={nameOptionRef}>{service_categories}</td>
-                                <td ref={serviceCategoriesRef} className='ml-12 text-base'>Yes</td>
-                              </tr>
-                            ))
-                          }                                             */}
                           {
                             selectedServiceRight  !== undefined && selectedServiceRight !== null 
                             ? 
