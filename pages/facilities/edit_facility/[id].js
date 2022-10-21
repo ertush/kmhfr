@@ -536,10 +536,12 @@ const EditFacility = (props) => {
     const [refreshForm6, setRefreshForm6] = useState(false)
     
 
-    const [isSavedChanges, setIsSavedChanges] = useState(false)
-    const [latestUpdateID, setLatestUpdateID] = useState(null)
-    const [facilityUpdateData, setFacilityUpdateData] = useState(null)
-    const [facilityCode, setFacilityCode] = useState(null)
+    // const [isSavedChanges, setIsSavedChanges] = useState(false)
+    let isSavedChanges = false
+    // const [latestUpdateID, setLatestUpdateID] = useState(null)
+    // const [facilityUpdateData, setFacilityUpdateData] = useState(null)
+    let facilityUpdateData = null
+    // const [facilityCode, setFacilityCode] = useState(null)
 
   
     const handleAddRegulatoryBody = (event) => {
@@ -707,12 +709,12 @@ const EditFacility = (props) => {
 
     // Facility update data
 
-    const {
-        updated,
-        updated_by,
-        facility_updated_json,
-        created_by_name,
-    } = facilityUpdateData ?? {updated: new Date(), updated_by: '', facility_updated_json: [], created_by_name: ''}
+    // const {
+    //     updated,
+    //     updated_by,
+    //     facility_updated_json,
+    //     created_by_name,
+    // } = facilityUpdateData ?? {updated: new Date(), updated_by: '', facility_updated_json: [], created_by_name: ''}
 
 
     // User Context 
@@ -798,7 +800,7 @@ const EditFacility = (props) => {
 
        
         
-    }, [])
+    }, [isSavedChanges])
 
 
     const handleAddContact = (event) => {
@@ -976,16 +978,16 @@ const EditFacility = (props) => {
                                 <div className='grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4'>
                                     <p className='text-base font-normal flex -leading-3'>Updates were made on
                                     <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
-                                      {new Date(updated).toLocaleString()}
+                                      {new Date(facilityUpdateData?.updated).toLocaleString()}
                                      </span>
                                       by 
                                     <span className='bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1'>
-                                        {created_by_name}
+                                        {facilityUpdateData?.created_by_name}
                                     </span>
                                     </p>
                                    
                                     <p className='text-base font-normal flex -leading-3'>Facility Code: 
-                                        <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">{code}</span>
+                                        <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">{facilityUpdateData?.code}</span>
                                     </p>
                                     
                                     <span className="flex space-x-2">
@@ -1016,13 +1018,13 @@ const EditFacility = (props) => {
                                             facility_updated_json?.basic?.map(({human_field_name, display_value}) => (
                                                 <TableRow>
                                                      <TableCell>
-                                                        {human_field_name}
+                                                        {facilityUpdateData?.human_field_name}
                                                     </TableCell>
                                                     <TableCell>
                                                         -
                                                     </TableCell>
                                                     <TableCell>
-                                                        {display_value}
+                                                        {facilityUpdateData?.display_value}
                                                     </TableCell>
                                                 </TableRow>
                                             )
@@ -1131,20 +1133,30 @@ const EditFacility = (props) => {
                                             
                                               handleBasicDetailsUpdates(payload, id, alert)
                                               .then(({statusText}) => {
+                                                let update_id, code
                                                 if(statusText == 'OK'){
+
                                                 
                                                         fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
 
                                                             const results = await resp.json()
-                                                            setLatestUpdateID(results?.latest_update)
-                                                            setFacilityCode(results?.code)
-                                                            console.log({results, latestUpdateID})
+                                                            
+                                                            update_id = results?.latest_update
+                                                            code = results?.code
+
+                                                            // setLatestUpdateID(update_id)
+                                                            // setFacilityCode(code)
+
+                                                            // console.log({latestUpdateID, facilityCode})
                                         
                                                 
-                                                            if(latestUpdateID){
+                                                            if(update_id){
                                                                
                                                                 try{
-                                                                    setFacilityUpdateData(await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${latestUpdateID}`)).json())
+                                                                    facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                    // setFacilityUpdateData(facility_update_data)
+
+                                                                    console.log({facilityUpdateData})
                                                                 }
                                                                 catch(e){
                                                                     console.error('Encountered error while fetching facility update data', e.message)
@@ -1160,7 +1172,7 @@ const EditFacility = (props) => {
                                                 })
                                                 .catch(e => console.error('unable to fetch facility data. Error:', e.message))
                                             
-                                                if(facilityUpdateData) setIsSavedChanges(true)
+                                                if(facilityUpdateData) isSavedChanges = true
                                                  
 
                                                         
@@ -2034,7 +2046,7 @@ const EditFacility = (props) => {
                                                         }
                                                      })
                                                     // setTimeout(() => {
-                                                        setIsSavedChanges(true)
+                                                        // setIsSavedChanges(true)
                                                     // }, 5000) 
                                                 }
                                         })

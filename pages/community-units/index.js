@@ -12,11 +12,14 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+
 import Select from 'react-select';
 
 const Home = (props) => {
 	const router = useRouter();
-	// console.log('props::: ',props)
 	let cus = props?.data?.results;
 	let filters = props?.filters;
 	let [drillDown, setDrillDown] = useState({});
@@ -63,9 +66,76 @@ const Home = (props) => {
 			filters: [{ id: 'is_rejected', value: true }],
 		},
 	];
+
+
+	const [title, setTitle] = useState('Community Health Units') 
+	const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '')
+	const [approvedCHUSelected, setApprovedCHUSelected] = useState(false);
+    const [newCHUSelected, setNewCHUSelected] = useState(false);
+    const [updatedCHUSelected, setUpdatedCHUSelected] = useState(false);
+    const [rejectedCHUSelected, setRejectedCHUSelected] = useState(false);
+	const [chuFeedBack, setCHUFeedBack] = useState([])
+    const [allCHUSelected, setAllCHUSelected] = useState(false);
+
+  
+    const [feedBackCHUSelected, setFeedBackCHUSelected] = useState(false);
+    const [chuPendingApproval, setCHUPendingApproval] = useState(false);
+
+
+
+
+	const handleQuickFiltersClick = async (filter_id) => {
+    
+		let filter = {}	
+		if(filter_id !== 'feedback') {
+			
+		const qfilter = quickFilters.filter(({id}) => id === filter_id).map(f => f.filters.map(({id, value}) => ({id, value})))
+	
+		qfilter[0].forEach(({id, value}) => {filter[id] = value}) 
+	 
+		// if (filter_id === 'new_pending_approval') filter['is_complete'] = true;
+	
+		}
+	
+	   
+		switch(filter_id){
+			case 'all':
+				setCHUFeedBack([])
+				router.push({pathname:'/community-units', query: {qf: filter_id}})
+				break;
+			
+			case 'feedback':
+			
+				try {
+					const feedback = await fetch('/api/community_units/chu_filters/?path=chu_ratings&fields=comment,facility_id,facility_name,chu_name,created,rating&id=feedback')
+					const feedbackFacilities = (await feedback.json()).results
+	
+					setCHUFeedBack(feedbackFacilities)
+				   
+				}
+				catch (err){
+					console.error(err.message);
+				}
+			 
+				break;
+			default:
+				setCHUFeedBack([])
+				
+				console.log({filter})
+	 
+				let robj = {pathname: '/community-units', query: {qf: filter_id, ...filter}}
+				router.push(robj)
+				break;
+		}
+			
+	
+		}
+	
+	
 	useEffect(() => {
 		let qry = props?.query;
 		delete qry.searchTerm;
+		delete qry.qf
 		setDrillDown({ ...drillDown, ...qry });
 		if (filters && Object.keys(filters).length > 0) {
 			filters['status'] = filters['chu_status'];
@@ -91,6 +161,8 @@ const Home = (props) => {
 				<div className='w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4'>
 					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-4'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
+							{/* Bread Crumbs */}
+
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
 								<a className='text-green-700' href='/'>
 									Home
@@ -98,7 +170,8 @@ const Home = (props) => {
 								{'>'}
 								<span className='text-gray-500'>Community Units</span>
 							</div>
-							<div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'>
+
+							{/* <div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'>
 								{quickFilters.map((qf, i) => {
 									return (
 										<button
@@ -132,17 +205,9 @@ const Home = (props) => {
 										</button>
 									);
 								})}
-							</div>
+							</div> */}
 						</div>
-						{/* <details open className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">
-                            {JSON.stringify( 
-                                {...filters, ...{county:[],sub_county:[], ward: [], constituency: []}},
-                                null, 2
-                            ) }
-                        </pre></details> */}
-						{/* <details open className="bg-gray-100 p-1 rounded"><summary>Drilldown:</summary> <pre className="whitespace-pre-wrap">
-                            {JSON.stringify(drillDown, null, 2)}
-                        </pre></details> */}
+					
 
 						<div className='flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between'>
 							<div className='flex flex-col items-start justify-start gap-y-1'>
@@ -185,8 +250,8 @@ const Home = (props) => {
 								</h5>
 							</div>
 
-							{/* <small className="font-bold text-sm">{JSON.stringify(props?.query)}</small> */}
-							{/* ((((((( dropdown options to download data */}
+							{/* Button Section */}
+
 							{props?.current_url && props?.current_url.length > 5 && (
 								<Menu as='div' className='relative'>
 									<div className='flex items-center space-x-6 w-auto'>
@@ -198,7 +263,7 @@ const Home = (props) => {
 													router.push('/community-units/add_community_unit');
 												}}
 												className='flex items-center justify-center'>
-												<span>Add Community Health Unit</span>
+												<span className='text-base uppercase font-semibold'>Add Community Health Unit</span>
 												<PlusIcon className='w-4 h-4 ml-2' />
 											</button>
 										</Menu.Item>
@@ -207,27 +272,14 @@ const Home = (props) => {
 											as='button'
 											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<DownloadIcon className='w-5 h-5 mr-1' />
-											<span>Export</span>
+											<span className='text-base uppercase font-semibold'>Export</span>
 											<ChevronDownIcon className='w-4 h-4 ml-2' />
 										</Menu.Button>
 									</div>
 									<Menu.Items
 										as='ul'
 										className='absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full'>
-										{/* <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
-                                            {({ active }) => (
-                                                <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
-                                                    let dl_url = props?.current_url
-                                                    if (dl_url.includes('?')) { dl_url += '&format=pdf' } else { dl_url += '?format=pdf' }
-                                                    console.log('Downloading PDF. ' + dl_url || '')
-                                                    // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                    window.location.href = dl_url
-                                                }}>
-                                                    <DownloadIcon className="w-4 h-4 mr-1" />
-                                                    <span>PDF</span>
-                                                </button>
-                                            )}
-                                        </Menu.Item> */}
+									
 										<Menu.Item
 											as='li'
 											className='p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200'>
@@ -281,9 +333,146 @@ const Home = (props) => {
 									</Menu.Items>
 								</Menu>
 							)}
-							{/* ))))))) dropdown options to download data */}
+
 						</div>
 					</div>
+
+					{/* Side Menu Filters*/}
+					<div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
+                        <List
+                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                        component="nav"
+                        aria-labelledby="nested-list-subheader"
+                    
+                        >	
+                            {/* All Community Health Units */}
+                            <ListItemButton sx={{ backgroundColor: (allCHUSelected || pathId === 'all') ?  '#e7ebf0' : 'none' }} name="rt"
+                                onClick={(ev)=>{
+                                    setTitle('Community Health Units')
+                                    setPathId('all')
+                                    setAllCHUSelected(true)
+                                    setApprovedCHUSelected(false)
+                                    setNewCHUSelected(false)
+                                    setUpdatedCHUSelected(false)
+                                    setCHUPendingApproval(false)
+                                    setRejectedCHUSelected(false)
+                                    setFeedBackCHUSelected(false)
+
+                                    handleQuickFiltersClick('all')
+                                
+                                }}
+                            >
+                                <ListItemText primary="All Community Health Units" />
+                            </ListItemButton>
+
+                            {/* Approved Community Health Units */}
+                            <ListItemButton sx={{ backgroundColor: (approvedCHUSelected || pathId === 'approved')  ?  '#e7ebf0' : 'none' }} 
+                                onClick={(ev)=>{
+                                    setTitle('Approved Community Health Units')
+                                    setAllCHUSelected(false)
+                                    setPathId('approved')
+                                    setApprovedCHUSelected(true)
+                                    setNewCHUSelected(false)
+                                    setUpdatedCHUSelected(false)
+                                    setCHUPendingApproval(false)
+                                    setRejectedCHUSelected(false)
+                                    setFeedBackCHUSelected(false)
+
+                                    handleQuickFiltersClick('approved')
+                                   
+                                
+                                }}
+                            >
+                                <ListItemText primary="Approved Community Health Units" />
+                            </ListItemButton>
+
+                            {/* New Community Health Units*/}
+                            <ListItemButton sx={{ backgroundColor: (newCHUSelected || pathId === 'new_pending_approval') ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle('Community Health Units Pending Approvals')
+                                setPathId('new_pending_approval')
+                                setAllCHUSelected(false)
+                                setApprovedCHUSelected(false)
+                                setNewCHUSelected(true)
+                                setUpdatedCHUSelected(false)
+                                setCHUPendingApproval(false)
+                                setRejectedCHUSelected(false)
+                                setFeedBackCHUSelected(false)
+
+                                handleQuickFiltersClick('new_pending_approval')
+                                            
+                            }}
+                            >
+                                <ListItemText primary="New Community Health Units Pending Approvals"/>
+                            </ListItemButton>
+
+                            {/* Update Community Health Units Pending Approvals*/}
+                            <ListItemButton sx={{ backgroundColor: (updatedCHUSelected  || pathId === 'updated_pending_approval') ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle(' Community Health Units Pending Approvals')
+                                setPathId('updated_pending_approval')
+                                setAllCHUSelected(false)
+                                setApprovedCHUSelected(false)
+                                setNewCHUSelected(false)
+                                setUpdatedCHUSelected(true)
+                                setCHUPendingApproval(false)
+                                setRejectedCHUSelected(false)
+                                setFeedBackCHUSelected(false)
+                                
+                                handleQuickFiltersClick('updated_pending_approval')
+                            
+                            }}
+                            >
+                                <ListItemText primary="Updated Community Health Units Pending Approvals"/>
+                            </ListItemButton>
+
+                            {/* Rejected Community Health Units */}    
+                            <ListItemButton sx={{ backgroundColor: (chuPendingApproval  || pathId === 'rejected') ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle('Rejected Community Health Units')
+                                setPathId('rejected')
+                                setAllCHUSelected(false)
+                                setApprovedCHUSelected(false)
+                                setNewCHUSelected(false)
+                                setUpdatedCHUSelected(false)
+                                setCHUPendingApproval(true)
+                                setRejectedCHUSelected(false)
+                                setFeedBackCHUSelected(false)
+                                
+                                handleQuickFiltersClick('rejected')
+                            
+                            }}
+                            >
+                                <ListItemText primary="Rejected Community Health Units"/>
+                            </ListItemButton>
+
+
+                            {/* Feedback on Community Health Units */}
+                            <ListItemButton sx={{ backgroundColor: (feedBackCHUSelected || pathId == "feedback") ?  '#e7ebf0' : 'none' }}
+                            onClick={()=>{
+                                setTitle('Community Health Units Feedback From Public')
+                                setPathId('feedback')
+                                setAllCHUSelected(false)
+                                setApprovedCHUSelected(false)
+                                setNewCHUSelected(false)
+                                setUpdatedCHUSelected(false)
+                                setCHUPendingApproval(false)
+                                setRejectedCHUSelected(false)
+                                setFeedBackCHUSelected(true)
+
+                                handleQuickFiltersClick('feedback')
+              
+                            }}
+                            >
+                                
+                                <ListItemText primary="Feedback on Community Health Units"/>
+                            </ListItemButton>
+                                
+                        </List>
+                    </div>
+
+
+					{/* Main Body */}
 					<div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'>
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
 							{/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
@@ -439,7 +628,7 @@ const Home = (props) => {
 							)}
 						</div>
 					</div>
-					<aside className='flex flex-col col-span-5 md:col-span-1 p-1 md:h-full'>
+					{/* <aside className='flex flex-col col-span-5 md:col-span-1 p-1 md:h-full'>
 						<details
 							className='rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z'
 							open>
@@ -471,19 +660,7 @@ const Home = (props) => {
 														className='text-gray-600 capitalize text-sm'>
 														{ft.split('_').join(' ')}
 													</label>
-													{/* 
-                                                        <select name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-2 rounded bg-gray-100" onChange={sl => {
-                                                            let nf = {}
-                                                            nf[ft] = sl.target.value
-                                                            setDrillDown({ ...drillDown, ...nf })
-                                                            // updateFt(nf)
-                                                        }}>
-                                                            <option value="">All</option>
-                                                            {filters[ft].map(ft_opt => (
-                                                                <option key={ft_opt.id} value={ft_opt.id}>{ft_opt.name}</option>
-                                                            ))}
-                                                        </select>
-                                                         */}
+													
 													<Select
 														isMulti={multiFilters.includes(ft)}
 														name={ft}
@@ -574,8 +751,8 @@ const Home = (props) => {
 								)}
 							</div>
 						</details>
-					</aside>
-					{/* (((((( Floating div at bottom right of page */}
+					</aside> */}
+				
 					<div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
 						<h5 className='text-sm font-bold'>
 							<span className='text-gray-600 uppercase'>Limited results</span>
@@ -585,7 +762,7 @@ const Home = (props) => {
 							results.
 						</p>
 					</div>
-					{/* ))))))) */}
+				
 				</div>
 			</MainLayout>
 		</div>
