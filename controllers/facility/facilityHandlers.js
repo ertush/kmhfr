@@ -508,7 +508,7 @@ const handleHrSubmit = (event, stateSetters, method) => {
 const handleBasicDetailsUpdates = async (formData, facility_id, alert) => {
 
     if(formData){
-        alert.success("Facility Geolocation successfully updated")
+        alert.success("Facility Basic Details successfully updated")
     } else {
         alert.danger("Unable to update facility geolocation data")
     }
