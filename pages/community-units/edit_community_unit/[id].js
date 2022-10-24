@@ -422,11 +422,11 @@ const CommUnit = (props) => {
                             label: 'Fully-functional',
                           },
                         ]}
-                        placeholder= {cu.status_name}
+                        // placeholder= {cu.status_name}
                         ref = {operationStatusRef}
                         onChange={(value)=> handleChange({target: {name:'status' , value: value.value}})}
                         name='status'
-                        //value={cu.status}
+                        defaultValue={cu.status_name}
                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                       />
                     </div>
