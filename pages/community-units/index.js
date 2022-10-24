@@ -13,12 +13,10 @@ import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
-
 import ListItemText from '@mui/material/ListItemText';
 
 const Home = (props) => {
 	const router = useRouter();
-	// console.log('props::: ',props)
 	let cus = props?.data?.results;
 	let filters = props?.filters;
 	let [drillDown, setDrillDown] = useState({});
@@ -65,9 +63,76 @@ const Home = (props) => {
 			filters: [{ id: 'is_rejected', value: true }],
 		},
 	];
+
+
+	const [title, setTitle] = useState('Community Health Units') 
+	const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '')
+	const [approvedCHUSelected, setApprovedCHUSelected] = useState(false);
+    const [newCHUSelected, setNewCHUSelected] = useState(false);
+    const [updatedCHUSelected, setUpdatedCHUSelected] = useState(false);
+    const [rejectedCHUSelected, setRejectedCHUSelected] = useState(false);
+	const [chuFeedBack, setCHUFeedBack] = useState([])
+    const [allCHUSelected, setAllCHUSelected] = useState(false);
+
+  
+    const [feedBackCHUSelected, setFeedBackCHUSelected] = useState(false);
+    const [chuPendingApproval, setCHUPendingApproval] = useState(false);
+
+
+
+
+	const handleQuickFiltersClick = async (filter_id) => {
+    
+		let filter = {}	
+		if(filter_id !== 'feedback') {
+			
+		const qfilter = quickFilters.filter(({id}) => id === filter_id).map(f => f.filters.map(({id, value}) => ({id, value})))
+	
+		qfilter[0].forEach(({id, value}) => {filter[id] = value}) 
+	 
+		// if (filter_id === 'new_pending_approval') filter['is_complete'] = true;
+	
+		}
+	
+	   
+		switch(filter_id){
+			case 'all':
+				setCHUFeedBack([])
+				router.push({pathname:'/community-units', query: {qf: filter_id}})
+				break;
+			
+			case 'feedback':
+			
+				try {
+					const feedback = await fetch('/api/community_units/chu_filters/?path=chu_ratings&fields=comment,facility_id,facility_name,chu_name,created,rating&id=feedback')
+					const feedbackFacilities = (await feedback.json()).results
+	
+					setCHUFeedBack(feedbackFacilities)
+				   
+				}
+				catch (err){
+					console.error(err.message);
+				}
+			 
+				break;
+			default:
+				setCHUFeedBack([])
+				
+				console.log({filter})
+	 
+				let robj = {pathname: '/community-units', query: {qf: filter_id, ...filter}}
+				router.push(robj)
+				break;
+		}
+			
+	
+		}
+	
+	
 	useEffect(() => {
 		let qry = props?.query;
 		delete qry.searchTerm;
+		delete qry.qf
 		setDrillDown({ ...drillDown, ...qry });
 		if (filters && Object.keys(filters).length > 0) {
 			filters['status'] = filters['chu_status'];
@@ -93,6 +158,8 @@ const Home = (props) => {
 				<div className='w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4'>
 					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-4'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
+							{/* Bread Crumbs */}
+
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
 								<a className='text-green-700' href='/'>
 									Home
@@ -100,12 +167,19 @@ const Home = (props) => {
 								{'>'}
 								<span className='text-gray-500'>Community Units</span>
 							</div>
+
+
 						</div>
-							<div className="flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between">
-                            <div className="flex flex-col items-start justify-start gap-y-1">
-                                <h1 className="text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2">
-                                    { 'All community units' }
-                                </h1>
+					
+
+						<div className='flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between'>
+							<div className='flex flex-col items-start justify-start gap-y-1'>
+								<h1 className='text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2'>
+									{props?.query?.searchTerm &&
+									props?.query?.searchTerm.length > 0
+										? `Community units matching '${props?.query?.searchTerm}'`
+										: 'All community units'}
+								</h1>
 								<h5 className='text-lg font-medium text-gray-800'>
 									{drillDown &&
 										Object.keys(drillDown).length > 0 &&
@@ -144,7 +218,7 @@ const Home = (props) => {
 													router.push('/community-units/add_community_unit');
 												}}
 												className='flex items-center justify-center'>
-												<span>Add Community Health Unit</span>
+												<span className='text-base uppercase font-semibold'>Add Community Health Unit</span>
 												<PlusIcon className='w-4 h-4 ml-2' />
 											</button>
 										</Menu.Item>
@@ -153,7 +227,7 @@ const Home = (props) => {
 											as='button'
 											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<DownloadIcon className='w-5 h-5 mr-1' />
-											<span>Export</span>
+											<span className='text-base uppercase font-semibold'>Export</span>
 											<ChevronDownIcon className='w-4 h-4 ml-2' />
 										</Menu.Button>
 									</div>
@@ -213,6 +287,7 @@ const Home = (props) => {
 									</Menu.Items>
 								</Menu>
 							)}
+
 							</div>
 							
 					</div>
@@ -225,7 +300,7 @@ const Home = (props) => {
                         component="nav"
                         aria-labelledby="nested-list-subheader"
                     
-                        >	
+                        >
 						    {quickFilters.map((qf, i)=>{
 								return (
 
@@ -258,10 +333,10 @@ const Home = (props) => {
 										</ListItemButton>
 								)
 							})}
+                          
                                 
                         </List>
                     </div>
-
                      {/* Main body */}
 					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
 					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
@@ -428,6 +503,7 @@ const Home = (props) => {
 					</div>
 					
 					{/* (((((( Floating div at bottom right of page */}
+
 					<div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
 						<h5 className='text-sm font-bold'>
 							<span className='text-gray-600 uppercase'>Limited results</span>
@@ -437,7 +513,7 @@ const Home = (props) => {
 							results.
 						</p>
 					</div>
-					{/* ))))))) */}
+				
 				</div>
 			</MainLayout>
 		</div>

@@ -166,7 +166,7 @@ const Home = (props) => {
     
     useEffect(() => {
     
-        console.log({permissions})
+        // console.log({permissions})
         let qry = props?.query
         
         delete qry.searchTerm
@@ -458,7 +458,7 @@ const Home = (props) => {
                                    <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facilities/add_facility')}} className='flex items-center justify-center'>
 
-                                            <span className='font-semibold uppercase'>Add Facility</span>
+                                            <span className='text-base uppercase font-semibold'>Add Facility</span>
                                             <PlusIcon className="w-4 h-4 ml-2" />
                                         </button>
                                     </Menu.Item>
@@ -466,7 +466,7 @@ const Home = (props) => {
                                      {/* Export Button */}
                                      <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <DownloadIcon className="w-5 h-5 mr-1" />
-                                        <span>Export</span>
+                                        <span className='text-base uppercase font-semibold'>Export</span>
                                         <ChevronDownIcon className="w-4 h-4 ml-2" />
                                     </Menu.Button>
                                 </div>
@@ -484,7 +484,7 @@ const Home = (props) => {
                                                 window.location.href = dl_url
                                             }}>
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>CSV</span>
+                                                <span className='text-base uppercase font-semibold'>CSV</span>
                                             </button>
                                         )}
                                     </Menu.Item>
