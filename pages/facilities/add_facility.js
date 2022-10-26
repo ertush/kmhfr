@@ -2202,13 +2202,13 @@ function AddFacility(props) {
 															
 															{/* Transfer list Container */}
 															<div className='flex items-center w-full h-auto min-h-[300px]'>
-															
-														
+																							
 															<TrasnferListServices 
 																categories={serviceOptions}
 																setServices={setServices}
 																setRefreshForm4={setRefreshForm4}
 																refreshForm4={refreshForm4}
+																setBtnDirection={() => null}
 																selectedRight={null}
 																setSelectedServiceRight={() => null}
 															/>

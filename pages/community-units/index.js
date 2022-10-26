@@ -17,11 +17,11 @@ import ListItemText from '@mui/material/ListItemText';
 
 const Home = (props) => {
 	const router = useRouter();
-	let cus = props?.data?.results;
-	let filters = props?.filters;
-	let [drillDown, setDrillDown] = useState({});
-	let qf = props?.query?.qf || 'all';
-	let [currentQuickFilter, setCurrentQuickFilter] = useState(qf);
+	const cus = props?.data?.results;
+	const filters = props?.filters;
+	const [drillDown, setDrillDown] = useState({});
+	const qf = props?.query?.qf || 'all';
+	const [currentQuickFilter, setCurrentQuickFilter] = useState(qf);
 	let multiFilters = [
 		'service_category',
 		'service',
@@ -118,10 +118,9 @@ const Home = (props) => {
 			default:
 				setCHUFeedBack([])
 				
-				console.log({filter})
+				// console.log({filter})
 	 
-				let robj = {pathname: '/community-units', query: {qf: filter_id, ...filter}}
-				router.push(robj)
+				router.push({pathname: '/community-units', query: {qf: filter_id, ...filter}})
 				break;
 		}
 			
@@ -130,6 +129,7 @@ const Home = (props) => {
 	
 	
 	useEffect(() => {
+		console.log({filters})
 		let qry = props?.query;
 		delete qry.searchTerm;
 		delete qry.qf
@@ -138,13 +138,7 @@ const Home = (props) => {
 			filters['status'] = filters['chu_status'];
 			delete filters['chu_status'];
 		}
-		// if (filters && Object.keys(filters).length > 0) {
-		//     Object.keys(filters).map(ft => {
-		//         if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-		//             setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-		//         }
-		//     })
-		// }
+
 	}, [filters]);
 
 	return (

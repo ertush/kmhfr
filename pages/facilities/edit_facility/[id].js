@@ -6,6 +6,7 @@ import Select from 'react-select'
 import MainLayout from '../../../components/MainLayout'
 import { Formik, Field, Form } from "formik"; 
 import dynamic from 'next/dynamic'
+import router from 'next/router'
 import { useAlert } from "react-alert";
 
 
@@ -29,6 +30,7 @@ import TransferListInfrastructure from '../../../components/TransferListInfrastr
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
 import { UserContext } from '../../../providers/user';
+import { defer } from 'underscore';
 
 
 // import { useInput } from '../../../hooks';
@@ -489,6 +491,7 @@ const EditFacility = (props) => {
         return _lat
 
     })(lat_long))
+
     const [_long, setLong] = useState(((coordinates) => {
    
         let _lng 
@@ -515,33 +518,27 @@ const EditFacility = (props) => {
 
 
     // different form states
-    const [formId, setFormId] = useState(0)
+    // const [formId, setFormId] = useState(0)
     const [services, setServices] = useState([])
     const [infrastructure, setInfrastructure] = useState([])
 	const [infrastructureCount, setInfrastructureCount] = useState([])    
 	const [hr, setHr] = useState([])
 	const [hrCount, setHrCount] = useState([])
-    const [facilityId, setFacilityId] = useState('')
-    const [refreshMap, setRefreshMap] = useState(false)
+    // const [facilityId, setFacilityId] = useState('')
     const [wardName, setWardName] = useState(ward_name)
     const [contact, setContact] = useState('')
     const [refreshForm4, setRefreshForm4] = useState()
     const [selectedServiceRight, setSelectedServiceRight] = useState()
     const [selectedInfraRight, setSelectedInfraRight] = useState()
     const [selectedHrRight, setSelectedHrRight] = useState()
-	const [geoJSON, setGeoJSON] = useState(null)
-    const [center, setCenter] = useState(null)
     const [operationStatus, setOperationStatus] = useState('')
 	const [refreshForm5, setRefreshForm5] = useState(false)
     const [refreshForm6, setRefreshForm6] = useState(false)
+    const [facilityUpdateData, setFacilityUpdateData] = useState(null)
+    const [isSavedChanges, setIsSavedChanges] = useState(false)
     
 
-    // const [isSavedChanges, setIsSavedChanges] = useState(false)
-    let isSavedChanges = false
-    // const [latestUpdateID, setLatestUpdateID] = useState(null)
-    // const [facilityUpdateData, setFacilityUpdateData] = useState(null)
-    let facilityUpdateData = null
-    // const [facilityCode, setFacilityCode] = useState(null)
+
 
   
     const handleAddRegulatoryBody = (event) => {
@@ -666,6 +663,7 @@ const EditFacility = (props) => {
     const [facilityTypeDetail, setFacilityTypeDetail] = useState('')
     const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
+    const [btnDir, setBtnDir] = useState(null)
 
 
     // Basic Details Refs
@@ -709,12 +707,12 @@ const EditFacility = (props) => {
 
     // Facility update data
 
-    // const {
-    //     updated,
-    //     updated_by,
-    //     facility_updated_json,
-    //     created_by_name,
-    // } = facilityUpdateData ?? {updated: new Date(), updated_by: '', facility_updated_json: [], created_by_name: ''}
+    const {
+        updated,
+        updated_by,
+        facility_updated_json,
+        created_by_name,
+    } = facilityUpdateData ?? {updated: new Date(), updated_by: '', facility_updated_json: [], created_by_name: ''}
 
 
     // User Context 
@@ -722,7 +720,6 @@ const EditFacility = (props) => {
     
     useEffect(() => {
 
-        // console.log({props}) 
 
         if (userCtx) setUser(userCtx)
 
@@ -798,9 +795,14 @@ const EditFacility = (props) => {
 
     }
 
+
+    return () => {
+        // setFacilityUpdateData(null)
+        // setIsSavedChanges(false)
+    }
        
         
-    }, [isSavedChanges])
+    }, [isSavedChanges, refreshForm4])
 
 
     const handleAddContact = (event) => {
@@ -978,7 +980,7 @@ const EditFacility = (props) => {
                                 <div className='grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4'>
                                     <p className='text-base font-normal flex -leading-3'>Updates were made on
                                     <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
-                                      {new Date(facilityUpdateData?.updated).toLocaleString()}
+                                      {new Date(facilityUpdateData?.updated).toLocaleString().split(',')[0]}
                                      </span>
                                       by 
                                     <span className='bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1'>
@@ -987,20 +989,19 @@ const EditFacility = (props) => {
                                     </p>
                                    
                                     <p className='text-base font-normal flex -leading-3'>Facility Code: 
-                                        <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">{facilityUpdateData?.code}</span>
+                                        <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">{code}</span>
                                     </p>
                                     
                                     <span className="flex space-x-2">
-                                        <button className='flex justify-center text-base font-semibold text-white bg-green-500 rounded py-1 px-2'>Edit</button>
-                                        <button className='flex justify-center text-base font-semibold text-white bg-green-500 rounded py-1 px-2'>Confirm Updates</button>
+                                        <button className='flex justify-center text-base font-semibold text-white bg-green-500 rounded py-1 px-2' onClick={() => router.push(`/facilities/${id}`)}>Edit</button>
+                                        <button className='flex justify-center text-base font-semibold text-white bg-green-500 rounded py-1 px-2' onClick={() => router.push('/facilities')}>Confirm Updates</button>
                                     </span>
                                 </div>
 
                                 {/* Update Details */}
 
                                 <Table className="md:px-4">
-                                    {/* {console.log({facilityUpdateData})} */}
-                                    <TableHead><h2 className='text-xl font-semibold'>Facility Basic Details</h2></TableHead>
+                                    <TableHead className='text-xl font-semibold'>Facility updates</TableHead>
                                     <TableBody>
                                         <TableRow>
                                             <TableCell>
@@ -1014,24 +1015,35 @@ const EditFacility = (props) => {
                                             </TableCell>
                                         </TableRow>
                                         {
-                                            facility_updated_json && facility_updated_json.length > 0 &&
-                                            facility_updated_json?.basic?.map(({human_field_name, display_value}) => (
-                                                <TableRow>
-                                                     <TableCell>
-                                                        {facilityUpdateData?.human_field_name}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        -
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {facilityUpdateData?.display_value}
-                                                    </TableCell>
-                                                </TableRow>
-                                            )
-                                            )
+                                           
+                                            facility_updated_json && 
+                                            Object.values(facility_updated_json).map(item => {
+                                               
+                                                    return  item.length !== undefined ?
+                                                    item.map(({human_field_name, display_value, field_name}, id) => (
+                                                       
+                                                            <TableRow id={id}>
+                                                                {console.log({item})}
+                                                                <TableCell>
+                                                                    {human_field_name}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {typeof(props['18']?.data[field_name]) === 'boolean' ? (Boolean(props['18']?.data[field_name]) ? 'Yes' : 'No') : props['18']?.data[field_name]}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {display_value}
+                                                                </TableCell>
+                                                            </TableRow>
+
+                                                    ))
+                                                    :''
+
+                                                }
+                                                )
+                                          
                                         }
 
-                                    </TableBody>
+                                        </TableBody>
 
                                 </Table>
 
@@ -1064,7 +1076,6 @@ const EditFacility = (props) => {
                                 </Tabs.List>
                                 {/* Basic Details */}
                                 <Tabs.Panel value="basic_details" className="grow-1 py-1 px-4 tab-panel">   
-
                                     <Formik
                                             initialValues={{ 
                                                 official_name: official_name ?? '',  
@@ -1096,7 +1107,8 @@ const EditFacility = (props) => {
                                                 nearest_landmark: nearest_landmark ?? '',
                                             }}
                                             onSubmit={(values) => {
-                                                
+                                                // Ensure isSaveChnages is false
+                                                setIsSavedChanges(false)
                                                 let formData = values
                                                 formData['facility_type'] = facilityTypeRef.current.state.value.value
                                                 formData['operation_status'] = operationStatusRef.current.state.value.value
@@ -1108,12 +1120,10 @@ const EditFacility = (props) => {
                                                 formData['constituency_id'] = constituencyRef.current.state.value.value
                                                 formData['ward'] = wardRef.current.state.value.value
 
-                                                
-
                                                 let payload = {}
 
                                                 const _payload = _.omit(formData, function (v, k) { return basicDetailsData[k] === v})
-                                                if(officer_in_charge ) {
+                                                if(officer_in_charge) {
                                                     payload = {..._payload, officer_in_charge}
                                                 }
                                                 else{
@@ -1133,7 +1143,8 @@ const EditFacility = (props) => {
                                             
                                               handleBasicDetailsUpdates(payload, id, alert)
                                               .then(({statusText}) => {
-                                                let update_id, code
+                                               defer(() => setIsSavedChanges(true))
+                                                let update_id
                                                 if(statusText == 'OK'){
 
                                                 
@@ -1144,37 +1155,24 @@ const EditFacility = (props) => {
                                                             update_id = results?.latest_update
                                                             code = results?.code
 
-                                                            // setLatestUpdateID(update_id)
-                                                            // setFacilityCode(code)
-
-                                                            // console.log({latestUpdateID, facilityCode})
-                                        
-                                                
+                                                      
                                                             if(update_id){
                                                                
                                                                 try{
                                                                     facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
-                                                                    // setFacilityUpdateData(facility_update_data)
-
-                                                                    console.log({facilityUpdateData})
+                                                                    setFacilityUpdateData(facilityUpdateData)                                                     
                                                                 }
                                                                 catch(e){
                                                                     console.error('Encountered error while fetching facility update data', e.message)
                                                                 }
                                                             }
                                                         })
-                                                        .catch(e => console.error('unable to fetch facility update data. Error:', e.message))
-
-                                                       
-                                                                                            
+                                                        .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
                                                     }
                                                   
                                                 })
                                                 .catch(e => console.error('unable to fetch facility data. Error:', e.message))
-                                            
-                                                if(facilityUpdateData) isSavedChanges = true
-                                                 
-
+                                        
                                                         
                                             }}
                                             >							
@@ -1680,8 +1678,9 @@ const EditFacility = (props) => {
                                             longitude: lat_long ? lat_long[1] ?? '' : ''
                                         }}
 
-                                        onSubmit={async formData => {
-                                            
+                                        onSubmit={formData => {
+                                            // Ensure isSaveChnages is false
+                                            setIsSavedChanges(false)
                                             let payload = {}
                                             const _payload = _.omit(formData, function (v, k) { return geolocationData[k] === v})
                                             
@@ -1689,11 +1688,37 @@ const EditFacility = (props) => {
 
                                             payload['collection_date'] = new Date(payload.collection_date)
                                         
-
-
-                                            await handleGeolocationUpdates(payload, coordinates, alert)
+                                            handleGeolocationUpdates(payload, coordinates, alert)
+                                            .then(({statusText}) => {
+                                                defer(() => setIsSavedChanges(true))
+                                                 let update_id
+                                                 if(statusText == 'OK'){
+ 
+                                                 
+                                                         fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
+ 
+                                                             const results = await resp.json()
+                                                             
+                                                             update_id = results?.latest_update
+                                                            
+                                                             if(update_id){
+                                                                
+                                                                 try{
+                                                                     facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                     setFacilityUpdateData(facilityUpdateData)                                                     
+                                                                 }
+                                                                 catch(e){
+                                                                     console.error('Encountered error while fetching facility update data', e.message)
+                                                                 }
+                                                             }
+                                                         })
+                                                         .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
+                                                     }
+                                                   
+                                                 })
+                                                 .catch(e => console.error('unable to fetch facility data. Error:', e.message))
                                         }}
-                                    >
+                                        >
                                         <Form
                                             name='geolocation_form'
                                             className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
@@ -1810,37 +1835,44 @@ const EditFacility = (props) => {
                                                 type: contactType
                                             }]
 
-                                            // console.log({_payload})
+                                           
 
                                             payload = {officer_in_charge:_payload, contacts:[]}
 
-                                            // console.log({payload})
 
                                             handleFacilityContactsUpdates(payload, id, alert)
-                                            .then(async ({statusText}) => {
+                                            .then(({statusText}) => {
+                                                defer(() => setIsSavedChanges(true))
+                                                 let update_id
+                                                 if(statusText == 'OK'){
+ 
+                                                 
+                                                         fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
+ 
+                                                             const results = await resp.json()
+                                                             
+                                                             update_id = results?.latest_update
+                                                            
+                                                       
+                                                             if(update_id){
+                                                                
+                                                                 try{
+                                                                     facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                     setFacilityUpdateData(facilityUpdateData)                                                     
+                                                                 }
+                                                                 catch(e){
+                                                                     console.error('Encountered error while fetching facility update data', e.message)
+                                                                 }
+                                                             }
+                                                         })
+                                                         .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
+                                                     }
+                                                   
+                                                 })
+                                                 .catch(e => console.error('unable to fetch facility data. Error:', e.message))
 
-                                                    if(statusText == 'OK'){
-                                                        try{
-                                                            setLatestUpdateID((await (await fetch(`/api/facility/get_facility/?path=facilities&id=${id}`)).json())?.results?.latest_update)
-                                                        }
-                                                        catch(e){
-                                                            console.error('Encountered error while fetching latest_update_id', e.message)
-                                                        }
-                                                    }
-                                                    
-                                                    if(latestUpdateID){
-                                                        try{
-                                                            setFacilityUpdateData((await(await fetch(`/api/facility/get_facility/?path=facility_updates&id=${latestUpdateID}`)).json())?.results)
-                                                        }
-                                                        catch(e){
-                                                            console.error('Encountered error while fetching facility update data', e.message)
-                                                        }
-                                                    }
-                                                
-                                            })
-
-                                        }}
-                                    >
+                                            }}
+                                        >
                                     
                                         <Form
                                             className='flex flex-col w-full items-start justify-start gap-3 md:mt-6'
@@ -2000,7 +2032,7 @@ const EditFacility = (props) => {
                                             license_number: license_number ?? ''
                                         }}
 
-                                        onSubmit={async formData => {
+                                        onSubmit={formData => {
                                             
 
                                             const regulatoryBody = regulatoryBodyRef.current  ? regulatoryBodyRef.current.state.value.value : ''
@@ -2015,42 +2047,35 @@ const EditFacility = (props) => {
                                             delete payload['facility_registration_number']
 
                                         handleRegulationUpdates(payload, id, alert, "Facility Regulation updated successfully")
-                                        .then(async ({statusText}) => {
+                                        .then(({statusText}) => {
+                                                defer(() => setIsSavedChanges(true))
+                                                 let update_id
+                                                 if(statusText == 'OK'){
 
-                                                const _payload = {units:[{
-                                                    license_number: formData['facility_license_number'],
-                                                    registration_number: formData['facility_registration_number'],
-                                                    regulatory_body_name: facilityRegulatingBody,
-                                                    unit: facilityUnit
-                                                }]}
-
-
-                                                if(statusText == 'OK'){
-                                                     handleRegulationUpdates(_payload, id, alert, "Facility regulation units updated successfully").then(async ({statusText}) => {
-                                                        if(statusText == 'OK'){
-                                                            try{
-                                                                setLatestUpdateID((await (await fetch(`/api/facility/get_facility/?path=facilities&id=${id}`)).json())?.results?.latest_update)
-                                                            }
-                                                            catch(e){
-                                                                console.error('Encountered error while fetching latest_update_id', e.message)
-                                                            }
-                                                        }
-                                                        
-                                                        if(latestUpdateID){
-                                                            try{
-                                                                setFacilityUpdateData((await(await fetch(`/api/facility/get_facility/?path=facility_updates&id=${latestUpdateID}`)).json())?.results)
-                                                            }
-                                                            catch(e){
-                                                                console.error('Encountered error while fetching facility update data', e.message)
-                                                            }
-                                                        }
-                                                     })
-                                                    // setTimeout(() => {
-                                                        // setIsSavedChanges(true)
-                                                    // }, 5000) 
-                                                }
-                                        })
-                                        }
+                                                         fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
+ 
+                                                             const results = await resp.json()
+                                                             
+                                                             update_id = results?.latest_update
+                                                            
+                                                       
+                                                             if(update_id){
+                                                                
+                                                                 try{
+                                                                     facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                     setFacilityUpdateData(facilityUpdateData)                                                     
+                                                                 }
+                                                                 catch(e){
+                                                                     console.error('Encountered error while fetching facility update data', e.message)
+                                                                 }
+                                                             }
+                                                         })
+                                                         .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
+                                                     }
+                                                   
+                                                 })
+                                                 .catch(e => console.error('unable to fetch facility data. Error:', e.message))
+                                            }
                                             }
                                     >
                                         <Form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
@@ -2170,61 +2195,121 @@ const EditFacility = (props) => {
                                 </Tabs.Panel>
                                 {/* Services */}
                                 <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
-                                    <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices], 'PATCH')}>
-                                                                    
-                                            {/* Transfer list Container */}
-                                            <div className='flex items-center w-full h-auto min-h-[300px]'>                                  
-                                        
-                                            <TrasnferListServices 
-                                                categories={serviceOptions}
-                                                setServices={setServices}
-                                                setRefreshForm4={setRefreshForm4}
-                                                refreshForm4={refreshForm4}
-                                                selectedRight={serviceSelected}
-                                                setSelectedServiceRight={setSelectedServiceRight}
-                                            />
+                                    <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
+                                         ev => {
+                                            // console.log({services, serviceSelected, selectedServiceRight, btnDir})
 
-                                            </div>
-                                            {/* Service Category Table */}
-                                            <table className='w-full  h-auto my-4'>
-                                                <thead className='w-full'>
-                                                    <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
-                                                        <td className='text-lg font-semibold text-indigo-900 '>Name</td>
-                                                        <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody ref={optionRefBody}>
-                                                    {
-                                                        selectedServiceRight && selectedServiceRight.length > 0 ? 
+                                            const editedServices = (() => {
+                                                let _services = []
+                                                if(btnDir === 'right'){
+                                                    _services = [...services]
+                                                    selectedServiceRight.forEach(({subCategories, value}) => {
+                                                        _services.push({subctg: subCategories[0], value:value[0]})
+                                                    })
+                                                  
+                                                }else{
+                                                    selectedServiceRight.splice(selectedServiceRight.indexOf(selectedServiceRight.filter(
+                                                        ({value}) => value[0] === services.value
+                                                    )[0]), 1)
 
-                                                        selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
-                                                            <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-                                                                <td ref={nameOptionRef}>{service}</td>
-                                                                <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-                                                            </tr>
-                                                        ))
-                                                        :
-                                                        services.map(({subctg}) => subctg).map((service, i) => (
-                                                            <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-                                                                <td ref={nameOptionRef}>{service}</td>
-                                                                <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-                                                            </tr>
-                                                        ))
-                                                    }
+                                                    selectedServiceRight.forEach(({subCategories, value}) => {
+                                                        _services.push({subctg: subCategories[0], value:value[0]})
+                                                    })
+                                                }
+
+                                                return _services
+                                            })()
+
+                                            console.log({editedServices})
+
+                                              handleServiceUpdates(ev, [selectedServiceRight, id], alert, "Facility Services updated successfully")
+                                              .then(({statusText}) => {
+                                                 defer(() => setIsSavedChanges(true))
+                                                 let update_id
+                                                 if(statusText == 'OK'){
+
+                                                         fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
+ 
+                                                             const results = await resp.json()
+                                                             
+                                                             update_id = results?.latest_update
+                                                            
+                                                       
+                                                             if(update_id){
+                                                                
+                                                                 try{
+                                                                     facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                     setFacilityUpdateData(facilityUpdateData)                                                     
+                                                                 }
+                                                                 catch(e){
+                                                                     console.error('Encountered error while fetching facility update data', e.message)
+                                                                 }
+                                                             }
+                                                         })
+                                                         .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
+                                                     }
+                                                   
+                                                 })
+                                                 .catch(e => console.error('unable to fetch facility data. Error:', e.message))
+                                             }
+                                    }>
+                                                           
+                                                    {/* Transfer list Container */}
+                                                    <div className='flex items-center w-full h-auto min-h-[300px]'>                                  
                                                 
-                                                </tbody>
-                                            </table>
-                                            
-                                            {/* Save btn */}
+                                                    <TrasnferListServices 
+                                                        categories={serviceOptions}
+                                                        setServices={setServices}
+                                                        setRefreshForm4={setRefreshForm4}
+                                                        refreshForm4={refreshForm4}
+														setBtnDirection={setBtnDir}
+                                                        selectedRight={serviceSelected}
+                                                        setSelectedServiceRight={setSelectedServiceRight}
+                                                    />
 
-                                            <div className=" w-full flex justify-end h-auto mr-3">
-                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
-                                            </div>
+                                                    </div>
+                                                    {/* Service Category Table */}
+                                                    <table className='w-full  h-auto my-4'>
+                                                        <thead className='w-full'>
+                                                            <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
+                                                                <td className='text-lg font-semibold text-indigo-900 '>Name</td>
+                                                                <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody ref={optionRefBody}>
+                                                            {
+                                                                selectedServiceRight && selectedServiceRight.length > 0 ? 
+
+                                                                selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
+                                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                                        <td ref={nameOptionRef}>{service}</td>
+                                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                                    </tr>
+                                                                ))
+                                                                :
+                                                                services.map(({subctg}) => subctg).map((service, i) => (
+                                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
+                                                                        <td ref={nameOptionRef}>{service}</td>
+                                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
+                                                                    </tr>
+                                                                ))
+                                                            }
+                                                        
+                                                        </tbody>
+                                                    </table>
+                                                    
+                                                    {/* Save btn */}
+
+                                                    <div className=" w-full flex justify-end h-auto mr-3">
+                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                                    </div>
+                                              
+                                         
                                     </form>
                                 </Tabs.Panel>
                                 {/* Infrastructure */}
                                 <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
-                                    <form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId], 'PATCH')}  className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                                    <form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureUpdates(ev, [infrastructure, infrastructureCount, setFormId, facilityId], 'PATCH')}  className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
                                                             
                                         {/* Transfer list Container */}
                                         <div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2302,7 +2387,7 @@ const EditFacility = (props) => {
                                 </Tabs.Panel>
                                 {/* Human Resources */}
                                 <Tabs.Panel value="human_resource" className="grow-1 py-1 px-4 tab-panel">
-                                    <form name="facility_services_form" onSubmit={ev => handleHrSubmit(ev, [hr, hrCount, facilityId, setFormId], 'PATCH')} className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                                    <form name="facility_services_form" onSubmit={ev => handleHrUpdates(ev, [hr, hrCount, facilityId, setFormId], 'PATCH')} className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
                                                         
                                                         {/* Transfer list Container */}
                                                         <div className='flex items-center w-full h-auto min-h-[300px]'>
