@@ -25,12 +25,11 @@ const CommUnit = (props) => {
   // State of the different tabs
   const [chulId, setchulId] = useState("");
   const [formData, setFormData] = useState({});
-  const [contactCHEW, setContactCHEW] = useState([]);
+  const [contactCHEW, setContactCHEW] = useState([... cu.health_unit_workers]);
   const [contactList, setContactList] = useState([...cu.contacts]);
   const contact_type = props.contact_type;
 
   // Services states
-  const [services, setServices] = useState([cu.services]);
   const [selectedServices, setSelectedServices] = useState(cu.services);
 
   const [user, setUser] = useState(null);
@@ -39,18 +38,7 @@ const CommUnit = (props) => {
 
   useEffect(() => {
     if (userCtx) setUser(userCtx);
-    cu.health_unit_workers.map((chew) => {
-      setContactCHEW((prev) => [
-        ...prev,
-        {
-          id: chew.id,
-          first_name: chew.first_name,
-          last_name: chew.last_name,
-          is_incharge: chew.is_incharge,
-        },
-      ]);
-    });
-  }, [cu, services]);
+  }, [cu]);
 
   const handleChange = (e) => {
     const newObj = {};
@@ -64,9 +52,13 @@ const CommUnit = (props) => {
       e.target.type == "checkbox"
         ? (data[e.target.id][e.target.name] = e.target.checked)
         : (data[e.target.id][e.target.name] = e.target.value);
-      newObj["health_unit_workers"] = data.map(
-        ({ first_name, last_name, is_incharge }) => {
-          return { first_name, last_name, is_incharge };
+      newObj["health_unit_workers"] = data.map((hu_w) => {
+          return { 
+            ...hu_w,
+            first_name: hu_w.first_name, 
+            last_name: hu_w.last_name, 
+            is_incharge: hu_w.is_incharge
+          };
         }
       );
       setFormData({ ...formData, ...newObj });
@@ -77,8 +69,6 @@ const CommUnit = (props) => {
       setFormData({ ...formData, ...newObj });
     }
   };
-
-  console.log(formData);
 
   const handleContactAdd = (e) => {
     e.preventDefault();
@@ -106,10 +96,9 @@ const CommUnit = (props) => {
         console.log(err);
       }
     } else {
+      const l= formData.health_unit_workers.splice(index, 1)
+      console.log(l);
       setContactCHEW((current) => current.filter((item, ind) => ind !== index));
-
-      // const filteredIssue = contactCHEW.filter((item, ind) =>ind != index );
-      // setContactCHEW(filteredIssue)
     }
   };
 
@@ -137,28 +126,6 @@ const CommUnit = (props) => {
 
   const handleCHEWs = (event) => {
     event.preventDefault();
-
-    const results = cu.health_unit_workers.map((hw) => {
-      return {
-        active: hw.active,
-        created: hw.created,
-        created_by: hw.created_by,
-        deleted: hw.deleted,
-        first_name: hw.first_name,
-        id: hw.id,
-        is_incharge: hw.is_incharge,
-        last_name: hw.last_name,
-        name: hw.name,
-        search: hw.search,
-        updated: hw.updated,
-        updated_by: hw.updated_by,
-      };
-    });
-
-    Object.keys(results).forEach((entry) => {
-      setFormData({ ...formData, ...results[entry] });
-    });
-    let payload = { ...formData };
     try {
       fetch(`/api/common/submit_form_data/?path=edit_chul&id=${_id}`, {
         headers: {
@@ -166,7 +133,7 @@ const CommUnit = (props) => {
           "Content-Type": "application/json;charset=utf-8",
         },
         method: "PATCH",
-        body: JSON.stringify({ health_unit_workers: [payload] }),
+        body: JSON.stringify({ ...formData } ),
       })
         .then((res) => res.json())
         .then((res) => {
@@ -177,30 +144,27 @@ const CommUnit = (props) => {
     }
   };
 
-  const handleServices = async (event, _id, method) => {
+  const handleServices = async (event) => {
     event.preventDefault();
 
-    const _payload = services.map(({ value }) => ({ service: value }));
-
-    _payload.forEach((obj) => (obj["health_unit"] = _id));
-    // console.log(_payload)
+    const _payload = selectedServices.map((s) => ({  health_unit: s.health_unit, service: s.service }));
 
     try {
-      fetch(`/api/common/submit_form_data/?path=edit_chul&id=${_id}`, {
+      fetch(`/api/common/submit_form_data/?path=edit_chul&id=${cu?.id}`, {
         headers: {
           Accept: "application/json, text/plain, */*",
           "Content-Type": "application/json;charset=utf-8",
         },
-        method,
+        method:'PATCH',
         body: JSON.stringify({ services: _payload }),
-      });
+      }).then(res=>res.json()).then((res)=>console.log(res))
     } catch (e) {
       console.error("Unable to patch CHU edit service details".e.message);
     }
 
     window.sessionStorage.setItem("formId", 1);
     // setFormId(window.sessionStorage.getItem('formId'))
-    setServices([]);
+    // setSeleServices([]);
   };
 
   return (
@@ -753,50 +717,18 @@ const CommUnit = (props) => {
                       </div>
 
                       {/* Cancel and Save Changes */}
-                      {/* <div className='col-start-1 col-span-1'>
-                          <div className='flex justify-start items-center w-full flex mb-1 gap-1'>
-                            <button className='flex items-center justify-start space-x-2 p-1 bg-red-500 rounded p-2 px-6'>
-                              <ChevronDoubleLeftIcon className='w-4 h-4 text-white' />
-                              <span className='text-medium font-semibold text-white '>
-                                Cancel
-                              </span>
-                            </button>
-                          </div>
-                        </div>
 
-                        <div className='col-start-3  col-span-1'>
-                          <div className='flex justify-end items-center w-full mb-6'>
-                            <button
-                              type='submit'
-                              className='flex items-center justify-start space-x-2 bg-blue-500 rounded p-2 px-6'>
-                              <span className='text-medium font-semibold text-white'>
-                                Finish 
-                              </span>   
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className='col-start-4 col-span-1'>
-                          <div className='flex justify-end items-center flex-col w-full mb-6'>
-                            <button
-                              type='submit'
-                              className='flex items-center justify-start space-x-2 bg-green-500 rounded p-2 px-6'>
-                              <span className='text-medium font-semibold text-white'>
-                                Save & Continue 
-                              </span>
-                              <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-                            </button>
-                          </div>
-                        </div> */}
-
-                      <div className="flex justify-between items-center w-full">
+                      <div className="flex items-center w-full">
                         <button className="flex items-center justify-start space-x-2 p-1 bg-red-500 rounded px-2">
                           <ChevronDoubleLeftIcon className="w-4 h-4 text-white" />
                           <span className="text-medium font-semibold text-white ">
                             Cancel
                           </span>
                         </button>
-
+                      </div>
+                      
+                      <div className="flex items-center w-full justify-end">
+                        
                         <button
                           type="submit"
                           className="flex items-right justify-end space-x-2 bg-blue-500 rounded p-1 px-2"
@@ -805,17 +737,22 @@ const CommUnit = (props) => {
                             Finish
                           </span>
                         </button>
+                        &nbsp;
 
                         <button
                           type="submit"
-                          className="flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2"
+                          className="flex items-center justify-end space-x-2 bg-green-500 rounded p-1 px-2"
                         >
                           <span className="text-medium font-semibold text-white">
                             Save & Continue
                           </span>
                           <ChevronDoubleRightIcon className="w-4 h-4 text-white" />
                         </button>
+
                       </div>
+                      
+
+
                     </div>
                   </form>
                 </>
@@ -985,7 +922,7 @@ const CommUnit = (props) => {
                   <form
                     name="chu_services_form"
                     className="flex flex-col w-full items-center justify-start gap-3"
-                    onSubmit={(ev) => handleServices(ev, chulId, "PATCH")}
+                    onSubmit={(ev) => handleServices(ev)}
                   >
                     {/* Transfer list Container */}
                     <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
@@ -1004,7 +941,7 @@ const CommUnit = (props) => {
                         onChange={(e) =>
                           setSelectedServices([
                             ...selectedServices,
-                            { id: e.value, name: e.label },
+                            {  health_unit: cu?.id,service: e.value,name:e.label },
                           ])
                         }
                         name="services"
@@ -1028,7 +965,7 @@ const CommUnit = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {cu?.services && cu?.services.length > 0 ? (
+                        {selectedServices && selectedServices?.length > 0 ? (
                           selectedServices?.map(({ id, name }) => (
                             <tr
                               key={id}
@@ -1039,6 +976,8 @@ const CommUnit = (props) => {
                                 <button
                                   type="button"
                                   onClick={() => {
+                                    selectedServices.splice(id, 1)
+                                    console.log(selectedServices)
                                     setSelectedServices(
                                       selectedServices.filter(
                                         (service) => service.id !== id
@@ -1068,12 +1007,21 @@ const CommUnit = (props) => {
                       </tbody>
                     </table>
                     <div className="flex justify-between items-center w-full">
-                      <button
+                    <button
                         type="submit"
                         className="flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2"
                       >
+                        <ChevronDoubleLeftIcon className="w-4 h-4 text-white" />
                         <span className="text-medium font-semibold text-white">
-                          Save
+                          CHEWS
+                        </span>
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex items-center justify-end space-x-2 bg-green-500 rounded p-1 px-2"
+                      >
+                        <span className="text-medium font-semibold text-white">
+                          Save & Finish
                         </span>
                         <ChevronDoubleRightIcon className="w-4 h-4 text-white" />
                       </button>
