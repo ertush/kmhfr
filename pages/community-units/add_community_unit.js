@@ -11,6 +11,8 @@ import StepLabel from '@mui/material/StepLabel';
 import { FixedSizeList } from 'react-window';
 import{ChevronDoubleRightIcon,ChevronDoubleLeftIcon,TrashIcon} from '@heroicons/react/solid';
 import Select from 'react-select';
+import { useAlert } from "react-alert";
+
 
 
 
@@ -19,6 +21,7 @@ const AddCommUnit=(props)=> {
 	const facilities = props.facility_data.results;
 	const serviceCtg = props.service_categories.results;
 	const contact_type = props.contact_type;
+	const alert = useAlert()
 
 	// Reference hooks for the services section
 	const {nameOptionRef, serviceCategoriesRef, optionRefBody} = useRef();
@@ -212,12 +215,13 @@ const AddCommUnit=(props)=> {
 															if (resp) {
 																setchulId(_id) //setting the state to the current CHUL
 															}
+															alert.success('CHU Basic Details Added Successfully')
 															
 														})
 												}
 
 												catch (e) {
-													console.error('Unable to post basic details')
+													alert.error('Error Occured: ' +e.message)
 												}
 
 												// Set the formId to the next step
@@ -660,9 +664,20 @@ const AddCommUnit=(props)=> {
 														},
 														method: 'PATCH',
 														body: JSON.stringify(chewData)
+													}).then(res => res.json()).then((res)=>{
+														if(res.details){
+															alert.error('Failed to add CHEW details')
+														  }else{
+															alert.success('CHEW details added successfully ')
+														  }   
+													}).catch(err=>{
+														alert.error('An error occured: ' + err)
+
 													})
 												}
 												catch (e) {
+													alert.error('An error occured: ' + e.message)
+
 													console.error('Unable to patch facility contacts details'.e.message)
 												}
 
