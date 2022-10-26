@@ -160,7 +160,7 @@ export default async function submitFormData(req, res) {
                     break           
                         
                 case `approve_chul`:
-                    url = `${API_URL}/chul/updates/${req.query.id}/`
+                    url = `${API_URL}/chul/units/${req.query.id}/`
                     contentType = 'application/json;charset=utf-8';
                     method = 'PATCH';
                     break  

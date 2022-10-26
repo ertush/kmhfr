@@ -40,8 +40,14 @@ const rejectCHU = (e, ctx, state, comment) => {
     console.log({ comment });
 };
 
-const approveCHUUpdates= async (e,id, router)=>{
+const approveCHUUpdates= async (e,id, status,router)=>{
   e.preventDefault();
+  let payload=''
+  if(status== true){
+    payload = {is_approved:true}
+  }else{
+    payload={is_rejected:true}
+  }
   let url=`/api/common/submit_form_data/?path=approve_chul_updates&latest_updates=${id}`
   try{
        await fetch(url, {
@@ -51,7 +57,7 @@ const approveCHUUpdates= async (e,id, router)=>{
               
           },
           method: 'PATCH',
-          body: JSON.stringify({is_approved:true})
+          body: JSON.stringify(payload)
       })
       .then(resp =>resp.json())
       .then(res =>{ 

@@ -570,7 +570,6 @@ const AddCommUnit=(props)=> {
 																		id={`${i}`}
 																		onChange={(e)=>{console.log(e)}}
 																		name='contact_type'
-																		// className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 
 																	>
@@ -594,9 +593,6 @@ const AddCommUnit=(props)=> {
 																		type='text'
 																		name='contact'
 																		id={i}
-																		// value={
-																		// 	 (userData.contacts[i])?.contact_text || ''
-																		// }
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>

@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Head from "next/head";
 import MainLayout from "../../../components/MainLayout";
-import TrasnferListServices from "../../../components/TrasnferListServices";
 import { checkToken } from "../../../controllers/auth/auth";
 import * as Tabs from "@radix-ui/react-tabs";
 import {
@@ -14,13 +13,16 @@ import {
 } from "@heroicons/react/solid";
 import Select from "react-select";
 import { UserContext } from "../../../providers/user";
+import { useRouter } from 'next/router'
+import { useAlert } from "react-alert";
 
 const CommUnit = (props) => {
   const facilities = props.facility_data.results;
+  const router = useRouter()
+  const alert = useAlert()
 
   let cu = props.data;
-  let _id;
-  _id = cu.id;
+  let _id = cu.id;
 
   // State of the different tabs
   const [chulId, setchulId] = useState("");
@@ -28,6 +30,10 @@ const CommUnit = (props) => {
   const [contactCHEW, setContactCHEW] = useState([... cu.health_unit_workers]);
   const [contactList, setContactList] = useState([...cu.contacts]);
   const contact_type = props.contact_type;
+  const [countyValue, setCountyValue] = useState('');
+	const [subCountyValue, setSubCountyValue] = useState('');
+	const [constituencyValue, setConstituencyValue] = useState('');
+	const [wardValue, setWardValue] = useState('');
 
   // Services states
   const [selectedServices, setSelectedServices] = useState(cu.services);
@@ -35,6 +41,24 @@ const CommUnit = (props) => {
   const [user, setUser] = useState(null);
 
   const userCtx = useContext(UserContext);
+  let operation_status =[
+    {
+      value: "2943e6c1-a581-461e-85a4-b9f25a2674ab",
+      label: "Closed",
+    },
+    {
+      value: "bac8ab50-1dad-4f96-ab96-a18a4e420871",
+      label: "Non-functional",
+    },
+    {
+      value: "fbc7fce5-3328-4dad-af70-0ec3d8f5ad80",
+      label: "Semi-functional",
+    },
+    {
+      value: "50ef43f0-887c-44e2-9b09-cfa7a7090deb",
+      label: "Fully-functional",
+    },
+  ]
 
   useEffect(() => {
     if (userCtx) setUser(userCtx);
@@ -62,6 +86,12 @@ const CommUnit = (props) => {
         }
       );
       setFormData({ ...formData, ...newObj });
+    }else if(e.target.name == 'contact_type' || e.target.name == 'contact'){
+      let data = [...contactList];
+      newObj['contacts'] = {}
+      data[e.target.id][e.target.name] = e.target.value
+      newObj['contacts'] = data.map((s)=>{return{...s,contact_type:s.contact_type, contact: s.contact}})
+      setFormData({ ...formData, ...newObj });
     } else {
       newObj[e.target.name] = {};
       newObj[e.target.name] = e.target.name;
@@ -85,7 +115,6 @@ const CommUnit = (props) => {
   };
 
   const remove = (e, index, id) => {
-    console.log(id);
     e.preventDefault();
     if (id !== undefined) {
       try {
@@ -97,7 +126,6 @@ const CommUnit = (props) => {
       }
     } else {
       const l= formData.health_unit_workers.splice(index, 1)
-      console.log(l);
       setContactCHEW((current) => current.filter((item, ind) => ind !== index));
     }
   };
@@ -117,10 +145,13 @@ const CommUnit = (props) => {
       })
         .then((res) => res.json())
         .then((res) => {
-          alert("Data updated successfully");
-        });
+          if(res.details){
+            alert.danger('Failed to update Community Unit')
+          }else{
+            alert.success('Community Unit Updated successfully ')
+          }        });
     } catch (e) {
-      console.error("Unable to patch CHU edit details".e.message);
+      alert.danger("Unable to update CHU edit details".e.message)
     }
   };
 
@@ -137,10 +168,14 @@ const CommUnit = (props) => {
       })
         .then((res) => res.json())
         .then((res) => {
-          alert("Data updated successfully");
+          if(res.details){
+            alert.danger('Failed to update Community Unit')
+          }else{
+            alert.success('Community Unit Updated successfully ')
+          }
         });
     } catch (e) {
-      console.error("Unable to patch CHU Chew details".e.message);
+      alert.danger("Unable to update CHU Chew details".e.message)
     }
   };
 
@@ -157,9 +192,16 @@ const CommUnit = (props) => {
         },
         method:'PATCH',
         body: JSON.stringify({ services: _payload }),
-      }).then(res=>res.json()).then((res)=>console.log(res))
+      }).then(res=>res.json()).then((res)=>{
+        if(res.details){
+          alert.danger('Failed to update Community Unit')
+        }else{
+          alert.success('Community Unit Updated successfully ')
+        }
+        router.push('/community-units')
+      })
     } catch (e) {
-      console.error("Unable to patch CHU edit service details".e.message);
+      alert.danger("Unable to update CHU edit service details".e.message)
     }
 
     window.sessionStorage.setItem("formId", 1);
@@ -305,7 +347,6 @@ const CommUnit = (props) => {
                 <>
                   <form
                     className="flex flex-col w-full items-start justify-start gap-3"
-                    //onSubmit={handleBasicDetails}>
                     onSubmit={(ev) => handleBasicDetails(ev)}
                   >
                     {/* CHU Name */}
@@ -345,9 +386,6 @@ const CommUnit = (props) => {
                           handleChange({
                             target: { name: "facility", value: value.value },
                           });
-                          setSelectedFacility(value);
-
-                          // list the facilities and their counties
                           facilities.map((facility) => {
                             if (facility.id === value.value) {
                               setCountyValue(facility.county);
@@ -355,7 +393,8 @@ const CommUnit = (props) => {
                               setConstituencyValue(facility.constituency);
                               setWardValue(facility.ward_name);
                             }
-                          });
+                          }
+                          );
                         }}
                         options={facilities.map((facility) => {
                           return {
@@ -363,11 +402,11 @@ const CommUnit = (props) => {
                             label: facility.name,
                           };
                         })}
-                        placeholder={cu.facility_name}
+                        value ={{
+                          value: formData?.facility !== undefined? formData.facility : cu.facility||"", 
+                          label:formData?.facility !== undefined? facilities.find(fc=> fc.id == formData.facility).name : cu.facility_name||"",
+                        }}
                         name="facility"
-                        // onChange={
-                        //   (e) => setLinkedFacility(e.label)
-                        // }
                         className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
                       />
                     </div>
@@ -385,32 +424,17 @@ const CommUnit = (props) => {
                         </span>
                       </label>
                       <Select
-                        options={[
-                          {
-                            value: "2943e6c1-a581-461e-85a4-b9f25a2674ab",
-                            label: "Closed",
-                          },
-                          {
-                            value: "bac8ab50-1dad-4f96-ab96-a18a4e420871",
-                            label: "Non-functional",
-                          },
-                          {
-                            value: "fbc7fce5-3328-4dad-af70-0ec3d8f5ad80",
-                            label: "Semi-functional",
-                          },
-                          {
-                            value: "50ef43f0-887c-44e2-9b09-cfa7a7090deb",
-                            label: "Fully-functional",
-                          },
-                        ]}
-                        // placeholder= {cu.status_name}
+                        options={operation_status}
+                        value ={{
+                          value: formData?.status !== undefined? formData.status : cu.status||"", 
+                          label:formData?.status !== undefined? operation_status.find(op=>op.value == formData.status).label : cu.status_name||"",
+                        }}
                         onChange={(value) =>
                           handleChange({
                             target: { name: "status", value: value.value },
                           })
                         }
                         name="status"
-                        defaultValue={cu.status_name}
                         className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
                       />
                     </div>
@@ -485,8 +509,6 @@ const CommUnit = (props) => {
                         name="households_monitored"
                         defaultValue={cu.households_monitored}
                         onChange={(ev) => handleChange(ev)}
-                        // onChange={ev => setNoOfMonitoredHouseholds(ev.target.value)}
-                        //placeholder={cu.households_monitored}
                         min={0}
                         className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                       />
@@ -509,7 +531,6 @@ const CommUnit = (props) => {
                         name="number_of_chvs"
                         defaultValue={cu.number_of_chvs || 0}
                         onChange={(ev) => handleChange(ev)}
-                        // onChange={ev => setNoOfCHVs(ev.target.value)}
                         min={0}
                         className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                       />
@@ -533,8 +554,7 @@ const CommUnit = (props) => {
                             </label>
                             <input
                               readOnly
-                              defaultValue={cu.facility_county}
-                              placeholder={cu.facility_county}
+                              value={countyValue || cu.facility_county}
                               type="text"
                               name="facility_county"
                               className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -557,8 +577,7 @@ const CommUnit = (props) => {
                             </label>
                             <input
                               readOnly
-                              placeholder={cu.facility_subcounty}
-                              defaultValue={cu.facility_subcounty}
+                              value={subCountyValue || cu.facility_subcounty}
                               type="text"
                               name="facility_subcounty"
                               className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -581,8 +600,7 @@ const CommUnit = (props) => {
                             </label>
                             <input
                               readOnly
-                              placeholder={cu.facility_constituency}
-                              defaultValue={cu.facility_constituency}
+                              value={constituencyValue || cu.facility_constituency}
                               type="text"
                               name="facility_constituency"
                               className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -605,8 +623,7 @@ const CommUnit = (props) => {
                             </label>
                             <input
                               readOnly
-                              placeholder={cu.facility_ward}
-                              defaultValue={cu.facility_ward}
+                              value={wardValue || cu.facility_ward}
                               type="text"
                               name="facility_ward"
                               className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
@@ -664,10 +681,8 @@ const CommUnit = (props) => {
                                   required
                                   key={i}
                                   id={`${i}`}
-                                  onChange={(e) => {
-                                    console.log(e);
-                                  }}
                                   name="contact_type"
+                                  onChange={(e)=>{handleChange(e)}}
                                   defaultValue={
                                     cu.contacts[i]?.contact_type || ""
                                   }
@@ -700,6 +715,7 @@ const CommUnit = (props) => {
                                   name="contact"
                                   id={i}
                                   defaultValue={cu.contacts[i]?.contact || ""}
+                                  onChange={(e)=>{handleChange(e)}}
                                   className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                 />
                               </div>
@@ -732,6 +748,9 @@ const CommUnit = (props) => {
                         <button
                           type="submit"
                           className="flex items-right justify-end space-x-2 bg-blue-500 rounded p-1 px-2"
+                          onClick={()=>{
+                            router.push('/community-units')
+                          }}
                         >
                           <span className="text-medium font-semibold text-white">
                             Finish
@@ -767,10 +786,8 @@ const CommUnit = (props) => {
                     onSubmit={handleCHEWs}
                   >
                     <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                      {cu?.health_unit_workers &&
-                      cu?.health_unit_workers.length > 0 ? (
+                      {contactCHEW && contactCHEW.length > 0 ? (
                         contactCHEW.map((contact, index) => {
-                          console.log(index)
                         return(
                           <div
                             className="grid grid-cols-4 place-content-start gap-3 w-full"
@@ -792,10 +809,6 @@ const CommUnit = (props) => {
                                 name="first_name"
                                 onChange={(e) => handleChange(e)}
                                 value={formData.health_unit_workers !== undefined? formData?.health_unit_workers[index]?.first_name : cu.health_unit_workers[index]?.first_name||""}
-                                // defaultValue={
-                                //   cu.health_unit_workers[index]?.first_name ||
-                                //   ""
-                                // }
                                 className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                               />
                             </div>
@@ -814,9 +827,6 @@ const CommUnit = (props) => {
                                 name="last_name"
                                 onChange={(e) => handleChange(e)}
                                 value={formData.health_unit_workers !== undefined? formData?.health_unit_workers[index]?.last_name : cu.health_unit_workers[index]?.last_name || ""}
-                                // defaultValue={
-                                //   cu.health_unit_workers[index]?.last_name || ""
-                                // }
                                 className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                               />
                             </div>
@@ -834,10 +844,6 @@ const CommUnit = (props) => {
                                 type="checkbox"
                                 onChange={(e) => handleChange(e)}
                                 checked={formData.health_unit_workers !== undefined? formData?.health_unit_workers[index]?.is_incharge : cu.health_unit_workers[index]?.is_incharge || false}
-                                // defaultChecked={
-                                //   cu.health_unit_workers[index]?.is_incharge || formData?.health_unit_workers[index]?.is_incharge||
-                                //   false
-                                // }
                                 className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                               />
                             </div>
@@ -883,31 +889,25 @@ const CommUnit = (props) => {
                     </div>
 
                     {/* Save Changes */}
-                    <div className="grid grid-cols-2 place-content-start gap-3 w-full">
-                      <div className="col-start-1 col-span-1">
-                        <div className="flex justify-start items-center w-full flex mb-1 gap-1">
-                          <button className="flex space-x-2 p-1 bg-red-500 rounded p-2 px-2">
-                            <ChevronDoubleLeftIcon className="w-4 h-4 text-white" />
-                            <span className="text-medium font-semibold text-white ">
-                              Basic Details
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="col-start-2 col-span-1">
-                        <div className="flex justify-end items-center flex-col w-full mb-6">
-                          <button
-                            type="submit"
-                            className="flex space-x-2 bg-green-500 rounded p-2 px-2"
-                          >
-                            <span className="text-medium font-semibold text-white">
-                              Save Changes
-                            </span>
-                            <ChevronDoubleRightIcon className="w-4 h-4 text-white" />
-                          </button>
-                        </div>
-                      </div>
+                    <div className="flex justify-between items-center w-full">
+                    <button
+                        type="submit"
+                        className="flex items-center justify-start space-x-2 bg-red-500 rounded p-1 px-2"
+                      >
+                        <ChevronDoubleLeftIcon className="w-4 h-4 text-white" />
+                        <span className="text-medium font-semibold text-white">
+                        Basic Details
+                        </span>
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex items-center justify-end space-x-2 bg-green-500 rounded p-1 px-2"
+                      >
+                        <span className="text-medium font-semibold text-white">
+                        Save Changes
+                        </span>
+                        <ChevronDoubleRightIcon className="w-4 h-4 text-white" />
+                      </button>
                     </div>
                   </form>
                 </>
@@ -977,7 +977,6 @@ const CommUnit = (props) => {
                                   type="button"
                                   onClick={() => {
                                     selectedServices.splice(id, 1)
-                                    console.log(selectedServices)
                                     setSelectedServices(
                                       selectedServices.filter(
                                         (service) => service.id !== id
@@ -1009,7 +1008,7 @@ const CommUnit = (props) => {
                     <div className="flex justify-between items-center w-full">
                     <button
                         type="submit"
-                        className="flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2"
+                        className="flex items-center justify-start space-x-2 bg-red-500 rounded p-1 px-2"
                       >
                         <ChevronDoubleLeftIcon className="w-4 h-4 text-white" />
                         <span className="text-medium font-semibold text-white">

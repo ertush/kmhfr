@@ -386,14 +386,14 @@ const CommUnit = (props) => {
                     <button
                       type="submit"
                       className={"p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
-                      onClick={(e) => approveCHUUpdates(e,cu.latest_update, router) }
+                      onClick={(e) => approveCHUUpdates(e,cu.latest_update,true, router) }
                     >
                       {"Approve CHU Updates"}
                     </button>
                     <button
                       type="submit"
                       className={"p-2 text-center rounded-md font-semibold text-base text-white bg-red-500" }
-                      onSubmit={(e) => rejectCHUUpdates(e,cu.id) }
+                      onClick={(e) => approveCHUUpdates(e,cu.latest_update,false, router) }
                     >
                       {"Reject CHU Updates"}
                     </button>
