@@ -611,7 +611,6 @@ const AddCommUnit=(props)=> {
 																onClick={handleContactAdd} 
 																>
 																	{`Add Contact`}
-																	{/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}
 															</button>
 
 														</div>

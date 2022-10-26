@@ -17,6 +17,9 @@ export default async function chuData(req, res) {
             case 'changelog':
                 url = `${API_URL}/chul/units/${id}/?fields=__rev__&include_audit=true`
             break;
+            case 'del_worker':
+                url = `${API_URL}/chul/workers/${id}/`
+            break;
             
             default:
             break;
@@ -46,7 +49,7 @@ export default async function chuData(req, res) {
         
     }
 
-    if (req.method === "GET") {
+    if (req.method !== null ) {
                                                                                     
         try {
             return checkToken(req, res).then(t => {

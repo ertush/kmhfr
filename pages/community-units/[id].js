@@ -499,8 +499,7 @@ const CommUnit = (props) => {
                       <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                         Contacts:
                       </h3>
-                      {cu.contacts &&
-                        cu.contacts.length > 0 &&
+                      {cu.contacts && cu.contacts.length > 0 &&
                         cu.contacts.map((contact, i) => (
                           <div
                             key={i}
@@ -528,8 +527,7 @@ const CommUnit = (props) => {
                           </p>
                         </div>
                       )}
-                      {cu.officer_in_charge &&
-                        cu.officer_in_charge.contacts.length > 0 &&
+                      {cu.officer_in_charge && cu.officer_in_charge.contacts.length > 0 &&
                         cu.officer_in_charge.contacts.map((contact, i) => (
                           <div
                             key={i}
@@ -650,25 +648,10 @@ const CommUnit = (props) => {
                             >
                               <div>
                                 <p className="text-gray-800 text-base">
-                                  {service.service_name}
+                                  {service.name}
                                 </p>
-                                <small className="text-xs text-gray-500">
-                                  {service.category_name || ""}
-                                </small>
                               </div>
-                              <div>
-                                <p className="text-gray-800 text-base">
-                                  {service.average_rating || 0}/
-                                  {service.number_of_ratings || 0}
-                                </p>
-                                <small className="text-xs text-gray-500">
-                                  Rating
-                                </small>
-                              </div>
-                              <label className="text-sm text-gray-600 flex gap-1 items-center">
-                                <CheckCircleIcon className="h-6 w-6 text-green-500" />
-                                <span>Active</span>
-                              </label>
+                              
                             </li>
                           ))
                         ) : (
@@ -677,28 +660,6 @@ const CommUnit = (props) => {
                           </li>
                         )}
                       </ul>
-                    </div>
-
-                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                      <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                        Service rating:
-                      </h3>
-                      <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                        <label className="col-span-1 text-gray-600">
-                          Average rating
-                        </label>
-                        <p className="col-span-2 text-black font-medium text-base">
-                          {cu.avg_rating || 0}
-                        </p>
-                      </div>
-                      <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                        <label className="col-span-1 text-gray-600">
-                          Number of ratings
-                        </label>
-                        <p className="col-span-2 text-black font-medium text-base">
-                          {cu.number_of_ratings || 0}
-                        </p>
-                      </div>
                     </div>
                   </div>
                 </Tabs.Panel>
@@ -715,8 +676,7 @@ const CommUnit = (props) => {
                         </span>
                       </h3>
                       <ul>
-                        {cu?.health_unit_workers &&
-                        cu?.health_unit_workers.length > 0 ? (
+                        {cu?.health_unit_workers && cu?.health_unit_workers.length > 0 ? (
                           cu?.health_unit_workers.map((hr, i) => (
                             <li
                               key={i}
@@ -724,31 +684,10 @@ const CommUnit = (props) => {
                             >
                               <div>
                                 <p className="text-gray-800 text-base">
-                                  {hr.name}
+                                  {hr.name} {hr.is_incharge ?<span className="font-bold" >(In charge)</span>: null}
                                 </p>
-                                {hr.is_incharge ? (
-                                  <small className="text-xs text-gray-500">
-                                    In charge
-                                  </small>
-                                ) : (
-                                  ""
-                                )}
                               </div>
-                              {hr.active ? (
-                                <div className="flex flex-row gap-1 items-center">
-                                  <CheckCircleIcon className="h-6 w-6 text-green-500" />
-                                  <label className="text-sm text-gray-600">
-                                    Active
-                                  </label>
-                                </div>
-                              ) : (
-                                <div className="flex flex-row gap-1 items-center">
-                                  <XCircleIcon className="h-6 w-5 text-red-600" />
-                                  <label className="text-sm text-gray-600">
-                                    Active
-                                  </label>
-                                </div>
-                              )}
+                              
                             </li>
                           ))
                         ) : (
@@ -758,16 +697,7 @@ const CommUnit = (props) => {
                         )}
                       </ul>
                     </div>
-                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                      <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                        <label className="col-span-1 text-gray-600">
-                          Number of CHVs
-                        </label>
-                        <p className="col-span-2 text-black font-medium text-base">
-                          {cu.number_of_chvs || " - "}
-                        </p>
-                      </div>
-                    </div>
+                  
                   </div>
                 </Tabs.Panel>
               </Tabs.Root>
