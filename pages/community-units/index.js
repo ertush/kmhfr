@@ -3,7 +3,6 @@ import Link from 'next/link';
 import MainLayout from '../../components/MainLayout';
 import {
 	DotsHorizontalIcon,
-	PencilIcon,
     DownloadIcon,
     PlusIcon
 } from '@heroicons/react/solid';
@@ -15,8 +14,6 @@ import { ChevronDownIcon } from '@heroicons/react/outline';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-
-import Select from 'react-select';
 
 const Home = (props) => {
 	const router = useRouter();
@@ -35,17 +32,17 @@ const Home = (props) => {
 	];
 	let quickFilters = [
 		{
-			name: 'All',
+			name: 'All Community Health Units',
 			id: 'all',
 			filters: Object.keys(filters),
 		},
 		{
-			name: 'Approved',
+			name: 'Approved Community Health Units',
 			id: 'approved',
 			filters: [{ id: 'is_approved', value: true }],
 		},
 		{
-			name: 'New pending approval',
+			name: 'New Community Health Units Pending Approval',
 			id: 'new_pending_approval',
 			filters: [
 				{ id: 'has_edits', value: false },
@@ -53,15 +50,15 @@ const Home = (props) => {
 			],
 		},
 		{
-			name: 'Updated pending approval',
+			name: 'Updated Community Health Units Pending Approval',
 			id: 'updated_pending_approval',
 			filters: [
 				{ id: 'has_edits', value: true },
-				{ id: 'pending_approval', value: true },
+				{ id: 'is_approved', value: true },
 			],
 		},
 		{
-			name: 'Rejected',
+			name: 'Rejected Community Health Units',
 			id: 'rejected',
 			filters: [{ id: 'is_rejected', value: true }],
 		},
@@ -171,41 +168,7 @@ const Home = (props) => {
 								<span className='text-gray-500'>Community Units</span>
 							</div>
 
-							{/* <div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'>
-								{quickFilters.map((qf, i) => {
-									return (
-										<button
-											key={qf.id}
-											style={{ paddingTop: '2px', paddingBottom: '2px' }}
-											className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium hover:border-green-400 focus:ring-1 focus:ring-blue-500 text-sm ${
-												currentQuickFilter == qf.id
-													? 'bg-green-800 border-green-800 text-green-50'
-													: 'text-gray-800 border-gray-300'
-											}`}
-											onClick={(evt) => {
-												setCurrentQuickFilter(qf.id);
-												let robj = {
-													pathname: '/community-units',
-													query: { qf: qf.id },
-												};
-												if (qf.id === 'all') {
-													router.push(robj);
-													return;
-												}
-												quickFilters.forEach((q_f) => {
-													if (q_f.id === qf.id) {
-														q_f.filters.map((sf) => {
-															robj.query[sf.id] = sf.value;
-														});
-													}
-												});
-												router.push(robj);
-											}}>
-											{qf.name}
-										</button>
-									);
-								})}
-							</div> */}
+
 						</div>
 					
 
@@ -241,17 +204,9 @@ const Home = (props) => {
 													})`
 											)
 											?.join(' & ')}`}
-									{props?.data?.count && props?.data?.count > 0 && (
-										<small className='text-gray-500 ml-2 text-base'>
-											{props?.data?.start_index || 0} -{' '}
-											{props?.data?.end_index || 0} of {props?.data?.count || 0}{' '}
-										</small>
-									)}
 								</h5>
-							</div>
-
-							{/* Button Section */}
-
+                           
+                            </div>
 							{props?.current_url && props?.current_url.length > 5 && (
 								<Menu as='div' className='relative'>
 									<div className='flex items-center space-x-6 w-auto'>
@@ -279,7 +234,6 @@ const Home = (props) => {
 									<Menu.Items
 										as='ul'
 										className='absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full'>
-									
 										<Menu.Item
 											as='li'
 											className='p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200'>
@@ -334,146 +288,65 @@ const Home = (props) => {
 								</Menu>
 							)}
 
-						</div>
+							</div>
+							
 					</div>
+				    
+					  {/* Side Menu Filters*/}
 
-					{/* Side Menu Filters*/}
 					<div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
                         <List
                         sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
                         component="nav"
                         aria-labelledby="nested-list-subheader"
                     
-                        >	
-                            {/* All Community Health Units */}
-                            <ListItemButton sx={{ backgroundColor: (allCHUSelected || pathId === 'all') ?  '#e7ebf0' : 'none' }} name="rt"
-                                onClick={(ev)=>{
-                                    setTitle('Community Health Units')
-                                    setPathId('all')
-                                    setAllCHUSelected(true)
-                                    setApprovedCHUSelected(false)
-                                    setNewCHUSelected(false)
-                                    setUpdatedCHUSelected(false)
-                                    setCHUPendingApproval(false)
-                                    setRejectedCHUSelected(false)
-                                    setFeedBackCHUSelected(false)
+                        >
+						    {quickFilters.map((qf, i)=>{
+								return (
 
-                                    handleQuickFiltersClick('all')
-                                
-                                }}
-                            >
-                                <ListItemText primary="All Community Health Units" />
-                            </ListItemButton>
-
-                            {/* Approved Community Health Units */}
-                            <ListItemButton sx={{ backgroundColor: (approvedCHUSelected || pathId === 'approved')  ?  '#e7ebf0' : 'none' }} 
-                                onClick={(ev)=>{
-                                    setTitle('Approved Community Health Units')
-                                    setAllCHUSelected(false)
-                                    setPathId('approved')
-                                    setApprovedCHUSelected(true)
-                                    setNewCHUSelected(false)
-                                    setUpdatedCHUSelected(false)
-                                    setCHUPendingApproval(false)
-                                    setRejectedCHUSelected(false)
-                                    setFeedBackCHUSelected(false)
-
-                                    handleQuickFiltersClick('approved')
-                                   
-                                
-                                }}
-                            >
-                                <ListItemText primary="Approved Community Health Units" />
-                            </ListItemButton>
-
-                            {/* New Community Health Units*/}
-                            <ListItemButton sx={{ backgroundColor: (newCHUSelected || pathId === 'new_pending_approval') ?  '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setTitle('Community Health Units Pending Approvals')
-                                setPathId('new_pending_approval')
-                                setAllCHUSelected(false)
-                                setApprovedCHUSelected(false)
-                                setNewCHUSelected(true)
-                                setUpdatedCHUSelected(false)
-                                setCHUPendingApproval(false)
-                                setRejectedCHUSelected(false)
-                                setFeedBackCHUSelected(false)
-
-                                handleQuickFiltersClick('new_pending_approval')
-                                            
-                            }}
-                            >
-                                <ListItemText primary="New Community Health Units Pending Approvals"/>
-                            </ListItemButton>
-
-                            {/* Update Community Health Units Pending Approvals*/}
-                            <ListItemButton sx={{ backgroundColor: (updatedCHUSelected  || pathId === 'updated_pending_approval') ?  '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setTitle(' Community Health Units Pending Approvals')
-                                setPathId('updated_pending_approval')
-                                setAllCHUSelected(false)
-                                setApprovedCHUSelected(false)
-                                setNewCHUSelected(false)
-                                setUpdatedCHUSelected(true)
-                                setCHUPendingApproval(false)
-                                setRejectedCHUSelected(false)
-                                setFeedBackCHUSelected(false)
-                                
-                                handleQuickFiltersClick('updated_pending_approval')
-                            
-                            }}
-                            >
-                                <ListItemText primary="Updated Community Health Units Pending Approvals"/>
-                            </ListItemButton>
-
-                            {/* Rejected Community Health Units */}    
-                            <ListItemButton sx={{ backgroundColor: (chuPendingApproval  || pathId === 'rejected') ?  '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setTitle('Rejected Community Health Units')
-                                setPathId('rejected')
-                                setAllCHUSelected(false)
-                                setApprovedCHUSelected(false)
-                                setNewCHUSelected(false)
-                                setUpdatedCHUSelected(false)
-                                setCHUPendingApproval(true)
-                                setRejectedCHUSelected(false)
-                                setFeedBackCHUSelected(false)
-                                
-                                handleQuickFiltersClick('rejected')
-                            
-                            }}
-                            >
-                                <ListItemText primary="Rejected Community Health Units"/>
-                            </ListItemButton>
-
-
-                            {/* Feedback on Community Health Units */}
-                            <ListItemButton sx={{ backgroundColor: (feedBackCHUSelected || pathId == "feedback") ?  '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setTitle('Community Health Units Feedback From Public')
-                                setPathId('feedback')
-                                setAllCHUSelected(false)
-                                setApprovedCHUSelected(false)
-                                setNewCHUSelected(false)
-                                setUpdatedCHUSelected(false)
-                                setCHUPendingApproval(false)
-                                setRejectedCHUSelected(false)
-                                setFeedBackCHUSelected(true)
-
-                                handleQuickFiltersClick('feedback')
-              
-                            }}
-                            >
-                                
-                                <ListItemText primary="Feedback on Community Health Units"/>
-                            </ListItemButton>
+										<ListItemButton 
+										    key={qf.id}
+										    sx={{ backgroundColor: '#e7ebf0'  }} 
+											name="rt"
+											onClick={(evt) => {
+												setCurrentQuickFilter(qf.id);
+												let robj = {
+													pathname: '/community-units',
+													query: { },
+												};
+												if (qf.id === 'all') {
+													router.push(robj);
+													return;
+												}
+												quickFilters.forEach((q_f) => {
+													if (q_f.id === qf.id) {
+														q_f.filters.map((sf) => {
+															robj.query[sf.id] = sf.value;
+														});
+													}
+												});
+												console.log(robj);
+												router.push(robj);
+											}}
+										>
+											<ListItemText primary={qf.name} />
+										</ListItemButton>
+								)
+							})}
+                          
                                 
                         </List>
                     </div>
+                     {/* Main body */}
+					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
+					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 
-
-					{/* Main Body */}
-					<div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'>
+					    <div className='mx-4 float-right'>
+							 
+						    <h5 className="text-lg font-medium text-gray-800 float-right">
+                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
+                            </h5>
+						</div>
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
 							{/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
 							{cus && cus.length > 0 ? (
@@ -628,131 +501,9 @@ const Home = (props) => {
 							)}
 						</div>
 					</div>
-					{/* <aside className='flex flex-col col-span-5 md:col-span-1 p-1 md:h-full'>
-						<details
-							className='rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z'
-							open>
-							<summary className='flex cursor-pointer w-full bg-white p-2'>
-								<h3 className='text-2xl tracking-tight font-bold leading-3'>
-									Filters
-								</h3>
-							</summary>
-							<div className='flex flex-col gap-2 p-2'>
-								{filters && filters?.error ? (
-									<div className='w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base'>
-										<p>No filters.</p>
-									</div>
-								) : (
-									<form
-										action='/'
-										onSubmit={(ev) => {
-											ev.preventDefault();
-											return false;
-										}}>
-										{filters &&
-											Object.keys(filters).length > 0 &&
-											Object.keys(filters).map((ft) => (
-												<div
-													key={ft}
-													className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-													<label
-														htmlFor={ft}
-														className='text-gray-600 capitalize text-sm'>
-														{ft.split('_').join(' ')}
-													</label>
-													
-													<Select
-														isMulti={multiFilters.includes(ft)}
-														name={ft}
-														defaultValue={props?.query[ft] || ''}
-														id={ft}
-														className='w-full p-1 rounded bg-gray-50'
-														options={Array.from(filters[ft] || [], (fltopt) => {
-															return {
-																value: fltopt.id,
-																label: fltopt.name,
-															};
-														})}
-														placeholder={
-															ft.split('_').join(' ')[0].toUpperCase() +
-															ft.split('_').join(' ').slice(1)
-														}
-														onChange={(sl) => {
-															let nf = {};
-															if (Array.isArray(sl)) {
-																nf[ft] =
-																	(drillDown[ft] ? drillDown[ft] + ',' : '') +
-																	Array.from(sl, (l_) => l_.value).join(',');
-															} else if (
-																sl &&
-																sl !== null &&
-																typeof sl === 'object' &&
-																!Array.isArray(sl)
-															) {
-																nf[ft] = sl.value;
-															} else {
-																delete nf[ft];
-																// let rr = drillDown.filter(d => d.key !== ft)
-																// setDrilldown(rr)
-															}
-															console.log(nf);
-															setDrillDown({ ...drillDown, ...nf });
-														}}
-													/>
-												</div>
-											))}
+					
+					{/* (((((( Floating div at bottom right of page */}
 
-										<button
-											onClick={(ev) => {
-												if (Object.keys(drillDown).length > 0) {
-													let qry = Object.keys(drillDown)
-														.map(function (key) {
-															let er = '';
-															if (
-																props.path &&
-																!props.path.includes(key + '=')
-															) {
-																er =
-																	encodeURIComponent(key) +
-																	'=' +
-																	encodeURIComponent(drillDown[key]);
-															}
-															return er;
-														})
-														.join('&');
-													let op = '?';
-													if (
-														props.path &&
-														props.path.includes('?') &&
-														props.path.includes('=')
-													) {
-														op = '&';
-													}
-													console.log(props.path);
-													// setDrillDown({})
-													if (qry && qry.length > 0) {
-														router.push(props.path + op + qry);
-													}
-												}
-											}}
-											className='bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center'>
-											Filter
-										</button>
-										<div className='w-full flex items-center py-2 justify-center'>
-											<button
-												className='cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline'
-												onClick={(ev) => {
-													router.push('/community-units');
-												}}>
-												Clear filters
-											</button>
-										</div>
-									</form>
-								)}
-							</div>
-						</details>
-					</aside> */}
-				
 					<div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
 						<h5 className='text-sm font-bold'>
 							<span className='text-gray-600 uppercase'>Limited results</span>
@@ -771,41 +522,48 @@ const Home = (props) => {
 
 Home.getInitialProps = async (ctx) => {
 	// console.log("=======================================")
-	// console.log(ctx.req)
+	console.log(ctx.query)
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
-	const fetchFilters = (token) => {
-		// let filters_url = API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+	const fetchFilters = async (token) => {
 		let filters_url =
 			API_URL +
 			'/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county';
 
-		return fetch(filters_url, {
-			headers: {
-				Authorization: 'Bearer ' + token,
-				Accept: 'application/json',
-			},
-		})
-			.then((r) => r.json())
-			.then((json) => {
-				return json;
-			})
-			.catch((err) => {
-				console.log('Error fetching filters: ', err);
-				return {
-					error: true,
-					err: err,
-					filters: [],
-					path: ctx.asPath || '/',
-				};
+		try {
+			const r = await fetch(filters_url, {
+				headers: {
+					Authorization: 'Bearer ' + token,
+					Accept: 'application/json',
+				},
 			});
+			const json = await r.json();
+			return json;
+		} catch (err) {
+			console.log('Error fetching filters: ', err);
+			return {
+				error: true,
+				err: err,
+				filters: [],
+				path: ctx.asPath || '/',
+			};
+		}
 	};
 
-	const fetchData = (token) => {
-		console.log(`TOKEN >>>>>>>>>>>>>>>>>>>>>${token}`);
-		// let url = API_URL+'/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,is_approved,rejected,keph_level,operation_status_name'
-		let url =
-			API_URL +
-			'/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency';
+	const fetchData = async (token) => {
+		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
+		let qry = ''
+		let url
+		if(ctx.query !== null){
+			qry = Object.keys(filterQuery).map(function (key) {
+				let er = (key) + '=' + (filterQuery[key]);
+				return er
+			 }).join('&')
+
+			 console.log(qry);
+			 url =API_URL + `/chul/units/?${qry}&fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
+		}else{
+			 url =API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
+		}
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {
 			query.searchTerm = ctx.query.q;
@@ -829,36 +587,34 @@ Home.getInitialProps = async (ctx) => {
 		if (ctx?.query?.page) {
 			url = `${url}&page=${ctx.query.page}`;
 		}
-		console.log('running fetchData(' + url + ')');
-		return fetch(url, {
-			headers: {
-				Authorization: 'Bearer ' + token,
-				Accept: 'application/json',
-			},
-		})
-			.then((r) => r.json())
-			.then((json) => {
-				return fetchFilters(token).then((ft) => {
-					return {
-						data: json,
-						query,
-						filters: { ...ft },
-						path: ctx.asPath || '/community-units',
-						current_url: current_url,
-					};
-				});
-			})
-			.catch((err) => {
-				console.log('Error fetching community units: ', err);
-				return {
-					error: true,
-					err: err,
-					data: [],
-					query: {},
-					path: ctx.asPath || '/community-units',
-					current_url: '',
-				};
+		// console.log('running fetchData(' + url + ')');
+		try {
+			const r = await fetch(url, {
+				headers: {
+					Authorization: 'Bearer ' + token,
+					Accept: 'application/json',
+				},
 			});
+			const json = await r.json();
+			const ft = await fetchFilters(token);
+			return {
+				data: json,
+				query,
+				filters: { ...ft },
+				path: ctx.asPath || '/community-units',
+				current_url: current_url,
+			};
+		} catch (err) {
+			console.log('Error fetching community units: ', err);
+			return {
+				error: true,
+				err: err,
+				data: [],
+				query: {},
+				path: ctx.asPath || '/community-units',
+				current_url: '',
+			};
+		}
 	};
 	return checkToken(ctx.req, ctx.res)
 		.then((t) => {

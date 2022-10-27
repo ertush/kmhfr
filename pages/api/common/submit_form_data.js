@@ -160,7 +160,12 @@ export default async function submitFormData(req, res) {
                     break           
                         
                 case `approve_chul`:
-                    url = `${API_URL}/chul/updates/${req.query.id}/`
+                    url = `${API_URL}/chul/units/${req.query.id}/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'PATCH';
+                    break  
+                case `approve_chul_updates`:
+                    url = `${API_URL}/chul/updates/${req.query.latest_updates}/`
                     contentType = 'application/json;charset=utf-8';
                     method = 'PATCH';
                     break   
@@ -179,12 +184,15 @@ export default async function submitFormData(req, res) {
                     url = `${API_URL}/gis/facility_coordinates/${req.query.id}/`;
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
-                    break;    
+                    break;              
+                default:
 
+                    
+                    break;
             }
               
             try {
-                console.log({url, body: JSON.stringify(req.body)});
+                console.log({url});
                 const resp = await fetch(url, {
                     headers: {
                         'Authorization': 'Bearer ' + token,
@@ -192,7 +200,7 @@ export default async function submitFormData(req, res) {
                         'Content-Type': contentType
                     },
                     method,
-                    body: method == 'GET' ? null : JSON.stringify(req.body)
+                    body: method == 'GET' ? null:JSON.stringify(req.body)
                 })
                 
                 return await resp.json()
