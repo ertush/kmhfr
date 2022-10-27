@@ -58,7 +58,7 @@ const CHUsStatus = (props) => { CHUsStatus
     const filter = (e) => {
         e.preventDefault()
         try {
-            fetch(`/api/common/submit_form_data/?path=chu_status&drilldown=${JSON.stringify(drillDown)}`, {
+            fetch(`/api/facility/get_facility/?path=chu_status&drilldown=${JSON.stringify(drillDown)}`, {
 				headers:{
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json;charset=utf-8'

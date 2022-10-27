@@ -211,16 +211,9 @@ const CHUsCount = (props) => {
 CHUsCount.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     
-    // const county_id= ctx.query.id
-    // console.log(ctx.query)
     const fetchData = async (token) => {
         let url = API_URL + `/reporting/chul/?report_type=county`
 
-        // if(county_id){
-        //     url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}&report_level=county`
-        // }else{
-        //     url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
-        // }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf

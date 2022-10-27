@@ -62,7 +62,7 @@ const FacilitiesCoordinates = (props) => {
     const filter = (e) => {
         e.preventDefault()
         try {
-            fetch(`/api/common/submit_form_data/?path=facility_coordinates&drilldown=${JSON.stringify(drillDown)}`, {
+            fetch(`/api/facility/get_facility/?path=facility_coordinates&drilldown=${JSON.stringify(drillDown)}`, {
 				headers:{
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json;charset=utf-8'
@@ -348,11 +348,6 @@ FacilitiesCoordinates.getInitialProps = async (ctx) => {
     const fetchData = async (token) => {
         let url = API_URL + `/facilities/facilities/`
 
-        // if(county_id){
-        //     url =API_URL + `/reporting/?county=${county_id}&report_type=${ctx.query.report_type}&report_level=county`
-        // }else{
-        //     url = API_URL + `/reporting/?report_type=beds_and_cots_by_constituency`
-        // }
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
