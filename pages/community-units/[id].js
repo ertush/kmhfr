@@ -3,24 +3,25 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect } from "react";
 import MainLayout from "../../components/MainLayout";
-// import { approveRejectCHU, rejectCHU } from "../../controllers/reject";
-// import { ChevronDownIcon } from "@heroicons/react/solid";
 import router from "next/router";
-
+import moment from 'moment'
 import {
   CheckCircleIcon,
-  ChevronRightIcon,
   InformationCircleIcon,
-  LocationMarkerIcon,
   LockClosedIcon,
   XCircleIcon,
 } from "@heroicons/react/solid";
-import { ArrowsExpandIcon } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 const CommUnit = (props) => {
   const Map = dynamic(
-    () => import("../../components/Map"), // replace '@components/map' with your component's location
+    () => import("../../components/Map"), 
     {
       loading: () => (
         <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
@@ -35,19 +36,61 @@ const CommUnit = (props) => {
   const [user, setUser] = useState(null);
   const [isCHUDetails, setIsCHUDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
+  const [viewLog, setViewLog] = useState(false);
+  const [columns, setColumns] = useState([
+    { id: 'updated_on', label: 'Date', minWidth: 100 },
+    { id: 'updated_by', label: 'User', minWidth: 100},
+    { id: 'updates',label: 'Updates',minWidth: 100, }
+  ]);
+  const [rows, setRows] = useState([])  
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      let usr = window.sessionStorage.getItem("user");
-      if (usr && usr.length > 0) {
-        setUser(JSON.parse(usr));
-      }
+  const fetchChangeLogs = async () => {
+    fetch(`/api/chus/data?path=changelog&id=${props?.data.id}`,{
+      headers:{
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json;charset=utf-8'
+        
+      },
+      method:'GET',
+    }).then(res => res.json()).then(data=>{
+     const res = data.revisions.map((item, ky)=>{
+
+          return {
+          updated_on: moment(item.updated_on).format('ddd, Do MMM YYYY, h:mm a'),
+          updated_by: item.updated_by,
+          updates: (item.updates.map((item, i)=> (
+            <div className={"self-start"}>
+            <span className={"font-bold text-2x self-start"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600 self-start'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-green-600 self-start'} key={item.new}>{item.new + ''}</span>
+           </div>
+      )))
+        }
+      })
+      setRows(res)
+    }).catch(err=>{console.log(err)})
+  }
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     let usr = window.sessionStorage.getItem("user");
+  //     if (usr && usr.length > 0) {
+  //       setUser(JSON.parse(usr));
+  //     }
+  //   }
+  //   return () => {
+  //     setIsCHUDetails(true);
+  //     setIsApproveReject(false);
+  //   };
+  // }, []);
+
+  useEffect(()=>{
+    if (typeof window !== 'undefined') { //auth.add_group
+        let usr =JSON.parse( window.sessionStorage.getItem('user'))
+
+        if(usr.all_permissions.find((r)=> r === 'chul.can_approve_chu') !== undefined){
+          setIsApproveReject(true)
+        }
     }
-    return () => {
-      setIsCHUDetails(true);
-      setIsApproveReject(false);
-    };
-  }, []);
+  },[])
   return (
     <>
       <Head>
@@ -128,7 +171,7 @@ const CommUnit = (props) => {
                       CHU Active
                     </span>
                   )}
-                  {cu.has_fffedits && (
+                  {cu.has_edits && (
                     <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
@@ -145,21 +188,15 @@ const CommUnit = (props) => {
               {/* Approve/Reject, Edit Buttons */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
-                  <button
-                    onClick={() => router.push("/community-units/approve/" + cu.id)
-                      //approveRejectCHU(cu.is_approved,setIsApproveReject,props.data.id)
-                    }
-                    className={
-                      cu.is_approved || cu.is_rejected
-                        ? ''
-                        : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
-                    }
+                  {isApproveReject &&<button
+                    onClick={() => {
+                      router.push("/community-units/approve/" + cu.id)
+                    }}
+                    className={"p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
                   >
                   {/* Dynamic Button Rendering */}
-                  {cu.is_approved || cu.is_rejected
-                  ? "" 
-                  : "Approve/Reject"}
-                  </button>
+                  {"Approve/Reject"}
+                  </button>}
                   <button
                     onClick={() => console.log(cu.name)}
                     className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
@@ -462,8 +499,7 @@ const CommUnit = (props) => {
                       <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                         Contacts:
                       </h3>
-                      {cu.contacts &&
-                        cu.contacts.length > 0 &&
+                      {cu.contacts && cu.contacts.length > 0 &&
                         cu.contacts.map((contact, i) => (
                           <div
                             key={i}
@@ -491,8 +527,7 @@ const CommUnit = (props) => {
                           </p>
                         </div>
                       )}
-                      {cu.officer_in_charge &&
-                        cu.officer_in_charge.contacts.length > 0 &&
+                      {cu.officer_in_charge && cu.officer_in_charge.contacts.length > 0 &&
                         cu.officer_in_charge.contacts.map((contact, i) => (
                           <div
                             key={i}
@@ -511,6 +546,78 @@ const CommUnit = (props) => {
                           </div>
                         ))}
                     </div>
+                    {/* <div> */}
+                       
+                    {/* </div> */}
+                    <div className='flex justify-between items-center w-full mt-5'>
+															<button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'
+                              onClick={() => {
+                                setViewLog(!viewLog);
+                                fetchChangeLogs()
+                              }}
+                              >
+																<span className='text-medium font-semibold text-black '>
+                                  {!viewLog ? 'View Changelog': 'Hide Changelog' }  
+																</span>
+															</button>
+                    </div>
+                    {viewLog && (
+
+                    <div className='col-span-4 w-full h-auto'>
+                              <TableContainer sx={{ maxHeight: 440 }}>
+                                    <Table stickyHeader aria-label="sticky table">
+                                    <TableHead>
+                                        <TableRow>
+                                        {columns.map((column,i) => (
+                                            <TableCell
+                                            key={i}
+                                            align={column.align}
+                                            style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                            >
+                                            {column.label}
+                                            </TableCell>
+                                        ))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody sx={{paddingX: 4}}>
+                                        {rows
+                                        // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((row) => {
+                                            return (
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                                {columns.map((column, i) => {
+                                                const value = row[column.id];
+                                                return (
+                                                    <TableCell key={column.id} align={column.align}>
+                                                        {
+                                                        column.id === 'action' ?
+                                                            
+                                                                <button className='bg-indigo-500 rounded p-2 text-white font-semibold'>{
+                                                                    resourceCategory === "HealthInfrastructure" || resourceCategory === "HR" ?
+                                                                    'Edit' : 'View'
+                                                                }</button>
+                                                            
+                                                            :
+                                                                column.format && typeof value === 'boolean'
+                                                                    ? value.toString()
+                                                                    :  column.format && typeof value === 'number'
+                                                                    ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+                                                        
+                                                        }
+                                                    </TableCell>
+                                                    
+                                                );
+                                                })}
+                                            </TableRow>
+                                            );
+                                        })}
+                                    </TableBody>
+                                    </Table>
+                                </TableContainer>
+                    </div>
+                    )}
+
+
                     <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
                       <summary>All data</summary>
                       <pre
@@ -541,25 +648,10 @@ const CommUnit = (props) => {
                             >
                               <div>
                                 <p className="text-gray-800 text-base">
-                                  {service.service_name}
+                                  {service.name}
                                 </p>
-                                <small className="text-xs text-gray-500">
-                                  {service.category_name || ""}
-                                </small>
                               </div>
-                              <div>
-                                <p className="text-gray-800 text-base">
-                                  {service.average_rating || 0}/
-                                  {service.number_of_ratings || 0}
-                                </p>
-                                <small className="text-xs text-gray-500">
-                                  Rating
-                                </small>
-                              </div>
-                              <label className="text-sm text-gray-600 flex gap-1 items-center">
-                                <CheckCircleIcon className="h-6 w-6 text-green-500" />
-                                <span>Active</span>
-                              </label>
+                              
                             </li>
                           ))
                         ) : (
@@ -568,28 +660,6 @@ const CommUnit = (props) => {
                           </li>
                         )}
                       </ul>
-                    </div>
-
-                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                      <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                        Service rating:
-                      </h3>
-                      <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                        <label className="col-span-1 text-gray-600">
-                          Average rating
-                        </label>
-                        <p className="col-span-2 text-black font-medium text-base">
-                          {cu.avg_rating || 0}
-                        </p>
-                      </div>
-                      <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                        <label className="col-span-1 text-gray-600">
-                          Number of ratings
-                        </label>
-                        <p className="col-span-2 text-black font-medium text-base">
-                          {cu.number_of_ratings || 0}
-                        </p>
-                      </div>
                     </div>
                   </div>
                 </Tabs.Panel>
@@ -606,8 +676,7 @@ const CommUnit = (props) => {
                         </span>
                       </h3>
                       <ul>
-                        {cu?.health_unit_workers &&
-                        cu?.health_unit_workers.length > 0 ? (
+                        {cu?.health_unit_workers && cu?.health_unit_workers.length > 0 ? (
                           cu?.health_unit_workers.map((hr, i) => (
                             <li
                               key={i}
@@ -615,31 +684,10 @@ const CommUnit = (props) => {
                             >
                               <div>
                                 <p className="text-gray-800 text-base">
-                                  {hr.name}
+                                  {hr.name} {hr.is_incharge ?<span className="font-bold" >(In charge)</span>: null}
                                 </p>
-                                {hr.is_incharge ? (
-                                  <small className="text-xs text-gray-500">
-                                    In charge
-                                  </small>
-                                ) : (
-                                  ""
-                                )}
                               </div>
-                              {hr.active ? (
-                                <div className="flex flex-row gap-1 items-center">
-                                  <CheckCircleIcon className="h-6 w-6 text-green-500" />
-                                  <label className="text-sm text-gray-600">
-                                    Active
-                                  </label>
-                                </div>
-                              ) : (
-                                <div className="flex flex-row gap-1 items-center">
-                                  <XCircleIcon className="h-6 w-5 text-red-600" />
-                                  <label className="text-sm text-gray-600">
-                                    Active
-                                  </label>
-                                </div>
-                              )}
+                              
                             </li>
                           ))
                         ) : (
@@ -649,16 +697,7 @@ const CommUnit = (props) => {
                         )}
                       </ul>
                     </div>
-                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                      <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                        <label className="col-span-1 text-gray-600">
-                          Number of CHVs
-                        </label>
-                        <p className="col-span-2 text-black font-medium text-base">
-                          {cu.number_of_chvs || " - "}
-                        </p>
-                      </div>
-                    </div>
+                  
                   </div>
                 </Tabs.Panel>
               </Tabs.Root>

@@ -56,7 +56,7 @@ const FacilityByTypeDetails = (props) => {
 
     const filter = () => {
         try {
-            fetch(`/api/common/submit_form_data/?path=facility_type_details&drilldown=${JSON.stringify(drillDown)}`, {
+            fetch(`/api/facility/get_facility/?path=facility_type_details&drilldown=${JSON.stringify(drillDown)}`, {
 				headers:{
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json;charset=utf-8'

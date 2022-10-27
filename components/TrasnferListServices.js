@@ -27,7 +27,7 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TrasnferListServices({categories, setServices, setRefreshForm4, refreshForm4, selectedRight, setSelectedServiceRight}) {
+export default function TrasnferListServices({categories, setServices, setRefreshForm4, refreshForm4, selectedRight, setSelectedServiceRight, setBtnDirection}) {
 
   const [newSelected, setNewSelected] = React.useState([])
   const [checked, setChecked] = React.useState([]);
@@ -55,9 +55,13 @@ useMemo(() => {
      
     // console.log({selectedRight, right})
 
+      
+
      setSelectedServiceRight(selectedRight)
      leftChecked = intersection(checked, left);
      rightChecked = intersection(checked, right);
+
+     console.log({right, left})
     
 
   }, [left, right])
@@ -122,6 +126,7 @@ useMemo(() => {
     // console.log({selectedService})
     setRefreshForm4(!refreshForm4)
     setServices(selectedService)
+    setBtnDirection('right')
     
   };
 
@@ -129,8 +134,12 @@ useMemo(() => {
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
-    setServices(right)
-    setSelectedServiceRight(right)
+
+    setRefreshForm4(!refreshForm4)
+    setServices(selectedService)
+    setBtnDirection('left')
+    // setServices(right)
+    // setSelectedServiceRight(left)
   };
 
   const handleAllLeft = () => {
@@ -172,6 +181,7 @@ useMemo(() => {
                         <>
                           {/* {(() => {console.log({checkBoxChecked})})()} */}
                           <Checkbox
+                            id={'left'}
                             checked={checkBoxChecked.indexOf(subctg) !== -1}
                             tabIndex={-1}
                             disableRipple
@@ -183,12 +193,14 @@ useMemo(() => {
                             <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
                         </>
                     :
-                    
                         <>
                           {
-                            (selectedRight !== null ? (selectedRight.map(ctg => {ctg => ctg.subCategories[0]}).indexOf(subctg) !== -1 || checkAll) : checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                            // (selectedRight !== null ? (selectedRight.map(ctg => {ctg => ctg.subCategories[0]}).indexOf(subctg) !== -1 || checkAll) : checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                            // checked={checkAll ? true : selectedRight !== null ? (selectedRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1) : (checkBoxChecked.indexOf(subctg) !== -1)}
+                            
                             <Checkbox
-                            checked={checkAll ? true : selectedRight !== null ? (selectedRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1) : (checkBoxChecked.indexOf(subctg) !== -1)}
+                            id={'right'}
+                            checked={checkBoxChecked.indexOf(subctg) !== -1}
                             tabIndex={-1}
                             disableRipple
                             onChange={handleCheckBoxToggle({subctg, value:value[i]})}
@@ -199,8 +211,8 @@ useMemo(() => {
                           }
                           {/* {console.log({selectedRight: selectedRight.map(ctg => ctg.subCategories[0])})} */}
                           {
-                            selectedRight !== null &&
-                            (selectedRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1 || checkAll) &&
+                            // selectedRight !== null &&
+                            // (selectedRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1 || checkAll) &&
                             <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
                           }
                         </>
@@ -240,6 +252,7 @@ useMemo(() => {
             >
               <ListItemIcon>
              
+     
                 <Checkbox
 
                   checked={
@@ -273,7 +286,7 @@ useMemo(() => {
   return (
     <Grid container spacing={2} justifyContent="evenly" alignItems="center"  sx={{flex: 100, boxShadow:'none', backgroundColor:'#f9fafb'}}>
       <Grid item> 
-      <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Categories</h5>
+      <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Service Categories</h5>
         <Grid container direction="column" justifyContent="start" alignItems="start" gap={2} >
          
             {customList(left, false)}  
@@ -326,7 +339,7 @@ useMemo(() => {
       </Grid>
       <Grid item>
           <Grid container direction="column"  justifyContent="start" alignItems="start">
-          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h5>
+          <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Selected Services</h5>
             {customList(right, true)}
           </Grid>
           </Grid>

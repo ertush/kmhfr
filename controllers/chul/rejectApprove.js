@@ -40,15 +40,58 @@ const rejectCHU = (e, ctx, state, comment) => {
     console.log({ comment });
 };
 
-
-const approveCHU = (e, id, comment) => {
+const approveCHUUpdates= async (e,id, status,router)=>{
+  e.preventDefault();
+  let payload=''
+  if(status== true){
+    payload = {is_approved:true}
+  }else{
+    payload={is_rejected:true}
+  }
+  let url=`/api/common/submit_form_data/?path=approve_chul_updates&latest_updates=${id}`
+  try{
+       await fetch(url, {
+          headers:{
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json;charset=utf-8'
+              
+          },
+          method: 'PATCH',
+          body: JSON.stringify(payload)
+      })
+      .then(resp =>resp.json())
+      .then(res =>{ 
+          router.push({
+            pathname: '/community-units',
+            query: {has_edits: false, pending_approval: true}
+          })
+          console.log(res)
+      })
+      .catch(e=>{
+        setStatus({status:'error', message: e})
+      })
+  }catch (e){
+      
+        setStatus({status:'error', message: e})
+        console.error(e)
+  }
+}
+const approveCHU = (e, id, comment,state, router) => {
     e.preventDefault();
-
-    const payload ={
-        approval_comment: comment,
-        is_rejected: false, 
-        is_approved: true
+    let payload ={}
+   if(state == true){
+     payload ={
+          approval_comment: comment,
+          is_rejected: false, 
+          is_approved: true
+      }
+   }else{
+      payload ={
+        rejection_reason: comment,
+        is_rejected: true, 
+        is_approved: false
     }
+   }
     console.log(JSON.stringify(payload))
     let url=`/api/common/submit_form_data/?path=approve_chul&id=${id}`
     try{
@@ -63,41 +106,10 @@ const approveCHU = (e, id, comment) => {
         })
         .then(resp =>resp)
         .then(res =>{ 
-            
-            console.log(res)
-        })
-        .catch(e=>{
-          setStatus({status:'error', message: e})
-        })
-    }catch (e){
-
-        setStatus({status:'error', message: e})
-        console.error(e)
-    }
-    console.log({comment})
-}
-
-const rejectChul = (e, id, comment) => {
-    e.preventDefault();
-
-    const payload ={
-        rejection_reason: comment,
-        is_rejected: true, 
-        is_approved: false
-    }
-    let url=`/api/common/submit_form_data/?path=approve_chul&id=${id}`
-    try{
-         fetch(url, {
-            headers:{
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
-                
-            },
-            method: 'PATCH',
-            body: JSON.stringify(payload)
-        })
-        .then(resp =>resp)
-        .then(res =>{ 
+          router.push({
+            pathname: '/community-units',
+            query: { }
+          })
             
             console.log(res)
         })
@@ -113,7 +125,7 @@ const rejectChul = (e, id, comment) => {
 
 export {
     approveRejectCHU,
+    approveCHUUpdates,
     approveCHU,
     rejectCHU,
-    rejectChul
 }

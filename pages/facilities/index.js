@@ -30,11 +30,11 @@ const Home = (props) => {
 
     const permissions = useContext(PermissionContext)
    
-    let facilities = props?.data?.results
-    let filters = props?.filters
+    const facilities = props?.data?.results
+    const filters = props?.filters
     let fltrs = filters
-    let [drillDown, setDrillDown] = useState({})
-    let qf = props?.query?.qf || 'all'
+    const [drillDown, setDrillDown] = useState({})
+    const qf = props?.query?.qf || 'all'
    
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -239,9 +239,8 @@ const Home = (props) => {
             setFacilityFeedBack([])
             setKhisSynched(false)
 
- 
-            let robj = {pathname: '/facilities', query: {qf: filter_id, ...filter}}
-            router.push(robj)
+
+            router.push({pathname: '/facilities', query: {qf: filter_id, ...filter}})
             break;
     }
         
