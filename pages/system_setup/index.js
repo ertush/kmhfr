@@ -58,6 +58,7 @@ const system_setup = (props) => {
     const [openCHU, setOpenCHU] = useState(false);    
     const [openDocuments, setOpenDocuments] = useState(false); 
     const [resourceCategory, setResourceCategory] = useState('');
+    const [infrastructureCategory, setInfrastructureCategory] = useState('');
     const [resource, setResource] = useState(''); 
     const [columns, setColumns] = useState([
         { id: 'name', label: 'Name', minWidth: 100 },
@@ -430,6 +431,14 @@ const system_setup = (props) => {
       setPage(0);
     };
 
+    useEffect(async() => {
+        if(addBtnLabel ==='infrastructure'){
+            const response = await fetch(`/api/system_setup/data/?resource=infrastructure_categories&resourceCategory=HealthInfrastructure&fields=id,name`)
+            const _data = await response.json()
+            const results = _data.results.map(({id, name}) => ({value:id, label:name}))
+            setInfrastructureCategory(results)        }
+
+    }, [addBtnLabel])
    
    
   return (
@@ -1566,8 +1575,38 @@ const system_setup = (props) => {
                                                             )
 
                                                         case 'infrastructure':
+                                                            const handleSubmitInfrastructure = (e) => {
+                                                                e.preventDefault()
+                                                                const obj = {};
+                                                                const elements = [...e.target];
+                                                                elements.forEach((element) => {
+                                                                    if(element.type== 'checkbox'){
+                                                                        obj[element.name] = element.checked
+                                                                    }else{
+                                                                        obj[element.name] = element.value
+                                                                    }
+                                                                });
+
+                                                                try {
+                                                                     fetch('/api/system_setup/submit_form/?path=add_infrastructure',{
+                                                                        headers: {
+                                                                            'Accept': 'application/json, text/plain, */*',
+                                                                            'Content-Type': 'application/json;charset=utf-8'
+                
+                                                                        },
+                                                                        method: 'POST',
+                                                                        body: JSON.stringify(obj).replace(',"":""', '')
+                                                                     }).then((res) => res.json()).then((data) => {
+                                                                        console.log(data)
+                                                                     }).catch((err) => {
+                                                                        console.log(err)
+                                                                     })
+                                                                } catch (error) {
+                                                                    console.log(error)
+                                                                }
+                                                            }
                                                             return (
-                                                                <form className='w-full h-full'>
+                                                                <form className='w-full h-full' onSubmit={handleSubmitInfrastructure}>
 
                                                                 {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1585,7 +1624,8 @@ const system_setup = (props) => {
                                                                         required
                                                                         type='text'
                                                                         placeholder='Name'
-                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                                     </div>                                                            
@@ -1603,20 +1643,11 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
-                                                                        options={[
-                                                                            {
-                                                                                value: 'type-1',
-                                                                                label: 'type-1',
-                                                                            },
-                                                                            {
-                                                                                value: 'type-2',
-                                                                                label: 'type-2',
-                                                                            },
-                                                                        ]}
+                                                                        options={ infrastructureCategory}
                                                                         required
                                                                         placeholder='Select a Category'
-                                                                        onChange={() => console.log('changed type')}
-                                                                        name={`add_${addBtnLabel}_category_field`}
+                                                                        id={`add_${addBtnLabel}_category_field`}
+                                                                        name='category'                                                              
                                                                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
@@ -1633,7 +1664,7 @@ const system_setup = (props) => {
                                                                             </span>
                                                                         </label>
 
-                                                                        <input className='' type='checkbox' name={`add_${addBtnLabel}_track_numbers`}/>
+                                                                        <input className='' type='checkbox' id={`add_${addBtnLabel}_track_numbers`} name='count'/>
                                                                 </div>
 
                                                                 {/* Description */}
@@ -1652,7 +1683,8 @@ const system_setup = (props) => {
                                                                         
                                                                             type='text'
                                                                             placeholder='Description'
-                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            id={`add_${addBtnLabel}_desc`}
+                                                                            name='description'
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -1808,8 +1840,29 @@ const system_setup = (props) => {
                                                             )
 
                                                         case 'contact type':
+                                                            const handleSubmitContactType = (e) => {
+                                                                e.preventDefault()
+                                                                const obj = {};
+                                                                const elements = [...e.target];
+                                                                elements.forEach((element) => {
+                                                                        obj[element.name] = element.value
+                                                                });
+
+                                                                try {
+                                                                    fetch('/api/system_setup/submit_form/?path=add_infrastructure',{
+                                                                       headers: {
+                                                                           'Accept': 'application/json, text/plain, */*',
+                                                                           'Content-Type': 'application/json;charset=utf-8'
+                                                                       },
+                                                                       method: 'POST',
+                                                                       body: JSON.stringify(obj).replace(',"":""', '')
+                                                                    })
+                                                               } catch (error) {
+                                                                   console.log(error)
+                                                               }
+                                                            }
                                                             return (
-                                                                <form className='w-full h-full'>
+                                                                <form className='w-full h-full' onSubmit={handleSubmitContactType}>
                                                                 
                                                                     {/* Name */}
                                                                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1827,7 +1880,8 @@ const system_setup = (props) => {
                                                                             required
                                                                             type='text'
                                                                             placeholder='Name'
-                                                                            name={`add_${addBtnLabel}_name`}
+                                                                            id={`add_${addBtnLabel}_name`}
+                                                                            name='name'
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -1849,7 +1903,8 @@ const system_setup = (props) => {
                                                                         
                                                                             type='text'
                                                                             placeholder='Description'
-                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            id={`add_${addBtnLabel}_desc`}
+                                                                            name='description'
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
