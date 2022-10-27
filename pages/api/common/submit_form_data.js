@@ -104,60 +104,7 @@ export default async function submitFormData(req, res) {
                     url = `${API_URL}/facilities/facility_approvals/`
                     contentType = 'application/json;charset=utf-8';
                     method = 'POST';
-                    break  
-                case `facilities_count`:
-                    url =API_URL + `/reporting/?county=${req.query.id}&report_type=facility_count_by_county&report_level=county`
-                    contentType = 'application/json;charset=utf-8';
-                    method = 'GET';
-                    break
-                case `filter_facilities_by_owners`:
-                    params= JSON.parse(req.query.drilldown)
-                    url =API_URL + `/reporting/?report_type=facility_count_by_owner_category&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
-                    contentType = 'application/json;charset=utf-8';
-                    method = 'GET';
-                    break 
-                case `filter_facilities_by_owners_category`:
-                    params= JSON.parse(req.query.drilldown)
-                    url =API_URL + `/reporting/?report_type=facility_count_by_owner&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
-                    contentType = 'application/json;charset=utf-8';
-                    method = 'GET';
-                    break  
-                case `filter_facilities_by_type`:
-                    params= JSON.parse(req.query.drilldown)
-                    url =API_URL + `/reporting/?report_type=facility_count_by_facility_type&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
-                    contentType = 'application/json;charset=utf-8';
-                    method = 'GET';
-                    break 
-                case `facility_type_details`:
-                    params= JSON.parse(req.query.drilldown)
-                    url =API_URL + `/reporting/?report_type=facility_count_by_facility_type_details&parent=&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
-                    contentType = 'application/json;charset=utf-8';
-                    method = 'GET';
-                    break 
-                case `keph_level`:
-                    params= JSON.parse(req.query.drilldown)
-                    url = `${API_URL}/reporting/?report_type=facility_keph_level_report&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
-                    contentType = 'application/json;charset=utf-8';
-                    method = 'GET';
-                    break
-                case `facility_coordinates`:
-                    params= JSON.parse(req.query.drilldown)
-                    url = `${API_URL}/facilities/facilities/?county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
-                    contentType = 'application/json;charset=utf-8';
-                    method = 'GET';
-                    break
-                case `admin_offices`:
-                    params= JSON.parse(req.query.drilldown)
-                    url = `${API_URL}/admin_offices/?report_type=county&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
-                    contentType = 'application/json;charset=utf-8';
-                    method = 'GET';
-                    break
-                case `chu_status`:
-                    params= JSON.parse(req.query.drilldown)
-                    url = `${API_URL}/reporting/chul/?report_type=status&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
-                    contentType = 'application/json;charset=utf-8';
-                    method = 'GET';
-                    break           
+                    break      
                         
                 case `approve_chul`:
                     url = `${API_URL}/chul/units/${req.query.id}/`
