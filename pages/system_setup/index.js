@@ -68,7 +68,9 @@ const system_setup = (props) => {
 
     const [fields, setFields] = useState([]);
     const [isAddForm, setIsAddForm] = useState(false);
-    const [rows, setRows] = useState(Array.from(props?.data?.results, ({id, name, code}) => ({id, name, code})))  
+    const [rows, setRows] = useState(Array.from(props?.data?.results, ({id, name, code}) => ({id, name, code})))
+    const [editData, setEditData] = useState([]);
+    const [editMode, setEditMode] = useState(false)
 
     // Refs
     const optionTypeRef = useRef(null)
@@ -431,6 +433,15 @@ const system_setup = (props) => {
       setPage(0);
     };
 
+    const handleEdit = async (id)=>{
+        setTitle(`Edit ${addBtnLabel}`); setIsAddForm(true); setEditMode(true);
+        const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${id}`);
+        const _data = await response.json()
+        setEditData(_data)
+        // editData.push(await response.json());
+        
+    }
+    console.log(editData);
     useEffect(async() => {
         if(addBtnLabel ==='infrastructure'){
             const response = await fetch(`/api/system_setup/data/?resource=infrastructure_categories&resourceCategory=HealthInfrastructure&fields=id,name`)
@@ -751,7 +762,7 @@ const system_setup = (props) => {
                                                         {
                                                         column.id === 'action' ?
                                                             
-                                                                <button className='bg-indigo-500 rounded p-2 text-white font-semibold'>{
+                                                                <button className='bg-indigo-500 rounded p-2 text-white font-semibold' onClick={() => {handleEdit(row.id)}}>{
                                                                     resourceCategory === "HealthInfrastructure" || resourceCategory === "HR" ?
                                                                     'Edit' : 'View'
                                                                 }</button>
@@ -1596,10 +1607,6 @@ const system_setup = (props) => {
                                                                         },
                                                                         method: 'POST',
                                                                         body: JSON.stringify(obj).replace(',"":""', '')
-                                                                     }).then((res) => res.json()).then((data) => {
-                                                                        console.log(data)
-                                                                     }).catch((err) => {
-                                                                        console.log(err)
                                                                      })
                                                                 } catch (error) {
                                                                     console.log(error)
@@ -1626,6 +1633,7 @@ const system_setup = (props) => {
                                                                         placeholder='Name'
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                                     </div>                                                            
@@ -1647,7 +1655,10 @@ const system_setup = (props) => {
                                                                         required
                                                                         placeholder='Select a Category'
                                                                         id={`add_${addBtnLabel}_category_field`}
-                                                                        name='category'                                                              
+                                                                        name='category' 
+                                                                        defaultValue={{
+                                                                            label: editData.category_name,
+                                                                            value: editData.category}}                                                            
                                                                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
@@ -1664,7 +1675,9 @@ const system_setup = (props) => {
                                                                             </span>
                                                                         </label>
 
-                                                                        <input className='' type='checkbox' id={`add_${addBtnLabel}_track_numbers`} name='count'/>
+                                                                        <input className='' type='checkbox' id={`add_${addBtnLabel}_track_numbers`} name='count' 
+                                                                        defaultChecked={editData.numbers} 
+                                                                        />
                                                                 </div>
 
                                                                 {/* Description */}
@@ -1685,6 +1698,7 @@ const system_setup = (props) => {
                                                                             placeholder='Description'
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
+                                                                            defaultValue={editData.description}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -1849,7 +1863,7 @@ const system_setup = (props) => {
                                                                 });
 
                                                                 try {
-                                                                    fetch('/api/system_setup/submit_form/?path=add_infrastructure',{
+                                                                    fetch('/api/system_setup/submit_form/?path=add_contact_type',{
                                                                        headers: {
                                                                            'Accept': 'application/json, text/plain, */*',
                                                                            'Content-Type': 'application/json;charset=utf-8'

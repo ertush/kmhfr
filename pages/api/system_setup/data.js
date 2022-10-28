@@ -9,9 +9,10 @@ export default async function fetchSystemSetupData(req, res) {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-        const {resource, resourceCategory, fields} = req.query
+        const {resource, resourceCategory, fields, id} = req.query
     
         let url = ''
+        let _id = id
         // console.log({resource, resourceCategory, fields});
 
         switch (resourceCategory){
@@ -22,7 +23,11 @@ export default async function fetchSystemSetupData(req, res) {
                 url = `${API_URL}/facilities/${resource}/?fields=${fields}` 
             break;
             case 'HealthInfrastructure':
-                url = `${API_URL}/facilities/${resource}/?fields=${fields}`
+                if(id== undefined){
+                    url = `${API_URL}/facilities/${resource}/?fields=${fields}`
+                }else{
+                    url = `${API_URL}/facilities/${resource}/${_id}/`
+                }
             break;
             case 'HR':
                 url = `${API_URL}/facilities/${resource}/?fields=${fields}`
