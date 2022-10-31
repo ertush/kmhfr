@@ -35,7 +35,7 @@ const Facility = (props) => {
     } // This line is important. It's what prevents server-side render
   );
   
-  console.log({ props_1: props["1"]})
+  // console.log({ props_1: props["1"]})
   
   let facility = props["0"]?.data;
   let center = props["1"]?.geoLocation.center;

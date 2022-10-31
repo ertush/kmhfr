@@ -1,48 +1,30 @@
-// React imports
 import React, { useState, useEffect, useRef } from 'react';
-
-// Next imports
 import Head from 'next/head';
-
-// Component imports
 import MainLayout from '../../components/MainLayout';
 import TrasnferListServices from '../../components/TrasnferListServices';
 import { renderMenuItem } from '../../components/renderMenuItem';
-
-// Controller imports
 import { checkToken } from '../../controllers/auth/auth';
-
-// MUI imports
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import { FixedSizeList } from 'react-window';
-
-
-// Heroicons imports
-import
-{
-	ChevronDoubleRightIcon,
-	ChevronDoubleLeftIcon,
-
-	TrashIcon
-} from '@heroicons/react/solid';
-
-
-// Package imports
+import{ChevronDoubleRightIcon,ChevronDoubleLeftIcon,TrashIcon} from '@heroicons/react/solid';
 import Select from 'react-select';
+import { useAlert } from "react-alert";
 
 
-function AddCommUnit(props) {
+
+
+const AddCommUnit=(props)=> {
 
 	const facilities = props.facility_data.results;
 	const serviceCtg = props.service_categories.results;
+	const contact_type = props.contact_type;
+	const alert = useAlert()
 
 	// Reference hooks for the services section
-	const nameOptionRef = useRef();
-	const serviceCategoriesRef = useRef();
-	const optionRefBody = useRef();
+	const {nameOptionRef, serviceCategoriesRef, optionRefBody} = useRef();
 
 	const [selected_facility, setSelectedFacility] = useState(null);
 	const [countyValue, setCountyValue] = useState('');
@@ -50,6 +32,9 @@ function AddCommUnit(props) {
 	const [constituencyValue, setConstituencyValue] = useState('');
 	const [wardValue, setWardValue] = useState('');
 	const [chulId, setchulId] = useState('');
+	const [contactCHEW, setContactCHEW]=useState([{}])
+	const [contactList, setContactList]=useState([{}])
+	const [chewData, setChewData] = useState({});
 
 	// Services state
 	const [services, setServices] = useState([])
@@ -96,13 +81,22 @@ function AddCommUnit(props) {
 		return _serviceCategories
 	 })(props.service_categories.results ?? [])
 
-	// Define state
 	const [formId, setFormId] = useState(0);
+	const handleAddClick = (e) => {
+		e.preventDefault();
+		setContactCHEW(s=>{
+			return [...s, {first_name: '', last_name: '', is_incharge: ''}]
+		})
+	};
 
-	// Define useEffect
+	const handleContactAdd = (e) => {
+		e.preventDefault();
+		setContactList(s=>{
+			return [...s, {contact_type: '', contact: ''}]
+		})
+	};
 	useEffect(() =>
 	{
-		// console.log(facilities.filter(({ county }) => county )[0])
 
 		const formIdState = window.sessionStorage.getItem('formId');
 
@@ -110,7 +104,6 @@ function AddCommUnit(props) {
 		{
 			window.sessionStorage.setItem('formId', 1);
 		}
-		// console.log(formId);
 
 		setFormId(window.sessionStorage.getItem('formId'));
 
@@ -122,7 +115,6 @@ function AddCommUnit(props) {
 			}
 		};
 	}, [formId, facilities, serviceCtg]);
-	// console.log(formId);
 
 	return (
 		<>
@@ -185,18 +177,24 @@ function AddCommUnit(props) {
 
 												let _id;
 
-												// An empty object of the form data
 												const formData = {};
 
-												// Loop through all the form elements and add them to the object
 												const elements = [...event.target];
-
-												elements.forEach(({ name, value }) =>
+												
+												elements.forEach(({ name, value, id }, index) =>
 												{
-													formData[name] = value;
-												});
+													console.log({index: index, name:name, id:id, value:value});
+													if(name == 'contact_type' || name == 'contact'){
+														let data = [...contactList];
+														formData['contacts'] = {}
+														data[id][name] = value
+														formData['contacts'] = data.map(({contact_type, contact})=>{return{contact_type, contact}})
 
-												console.log('this is the formdata',formData);
+													}else{
+
+														formData[name] = value;
+													}
+												});
 												
 												// Posting CHU basic details 
 												try {
@@ -217,12 +215,13 @@ function AddCommUnit(props) {
 															if (resp) {
 																setchulId(_id) //setting the state to the current CHUL
 															}
+															alert.success('CHU Basic Details Added Successfully')
 															
 														})
 												}
 
 												catch (e) {
-													console.error('Unable to post basic details')
+													alert.error('Error Occured: ' +e.message)
 												}
 
 												// Set the formId to the next step
@@ -255,9 +254,9 @@ function AddCommUnit(props) {
 															</label>
 															<input
 																placeholder='Select the name of the CHU'
-
 																type='text'
 																name='name'
+																id='comm_unit_name'
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -300,6 +299,7 @@ function AddCommUnit(props) {
 
 																placeholder='Select linked facility...'
 																name='facility'
+																inputId='comm_unit_facility'
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															/>
 														</div>
@@ -339,6 +339,7 @@ function AddCommUnit(props) {
 																required
 																placeholder='Select an operation status ...'
 																name='status'
+																inputId='comm_unit_status'
 																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 															/>
 														</div>
@@ -362,6 +363,7 @@ function AddCommUnit(props) {
 																			required
 																			type='date'
 																			name='date_established'
+																			id='date_established'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
@@ -383,6 +385,7 @@ function AddCommUnit(props) {
 																			required
 																			type='date'
 																			name='date_operational'
+																			id='date_operational'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
@@ -404,7 +407,8 @@ function AddCommUnit(props) {
 															<input
 																required
 																type='number'
-																name='no_monitored_households'
+																name='households_monitored'
+																id='households_monitored'
 																placeholder='Number of households served by the unit'
 																min={0}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -425,7 +429,8 @@ function AddCommUnit(props) {
 															<input
 																required
 																type='number'
-																name='no_chvs'
+																name='number_of_chvs'
+																id='number_of_chvs'
 																placeholder='Number of Community Health Volunteers in the unit'
 																min={0}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -450,7 +455,8 @@ function AddCommUnit(props) {
 																		<input
 																			value={countyValue}
 																			type='text'
-																			name='linked_facility_county'
+																			name='facility_county'
+																			id='facility_county'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
@@ -471,7 +477,8 @@ function AddCommUnit(props) {
 																		<input
 																			value={subCountyValue}
 																			type='text'
-																			name='linked_facility_sub_county'
+																			name='facility_sub_county'
+																			id='facility_sub_county'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
@@ -492,7 +499,8 @@ function AddCommUnit(props) {
 																		<input
 																			value={constituencyValue}
 																			type='text'
-																			name='linked_facility_sub_county'
+																			name='facility_constituency'
+																			id='facility_constituency'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
@@ -513,7 +521,8 @@ function AddCommUnit(props) {
 																		<input
 																			value={wardValue}
 																			type='text'
-																			name='linked_facility_sub_county'
+																			name='facility_ward'
+																			id='facility_ward'
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
@@ -531,11 +540,79 @@ function AddCommUnit(props) {
 															<input
 																required
 																type='number'
-																name='area_of_coverage'
+																name='location'
+																id='location'
 																placeholder='Description of the area of coverage'
 																min={0}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
+														</div>
+
+														<div className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
+															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+																Community Health Unit Contacts
+															</h4>
+														
+															{contactList.map((x,i)=>{
+															
+																return( 
+																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
+																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
+																	<label
+																		htmlFor='contact'
+																		className='text-gray-600 capitalize text-sm'
+																		>
+																		Contact Type
+																		<span className='text-medium leading-12 font-semibold'>
+																			{' '}
+																			*
+																		</span>
+																	</label>	
+																	<select
+																		required
+																		key={i}
+																		id={`${i}`}
+																		onChange={(e)=>{console.log(e)}}
+																		name='contact_type'
+																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+
+																	>
+																	{contact_type.map((ct, i) => (
+																		<option value={ct.id} key ={i}>{ct.name}</option>
+																	))}
+																	</select>
+																</div>	
+																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
+																	<label
+																		htmlFor='contact_text'
+																		className='text-gray-600 capitalize text-sm'>
+																		Contact Details
+																		<span className='text-medium leading-12 font-semibold'>
+																			{' '}
+																			*
+																		</span>
+																	</label>
+																	<input
+																		required
+																		type='text'
+																		name='contact'
+																		id={i}
+																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																	/>
+																</div>
+
+														    </div>)
+															})
+															}
+
+														</div>
+														<div class="sticky top-0 right-10 w-full flex justify-end">
+															<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
+																onClick={handleContactAdd} 
+																>
+																	{`Add Contact`}
+															</button>
+
 														</div>
 
 														{/* Cancel and CHEWs */}
@@ -560,39 +637,21 @@ function AddCommUnit(props) {
 											);
 										// CHEWs Case
 										case 1:
+										    const handleChange = (e) => {
+
+												let data = [...contactCHEW];
+												const Obj={}
+												Obj['health_unit_workers'] = {}
+												e.target.type == 'checkbox'? data[e.target.id][e.target.name] = e.target.checked :data[e.target.id][e.target.name] = e.target.value
+												Obj['health_unit_workers'] = data.map(({first_name, last_name,is_incharge})=>{return{first_name, last_name,is_incharge}})
+												setChewData({ ...chewData, ...Obj })
+											}
+
+											console.log(chewData);
 											// Handle CHEWs Case
 											const handleCHEWSubmit = (event) =>
 											{
 												event.preventDefault();
-
-												const ChewData = {};
-
-												const elements = [...event.target];
-												let payload = {}
-
-												elements.forEach(({ name, value }) => {
-													switch (name) {
-														case 'first_name':
-															ChewData[name] = value
-															break;
-														case 'last_name':
-															ChewData[name] = value
-															break;
-														case 'is_incharge':
-															ChewData[name] = value
-															break;
-													}
-												});
-
-												payload = {
-													health_unit_workers: [{
-														first_name: ChewData.first_name,
-														last_name: ChewData.last_name,
-														is_incharge: true
-													}]
-												}
-
-												console.log(payload);
 
 												try {
 
@@ -603,11 +662,22 @@ function AddCommUnit(props) {
 															'Content-Type': 'application/json;charset=utf-8'
 
 														},
-														method: 'POST',
-														body: JSON.stringify(payload)
+														method: 'PATCH',
+														body: JSON.stringify(chewData)
+													}).then(res => res.json()).then((res)=>{
+														if(res.details){
+															alert.error('Failed to add CHEW details')
+														  }else{
+															alert.success('CHEW details added successfully ')
+														  }   
+													}).catch(err=>{
+														alert.error('An error occured: ' + err)
+
 													})
 												}
 												catch (e) {
+													alert.error('An error occured: ' + e.message)
+
 													console.error('Unable to patch facility contacts details'.e.message)
 												}
 
@@ -637,8 +707,8 @@ function AddCommUnit(props) {
 														className='flex flex-col w-full items-start justify-start gap-3'
 														onSubmit={handleCHEWSubmit}>
 														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-															{/* Form labels */}
-															<div className='grid grid-cols-4 place-content-start gap-3 w-full'>
+															{contactCHEW.map((contact, index) => (
+															<div className='grid grid-cols-4 place-content-start gap-3 w-full' key={index}>
 																{/* First Name */}
 																<div className='col-start-1 col-span-1'>
 																	<label
@@ -646,6 +716,14 @@ function AddCommUnit(props) {
 																		className='block text-sm font-medium text-gray-700'>
 																		First Name
 																	</label>
+																	<input
+																		required
+																		id={index}
+																		type='text'
+																		name='first_name'
+																		onChange={(e)=>handleChange(e)}
+																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																	/>
 																</div>
 																{/* Second Name */}
 																<div className='col-start-2 col-span-1'>
@@ -654,6 +732,14 @@ function AddCommUnit(props) {
 																		className='block text-sm font-medium text-gray-700'>
 																		Second Name
 																	</label>
+																	<input
+																		required
+																		id={index}
+																		type='text'
+																		name='last_name'
+																		onChange={(e)=>handleChange(e)}
+																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																	/>
 																</div>
 																{/* In charge */}
 																<div className='col-start-3 col-span-1'>
@@ -662,6 +748,13 @@ function AddCommUnit(props) {
 																		className='block text-sm font-medium text-gray-700'>
 																		In Charge
 																	</label>
+																	<input
+																		name='is_incharge'
+																		id={index}
+																		type='checkbox'
+																		onChange={(e)=>handleChange(e)}
+																		className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
+																		/>
 																</div>
 
 																{/* Delete CHEW */}
@@ -671,54 +764,29 @@ function AddCommUnit(props) {
 																		className='block text-sm font-medium text-gray-700'>
 																		Delete
 																	</label>
-																</div>
-															</div>
-
-															{/* Form input */}
-															<div className='grid grid-cols-4 place-content-start gap-3 w-full'>
-																{/* First Name */}
-																<div className='col-span-1'>
-																	<input
-																		required
-																		type='text'
-																		name='first_name'
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
-																{/* Second Name */}
-																<div className='col-span-1'>
-																	<input
-																		required
-																		type='text'
-																		name='last_name'
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
-																{/* In charge */}
-																<div className='col-span-1'>
-																	<div className='flex items-center py-3'>
-																		<input
-																			name='is_incharge'
-																			type='checkbox'
-																			className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
-																		/>
-																	</div>
-																</div>
-
-																{/* Delete CHEW */}
-																<div className='col-span-1'>
 																	<div className='flex items-center'>
 																		{/* insert red button for deleting */}
 																		<button
 																			name='delete'
+																			id={index}
 																			type='button'
 																			className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 rounded border border-red-500 hover:border-transparent '
 																			onClick={() => {  }}>
-																			<TrashIcon class="w-7 h-7 text-red-500 group-hover:text-white" />
+																			<TrashIcon class="w-4 h-4 text-red-500 group-hover:text-white" />
 																		</button>
 																	</div>
 																</div>
 															</div>
+															))}
+														    <div class="sticky top-0 right-10 w-full flex justify-end">
+															<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
+																onClick={handleAddClick} 
+																>
+																	{`Add`}
+																	{/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}
+															</button>
+
+														</div>
 														</div>
 
 														{/* Basic Details and Services */}
@@ -802,10 +870,9 @@ function AddCommUnit(props) {
 																categories={serviceCategories}
 																setServices={setServices}
 																setRefreshForm4={setRefreshForm}
-																refreshForm4={refreshForm}
 																selectedRight={null}
 																setSelectedServiceRight={() => null}
-														
+																refreshForm4={refreshForm}
 															/>
 														</div>
 																												
@@ -897,6 +964,8 @@ function AddCommUnit(props) {
 }
 
 AddCommUnit.getInitialProps = async (ctx) => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL
+
 
 	return checkToken(ctx.req, ctx.res)
 		.then(async (t) => {
@@ -908,8 +977,7 @@ AddCommUnit.getInitialProps = async (ctx) => {
 				console.log('token', token);
 
 				// Prefetch the facility data details
-				let url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
-				console.log('url', url);
+				let url = `${API_URL}/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
 				const response = await fetch(url, {
 					headers: {
 						Authorization: 'Bearer ' + token,
@@ -918,16 +986,14 @@ AddCommUnit.getInitialProps = async (ctx) => {
 				})
 
 				let facility_data = await response.json();
-				console.log(url)
-				console.log(facility_data);
+				console.log('facilities',facility_data)
 
 				if (facility_data.error) {
 					throw new Error('Error fetching facility data');
-					window.location.reload();
 				}
 
 				// Fetch the service options
-				let service_url = `${process.env.NEXT_PUBLIC_API_URL}/chul/services/?page_size=100&ordering=name`;
+				let service_url = `${API_URL}/chul/services/?page_size=100&ordering=name`;
 
 				const service_response = await fetch(service_url,
 					{
@@ -938,16 +1004,36 @@ AddCommUnit.getInitialProps = async (ctx) => {
 					})
 
 				let service_categories = await service_response.json();
-				console.log('Service Categories', service_categories)
+				console.log('services',service_categories)
+
 
 				if (service_categories.error){
 					throw new Error('Error fetching the service categories');
 				}
 
+				let contact_url = `${API_URL}/common/contact_types/?fields=id,name`;
+				const _data = await fetch(contact_url, {
+					headers: {
+						Authorization: 'Bearer ' + token,
+						Accept: 'application/json',
+					},
+				})
+
+				// let contact_res = (await _data.json()).results.map(({id, name }) => {return {value:id, label:name}})
+				const defaultSelected ={id: '0', name: 'Select contact type', disabled:true};
+
+				let contact_res = (await _data.json()).results
+				contact_res.unshift(defaultSelected)
+
+				if (contact_res.error){
+					throw new Error('Error fetching the contact types');
+				}
+				
 				return {
 					token: token,
 					facility_data: facility_data,
 					service_categories: service_categories,
+					contact_type: contact_res
 				};
 
 			}

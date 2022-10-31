@@ -60,7 +60,7 @@ const AdminOffices = (props) => {
     const filter = (e) => {
         e.preventDefault()
         try {
-            fetch(`/api/common/submit_form_data/?path=admin_offices&drilldown=${JSON.stringify(drillDown)}`, {
+            fetch(`/api/facility/get_facility/?path=admin_offices&drilldown=${JSON.stringify(drillDown)}`, {
 				headers:{
 					'Accept': 'application/json, text/plain, */*',
 					'Content-Type': 'application/json;charset=utf-8'

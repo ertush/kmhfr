@@ -618,7 +618,37 @@ const handleRegulationUpdates = async (formData, facility_id, alert, alert_messa
 }
 
 // handleServiceUpdates
-const handleServiceUpdates = async () => {
+const handleServiceUpdates = async (event, stateSetters, alert, alert_message) => {
+
+    event.preventDefault()
+
+    const [services, facilityId]  = stateSetters
+    
+    // const _payload = services.length > 0 ? services.map(({value}) => ({service: value})) : {services:[{service: null}]}
+
+    // try{
+
+    //     if(_payload){
+    //         alert.success(alert_message)
+    //     } else {
+    //         alert.danger("Unable to update facility regulation")
+    //     }
+
+    //       const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+    //         headers:{
+    //             'Accept': 'application/json, text/plain, */*',
+    //             'Content-Type': 'application/json;charset=utf-8'
+    //         },
+    //         method: 'POST',
+    //         body: JSON.stringify({services:_payload})
+    //     })
+
+    //     return resp
+
+    // }
+    // catch(e){
+    //     console.error('Unable to patch facility services details', e.message)
+    // }
 
 }
 
