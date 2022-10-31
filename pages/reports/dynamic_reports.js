@@ -20,11 +20,6 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import { ToastContainer, toast } from 'react-toastify';
-// import { WindowSharp } from '@mui/icons-material'
-// import LoadingAnimation from '../../components/LoadingAnimation'
-
-
 
 
 const DynamicReports = (props) => {
@@ -37,6 +32,7 @@ const DynamicReports = (props) => {
     // Temporary fix folty Kirinyaga id
     let filters = props?.filters
 
+    console.log({filters})
     let fltrs = filters
 
     const formRef = useRef(null)
@@ -46,6 +42,9 @@ const DynamicReports = (props) => {
 
     const [isServiceOptionsUpdate, setIsServiceOptionUpdate] = useState(false)
     const [serviceOptions, setServiceOptions] = useState([])
+
+    const [isInfrastructureOptionsUpdate, setIsInfrastructureOptionUpdate] = useState(false)
+    const [infrastructureOptions, setInfrastructureOptions] = useState([])
 
 
     const [isSubCountyOptionsUpdate, setIsSubCountyOptionsUpdate] = useState(false)
@@ -359,11 +358,12 @@ const DynamicReports = (props) => {
 
                                             }}>
                                                  
-                                                                {filters && Object.keys(filters).length > 0 &&
+                                                        {filters && Object.keys(filters).length > 0 &&
                                                             (() => {
+                                                            // console.log({filters})
                                                              const sorted = Object.keys(fltrs).sort()  
 
-                                                             const sortOrder = [1, 9, 0, 10, 2, 3, 4, 5, 6, 8 , 7]
+                                                             const sortOrder = [1, 0, 2, 5, 6, 8, 7, 10, 9, 4, 3,]
 
                                                             return sortOrder.map((v, i) => sorted.indexOf(sorted[i]) === v ? sorted[i] : sorted[v] )
 
@@ -377,8 +377,8 @@ const DynamicReports = (props) => {
                                                                         // let serviceOptions = [];
                                                                         switch(ft) {
                                                                         
+                                                                            // Service Category
                                                                             case 'service_category':
-
 
                                                                                 const handleServiceCategoryChange = async (ev) => {
 
@@ -390,7 +390,7 @@ const DynamicReports = (props) => {
                                                                                        r.results.forEach(({id, name}) => {
                                                                                             options.push({
                                                                                                 value: id,
-                                                                                                label: name
+                                                                                                label: name.toLocaleLowerCase()
                                                                                             })  
                                                                                        } )  
 
@@ -423,13 +423,12 @@ const DynamicReports = (props) => {
                                                                                         id={ft}
                                                                                         name={ft}
                                                                                         className="w-full p-1 rounded bg-gray-50"
-                                                                        
                                                                                         options={ 
                                                                                             Array.from(filters[ft] || [],
                                                                                             fltopt => {
                                                                                                 return {
                                                                                                     value: fltopt.id, 
-                                                                                                    label: fltopt.name
+                                                                                                    label: fltopt.name.toUpperCase()
                                                                                                 }
                                                                                             })
                                                                                         }
@@ -440,7 +439,7 @@ const DynamicReports = (props) => {
                                                                                 )
                                                                             
                                                                            
-                                                                            
+                                                                            // Service
                                                                             case 'service':
 
                                                                                
@@ -449,7 +448,8 @@ const DynamicReports = (props) => {
                                                                                         <Select 
                                                                                         id={ft}
                                                                                         name={ft}
-                                                                                       
+                                                                                        isMulti
+                                                                                        
                                                                                         className="w-full p-1 rounded bg-gray-50 col-start-1"
                                                                                        
                                                                                         options={serviceOptions}
@@ -469,7 +469,101 @@ const DynamicReports = (props) => {
                                                                                       
                                                                                     />
                                                                                 )
+                                                                            
+                                                                            // Infrastructure  Category
+                                                                            case 'infrastructure_category':
 
+                                                                                const handleInfrastructureCategoryChange = async (ev) => {
+
+                                                                                    
+                                                                                    try{
+                                                                                        const data = await fetch(`/api/filters/infrastructure/?category=${ev.value}`)
+                                                                                        data.json().then(r => {
+                                                                                        const options = []
+                                                                                        r.results.forEach(({id, name}) => {
+                                                                                            options.push({
+                                                                                                value: id,
+                                                                                                label: name.toLocaleLowerCase()
+                                                                                            })  
+                                                                                        } )  
+
+
+                                                                                        setInfrastructureOptions(options)
+                                                                                        setIsInfrastructureOptionUpdate(!isInfrastructureOptionsUpdate)
+                                                                                    })
+
+                                                                                    let nf = {}
+                                                                                    if (Array.isArray(ev)) {
+                                                                                        nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                    } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                        nf[ft] = ev.value
+                                                                                    } else {
+                                                                                        delete nf[ft]
+                                                                                        
+                                                                                    }
+                                                                                    setDrillDown({ ...drillDown, ...nf })
+                                                                                    }
+                                                                                    catch(e) {
+                                                                                        console.log(e.message)
+                                                                                    }
+                                                                                    
+                                                                                    
+    
+                                                                                }
+                                                                                
+                                                                                return (
+                                                                                        <Select 
+                                                                                        id={ft}
+                                                                                        name={ft}
+                                                                                        className="w-full p-1 rounded bg-gray-50"
+                                                                                        options={ 
+                                                                                            Array.from(filters[ft] || [],
+                                                                                            fltopt => {
+                                                                                                return {
+                                                                                                    value: fltopt.id, 
+                                                                                                    label: fltopt.name.toUpperCase()
+                                                                                                }
+                                                                                            })
+                                                                                        }
+                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                        onChange={handleInfrastructureCategoryChange}
+                                                                                    />
+                                                                                
+                                                                                )
+                                                                            
+                                                                            
+                                                                            // Infrastructure
+                                                                            case 'infrastructure':
+
+                                                                                
+
+                                                                                return (
+                                                                                        <Select 
+                                                                                        id={ft}
+                                                                                        name={ft}
+                                                                                        isMulti
+                                                                                        
+                                                                                        className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                        
+                                                                                        options={infrastructureOptions}
+                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                        onChange={sl => {
+                                                                                            let nf = {}
+                                                                                            if (Array.isArray(sl)) {
+                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                            } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                nf[ft] = sl.value
+                                                                                            } else {
+                                                                                                delete nf[ft]
+                                                                                                
+                                                                                            }
+                                                                                            setDrillDown({ ...drillDown, ...nf })
+                                                                                        }}
+                                                                                        
+                                                                                    />
+                                                                                )
+
+                                                                            // County
                                                                             case 'county':
                                                                                 const handleCountyCategoryChange = async (ev) => {
 
@@ -567,6 +661,7 @@ const DynamicReports = (props) => {
                                                                                     />
                                                                                 )
 
+                                                                            // Sub County
                                                                             case 'sub_county':
                                                                                
 
@@ -606,6 +701,7 @@ const DynamicReports = (props) => {
                                                                                 />
                                                                                 )
 
+                                                                            // Constitunecy
                                                                             case 'constituency':
                                                                                 const handleConstituencyChange = async (ev) => {
 
@@ -668,6 +764,7 @@ const DynamicReports = (props) => {
                                                                                         />
                                                                                     )
                                                                             
+                                                                                 // Ward
                                                                                 case 'ward':
                                                                                         
                                                                                
@@ -745,11 +842,11 @@ const DynamicReports = (props) => {
                                                             ))}
                                                   
                                                 <div  className="col-md-2" >
-                                                    <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">From date:<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                    <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">From date:</label>
                                                     <input  type="date" name="from_date" onChange={(e)=>setFromDate(e.target.value)} value={fromDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                 </div>
                                                 <div  className="col-md-2" >
-                                                    <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                    <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:</label>
                                                     <input  type="date" name="to_date" onChange={(e)=>setToDate(e.target.value)} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                 </div>
                                                 <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
@@ -1037,9 +1134,9 @@ const DynamicReports = (props) => {
 
 DynamicReports.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
-    console.log(ctx.query)
+    // console.log(ctx.query)
     const fetchFilters = token => {
-        let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+        let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county%2Cinfrastructure%2Cinfrastructure_category'
 
         return fetch(filters_url, {
             headers: {
@@ -1091,13 +1188,13 @@ DynamicReports.getInitialProps = async (ctx) => {
                 url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
             }
         })
-        // let current_url = url + '&page_size=25000' //change the limit on prod
+       
         let current_url = url + '&page_size=10000'
         if (ctx?.query?.page) {
-            // console.log({page:ctx.query.page})
+          
             url = `${url}&page=${ctx.query.page}`
         }
-        // console.log('running fetchData(' + url + ')')
+
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -1106,6 +1203,7 @@ DynamicReports.getInitialProps = async (ctx) => {
         }).then(r => r.json())
             .then(json => {
                 return fetchFilters(token).then(ft => {
+                    console.log({ft})
                     return {
                         data: json, query, token, filters: { ...ft }, path: ctx.asPath || '/reports/dynamic_reports', current_url: current_url 
                     }
