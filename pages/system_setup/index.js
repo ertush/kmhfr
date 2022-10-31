@@ -1654,11 +1654,12 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
-                                                                        options={ infrastructureCategory}
+                                                                        options={infrastructureCategory}
                                                                         required
-                                                                        placeholder={editData?.category_name}
                                                                         id={`add_${addBtnLabel}_category_field`}
-                                                                        name='category' 
+                                                                        name='category'
+                                                                        key={editData.category} 
+                                                                        defaultValue={{value: editData.category, label: editData.category_name}}
                                                                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
