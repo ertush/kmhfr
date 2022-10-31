@@ -13,15 +13,16 @@ export default async function postSystemSetupData(req, res) {
     
         let url = ''
         let contentType=''
+        let id = req.query.id || null
 
         switch (path){
             case 'add_infrastructure':
-                url = `${API_URL}/facilities/infrastructure/`
+                url = `${API_URL}/facilities/infrastructure/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
 
             case 'add_contact_type': 
-                url = `${API_URL}/common/contact_types/`
+                url = `${API_URL}/common/contact_types/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
 
@@ -39,7 +40,7 @@ export default async function postSystemSetupData(req, res) {
                     'Content-Type': contentType
   
                 },
-                method: 'POST',
+                method: req.method,
                 body: JSON.stringify(req.body)
 
             })
@@ -57,7 +58,7 @@ export default async function postSystemSetupData(req, res) {
         
     }
 
-    if (req.method === "POST") {
+    if (req.method !== null) {
                                                                                     
         try {
             return checkToken(req, res).then(t => {

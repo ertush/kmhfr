@@ -33,7 +33,11 @@ export default async function fetchSystemSetupData(req, res) {
                 url = `${API_URL}/facilities/${resource}/?fields=${fields}`
             break;
             case 'Contacts':
-                url = `${API_URL}/common/${resource}/?fields=${fields}`
+                if(id== undefined){
+                    url = `${API_URL}/common/${resource}/?fields=${fields}`
+                }else{
+                    url = `${API_URL}/common/${resource}/${_id}/`
+                }
             break;
             case 'Facilities':
                 url = `${API_URL}/facilities/${resource}/?fields=${fields}`

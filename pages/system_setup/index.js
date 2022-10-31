@@ -71,6 +71,7 @@ const system_setup = (props) => {
     const [rows, setRows] = useState(Array.from(props?.data?.results, ({id, name, code}) => ({id, name, code})))
     const [editData, setEditData] = useState([]);
     const [editMode, setEditMode] = useState(false)
+    const [editID, setEditID] = useState('');
 
     // Refs
     const optionTypeRef = useRef(null)
@@ -433,23 +434,23 @@ const system_setup = (props) => {
       setPage(0);
     };
 
-    const handleEdit = async (id)=>{
-        setTitle(`Edit ${addBtnLabel}`); setIsAddForm(true); setEditMode(true);
-        const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${id}`);
-        const _data = await response.json()
-        setEditData(_data)
-        // editData.push(await response.json());
-        
-    }
-    console.log(editData);
     useEffect(async() => {
         if(addBtnLabel ==='infrastructure'){
             const response = await fetch(`/api/system_setup/data/?resource=infrastructure_categories&resourceCategory=HealthInfrastructure&fields=id,name`)
             const _data = await response.json()
             const results = _data.results.map(({id, name}) => ({value:id, label:name}))
-            setInfrastructureCategory(results)        }
+            setInfrastructureCategory(results)        
+        }
+        if(editMode && editID !== ''){
+            setTitle(`Edit ${addBtnLabel}`); setIsAddForm(true);
+            const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`);
+            const _data = await response.json()
+            setEditData(_data)
+        }else{
+            setEditData({})
+        }
 
-    }, [addBtnLabel])
+    }, [addBtnLabel, editID])
    
    
   return (
@@ -563,7 +564,7 @@ const system_setup = (props) => {
                                                 <ListItemText primary="Categories" />
                                             </ListItemButton>
                                             {/* Infrastructure */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure'); setEditMode(false); setEditID('')}}>
                                                 <ListItemText primary="Infrastructure" />
                                             </ListItemButton>
                                         </List>
@@ -601,7 +602,7 @@ const system_setup = (props) => {
                                     <Collapse in={openContacts} timeout="auto" unmountOnExit>
                                         <List component="div" disablePadding>
                                             {/* HR Categories */}
-                                            <ListItemButton sx={{ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type')}}>
+                                            <ListItemButton sx={{ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type'); setEditMode(false); setEditID('')}}>
                                                 <ListItemText primary="Contact Type" />
                                             </ListItemButton>
                                         
@@ -762,7 +763,7 @@ const system_setup = (props) => {
                                                         {
                                                         column.id === 'action' ?
                                                             
-                                                                <button className='bg-indigo-500 rounded p-2 text-white font-semibold' onClick={() => {handleEdit(row.id)}}>{
+                                                                <button className='bg-indigo-500 rounded p-2 text-white font-semibold' onClick={() => {setEditID(row.id); setEditMode(true); }}>{
                                                                     resourceCategory === "HealthInfrastructure" || resourceCategory === "HR" ?
                                                                     'Edit' : 'View'
                                                                 }</button>
@@ -1599,13 +1600,15 @@ const system_setup = (props) => {
                                                                 });
 
                                                                 try {
-                                                                     fetch('/api/system_setup/submit_form/?path=add_infrastructure',{
+                                                                    let url = ''
+                                                                    editMode? url =`/api/system_setup/submit_form/?path=add_infrastructure&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=edit_infrastructure`
+                                                                     fetch(url,{
                                                                         headers: {
                                                                             'Accept': 'application/json, text/plain, */*',
                                                                             'Content-Type': 'application/json;charset=utf-8'
                 
                                                                         },
-                                                                        method: 'POST',
+                                                                        method: editMode ? 'PATCH' : 'POST' ,
                                                                         body: JSON.stringify(obj).replace(',"":""', '')
                                                                      })
                                                                 } catch (error) {
@@ -1653,12 +1656,9 @@ const system_setup = (props) => {
                                                                     <Select
                                                                         options={ infrastructureCategory}
                                                                         required
-                                                                        placeholder='Select a Category'
+                                                                        placeholder={editData?.category_name}
                                                                         id={`add_${addBtnLabel}_category_field`}
                                                                         name='category' 
-                                                                        defaultValue={{
-                                                                            label: editData.category_name,
-                                                                            value: editData.category}}                                                            
                                                                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
@@ -1863,13 +1863,17 @@ const system_setup = (props) => {
                                                                 });
 
                                                                 try {
-                                                                    fetch('/api/system_setup/submit_form/?path=add_contact_type',{
+                                                                    let url = ''
+                                                                    editMode? url =`/api/system_setup/submit_form/?path=add_contact_type&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=add_contact_type`
+                                                                    fetch(url,{
                                                                        headers: {
                                                                            'Accept': 'application/json, text/plain, */*',
                                                                            'Content-Type': 'application/json;charset=utf-8'
                                                                        },
-                                                                       method: 'POST',
+                                                                       method: editMode ? 'PATCH' : 'POST' ,
                                                                        body: JSON.stringify(obj).replace(',"":""', '')
+                                                                    }).then(res => res.json()).then(data => {
+                                                                        setEditMode(false);setEditID('')
                                                                     })
                                                                } catch (error) {
                                                                    console.log(error)
@@ -1896,6 +1900,7 @@ const system_setup = (props) => {
                                                                             placeholder='Name'
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
+                                                                            defaultValue={editData.name}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -1919,6 +1924,7 @@ const system_setup = (props) => {
                                                                             placeholder='Description'
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
+                                                                            defaultValue={editData.description}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
