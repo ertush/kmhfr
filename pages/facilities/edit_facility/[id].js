@@ -2195,32 +2195,41 @@ const EditFacility = (props) => {
                                 </Tabs.Panel>
                                 {/* Services */}
                                 <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
+                                    {/* {console.log({selectedServiceRight, services})} */}
                                     <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
                                          ev => {
-                                            // console.log({services, serviceSelected, selectedServiceRight, btnDir})
-
+                                      
                                             const editedServices = (() => {
-                                                let _services = []
+                                                let _services = selectedServiceRight.map(({subCategories, value}) => ({subctg:subCategories[0], value:value[0]}))
+
                                                 if(btnDir === 'right'){
-                                                    _services = [...services]
-                                                    selectedServiceRight.forEach(({subCategories, value}) => {
-                                                        _services.push({subctg: subCategories[0], value:value[0]})
+                                                    
+                                                    console.log('right before >>>>>>>', _services)
+                                                    services.forEach(({subctg, value}) => {
+                                                        _services.push({subctg, value})
                                                     })
+
+                                                    console.log('right after >>>>>>>', _services)
+
+                                                    setServices([])
                                                   
                                                 }else{
-                                                    selectedServiceRight.splice(selectedServiceRight.indexOf(selectedServiceRight.filter(
-                                                        ({value}) => value[0] === services.value
+
+                                                    console.log('left before >>>>>>>', _services)
+
+                                                    _services.splice(_services.indexOf(_services.filter(
+                                                        ({value}) => services.filter(service => service.value === value).length > 0
                                                     )[0]), 1)
 
-                                                    selectedServiceRight.forEach(({subCategories, value}) => {
-                                                        _services.push({subctg: subCategories[0], value:value[0]})
-                                                    })
+                                                    console.log('left after >>>>>>>', _services)
+                                                    
+                                                    setServices([])
                                                 }
 
                                                 return _services
                                             })()
 
-                                            console.log({editedServices})
+                                          console.log({editedServices})
 
                                               handleServiceUpdates(ev, [selectedServiceRight, id], alert, "Facility Services updated successfully")
                                               .then(({statusText}) => {
@@ -2234,7 +2243,7 @@ const EditFacility = (props) => {
                                                              
                                                              update_id = results?.latest_update
                                                             
-                                                       
+
                                                              if(update_id){
                                                                 
                                                                  try{
@@ -2471,8 +2480,6 @@ const EditFacility = (props) => {
 }
 
 EditFacility.getInitialProps = async (ctx) => {
-
- 
 
     const allOptions = []
 	const options = [
