@@ -10,11 +10,10 @@ export default async function postSystemSetupData(req, res) {
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
         const {path} = req.query
-    
+        let method = req.method
         let url = ''
         let contentType=''
-        let id = req.query.id || null
-
+        let id = req.query.id || ''
         switch (path){
             case 'add_infrastructure':
                 url = `${API_URL}/facilities/infrastructure/${id}`
@@ -23,6 +22,10 @@ export default async function postSystemSetupData(req, res) {
 
             case 'add_contact_type': 
                 url = `${API_URL}/common/contact_types/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break;
+            case 'add_facility_dept': 
+                url = `${API_URL}/facilities/facility_depts/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
 
@@ -40,7 +43,7 @@ export default async function postSystemSetupData(req, res) {
                     'Content-Type': contentType
   
                 },
-                method: req.method,
+                method: method,
                 body: JSON.stringify(req.body)
 
             })

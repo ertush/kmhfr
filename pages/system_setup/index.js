@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, {useState, useContext, useEffect, useMemo} from 'react'
 
 // component / controllers imports
 import MainLayout from '../../components/MainLayout'
@@ -58,7 +58,7 @@ const system_setup = (props) => {
     const [openCHU, setOpenCHU] = useState(false);    
     const [openDocuments, setOpenDocuments] = useState(false); 
     const [resourceCategory, setResourceCategory] = useState('');
-    const [infrastructureCategory, setInfrastructureCategory] = useState('');
+    const [selectOptionss, setSelectOptionss] = useState([]);
     const [resource, setResource] = useState(''); 
     const [columns, setColumns] = useState([
         { id: 'name', label: 'Name', minWidth: 100 },
@@ -71,7 +71,7 @@ const system_setup = (props) => {
     const [rows, setRows] = useState(Array.from(props?.data?.results, ({id, name, code}) => ({id, name, code})))
     const [editData, setEditData] = useState([]);
     const [editMode, setEditMode] = useState(false)
-    const [editID, setEditID] = useState('');
+    const [editID, setEditID] = useState(null);
 
     // Refs
     const optionTypeRef = useRef(null)
@@ -434,25 +434,34 @@ const system_setup = (props) => {
       setPage(0);
     };
 
-    useEffect(async() => {
-        if(addBtnLabel ==='infrastructure'){
-            const response = await fetch(`/api/system_setup/data/?resource=infrastructure_categories&resourceCategory=HealthInfrastructure&fields=id,name`)
+    useMemo(async() => {
+        let url = ''
+        if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department'){
+            if(addBtnLabel ==='facility department'){
+                url =`/api/system_setup/data/?resource=regulating_bodies&resourceCategory=Facilities&fields=id,name`                
+            }
+            if(addBtnLabel ==='infrastructure'){
+                url =`/api/system_setup/data/?resource=infrastructure_categories&resourceCategory=HealthInfrastructure&fields=id,name`                
+            }
+            const response = await fetch(url)
             const _data = await response.json()
             const results = _data.results.map(({id, name}) => ({value:id, label:name}))
-            setInfrastructureCategory(results)        
+            setSelectOptionss(results)        
         }
         if(editMode && editID !== ''){
             setTitle(`Edit ${addBtnLabel}`); setIsAddForm(true);
             const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`);
             const _data = await response.json()
+            // console.log(_data);
             setEditData(_data)
         }else{
             setEditData({})
         }
+       
 
-    }, [addBtnLabel, editID])
+    }, [addBtnLabel, editID, editMode])
    
-   
+   console.log( editData)
   return (
   <>
             <Head>
@@ -564,7 +573,7 @@ const system_setup = (props) => {
                                                 <ListItemText primary="Categories" />
                                             </ListItemButton>
                                             {/* Infrastructure */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure'); setEditMode(false); setEditID('')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Infrastructure" />
                                             </ListItemButton>
                                         </List>
@@ -602,7 +611,7 @@ const system_setup = (props) => {
                                     <Collapse in={openContacts} timeout="auto" unmountOnExit>
                                         <List component="div" disablePadding>
                                             {/* HR Categories */}
-                                            <ListItemButton sx={{ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type'); setEditMode(false); setEditID('')}}>
+                                            <ListItemButton sx={{ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Contact Type" />
                                             </ListItemButton>
                                         
@@ -1601,7 +1610,7 @@ const system_setup = (props) => {
 
                                                                 try {
                                                                     let url = ''
-                                                                    editMode? url =`/api/system_setup/submit_form/?path=add_infrastructure&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=edit_infrastructure`
+                                                                    editMode? url =`/api/system_setup/submit_form/?path=add_infrastructure&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=add_infrastructure`
                                                                      fetch(url,{
                                                                         headers: {
                                                                             'Accept': 'application/json, text/plain, */*',
@@ -1616,7 +1625,7 @@ const system_setup = (props) => {
                                                                 }
                                                             }
                                                             return (
-                                                                <form className='w-full h-full' onSubmit={handleSubmitInfrastructure}>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleSubmitInfrastructure(e)}>
 
                                                                 {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1654,7 +1663,7 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
-                                                                        options={infrastructureCategory}
+                                                                        options={selectOptionss}
                                                                         required
                                                                         id={`add_${addBtnLabel}_category_field`}
                                                                         name='category'
@@ -1874,7 +1883,7 @@ const system_setup = (props) => {
                                                                        method: editMode ? 'PATCH' : 'POST' ,
                                                                        body: JSON.stringify(obj).replace(',"":""', '')
                                                                     }).then(res => res.json()).then(data => {
-                                                                        setEditMode(false);setEditID('')
+                                                                        setEditMode(false);setEditID(null)
                                                                     })
                                                                } catch (error) {
                                                                    console.log(error)
@@ -1938,8 +1947,34 @@ const system_setup = (props) => {
                                                                 </form>
                                                             )
                                                         case 'facility department':
+                                                            const handleFacilityDepartment = (e) => {
+                                                                e.preventDefault()
+                                                                const obj = {};
+                                                                const elements = [...e.target];
+                                                                elements.forEach((element) => {
+                                                                        obj[element.name] = element.value
+                                                                });
+
+                                                                console.log(JSON.stringify(obj).replace(',"":""', ''));
+                                                                try {
+                                                                    let url = ''
+                                                                    editMode? url =`/api/system_setup/submit_form/?path=add_facility_dept&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=add_facility_dept`
+                                                                    fetch(url,{
+                                                                       headers: {
+                                                                           'Accept': 'application/json, text/plain, */*',
+                                                                           'Content-Type': 'application/json;charset=utf-8'
+                                                                       },
+                                                                       method: editMode ?'PATCH' :'POST' ,
+                                                                       body: JSON.stringify(obj).replace(',"":""', '')
+                                                                    }).then(res => res.json()).then(data => {
+                                                                        setEditMode(false);setEditID(null)
+                                                                    })
+                                                               } catch (error) {
+                                                                   console.log(error)
+                                                               }
+                                                            }
                                                             return (
-                                                            <form className='w-full h-full'>
+                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityDepartment(e)}>
                                                                 
                                                                 {/* Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1957,7 +1992,9 @@ const system_setup = (props) => {
                                                                         required
                                                                         type='text'
                                                                         placeholder='Name'
-                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -1979,7 +2016,9 @@ const system_setup = (props) => {
                                                                     
                                                                         type='text'
                                                                         placeholder='Description'
-                                                                        name={`add_${addBtnLabel}_desc`}
+                                                                        id={`add_${addBtnLabel}_desc`}
+                                                                        name='description'
+                                                                        defaultValue={editData.description}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -1998,20 +2037,13 @@ const system_setup = (props) => {
                                                                     </label>
 
                                                                     <Select
-                                                                        options={[
-                                                                            {
-                                                                                value: 'type-1',
-                                                                                label: 'type-1',
-                                                                            },
-                                                                            {
-                                                                                value: 'type-2',
-                                                                                label: 'type-2',
-                                                                            },
-                                                                        ]}
+                                                                        options={selectOptionss}
                                                                         required
                                                                         placeholder='Select a regulatory body'
-                                                                        onChange={() => console.log('changed type')}
-                                                                        name={`add_${addBtnLabel}_category_field`}
+                                                                        id={`add_${addBtnLabel}_category_field`}
+                                                                        name='regulatory_body'
+                                                                        key={editData.regulatory_body}
+                                                                        defaultValue={{value:editData.regulatory_body, label: editData.regulatory_body_name}}
                                                                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                    
