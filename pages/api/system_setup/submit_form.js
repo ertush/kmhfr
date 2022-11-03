@@ -19,13 +19,20 @@ export default async function postSystemSetupData(req, res) {
                 url = `${API_URL}/facilities/infrastructure/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
-
             case 'add_contact_type': 
                 url = `${API_URL}/common/contact_types/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
             case 'add_facility_dept': 
                 url = `${API_URL}/facilities/facility_depts/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break;
+            case 'add_facility_type': 
+                url = `${API_URL}/facilities/facility_types/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break;
+            case 'add_facility_status': 
+                url = `${API_URL}/facilities/facility_status/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
 

@@ -234,7 +234,7 @@ const system_setup = (props) => {
                            
                             break;
 
-                        case 'facility_operation_status':
+                        case 'facility_status':
                             setColumns([    
                                 { id: 'name', label: 'Facility Status', minWidth: 100 },
                                 { id: 'is_public_visible', label: 'Public Visible', minWidth: 100 },
@@ -434,7 +434,7 @@ const system_setup = (props) => {
       setPage(0);
     };
 
-    useMemo(async() => {
+    useEffect(async() => {
         let url = ''
         if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department'){
             if(addBtnLabel ==='facility department'){
@@ -645,7 +645,7 @@ const system_setup = (props) => {
                                             </ListItemButton>
 
                                             {/* Facility Operation Status */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_status'); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields([]); setResource('facility_status'); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status')}}>
                                                 <ListItemText primary="Facility Operation Status" />
                                             </ListItemButton>
 
@@ -1955,7 +1955,6 @@ const system_setup = (props) => {
                                                                         obj[element.name] = element.value
                                                                 });
 
-                                                                console.log(JSON.stringify(obj).replace(',"":""', ''));
                                                                 try {
                                                                     let url = ''
                                                                     editMode? url =`/api/system_setup/submit_form/?path=add_facility_dept&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=add_facility_dept`
@@ -2057,8 +2056,33 @@ const system_setup = (props) => {
                                                             </form>
                                                             )
                                                         case 'facility type detail':
+                                                            const handleFacilityTypeDetail = (e) => {
+                                                                e.preventDefault()
+                                                                const obj = {};
+                                                                const elements = [...e.target];
+                                                                elements.forEach((element) => {
+                                                                        obj[element.name] = element.value
+                                                                });
+
+                                                                try {
+                                                                    let url = ''
+                                                                    editMode? url =`/api/system_setup/submit_form/?path=add_facility_type&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=add_facility_type`
+                                                                    fetch(url,{
+                                                                       headers: {
+                                                                           'Accept': 'application/json, text/plain, */*',
+                                                                           'Content-Type': 'application/json;charset=utf-8'
+                                                                       },
+                                                                       method: editMode ?'PATCH' :'POST' ,
+                                                                       body: JSON.stringify(obj).replace(',"":""', '')
+                                                                    }).then(res => res.json()).then(data => {
+                                                                        setEditMode(false);setEditID(null)
+                                                                    })
+                                                               } catch (error) {
+                                                                   console.log(error)
+                                                               }
+                                                            }
                                                             return (
-                                                            <form className='w-full h-full'>
+                                                            <form className='w-full h-full' onSubmit={handleFacilityTypeDetail}>
                                                                 
                                                                 {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2076,7 +2100,9 @@ const system_setup = (props) => {
                                                                         required
                                                                         type='text'
                                                                         placeholder='Name'
-                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -2155,9 +2181,34 @@ const system_setup = (props) => {
                                                             </form>
                                                             )
                                                         case 'facility operation status':
+                                                            const handleOperationStatus = (e) => {
+                                                                e.preventDefault()
+                                                                const obj = {};
+                                                                const elements = [...e.target];
+                                                                elements.forEach((element) => {
+                                                                    element.type == 'checkbox' ? (obj[element.name] = element.checked) : (obj[element.name] = element.value);
+                                                                });
+                                                                console.log(obj);
+                                                                try {
+                                                                    let url = ''
+                                                                    editMode? url =`/api/system_setup/submit_form/?path=add_facility_status&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=add_facility_status`
+                                                                    fetch(url,{
+                                                                       headers: {
+                                                                           'Accept': 'application/json, text/plain, */*',
+                                                                           'Content-Type': 'application/json;charset=utf-8'
+                                                                       },
+                                                                       method: editMode ?'PATCH' :'POST' ,
+                                                                       body: JSON.stringify(obj).replace(',"":""', '')
+                                                                    }).then(res => res.json()).then(data => {
+                                                                        setEditMode(false);setEditID(null)
+                                                                    })
+                                                               } catch (error) {
+                                                                   console.log(error)
+                                                               }
+                                                            }
                                                             return (
                                                                 
-                                                             <form className='w-full h-full'>
+                                                             <form className='w-full h-full' onSubmit={handleOperationStatus}>
                                                                 
                                                                 {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2175,7 +2226,9 @@ const system_setup = (props) => {
                                                                         required
                                                                         type='text'
                                                                         placeholder='Name'
-                                                                        name={`add_${addBtnLabel}_status`}
+                                                                        id={`add_${addBtnLabel}_status`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -2196,7 +2249,9 @@ const system_setup = (props) => {
                                                                         required
                                                                         type='checkbox'
                                                                         placeholder='Name'
-                                                                        name={`add_${addBtnLabel}_is_public`}
+                                                                        id={`add_${addBtnLabel}_is_public`}
+                                                                        name= 'is_public_visible'
+                                                                        defaultChecked={editData.is_public_visible}
                                                                         
                                                                     />
                                                             </div>
