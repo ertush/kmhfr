@@ -336,7 +336,9 @@ const system_setup = (props) => {
 
                             setColumns([
                                 { id: 'reason', label: 'Change Reason', minWidth: 100 },
-                                { id: 'description',label: 'Description', minWidth: 100, align:'right'}
+                                { id: 'description',label: 'Description', minWidth: 100, align:'right'},
+                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+
                             ])
                             
                             setRows(Array.from(_data.results, ({id, reason, description}) => ({id, reason, description})))
@@ -434,14 +436,42 @@ const system_setup = (props) => {
       setPage(0);
     };
 
+    const handleFacilityOnChange = (e, path) => {
+        e.preventDefault()
+        const obj = {};
+        const elements = [...e.target];
+        elements.forEach((element) => {
+            element.type === 'checkbox' ? obj[element.name] = element.checked : obj[element.name] = element.value;
+        });
+        try {
+            let url = ''
+            editMode? url =`/api/system_setup/submit_form/?path=${path}&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=${path}`
+            fetch(url,{
+               headers: {
+                   'Accept': 'application/json, text/plain, */*',
+                   'Content-Type': 'application/json;charset=utf-8'
+               },
+               method: editMode ?'PATCH' :'POST' ,
+               body: JSON.stringify(obj).replace(',"":""', '')
+            }).then(res => res.json()).then(data => {
+                setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([])
+            })
+       } catch (error) {
+           console.log(error)
+       }
+    }
+
     useEffect(async() => {
         let url = ''
-        if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department'){
+        if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department' || addBtnLabel ==='facility owner category'){
             if(addBtnLabel ==='facility department'){
                 url =`/api/system_setup/data/?resource=regulating_bodies&resourceCategory=Facilities&fields=id,name`                
             }
             if(addBtnLabel ==='infrastructure'){
                 url =`/api/system_setup/data/?resource=infrastructure_categories&resourceCategory=HealthInfrastructure&fields=id,name`                
+            }
+            if(addBtnLabel ==='facility owner category'){
+                url =`/api/system_setup/data/?resource=owner_types&resourceCategory=Facilities&fields=id,name`                
             }
             const response = await fetch(url)
             const _data = await response.json()
@@ -455,7 +485,7 @@ const system_setup = (props) => {
             // console.log(_data);
             setEditData(_data)
         }else{
-            setEditData({})
+            setEditData([])
         }
        
 
@@ -1619,6 +1649,8 @@ const system_setup = (props) => {
                                                                         },
                                                                         method: editMode ? 'PATCH' : 'POST' ,
                                                                         body: JSON.stringify(obj).replace(',"":""', '')
+                                                                     }).then(res => res.json()).then(data => {
+                                                                        setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([])
                                                                      })
                                                                 } catch (error) {
                                                                     console.log(error)
@@ -1883,7 +1915,7 @@ const system_setup = (props) => {
                                                                        method: editMode ? 'PATCH' : 'POST' ,
                                                                        body: JSON.stringify(obj).replace(',"":""', '')
                                                                     }).then(res => res.json()).then(data => {
-                                                                        setEditMode(false);setEditID(null)
+                                                                        setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([])
                                                                     })
                                                                } catch (error) {
                                                                    console.log(error)
@@ -1947,33 +1979,8 @@ const system_setup = (props) => {
                                                                 </form>
                                                             )
                                                         case 'facility department':
-                                                            const handleFacilityDepartment = (e) => {
-                                                                e.preventDefault()
-                                                                const obj = {};
-                                                                const elements = [...e.target];
-                                                                elements.forEach((element) => {
-                                                                        obj[element.name] = element.value
-                                                                });
-
-                                                                try {
-                                                                    let url = ''
-                                                                    editMode? url =`/api/system_setup/submit_form/?path=add_facility_dept&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=add_facility_dept`
-                                                                    fetch(url,{
-                                                                       headers: {
-                                                                           'Accept': 'application/json, text/plain, */*',
-                                                                           'Content-Type': 'application/json;charset=utf-8'
-                                                                       },
-                                                                       method: editMode ?'PATCH' :'POST' ,
-                                                                       body: JSON.stringify(obj).replace(',"":""', '')
-                                                                    }).then(res => res.json()).then(data => {
-                                                                        setEditMode(false);setEditID(null)
-                                                                    })
-                                                               } catch (error) {
-                                                                   console.log(error)
-                                                               }
-                                                            }
                                                             return (
-                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityDepartment(e)}>
+                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_dept')}>
                                                                 
                                                                 {/* Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2056,33 +2063,8 @@ const system_setup = (props) => {
                                                             </form>
                                                             )
                                                         case 'facility type detail':
-                                                            const handleFacilityTypeDetail = (e) => {
-                                                                e.preventDefault()
-                                                                const obj = {};
-                                                                const elements = [...e.target];
-                                                                elements.forEach((element) => {
-                                                                        obj[element.name] = element.value
-                                                                });
-
-                                                                try {
-                                                                    let url = ''
-                                                                    editMode? url =`/api/system_setup/submit_form/?path=add_facility_type&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=add_facility_type`
-                                                                    fetch(url,{
-                                                                       headers: {
-                                                                           'Accept': 'application/json, text/plain, */*',
-                                                                           'Content-Type': 'application/json;charset=utf-8'
-                                                                       },
-                                                                       method: editMode ?'PATCH' :'POST' ,
-                                                                       body: JSON.stringify(obj).replace(',"":""', '')
-                                                                    }).then(res => res.json()).then(data => {
-                                                                        setEditMode(false);setEditID(null)
-                                                                    })
-                                                               } catch (error) {
-                                                                   console.log(error)
-                                                               }
-                                                            }
                                                             return (
-                                                            <form className='w-full h-full' onSubmit={handleFacilityTypeDetail}>
+                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_type')}>
                                                                 
                                                                 {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2181,34 +2163,9 @@ const system_setup = (props) => {
                                                             </form>
                                                             )
                                                         case 'facility operation status':
-                                                            const handleOperationStatus = (e) => {
-                                                                e.preventDefault()
-                                                                const obj = {};
-                                                                const elements = [...e.target];
-                                                                elements.forEach((element) => {
-                                                                    element.type == 'checkbox' ? (obj[element.name] = element.checked) : (obj[element.name] = element.value);
-                                                                });
-                                                                console.log(obj);
-                                                                try {
-                                                                    let url = ''
-                                                                    editMode? url =`/api/system_setup/submit_form/?path=add_facility_status&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=add_facility_status`
-                                                                    fetch(url,{
-                                                                       headers: {
-                                                                           'Accept': 'application/json, text/plain, */*',
-                                                                           'Content-Type': 'application/json;charset=utf-8'
-                                                                       },
-                                                                       method: editMode ?'PATCH' :'POST' ,
-                                                                       body: JSON.stringify(obj).replace(',"":""', '')
-                                                                    }).then(res => res.json()).then(data => {
-                                                                        setEditMode(false);setEditID(null)
-                                                                    })
-                                                               } catch (error) {
-                                                                   console.log(error)
-                                                               }
-                                                            }
                                                             return (
                                                                 
-                                                             <form className='w-full h-full' onSubmit={handleOperationStatus}>
+                                                             <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_status')}>
                                                                 
                                                                 {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2267,7 +2224,7 @@ const system_setup = (props) => {
                                                         case 'facility admission status':
                                                             return (
                                                                 
-                                                            <form className='w-full h-full'>
+                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_admission')}>
                                                                 
                                                                 {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2285,7 +2242,9 @@ const system_setup = (props) => {
                                                                         required
                                                                         type='text'
                                                                         placeholder='Name'
-                                                                        name={`add_${addBtnLabel}_status`}
+                                                                        id={`add_${addBtnLabel}_status`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -2300,7 +2259,7 @@ const system_setup = (props) => {
                                                             )
                                                         case 'facility owner detail':
                                                             return(
-                                                                <form className='w-full h-full'>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_owner')}>
                                                                 
                                                                 {/* Name */}
                                                                  <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2318,7 +2277,9 @@ const system_setup = (props) => {
                                                                         required
                                                                         type='text'
                                                                         placeholder='Name'
-                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -2339,7 +2300,9 @@ const system_setup = (props) => {
                                                                     
                                                                         type='text'
                                                                         placeholder='Description'
-                                                                        name={`add_${addBtnLabel}_desc`}
+                                                                        id={`add_${addBtnLabel}_desc`}
+                                                                        name='description'
+                                                                        defaultValue={editData.description}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -2353,9 +2316,9 @@ const system_setup = (props) => {
 
                                                                 </form>
                                                             )
-                                                            case 'facility owner category':
+                                                        case 'facility owner category':
                                                                 return(
-                                                                    <form className='w-full h-full'>
+                                                                    <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_owner_category')}>
                                                                     
                                                                     {/* Name */}
                                                                      <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2373,7 +2336,9 @@ const system_setup = (props) => {
                                                                             required
                                                                             type='text'
                                                                             placeholder='Name'
-                                                                            name={`add_${addBtnLabel}_name`}
+                                                                            id={`add_${addBtnLabel}_name`}
+                                                                            name='name'
+                                                                            defaultValue={editData.name}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -2393,20 +2358,14 @@ const system_setup = (props) => {
                                                                         </label>
 
                                                                         <Select
-                                                                            options={[
-                                                                                {
-                                                                                    value: 'type-1',
-                                                                                    label: 'type-1',
-                                                                                },
-                                                                                {
-                                                                                    value: 'type-2',
-                                                                                    label: 'type-2',
-                                                                                },
-                                                                            ]}
+                                                                            options={selectOptionss}
                                                                             required
                                                                             placeholder='Select Facility Owner'
                                                                             onChange={() => console.log('changed type')}
-                                                                            name={`add_${addBtnLabel}_owner_type`}
+                                                                            key={editData.owner_type}
+                                                                            id={`add_${addBtnLabel}_owner_type`}
+                                                                            name='owner_type'
+                                                                            defaultValue={{value:editData.owner_type, label:editData.owner_type_name}}
                                                                             className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
                                                                        
@@ -2428,7 +2387,9 @@ const system_setup = (props) => {
                                                                                     required
                                                                                     type='text'
                                                                                     placeholder='Abbreviation'
-                                                                                    name={`add_${addBtnLabel}_constituency_field`}
+                                                                                    id={`add_${addBtnLabel}_constituency_field`}
+                                                                                    name='abbreviation'
+                                                                                    defaultValue={editData.abbreviation}
                                                                                     className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                 />
                                                                      </div>
@@ -2451,7 +2412,9 @@ const system_setup = (props) => {
                                                                         
                                                                             type='text'
                                                                             placeholder='Description'
-                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            id={`add_${addBtnLabel}_desc`}
+                                                                            name='description'
+                                                                            defaultValue={editData.description}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -2467,7 +2430,7 @@ const system_setup = (props) => {
                                                                 )
                                                         case 'job title':
                                                             return (
-                                                                <form className='w-full h-full'>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_job_title')}>
                                                                 
                                                                 {/* Name */}
                                                                  <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2485,7 +2448,9 @@ const system_setup = (props) => {
                                                                         required
                                                                         type='text'
                                                                         placeholder='Name'
-                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -2506,7 +2471,9 @@ const system_setup = (props) => {
                                                                     
                                                                         type='text'
                                                                         placeholder='Description'
-                                                                        name={`add_${addBtnLabel}_desc`}
+                                                                        id={`add_${addBtnLabel}_desc`}
+                                                                        name='description'
+                                                                        defaultValue={editData.description}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -2651,7 +2618,7 @@ const system_setup = (props) => {
 
                                                     case 'regulatory status':
                                                         return (
-                                                            <form className='w-full h-full'>
+                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_regulatory_status')}>
                                                                  {/* regulatory Status */}
                                                              <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                     
@@ -2668,7 +2635,9 @@ const system_setup = (props) => {
                                                                     
                                                                         type='text'
                                                                         placeholder='Enter Regulatory status'
-                                                                        name={`add_${addBtnLabel}_status`}
+                                                                        id={`add_${addBtnLabel}_status`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -2682,7 +2651,7 @@ const system_setup = (props) => {
                                                         )
                                                         case 'upgrade reason':
                                                             return (
-                                                                <form className='w-full h-full'>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_change_reason')}>
                                                                 
                                                                     {/* Facility Change reason */}
                                                                      <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2700,7 +2669,9 @@ const system_setup = (props) => {
                                                                             required
                                                                             type='text'
                                                                             placeholder='Name'
-                                                                            name={`add_${addBtnLabel}_reason`}
+                                                                            id={`add_${addBtnLabel}_reason`}
+                                                                            name='reason'
+                                                                            defaultValue={editData.reason}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -2721,7 +2692,9 @@ const system_setup = (props) => {
                                                                         
                                                                             type='text'
                                                                             placeholder='Description'
-                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            id={`add_${addBtnLabel}_desc`}
+                                                                            name='description'
+                                                                            defaultValue={editData.description}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>

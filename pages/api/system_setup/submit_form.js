@@ -34,6 +34,30 @@ export default async function postSystemSetupData(req, res) {
             case 'add_facility_status': 
                 url = `${API_URL}/facilities/facility_status/${id}`
                 contentType = 'application/json;charset=utf-8';
+            break; 
+            case 'add_facility_admission': 
+                url = `${API_URL}/facilities/facility_admission_status/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break;
+            case 'add_facility_owner': 
+                url = `${API_URL}/facilities/owner_types/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break; 
+            case 'add_facility_owner_category': 
+                url = `${API_URL}/facilities/owners/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break; 
+            case 'add_facility_job_title': 
+                url = `${API_URL}/facilities/job_titles/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break; 
+            case 'add_facility_regulatory_status': 
+                url = `${API_URL}/facilities/regulation_status/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break; //add_facility_change_reason
+            case 'add_facility_change_reason': 
+                url = `${API_URL}/facilities/level_change_reasons/${id}`
+                contentType = 'application/json;charset=utf-8';
             break;
 
             default:
