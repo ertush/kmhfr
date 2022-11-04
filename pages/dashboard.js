@@ -566,7 +566,7 @@ Dash.getInitialProps = async (ctx) => {
                 }
             }
         })
-        // console.log(`running: fetchData(${url}), token: ${token}`)       
+          
 
         return fetch(url, {
             headers: {
@@ -574,11 +574,7 @@ Dash.getInitialProps = async (ctx) => {
                 'Accept': 'application/json'
             }
         }).then(r => r.json())
-            // .then(json => {
-            //     return {
-            //         data: json, query, path: ctx.asPath || '/dashboard', current_url: url, api_url: process.env.NEXT_PUBLIC_API_URL
-            //     }
-            // })
+         
             .then(json => {
                 console.log({json});
                 return fetchFilters(token).then(ft => {

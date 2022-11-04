@@ -34,8 +34,7 @@ const Facility = (props) => {
       ssr: false,
     } // This line is important. It's what prevents server-side render
   );
-  
-  // console.log({ props_1: props["1"]})
+
   
   let facility = props["0"]?.data;
   let center = props["1"]?.geoLocation.center;
@@ -176,18 +175,14 @@ const Facility = (props) => {
                         setIsApproveReject
                       )
                     }
-                    // className={
-                    //   facility?.rejected
-                    //     ? "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
-                    //     : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"
-                    // }
+                 
                     className={
                       "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
                        
                     }
                   >
                     {/* Dynamic Button Rendering */}
-                    {/* {facility?.rejected ? "Appreve" : "Reject"} */}
+                 
                     Approve/Reject Facility
                   </button>
 
@@ -197,12 +192,16 @@ const Facility = (props) => {
                   >
                     Print
                   </button>
-                  <button
-                    onClick={() => router.push(`edit_facility/${facility?.id}`)}
-                    className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                  >
-                    Edit
-                  </button>
+                  {
+                      !facility?.closed && 
+                         <button
+                         onClick={() => router.push(`edit_facility/${facility?.id}`)}
+                         className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
+                       >
+                         Edit
+                       </button>
+                  }
+             
                   <button
                     onClick={() => router.push("/facilities/regulate")}
                     className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
