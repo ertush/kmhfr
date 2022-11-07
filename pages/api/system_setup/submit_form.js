@@ -54,7 +54,7 @@ export default async function postSystemSetupData(req, res) {
             case 'add_facility_regulatory_status': 
                 url = `${API_URL}/facilities/regulation_status/${id}`
                 contentType = 'application/json;charset=utf-8';
-            break; //add_facility_change_reason
+            break; 
             case 'add_facility_change_reason': 
                 url = `${API_URL}/facilities/level_change_reasons/${id}`
                 contentType = 'application/json;charset=utf-8';
@@ -64,7 +64,6 @@ export default async function postSystemSetupData(req, res) {
             break;
         }
         
-
         try {
           
             const resp = await fetch(url, {
