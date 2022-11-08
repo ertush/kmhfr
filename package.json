@@ -24,6 +24,7 @@
     "ag-grid-community": "^26.1.0",
     "ag-grid-enterprise": "^26.2.0",
     "ag-grid-react": "^26.1.0",
+    "antd": "^4.24.1",
     "cookie-cutter": "^0.2.0",
     "cookies": "^0.8.0",
     "dotenv": "^10.0.0",

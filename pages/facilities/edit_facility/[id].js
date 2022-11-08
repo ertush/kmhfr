@@ -2189,6 +2189,7 @@ const EditFacility = (props) => {
                                                                 update_id = results?.latest_update
                                                                 
                                                                 if(update_id){
+                                                                    console.log({update_id})
                                                                     
                                                                     try{
                                                                         facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
