@@ -778,10 +778,12 @@ const EditFacility = (props) => {
             regBodyRef.current.value = facility_units[0]?.regulating_body_name ?? ''
         } 
 
+
     }
 
 
     return () => {
+
         // setFacilityUpdateData(null)
         // setIsSavedChanges(false)
     }
@@ -2144,39 +2146,32 @@ const EditFacility = (props) => {
                                     <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
                                          ev => {
                                       
-                                            const editedServices = (() => {
-                                                let _services = selectedServiceRight.map(({subCategories, value}) => ({subctg:subCategories[0], value:value[0]}))
-
+                                            const getServiceId = (async () => {
+                                                let serviceId 
                                                 if(btnDir === 'right'){
-                                                    
-                                                    // console.log('right before >>>>>>>', _services)
-                                                    services.forEach(({subctg, value}) => {
-                                                        _services.push({subctg, value})
-                                                    })
-
-                                                    // console.log('right after >>>>>>>', _services)
-
-                                                    setServices([])
+                                                    serviceId = services[services.length - 1]
+                               
+                                                    console.log({serviceId})
                                                   
                                                 }else{
+                                                    // fetch facility_id
+                                                    try{
+                                                        const facility_services = await (await fetch(`/api/facility/get_facility/?path=facility_services&id=${id}`)).json()
 
-                                                    // console.log('left before >>>>>>>', _services)
-
-                                                    _services.splice(_services.indexOf(_services.filter(
-                                                        ({value}) => services.filter(service => service.value === value).length > 0
-                                                    )[0]), 1)
-
-                                                    // console.log('left after >>>>>>>', _services)
+                                                        serviceId = facility_services.filter(({service}) => service === services[services.length - 1])[0].id
+                                                        
+                                                    }catch(e){
+                                                        console.error('Unable to fetch facility_service_id: ', e.message)
+                                                    }
                                                     
-                                                    setServices([])
                                                 }
 
-                                                return _services
+                                                return serviceId
                                             })()
 
-                                            //   console.log({editedServices})
+                                              console.log({getServiceId})
 
-                                                handleServiceUpdates(ev, [selectedServiceRight, id], alert, "Facility Services updated successfully")
+                                               /* handleServiceUpdates(ev, [selectedServiceRight, id], alert, "Facility Services updated successfully")
                                                 .then(({statusText}) => {
                                                     defer(() => setIsSavedChanges(true))
                                                     let update_id
@@ -2204,13 +2199,13 @@ const EditFacility = (props) => {
                                                         }
                                                     
                                                     })
-                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message))
+                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message))*/
                                                 }
                                          }>
                                                            
                                                     {/* Transfer list Container */}
                                                     <div className='flex items-center w-full h-auto min-h-[300px]'>                                  
-                                                
+                                                    {console.log({services})}
                                                     <TrasnferListServices 
                                                         categories={serviceOptions}
                                                         setServices={setServices}
