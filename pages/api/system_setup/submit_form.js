@@ -59,6 +59,10 @@ export default async function postSystemSetupData(req, res) {
                 url = `${API_URL}/facilities/level_change_reasons/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
+            case 'add_facility_regulating_body': 
+                url = `${API_URL}/facilities/regulating_bodies/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break;
 
             default:
             break;

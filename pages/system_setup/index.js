@@ -73,16 +73,10 @@ const system_setup = (props) => {
     const [editData, setEditData] = useState([]);
     const [editMode, setEditMode] = useState(false)
     const [editID, setEditID] = useState(null);
+    const [contactList, setContactList]=useState([{}])
 
     // Refs
-    const optionTypeRef = useRef(null)
-    const displayTextRef = useRef(null)
-    const optionValueRef = useRef(null)
-    const inputsContainerRef = useRef(null)
-    const inputsContainerRef2 = useRef(null)
-    const contactTypeRef = useRef(null)
-    const contactDetailRef = useRef(null)
-    console.log(selectOptionss);
+    const {optionTypeRef,displayTextRef,optionValueRef,inputsContainerRef, inputsContainerRef2,contactTypeRef,contactDetailRef} = useRef(null)
 
     const uid = useId();
 
@@ -451,7 +445,21 @@ const system_setup = (props) => {
             if (obj[element.name] === '') {
                 delete obj[element.name];
               }
-            element.type === 'checkbox' ? obj[element.name] = element.checked : obj[element.name] = element.value;
+            if(element.name == 'contact_type' || element.name == 'contact'){
+                let data = [...contactList];
+                obj['contacts'] = {}
+                data[element.id][element.name] = element.value
+                obj['contacts'] = data.map((ct)=>{
+                    return{
+                    ...ct,
+                    contact_type: ct.contact_type,
+                    contact: ct.contact
+                }
+                })
+
+            }else{
+                element.type === 'checkbox' ? obj[element.name] = element.checked : obj[element.name] = element.value;
+            }
         });
         try {
             let url = ''
@@ -473,7 +481,7 @@ const system_setup = (props) => {
 
     useEffect(async() => {
         let url = ''
-        if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department' || addBtnLabel ==='facility owner category' || addBtnLabel === 'facility type category'){
+        if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department' || addBtnLabel ==='facility owner category' || addBtnLabel === 'facility type category' || addBtnLabel === 'regulatory body'){
             if(addBtnLabel ==='facility department'){
                 url =`/api/system_setup/data/?resource=regulating_bodies&resourceCategory=Facilities&fields=id,name`                
             }
@@ -486,6 +494,9 @@ const system_setup = (props) => {
             if(addBtnLabel ==='facility type category'){
                 url =`/api/system_setup/data/?resource=facility_types&resourceCategory=Facilities&fields=id,name&is_parent=true`                
             }
+            if(addBtnLabel ==='regulatory body'){
+                url =`/api/system_setup/data/?resource=contact_types&resourceCategory=Contacts&fields=id,name`                
+            }
 
             const response = await fetch(url)
             const _data = await response.json()
@@ -496,7 +507,7 @@ const system_setup = (props) => {
             setTitle(`Edit ${addBtnLabel}`); setIsAddForm(true);
             const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`);
             const _data = await response.json()
-            // console.log(_data);
+            addBtnLabel === 'regulatory body' ?? setContactList([..._data.contacts])
             setEditData(_data)
         }else{
             setEditData([])
@@ -505,7 +516,6 @@ const system_setup = (props) => {
 
     }, [addBtnLabel, editID, editMode])
    
-   console.log( editData)
   return (
   <>
             <Head>
@@ -2388,7 +2398,7 @@ const system_setup = (props) => {
                                                                 <button onClick={(e) => {e.preventDefault()}} className="rounded p-2 bg-indigo-500 mt-3 text-white font-semibold">View change log</button>
     
                                                                     </form>
-                                                                )
+                                                            )
                                                         case 'job title':
                                                             return (
                                                                 <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_job_title')}>
@@ -2447,35 +2457,15 @@ const system_setup = (props) => {
                                                             </form>
                                                             )
                                                     case 'regulatory body':
-                                                        const handleAddContactGroup = (e) => {
-                                                            e.preventDefault()
-                                                            // Contact Type
-                                                            const contactTypeNode = inputsContainerRef2.current.childNodes[2].cloneNode(true);
-                                                          
-                                                            contactTypeNode.setAttribute('name', `option_type_${uid}`);
-                                                            contactTypeNode.setAttribute('options', `
-                                                                type-1
-                                                                type-2
-                                                            `)
-                                                            contactTypeRef.current.append(contactTypeNode)
-
-
-                                                            // Contact Details
-                                                             const contactDetailsNode = document.createElement('input')
-                                                             contactDetailsNode.setAttribute(
-                                                                'placeholder',
-                                                                'Display Text'
-                                                             );
-                                                             contactDetailsNode.setAttribute(
-                                                                'name',
-                                                                `display_input_${uid}`
-                                                             );
-                                                             contactDetailsNode.setAttribute('class', 'flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none')
-                                                             contactDetailRef.current.append(contactDetailsNode)
-                                                        }
+                                                        const handleAddClick = (e) => {
+                                                            e.preventDefault();
+                                                            setContactList(s=>{
+                                                                return [...s, {contact_type: '', contact: ''}]
+                                                            })
+                                                        };
                                                        
-                                                        return (
-                                                            <form className='w-full h-full'>
+                                                        return ( //add_facility_regulating_body
+                                                            <form className='w-full h-full' onSubmit={e=>handleFacilityOnChange(e, "add_facility_regulating_body")}>
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                     
                                                                     <label
@@ -2491,7 +2481,9 @@ const system_setup = (props) => {
                                                                         required
                                                                         type='text'
                                                                         placeholder='Name'
-                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name="name"
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -2512,7 +2504,9 @@ const system_setup = (props) => {
                                                                     
                                                                         type='text'
                                                                         placeholder=''
-                                                                        name={`add_${addBtnLabel}_abbr`}
+                                                                        id={`add_${addBtnLabel}_abbr`}
+                                                                        name="abbreviation"
+                                                                        defaultValue={editData.abbreviation}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
@@ -2523,45 +2517,44 @@ const system_setup = (props) => {
                                                                     <h2 className='text-lg font-semibold text-indigo-900'>Contact Type*</h2>
                                                                     <h2 className='text-lg font-semibold text-indigo-900'>Contact Details*</h2>
                                                                 
+                                                                    {contactList.map((contact, index) =>{ return (
+                                                                        <>
+                                                                            {/* Contact Type */}
 
-                                                                    {/* Contact Type */}
-                                                                    <Select
-                                                                            options={[
-                                                                                {
-                                                                                    value: 'type-1',
-                                                                                    label: 'type-1',
-                                                                                },
-                                                                                {
-                                                                                    value: 'type-2',
-                                                                                    label: 'type-2',
-                                                                                },
-                                                                            ]}
-                                                                            required
-                                                                            placeholder='Select Contact Type'
-                                                                            onChange={() => console.log('changed type')}
-                                                                            name={`add_${addBtnLabel}_contact_type`}
-                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-                                                                        />
-                                                                    {/* Contact Detail */}
-                                                                      <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Contact Details'
-                                                                            name={`add_${addBtnLabel}_display_text`}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                                                        />
+                                                                            <select
+                                                                                required
+                                                                                key={index}
+                                                                                id={`${index}`}
+                                                                                onChange={(e)=>{console.log(e)}}
+                                                                                name='contact_type'
+                                                                                defaultValue={contact?.contact_type}
+                                                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 
-                                                                    <div ref={contactTypeRef} className='mx-0 px-0 space-y-4'>
+                                                                            >
 
-                                                                    </div>
+                                                                            {selectOptionss.map((ct, i) => (
+                                                                                <option value={ct.value} key ={i}>{ct.label}</option>
+                                                                            ))}
+                                                                            </select>
 
-                                                                    <div ref={contactDetailRef} className='mx-0 px-0 space-y-3'>
-
-                                                                    </div>
+                                                                            {/* Contact Detail */}
+                                                                            <input
+                                                                                    required
+                                                                                    type='text'
+                                                                                    placeholder='Contact Details'
+                                                                                    key={index}
+                                                                                    id={index}
+                                                                                    name="contact"
+                                                                                    defaultValue={contact?.contact}
+                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                />
+                                                                        
+                                                                        </>
+                                                                    )})}
                                                                     
                                                                     <div className='col-span-2 flex items-center justify-end'>
                                                                         <button className='rounded p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
-                                                                        onClick={handleAddContactGroup}
+                                                                        onClick={handleAddClick}
                                                                         >Add <PlusIcon className='w-5 h-5 text-white'/></button>
                                                                     </div>
 
