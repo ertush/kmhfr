@@ -24,7 +24,7 @@ export default async function fetchFacilityData(req, res) {
                 break;
 
                 case `facility_services`:
-                    url = `${API_URL}/facilities/facility_services/?facility=${id}/`
+                    url = `${API_URL}/facilities/facility_services/?facility=${id}`
                 break;  
 
                 case 'facilities':

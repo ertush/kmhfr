@@ -61,7 +61,7 @@ useMemo(() => {
      leftChecked = intersection(checked, left);
      rightChecked = intersection(checked, right);
 
-     console.log({right, left})
+    //  console.log({right, left})
     
  
 
