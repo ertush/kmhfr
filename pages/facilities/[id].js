@@ -25,6 +25,15 @@ import { UserContext } from "../../providers/user";
 import FacilityDetailsTabs from "../../components/FacilityDetailsTabs";
 import FacilityUpdatesTable from "../../components/FacilityUpdatesTable";
 
+
+import Backdrop from '@mui/material/Backdrop';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import {Formik, Form, Field} from 'formik'
+import Typography from '@mui/material/Typography';
+
+
 const Facility = (props) => {
   const Map = memo(dynamic(
     () => import("../../components/Map"), // replace '@components/map' with your component's location
@@ -45,12 +54,14 @@ const Facility = (props) => {
   const geoLocationData = props["1"]?.geoLocation;
   const {facility_updated_json } = props["2"]?.updates;
 
-  
 
   const [user, setUser] = useState(null);
   const [isFacDetails, setIsFacDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('')
+  const [open, setOpen] = React.useState(true);
+  const [isReasonRejected, setIsReasonRejected] = useState(false)
+  const handleClose = () => setOpen(false);
 
   const userCtx = useContext(UserContext)
   let reject = ''
@@ -77,6 +88,94 @@ const Facility = (props) => {
 
       <MainLayout>
         <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
+                   {/* Closed Facility Modal */}
+
+         {
+                        facility?.closed && 
+                        <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            open={open}
+                            onClose={handleClose}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                            timeout: 500,
+                            }}
+                        >
+                            <Fade in={open}>
+                            <Box sx={
+                                {
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: 400,
+                                    bgcolor: 'background.paper',
+                                    borderRadius: '6px',
+                                    borderLeft: 'solid 10px red',
+                                    boxShadow: 24,
+                                    p: 4,
+                                }
+                            }>
+                                <span className="flex gap-2">
+                                  <InformationCircleIcon className="w-7 h-7 text-red-500"/>
+                                  <Typography id="transition-modal-title" variant="h6" component="h2">      
+                                      Attention Facility is Closed     
+                                  </Typography>    
+                                </span>
+                                  {
+                                    isReasonRejected && 
+                                    <span className="text-sm text-red-500">      
+                                        Reason rejected
+                                    </span>
+                                  }
+                                <div className="flex-col items-start">
+                                  <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                                   Please state the reason for reopening the facility
+                                  </Typography>
+                                  <Formik 
+                                  initialValues={
+                                    {
+                                      reason_reopen: ''
+                                    }
+                                  }
+                                  onSubmit={({reason_reopen}) => {
+                                  
+                                    if(reason_reopen.includes('complete')){ // Reopeninig criteria will be updated soon
+                                      setIsReasonRejected(false)
+                                      router.push(`edit_facility/${facility?.id}`)
+                                    } else{
+                                      setIsReasonRejected(true)
+                                    }
+
+                                   
+
+                                  }} >
+
+                                    <Form className='my-3 flex-col gap-y-2'>
+                                     <Field
+                                     as='textarea'
+                                     cols={'30'}
+                                     rows={'6'}
+                                     name='reason_reopen'
+                                     className='border-2 border-gray-400 rounded'
+                                     >
+                                     </Field>
+                                      <div className='flex justify-start gap-4 mt-4'>
+                                          <button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="submit">Reopen</button>
+                                          <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" onClick={() => router.push('/facilities')}>Cancel</button>
+                                     </div>
+                                    </Form>
+                                  </Formik>
+                                </div>
+                                
+                            </Box>
+                            </Fade>
+                        </Modal>
+         }
+
+
           {/* Header */}
           <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
             {/* Breadcramps */}
@@ -427,9 +526,13 @@ const Facility = (props) => {
               </ol>
             </div>
           </aside>
+
+
           
                     
         </div>
+
+
       </MainLayout>
     </>
   );

@@ -37,7 +37,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
   const [inputVal, setInputVal] = React.useState([])
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
   const [right, setRight] = React.useState((selectedInfraRight ? (() => {
-    const result = []
+  const result = []
 
     new Set(selectedInfraRight.map(({name}) => name)).forEach(data => {
         result.push(data)
@@ -127,8 +127,6 @@ export default function TransferListInfrastructure({categories, setState, setCou
 
   }
 
-
-
   const handleAllRight = () => {
     setRight(right.concat(left));
     setLeft([]);
@@ -143,7 +141,6 @@ export default function TransferListInfrastructure({categories, setState, setCou
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
    
-    // setState(checkBoxChecked)
     setCount(inputVal)
 
     setRefreshForm5(!refreshForm5)
@@ -204,7 +201,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
       
                       <div key={i} className='w-full grid grid-cols-3 gap-x-2 place-content-center border-b-2 border-gray-300'>
                             <label htmlFor='item_exist_cnt' className='self-center'>{subctg}</label>
-                            <div  id='item_exist_cnt' className='flex items-center space-x-1 h-auto'>
+                            <div  id='item_exist_cnt' className={`flex items-center ${(name === "ROADS") ? 'justify-end' : ''}  space-x-1 h-auto`}>
                                 <label htmlFor='item_exist'>Yes</label>
 
                                 <Checkbox
@@ -218,6 +215,12 @@ export default function TransferListInfrastructure({categories, setState, setCou
                                     }}
                             />
                             </div> 
+
+                            {/*  debug {console.log({name})} */}
+
+                                {
+                                  !(name === "ROADS") &&
+                                
                                 <input
                                     
                                     id={`${subctg}-${i}`}
@@ -226,6 +229,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
                                     name='facility_official_name'
                                     className='flex-none w-full h-8 self-center bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                 />
+                              } 
     
                       </div>
                   :               
@@ -267,7 +271,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
   }
 
   const customList = (items, isRight) => (
-    <Paper sx={{ width: 520, height: 300, overflow: 'auto', padding:1 }}>
+    <Paper sx={{ width: 620, height: 300, overflow: 'auto', padding:1, margin:'auto' }}>
     
 
       <List dense component="div" role="list">
@@ -308,17 +312,14 @@ export default function TransferListInfrastructure({categories, setState, setCou
   );
 
   return (
-    <Grid container spacing={2} justifyContent="evenly" alignItems="center"  sx={{flex: 100, boxShadow:'none', backgroundColor:'#f9fafb'}}>
-      <Grid item> 
-      <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Categories</h5>
-        <Grid container direction="column" justifyContent="start" alignItems="start" gap={2} >
-         
-            {customList(left, false)}  
-        </Grid>
+    <div className="flex items-center justify-start gap-6 w-full">
+      <div className='flex-col items-start gap-2'>
+        <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Categories</h5>
+        {customList(left, false)}  
+      </div>
       
-          </Grid>
-      <Grid item>
-        <Grid container direction="column" alignItems="center">
+
+        <div className='flex flex-col justify-center items-center gap-3'>
           <Button
             sx={{ my: 0.5 }}
             variant="outlined"
@@ -359,17 +360,13 @@ export default function TransferListInfrastructure({categories, setState, setCou
           >
             ≪
           </Button>
-        </Grid>
-      </Grid>
-      <Grid item>
-          <Grid container direction="column"  justifyContent="start" alignItems="start">
+        </div>
+      
+        <div className='flex-col items-start gap-2'>
           <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">{selectTitle}</h5>
-          
-
-            {customList(right, true)}
-          </Grid>
-          </Grid>
-    </Grid>
+          {customList(right, true)}
+        </div>
+    </div >
   );
 }
 

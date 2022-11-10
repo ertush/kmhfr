@@ -22,6 +22,9 @@ import Alert from '@mui/material/Alert';
 import ListItemText from '@mui/material/ListItemText';
 import NativePickers from '../../components/date-picker'
 import { PermissionContext } from '../../providers/permissions'
+
+
+
 // import { set } from 'nprogress'
 
 
@@ -54,6 +57,7 @@ const Home = (props) => {
     delete fltrs.open_public_holidays
 
     let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
+
     let quickFilters = [
         {
             name: 'All',
@@ -133,7 +137,6 @@ const Home = (props) => {
         }
     ]
 
-
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
     const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
@@ -157,6 +160,8 @@ const Home = (props) => {
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
     const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '')
     const [allFctsSelected, setAllFctsSelected] = useState(true);
+
+  
 
     if(allFctsSelected && pathId.length > 0){
         setAllFctsSelected(false)
@@ -820,7 +825,7 @@ const Home = (props) => {
                         </List>
                     </div>
 
-                 
+                   
                     
                     {/* Main Body */}
                     <div className="w-full md:col-span-4 md:col-start-2  col-span-5 md:h-auto">
