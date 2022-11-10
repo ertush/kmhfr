@@ -704,12 +704,34 @@ const EditFacility = (props) => {
     } = facilityUpdateData ?? {updated: new Date(), updated_by: '', facility_updated_json: [], created_by_name: ''}
 
 
+
+    const ownerTypeName = ownerTypeOptions.find(({value}) => value === owner_type).label
+
+    // Filter regulationStatusOptions based on owner type
+    const filteredRegulationStateOptions = (() => {
+        let stateOptions = []
+
+        const regulationStatuses = [
+            "Pending Gazettement",
+            "Gazetted",
+            "License Suspended"
+        ]
+
+         regulationStatuses.forEach(option => {
+            stateOptions.push(
+                regulationStateOptions.find(({label}) => label === option)
+            )
+        })
+
+        return stateOptions
+    })()
+
+    const filteredRegBodyOptions = regBodyOptions.filter(({label}) => label === ownerTypeName)
+
     // User Context 
     const userCtx = useContext(UserContext)
     
     useEffect(() => {
-
-
         if (userCtx) setUser(userCtx)
 
         // Pre-fetch values for drop down
@@ -785,30 +807,9 @@ const EditFacility = (props) => {
 
     }
 
-    let filteredRegulationStateOptions = []
-    const regulationStatuses = [
-        "Pending Gazettment",
-        "Gazetted",
-        "License Supended"
-    ]
-    // console.log({owner_type, owner, ownerTypeOption, regulationStateOptions})
-    const ownerTypeName = ownerTypeOptions.find(({value}) => value === owner_type).label
-    if(ownerTypeName == 'Ministry of Health'){
-        regulationStatuses.forEach(option => {
-            filteredRegulationStateOptions.push(
-                regulationStateOptions.find(({label}) => label === option)
-            )
-        })
-    }  else {
-        filteredRegulationStateOptions = regulationStateOptions
-    }
-    
-    regulationStateOptions = filteredRegulationStateOptions
-
+   
     return () => {
 
-        // setFacilityUpdateData(null)
-        // setIsSavedChanges(false)
     }
        
         
@@ -1016,7 +1017,7 @@ const EditFacility = (props) => {
                             :
                             // Display Tabs with Edit Forms
                             <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root" defaultValue="geolocation">
-                                <Tabs.List className="list-none md:gr   id md:grid-cols-7 grid grid-cols-2 gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+                                <Tabs.List className="list-none md:grid md:grid-cols-7 grid grid-cols-2 gap-2  md:mx-3 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
                                     <Tabs.Tab value="basic_details" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                         Basic Details
                                     </Tabs.Tab>
@@ -1713,8 +1714,10 @@ const EditFacility = (props) => {
                                         </div>
 
                                             {/* Lon/Lat */}
-                                            <div className='grid grid-cols-2 gap-4 place-content-start w-full'>
-                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
+                                            <div className='grid grid-cols-3 gap-4 place-content-start w-full'>
+
+                                                {/* Longitude */}
+                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 '>
                                                     <label
                                                         htmlFor='longitude'
                                                         className='text-gray-600 capitalize text-sm'>
@@ -1732,7 +1735,8 @@ const EditFacility = (props) => {
                                                     />
                                                 </div>
 
-                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
+                                                {/* Latitude */}
+                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 '>
                                                     <label
                                                         htmlFor='latitude'
                                                         className='text-gray-600 capitalize text-sm'>
@@ -1746,6 +1750,22 @@ const EditFacility = (props) => {
                                                         required
                                                         type='decimal'
                                                         name='latitude'
+                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                    />
+                                                </div>
+
+                                                {/* Accuracy */}
+                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 '>
+                                                    <label
+                                                        htmlFor='accuracy'
+                                                        className='text-gray-600 capitalize text-sm'>
+                                                        Accurcay
+                                                       
+                                                    </label>
+                                                    <Field
+                                                        required
+                                                        type='decimal'
+                                                        name='accuracy'
                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                     />
                                                 </div>
@@ -2048,13 +2068,31 @@ const EditFacility = (props) => {
                                                  .catch(e => console.error('unable to fetch facility data. Error:', e.message))
                                             }
                                             }
-                                    >
+                                         >
                                         <Form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
                                             {/* Regulatory Body */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                     <label htmlFor="regulatory_body"  className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
-                                                    <Select 
+                                                    {
+                                                        ownerTypeName === 'Ministry of Health' ?
+                                                        // Filtered Regulaotry Body Options
+
+                                                        <Select 
+                                                        ref={regulatoryBodyRef} 
+                                                        options={filteredRegBodyOptions || []} 
+                                                        required
+                                                        onChange={ev => {
+                                                            setIsPendingRegistration(false)
+                                                            if(ev.label === 'Pending Registration') setIsPendingRegistration(true)
+                                                        }}
+                                                        placeholder="Select Regulatory Body"
+                                                        name='regulatory_body'
+                                                        className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+
+                                                        :
+
+                                                        <Select 
                                                         ref={regulatoryBodyRef} 
                                                         options={regBodyOptions || []} 
                                                         required
@@ -2065,13 +2103,36 @@ const EditFacility = (props) => {
                                                         placeholder="Select Regulatory Body"
                                                         name='regulatory_body'
                                                         className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                    }
+                                                    
+                                                    
 
                                             </div>
 
                                             {/* Regulation Status */} 
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
-                                                <Select 
+                                                {console.log({ownerTypeName, filteredRegulationStateOptions})}
+                                                {
+                                                
+                                                ownerTypeName === 'Ministry of Health' ?
+
+                                                  //    Filtered Regulatory State Options
+
+                                                  <Select 
+                                                  ref={regulatoryStateRef}
+                                                      options={filteredRegulationStateOptions || []} 
+                                                      required
+                                                      onChange={ev => {
+                                                          setIsPendingLicense(false)
+                                                          if(ev.label === 'Pending License') setIsPendingLicense(true)
+                                                      }}
+                                                      placeholder="Select Regulation Status"
+                                                      name='regulation_status'
+                                                      className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                               :
+
+                                               <Select 
                                                         ref={regulatoryStateRef}
                                                         options={regulationStateOptions || []} 
                                                         required
@@ -2082,7 +2143,10 @@ const EditFacility = (props) => {
                                                         placeholder="Select Regulation Status"
                                                         name='regulation_status'
                                                         className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                            </div>
+                                              
+                                                    }
+
+                                                </div>
 
                                             {/* License Number */} 
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -2114,8 +2178,6 @@ const EditFacility = (props) => {
                                                         className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 
                                             </div>
-
-
 
                                             {/* Registration Number */} 
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
