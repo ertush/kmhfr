@@ -15,51 +15,55 @@ export default async function postSystemSetupData(req, res) {
         let contentType=''
         let id = req.query.id || ''
         switch (path){
-            case 'add_infrastructure':
+            case 'infrastructure':
                 url = `${API_URL}/facilities/infrastructure/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
-            case 'add_contact_type': 
+            case 'contact type': 
                 url = `${API_URL}/common/contact_types/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
-            case 'add_facility_dept': 
+            case 'facility department': 
                 url = `${API_URL}/facilities/facility_depts/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
-            case 'add_facility_type': 
+            case 'facility type detail': 
                 url = `${API_URL}/facilities/facility_types/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
-            case 'add_facility_status': 
+            case 'facility type category': 
+                url = `${API_URL}/facilities/facility_types/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break;
+            case 'facility operation status': 
                 url = `${API_URL}/facilities/facility_status/${id}`
                 contentType = 'application/json;charset=utf-8';
             break; 
-            case 'add_facility_admission': 
+            case 'facility admission status': 
                 url = `${API_URL}/facilities/facility_admission_status/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
-            case 'add_facility_owner': 
+            case 'facility owner detail': 
                 url = `${API_URL}/facilities/owner_types/${id}`
                 contentType = 'application/json;charset=utf-8';
             break; 
-            case 'add_facility_owner_category': 
+            case 'facility owner category': 
                 url = `${API_URL}/facilities/owners/${id}`
                 contentType = 'application/json;charset=utf-8';
             break; 
-            case 'add_facility_job_title': 
+            case 'job title': 
                 url = `${API_URL}/facilities/job_titles/${id}`
                 contentType = 'application/json;charset=utf-8';
             break; 
-            case 'add_facility_regulatory_status': 
+            case 'regulatory status': 
                 url = `${API_URL}/facilities/regulation_status/${id}`
                 contentType = 'application/json;charset=utf-8';
             break; 
-            case 'add_facility_change_reason': 
+            case 'upgrade reason': 
                 url = `${API_URL}/facilities/level_change_reasons/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
-            case 'add_facility_regulating_body': 
+            case 'regulatory body': 
                 url = `${API_URL}/facilities/regulating_bodies/${id}`
                 contentType = 'application/json;charset=utf-8';
             break;
@@ -78,7 +82,7 @@ export default async function postSystemSetupData(req, res) {
   
                 },
                 method: method,
-                body: JSON.stringify(req.body)
+                body: method == 'DELETE' ? null:JSON.stringify(req.body)
 
             })
             

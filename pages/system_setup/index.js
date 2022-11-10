@@ -32,10 +32,11 @@ import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import { PermissionContext } from '../../providers/permissions';
 import { hasSystemSetupPermissions } from '../../utils/checkPermissions';
+import moment from 'moment'
 
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
-
+import { useAlert } from "react-alert";
 import useId from 'react-use-uuid';
 import router from 'next/router';
 
@@ -65,7 +66,14 @@ const system_setup = (props) => {
         { id: 'code', label: 'Code', minWidth: 100},
         { id: 'action',label: 'Action',minWidth: 100, align:'right'}
       ]);
-
+      const [logsColumns, setLogsColumns] = useState([
+        { id: 'updated_on', label: 'Date', minWidth: 100 },
+        { id: 'updated_by', label: 'User', minWidth: 100},
+        { id: 'updates',label: 'Updates',minWidth: 100, }
+      ]);
+    const [logsRows, setLogsRows] = useState([]);
+    const alert = useAlert()
+    const [viewLog, setViewLog] = useState(false);
     const [fields, setFields] = useState([]);
     const [is_parent, setIsParent] = useState(null);
     const [isAddForm, setIsAddForm] = useState(false);
@@ -87,7 +95,7 @@ const system_setup = (props) => {
 
         return () => {
             setFields(null)
-            setIsAddForm(null)
+            setIsAddForm(false)
             setRows(null)
         }
     },[])
@@ -473,12 +481,114 @@ const system_setup = (props) => {
                body: JSON.stringify(obj).replace(',"":""', '')
             }).then(res => res.json()).then(data => {
                 setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([])
+                if(data.details){
+                    alert.danger('Error: '+data.details)
+                  }else{
+                    alert.success( (editMode? 'Updated' : 'Added') +' Successfully')
+                  }
             })
        } catch (error) {
-           console.log(error)
+           alert.danger('Error: '+error)
        }
     }
 
+    const handleDelete = async (path) => {
+        await fetch(`/api/system_setup/submit_form/?path=${path}&id=${editData.id}`,{
+            method: 'DELETE'
+        })
+        setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([])   
+    }
+
+    const fetchChangeLogs = async () => {
+        await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editData.id}&?fields=__rev__&include_audit=true`,{
+          headers:{
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json;charset=utf-8'
+            
+          },
+          method:'GET',
+        }).then(res => res.json()).then(data=>{
+            console.log(data);
+         const res = data.revisions.map((item, ky)=>{
+    
+              return {
+              updated_on: moment(item.updated_on).format('ddd, Do MMM YYYY, h:mm a'),
+              updated_by: item.updated_by,
+              updates: (item.updates.map((item, i)=> (
+                <div className={"self-start"}>
+                <span className={"font-bold text-2x self-start"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600 self-start'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-green-600 self-start'} key={item.new}>{item.new + ''}</span>
+               </div>
+          )))
+            }
+          })
+          setLogsRows(res)
+        }).catch(err=>{console.log(err)})
+      }
+
+    const ChangeLog = () => {
+        return(
+            <>
+            <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'
+            onClick={() => {
+                setViewLog(!viewLog);
+                fetchChangeLogs()
+            } }
+            >
+                <span className='text-medium font-semibold text-black '>
+                    {!viewLog ? 'View Changelog' : 'Hide Changelog'}
+                </span>
+            </button>
+            
+            {viewLog && (
+
+                <div className='col-span-4 w-full h-auto'>
+                        <TableContainer sx={{ maxHeight: 440 }}>
+                                <Table stickyHeader aria-label="sticky table">
+                                <TableHead>
+                                    <TableRow>
+                                    {logsColumns.map((column,i) => (
+                                        <TableCell
+                                        key={i}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                        >
+                                        {column.label}
+                                        </TableCell>
+                                    ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody sx={{paddingX: 4}}>
+                                    {logsRows
+                                    // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row) => {
+                                        return (
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                            {logsColumns.map((column, i) => {
+                                            const value = row[column.id];
+                                            return (
+                                                <TableCell key={column.id} align={column.align}>
+                                                    {
+                                                            column.format && typeof value === 'boolean'
+                                                                ? value.toString()
+                                                                :  column.format && typeof value === 'number'
+                                                                ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+                                                    
+                                                    }
+                                                </TableCell>
+                                                
+                                            );
+                                            })}
+                                        </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                                </Table>
+                            </TableContainer>
+                </div>
+            )}
+            </>
+        )
+    }
     useEffect(async() => {
         let url = ''
         if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department' || addBtnLabel ==='facility owner category' || addBtnLabel === 'facility type category' || addBtnLabel === 'regulatory body'){
@@ -504,17 +614,18 @@ const system_setup = (props) => {
             setSelectOptionss(results)        
         }
         if(editMode && editID !== ''){
-            setTitle(`Edit ${addBtnLabel}`); setIsAddForm(true);
+            setTitle(`Edit ${addBtnLabel}`); 
             const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`);
             const _data = await response.json()
             addBtnLabel === 'regulatory body' ?? setContactList([..._data.contacts])
             setEditData(_data)
         }else{
             setEditData([])
+            setEditMode(false)
         }
-       
+        isAddForm==false ?? setLogsRows([]); setViewLog(false); 
 
-    }, [addBtnLabel, editID, editMode])
+    }, [addBtnLabel, editID, editMode, isAddForm])
    
   return (
   <>
@@ -541,6 +652,11 @@ const system_setup = (props) => {
                         <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setTitle(`Add ${addBtnLabel}`); setIsAddForm(true)}}>
                         {`Add ${addBtnLabel}`}
                         <PlusIcon className='text-white ml-2 h-5 w-5'/>
+                        </button>
+                        }
+                        {isAddForm && editMode && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' &&
+                        <button className='rounded bg-red-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {handleDelete(addBtnLabel)}}>
+                        {`Delete `}
                         </button>
                         }
                     </div> 
@@ -684,62 +800,62 @@ const system_setup = (props) => {
                                         
                                         <List component="div" disablePadding>
                                             {/* Facility Departments */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_depts'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility departments'); setAddBtnLabel('facility department')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_depts'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility departments'); setAddBtnLabel('facility department'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Departments" />
                                             </ListItemButton>
 
                                             {/* Facility Type Details */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division']); setIsParent(true); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type details'); setAddBtnLabel('facility type detail')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division']); setIsParent(true); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type details'); setAddBtnLabel('facility type detail'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Type Details" />
                                             </ListItemButton>
 
                                             {/* Facility Type Categories */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division']); setIsParent(false); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type categories'); setAddBtnLabel('facility type category')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division']); setIsParent(false); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type categories'); setAddBtnLabel('facility type category'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Type Categories" />
                                             </ListItemButton>
 
                                             {/* Facility Operation Status */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields([]); setResource('facility_status');setIsParent(null); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields([]); setResource('facility_status');setIsParent(null); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Operation Status" />
                                             </ListItemButton>
 
                                             {/*  Facility Admission Status */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_admission_status');setIsParent(null); setResourceCategory('Facilities'); setTitle('facility admission statuses'); setAddBtnLabel('facility admission status')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_admission_status');setIsParent(null); setResourceCategory('Facilities'); setTitle('facility admission statuses'); setAddBtnLabel('facility admission status'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Admission Status" />
                                             </ListItemButton>
 
                                             {/*  Feedback */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']);setIsParent(null); setResource('facility_service_ratings'); setResourceCategory('Facilities'); setTitle('feedbacks'); setAddBtnLabel('feedback')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']);setIsParent(null); setResource('facility_service_ratings'); setResourceCategory('Facilities'); setTitle('feedbacks'); setAddBtnLabel('feedback'); setEditMode(false);}}>
                                                 <ListItemText primary="Feedback" />
                                             </ListItemButton>
 
                                             {/*  Facility Owner Details */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id', 'name']);setIsParent(null); setResource('owner_types'); setResourceCategory('Facilities'); setTitle('facility owner details'); setAddBtnLabel('facility owner detail')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id', 'name']);setIsParent(null); setResource('owner_types'); setResourceCategory('Facilities'); setTitle('facility owner details'); setAddBtnLabel('facility owner detail'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Owner Details" />
                                             </ListItemButton>
 
                                             {/* Facility Owners Categories */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'owner_type_name']);setIsParent(null); setResource('owners'); setResourceCategory('Facilities'); setTitle('facility owner categories'); setAddBtnLabel('facility owner category')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'owner_type_name']);setIsParent(null); setResource('owners'); setResourceCategory('Facilities'); setTitle('facility owner categories'); setAddBtnLabel('facility owner category'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Owners Categories" />
                                             </ListItemButton>
 
                                             {/*  Job Titles */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']);setIsParent(null); setResource('job_titles'); setResourceCategory('Facilities'); setTitle('job titles'); setAddBtnLabel('job title') }}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']);setIsParent(null); setResource('job_titles'); setResourceCategory('Facilities'); setTitle('job titles'); setAddBtnLabel('job title'); setEditMode(false); }}>
                                                 <ListItemText primary="Job Titles" />
                                             </ListItemButton>
 
                                             {/*  Regulatory Bodies */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'regulatory_body_type_name', 'regulation_verb']); setIsParent(null);setResource('regulating_bodies'); setResourceCategory('Facilities'); setTitle('regulatory bodies'); setAddBtnLabel('regulatory body') }}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'regulatory_body_type_name', 'regulation_verb']); setIsParent(null);setResource('regulating_bodies'); setResourceCategory('Facilities'); setTitle('regulatory bodies'); setAddBtnLabel('regulatory body'); setEditMode(false); }}>
                                                 <ListItemText primary="Regulatory Bodies" />
                                             </ListItemButton>
 
                                             {/*  Regulatory Status */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']);setIsParent(null); setResource('regulation_status'); setResourceCategory('Facilities'); setTitle('regulatory statuses'); setAddBtnLabel('regulatory status') }}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']);setIsParent(null); setResource('regulation_status'); setResourceCategory('Facilities'); setTitle('regulatory statuses'); setAddBtnLabel('regulatory status'); setEditMode(false); }}>
                                                 <ListItemText primary="Regulatory Status" />
                                             </ListItemButton>
 
                                             {/*  Upgrade Reason */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','reason', 'description']);setIsParent(null); setResource('level_change_reasons'); setResourceCategory('Facilities'); setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason') }}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','reason', 'description']);setIsParent(null); setResource('level_change_reasons'); setResourceCategory('Facilities'); setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason'); setEditMode(false); }}>
                                                 <ListItemText primary="Upgrade Reason" />
                                             </ListItemButton>
 
@@ -826,7 +942,7 @@ const system_setup = (props) => {
                                                         {
                                                         column.id === 'action' ?
                                                             
-                                                                <button className='bg-indigo-500 rounded p-2 text-white font-semibold' onClick={() => {setEditID(row.id); setEditMode(true); }}>{
+                                                                <button className='bg-indigo-500 rounded p-2 text-white font-semibold' onClick={() => {setEditID(row.id); setEditMode(true); setIsAddForm(true);}}>{
                                                                     resourceCategory === "HealthInfrastructure" || resourceCategory === "HR" ?
                                                                     'Edit' : 'View'
                                                                 }</button>
@@ -1480,7 +1596,7 @@ const system_setup = (props) => {
                                                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
                                                                         <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                                  </div>
-                                                        </form>
+                                                                </form>
                                                             )
 
                                                         case 'service':
@@ -1651,7 +1767,7 @@ const system_setup = (props) => {
 
                                                         case 'infrastructure':
                                                             return ( 
-                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, 'add_infrastructure')}>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
 
                                                                 {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1891,7 +2007,8 @@ const system_setup = (props) => {
 
                                                         case 'contact type':
                                                             return (
-                                                                <form className='w-full h-full'  onSubmit={(e)=>handleFacilityOnChange(e, 'add_contact_type')}>
+                                                                <> 
+                                                                <form className='w-full h-full'  onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
                                                                 
                                                                     {/* Name */}
                                                                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1946,10 +2063,14 @@ const system_setup = (props) => {
                                                                 </div>
 
                                                                 </form>
+                                                                &nbsp;
+                                                                <ChangeLog />
+                                                                </>
                                                             )
                                                         case 'facility department':
                                                             return (
-                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_dept')}>
+                                                            <>    
+                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
                                                                 
                                                                 {/* Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2030,46 +2151,54 @@ const system_setup = (props) => {
                                                             </div>
 
                                                             </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                            </>
                                                             )
                                                         case 'facility type detail':
                                                             return (
-                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_type')}>
-                                                                
-                                                                {/* Facility Type */}
+                                                            <>
+                                                                <form className='w-full h-full' onSubmit={(e) => handleFacilityOnChange(e, addBtnLabel)}>
+
+                                                                    {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                    
-                                                                    <label
-                                                                        htmlFor={`add_${addBtnLabel}_name`}
-                                                                        className='text-gray-600 capitalize text-sm'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_name`}
+                                                                            className='text-gray-600 capitalize text-sm'>
                                                                             Facility Type
-                                                                        <span className='text-medium leading-12 font-semibold'>
-                                                                            {' '}
-                                                                            *
-                                                                        </span>
-                                                                    </label>
-                                                                    <input
-                                                                        required
-                                                                        type='text'
-                                                                        placeholder='Name'
-                                                                        id={`add_${addBtnLabel}_name`}
-                                                                        name='name'
-                                                                        defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                                                    />
-                                                            </div>
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            required
+                                                                            type='text'
+                                                                            placeholder='Name'
+                                                                            id={`add_${addBtnLabel}_name`}
+                                                                            name='name'
+                                                                            defaultValue={editData.name}
+                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' />
+                                                                    </div>
 
 
-                                                            <div className='flex items-center space-x-3 mt-4'>
-                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
-                                                            </div>
+                                                                    <div className='flex items-center space-x-3 mt-4'>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                    </div>
 
-                                                            </form>
+
+                                                                </form>
+                                                                &nbsp;
+                                                                <ChangeLog />
+                                                            </>
+
                                                             )
                                                         case 'facility type category':
                                                             return (
                                                                 
-                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, 'add_facility_type')}>
+                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
                                                                 
                                                                 {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2097,7 +2226,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_type`}
                                                                         name='sub_division'
                                                                         key={editData.parent}
-                                                                        defaultValue={{value:editData.parent, label: editData.sub_division}}
+                                                                        defaultValue={{value:editData.sub_division, label: editData.sub_division}}
                                                                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                             </div>
@@ -2135,8 +2264,8 @@ const system_setup = (props) => {
                                                             )
                                                         case 'facility operation status':
                                                             return (
-                                                                
-                                                             <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_status')}>
+                                                            <>
+                                                             <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
                                                                 
                                                                 {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2174,7 +2303,7 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <input
-                                                                        required
+                                                                        // required
                                                                         type='checkbox'
                                                                         placeholder='Name'
                                                                         id={`add_${addBtnLabel}_is_public`}
@@ -2191,11 +2320,14 @@ const system_setup = (props) => {
                                                             </div>
 
                                                             </form>
+                                                            &nbsp;
+                                                            <ChangeLog />                                                            
+                                                            </>
                                                             )
                                                         case 'facility admission status':
                                                             return (
-                                                                
-                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_admission')}>
+                                                             <>
+                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
                                                                 
                                                                 {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2227,10 +2359,14 @@ const system_setup = (props) => {
                                                             </div>
 
                                                             </form>
+                                                             &nbsp;
+                                                             <ChangeLog />
+                                                             </>   
                                                             )
                                                         case 'facility owner detail':
                                                             return(
-                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_owner')}>
+                                                                <>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
                                                                 
                                                                 {/* Name */}
                                                                  <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2283,13 +2419,16 @@ const system_setup = (props) => {
                                                                     <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                             </div>
 
-                                                            <button onClick={(e) => {e.preventDefault()}} className="rounded p-2 bg-indigo-500 mt-3 text-white font-semibold">View change log</button>
-
                                                                 </form>
+                                                                &nbsp;
+                                                                <ChangeLog />
+                                                                </>
+
                                                             )
                                                         case 'facility owner category':
                                                                 return(
-                                                                    <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_owner_category')}>
+                                                                    <>
+                                                                    <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
                                                                     
                                                                     {/* Name */}
                                                                      <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2394,14 +2533,16 @@ const system_setup = (props) => {
                                                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
                                                                         <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                                 </div>
-    
-                                                                <button onClick={(e) => {e.preventDefault()}} className="rounded p-2 bg-indigo-500 mt-3 text-white font-semibold">View change log</button>
-    
+        
                                                                     </form>
+                                                                    &nbsp;
+                                                                    <ChangeLog />
+                                                                    </>
                                                             )
                                                         case 'job title':
                                                             return (
-                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_job_title')}>
+                                                                <>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
                                                                 
                                                                 {/* Name */}
                                                                  <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2454,7 +2595,10 @@ const system_setup = (props) => {
                                                                     <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                             </div>
 
-                                                            </form>
+                                                                </form>
+                                                                &nbsp;
+                                                                <ChangeLog />
+                                                                </>
                                                             )
                                                     case 'regulatory body':
                                                         const handleAddClick = (e) => {
@@ -2464,8 +2608,9 @@ const system_setup = (props) => {
                                                             })
                                                         };
                                                        
-                                                        return ( //add_facility_regulating_body
-                                                            <form className='w-full h-full' onSubmit={e=>handleFacilityOnChange(e, "add_facility_regulating_body")}>
+                                                        return ( 
+                                                            <>
+                                                            <form className='w-full h-full' onSubmit={e=>handleFacilityOnChange(e, addBtnLabel)}>
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                     
                                                                     <label
@@ -2568,11 +2713,15 @@ const system_setup = (props) => {
                                                             
 
                                                             </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                            </>
                                                         )
 
                                                     case 'regulatory status':
                                                         return (
-                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_regulatory_status')}>
+                                                            <>
+                                                            <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
                                                                  {/* regulatory Status */}
                                                              <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                     
@@ -2602,10 +2751,14 @@ const system_setup = (props) => {
                                                              </div>
                                                     
                                                             </form>
+                                                            &nbsp;
+                                                            <ChangeLog />
+                                                            </>
                                                         )
                                                         case 'upgrade reason':
                                                             return (
-                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,'add_facility_change_reason')}>
+                                                                <>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
                                                                 
                                                                     {/* Facility Change reason */}
                                                                      <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2659,6 +2812,9 @@ const system_setup = (props) => {
                                                                 </div>
 
                                                                 </form>
+                                                                &nbsp;
+                                                                <ChangeLog />
+                                                                </>
                                                             )
 
                                                         case 'Document':

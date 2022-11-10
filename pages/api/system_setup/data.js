@@ -42,14 +42,14 @@ export default async function fetchSystemSetupData(req, res) {
                 if(_id== undefined){
                     url = `${API_URL}/common/${res}/?${qry}`
                 }else{
-                    url = `${API_URL}/common/${res}/${_id}/`
+                    url = `${API_URL}/common/${res}/${_id}/?${qry}`
                 }
             break;
             case 'Facilities':
                 if(_id== undefined){ 
                     url = `${API_URL}/facilities/${res}/?${qry}`
                 }else{
-                    url = `${API_URL}/facilities/${res}/${_id}`
+                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
                 }
             break;
             case 'CHU':
