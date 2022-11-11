@@ -1763,7 +1763,7 @@ const EditFacility = (props) => {
                                                        
                                                     </label>
                                                     <Field
-                                                        required
+                                                        
                                                         type='decimal'
                                                         name='accuracy'
                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
