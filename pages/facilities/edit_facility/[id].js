@@ -8,6 +8,7 @@ import { Formik, Field, Form } from "formik";
 import dynamic from 'next/dynamic'
 import router from 'next/router'
 import { useAlert } from "react-alert";
+import Link from 'next/link';
 
 
 import { 
@@ -961,8 +962,8 @@ const EditFacility = (props) => {
                 <div className="w-full grid grid-cols-1 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
                     <div className="col-span-4 flex flex-col items-start px-4 justify-start gap-3">
                         <div className="flex flex-row gap-2 text-sm md:text-base">
-                            <a className="text-green-700" href="/">Home</a> {'>'}
-                            <a className="text-green-700" href="/facilities">Facilities</a> {'>'}
+                            <Link className="text-green-700" href="/">Home</Link> {'>'}
+                            <Link className="text-green-700" href="/facilities">Facilities</Link> {'>'}
                             <span className="text-gray-500">{official_name} ( #<i className="text-black">{code || "NO_CODE"}</i> )</span>
                         </div>
                         <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (is_approved ? "border-green-600" : "border-green-600")}>
