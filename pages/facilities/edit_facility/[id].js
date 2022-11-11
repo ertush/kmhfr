@@ -27,13 +27,14 @@ import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import TrasnferListServices from '../../../components/TrasnferListServices';
 import TransferListHr from '../../../components/TransferListHr';
 import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
+
 
 import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
+import { set } from 'nprogress';
 
 
-// import { useInput } from '../../../hooks';
 
 const _ = require('underscore') 
 
@@ -86,7 +87,7 @@ const EditFacility = (props) => {
     const contactTypeOptions = props['11']?.contact_types ?? []
     const facilityDeptOptions = props['12']?.facility_depts ?? []
     const regBodyOptions = props['13']?.regulating_bodies ?? []
-    const regulationStateOptions = props['14']?.regulation_status ?? []
+    let regulationStateOptions = props['14']?.regulation_status ?? []
     const serviceOptions = ((_services) => {
 		
     const _serviceOptions = []
@@ -121,7 +122,7 @@ const EditFacility = (props) => {
 	 })(props['15'].service ?? [])
 
 
-     const infrastructureOption = ((_infrastructure) => {
+    const infrastructureOption = ((_infrastructure) => {
 		
 		const _infrastructureOptions = []
 		let _values = []    
@@ -153,8 +154,6 @@ const EditFacility = (props) => {
 		return _infrastructureOptions
 	 })(props['16'].infrastructure ?? [])
 
-   
-    
     const operationStatusOptions = [
         {
             value: '190f470f-9678-47c3-a771-de7ceebfc53c',
@@ -308,7 +307,6 @@ const EditFacility = (props) => {
 
     const facilityContactsData = {
 
-
         contact:  ((facility_contacts) => {
   
             let _contactDetail 
@@ -415,7 +413,6 @@ const EditFacility = (props) => {
     } = props['19']?.geolocation ?? {}
 
   
-
     const serviceSelected = ((_services) => {
         return _services.map(({category_name, service_name, service_id}) => ({
                     name: category_name,
@@ -469,11 +466,9 @@ const EditFacility = (props) => {
         )
     })(facility_specialists || [])
 
-
     const [user, setUser] = useState(null)
 
     // Form field states
-   
     const [_checklistFile, setCheckListFile] = useState(facility_checklist_document ?? '')
     const [_lat, setLat] = useState(((coordinates) => {
    
@@ -517,14 +512,12 @@ const EditFacility = (props) => {
     const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
 
 
-    // different form states
-    // const [formId, setFormId] = useState(0)
+    // Different form states
     const [services, setServices] = useState([])
     const [infrastructure, setInfrastructure] = useState([])
 	const [infrastructureCount, setInfrastructureCount] = useState([])    
 	const [hr, setHr] = useState([])
 	const [hrCount, setHrCount] = useState([])
-    // const [facilityId, setFacilityId] = useState('')
     const [wardName, setWardName] = useState(ward_name)
     const [contact, setContact] = useState('')
     const [refreshForm4, setRefreshForm4] = useState()
@@ -537,9 +530,6 @@ const EditFacility = (props) => {
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
     
-
-
-
   
     const handleAddRegulatoryBody = (event) => {
         event.preventDefault();
@@ -664,10 +654,12 @@ const EditFacility = (props) => {
     const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
     const [btnDir, setBtnDir] = useState(null)
+    const [isPendingLicense, setIsPendingLicense] = useState(false)
+    const [isPendingRegistration, setIsPendingRegistration] = useState(false)
+
 
 
     // Basic Details Refs
-
     const facilityTypeRef = useRef(null)
     const facilityTypeDetailsRef = useRef(null)
     const operationStatusRef = useRef(null)    
@@ -683,7 +675,6 @@ const EditFacility = (props) => {
 
 
     // Facility Contacts Refs
-
     const contactRef = useRef(null)
     const jobTitleRef = useRef(null)
     const otherContactRef = useRef(null)
@@ -692,7 +683,6 @@ const EditFacility = (props) => {
  
 
     // Regulation Refs
-
     const regulatoryBodyRef = useRef(null)
     const regulatoryStateRef = useRef(null)
     const facilityContactRef = useRef(null)
@@ -706,7 +696,6 @@ const EditFacility = (props) => {
     const infrastructureBodyRef = useRef(null)
 
     // Facility update data
-
     const {
         updated,
         updated_by,
@@ -715,12 +704,34 @@ const EditFacility = (props) => {
     } = facilityUpdateData ?? {updated: new Date(), updated_by: '', facility_updated_json: [], created_by_name: ''}
 
 
+
+    const ownerTypeName = ownerTypeOptions.find(({value}) => value === owner_type).label
+
+    // Filter regulationStatusOptions based on owner type
+    const filteredRegulationStateOptions = (() => {
+        let stateOptions = []
+
+        const regulationStatuses = [
+            "Pending Gazettement",
+            "Gazetted",
+            "License Suspended"
+        ]
+
+         regulationStatuses.forEach(option => {
+            stateOptions.push(
+                regulationStateOptions.find(({label}) => label === option)
+            )
+        })
+
+        return stateOptions
+    })()
+
+    const filteredRegBodyOptions = regBodyOptions.filter(({label}) => label === ownerTypeName)
+
     // User Context 
     const userCtx = useContext(UserContext)
     
     useEffect(() => {
-
-
         if (userCtx) setUser(userCtx)
 
         // Pre-fetch values for drop down
@@ -793,12 +804,12 @@ const EditFacility = (props) => {
             regBodyRef.current.value = facility_units[0]?.regulating_body_name ?? ''
         } 
 
+
     }
 
-
+   
     return () => {
-        // setFacilityUpdateData(null)
-        // setIsSavedChanges(false)
+
     }
        
         
@@ -1000,58 +1011,13 @@ const EditFacility = (props) => {
 
                                 {/* Update Details */}
 
-                                <Table className="md:px-4">
-                                    <TableHead className='text-xl font-semibold'>Facility updates</TableHead>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell>
-                                            <p className='text-base font-semibold'>Field</p>
-                                            </TableCell>
-                                            <TableCell  className='text-xl font-semibold'>
-                                            <p className='text-base font-semibold'>Old Value</p>
-                                            </TableCell>
-                                            <TableCell className='text-xl font-semibold'>
-                                            <p className='text-base font-semibold'>New Value</p>
-                                            </TableCell>
-                                        </TableRow>
-                                        {
-                                           
-                                            facility_updated_json && 
-                                            Object.values(facility_updated_json).map(item => {
-                                               
-                                                    return  item.length !== undefined ?
-                                                    item.map(({human_field_name, display_value, field_name}, id) => (
-                                                       
-                                                            <TableRow id={id}>
-                                                                {console.log({item})}
-                                                                <TableCell>
-                                                                    {human_field_name}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    {typeof(props['18']?.data[field_name]) === 'boolean' ? (Boolean(props['18']?.data[field_name]) ? 'Yes' : 'No') : props['18']?.data[field_name]}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    {display_value}
-                                                                </TableCell>
-                                                            </TableRow>
-
-                                                    ))
-                                                    :''
-
-                                                }
-                                                )
-                                          
-                                        }
-
-                                        </TableBody>
-
-                                </Table>
+                                <FacilityUpdatesTable facilityUpdatedJson={facility_updated_json} originalData={props['18']}/> 
 
                             </div>
                             :
                             // Display Tabs with Edit Forms
                             <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root" defaultValue="geolocation">
-                                <Tabs.List className="list-none md:gr   id md:grid-cols-7 grid grid-cols-2 gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+                                <Tabs.List className="list-none md:grid md:grid-cols-7 grid grid-cols-2 gap-2  md:mx-3 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
                                     <Tabs.Tab value="basic_details" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                         Basic Details
                                     </Tabs.Tab>
@@ -1106,6 +1072,8 @@ const EditFacility = (props) => {
                                                 plot_number: plot_number ?? '',
                                                 nearest_landmark: nearest_landmark ?? '',
                                             }}
+
+
                                             onSubmit={(values) => {
                                                 // Ensure isSaveChnages is false
                                                 setIsSavedChanges(false)
@@ -1184,11 +1152,13 @@ const EditFacility = (props) => {
                                                 <label htmlFor="official_name" className="text-gray-600 capitalize text-sm">Facility Official Name<span className='text-medium leading-12 font-semibold'> *</span></label>
                                                 <Field required type="text" name="official_name" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
+
                                             {/* Facility Unique Name  */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="name" className="text-gray-600 capitalize text-sm">Facility Unique Name<span className='text-medium leading-12 font-semibold'> *</span></label>
                                                 <Field required type="text" name="name" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
+
                                             {/* Facility Type */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Facility Type <span className='text-medium leading-12 font-semibold'> *</span></label>
@@ -1207,7 +1177,7 @@ const EditFacility = (props) => {
 
                                             {/* Facility Type Details */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                            <label
+                                                     <label
                                                         htmlFor='facility_type_details'
                                                         className='text-gray-600 capitalize text-sm'>
                                                         Facility Type Details
@@ -1285,6 +1255,7 @@ const EditFacility = (props) => {
                                                                 }
                                                             })()
                                                         }
+
                                                         required
                                                         placeholder='Select a facility type details...'
                                                         onChange={ev => {
@@ -1424,14 +1395,15 @@ const EditFacility = (props) => {
                                                 <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">KEPH Level</label>
                                                 <Select 
                                                 ref={kephLvlRef}
-                                                options={kephOptions ?? []}
-
+                                                isDisabled={true}
+                                                options={kephOptions ?? []}   
                                                 placeholder="Select a KEPH Level.."
                                                 onChange={
                                                     ev => ev.preventDefault()
                                                 }
+                                                
                                                 name="keph_level" 
-                                                className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                className="flex-none  w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                             </div>
 
                                             {/* No. Functional general Beds */}
@@ -1663,7 +1635,7 @@ const EditFacility = (props) => {
                                             </div>
 
                                             <div className=" w-full flex justify-end h-auto mr-3">
-                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
                                             </div>
                                         </Form>      
                                     </Formik>                        
@@ -1742,8 +1714,10 @@ const EditFacility = (props) => {
                                         </div>
 
                                             {/* Lon/Lat */}
-                                            <div className='grid grid-cols-2 gap-4 place-content-start w-full'>
-                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
+                                            <div className='grid grid-cols-3 gap-4 place-content-start w-full'>
+
+                                                {/* Longitude */}
+                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 '>
                                                     <label
                                                         htmlFor='longitude'
                                                         className='text-gray-600 capitalize text-sm'>
@@ -1761,7 +1735,8 @@ const EditFacility = (props) => {
                                                     />
                                                 </div>
 
-                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
+                                                {/* Latitude */}
+                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 '>
                                                     <label
                                                         htmlFor='latitude'
                                                         className='text-gray-600 capitalize text-sm'>
@@ -1778,6 +1753,22 @@ const EditFacility = (props) => {
                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                     />
                                                 </div>
+
+                                                {/* Accuracy */}
+                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3 '>
+                                                    <label
+                                                        htmlFor='accuracy'
+                                                        className='text-gray-600 capitalize text-sm'>
+                                                        Accurcay
+                                                       
+                                                    </label>
+                                                    <Field
+                                                        required
+                                                        type='decimal'
+                                                        name='accuracy'
+                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                    />
+                                                </div>
                                             </div>
 
                                             {/* Ward Geo Map */}
@@ -1791,7 +1782,7 @@ const EditFacility = (props) => {
 
                                             {/* Next/Previous Form  */}
                                             <div className=" w-full flex justify-end h-auto mr-3">
-                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
                                             </div>
                                         </Form>
                                     </Formik>
@@ -2016,7 +2007,7 @@ const EditFacility = (props) => {
                                             {/* Save btn */}
 
                                             <div className=" w-full flex justify-end h-auto mr-3">
-                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
                                             </div>
                                         </Form>
                                     </Formik>
@@ -2077,46 +2068,130 @@ const EditFacility = (props) => {
                                                  .catch(e => console.error('unable to fetch facility data. Error:', e.message))
                                             }
                                             }
-                                    >
+                                         >
                                         <Form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
                                             {/* Regulatory Body */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                     <label htmlFor="regulatory_body"  className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
-                                                    <Select 
+                                                    {
+                                                        ownerTypeName === 'Ministry of Health' ?
+                                                        // Filtered Regulaotry Body Options
+
+                                                        <Select 
                                                         ref={regulatoryBodyRef} 
-                                                        options={regBodyOptions || []} 
+                                                        options={filteredRegBodyOptions || []} 
                                                         required
+                                                        onChange={ev => {
+                                                            setIsPendingRegistration(false)
+                                                            if(ev.label === 'Pending Registration') setIsPendingRegistration(true)
+                                                        }}
                                                         placeholder="Select Regulatory Body"
                                                         name='regulatory_body'
                                                         className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+
+                                                        :
+
+                                                        <Select 
+                                                        ref={regulatoryBodyRef} 
+                                                        options={regBodyOptions || []} 
+                                                        required
+                                                        onChange={ev => {
+                                                            setIsPendingRegistration(false)
+                                                            if(ev.label === 'Pending Registration') setIsPendingRegistration(true)
+                                                        }}
+                                                        placeholder="Select Regulatory Body"
+                                                        name='regulatory_body'
+                                                        className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                    }
+                                                    
+                                                    
 
                                             </div>
 
                                             {/* Regulation Status */} 
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
-                                                <Select 
+                                                {console.log({ownerTypeName, filteredRegulationStateOptions})}
+                                                {
+                                                
+                                                ownerTypeName === 'Ministry of Health' ?
+
+                                                  //    Filtered Regulatory State Options
+
+                                                  <Select 
+                                                  ref={regulatoryStateRef}
+                                                      options={filteredRegulationStateOptions || []} 
+                                                      required
+                                                      onChange={ev => {
+                                                          setIsPendingLicense(false)
+                                                          if(ev.label === 'Pending License') setIsPendingLicense(true)
+                                                      }}
+                                                      placeholder="Select Regulation Status"
+                                                      name='regulation_status'
+                                                      className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                               :
+
+                                               <Select 
                                                         ref={regulatoryStateRef}
                                                         options={regulationStateOptions || []} 
                                                         required
+                                                        onChange={ev => {
+                                                            setIsPendingLicense(false)
+                                                            if(ev.label === 'Pending License') setIsPendingLicense(true)
+                                                        }}
                                                         placeholder="Select Regulation Status"
                                                         name='regulation_status'
                                                         className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                            </div>
+                                              
+                                                    }
+
+                                                </div>
 
                                             {/* License Number */} 
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                <label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
-                                                <Field type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number
+                                                {isPendingLicense ? ' *': ''}
+                                                </label>
+                                                {
+                                                isPendingLicense ? 
+                                                <Field  required type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                : 
+                                                <Field  type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                }
+                                                
                                             </div>
 
+                                              {/* Licensing Body */} 
+                                              <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                    <label htmlFor="regulatory_body"  className="text-gray-600 capitalize text-sm">Licensing Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
+                                                    <Select 
+                                                        ref={regulatoryBodyRef} 
+                                                        options={regBodyOptions || []} 
+                                                        required
+                                                        onChange={ev => {
+                                                            setIsPendingRegistration(false)
+                                                            if(ev.label === 'Pending Registration') setIsPendingRegistration(true)
+                                                        }}
+                                                        placeholder="Select Licensing Body"
+                                                        name='regulatory_body'
+                                                        className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+
+                                            </div>
 
                                             {/* Registration Number */} 
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                <label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number</label>
+                                                <label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number
+                                                {isPendingRegistration ? ' *': ''}
+                                                </label>
+                                                {
+                                                isPendingRegistration ? 
+                                                <Field required type="text" name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                :
                                                 <Field type="text" name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                            </div>
+
+                                                }
+                                                </div>
 
                                             {/* check file upload */}
                                             <div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
@@ -2187,7 +2262,7 @@ const EditFacility = (props) => {
                                             {/* Save btn */}
 
                                             <div className=" w-full flex justify-end h-auto mr-3">
-                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                                <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
                                             </div>
                                         </Form>
                                     </Formik>
@@ -2197,75 +2272,82 @@ const EditFacility = (props) => {
                                 <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
                                     {/* {console.log({selectedServiceRight, services})} */}
                                     <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
-                                         ev => {
+                                       async ev => {
+
+                                            ev.preventDefault()
+
+                                            let getServiceId
                                       
-                                            const editedServices = (() => {
-                                                let _services = selectedServiceRight.map(({subCategories, value}) => ({subctg:subCategories[0], value:value[0]}))
+                                            if(btnDir === 'left'){ 
+                                             getServiceId = await (async () => {
+                                                
+                                                    // console.log({services})
+                                                    // fetch facility_id
+                                                    try{
+                                                       
+                                                       return (await (await fetch(`/api/facility/get_facility/?path=facility_services&id=${id}`)).json()).results
+                                                
+                                                    }catch(e){
+                                                        console.error('Unable to fetch facility_service_id: ', e.message)
+                                                    }
+                                                
 
-                                                if(btnDir === 'right'){
-                                                    
-                                                    console.log('right before >>>>>>>', _services)
-                                                    services.forEach(({subctg, value}) => {
-                                                        _services.push({subctg, value})
-                                                    })
 
-                                                    console.log('right after >>>>>>>', _services)
-
-                                                    setServices([])
-                                                  
-                                                }else{
-
-                                                    console.log('left before >>>>>>>', _services)
-
-                                                    _services.splice(_services.indexOf(_services.filter(
-                                                        ({value}) => services.filter(service => service.value === value).length > 0
-                                                    )[0]), 1)
-
-                                                    console.log('left after >>>>>>>', _services)
-                                                    
-                                                    setServices([])
-                                                }
-
-                                                return _services
                                             })()
 
-                                          console.log({editedServices})
+                                            // getServiceId.then(value => {
+                                            //     console.log({value})
+                                            // }).catch(console.error)
 
-                                              handleServiceUpdates(ev, [selectedServiceRight, id], alert, "Facility Services updated successfully")
-                                              .then(({statusText}) => {
-                                                 defer(() => setIsSavedChanges(true))
-                                                 let update_id
-                                                 if(statusText == 'OK'){
+                                            // console.log({getServiceId})
 
-                                                         fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
- 
-                                                             const results = await resp.json()
-                                                             
-                                                             update_id = results?.latest_update
-                                                            
+                                           }
+                                            else {
 
-                                                             if(update_id){
+                                            getServiceId = (() => services[services.length - 1])()
+
+                                            }
+
+
+                                            console.log({getServiceId})
+                                          
+  
+                                            
+                                               /* handleServiceUpdates(ev, [selectedServiceRight, id], alert, "Facility Services updated successfully")
+                                                .then(({statusText}) => {
+                                                    defer(() => setIsSavedChanges(true))
+                                                    let update_id
+                                                    if(statusText == 'OK'){
+
+                                                            fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
+    
+                                                                const results = await resp.json()
                                                                 
-                                                                 try{
-                                                                     facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
-                                                                     setFacilityUpdateData(facilityUpdateData)                                                     
-                                                                 }
-                                                                 catch(e){
-                                                                     console.error('Encountered error while fetching facility update data', e.message)
-                                                                 }
-                                                             }
-                                                         })
-                                                         .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
-                                                     }
-                                                   
-                                                 })
-                                                 .catch(e => console.error('unable to fetch facility data. Error:', e.message))
-                                             }
-                                    }>
+                                                                update_id = results?.latest_update
+                                                                
+                                                                if(update_id){
+                                                                    console.log({update_id})
+                                                                    
+                                                                    try{
+                                                                        facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                        setFacilityUpdateData(facilityUpdateData)                                                     
+                                                                    }
+                                                                    catch(e){
+                                                                        console.error('Encountered error while fetching facility update data', e.message)
+                                                                    }
+                                                                }
+                                                            })
+                                                            .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
+                                                        }
+                                                    
+                                                    })
+                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message))*/
+                                                }
+                                         }>
                                                            
                                                     {/* Transfer list Container */}
                                                     <div className='flex items-center w-full h-auto min-h-[300px]'>                                  
-                                                
+                                                    {/* {console.log({services})} */}
                                                     <TrasnferListServices 
                                                         categories={serviceOptions}
                                                         setServices={setServices}
@@ -2310,7 +2392,7 @@ const EditFacility = (props) => {
                                                     {/* Save btn */}
 
                                                     <div className=" w-full flex justify-end h-auto mr-3">
-                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
                                                     </div>
                                               
                                          
@@ -2389,7 +2471,7 @@ const EditFacility = (props) => {
                                         {/* Save btn */}
 
                                         <div className=" w-full flex justify-end h-auto mr-3">
-                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
                                         </div>
 
                                     </form>
@@ -2462,7 +2544,7 @@ const EditFacility = (props) => {
                                                         {/* Save btn */}
 
                                                         <div className=" w-full flex justify-end h-auto mr-3">
-                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save changes</button>
+                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
                                                         </div>
                                                         
                                                     

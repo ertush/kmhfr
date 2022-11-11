@@ -169,10 +169,7 @@ const Home = (props) => {
 						<div className='flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between'>
 							<div className='flex flex-col items-start justify-start gap-y-1'>
 								<h1 className='text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2'>
-									{props?.query?.searchTerm &&
-									props?.query?.searchTerm.length > 0
-										? `Community units matching '${props?.query?.searchTerm}'`
-										: 'All community units'}
+									{title}
 								</h1>
 								<h5 className='text-lg font-medium text-gray-800'>
 									{drillDown &&
@@ -300,9 +297,106 @@ const Home = (props) => {
 
 										<ListItemButton 
 										    key={qf.id}
-										    sx={{ backgroundColor: '#e7ebf0'  }} 
+										    sx={(() => {
+												switch(qf.name){
+													case 'All Community Health Units':
+														return { backgroundColor: (allCHUSelected || pathId === 'all') ?  '#e7ebf0' : 'none' }
+													case 'Approved Community Health Units':
+														return { backgroundColor: (approvedCHUSelected || pathId === 'approved')  ?  '#e7ebf0' : 'none' }
+													case 'New Community Health Units Pending Approval':
+														return { backgroundColor: (newCHUSelected || pathId === 'new_pending_approval') ?  '#e7ebf0' : 'none' }
+													case 'Updated Community Health Units Pending Approval':
+														return { backgroundColor: (updatedCHUSelected  || pathId === 'updated_pending_approval') ?  '#e7ebf0' : 'none' }
+													case 'Rejected Community Health Units':
+														return { backgroundColor: (chuPendingApproval  || pathId === 'rejected') ?  '#e7ebf0' : 'none' }
+													case 'Feedback on Community Health Units':
+														return { backgroundColor: (feedBackCHUSelected || pathId == "feedback") ?  '#e7ebf0' : 'none' }
+												}
+											})()} 
 											name="rt"
 											onClick={(evt) => {
+												switch(qf.name){
+													case 'All Community Health Units':
+														setTitle('All Community Health Units')
+														setPathId('all')
+														setAllCHUSelected(true)
+														setApprovedCHUSelected(false)
+														setNewCHUSelected(false)
+														setUpdatedCHUSelected(false)
+														setCHUPendingApproval(false)
+														setRejectedCHUSelected(false)
+														setFeedBackCHUSelected(false)
+					
+														handleQuickFiltersClick('all')
+													break;
+													case 'Approved Community Health Units':
+														setTitle('Approved Community Health Units')
+														setAllCHUSelected(false)
+														setPathId('approved')
+														setApprovedCHUSelected(true)
+														setNewCHUSelected(false)
+														setUpdatedCHUSelected(false)
+														setCHUPendingApproval(false)
+														setRejectedCHUSelected(false)
+														setFeedBackCHUSelected(false)
+					
+														handleQuickFiltersClick('approved')
+													break;
+				
+													case 'New Community Health Units Pending Approval':
+														setTitle('Community Health Units Pending Approval')
+														setPathId('new_pending_approval')
+														setAllCHUSelected(false)
+														setApprovedCHUSelected(false)
+														setNewCHUSelected(true)
+														setUpdatedCHUSelected(false)
+														setCHUPendingApproval(false)
+														setRejectedCHUSelected(false)
+														setFeedBackCHUSelected(false)
+					
+														handleQuickFiltersClick('new_pending_approval')
+													break;
+													case 'Updated Community Health Units Pending Approval':
+														setTitle(' Community Health Units Pending Approval')
+														setPathId('updated_pending_approval')
+														setAllCHUSelected(false)
+														setApprovedCHUSelected(false)
+														setNewCHUSelected(false)
+														setUpdatedCHUSelected(true)
+														setCHUPendingApproval(false)
+														setRejectedCHUSelected(false)
+														setFeedBackCHUSelected(false)
+
+														handleQuickFiltersClick('updated_pending_approval')
+													break;
+													case 'Rejected Community Health Units':
+														setTitle('Rejected Community Health Units')
+														setPathId('rejected')
+														setAllCHUSelected(false)
+														setApprovedCHUSelected(false)
+														setNewCHUSelected(false)
+														setUpdatedCHUSelected(false)
+														setCHUPendingApproval(true)
+														setRejectedCHUSelected(false)
+														setFeedBackCHUSelected(false)
+
+														handleQuickFiltersClick('rejected')
+													break;
+													case 'Feedback on Community Health Units':
+														setTitle('Community Health Units Feedback From Public')
+														setPathId('feedback')
+														setAllCHUSelected(false)
+														setApprovedCHUSelected(false)
+														setNewCHUSelected(false)
+														setUpdatedCHUSelected(false)
+														setCHUPendingApproval(false)
+														setRejectedCHUSelected(false)
+														setFeedBackCHUSelected(true)
+					
+														handleQuickFiltersClick('feedback')
+													break;
+												}
+
 												setCurrentQuickFilter(qf.id);
 												let robj = {
 													pathname: '/community-units',

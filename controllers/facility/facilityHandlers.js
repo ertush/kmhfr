@@ -624,31 +624,31 @@ const handleServiceUpdates = async (event, stateSetters, alert, alert_message) =
 
     const [services, facilityId]  = stateSetters
     
-    // const _payload = services.length > 0 ? services.map(({value}) => ({service: value})) : {services:[{service: null}]}
+    const _payload = services.length > 0 ? services.map(({value}) => ({service: value})) : {services:[{service: null}]}
 
-    // try{
+    try{
 
-    //     if(_payload){
-    //         alert.success(alert_message)
-    //     } else {
-    //         alert.danger("Unable to update facility regulation")
-    //     }
+        if(_payload){
+            alert.success(alert_message)
+        } else {
+            alert.danger("Unable to update facility regulation")
+        }
 
-    //       const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-    //         headers:{
-    //             'Accept': 'application/json, text/plain, */*',
-    //             'Content-Type': 'application/json;charset=utf-8'
-    //         },
-    //         method: 'POST',
-    //         body: JSON.stringify({services:_payload})
-    //     })
+          const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method: 'POST',
+            body: JSON.stringify({services:_payload})
+        })
 
-    //     return resp
+        return resp
 
-    // }
-    // catch(e){
-    //     console.error('Unable to patch facility services details', e.message)
-    // }
+    }
+    catch(e){
+        console.error('Unable to patch facility services details', e.message)
+    }
 
 }
 
