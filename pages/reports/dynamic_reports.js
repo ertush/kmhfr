@@ -46,6 +46,9 @@ const DynamicReports = (props) => {
     const [isInfrastructureOptionsUpdate, setIsInfrastructureOptionUpdate] = useState(false)
     const [infrastructureOptions, setInfrastructureOptions] = useState([])
 
+    const [isSpecialityOptionsUpdate, setIsSpecialityOptionUpdate] = useState(false)
+    const [specialityOptions, setSpecialityOptions] = useState([])
+
 
     const [isSubCountyOptionsUpdate, setIsSubCountyOptionsUpdate] = useState(false)
     const [subCountyOptions, setSubCountyOptions] = useState([])
@@ -58,6 +61,14 @@ const DynamicReports = (props) => {
 
     const [isAccordionExpanded, setIsAccordionExpanded] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
+
+    const [filteredKeph, setFilteredKeph] = useState([
+        { value: "ed23da85-4c92-45af-80fa-9b2123769f49", label: "Level 6" },
+        { value: "7824068f-6533-4532-9775-f8ef200babd1", label: "Level 5" },
+        { value: "c0bb24c2-1a96-47ce-b327-f855121f354f", label: "Level 4" },
+        { value: "174f7d48-3b57-4997-a743-888d97c5ec31", label: "Level 3" },
+        { ivalued: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
+    ])
 
 
 
@@ -154,6 +165,38 @@ const DynamicReports = (props) => {
         updateData(lnlst)
     };
 
+    const facilityTypeCategories =  [
+        {
+            value: "87626d3d-fd19-49d9-98da-daca4afe85bf",
+            label: "DISPENSARY"
+        },
+        {
+            value: "8949eeb0-40b1-43d4-a38d-5d4933dc209f",
+            label: "MEDICAL CLINIC"
+        },
+        {
+            value: "1f1e3389-f13f-44b5-a48e-c1d2b822e5b5",
+            label: "HOSPITALS"
+        },  
+        {
+            value: "85f2099b-a2f8-49f4-9798-0cb48c0875ff",
+            label: "STAND ALONE"
+        },
+        {
+            value: "0b7f9699-6024-4813-8801-38f188c834f5",
+            label: "NURSING HOME"
+        },
+        {
+            value: "9ad22615-48f2-47b3-8241-4355bb7db835",
+            label: "HEALTH CENTRE"
+        },
+        {
+            value: "df69577d-b90f-4b66-920a-d0f3ecd95191",
+            label: "MEDICAL CENTRE"
+        }
+
+   ]
+
     gridApi?.setRowData(lnlst)
 
     useEffect(()=>{
@@ -164,7 +207,7 @@ const DynamicReports = (props) => {
             setlinelist(linelist2)
         }
         
-      }, [fromDate, toDate])
+      }, [fromDate, toDate, filteredKeph])
 
     const handleAccordionExpand = (ev) => {
         if(isAccordionExpanded){
@@ -174,6 +217,7 @@ const DynamicReports = (props) => {
         }
         
     }
+
     let drill = {}
     useEffect(()=>{
         let org_level=JSON.parse(localStorage.getItem('dd_owners'))
@@ -190,7 +234,7 @@ const DynamicReports = (props) => {
                 }
          }}
  
-     },[])
+     },[filteredKeph])
      
 
 //  console.log(drillDown)
@@ -243,7 +287,7 @@ const DynamicReports = (props) => {
     useEffect(() => {
         // setIsAccordionExpanded(true)
        
-    }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate, isConstituencyOptionsUpdate, isWardOptionsUpdate, linelist, isLoading])
+    }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate, isConstituencyOptionsUpdate, isWardOptionsUpdate, linelist, isLoading, filteredKeph])
 
 
     return (
@@ -360,15 +404,16 @@ const DynamicReports = (props) => {
                                                  
                                                         {filters && Object.keys(filters).length > 0 &&
                                                             (() => {
-                                                            // console.log({filters})
+                                                            console.log({filters})
                                                              const sorted = Object.keys(fltrs).sort()  
 
-                                                             const sortOrder = [1, 0, 2, 5, 6, 8, 7, 10, 9, 4, 3,]
+                                                             const sortOrder = [1, 0, 13, 2, 5, 6, 8, 7, 10, 9, 4, 3, 12, 11]
 
                                                             return sortOrder.map((v, i) => sorted.indexOf(sorted[i]) === v ? sorted[i] : sorted[v] )
 
                                                             })(fltrs).map(ft => (
                                                                 <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                                                    
                                                                     <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
 
                                                                     {
@@ -563,6 +608,98 @@ const DynamicReports = (props) => {
                                                                                     />
                                                                                 )
 
+                                                                             // Speciality Category
+                                                                             case 'speciality_category':
+
+                                                                                const handleSpecialityCategoryChange = async (ev) => {
+
+                                                                                    
+                                                                                    try{
+                                                                                        const data = await fetch(`/api/filters/speciality/?category=${ev.value}`)
+                                                                                        data.json().then(r => {
+                                                                                        const options = []
+                                                                                        r.results.forEach(({id, name}) => {
+                                                                                            options.push({
+                                                                                                value: id,
+                                                                                                label: name.toLocaleLowerCase()
+                                                                                            })  
+                                                                                        } )  
+
+
+                                                                                        setSpecialityOptions(options)
+                                                                                        setIsSpecialityOptionUpdate(!isSpecialityOptionsUpdate)
+                                                                                    })
+
+                                                                                    let nf = {}
+                                                                                    if (Array.isArray(ev)) {
+                                                                                        nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                    } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                        nf[ft] = ev.value
+                                                                                    } else {
+                                                                                        delete nf[ft]
+                                                                                        
+                                                                                    }
+                                                                                    setDrillDown({ ...drillDown, ...nf })
+                                                                                    }
+                                                                                    catch(e) {
+                                                                                        console.log(e.message)
+                                                                                    }
+                                                                                    
+                                                                                    
+    
+                                                                                }
+                                                                                
+                                                                                return (
+                                                                                        <Select 
+                                                                                        id={ft}
+                                                                                        name={ft}
+                                                                                        className="w-full p-1 rounded bg-gray-50"
+                                                                                        options={ 
+                                                                                            Array.from(filters[ft] || [],
+                                                                                            fltopt => {
+                                                                                                return {
+                                                                                                    value: fltopt.id, 
+                                                                                                    label: fltopt.name.toUpperCase()
+                                                                                                }
+                                                                                            })
+                                                                                        }
+                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                        onChange={handleSpecialityCategoryChange}
+                                                                                    />
+                                                                                
+                                                                                )
+                                                                            
+                                                                            
+                                                                            // Speciality
+                                                                            case 'speciality':
+
+                                                                                
+                                                                                return (
+                                                                                        <Select 
+                                                                                        id={ft}
+                                                                                        name={ft}
+                                                                                        isMulti
+                                                                                        
+                                                                                        className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                        
+                                                                                        options={specialityOptions}
+                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                        onChange={sl => {
+                                                                                            let nf = {}
+                                                                                            if (Array.isArray(sl)) {
+                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                            } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                nf[ft] = sl.value
+                                                                                            } else {
+                                                                                                delete nf[ft]
+                                                                                                
+                                                                                            }
+                                                                                            setDrillDown({ ...drillDown, ...nf })
+                                                                                        }}
+                                                                                        
+                                                                                    />
+                                                                                )
+
                                                                             // County
                                                                             case 'county':
                                                                                 const handleCountyCategoryChange = async (ev) => {
@@ -632,6 +769,21 @@ const DynamicReports = (props) => {
                                                                                    
                                                                                 }
 
+                                                                                const options = Array.from(filters[ft] || [],
+                                                                                    fltopt => {
+                                                                                        return {
+                                                                                            value: fltopt.id, 
+                                                                                            label: fltopt.name
+                                                                                        }
+                                                                                    })
+                                                                                
+                                                                                    if(ft === 'county' || ft == 'sub_county' || ft == 'constituency') options.unshift({
+                                                                                        value:'#',
+                                                                                        label:'All'
+                                                                                    })
+
+
+
                                                                                 return (
                                                                                     <Select 
                                                                                     id={ft}
@@ -639,15 +791,8 @@ const DynamicReports = (props) => {
                                                                                     
                                                                                     className="w-full p-1 rounded bg-gray-50"
                                                                                
-                                                                                    options={ 
-                                                                                        Array.from(filters[ft] || [],
-                                                                                        fltopt => {
-                                                                                            return {
-                                                                                                value: fltopt.id, 
-                                                                                                label: fltopt.name
-                                                                                            }
-                                                                                        })
-                                                                                    }
+                                                                                    options={options}
+
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                     value={
                                                                                        
@@ -800,29 +945,104 @@ const DynamicReports = (props) => {
                                                                                         )
     
                                                                             default:
-    
+
                                                                                return( <Select 
                                                                                     
                                                                                     isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
                                                                                     options={
-                                                                                        Array.from(filters[ft] || [],
+                                                                                        
+                                                                                       ft === 'keph_level' ?
+                                                                                       filteredKeph
+                                                                                       :
+                                                                                       facilityTypeCategories
+                                                                                        
+                                                                                       /* Array.from(filters[ft] || [],
                                                                                             fltopt => {
                                                                                                 return {
                                                                                                     value: fltopt.id, 
                                                                                                     label: fltopt.name
                                                                                                 }
                                                                                             })
+                                                                                        */
+                                                                                   
                                                                                     }
                                                                                     value={
-                                                                                       
-                                                                                        {
-                                                                                            value: drillDown[ft] || router?.query?.id || '', 
-                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== router?.query?.id)?.name || ''
+                                                                                   
+                                                                                       {
+                                                                                        value: drillDown[ft] || router?.query?.id || '', 
+                                                                                        label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== router?.query?.id)?.name || ''
                                                                                         }
+  
                                                                                     }
                                                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                     onChange={sl => {
-                                                                                        
+
+                                                                                        // Hospital Keph Level Validation
+                                                                                
+                                                                                        if(ft === 'facility_type'){
+                                                                                            
+                                                                                            if(sl.label === 'MEDICAL CENTRE') console.log({sl})
+
+                                                                                            switch (sl.label){
+
+                                                                                                case 'HOSPITALS':
+                                                                                                    setFilteredKeph([
+                                                                                                        { value: "ed23da85-4c92-45af-80fa-9b2123769f49", label: "Level 6" },
+                                                                                                        { value: "7824068f-6533-4532-9775-f8ef200babd1", label: "Level 5" },
+                                                                                                        { value: "c0bb24c2-1a96-47ce-b327-f855121f354f", label: "Level 4" },
+                                                                                                ])
+
+                                                                                                break;
+
+                                                                                                case 'DISPENSARY':
+                                                                                                    setFilteredKeph([
+                                                                                                        { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
+                                                                                                    ])
+
+                                                                                                    break;
+
+                                                                                                case 'STAND ALONE':
+                                                                                                     
+                                                                                                    setFilteredKeph([
+                                                                                                        { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
+                                                                                                    ])
+
+                                                                                                    break;
+
+                                                                                                case 'MEDICAL CENTRE':
+                                                                                                    console.log({ft})
+                                                                                                    setFilteredKeph([
+                                                                                                        { value: "174f7d48-3b57-4997-a743-888d97c5ec31", label: "Level 3" }
+                                                                                                    ])
+
+                                                                                                    break;
+
+                                                                                                case 'HEALTH CENTRE':
+                                                                                                    setFilteredKeph([
+                                                                                                        { value: "174f7d48-3b57-4997-a743-888d97c5ec31", label: "Level 3" }
+                                                                                                    ])
+
+                                                                                                    break;
+
+                                                                                                case 'NURSING HOME':
+                                                                                                    setFilteredKeph([
+                                                                                                        { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
+                                                                                                    ])
+
+                                                                                                    break;
+
+                                                                                                case 'MEDICAL CLINIC':
+                                                                                                    setFilteredKeph([
+                                                                                                        { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
+                                                                                                    ])
+
+                                                                                                    break;
+                                                                                            
+                                                                                            }
+                                                                                            
+                                                                                            
+                                                                                        }
+
                                                                                         let nf = {}
                                                                                         if (Array.isArray(sl)) {
                                                                                             nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
@@ -849,77 +1069,121 @@ const DynamicReports = (props) => {
                                                     <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:</label>
                                                     <input  type="date" name="to_date" onChange={(e)=>setToDate(e.target.value)} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                 </div>
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has edits</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
+
+                                                <div className='col-md-2 flex-col  items-start'>
+                                                    {/* Has ICU Beds */}
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="has_icu_beds" className="text-gray-700 capitalize text-sm flex-grow">Has ICU beds</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_icu_beds" id="has_icu_beds" onChange={ev => {
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                    </div>
+
+                                                    {/* Has HDU Beds */}
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has HDU beds</label>
+                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_hdu_beds" id="has_hdu_beds" onChange={ev => {
                                                             setDrillDown({ ...drillDown, 'has_edits': true })
                                                         }} />
                                                 
-                                                </div>
+                                                    </div>  
 
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Approved</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="approved" onChange={ev => {
+                                                    {/* Has Martenity Beds */}
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        <label htmlFor="has_martenity_beds" className="text-gray-700 capitalize text-sm flex-grow">Has Martenity beds</label>
+                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_martenity_beds" id="has_martenity_beds" onChange={ev => {
                                                             setDrillDown({ ...drillDown, 'has_edits': true })
                                                         }} />
                                                 
+                                                    </div> 
                                                 </div>
-
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Complete</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="complete" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
                                                 
-                                                </div>
+                                                <div className='col-md-2 flex-col  items-start'>
 
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has beds</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_beds" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="approved" className="text-gray-700 capitalize text-sm flex-grow">Approved</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="approved" id="approved" onChange={ev => {
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                    </div>
+
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Complete</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="complete" onChange={ev => {
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                    </div>
+
                                                 
+
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="has_cots" className="text-gray-700 capitalize text-sm flex-grow">Has cots</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_cots" id="has_cots" onChange={ev => {
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                    </div>
                                                 </div>
 
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has cots</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_cots" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
+                                                <div className='col-md-2 flex-col  items-start'>
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="open_24_hrs" className="text-gray-700 capitalize text-sm flex-grow">Open 24 hours</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                    </div>
+
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">Open weekends</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                    </div>
+
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                    </div>
                                                 </div>
 
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open 24 hours</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_24_hrs" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
+                                                <div className='col-md-2 flex-col  items-start'>
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="open_24_hrs" className="text-gray-700 capitalize text-sm flex-grow">Is classified</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                    </div>
+
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">has general theatre</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                    </div>
+
+                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">has maternity theatre</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                    </div>
                                                 </div>
-
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open weekends</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_weekends" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                </div>
-
-                                                <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="open_holidays" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                </div>
-
-
 
                                                 <div className='row-start-9 col-start-1 flex items-center space-x-3'>
                                        
                                                     <button 
-                                                    type='submit'
-                                                   
+                                                    type='submit'                   
                                                     className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">
 
                                                 {
@@ -1062,7 +1326,7 @@ const DynamicReports = (props) => {
                                                 <button className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline" onClick={ev => {
                                                     // router.push('/reports/dynamic_reports')
                                                     const fields = formRef.current.children
-                                                    console.log({fields})
+                                                    // console.log({fields})
                                                 }}>Clear filters</button>
                                             </div>
                                         </form>
@@ -1136,7 +1400,7 @@ DynamicReports.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     // console.log(ctx.query)
     const fetchFilters = token => {
-        let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county%2Cinfrastructure%2Cinfrastructure_category'
+        let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county%2Cinfrastructure%2Cinfrastructure_category%2Cspeciality%2Cspeciality_category'
 
         return fetch(filters_url, {
             headers: {
@@ -1203,7 +1467,7 @@ DynamicReports.getInitialProps = async (ctx) => {
         }).then(r => r.json())
             .then(json => {
                 return fetchFilters(token).then(ft => {
-                    console.log({ft})
+                    // console.log({ft})
                     return {
                         data: json, query, token, filters: { ...ft }, path: ctx.asPath || '/reports/dynamic_reports', current_url: current_url 
                     }
