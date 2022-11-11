@@ -16,7 +16,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import {useRef} from 'react'
-
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
@@ -33,6 +32,10 @@ import Alert from '@mui/material/Alert';
 import { PermissionContext } from '../../providers/permissions';
 import { hasSystemSetupPermissions } from '../../utils/checkPermissions';
 import moment from 'moment'
+import Backdrop from '@mui/material/Backdrop';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
 
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
@@ -41,10 +44,7 @@ import useId from 'react-use-uuid';
 import router from 'next/router';
 
 
-
-
 const system_setup = (props) => {
-
 
     const userPermissions = useContext(PermissionContext)
     const [title, setTitle] = useState('Counties')
@@ -82,6 +82,9 @@ const system_setup = (props) => {
     const [editMode, setEditMode] = useState(false)
     const [editID, setEditID] = useState(null);
     const [contactList, setContactList]=useState([{}])
+    const [open, setOpen] = useState(false);
+    const handleClose = () => setOpen(false);
+
 
     // Refs
     const {optionTypeRef,displayTextRef,optionValueRef,inputsContainerRef, inputsContainerRef2,contactTypeRef,contactDetailRef} = useRef(null)
@@ -639,6 +642,44 @@ const system_setup = (props) => {
             <MainLayout>
 
                 <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
+                    {open && 
+                       <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            open={open}
+                            onClose={handleClose}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                            timeout: 500,
+                            }}
+                        >
+                            <Fade in={open}>
+                            <Box sx={
+                                {
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: 700,
+                                    bgcolor: 'background.paper',
+                                    borderRadius: '6px',
+                                    boxShadow: 24,
+                                    p: 4,
+                                }
+                            }>
+                                <span className="flex gap-2">    
+                                      Are you sure you want to delete<b>{editData.name}</b> ?
+                                </span>
+                               <div className='flex justify-start gap-4 mt-4'>
+                                    <button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="button" onClick={()=>{handleDelete(addBtnLabel);setOpen(false)}}>Yes</button>
+                                    <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" 
+                                    onClick={()=> {setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([]);setOpen(false)}} 
+                                    >No</button>
+                                </div>     
+                            </Box>
+                            </Fade>
+                        </Modal>}
                      {/* Bread Cumbs  */}
                      <div className="flex flex-row gap-2 text-sm md:text-base">
                             <a className="text-green-700" href="/">Home</a> {'>'}
@@ -655,7 +696,7 @@ const system_setup = (props) => {
                         </button>
                         }
                         {isAddForm && editMode && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' &&
-                        <button className='rounded bg-red-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {handleDelete(addBtnLabel)}}>
+                        <button className='rounded bg-red-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setOpen(true)}}>
                         {`Delete `}
                         </button>
                         }
@@ -2055,8 +2096,32 @@ const system_setup = (props) => {
                                                                             defaultValue={editData.description}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
-                                                                </div>
+                                                                 </div>
+                                                                 {/* Active */} 
+                                                                 {editMode && (
 
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input 
+                                                                            className=''
+                                                                            name="active" 
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}   
+                                                                        />
+                                                                            
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_active`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Is Active?
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    
+                                                                                </span>
+                                                                            </label>
+                                                                    </div>
+                                                                 )}
+
+ 
                                                                 <div className='flex items-center space-x-3 mt-4'>
                                                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
                                                                         <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
@@ -2413,6 +2478,28 @@ const system_setup = (props) => {
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
+                                                            {editMode && (
+
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input 
+                                                                            className=''
+                                                                            name="active" 
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}
+                                                                            />
+                                                                            
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_active`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Is Active?
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    
+                                                                                </span>
+                                                                            </label>
+                                                                    </div>
+                                                            )}
 
                                                             <div className='flex items-center space-x-3 mt-4'>
                                                                     <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
@@ -2528,6 +2615,28 @@ const system_setup = (props) => {
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
+                                                                {editMode && (
+
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input 
+                                                                            className=''
+                                                                            name="active" 
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}
+                                                                            />
+                                                                            
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_active`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Is Active?
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    
+                                                                                </span>
+                                                                            </label>
+                                                                    </div>
+                                                                )}
     
                                                                 <div className='flex items-center space-x-3 mt-4'>
                                                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
@@ -2589,6 +2698,29 @@ const system_setup = (props) => {
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
+
+                                                            {editMode && (
+
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    <input 
+                                                                        className=''
+                                                                        name="active" 
+                                                                        type='checkbox'
+                                                                        defaultChecked={editData.active}
+                                                                        id={`add_${addBtnLabel}_active`}
+                                                                        />
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_active`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Is Active?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                </div>
+                                                            )}
 
                                                             <div className='flex items-center space-x-3 mt-4'>
                                                                     <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
@@ -2655,7 +2787,28 @@ const system_setup = (props) => {
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
+                                                            {editMode && (
 
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    <input 
+                                                                        className=''
+                                                                        name="active" 
+                                                                        type='checkbox'
+                                                                        defaultChecked={editData.active}
+                                                                        id={`add_${addBtnLabel}_active`}
+                                                                        />
+                                                                        
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_active`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Is Active?
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                
+                                                                            </span>
+                                                                        </label>
+                                                                </div>
+                                                            )}
 
                                                                 {/* inputsContainer */}
                                                                 <div className='grid grid-cols-2 place-content-start gap-3 space-y-1' ref={inputsContainerRef2}>
