@@ -131,7 +131,22 @@ export default async function submitFormData(req, res) {
                     url = `${API_URL}/gis/facility_coordinates/${req.query.id}/`;
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
-                    break;              
+                    break; 
+                case `admin_offices`:
+                    url = `${API_URL}/admin_offices/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST'
+                    break
+                case `edit_admin_offices`:
+                    url = `${API_URL}/admin_offices/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = req.method;
+                    break
+                case `delete_admin_office`:
+                    url = `${API_URL}/admin_offices/${req.query.id}`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'DELETE';
+                    break             
                 default:
 
                     
