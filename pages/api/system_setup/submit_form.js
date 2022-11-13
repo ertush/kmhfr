@@ -9,12 +9,36 @@ export default async function postSystemSetupData(req, res) {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-        const {path} = req.query
+        const {path,resourceCategory} = req.query
         let method = req.method
         let url = ''
         let contentType=''
         let id = req.query.id || ''
         switch (path){
+            case 'hr category':
+                url = `${API_URL}/facilities/speciality_categories/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break; 
+            case 'category':
+                if(resourceCategory === 'ServiceCatalogue'){
+                    url = `${API_URL}/facilities/service_categories/${id}`
+                }else{
+                    url = `${API_URL}/facilities/infrastructure_categories/${id}`
+                }
+                contentType = 'application/json;charset=utf-8';
+            break; 
+            case 'option group':
+                url = `${API_URL}/facilities/option_group_with_options/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break;
+            case 'service':
+                url = `${API_URL}/facilities/services/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break;
+            case 'specialty':
+                url = `${API_URL}/facilities/specialities/${id}`
+                contentType = 'application/json;charset=utf-8';
+            break;
             case 'infrastructure':
                 url = `${API_URL}/facilities/infrastructure/${id}`
                 contentType = 'application/json;charset=utf-8';

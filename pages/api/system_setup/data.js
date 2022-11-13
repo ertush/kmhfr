@@ -26,17 +26,25 @@ export default async function fetchSystemSetupData(req, res) {
                 url = `${API_URL}/common/${res}/?${qry}`
             break;
             case 'ServiceCatalogue':
-                url = `${API_URL}/facilities/${res}/?${qry}` 
+                if(_id== undefined){
+                    url = `${API_URL}/facilities/${res}/?${qry}`
+                }else{
+                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
+                }
             break;
             case 'HealthInfrastructure':
                 if(_id== undefined){
                     url = `${API_URL}/facilities/${res}/?${qry}`
                 }else{
-                    url = `${API_URL}/facilities/${res}/${_id}/`
+                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
                 }
             break;
             case 'HR':
-                url = `${API_URL}/facilities/${res}/?${qry}`
+                if(_id== undefined){
+                    url = `${API_URL}/facilities/${res}/?${qry}`
+                }else{
+                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
+                }
             break;
             case 'Contacts':
                 if(_id== undefined){

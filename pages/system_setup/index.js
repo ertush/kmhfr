@@ -66,7 +66,7 @@ const system_setup = (props) => {
         { id: 'code', label: 'Code', minWidth: 100},
         { id: 'action',label: 'Action',minWidth: 100, align:'right'}
       ]);
-      const [logsColumns, setLogsColumns] = useState([
+    const [logsColumns, setLogsColumns] = useState([
         { id: 'updated_on', label: 'Date', minWidth: 100 },
         { id: 'updated_by', label: 'User', minWidth: 100},
         { id: 'updates',label: 'Updates',minWidth: 100, }
@@ -82,6 +82,7 @@ const system_setup = (props) => {
     const [editMode, setEditMode] = useState(false)
     const [editID, setEditID] = useState(null);
     const [contactList, setContactList]=useState([{}])
+    const [optionGroup, setOptionGroup]=useState([{}])
     const [open, setOpen] = useState(false);
     const handleClose = () => setOpen(false);
 
@@ -474,7 +475,7 @@ const system_setup = (props) => {
         });
         try {
             let url = ''
-            editMode? url =`/api/system_setup/submit_form/?path=${path}&id=${editData.id}` : url =`/api/system_setup/submit_form/?path=${path}`
+            editMode? url =`/api/system_setup/submit_form/?path=${path}&id=${editData.id}&resourceCategory=${resourceCategory}` : url =`/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}`
             fetch(url,{
                headers: {
                    'Accept': 'application/json, text/plain, */*',
@@ -496,7 +497,7 @@ const system_setup = (props) => {
     }
 
     const handleDelete = async (path) => {
-        await fetch(`/api/system_setup/submit_form/?path=${path}&id=${editData.id}`,{
+        await fetch(`/api/system_setup/submit_form/?path=${path}&id=${editData.id}&resourceCategory=${resourceCategory}`,{
             method: 'DELETE'
         })
         setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([])   
@@ -594,7 +595,7 @@ const system_setup = (props) => {
     }
     useEffect(async() => {
         let url = ''
-        if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department' || addBtnLabel ==='facility owner category' || addBtnLabel === 'facility type category' || addBtnLabel === 'regulatory body'){
+        if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department' || addBtnLabel ==='facility owner category' || addBtnLabel === 'facility type category' || addBtnLabel === 'regulatory body' || addBtnLabel === 'specialty' || addBtnLabel === 'category' ){
             if(addBtnLabel ==='facility department'){
                 url =`/api/system_setup/data/?resource=regulating_bodies&resourceCategory=Facilities&fields=id,name`                
             }
@@ -610,17 +611,35 @@ const system_setup = (props) => {
             if(addBtnLabel ==='regulatory body'){
                 url =`/api/system_setup/data/?resource=contact_types&resourceCategory=Contacts&fields=id,name`                
             }
+            if(addBtnLabel ==='specialty'){
+                url =`/api/system_setup/data/?resource=speciality_categories&resourceCategory=HR&fields=id,name`                
+            }
+            if(addBtnLabel ==='category'){
+                url =`/api/system_setup/data/?resource=service_categories&resourceCategory=ServiceCatalogue&fields=id,name`                
+            }
 
             const response = await fetch(url)
             const _data = await response.json()
             const results = _data.results.map(({id, name}) => ({value:id, label:name}))
             setSelectOptionss(results)        
         }
+        if(addBtnLabel === 'service'){
+            let resource =['option_groups', 'service_categories']
+            let options = []
+            resource.map(async (item, i)=>{
+                const response = await fetch(`/api/system_setup/data/?resource=${item}&resourceCategory=ServiceCatalogue&fields=id,name`)
+                const _data = await response.json()
+                const results = _data.results.map(({id, name}) => ({value:id, label:name}))
+                options.push(results)
+                setSelectOptionss(options)
+               
+            })
+        }
         if(editMode && editID !== ''){
             setTitle(`Edit ${addBtnLabel}`); 
             const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`);
             const _data = await response.json()
-            addBtnLabel === 'regulatory body' ?? setContactList([..._data.contacts])
+            addBtnLabel === 'regulatory body' ? setContactList([..._data.contacts]): addBtnLabel === 'option group' ? setOptionGroup([..._data.options]) :null
             setEditData(_data)
         }else{
             setEditData([])
@@ -754,15 +773,15 @@ const system_setup = (props) => {
                                     <Collapse in={openServiceCatalogue} timeout="auto" unmountOnExit>
                                         <List component="div" disablePadding>
                                             {/* Categories */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('categories'); setAddBtnLabel('category')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('categories'); setAddBtnLabel('category'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Categories" />
                                             </ListItemButton>
                                             {/* Option groups */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('option_groups'); setResourceCategory('ServiceCatalogue'); setTitle('option groups'); setAddBtnLabel('option group')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('option_groups'); setResourceCategory('ServiceCatalogue'); setTitle('option groups'); setAddBtnLabel('option group'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Option Groups" />
                                             </ListItemButton>
                                             {/* Services */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'service' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'category_name']); setResource('services'); setResourceCategory('ServiceCatalogue'); setTitle('services'); setAddBtnLabel('service')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'service' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'category_name']); setResource('services'); setResourceCategory('ServiceCatalogue'); setTitle('services'); setAddBtnLabel('service'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Services" />
                                             </ListItemButton>
                                         
@@ -780,7 +799,7 @@ const system_setup = (props) => {
                                     <Collapse in={openHealthInfr} timeout="auto" unmountOnExit>
                                         <List component="div" disablePadding>
                                             {/* Categories */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('categories'); setAddBtnLabel('category')}}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('categories'); setAddBtnLabel('category'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Categories" />
                                             </ListItemButton>
                                             {/* Infrastructure */}
@@ -1280,7 +1299,8 @@ const system_setup = (props) => {
                                                         case 'category':
                                                             return (
                                                                  resourceCategory === 'ServiceCatalogue' ? (
-                                                                    <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
+                                                                    <>
+                                                                    <form className='w-full h-full flex-col gap-1' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
                                                                             {/* Name */}
                                                                             <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                                 
@@ -1297,7 +1317,9 @@ const system_setup = (props) => {
                                                                                         required
                                                                                         type='text'
                                                                                         placeholder='Name'
-                                                                                        name={`add_${addBtnLabel}_constituency_field`}
+                                                                                        id={`add_${addBtnLabel}_constituency_field`}
+                                                                                        name='name'
+                                                                                        defaultValue={editData.name}
                                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                     />
                                                                             </div>
@@ -1315,20 +1337,12 @@ const system_setup = (props) => {
                                                                                     </span>
                                                                                 </label>
                                                                                 <Select
-                                                                                    options={[
-                                                                                        {
-                                                                                            value: 'type-1',
-                                                                                            label: 'type-1',
-                                                                                        },
-                                                                                        {
-                                                                                            value: 'type-2',
-                                                                                            label: 'type-2',
-                                                                                        },
-                                                                                    ]}
-                                                                                    
+                                                                                    options={selectOptionss}
                                                                                     placeholder='Select Parent'
-                                                                                    onChange={() => console.log('changed type')}
-                                                                                    name={`add_${addBtnLabel}_county_field`}
+                                                                                    id={`add_${addBtnLabel}_county_field`}
+                                                                                    name='parent'
+                                                                                    key={editData.parent}
+                                                                                    defaultValue={{value: editData?.parent, label: selectOptionss?.find(so=> so.value === editData?.parent)?.label}}
                                                                                     className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                                 />
 
@@ -1350,7 +1364,9 @@ const system_setup = (props) => {
                                                                                         required
                                                                                         type='text'
                                                                                         placeholder='Abbreviation'
-                                                                                        name={`add_${addBtnLabel}_constituency_field`}
+                                                                                        id={`add_${addBtnLabel}_constituency_field`}
+                                                                                        name='abbreviation'
+                                                                                        defaultValue={editData?.abbreviation}
                                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                     />
                                                                             </div>
@@ -1371,7 +1387,9 @@ const system_setup = (props) => {
                                                                                     required
                                                                                     type='text'
                                                                                     placeholder='Description'
-                                                                                    name={`add_${addBtnLabel}_constituency_field`}
+                                                                                    id={`add_${addBtnLabel}_constituency_field`}
+                                                                                    name='description'
+                                                                                    defaultValue={editData?.description}
                                                                                     className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                 />
                                                                                
@@ -1382,9 +1400,14 @@ const system_setup = (props) => {
                                                                                     <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                                             </div>
                                                                     </form>
+                                                                    &nbsp;
+                                                                    <ChangeLog/>
+                                                                    </>
+
                                                                  ) :
                                                                  (
-                                                                    <form className='w-full h-full'>
+                                                                    <>
+                                                                    <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
                                                                 
                                                                         {/* Name */}
                                                                      <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1402,7 +1425,9 @@ const system_setup = (props) => {
                                                                             required
                                                                             type='text'
                                                                             placeholder='Name'
-                                                                            name={`add_${addBtnLabel}_name`}
+                                                                            id={`add_${addBtnLabel}_name`}
+                                                                            name='name'
+                                                                            defaultValue={editData.name}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -1423,7 +1448,9 @@ const system_setup = (props) => {
                                                                         
                                                                             type='text'
                                                                             placeholder='Description'
-                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            id={`add_${addBtnLabel}_desc`}
+                                                                            name='description'
+                                                                            defaultValue={editData.description}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -1434,112 +1461,76 @@ const system_setup = (props) => {
                                                                 </div>
 
                                                                     </form>
+                                                                    &nbsp;
+                                                                    <ChangeLog/>
+                                                                    
+                                                                    </>
                                                                  )
                                                             )
 
                                                         case 'option group':
-                                                            const handleAddOptionGroup = e => {
-                                                              
-
+                                                            const handleAddOptionGroup = (e,path )=> {
                                                                 e.preventDefault()
-                             
-                                                                // Option Type Node
-                                                                /*
-                                                                const optionTypeNode = document.createElement('select')
-                                                                optionTypeNode.setAttribute('class', ' h-10 border-2 border-gray-200 flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none');
-                                                                optionTypeNode.setAttribute(
-                                                                    'placeholder',
-                                                                    'Select Service'
-                                                                );
-                                                                optionTypeNode.setAttribute(
-                                                                    'name',
-                                                                    `option_type_${uid}`
-                                                                );
-            
-                                                                const option0 = document.createElement('option');
-                                                                option0.innerText = 'BOOLEAN';
-                                                                option0.value = 'BOOLEAN';
+                                                                const obj = {};
+                                                                const jk ={}
+                                                                editMode ? obj = {...editData}: null
+                                                                console.log(jk);
+                                                                const elements = [...e.target];
+                                                                elements.forEach((element) => {
+                                                                    if (obj[element.name] === '') {
+                                                                        delete obj[element.name];
+                                                                      }
+                                                                    if(element.name == 'option_type' || element.name == 'display_text' || element.name == 'value'){
+                                                                        let data = [...optionGroup];
+                                                                        obj['options'] = {}
+                                                                        data[element.id][element.name] = element.value
+                                                                        obj['options'] = data.map((op)=>{
+                                                                            return{
+                                                                            ...op,
+                                                                            option_type: op.option_type,
+                                                                            display_text: op.display_text,
+                                                                            value: op.value
+                                                                        }
+                                                                        })
+                                                        
+                                                                    }else{
+                                                                        element.type ==='checkbox'?obj[element.name]= element.checked  :obj[element.name] = element.value;
+                                                                    }
+                                                                });
 
-                                                                const option1 = document.createElement('option');
-                                                                option1.innerText = 'INTEGER';
-                                                                option1.value = 'INTEGER';
-
-                                                                const option2 = document.createElement('option');
-                                                                option2.innerText = 'DECIMAL';
-                                                                option2.value = 'DECIMAL';
-
-                                                                const option3 = document.createElement('option');
-                                                                option3.innerText = 'TEXT';
-                                                                option3.value = 'TEXT';
-
-                                                                optionTypeNode.appendChild(option0.getRootNode());
-                                                                optionTypeNode.appendChild(option1.getRootNode());
-                                                                optionTypeNode.appendChild(option2.getRootNode());
-                                                                optionTypeNode.appendChild(option3.getRootNode());
-                                                               
-
-                                                                optionTypeRef.current.append(optionTypeNode)
-                                                                 */
-
-                                                                const optionTypeNode = inputsContainerRef.current.childNodes[3].cloneNode(true);
-                                                          
-													            optionTypeNode.setAttribute('name', `option_type_${uid}`);
-                                                                optionTypeNode.setAttribute('options', `
-                                                                    type-1
-                                                                    type-2
-                                                                `)
-                                                                optionTypeRef.current.append(optionTypeNode)
-
-
-                                                                // Display Text
-                                                                 const displayTextNode = document.createElement('input')
-                                                                 displayTextNode.setAttribute(
-                                                                    'placeholder',
-                                                                    'Display Text'
-                                                                 );
-                                                                 displayTextNode.setAttribute(
-                                                                    'name',
-                                                                    `display_input_${uid}`
-                                                                 );
-                                                                 displayTextNode.setAttribute('class', 'flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none')
-                                                                 displayTextRef.current.append(displayTextNode)
-
-                                                                 // Delete Btn
-                                                                const deleteBtnNode = document.createElement('button')
-                                                                deleteBtnNode.setAttribute('class', 'w-auto h-auto flex-shrink-1 col-span-1 rounded p-2 bg-white border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white')
-                                                                deleteBtnNode.append('Delete')
-                                                                deleteBtnNode.onclick = (e) => {
-                                                                    e.preventDefault()
-
-                                                                    // optionTypeRef.current.childNodes
-                                                                    console.log('deleting...', {childNodes: optionTypeRef.current.childNodes});
-
-                                                                }
-                                                                
-
-                                                                // Option Value
-
-                                                                const optionValueNode = document.createElement('input')
-                                                                optionValueNode.setAttribute('class', 'col-span-2')
-                                                                optionValueNode.setAttribute(
-                                                                    'placeholder',
-                                                                    'Option Value'
-                                                                 );
-                                                                optionValueNode.setAttribute(
-                                                                    'name',
-                                                                    `option_value_${uid}`
-                                                                 );
-                                                                optionValueNode.setAttribute('class', 'flex-none col-span-3 w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none')
-                                                                optionValueRef.current.append(optionValueNode)
-                                                                optionValueRef.current.append(deleteBtnNode)
-
-                                                                
-                                                              
-
+                                                                try {
+                                                                    let url = ''
+                                                                    editMode? url =`/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}` : url =`/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}`
+                                                                    fetch(url,{
+                                                                       headers: {
+                                                                           'Accept': 'application/json, text/plain, */*',
+                                                                           'Content-Type': 'application/json;charset=utf-8'
+                                                                       },
+                                                                       method: 'POST',
+                                                                       body: JSON.stringify(obj).replace(',"":""', '')
+                                                                    }).then(res => res.json()).then(data => {
+                                                                        setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([])
+                                                                        if(data.details){
+                                                                            alert.danger('Error: '+data.details)
+                                                                          }else{
+                                                                            alert.success( (editMode? 'Updated' : 'Added') +' Successfully')
+                                                                          }
+                                                                    })
+                                                               } catch (error) {
+                                                                   alert.danger('Error: '+error)
+                                                               }
                                                             } 
 
+                                                            const handleAddOptionGroupClick = (e) => {
+                                                                e.preventDefault();
+                                                                setOptionGroup(s=>{
+                                                                    return [...s, {option_type: '', display_text: '', value: ''}]
+                                                                })
+                                                            };
+
                                                             return (
-                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e) => {e.preventDefault()}}>
+                                                                <>  
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e)=>handleAddOptionGroup(e, addBtnLabel)}>
                                                                 {/* Name */}
                                                               
                                                                     <div className='col-span-3 flex-1 flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1557,11 +1548,34 @@ const system_setup = (props) => {
                                                                             required
                                                                             type='text'
                                                                             placeholder='Option Group Name'
-                                                                            name={`add_${addBtnLabel}_option_group`}
+                                                                            id={`add_${addBtnLabel}_option_group`}
+                                                                            name='name'
+                                                                            defaultValue={editData?.name}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                      </div>
-                                                               
+                                                                     {editMode && (
+
+                                                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input 
+                                                                            className=''
+                                                                            name="active" 
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}   
+                                                                        />
+                                                                            
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_active`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Is Active?
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
+                                                                        )}
                                                                 
 
                                                                 {/* inputsContainer */}
@@ -1569,63 +1583,54 @@ const system_setup = (props) => {
                                                                     <h2 className='text-lg font-semibold text-indigo-900'>Option Type*</h2>
                                                                     <h2 className='text-lg font-semibold text-indigo-900'>Display Text*</h2>
                                                                     <h2 className='text-lg font-semibold text-indigo-900'>Option Value*</h2>
+                                                                {optionGroup.length > 0 ? optionGroup.map((option, index) => {
+                                                                    return (
+                                                                        <>
+                                                                            {/* Option Type */}
+                                                                            <select
+                                                                                required
+                                                                                placeholder='Select Option Type'
+                                                                                id={index}
+                                                                                name='option_type'
+                                                                                defaultValue={option.option_type}
+                                                                                className='flex-none w-full bg-gray-50 rounded flex-grow placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            >
+                                                                                    <option value='BOOLEAN'>BOOLEAN</option>
+                                                                                    <option value='INTEGER'>INTEGER</option>
+                                                                                    <option value='DECIMAL'>DECIMAL</option>
+                                                                                    <option value='TEXT'>TEXT</option>
+                                                                            </select>
+                                                                            {/* Display Text */}
+                                                                                <input
+                                                                                    required
+                                                                                    type='text'
+                                                                                    placeholder='Display Text'
+                                                                                    id={index}
+                                                                                    name='display_text'
+                                                                                    defaultValue={option.display_text}
+                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                />
 
-                                                                    {/* Option Type */}
-                                                                    <Select
-                                                                            options={[
-                                                                                {
-                                                                                    value: 'type-1',
-                                                                                    label: 'type-1',
-                                                                                },
-                                                                                {
-                                                                                    value: 'type-2',
-                                                                                    label: 'type-2',
-                                                                                },
-                                                                            ]}
-                                                                            required
-                                                                            placeholder='Select Option Type'
-                                                                            onChange={() => console.log('changed type')}
-                                                                            name={`add_${addBtnLabel}_option_type`}
-                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-                                                                        />
-                                                                    {/* Display Text */}
-                                                                      <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Display Text'
-                                                                            name={`add_${addBtnLabel}_display_text`}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                                                        />
-
-                                                                    {/* Option Value */}
-                                                                    <div className='grid grid-cols-4 w-full'>
-                                                                        <input
-                                                                            required
-                                                                            type='text'
-                                                                            placeholder='Option Value'
-                                                                            name={`add_${addBtnLabel}_option_value`}
-                                                                            className='flex-none w-full bg-gray-50 col-span-3 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                                                        />
-                                                                    </div>
-                                                                    
-
-                                                                    <div ref={optionTypeRef} className='mx-0 px-0 space-y-4'>
-
-                                                                    </div>
-
-                                                                    <div ref={displayTextRef} className='mx-0 px-0 space-y-3'>
-
-                                                                    </div>
-                                                                    
-                                                                   
-                                                                    <div ref={optionValueRef} className='m-0 p-0 grid grid-cols-4 gap-2 w-full'>
+                                                                            {/* Option Value */}
+                                                                            <div className='grid grid-cols-4 w-full'>
+                                                                                <input
+                                                                                    required
+                                                                                    type='text'
+                                                                                    placeholder='Option Value'
+                                                                                    id={index}
+                                                                                    name='value'
+                                                                                    defaultValue={option.value}
+                                                                                    className='flex-none w-full bg-gray-50 col-span-3 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                />
+                                                                            </div>
                                                                         
-                                                                    </div>
-
+                                                                        </>
+                                                                    )
+                                                                }): (<><p>No Options Assigned to Option Group </p></>)}
                                                                  
                                                                     <div className='col-span-3 flex items-center justify-end'>
                                                                         <button className='rounded p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
-                                                                        onClick={handleAddOptionGroup}
+                                                                        onClick={handleAddOptionGroupClick}
                                                                         >Add <PlusIcon className='w-5 h-5 text-white'/></button>
                                                                     </div>
                                                                    
@@ -1638,11 +1643,16 @@ const system_setup = (props) => {
                                                                         <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                                  </div>
                                                                 </form>
+                                                                &nbsp;
+                                                                <ChangeLog/>
+                                                                
+                                                                </>
                                                             )
 
                                                         case 'service':
                                                             return (
-                                                                <form className='w-full h-full'>
+                                                                <>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
 
                                                                      {/* Service code */}
                                                                      <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1655,7 +1665,9 @@ const system_setup = (props) => {
                                                                                 
                                                                             </span>
                                                                         </label>
+                                                                        {editMode ? editData.code: (
                                                                         <Alert severity="info">Service Code will be generated after creating the service</Alert>
+                                                                        )}
 
                                                                     </div>
                                                                      {/* Service Name */}
@@ -1674,7 +1686,9 @@ const system_setup = (props) => {
                                                                             required
                                                                             type='text'
                                                                             placeholder='Service Name'
-                                                                            name={`add_${addBtnLabel}_field`}
+                                                                            id={`add_${addBtnLabel}_field`}
+                                                                            name='name'
+                                                                            defaultValue={editData.name}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -1695,7 +1709,9 @@ const system_setup = (props) => {
                                                                         
                                                                             type='text'
                                                                             placeholder='Abbreviation'
-                                                                            name={`add_${addBtnLabel}_field`}
+                                                                            id={`add_${addBtnLabel}_field`}
+                                                                            name='abbreviation'
+                                                                            defaultValue={editData.abbreviation}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -1713,20 +1729,13 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
-                                                                        options={[
-                                                                            {
-                                                                                value: 'type-1',
-                                                                                label: 'type-1',
-                                                                            },
-                                                                            {
-                                                                                value: 'type-2',
-                                                                                label: 'type-2',
-                                                                            },
-                                                                        ]}
+                                                                        options={selectOptionss[1]}
                                                                         required
                                                                         placeholder='Select a Category'
-                                                                        onChange={() => console.log('changed type')}
-                                                                        name={`add_${addBtnLabel}_category_field`}
+                                                                        key={editData.category}
+                                                                        id={`add_${addBtnLabel}_category_field`}
+                                                                        name='category'
+                                                                        defaultValue={{value:editData.category, label:editData.category_name}}
                                                                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
@@ -1744,20 +1753,13 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
-                                                                        options={[
-                                                                            {
-                                                                                value: 'type-1',
-                                                                                label: 'type-1',
-                                                                            },
-                                                                            {
-                                                                                value: 'type-2',
-                                                                                label: 'type-2',
-                                                                            },
-                                                                        ]}
+                                                                        options={selectOptionss[0]}
                                                                         required
                                                                         placeholder='Select Option Group'
-                                                                        onChange={() => console.log('changed type')}
-                                                                        name={`add_${addBtnLabel}_sub_county_field`}
+                                                                        key={editData.group}
+                                                                        id={`add_${addBtnLabel}_sub_county_field`}
+                                                                        name='group'
+                                                                        defaultValue={{value:editData.group, label:(selectOptionss[0])?.find(i=> i.value ==editData.group)?.label}}
                                                                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
@@ -1778,13 +1780,16 @@ const system_setup = (props) => {
                                                                         
                                                                             type='text'
                                                                             placeholder='Service description'
-                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            id={`add_${addBtnLabel}_desc`}
+                                                                            name='description'
+                                                                            defaultValue={editData.description}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
                                                                 {/* Has options */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                    <input className='' type='checkbox' id={`add_${addBtnLabel}_has_options`} name='has_options' defaultChecked ={editData.has_options}/>
                                                                          <label
                                                                             htmlFor={`add_${addBtnLabel}_has_options`}
                                                                             className='text-gray-600 capitalize text-sm'>
@@ -1795,8 +1800,31 @@ const system_setup = (props) => {
                                                                             </span>
                                                                         </label>
 
-                                                                        <input className='' type='checkbox' name={`add_${addBtnLabel}_has_options`}/>
                                                                 </div>
+
+                                                                {/* Active */} 
+                                                                {editMode && (
+
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <input 
+                                                                            className=''
+                                                                            name="active" 
+                                                                            type='checkbox'
+                                                                            defaultChecked={editData.active}
+                                                                            id={`add_${addBtnLabel}_active`}   
+                                                                        />
+                                                                            
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_active`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Is Active?
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    
+                                                                                </span>
+                                                                            </label>
+                                                                    </div>
+                                                                    )}
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
                                                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
@@ -1804,6 +1832,9 @@ const system_setup = (props) => {
                                                                 </div>
 
                                                                 </form>
+                                                                &nbsp;
+                                                                <ChangeLog/>
+                                                                </>
                                                             )
 
                                                         case 'infrastructure':
@@ -1908,7 +1939,8 @@ const system_setup = (props) => {
 
                                                         case 'hr category':
                                                             return (
-                                                                <form className='w-full h-full'>
+                                                                <>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
                                                                 
                                                                     {/* Name */}
                                                                      <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1926,7 +1958,9 @@ const system_setup = (props) => {
                                                                             required
                                                                             type='text'
                                                                             placeholder='Name'
-                                                                            name={`add_${addBtnLabel}_name`}
+                                                                            id={`add_${addBtnLabel}_name`}
+                                                                            name='name'
+                                                                            defaultValue={editData.name}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -1947,7 +1981,9 @@ const system_setup = (props) => {
                                                                         
                                                                             type='text'
                                                                             placeholder='Description'
-                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            id={`add_${addBtnLabel}_desc`}
+                                                                            name='description'
+                                                                            defaultValue={editData.description}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -1958,10 +1994,13 @@ const system_setup = (props) => {
                                                                 </div>
 
                                                                 </form>
+                                                                &nbsp;
+                                                                <ChangeLog/>
+                                                                </>
                                                             )
                                                         case 'specialty':
                                                             return(
-                                                                <form className='w-full h-full'>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
 
                                                                 {/* Name */}
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1979,7 +2018,9 @@ const system_setup = (props) => {
                                                                         required
                                                                         type='text'
                                                                         placeholder='Name'
-                                                                        name={`add_${addBtnLabel}_name`}
+                                                                        id={`add_${addBtnLabel}_name`}
+                                                                        name='name'
+                                                                        defaultValue={editData.name}
                                                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                                     </div>                                                            
@@ -1997,20 +2038,13 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
-                                                                        options={[
-                                                                            {
-                                                                                value: 'type-1',
-                                                                                label: 'type-1',
-                                                                            },
-                                                                            {
-                                                                                value: 'type-2',
-                                                                                label: 'type-2',
-                                                                            },
-                                                                        ]}
+                                                                        options={selectOptionss}
                                                                         required
                                                                         placeholder='Select a Category'
-                                                                        onChange={() => console.log('changed type')}
-                                                                        name={`add_${addBtnLabel}_category_field`}
+                                                                        key={editData.category}
+                                                                        id={`add_${addBtnLabel}_category_field`}
+                                                                        name='category'
+                                                                        defaultValue={{value: editData.category, label: editData.category_name}} 
                                                                         className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
@@ -2031,7 +2065,9 @@ const system_setup = (props) => {
                                                                         
                                                                             type='text'
                                                                             placeholder='Description'
-                                                                            name={`add_${addBtnLabel}_desc`}
+                                                                            id={`add_${addBtnLabel}_desc`}
+                                                                            name='description'
+                                                                            defaultValue={editData.description}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
@@ -2823,7 +2859,6 @@ const system_setup = (props) => {
                                                                                 required
                                                                                 key={index}
                                                                                 id={`${index}`}
-                                                                                onChange={(e)=>{console.log(e)}}
                                                                                 name='contact_type'
                                                                                 defaultValue={contact?.contact_type}
                                                                                 className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
