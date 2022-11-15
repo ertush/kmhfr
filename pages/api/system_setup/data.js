@@ -23,7 +23,11 @@ export default async function fetchSystemSetupData(req, res) {
 
         switch (resCat){
             case 'AdminUnits':
-                url = `${API_URL}/common/${res}/?${qry}`
+                if(_id== undefined){
+                    url = `${API_URL}/common/${res}/?${qry}`
+                }else{
+                    url = `${API_URL}/common/${res}/${_id}/?${qry}`
+                }
             break;
             case 'ServiceCatalogue':
                 if(_id== undefined){
