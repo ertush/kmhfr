@@ -20,8 +20,6 @@ import NativePickers from '../../components/date-picker'
 import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
 
-
-
 // import { set } from 'nprogress'
 
 
@@ -121,7 +119,7 @@ const Home = (props) => {
                             {/* Bread Crumbs */}
 
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <a className="text-green-800" href="/">Home</a> {'>'}
+                                <Link className="text-green-800" href="/">Home</Link> {'>'}
                                 <span className="text-gray-500">Facilities</span>
                             </div>
 
