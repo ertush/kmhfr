@@ -6,7 +6,8 @@ import { useAlert } from "react-alert";
 // Next imports
 import Head from 'next/head';
 import router from 'next/router';
-import dynamic from 'next/dynamic'
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
 
 // Component imports
 import MainLayout from '../../components/MainLayout';
@@ -400,8 +401,8 @@ function AddFacility(props) {
 						<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
 							<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
 								<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-									<a className="text-green-800" href="/">Home</a> {'>'}
-									<a className="text-green-800" href="/facilities/">Facilities</a> {'>'}
+									<Link className="text-green-800" href="/">Home</Link> {'>'}
+									<Link className="text-green-800" href="/facilities/">Facilities</Link> {'>'}
 									<span className="text-gray-500">Add Facility</span>
 								</div>
 							</div>

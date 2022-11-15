@@ -271,7 +271,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
   }
 
   const customList = (items, isRight) => (
-    <Paper sx={{ width: 620, height: 300, overflow: 'auto', padding:1, margin:'auto' }}>
+    <Paper sx={{ width: 480, height: 300, overflow: 'auto', padding:1, margin:'auto' }}>
     
 
       <List dense component="div" role="list">
