@@ -234,7 +234,7 @@ useMemo(() => {
   }
 
   const customList = (items, _isRight) => (
-    <Paper sx={{ width: 520, height: 300, overflow: 'auto', padding:1 }}>
+    <Paper sx={{ width:480, height: 300, overflow: 'auto', padding:1 }}>
         
       <List dense component="div" role="list">
         

@@ -8,6 +8,7 @@ import useDidMountEffect from '../../hooks/useDidMountEffect';
 // next imports
 import Head from 'next/dist/shared/lib/head'
 import { PlusIcon, TrashIcon } from '@heroicons/react/solid'
+import Link from 'next/link'
 
 // MUI imports
 import ListSubheader from '@mui/material/ListSubheader';
@@ -446,7 +447,7 @@ const system_setup = (props) => {
                 <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
                      {/* Bread Cumbs  */}
                      <div className="flex flex-row gap-2 text-sm md:text-base">
-                            <a className="text-green-700" href="/">Home</a> {'>'}
+                            <Link className="text-green-700" href="/">Home</Link> {'>'}
                             <span className="text-gray-500" >System setup</span>   
                     </div>
                     {/* Header Bunner */}

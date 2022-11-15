@@ -4,7 +4,9 @@ import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 function FacilityUpdatesTable({facilityUpdatedJson, originalData}) {
   return (
     <Table className="md:px-4">
-        <TableHead className='text-xl font-semibold'>Facility Updates</TableHead>
+        <TableHead className='text-xl font-semibold'>
+            <h2>Facility Updates</h2>
+        </TableHead>
         <TableBody>
             <TableRow>
                 <TableCell>
@@ -43,7 +45,6 @@ function FacilityUpdatesTable({facilityUpdatedJson, originalData}) {
 
                         ))
                         :''
-
                         }
                     )
                 
@@ -57,7 +58,7 @@ function FacilityUpdatesTable({facilityUpdatedJson, originalData}) {
                     <div className='flex-col gap-2 items-start mt-4'>
                         <h3 className='text-lg font-semibold'>Officer In-Charge</h3>
                         <div className='grid md:grid-cols-5 grid-cols-2 justify-start gapx-x-2 gap-y-3'>
-                            {console.log({facilityUpdatedJson})}
+                            {/* {console.log({facilityUpdatedJson})} */}
                             {/* Key Value */}
                             <p className='text-base font-semibold col-start-1'>Name{' :'}</p>
                             <p className='text-base font-normal col-start-2'>{facilityUpdatedJson.officer_in_charge.name}</p>
@@ -89,14 +90,8 @@ function FacilityUpdatesTable({facilityUpdatedJson, originalData}) {
                 
                 }
             </TableRow>
-            
-
             {/* Infrastructure updates */}
-            
-
             {/* Human resources updates */}
-            
-        
             </TableBody>
             
 

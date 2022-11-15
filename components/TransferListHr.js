@@ -263,7 +263,7 @@ export default function TransferListHr({categories, setState, setCount, setRefre
   }
 
   const customList = (items, isRight) => (
-    <Paper sx={{ width: 520, height: 300, overflow: 'auto', padding:1 }}>
+    <Paper sx={{ width: 480, height: 300, overflow: 'auto', padding:1 }}>
         
       <List dense component="div" role="list">
         {items.map((_data, i) => {
