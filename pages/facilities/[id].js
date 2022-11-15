@@ -315,7 +315,7 @@ const Facility = (props) => {
                   }
              
                   <button
-                    onClick={() => router.push("/facilities/regulate")}
+                    onClick={() => router.push(`regulate/${facility?.id}`)}
                     className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                   >
                     Regulate
