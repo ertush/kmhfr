@@ -29,6 +29,7 @@ import TrasnferListServices from '../../../components/TrasnferListServices';
 import TransferListHr from '../../../components/TransferListHr';
 import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
+import FacilitySideMenu from '../../../components/FacilitySideMenu';
 
 
 import { UserContext } from '../../../providers/user';
@@ -74,6 +75,17 @@ const EditFacility = (props) => {
 		props['0']?.facility_types[16], // HEALTH CENTRE
 		props['0']?.facility_types[25]  // MEDICAL CENTRE
 	]
+
+
+
+    const [khisSynched, setKhisSynched] = useState(false);
+    const [facilityFeedBack, setFacilityFeedBack] = useState([])
+    const [pathId, setPathId] = useState('') 
+    const [allFctsSelected, setAllFctsSelected] = useState(false);
+    const [title, setTitle] = useState('') 
+
+    const filters = props["3"]?.filters ?? []
+
 
     const facilityTypeOptions = props['1']?.facility_type_details?? []
     const ownerOptions =  props['2']?.owners ?? []
@@ -959,13 +971,17 @@ const EditFacility = (props) => {
             </Head>
 
             <MainLayout>
-                <div className="w-full grid grid-cols-1 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
-                    <div className="col-span-4 flex flex-col items-start px-4 justify-start gap-3">
+                <div className="w-full grid grid-cols-7 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
+                    {/* Heading */}
+                    <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
+                        {/* Bread crumbs */}
                         <div className="flex flex-row gap-2 text-sm md:text-base">
                             <Link className="text-green-700" href="/">Home</Link> {'>'}
                             <Link className="text-green-700" href="/facilities">Facilities</Link> {'>'}
                             <span className="text-gray-500">{official_name} ( #<i className="text-black">{code || "NO_CODE"}</i> )</span>
                         </div>
+
+                        {/* Header */}
                         <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (is_approved ? "border-green-600" : "border-green-600")}>
                             <div className="col-span-6 md:col-span-3">
                                 <h1 className="text-4xl tracking-tight font-bold leading-tight">{official_name}</h1>
@@ -982,7 +998,17 @@ const EditFacility = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-span-1 md:col-span-4 flex flex-col items-center md:gap-3 gap-y-3 mt-4">
+
+                    {/* Facility Side Menu Filters */}
+                    <div className="md:col-span-1 md:mt-8">
+                            <FacilitySideMenu 
+                                filters={filters}
+                                states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                                stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
+                    </div>
+                    
+
+                    <div className="md:col-span-6 md:col-span-4 flex flex-col items-center md:gap-3 gap-y-3 mt-4">
                         {
                             isSavedChanges && facilityUpdateData ?
                             // Display Changes to be updated
