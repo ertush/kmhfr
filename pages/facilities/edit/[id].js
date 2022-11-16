@@ -83,8 +83,7 @@ const EditFacility = (props) => {
     const [pathId, setPathId] = useState('') 
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('') 
-
-    const filters = props["3"]?.filters ?? []
+    const filters = []
 
 
     const facilityTypeOptions = props['1']?.facility_type_details?? []
@@ -2636,7 +2635,7 @@ EditFacility.getInitialProps = async (ctx) => {
         } else {
 
             let token = t.token;
-				let url = '';
+			let url = '';
 				
 				
 

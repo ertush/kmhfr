@@ -2,22 +2,15 @@
 import React, { useState, useEffect, useRef } from 'react'
 // import * as React from 'react'
 import MainLayout from '../../components/MainLayout'
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Select from 'react-select'
 import { checkToken } from '../../controllers/auth/auth'
 import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon, PlusIcon } from '@heroicons/react/solid';
-import reactDom from 'react-dom';
-// import reactDom from 'react-dom';
 
 
 
 function AddFacility(props) {
 
 
-    let facility = props.data
+    const facility = props.data
     const steps = [
         'Basic Details',
       ];
