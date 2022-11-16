@@ -145,8 +145,8 @@ function EditAdminOfffice(props) {
                 <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/')}>Home</span>{'>'}
-                            <span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/admin_offices')}>Adminoffices</span> {'>'}
+                            <span className="text-green-700 cursor-pointer" onClick={() => router.push('/')}>Home</span>{'>'}
+                            <span className="text-green-700 cursor-pointer" onClick={() => router.push('/admin_offices')}>Adminoffices</span> {'>'}
                             <span className="text-gray-500">Edit AdminOffice</span>
                         </div>
                     </div>

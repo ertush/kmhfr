@@ -167,7 +167,7 @@ export default async function submitFormData(req, res) {
                         'Content-Type': contentType
                     },
                     method,
-                    body: JSON.stringify(req.body)
+                    body: method == 'GET' ? null:JSON.stringify(req.body)
                 })
                 
                 return await resp.json()
