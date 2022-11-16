@@ -335,13 +335,17 @@ const Facility = (props) => {
                   }
              
                   <button
+<<<<<<< HEAD
                     onClick={() => router.push(`regulate/${facility?.id}`)}
+=======
+                    onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
+>>>>>>> Started work on pages/facilities/upgrade/[id].js; work in progres
                     className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                   >
                     Regulate
                   </button>
                   <button
-                    onClick={() => router.push("/facilities/upgrade")}
+                    onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
                     className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                   >
                     Upgrade
