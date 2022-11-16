@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useRef, useState} from 'react'
 import MainLayout from '../../../components/MainLayout'
 import Head from 'next/head'
 import router from 'next/router'
@@ -18,15 +18,14 @@ import {
 import * as Tabs from "@radix-ui/react-tabs";
 import { UserContext } from "../../../providers/user";
 
-
-
-
-
 const Regulate = props => {
     const facility = props["0"]?.data;
     const regulationStateOptions = props['1']?.regulation_status
     const [isFacDetails, setIsFacDetails] = useState(true);
     const [user, setUser] = useState(null);
+    const formRef = useRef(null);
+    const regulationRef = useRef(null)
+
     const userCtx = useContext(UserContext)
     let reject = ''
 
@@ -39,6 +38,46 @@ const Regulate = props => {
             // setIsApproveReject(false);
         };
     }, []);
+    const handleSubmit = async (event,facility_id) => {
+        // Stop the form from submitting and refreshing the page.
+        event.preventDefault()
+        let _payload = {}
+        const formData = new FormData(formRef.current)
+        formData.forEach((v, k) => {
+            _payload.facility=facility_id;
+            _payload[k] = v
+        })
+
+        let url='/api/common/submit_form_data/?path=regulation_status'
+        try{
+            fetch(url, {
+                headers:{
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json;charset=utf-8'
+
+                },
+                method:'POST',
+                body: JSON.stringify(_payload)
+            })
+                .then(resp =>resp)
+                .then(res =>{
+
+                    // console.log(res.json)
+                    if(res.status==200){
+                        router.push('/facilities')
+                    }
+                })
+                .catch(e=>{
+                    setStatus({status:'error', message: e})
+                })
+        }catch (e){
+
+            setStatus({status:'error', message: e})
+            console.error(e)
+        }
+        console.log(_payload)
+    }
+
     return (
         <>
             <Head>
@@ -90,19 +129,19 @@ const Regulate = props => {
                             <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                                     <label className="col-span-1 text-gray-600">
-                                        Facility Type
+                                        Facility Type:
                                     </label>
                                     <p className="col-span-2 text-black font-medium text-base">
                                         {facility?.facility_type_name || " - "}
                                     </p>
                                     <label className="col-span-1 text-gray-600">
-                                        Regulation Status
+                                        Regulation Status:
                                     </label>
                                     <p className="col-span-2 text-black font-medium text-base">
                                         {facility?.regulatory_status_name || " - "}
                                     </p>
                                     <label className="col-span-1 text-gray-600">
-                                        Operation Status
+                                        Operation Status:
                                     </label>
                                     <p className="col-span-2 text-black font-medium text-base">
                                         {facility?.operation_status_name || " - "}
@@ -199,6 +238,14 @@ const Regulate = props => {
                                                             )}
                                                         </p>
                                                     </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
+                                                            Functional general Beds:
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.number_of_beds}
+                                                        </p>
+                                                    </div>
                                                     <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                                                         <label className=" text-gray-600">
                                                             Open Weekends
@@ -217,6 +264,14 @@ const Regulate = props => {
                                                             )}
                                                         </p>
                                                     </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
+                                                            Emergency casualty beds:
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.number_of_emergency_casualty_beds}
+                                                        </p>
+                                                    </div>
                                                     <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                                                         <label className=" text-gray-600">
                                                             Open on public holidays
@@ -233,6 +288,14 @@ const Regulate = props => {
                                                                     No
                                                                   </span>
                                                             )}
+                                                        </p>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
+                                                            Intensive Care Unit (ICU) Beds:
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.number_of_icu_beds}
                                                         </p>
                                                     </div>
                                                     <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
@@ -266,6 +329,14 @@ const Regulate = props => {
                                                             </p>
                                                         </div>
                                                     )}
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
+                                                            High Dependency Unit (HDU) Beds:
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.number_of_hdu_beds}
+                                                        </p>
+                                                    </div>
                                                     <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                                                         <label className=" text-gray-600">
                                                             KHIS reporting
@@ -284,6 +355,14 @@ const Regulate = props => {
                                                             )}
                                                         </p>
                                                     </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
+                                                            General Theatres:
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.number_of_general_theatres}
+                                                        </p>
+                                                    </div>
                                                     <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                                                         <label className=" text-gray-600">
                                                             NHIF accreditation
@@ -300,6 +379,14 @@ const Regulate = props => {
                                                                     No
                                                                   </span>
                                                             )}
+                                                        </p>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
+                                                            Maternity theatres:
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.number_of_maternity_theatres}
                                                         </p>
                                                     </div>
                                                     <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
@@ -322,10 +409,26 @@ const Regulate = props => {
                                                     </div>
                                                     <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                         <label className="col-span-1 text-gray-600">
+                                                            Maternity beds:
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.number_of_maternity_beds}
+                                                        </p>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
                                                             Keph Level:
                                                         </label>
                                                         <p className="col-span-2 text-black font-medium text-base">
                                                             {facility?.keph_level_name || " - "}
+                                                        </p>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
+                                                            Isolation beds:
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.number_of_isolation_beds}
                                                         </p>
                                                     </div>
                                                     <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -338,10 +441,10 @@ const Regulate = props => {
                                                     </div>
                                                     <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                         <label className="col-span-1 text-gray-600">
-                                                            Date Established:
+                                                            Functional cots:
                                                         </label>
                                                         <p className="col-span-2 text-black font-medium text-base">
-                                                            {facility?.date_established || " - "}
+                                                            {facility?.number_of_cots}
                                                         </p>
                                                     </div>
                                                     <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
@@ -360,6 +463,14 @@ const Regulate = props => {
                                                                     No
                                                                   </span>
                                                             )}
+                                                        </p>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
+                                                            Date Established:
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.date_established || " - "}
                                                         </p>
                                                     </div>
                                                     <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
@@ -409,6 +520,30 @@ const Regulate = props => {
                                                     </h3>
                                                     <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                         <label className="col-span-1 text-gray-600">
+                                                            COUNTY
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.county_name || " - "}
+                                                        </p>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
+                                                            SUB-COUNTY
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.sub_county_name || " - "}
+                                                        </p>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
+                                                            WARD
+                                                        </label>
+                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                            {facility?.ward_name || " - "}
+                                                        </p>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                                                        <label className="col-span-1 text-gray-600">
                                                             Town
                                                         </label>
                                                         <p className="col-span-2 text-black font-medium text-base">
@@ -417,7 +552,7 @@ const Regulate = props => {
                                                     </div>
                                                     <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                                                         <label className="col-span-1 text-gray-600">
-                                                            Description
+                                                            Specific directions:
                                                         </label>
                                                         <p className="col-span-2 text-black font-medium text-base">
                                                             {facility?.location_desc || " - "}
@@ -440,76 +575,15 @@ const Regulate = props => {
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                                                    <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                                                        Bed capacity:
+                                                <div className="bg-white border border-gray-100 w-full p-3 rounded grid grid-cols-2 gap-3 shadow-sm mt-4">
+                                                    <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
+                                                        Geologation:
                                                     </h3>
-                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                                        <label className="col-span-1 text-gray-600">
-                                                            Beds
-                                                        </label>
-                                                        <p className="col-span-2 text-black font-medium text-base">
-                                                            {facility?.number_of_beds}
-                                                        </p>
-                                                    </div>
-                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                                        <label className="col-span-1 text-gray-600">
-                                                            Cots
-                                                        </label>
-                                                        <p className="col-span-2 text-black font-medium text-base">
-                                                            {facility?.number_of_cots}
-                                                        </p>
-                                                    </div>
-                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                                        <label className="col-span-1 text-gray-600">
-                                                            Emergency casualty beds
-                                                        </label>
-                                                        <p className="col-span-2 text-black font-medium text-base">
-                                                            {facility?.number_of_emergency_casualty_beds}
-                                                        </p>
-                                                    </div>
-                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                                        <label className="col-span-1 text-gray-600">
-                                                            ICU beds
-                                                        </label>
-                                                        <p className="col-span-2 text-black font-medium text-base">
-                                                            {facility?.number_of_icu_beds}
-                                                        </p>
-                                                    </div>
-                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                                        <label className="col-span-1 text-gray-600">
-                                                            HDU beds
-                                                        </label>
-                                                        <p className="col-span-2 text-black font-medium text-base">
-                                                            {facility?.number_of_hdu_beds}
-                                                        </p>
-                                                    </div>
-                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                                        <label className="col-span-1 text-gray-600">
-                                                            General theatres
-                                                        </label>
-                                                        <p className="col-span-2 text-black font-medium text-base">
-                                                            {facility?.number_of_general_theatres}
-                                                        </p>
-                                                    </div>
-                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                                        <label className="col-span-1 text-gray-600">
-                                                            Maternity theatres
-                                                        </label>
-                                                        <p className="col-span-2 text-black font-medium text-base">
-                                                            {facility?.number_of_maternity_theatres}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                                                    <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                                                        Geologation
-                                                    </h3>
-                                                    <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                                                        <label className="col-span-1 text-gray-600">
+                                                    <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                                                        <label className=" text-gray-600">
                                                             Longitude:
                                                         </label>
-                                                        <p className="col-span-2 text-black font-medium text-base">
+                                                        <p className="text-black font-medium text-base flex">
                                                             {facility?.lat_long}
                                                         </p>
                                                     </div>
@@ -518,7 +592,7 @@ const Regulate = props => {
                                                             Latitude:
                                                         </label>
                                                         <p className="col-span-2 text-black font-medium text-base">
-                                                            {facility?.lat_long}
+                                                            {facility?.lat_long.splice(0,1)}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -675,14 +749,15 @@ const Regulate = props => {
                             <>
                                 <form
                                     className='flex flex-col w-full items-start justify-start gap-3'
-                                    // onSubmit={handleSubmit}
-                                    // ref={formRef}
+                                    onSubmit = { (event) => handleSubmit(event, facility?.id)}
+                                    ref={formRef}
                                 >
                                     {/* Regulation Status */}
 
                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                         <label
-                                            htmlFor="comm_unit_status"
+                                            htmlFor='status'
+                                            id='status'
                                             className='text-gray-600 capitalize text-sm'>
                                             Regulation Status
                                             <span className='text-medium leading-12 font-semibold'>
@@ -693,6 +768,7 @@ const Regulate = props => {
 
                                         <Select
                                             options={regulationStateOptions || []}
+                                            ref={regulationRef}
                                             required
                                             placeholder="Select Regulation Status"
                                             name='regulation_status'
@@ -710,6 +786,7 @@ const Regulate = props => {
                                             cols="70"
                                             rows="auto"
                                             required
+                                            name='reason'
                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                             placeholder="Enter a comment"
                                             // onChange={(e) => setAppRejReason(e.target.value)}
@@ -834,42 +911,7 @@ Regulate.getInitialProps = async (ctx) => {
                                     }
                                     break;
                                 default:
-                                    let fields = ''
-                                    let _obj = {}
 
-                                    if(option === 'counties') fields = 'id,name&page_size=47'
-                                    if(option === 'sub_counties') fields = 'id,name,county'
-                                    if(option === 'wards') fields = 'id,name,sub_county,constituency'
-                                    if(option === 'constituencies') fields = 'id,name,county'
-
-
-                                    url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=${fields}`;
-
-
-                                    try{
-
-                                        const _data = await fetch(url, {
-                                            headers: {
-                                                Authorization: 'Bearer ' + token,
-                                                Accept: 'application/json',
-                                            },
-                                        })
-
-                                        _obj[option] = (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))
-
-
-                                        allOptions.push(_obj)
-
-
-                                    }
-                                    catch(err) {
-                                        console.log(`Error fetching ${option}: `, err);
-                                        allOptions.push({
-                                            error: true,
-                                            err: err,
-                                            data: []
-                                        });
-                                    }
                                     break;
 
                             }
