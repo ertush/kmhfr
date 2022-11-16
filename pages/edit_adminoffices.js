@@ -2,6 +2,7 @@ import React, { useState, Suspense, useEffect, useRef } from 'react';
 import router from 'next/router';
 import MainLayout from '../components/MainLayout';
 import { checkToken } from '../controllers/auth/auth';
+import Link from 'next/link'
 import { Formik, Field, Form } from "formik";
 import {
     ChevronDoubleRightIcon,
@@ -145,8 +146,8 @@ function EditAdminOfffice(props) {
                 <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <span className="text-green-700 cursor-pointer" onClick={() => router.push('/')}>Home</span>{'>'}
-                            <span className="text-green-700 cursor-pointer" onClick={() => router.push('/admin_offices')}>Adminoffices</span> {'>'}
+                            <Link href='/' className="text-green-500">Home</Link>{'>'}
+                            <Link href='/admin_offices' className="text-green-500">Adminoffices</Link> {'>'}
                             <span className="text-gray-500">Edit AdminOffice</span>
                         </div>
                     </div>

@@ -3,6 +3,7 @@ import Head from "next/head";
 import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect, useContext, memo } from "react";
 import MainLayout from "../../components/MainLayout";
+import Link from 'next/link'
 import {
   approveRejectFacility,
   validateFacility,
@@ -32,6 +33,7 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import {Formik, Form, Field} from 'formik'
 import Typography from '@mui/material/Typography';
+import FacilitySideMenu from "../../components/FacilitySideMenu";
 
 
 const Facility = (props) => {
@@ -43,8 +45,8 @@ const Facility = (props) => {
           Loading&hellip;
         </div>
       ),
-      ssr: false,
-    } // This line is important. It's what prevents server-side render
+      ssr: false, // This line is important. It's what prevents server-side render
+    } 
   ));
 
   
@@ -53,6 +55,7 @@ const Facility = (props) => {
   const center = props["1"]?.geoLocation.center;
   const geoLocationData = props["1"]?.geoLocation;
   const {facility_updated_json } = props["2"]?.updates;
+  const filters = props["3"]?.filters ?? []
 
 
   const [user, setUser] = useState(null);
@@ -62,6 +65,14 @@ const Facility = (props) => {
   const [open, setOpen] = React.useState(true);
   const [isReasonRejected, setIsReasonRejected] = useState(false)
   const handleClose = () => setOpen(false);
+
+
+  const [khisSynched, setKhisSynched] = useState(false);
+  const [facilityFeedBack, setFacilityFeedBack] = useState([])
+  const [pathId, setPathId] = useState('') 
+  const [allFctsSelected, setAllFctsSelected] = useState(false);
+  const [title, setTitle] = useState('') 
+
 
   const userCtx = useContext(UserContext)
   let reject = ''
@@ -87,106 +98,106 @@ const Facility = (props) => {
       </Head>
 
       <MainLayout>
-        <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
-                   {/* Closed Facility Modal */}
+        <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
+          {/* Closed Facility Modal */}
 
-         {
-                        facility?.closed && 
-                        <Modal
-                            aria-labelledby="transition-modal-title"
-                            aria-describedby="transition-modal-description"
-                            open={open}
-                            onClose={handleClose}
-                            closeAfterTransition
-                            BackdropComponent={Backdrop}
-                            BackdropProps={{
-                            timeout: 500,
-                            }}
-                        >
-                            <Fade in={open}>
-                            <Box sx={
-                                {
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    width: 400,
-                                    bgcolor: 'background.paper',
-                                    borderRadius: '6px',
-                                    borderLeft: 'solid 10px red',
-                                    boxShadow: 24,
-                                    p: 4,
-                                }
-                            }>
-                                <span className="flex gap-2">
-                                  <InformationCircleIcon className="w-7 h-7 text-red-500"/>
-                                  <Typography id="transition-modal-title" variant="h6" component="h2">      
-                                      Attention Facility is Closed     
-                                  </Typography>    
-                                </span>
-                                  {
-                                    isReasonRejected && 
-                                    <span className="text-sm text-red-500">      
-                                        Reason rejected
-                                    </span>
-                                  }
-                                <div className="flex-col items-start">
-                                  <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-                                   Please state the reason for reopening the facility
-                                  </Typography>
-                                  <Formik 
-                                  initialValues={
-                                    {
-                                      reason_reopen: ''
-                                    }
-                                  }
-                                  onSubmit={({reason_reopen}) => {
-                                  
-                                    if(reason_reopen.includes('complete')){ // Reopeninig criteria will be updated soon
-                                      setIsReasonRejected(false)
-                                      router.push(`edit_facility/${facility?.id}`)
-                                    } else{
-                                      setIsReasonRejected(true)
-                                    }
+          {
+              facility?.closed && 
+              <Modal
+                  aria-labelledby="transition-modal-title"
+                  aria-describedby="transition-modal-description"
+                  open={open}
+                  onClose={handleClose}
+                  closeAfterTransition
+                  BackdropComponent={Backdrop}
+                  BackdropProps={{
+                  timeout: 500,
+                  }}
+              >
+                  <Fade in={open}>
+                  <Box sx={
+                      {
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          width: 400,
+                          bgcolor: 'background.paper',
+                          borderRadius: '6px',
+                          borderLeft: 'solid 10px red',
+                          boxShadow: 24,
+                          p: 4,
+                      }
+                  }>
+                      <span className="flex gap-2">
+                        <InformationCircleIcon className="w-7 h-7 text-red-500"/>
+                        <Typography id="transition-modal-title" variant="h6" component="h2">      
+                            Attention Facility is Closed     
+                        </Typography>    
+                      </span>
+                        {
+                          isReasonRejected && 
+                          <span className="text-sm text-red-500">      
+                              Reason rejected
+                          </span>
+                        }
+                      <div className="flex-col items-start">
+                        <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                          Please state the reason for reopening the facility
+                        </Typography>
+                        <Formik 
+                        initialValues={
+                          {
+                            reason_reopen: ''
+                          }
+                        }
+                        onSubmit={({reason_reopen}) => {
+                        
+                          if(reason_reopen.includes('complete')){ // Reopeninig criteria will be updated soon
+                            setIsReasonRejected(false)
+                            router.push(`edit_facility/${facility?.id}`)
+                          } else{
+                            setIsReasonRejected(true)
+                          }
 
-                                   
+                          
 
-                                  }} >
+                        }} >
 
-                                    <Form className='my-3 flex-col gap-y-2'>
-                                     <Field
-                                     as='textarea'
-                                     cols={'30'}
-                                     rows={'6'}
-                                     name='reason_reopen'
-                                     className='border-2 border-gray-400 rounded'
-                                     >
-                                     </Field>
-                                      <div className='flex justify-start gap-4 mt-4'>
-                                          <button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="submit">Reopen</button>
-                                          <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" onClick={() => router.push('/facilities')}>Cancel</button>
-                                     </div>
-                                    </Form>
-                                  </Formik>
-                                </div>
-                                
-                            </Box>
-                            </Fade>
-                        </Modal>
-         }
+                          <Form className='my-3 flex-col gap-y-2'>
+                            <Field
+                            as='textarea'
+                            cols={'30'}
+                            rows={'6'}
+                            name='reason_reopen'
+                            className='border-2 border-gray-400 rounded'
+                            >
+                            </Field>
+                            <div className='flex justify-start gap-4 mt-4'>
+                                <button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="submit">Reopen</button>
+                                <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" onClick={() => router.push('/facilities')}>Cancel</button>
+                            </div>
+                          </Form>
+                        </Formik>
+                      </div>
+                      
+                  </Box>
+                  </Fade>
+              </Modal>
+          }
 
 
           {/* Header */}
-          <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
+          <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
             {/* Breadcramps */}
-            <div className="flex flex-row gap-2 text-sm md:text-base">
-              <a className="text-green-700" href="/">
+            <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
+              <Link className="text-green-700" href="/">
                 Home
-              </a>{" "}
+              </Link>{" "}
               {">"}
-              <a className="text-green-700" href="/facilities">
+              <Link className="text-green-700" href="/facilities">
                 Facilities
-              </a>{" "}
+              </Link>{" "}
               {">"}
               <span className="text-gray-500">
                 {facility?.official_name ?? ""} ( #
@@ -196,7 +207,7 @@ const Facility = (props) => {
             {/* Header Bunner  */}
             <div
               className={
-                "col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+                "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
                 (facility?.is_approved ? "border-green-600" : "border-red-600")
               }
             >
@@ -272,10 +283,18 @@ const Facility = (props) => {
               <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
             </div>
           </div>
+
+          {/* Facility Side Menu Filters */}
+          <div className="hidden md:col-span-1 md:flex md:mt-8">
+                <FacilitySideMenu 
+                    filters={filters}
+                    states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                    stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
+          </div>
           
           {!isApproveReject ? (
         
-            <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
+            <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4">
 
               {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
@@ -293,8 +312,9 @@ const Facility = (props) => {
                        
                     }
                   >
-                    {/* Dynamic Button Rendering */}
-                 
+
+                  {/*  Dynamic Approve/reject Button  */}
+     
                     Approve/Reject Facility
                   </button>
 
@@ -336,11 +356,11 @@ const Facility = (props) => {
               </div>
 
               {/* Facility Details Tab Section */}
-              <FacilityDetailsTabs facility={facility}/>
-            </div>
-          ) : (
-            // Approval Rejection Section
-            <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4 mx-3">
+                <FacilityDetailsTabs facility={facility}/>
+              </div>
+            ) : (
+               // Approval Rejection Section
+              <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4 mx-3">
               <h3 className="text-2xl tracking-tight font-semibold leading-5">
                 Approve/Reject Facility
               </h3>
@@ -488,10 +508,10 @@ const Facility = (props) => {
               
           {/* end facility approval */}
               
-          <aside className="flex flex-col col-span-5 md:col-span-2 gap-4 mt-5">
-            <h3 className="text-2xl tracking-tight font-semibold leading-5">
+          <aside className="flex flex-col col-span-1 md:col-span-2 gap-4 md:mt-7">
+            {/* <h3 className="text-2xl tracking-tight font-semibold leading-5">
               Map
-            </h3>
+            </h3> */}
 
             {facility?.lat_long && facility?.lat_long.length > 0 ? (
               <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
