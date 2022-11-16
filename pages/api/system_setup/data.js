@@ -9,7 +9,7 @@ export default async function fetchSystemSetupData(req, res) {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-        const {resource, resourceCategory, ...qux} = req.query
+        const {resource, resourceCategory,id, ...qux} = req.query
         
         let res = req.query.resource
         let resCat = req.query.resourceCategory
@@ -73,7 +73,7 @@ export default async function fetchSystemSetupData(req, res) {
             default:
             break;
         }
-        
+        console.log(url);
 
         try {
           

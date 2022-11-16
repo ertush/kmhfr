@@ -21,7 +21,7 @@ import {useRef} from 'react'
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Paper } from '@mui/material'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -79,8 +79,12 @@ const system_setup = (props) => {
         { id: 'code', label: 'Code', minWidth: 100},
     ]);
     const [county_users, setcounty_users] = useState([
-        { field: 'user_full_name', headerName: 'User', minWidth: 100 },
-        { field: 'user_email', headerName: 'Email', minWidth: 100},
+        { field: 'user_full_name', headerName: 'User', width: 200 },
+        { field: 'user_email', headerName: 'Email', width: 300 }, //county_name,county_code,user
+        { field: 'county_name', headerName: 'County', width: 100 },
+        { field: 'county_code', headerName: 'Code', width: 100 },
+        { field: 'user', headerName: 'User', width: 100 },
+        
     ]);
     const [loading, setIsLoading] = useState(true);
     const [logsRows, setLogsRows] = useState([]);
@@ -97,6 +101,13 @@ const system_setup = (props) => {
     const [optionGroup, setOptionGroup]=useState([{}])
     const [open, setOpen] = useState(false);
     const handleClose = () => setOpen(false);
+    function CustomToolbar() {
+        return (
+          <GridToolbarContainer>
+            <GridToolbarExport />
+          </GridToolbarContainer>
+        );
+      }
 
 
     // Refs
@@ -518,7 +529,7 @@ const system_setup = (props) => {
     const fetchChangeLogs = async () => {
         let id = editData.id
         if(addBtnLabel== 'county')id=editData[0].id
-        await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${id}&?fields=__rev__&include_audit=true`,{
+        await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${id}&fields=__rev__&include_audit=true`,{
           headers:{
             'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json;charset=utf-8'
@@ -687,7 +698,7 @@ const system_setup = (props) => {
 
     }, [addBtnLabel, editID, editMode])
 
-    console.log({loading, l:editData.length, k: editData[2]?.results?.map((row, i) => ({...row, id: i}))} );
+    console.log({loading, l:editData.length, k: editData[2]?.results?.map(({id, user_full_name, user_email}) => ({id, user_full_name, user_email}))} );
   return (
   <>
             <Head>
@@ -1218,13 +1229,16 @@ const system_setup = (props) => {
                                                                      <div className='col-span-4 w-full h-auto'>
                                                                     {loading ? <div>loading...</div>: 
                                                                      <DataGrid
-                                                                        rows={editData[2]?.results?.map((row, i) => ({...row, id: i})) }
+                                                                        rows={editData[2]?.results?.map(({id,user_full_name, user_email,county_name,county_code,user}) => ({id,user_full_name, user_email,county_name,county_code,user})) }
                                                                         columns={county_users}
+                                                                        autoHeight
                                                                         pageSize={5}
                                                                         rowsPerPageOptions={[5]}
-                                                                        checkboxSelection
                                                                         disableSelectionOnClick
                                                                         experimentalFeatures={{ newEditingApi: true }}
+                                                                        components={{
+                                                                            Toolbar: CustomToolbar,
+                                                                          }}
                                                                     />}
                                                                             {/*  */}
                                                                     </div>
