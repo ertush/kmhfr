@@ -66,7 +66,7 @@ const Upgrade = props => {
                 </div>
 
                  {/* Facility Side Menu Filters */}
-                 <div className="md:col-span-2 md:mt-8">
+                 <div className="md:col-span-1 md:mt-8">
                             <FacilitySideMenu 
                                 filters={filters}
                                 states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
@@ -74,7 +74,7 @@ const Upgrade = props => {
                 </div>
 
                 {/* Facility Upgrade View */}
-                <div className='md:col-span-5 flex flex-col items-center gap-2'>
+                <div className='md:col-span-6 flex flex-col items-center gap-2'>
                     {/* Upgrade Form */}
                     <Formik initialValues={{
                         previous_keph: kephOptions.find(({value}) => value === keph_level).label,
