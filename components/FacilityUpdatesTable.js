@@ -76,7 +76,7 @@ function FacilityUpdatesTable({facilityUpdatedJson, originalData}) {
 
             <TableRow>
                 {
-                    facilityUpdatedJson.services && 
+                    facilityUpdatedJson?.services && 
                     <div className='flex-col gap-2 items-start mt-4'>
                         <h3 className='text-lg font-semibold'>Services</h3>
                         <div className='grid md:grid-cols-5 grid-cols-2 justify-start gapx-x-2 gap-y-3'>
