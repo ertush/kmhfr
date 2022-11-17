@@ -663,6 +663,35 @@ const handleHrUpdates = async () => {
 
 }
 
+// handleFacilityUpgrades
+const handleFacilityUpgrades = async (payload, alert) => {
+
+    // console.log(Object.values(payload).indexOf(null), {payload})
+
+    try{
+
+        if(Object.values(payload).indexOf(null) === -1){
+            alert.success('Facility Upgraded Successfully')
+        } else {
+            alert.danger("Unable to upgrade facility")
+        }
+
+          const resp = await fetch(`/api/common/submit_form_data/?path=facility_upgrade`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method: 'POST',
+            body: JSON.stringify(payload)
+        })
+
+        return resp
+
+    }
+    catch(e){
+        console.error('Unable to upgrade facility: ', e.message)
+    }
+}
 
 export {
     handleBasicDetailsSubmit,
@@ -679,4 +708,5 @@ export {
     handleServiceUpdates,
     handleInfrastructureUpdates,
     handleHrUpdates,
+    handleFacilityUpgrades
 }

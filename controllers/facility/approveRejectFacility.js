@@ -1,12 +1,14 @@
-import router from "next/router";
 
-const approveRejectFacility = (rejected, facilityId) => {
-   router.push(`/facilities/approve_reject/${facilityId}}`)
+import router from "next/router"
 
-}
+const validateFacility = (facility_id, reject, comment, alert) => {
 
-const validateFacility = (e, facility_id, reject,comment) => {
-    e.preventDefault();
+
+    if(comment && !reject){
+        alert.success("Facility validated successfully")
+    }else {
+        alert.error("Unable to validate facility")
+    }
 
     const payload ={
         comment: comment,
@@ -29,38 +31,38 @@ const validateFacility = (e, facility_id, reject,comment) => {
         .then(resp =>resp)
         .then(res =>{ 
             
-            console.log(res)
-            // if(res.status==200){
-            // 	router.push('/users')
-            // }
+            if(res){
+                router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
+            }
+         
         })
         .catch(e=>{
-          setStatus({status:'error', message: e})
+         console.error(e.message)
         })
     }catch (e){
 
-        setStatus({status:'error', message: e})
-        console.error(e)
+        console.error(e.message)
+    
     }
-    // if(state){
-    //     ctx.is_approved = false;
-    // }else {
-    //     ctx.is_approved = true;
-    // }
 
-    console.log({comment})
 }
 
-const approveFacility = (e, facility_id, comment) => {
-    e.preventDefault();
+const approveRejectFacility = (facility_id, comment, alert, reject) => {
 
-    const payload ={
-        approved_national_level: true,
+    if(comment){
+        alert.success(`Facility ${reject ? 'Approved' : 'Rejected'} successfully`)
+    }else {
+        alert.error(`Unable to ${reject ? 'Approve' : 'Reject'} facility`)
+    }
+    
+    const payload = {
+        approved_national_level: reject,
         comment,
         facility: facility_id,
-        is_national_approval: true,
+        is_national_approval: reject,
     }
-    console.log(JSON.stringify(payload))
+
+    // console.log(JSON.stringify(payload))
     let url=`/api/common/submit_form_data/?path=validate_facility`
     try{
          fetch(url, {
@@ -74,31 +76,26 @@ const approveFacility = (e, facility_id, comment) => {
         })
         .then(resp =>resp)
         .then(res =>{ 
-            
-            console.log(res)
-            // if(res.status==200){
-            // 	router.push('/users')
-            // }
+
+            if(res){
+                router.push('/facilities?qf=to_publish&to_publish=true') // redirect Facilties Pending Approval
+            }
+         
+         
         })
         .catch(e=>{
-          setStatus({status:'error', message: e})
+            console.error(e.message)
         })
     }catch (e){
 
-        setStatus({status:'error', message: e})
         console.error(e)
     }
-    // if(state){
-    //     ctx.is_approved = false;
-    // }else {
-    //     ctx.is_approved = true;
-    // }
+  
 
-    console.log({comment})
+    // console.log({comment})
 }
 
 export {
     approveRejectFacility,
-    validateFacility,
-    approveFacility
+    validateFacility
 }

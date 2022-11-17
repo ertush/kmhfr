@@ -3,7 +3,7 @@ import MainLayout from '../../../components/MainLayout';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
 import {
     validateFacility,
-    approveFacility,
+    approveRejectFacility
   } from "../../../controllers/facility/approveRejectFacility";
 
 import {
@@ -13,18 +13,18 @@ import {
   CheckCircleIcon,
   InformationCircleIcon
 } from "@heroicons/react/solid";
+
 import FacilityUpdatesTable from "../../../components/FacilityUpdatesTable";
 import { checkToken } from "../../../controllers/auth/auth";
 import Link from 'next/link'
 import FacilityDetailsTabs from '../../../components/FacilityDetailsTabs';
-
-
+import {Formik, Form, Field} from 'formik';
+import {useAlert} from 'react-alert'
 
 function ApproveReject(props) {
 
 
-console.log({props})
- const [rejectionReason, setRejectionReason] = useState('')
+  const alert = useAlert()
   const [isFacDetails, setIsFacDetails] = useState(true);
     
 
@@ -38,6 +38,9 @@ console.log({props})
   const facility = props["0"]?.data;
   const {facility_updated_json } = props["2"]?.updates;
   const filters = []
+  // const [reject, setReject] = useState(null)
+
+  let reject
 
 
   return (
@@ -250,23 +253,38 @@ console.log({props})
 
                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
                     <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-                        {facility?.has_edits ? '' : 'Approval / Rejection comment'}
+                        {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Validate/Reject newly created facility"}
                     </h3>
                     {facility?.is_approved}
-                    <form
+                    <Formik
+                        initialValues={{
+                            comment:''
+                        }}
+                        onSubmit = {async ({comment}) => {
+                             console.log({comment}) // debug
+                            if (facility?.is_approved) 
+                            {
+                              approveRejectFacility(facility?.id, comment, alert, reject)
+                            } else {
+                                validateFacility(facility?.id, reject, comment, alert)
+                            }
+                        }
+                    }
+                    >
+                    <Form
                         className="space-y-3"
-                        onSubmit = {facility?.is_approved? (e) => approveFacility(e,facility?.id, rejectionReason) : (e) => validateFacility(e, facility?.id,reject, rejectionReason)}
-                    
                     >
                         {
                         !facility?.has_edits ?
-                        <textarea
+                        <Field
+                        as="textarea"
                         cols="130"
                         rows="auto"
+                        name="comment"
                         className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
                         placeholder="Enter a comment"
-                        onChange={(e) => setRejectionReason(e.target.value)}
-                        ></textarea>
+                       
+                        ></Field>
                         :
                         // Facility Updates Table
                         <FacilityUpdatesTable facilityUpdatedJson={facility_updated_json} originalData={props["0"]}/>
@@ -277,7 +295,7 @@ console.log({props})
                         <button
                         type="submit"
                         className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
-                        onClick={(e) => reject = false}
+                        onClick={() => reject = true}
                         
                         >
                         { facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approve Facility" : "Validate Facility"}
@@ -285,13 +303,14 @@ console.log({props})
                         <button
                         type="submit"
                         className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
-                        onClick={(e) => reject = true}
+                        onClick={() => reject = false}
                         
                         >
                         { facility?.has_edits ? 'Decline Updates' : 'Reject Facility'}
                         </button>
                         </div>
-                    </form>
+                    </Form>
+                    </Formik>
                 </div>
 
             </div>

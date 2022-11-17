@@ -206,7 +206,7 @@ const CommUnit = (props) => {
                   <button
                     onClick={() =>
                       router.push(
-                        "/community-units/edit_community_unit/" + cu.id
+                        "/community-units/edit/" + cu.id
                       )
                     }
                     className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"

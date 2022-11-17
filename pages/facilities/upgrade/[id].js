@@ -1,5 +1,5 @@
 
-import React, {useState, useRef, useEffect} from 'react'
+import React, {useState, useRef} from 'react'
 import MainLayout from '../../../components/MainLayout'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -7,30 +7,39 @@ import FacilitySideMenu from '../../../components/FacilitySideMenu'
 import { checkToken } from "../../../controllers/auth/auth"
 import { Formik, Form, Field } from 'formik'
 import Select from 'react-select'
-
+import { ChevronRightIcon, ChevronDownIcon }  from '@heroicons/react/solid'
+import { Table, TableBody, TableCell, TableRow } from '@mui/material';
+import { useAlert } from 'react-alert'
+import { handleFacilityUpgrades } from '../../../controllers/facility/facilityHandlers'
 
 
 const Upgrade = props => {
+
+    const alert = useAlert()
 
     const [khisSynched, setKhisSynched] = useState(false);
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
     const [pathId, setPathId] = useState('') 
     const [allFctsSelected, setAllFctsSelected] = useState(false);
-    const [title, setTitle] = useState('') 
+    const [title, setTitle] = useState('');
+    const [isFacilityServices, setIsFacilityServices] = useState(false);
     const filters = []
 
-
     // console.log({props})
+
     const kephOptions =  props['0']?.kephOptions.sort((a, b) => a < b) 
     const facilityServices =  props['1']?.services 
     const {
+        id,
         keph_level,
         facility_type_name
     } = props['2']?.facilityData
     const facilityOptions = props['3']?.facilityTypes
     const levelChangeReasons = props['4']?.levelChangeReasons
 
-    // const newkephLvlRef = useRef(null)
+    const newkephLvlRef = useRef(null)
+    const facilityTypeRef = useRef(null)
+    const reasonTypeRef = useRef(null)
 
     // useEffect(() => {
 
@@ -83,8 +92,15 @@ const Upgrade = props => {
                     }}
 
                     onSubmit={
-                        async values => {
+                        async _ => {
 
+                            handleFacilityUpgrades({
+                                facility:id,
+                                facility_type: facilityTypeRef.current.state.value.value ?? null,
+                                keph_level: newkephLvlRef.current.state.value.value ?? null,
+                                reason: reasonTypeRef.current.state.value.value ?? null
+
+                            }, alert)
                         }
                     }
                     >
@@ -111,12 +127,10 @@ const Upgrade = props => {
                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                 <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">KEPH Level</label>
                                 <Select 
-                             
+                                ref={newkephLvlRef}
                                 options={kephOptions ?? []}   
                                 placeholder="Select a KEPH Level.."
-                                onChange={
-                                    ev => ev.preventDefault()
-                                }
+                                
                                 
                                 name="keph_level" 
                                 className="flex-none  w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
@@ -144,40 +158,89 @@ const Upgrade = props => {
 
                             {/* New Facility Type */}
                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Facility Type</label>
+                                <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Facility Type {" *"}</label>
                                 <Select
-                               
-                                options={facilityOptions || []}
-                                required
-                                placeholder="Select a facility type..."
-                                
-                                name="facility_type" 
-                                
-                                className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                    ref={facilityTypeRef}
+                                    options={facilityOptions || []}
+                                    required
+                                    placeholder="Select a facility type..."
+                                    name="facility_type"   
+                                    className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                             </div>
 
 
 
                             {/* Reason for Upgrade */}
                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Reason for Upgrade</label>
+                                <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Reason for Upgrade {" *"}</label>
                                 <Select
-                               
-                                options={levelChangeReasons || []}
-                                required
-                                placeholder="Select a reason"
-                                
-                                name="reason_upgrade" 
-                                
-                                className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                    ref={reasonTypeRef}
+                                    options={levelChangeReasons || []}
+                                    required
+                                    placeholder="Select a reason"
+                                    name="reason_upgrade" 
+                                    className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                             </div>
+
+                            {/* View Facility Services Button */}
+                            <button
+                                className="bg-green-500 font-semibold w-auto text-white flex text-left items-center p-2 h-auto rounded-md"
+                                onClick={() => {
+                                if (isFacilityServices) {
+                                    setIsFacilityServices(false);
+                                } else {
+                                    setIsFacilityServices(true);
+                                }
+                                }}
+                            >
+                                {isFacilityServices ? 'Show' :  'Hide'} Facility Services
+                                {isFacilityServices ? (
+                                <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
+                                ) : (
+                                <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" />
+                                )}
+                            </button>
 
                             {/* Facility Services Table */}
                             {
+                                !isFacilityServices && 
+
+                                <Table className="md:px-4">
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell>
+                                                <p className='text-base font-semibold'>Name</p>
+                                            </TableCell>
+                                            <TableCell className='text-xl font-semibold'>
+                                                <p className='text-base font-semibold'>Service Option</p>
+                                            </TableCell>
+                                        </TableRow>
+                                        {
+                                            facilityServices.map(({service_name}, id) => (
+                                                <TableRow key={id}>
+                                                    <TableCell>
+                                                        {service_name}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        Yes
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        }
+
+                                    </TableBody>
+                                </Table>
+
 
                             }
 
                             {/* Facility Upgrade Button */}
+
+                            <button
+                            type="submit"
+                            className="bg-green-500 mt-3 font-semibold w-auto text-white flex text-left items-center p-2 h-auto rounded-md">
+                            Upgrade Facility
+                            </button>
 
 
                         </Form>

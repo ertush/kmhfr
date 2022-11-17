@@ -1,30 +1,22 @@
 import Head from "next/head";
-
 import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect, useContext, memo } from "react";
 import MainLayout from "../../components/MainLayout";
 import Link from 'next/link'
-import {
-  approveRejectFacility,
-  validateFacility,
-  approveFacility,
-} from "../../controllers/facility/approveRejectFacility";
+
 
 import {
   CheckCircleIcon,
   InformationCircleIcon,
   LockClosedIcon,
   XCircleIcon,
-  PencilAltIcon,
-  ChevronRightIcon,
 } from "@heroicons/react/solid";
 
-// import { ChevronDownIcon } from "@heroicons/react/solid";
+
 import dynamic from "next/dynamic";
 import router from "next/router";
 import { UserContext } from "../../providers/user";
 import FacilityDetailsTabs from "../../components/FacilityDetailsTabs";
-// import FacilityUpdatesTable from "../../components/FacilityUpdatesTable";
 
 
 import Backdrop from '@mui/material/Backdrop';
@@ -59,9 +51,7 @@ const Facility = (props) => {
 
 
   const [user, setUser] = useState(null);
-  // const [isFacDetails, setIsFacDetails] = useState(true);
-  const [isApproveReject, setIsApproveReject] = useState(false);
-  // const [rejectionReason, setRejectionReason] = useState('')
+
   const [open, setOpen] = React.useState(true);
   const [isReasonRejected, setIsReasonRejected] = useState(false)
   const handleClose = () => setOpen(false);
@@ -291,76 +281,65 @@ const Facility = (props) => {
                     stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
           </div>
           
-          {!isApproveReject &&
-        
-            <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4">
+          <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4">
 
-              {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                <div className="flex flex-row justify-start items-center space-x-3 p-3">
-                  <button
-                    onClick={() =>
-                      approveRejectFacility(
-                        facility?.rejected,
-                        facility?.id
-                      )
-                    }
-                 
-                    className={
-                      "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
-                       
-                    }
-                  >
-
-                  {/*  Dynamic Approve/reject Button  */}
-     
-                    Approve/Reject Facility
-                  </button>
-
-                  <button
-                    onClick={() => console.log(props.data)}
-                    className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
-                  >
-                    Print
-                  </button>
-                  {
-                      !facility?.closed && 
-                         <button
-                         onClick={() => router.push(`edit/${facility?.id}`)}
-                         className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                       >
-                         Edit
-                       </button>
+            {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
+            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+              <div className="flex flex-row justify-start items-center space-x-3 p-3">
+                <button
+                  onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
+                  className={
+                    "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+                      
                   }
-             
-                  <button
-                    onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
-                    className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                  >
-                    Regulate
-                  </button>
-                  <button
-                    onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
-                    className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                  >
-                    Upgrade
-                  </button>
-                  <button
-                    onClick={() => window.alert("Edit")}
-                    className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
+                >
 
-              {/* Facility Details Tab Section */}
-                <FacilityDetailsTabs facility={facility}/>
+                {/*  Dynamic Approve/reject Button  */}
+    
+                  Approve/Reject Facility
+                </button>
+
+                <button
+                  onClick={() => console.log(props.data)}
+                  className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
+                >
+                  Print
+                </button>
+                {
+                    !facility?.closed && 
+                        <button
+                        onClick={() => router.push(`edit/${facility?.id}`)}
+                        className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
+                      >
+                        Edit
+                      </button>
+                }
+            
+                <button
+                  onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
+                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
+                >
+                  Regulate
+                </button>
+                <button
+                  onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
+                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
+                >
+                  Upgrade
+                </button>
+                <button
+                  onClick={() => window.alert("Edit")}
+                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
+                >
+                  Close
+                </button>
+              </div>
             </div>
 
-            }
-            
-              
+            {/* Facility Details Tab Section */}
+              <FacilityDetailsTabs facility={facility}/>
+          </div>
+
           {/* end facility approval */}
               
           <aside className="flex flex-col col-span-1 md:col-span-2 gap-4 md:mt-7">
