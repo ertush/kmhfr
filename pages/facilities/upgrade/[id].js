@@ -20,7 +20,7 @@ const Upgrade = props => {
     const filters = []
 
 
-    console.log({props})
+    // console.log({props})
     const kephOptions =  props['0']?.kephOptions.sort((a, b) => a < b) 
     const facilityServices =  props['1']?.services 
     const {
