@@ -970,7 +970,7 @@ const EditFacility = (props) => {
             </Head>
 
             <MainLayout>
-                <div className="w-full grid grid-cols-7 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
+                <div className="w-full grid md:grid-cols-7 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
                     {/* Heading */}
                     <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
                         {/* Bread crumbs */}

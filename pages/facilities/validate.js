@@ -43,6 +43,7 @@ function AddFacility(props) {
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
         <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
+                    {/* Header */}
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
@@ -56,6 +57,7 @@ function AddFacility(props) {
                         </div>
                   
                     </div>
+
                     <div className="col-span-5 md:col-span-4 flex flex-col items-center border rounded pt-8 pb-4 gap-4 mt-2 order-last md:order-none">
                         {/* Stepper Header */}
                         <div className="flex flex-col justify-center items-center px-1 md:px-4 w-full ">
@@ -65,6 +67,7 @@ function AddFacility(props) {
                             onChange={ev => {
                                 alert("Changing!!!")
                             }}
+                            
                         className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
                         <div className='flex justify-between items-center w-full'>
                                 <button className='flex items-center justify-start space-x-2 p-1 border-2 bg-green-500 rounded px-2'>

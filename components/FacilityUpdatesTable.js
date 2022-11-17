@@ -83,7 +83,7 @@ function FacilityUpdatesTable({facilityUpdatedJson, originalData}) {
                             {/* {console.log({facilityUpdatedJson})} */}
                             {/* Key Value */}
                             <p className='text-base font-semibold col-start-1'>Name{' :'}</p>
-                            <p className='text-base font-normal col-start-2'>{facilityUpdatedJson.service.name}</p>
+                            <p className='text-base font-normal col-start-2'>{facilityUpdatedJson?.service?.name}</p>
 
                         </div>
                     </div>
@@ -91,6 +91,7 @@ function FacilityUpdatesTable({facilityUpdatedJson, originalData}) {
                 }
             </TableRow>
             {/* Infrastructure updates */}
+            
             {/* Human resources updates */}
             </TableBody>
             

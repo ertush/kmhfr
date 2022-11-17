@@ -169,7 +169,7 @@ const Regulate = props => {
                     </div>
 
                     {/* Facility Side Menu Filters */}
-                    <div className="md:col-span-2    md:mt-8">
+                    <div className="md:col-span-1  md:mt-8">
                                 <FacilitySideMenu 
                                     filters={filters}
                                     states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
@@ -177,8 +177,8 @@ const Regulate = props => {
                     </div>
 
                     {/* Facility Regulate Form */}
-                    <div className='md:col-span-5 flex flex-col justify-start items-start px-1 md:px-4 w-full md:mt-7'>
-                        <div className='w-full flex flex-col items-start h-auto p-3 rounded border border-gray-300/70 bg-gray-50'>
+                    <div className='md:col-span-6 flex flex-col justify-start items-start px-1 md:px-4 w-full md:mt-7'>
+                        <div className='w-full flex flex-col items-start h-auto p-4 rounded border border-gray-300/70 bg-gray-50'>
                             {/* Facility details hidden section */}
 
                             <div className="col-start-1 col-span-1 mb-4">
@@ -763,9 +763,9 @@ const Regulate = props => {
 
                             }
 
-                            <>
+                            
                                 <form
-                                    className='flex flex-col w-full items-start justify-start gap-3'
+                                    className='flex flex-col w-full items-start justify-start gap-3 mt-4'
                                     onSubmit = { (event) => handleSubmit(event, facility?.id)}
                                     ref={formRef}
                                 >
@@ -843,7 +843,7 @@ const Regulate = props => {
                                         </button>
                                     </div>
                                 </form>
-                            </>
+                            
 
                         </div>
                     </div>
