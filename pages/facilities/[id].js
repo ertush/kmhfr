@@ -19,12 +19,12 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/solid";
 
-import { ChevronDownIcon } from "@heroicons/react/solid";
+// import { ChevronDownIcon } from "@heroicons/react/solid";
 import dynamic from "next/dynamic";
 import router from "next/router";
 import { UserContext } from "../../providers/user";
 import FacilityDetailsTabs from "../../components/FacilityDetailsTabs";
-import FacilityUpdatesTable from "../../components/FacilityUpdatesTable";
+// import FacilityUpdatesTable from "../../components/FacilityUpdatesTable";
 
 
 import Backdrop from '@mui/material/Backdrop';
@@ -59,9 +59,9 @@ const Facility = (props) => {
 
 
   const [user, setUser] = useState(null);
-  const [isFacDetails, setIsFacDetails] = useState(true);
+  // const [isFacDetails, setIsFacDetails] = useState(true);
   const [isApproveReject, setIsApproveReject] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState('')
+  // const [rejectionReason, setRejectionReason] = useState('')
   const [open, setOpen] = React.useState(true);
   const [isReasonRejected, setIsReasonRejected] = useState(false)
   const handleClose = () => setOpen(false);
@@ -82,8 +82,7 @@ const Facility = (props) => {
     if (userCtx) setUser(userCtx);
     
     return () => {
-      setIsFacDetails(true);
-      setIsApproveReject(false);
+    
     };
   }, []);
 
@@ -292,7 +291,7 @@ const Facility = (props) => {
                     stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
           </div>
           
-          {!isApproveReject ? (
+          {!isApproveReject &&
         
             <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4">
 
@@ -303,7 +302,7 @@ const Facility = (props) => {
                     onClick={() =>
                       approveRejectFacility(
                         facility?.rejected,
-                        setIsApproveReject
+                        facility?.id
                       )
                     }
                  
@@ -357,153 +356,9 @@ const Facility = (props) => {
 
               {/* Facility Details Tab Section */}
                 <FacilityDetailsTabs facility={facility}/>
-              </div>
-            ) : (
-               // Approval Rejection Section
-              <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4 mx-3">
-              <h3 className="text-2xl tracking-tight font-semibold leading-5">
-                Approve/Reject Facility
-              </h3>
+            </div>
 
-
-              {/* Facility details */}
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Functional Status
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.operation_status_name || " - "}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">Keph Level</label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.keph_level_name || " - "}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">Admission</label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.admission_status_name || " - "}
-                  </p>
-                </div>
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Facility Type
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.facility_type_name || " - "}
-                  </p>
-                </div>
-
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">County</label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.county || " - "}
-                  </p>
-                </div>
-
-
-                {facility?.date_established && (
-                  <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                      Date established
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {new Date(facility?.date_established).toLocaleDateString(
-                        "en-GB",
-                        { year: "numeric", month: "long", day: "numeric" }
-                      ) || " - "}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-
-              {/* Facility details hidden section */}
-               
-               <div className="col-start-1 col-span-1 ">
-                <button
-                  className="bg-green-500 font-semibold w-auto text-white flex text-left items-center p-2 h-auto rounded-md"
-                  onClick={() => {
-                    if (isFacDetails) {
-                      setIsFacDetails(false);
-                    } else {
-                      setIsFacDetails(true);
-                    }
-                  }}
-                >
-                  View More Facility Details
-                  {isFacDetails ? (
-                    <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
-                  ) : (
-                    <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" />
-                  )}
-                </button>
-                </div>
-            
-
-              {!isFacDetails && 
-              
-                <div className="border border-gray-100 rounded pb-2">
-                  <FacilityDetailsTabs facility={facility}/>
-                </div>
-               }
-
-              {/* Comments and Updates Section  */}
-
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-                  {facility?.has_edits ? 'Updated Facility Details' : 'Approval / Rejection comment'}
-                </h3>
-                {facility?.is_approved}
-                <form
-                  className="space-y-3"
-                  onSubmit = {facility?.is_approved? (e) => approveFacility(e,facility?.id, rejectionReason) : (e) => validateFacility(e, facility?.id,reject, rejectionReason)}
-                
-                >
-                  {
-                  !facility?.has_edits ?
-                  <textarea
-                    cols="85"
-                    rows="auto"
-                    className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
-                    placeholder="Enter a comment"
-                    onChange={(e) => setRejectionReason(e.target.value)}
-                  ></textarea>
-                  :
-                  // Facility Updates Table
-                    <FacilityUpdatesTable facilityUpdatedJson={facility_updated_json} originalData={props["0"]}/>
-                  
-                  }
-
-                  <div className="flex justify-start items-center gap-4 mt-4">
-                  <button
-                    type="submit"
-                    className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
-                    onClick={(e) => reject = false}
-                    
-                  >
-                    { facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approve Facility" : "Validate Facility"}
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
-                    onClick={(e) => reject = true}
-                    
-                  >
-                    { facility?.has_edits ? 'Decline Updates' : 'Reject Facility'}
-                  </button>
-                  </div>
-                </form>
-                </div>
-
-              </div>
-              )}
+            }
             
               
           {/* end facility approval */}

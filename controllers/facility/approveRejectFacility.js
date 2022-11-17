@@ -1,13 +1,7 @@
-const approveRejectFacility = (rejected, setState) => {
-    console.log("pppppppppppppppppp ------------>>>> "+rejected);
+import router from "next/router";
 
-    if (rejected) {
-        setState(false)
-
-    } else {
-        setState(true)
-
-    }
+const approveRejectFacility = (rejected, facilityId) => {
+   router.push(`/facilities/approve_reject/${facilityId}}`)
 
 }
 
@@ -19,7 +13,9 @@ const validateFacility = (e, facility_id, reject,comment) => {
         facility: facility_id,
         is_cancelled: reject,
     }
+    
     let url=`/api/common/submit_form_data/?path=validate_facility`
+
     try{
          fetch(url, {
             headers:{
