@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useMemo, useContext } from "react";
 
 // Next imports
 import Head from "next/head";
-// import Link from 'next/link'
+import Link from 'next/link'
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 
@@ -268,9 +268,9 @@ const Gis = (props) => {
               <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 pt-2 justify-between items-center w-full bg-gray-100">
                 {/* BREADCRUMB */}
                 <div className="flex flex-row gap-2 text-sm md:text-base py-2 px-3">
-                  <a className="text-green-700" href="/">
+                  <Link className="text-green-700" href="/">
                     Home
-                  </a>{" "}
+                  </Link>{" "}
                   {">"}
                   <span className="text-gray-500">GIS Explorer</span>
                 </div>

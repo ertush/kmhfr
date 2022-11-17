@@ -8,7 +8,7 @@ import useDidMountEffect from '../../hooks/useDidMountEffect';
 // next imports
 import Head from 'next/dist/shared/lib/head'
 import { PlusIcon, TrashIcon } from '@heroicons/react/solid'
-import * as Tabs from "@radix-ui/react-tabs";
+import Link from 'next/link'
 
 
 // MUI imports
@@ -751,7 +751,7 @@ const system_setup = (props) => {
                         </Modal>}
                      {/* Bread Cumbs  */}
                      <div className="flex flex-row gap-2 text-sm md:text-base">
-                            <a className="text-green-700" href="/">Home</a> {'>'}
+                            <Link className="text-green-700" href="/">Home</Link> {'>'}
                             <span className="text-gray-500" >System setup</span>   
                     </div>
                     {/* Header Bunner */}
@@ -3327,7 +3327,7 @@ system_setup.getInitialProps = async (ctx) => {
     }
 
     return checkToken(ctx.req, ctx.res).then(t => {
-        if (t.error) {
+        if (t.error) {  
             throw new Error('Error checking token')
         } else {
             let token = t.token
