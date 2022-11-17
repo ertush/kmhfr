@@ -45,7 +45,7 @@ const CommUnit = (props) => {
   const [rows, setRows] = useState([])  
 
   const fetchChangeLogs = async () => {
-    fetch(`/api/chus/data?path=changelog&id=${props?.data.id}`,{
+    await fetch(`/api/chus/data?path=changelog&id=${props?.data.id}`,{
       headers:{
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json;charset=utf-8'
