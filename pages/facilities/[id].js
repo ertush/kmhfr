@@ -155,7 +155,7 @@ const Facility = (props) => {
                         
                           if(reason_reopen.includes('complete')){ // Reopeninig criteria will be updated soon
                             setIsReasonRejected(false)
-                            router.push(`edit_facility/${facility?.id}`)
+                            router.push(`edit/${facility?.id}`)
                           } else{
                             setIsReasonRejected(true)
                           }
@@ -327,7 +327,7 @@ const Facility = (props) => {
                   {
                       !facility?.closed && 
                          <button
-                         onClick={() => router.push(`edit_facility/${facility?.id}`)}
+                         onClick={() => router.push(`edit/${facility?.id}`)}
                          className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                        >
                          Edit

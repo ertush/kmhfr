@@ -44,6 +44,7 @@ import TabPanel from '@mui/lab/TabPanel';
 
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
+import * as Tabs from '@radix-ui/react-tabs';
 
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';

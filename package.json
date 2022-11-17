@@ -17,6 +17,7 @@
     "@heroicons/react": "^1.0.2",
     "@mui/icons-material": "^5.8.2",
     "@mui/material": "^5.8.0",
+    "@mui/x-data-grid": "^5.17.11",
     "@mui/x-date-pickers": "^5.0.0-alpha.7",
     "@radix-ui/react-radio-group": "^0.0.19",
     "@radix-ui/react-tabs": "0.0.5",
