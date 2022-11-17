@@ -198,7 +198,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
 
         >	
             {/* All Facilities */}
-            <ListItemButton sx={{ backgroundColor: (allFctsSelected || pathId === 'all') ?  '#e7ebf0' : 'none' }} name="rt"
+            <ListItemButton sx={{ backgroundColor: (allFctsSelected || pathId === 'all') ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }} name="rt"
                 onClick={(ev)=>{
                     setTitle('Facilities')
                     setPathId('all')
@@ -223,7 +223,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* Approved Facilities */}
-            <ListItemButton sx={{ backgroundColor: (approvedFctsSelected || pathId === 'approved')  ?  '#e7ebf0' : 'none' }} 
+            <ListItemButton sx={{ backgroundColor: (approvedFctsSelected || pathId === 'approved')  ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }} 
                 onClick={(ev)=>{
                     setTitle('Approved Facilities')
                     setAllFctsSelected(false)
@@ -249,7 +249,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* New Facilities Pending Validation */}
-            <ListItemButton sx={{ backgroundColor: (newFtsSelected || pathId === 'new_pending_validation') ?  '#e7ebf0' : 'none' }}
+            <ListItemButton sx={{ backgroundColor: (newFtsSelected || pathId === 'new_pending_validation') ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af'  }}
             onClick={()=>{
                 setTitle('Validate New Facilities')
                 setPathId('new_pending_validation')
@@ -274,7 +274,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* Update Facilities Pending Validation */}
-            <ListItemButton sx={{ backgroundColor: (updatedFctsSelected  || pathId === 'updated_pending_validation') ?  '#e7ebf0' : 'none' }}
+            <ListItemButton sx={{ backgroundColor: (updatedFctsSelected  || pathId === 'updated_pending_validation') ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af'  }}
             onClick={()=>{
                 setTitle('Validate Updated Facilities')
                 setPathId('updated_pending_validation')
@@ -299,7 +299,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* Facilities Pending Approval  */}    
-            <ListItemButton sx={{ backgroundColor: (facilitiesPendingApproval  || pathId === 'to_publish') ?  '#e7ebf0' : 'none' }}
+            <ListItemButton sx={{ backgroundColor: (facilitiesPendingApproval  || pathId === 'to_publish') ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af'  }}
             onClick={()=>{
                 setTitle('Facilities Pending Approval')
                 setPathId('to_publish')
@@ -324,7 +324,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* Approved DHIS Synced Facilities */}
-            <ListItemButton sx={{ backgroundColor: (DHISSyncedFacilities  || pathId === 'dhis_synced_facilities') ?  '#e7ebf0' : 'none' }}
+            <ListItemButton sx={{ backgroundColor: (DHISSyncedFacilities  || pathId === 'dhis_synced_facilities') ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af'  }}
             onClick={()=>{
                 setTitle('DHIS Synced Approved Facilities')
                 setPathId('dhis_synced_facilities')
@@ -349,9 +349,9 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* Failed Validation Facilities */}
-            <ListItemButton sx={{ backgroundColor: (failedValidationFctsSelected || pathId === 'failed_validation')?  '#e7ebf0' : 'none'}}
+            <ListItemButton sx={{ backgroundColor: (failedValidationFctsSelected || pathId === 'failed_validation')?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
             onClick={()=>{
-                setTitle('Rejected Facilities')
+                setTitle('Failed Validation Facilities')
                 setPathId('failed_validation')
                 setAllFctsSelected(false)
                 setApprovedFctsSelected(false)
@@ -373,7 +373,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* Rejected Facilities */}
-            <ListItemButton sx={{  backgroundColor: (rejectedFctsSelected || pathId === 'rejected') ?  '#e7ebf0' : 'none'}}
+            <ListItemButton sx={{  backgroundColor: (rejectedFctsSelected || pathId === 'rejected') ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
             onClick={()=>{
                 setTitle('Rejected Facilities')
                 setPathId('rejected')
@@ -397,7 +397,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* Closed Facilities */}
-            <ListItemButton sx={{ backgroundColor: (closedFctsSelected || pathId == "closed") ?  '#e7ebf0' : 'none'}}
+            <ListItemButton sx={{ backgroundColor: (closedFctsSelected || pathId == "closed") ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
             onClick={()=>{
                 setTitle('Closed Facilities')
                 setPathId('closed')
@@ -422,7 +422,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* Incomplete Facilities */}
-            <ListItemButton sx={{  backgroundColor: (incompleteFctsSelected || pathId == "incomplete")  ?  '#e7ebf0' : 'none' }}
+            <ListItemButton sx={{  backgroundColor: (incompleteFctsSelected || pathId == "incomplete")  ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af'  }}
             onClick={()=>{
                 setTitle('Incomplete Facilities')
                 setPathId('incomplete')
@@ -447,7 +447,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* Synchronize Regulated Facilities */}
-            <ListItemButton sx={{ backgroundColor: (syncRegulatedFctsSelected || pathId == "khis_synched")  ?  '#e7ebf0' : 'none' }}
+            <ListItemButton sx={{ backgroundColor: (syncRegulatedFctsSelected || pathId == "khis_synched")  ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af'  }}
             onClick={()=>{
                 setTitle('Synchronize Regulated Facilities')
                 setPathId('khis_synched')
@@ -472,7 +472,7 @@ function FacilitySideMenu({states, stateSetters, filters}) {
             </ListItemButton>
 
             {/* Feedback on Facilities */}
-            <ListItemButton sx={{ backgroundColor: (feedBackFctsSelected || pathId == "feedback") ?  '#e7ebf0' : 'none' }}
+            <ListItemButton sx={{ backgroundColor: (feedBackFctsSelected || pathId == "feedback") ?  '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af'  }}
             onClick={()=>{
                 setTitle('Facilities Feedback From Public')
                 setPathId('feedback')
