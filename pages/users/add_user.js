@@ -68,7 +68,7 @@ const AddUser = (props)=> {
 				val.cont_name =="contact_type"?data[val.id][val.cont_name] = val.value.value : data[val.id][val.cont_name] = val.value.target.value
 				console.log(data);
 				newObj1['contacts'] = data.map((id)=>({
-					
+					...id,
 					contact_text: id.contact_text,
 					contact_type:id.contact_type
 				}))

@@ -9,40 +9,71 @@ export default async function fetchSystemSetupData(req, res) {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-        const {resource, resourceCategory, fields} = req.query
-    
+        const {resource, resourceCategory,id, ...qux} = req.query
+        
+        let res = req.query.resource
+        let resCat = req.query.resourceCategory
         let url = ''
-        // console.log({resource, resourceCategory, fields});
+        let _id = req.query.id
 
-        switch (resourceCategory){
+        let qry = Object.keys(qux).map(function (key) {
+            let er = (key) + '=' + (qux[key]);
+            return er
+         }).join('&')
+
+        switch (resCat){
             case 'AdminUnits':
-                url = `${API_URL}/common/${resource}/?fields=${fields}`
+                if(_id== undefined){
+                    url = `${API_URL}/common/${res}/?${qry}`
+                }else{
+                    url = `${API_URL}/common/${res}/${_id}/?${qry}`
+                }
             break;
             case 'ServiceCatalogue':
-                url = `${API_URL}/facilities/${resource}/?fields=${fields}` 
+                if(_id== undefined){
+                    url = `${API_URL}/facilities/${res}/?${qry}`
+                }else{
+                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
+                }
             break;
             case 'HealthInfrastructure':
-                url = `${API_URL}/facilities/${resource}/?fields=${fields}`
+                if(_id== undefined){
+                    url = `${API_URL}/facilities/${res}/?${qry}`
+                }else{
+                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
+                }
             break;
             case 'HR':
-                url = `${API_URL}/facilities/${resource}/?fields=${fields}`
+                if(_id== undefined){
+                    url = `${API_URL}/facilities/${res}/?${qry}`
+                }else{
+                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
+                }
             break;
             case 'Contacts':
-                url = `${API_URL}/common/${resource}/?fields=${fields}`
+                if(_id== undefined){
+                    url = `${API_URL}/common/${res}/?${qry}`
+                }else{
+                    url = `${API_URL}/common/${res}/${_id}/?${qry}`
+                }
             break;
             case 'Facilities':
-                url = `${API_URL}/facilities/${resource}/?fields=${fields}`
+                if(_id== undefined){ 
+                    url = `${API_URL}/facilities/${res}/?${qry}`
+                }else{
+                    url = `${API_URL}/facilities/${res}/${_id}/?${qry}`
+                }
             break;
             case 'CHU':
-                url = `${API_URL}/chul/${resource}/?fields=${fields}`
+                url = `${API_URL}/chul/${res}/?${qry}`
             break;
             case 'Documents':
-                url = `${API_URL}/common/${resource}/?fields=${fields}`
+                url = `${API_URL}/common/${res}/?${qry}`
             break;
             default:
             break;
         }
-        
+        console.log(url);
 
         try {
           
