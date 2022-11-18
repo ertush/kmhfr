@@ -37,13 +37,17 @@ import { hasSystemSetupPermissions } from '../../utils/checkPermissions';
 import moment from 'moment'
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
+
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
 import { useAlert } from "react-alert";
-import useId from 'react-use-uuid';
 import router from 'next/router';
 
 
@@ -79,6 +83,7 @@ const system_setup = (props) => {
     const [open, setOpen] = useState(false);
     const handleClose = () => setOpen(false);
     const [sbcty_constituency, setSbctyConstituency] = useState([]);
+    const [value, setValue] = React.useState('1');
     const [columns, setColumns] = useState([
         { id: 'name', label: 'Name', minWidth: 100 },
         { id: 'code', label: 'Code', minWidth: 100},
@@ -109,10 +114,11 @@ const system_setup = (props) => {
 
 
     // Refs
-    const {optionTypeRef,displayTextRef,optionValueRef,inputsContainerRef, inputsContainerRef2,contactTypeRef,contactDetailRef} = useRef(null)
-
-    const uid = useId();
-
+    const {inputsContainerRef, inputsContainerRef2} = useRef(null)
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+      };
+    
     useEffect(() => {
         if(!hasSystemSetupPermissions(/^common.add_county$/, userPermissions)){
             router.push('/unauthorized')
@@ -1174,81 +1180,60 @@ console.log(editData, editMode, editID);
                                                            <ChangeLog/>
                                                             &nbsp;
 
-                                                            <Tabs.Root
-                                                                orientation="horizontal"
-                                                                className="w-full flex flex-col tab-root"
-                                                                defaultValue="constituencies"
-                                                            >
-                                                                <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
-                                                                    <Tabs.Tab
-                                                                        id={1}
-                                                                        value="constituencies"
-                                                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                                    >
-                                                                        Constituencies
-                                                                    </Tabs.Tab>
-                                                                    <Tabs.Tab
-                                                                        id={2}
-                                                                        value="county_users"
-                                                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                                    >
-                                                                        County Users
-                                                                    </Tabs.Tab>
-                                                                
-                                                                </Tabs.List>
-
-                                                                <Tabs.Panel
-                                                                 value="constituencies"
-                                                                 className="grow-1 py-1 px-4 tab-panel"
-                                                                >
-                                                                     <div className='col-span-4 w-full h-auto'>
-                                                                            <TableContainer sx={{ maxHeight: 440 }}>
-                                                                                    <Table stickyHeader aria-label="sticky table">
-                                                                                    <TableHead>
-                                                                                        <TableRow>
-                                                                                        {constituenciesColumns.map((column,i) => (
-                                                                                            <TableCell
-                                                                                            key={i}
-                                                                                            align={column.align}
-                                                                                            style={{ minWidth: column.minWidth, fontWeight:600 }}
-                                                                                            >
-                                                                                            {column.label}
-                                                                                            </TableCell>
-                                                                                        ))}
-                                                                                        </TableRow>
-                                                                                    </TableHead>
-                                                                                    <TableBody sx={{paddingX: 4}}>
-                                                                                        {editData[1]?.results.map((row) => {
-                                                                                            return (
-                                                                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                                                                                {constituenciesColumns.map((column, i) => {
-                                                                                                const value = row[column.id];
-                                                                                                return (
-                                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                                        {
-                                                                                                                column.format && typeof value === 'boolean'
-                                                                                                                    ? value.toString()
-                                                                                                                    :  column.format && typeof value === 'number'
-                                                                                                                    ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
-                                                                                                        
-                                                                                                        }
-                                                                                                    </TableCell>
-                                                                                                    
-                                                                                                );
-                                                                                                })}
+                                                            <Box sx={{ width: '100%', typography: 'body1' }}>
+                                                                <TabContext value={value}>
+                                                                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                                                    <TabList onChange={handleChange} aria-label="lab API tabs example">
+                                                                        <Tab label="Constituencies" value="1" />
+                                                                        <Tab label="County Users" value="2" />
+                                                                    </TabList>
+                                                                    </Box>
+                                                                    <TabPanel value="1">
+                                                                        <div className='col-span-4 w-full h-auto'>
+                                                                                <TableContainer sx={{ maxHeight: 440 }}>
+                                                                                        <Table stickyHeader aria-label="sticky table">
+                                                                                        <TableHead>
+                                                                                            <TableRow>
+                                                                                            {constituenciesColumns.map((column,i) => (
+                                                                                                <TableCell
+                                                                                                key={i}
+                                                                                                align={column.align}
+                                                                                                style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                                                                                >
+                                                                                                {column.label}
+                                                                                                </TableCell>
+                                                                                            ))}
                                                                                             </TableRow>
-                                                                                            );
-                                                                                        })}
-                                                                                    </TableBody>
-                                                                                    </Table>
-                                                                                </TableContainer>
-                                                                    </div>
-                                                                </Tabs.Panel>
-                                                                <Tabs.Panel
-                                                                 value="county_users"
-                                                                 className="grow-1 py-1 px-4 tab-panel"
-                                                                >
-                                                                     <div className='col-span-4 w-full h-auto'>
+                                                                                        </TableHead>
+                                                                                        <TableBody sx={{paddingX: 4}}>
+                                                                                            {editData[1]?.results.map((row) => {
+                                                                                                return (
+                                                                                                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                                                                                    {constituenciesColumns.map((column, i) => {
+                                                                                                    const value = row[column.id];
+                                                                                                    return (
+                                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                                            {
+                                                                                                                    column.format && typeof value === 'boolean'
+                                                                                                                        ? value.toString()
+                                                                                                                        :  column.format && typeof value === 'number'
+                                                                                                                        ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+                                                                                                            
+                                                                                                            }
+                                                                                                        </TableCell>
+                                                                                                        
+                                                                                                    );
+                                                                                                    })}
+                                                                                                </TableRow>
+                                                                                                );
+                                                                                            })}
+                                                                                        </TableBody>
+                                                                                        </Table>
+                                                                                    </TableContainer>
+                                                                        </div>
+                                                                    </TabPanel>
+                                                                    <TabPanel value="2">
+                                                                    <div className='col-span-4 w-full h-auto'>
                                                                     {loading ? <div>loading...</div>: 
                                                                         <div style={{ height: 300, width: "100%" }}>
 
@@ -1266,9 +1251,11 @@ console.log(editData, editMode, editID);
                                                                                  }}
                                                                            />
                                                                         </div>}
-                                                                    </div>
-                                                                </Tabs.Panel>
-                                                            </Tabs.Root>
+                                                                    </div>                                                                    
+                                                                    </TabPanel>
+                                                                </TabContext>
+                                                            </Box>
+                                                            
                                                             </>
                                                             }
 
@@ -1525,7 +1512,8 @@ console.log(editData, editMode, editID);
                                                             )
                                                         case 'town':
                                                             return (
-                                                                <form className='w-full h-full' onSubmit={() => console.log('submitting form')}>
+                                                                <>
+                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                         <label
                                                                             htmlFor={`add_${addBtnLabel}_town_field`}
@@ -1540,7 +1528,9 @@ console.log(editData, editMode, editID);
                                                                             required
                                                                             type='text'
                                                                             placeholder='Town Name'
-                                                                            name={`add_${addBtnLabel}_town_field`}
+                                                                            id={`add_${addBtnLabel}_town_field`}
+                                                                            name="name"
+                                                                            defaultValue={editData.name}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                       
@@ -1551,6 +1541,9 @@ console.log(editData, editMode, editID);
                                                                             <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                                     </div>
                                                                 </form>
+                                                                &nbsp;
+                                                                {editMode && <ChangeLog/>}
+                                                                </>
                                                             )
                                                         case 'category':
                                                             return (
