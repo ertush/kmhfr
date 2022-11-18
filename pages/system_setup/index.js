@@ -21,7 +21,7 @@ import {useRef} from 'react'
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Paper } from '@mui/material'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -37,11 +37,6 @@ import { hasSystemSetupPermissions } from '../../utils/checkPermissions';
 import moment from 'moment'
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -49,6 +44,7 @@ import * as Tabs from '@radix-ui/react-tabs';
 import Select from 'react-select';
 import { AddLocationAlt, Article, GroupAdd, LocalHospital, MapsHomeWork, MiscellaneousServices, Phone, ReduceCapacity } from '@mui/icons-material';
 import { useAlert } from "react-alert";
+import useId from 'react-use-uuid';
 import router from 'next/router';
 
 
@@ -56,7 +52,8 @@ const system_setup = (props) => {
 
     const userPermissions = useContext(PermissionContext)
     const [title, setTitle] = useState('Counties')
-    const [addBtnLabel, setAddBtnLabel] = useState('county')  
+    const [addBtnLabel, setAddBtnLabel] = useState('county')
+    
     const [openAdminUnits, setOpenAdminUnits] = useState(false);
     const [openServiceCatalogue, setOpenServiceCatalogue] = useState(false);
     const [openHealthInfr, setOpenHealthInfr] = useState(false);
@@ -68,6 +65,28 @@ const system_setup = (props) => {
     const [resourceCategory, setResourceCategory] = useState('AdminUnits');
     const [selectOptionss, setSelectOptionss] = useState([]);
     const [resource, setResource] = useState('counties'); 
+    const [columns, setColumns] = useState([
+        { id: 'name', label: 'Name', minWidth: 100 },
+        { id: 'code', label: 'Code', minWidth: 100},
+        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+      ]);
+    const [logsColumns, setLogsColumns] = useState([
+        { id: 'updated_on', label: 'Date', minWidth: 100 },
+        { id: 'updated_by', label: 'User', minWidth: 100},
+        { id: 'updates',label: 'Updates',minWidth: 100, }
+      ]);
+    const [constituenciesColumns, setConstituenciesColumns] = useState([
+        { id: 'name', label: 'Name', minWidth: 100 },
+        { id: 'code', label: 'Code', minWidth: 100},
+    ]);
+    const [county_users, setcounty_users] = useState([
+        { field: 'user_full_name', headerName: 'User', width: 200 },
+        { field: 'user_email', headerName: 'Email', width: 300 }, //county_name,county_code,user
+        { field: 'county_name', headerName: 'County', width: 100 },
+        { field: 'county_code', headerName: 'Code', width: 100 },
+        { field: 'user', headerName: 'User', width: 100 },
+        
+    ]);
     const [loading, setIsLoading] = useState(true);
     const [logsRows, setLogsRows] = useState([]);
     const alert = useAlert()
@@ -83,43 +102,20 @@ const system_setup = (props) => {
     const [optionGroup, setOptionGroup]=useState([{}])
     const [open, setOpen] = useState(false);
     const handleClose = () => setOpen(false);
-    const [sbcty_constituency, setSbctyConstituency] = useState([]);
-    const [value, setValue] = React.useState('1');
-    const [columns, setColumns] = useState([
-        { id: 'name', label: 'Name', minWidth: 100 },
-        { id: 'code', label: 'Code', minWidth: 100},
-        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-      ]);
-    const [logsColumns] = useState([
-        { id: 'updated_on', label: 'Date', minWidth: 100 },
-        { id: 'updated_by', label: 'User', minWidth: 100},
-        { id: 'updates',label: 'Updates',minWidth: 100, }
-      ]);
-    const [constituenciesColumns] = useState([
-        { id: 'name', label: 'Name', minWidth: 100 },
-        { id: 'code', label: 'Code', minWidth: 100},
-    ]);
-    const [wardsColumns] = useState([
-        { id: 'name', label: 'Name', minWidth: 100 },
-        { id: 'code', label: 'Code', minWidth: 100},
-    ]);
-    const [county_users] = useState([
-        { field: 'user_full_name', headerName: 'User', width: 200 },
-        { field: 'user_email', headerName: 'Email', width: 300 }, 
-        { field: 'county_name', headerName: 'County', width: 100 },
-        { field: 'county_code', headerName: 'Code', width: 100 },
-        { field: 'user', headerName: 'User', width: 100 },
-        
-    ]);
-   
+    function CustomToolbar() {
+        return (
+          <GridToolbarContainer>
+            <GridToolbarExport />
+          </GridToolbarContainer>
+        );
+      }
 
 
     // Refs
-    const {inputsContainerRef, inputsContainerRef2} = useRef(null)
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-      };
-    
+    const {optionTypeRef,displayTextRef,optionValueRef,inputsContainerRef, inputsContainerRef2,contactTypeRef,contactDetailRef} = useRef(null)
+
+    const uid = useId();
+
     useEffect(() => {
         if(!hasSystemSetupPermissions(/^common.add_county$/, userPermissions)){
             router.push('/unauthorized')
@@ -476,7 +472,7 @@ const system_setup = (props) => {
       setRowsPerPage(+event.target.value);
       setPage(0);
     };
-    //onChange 
+
     const handleFacilityOnChange = (e, path) => {
         e.preventDefault()
         const obj = {};
@@ -503,7 +499,7 @@ const system_setup = (props) => {
         });
         try {
             let url = ''
-            editMode? url =`/api/system_setup/submit_form/?path=${path}&id=${editID}&resourceCategory=${resourceCategory}` : url =`/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}`
+            editMode? url =`/api/system_setup/submit_form/?path=${path}&id=${editData.id}&resourceCategory=${resourceCategory}` : url =`/api/system_setup/submit_form/?path=${path}&resourceCategory=${resourceCategory}`
             fetch(url,{
                headers: {
                    'Accept': 'application/json, text/plain, */*',
@@ -531,15 +527,6 @@ const system_setup = (props) => {
         setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([])   
     }
 
-    const fetchSbctyConstituency = async (id) => {
-        const url =[`/api/system_setup/data/?resource=constituencies&resourceCategory=${resourceCategory}&county=${id}`,
-            `/api/system_setup/data/?resource=sub_counties&resourceCategory=${resourceCategory}&county=${id}` ]
-        const resp= await Promise.all(url.map(url=>fetch(url)))
-        const data = await Promise.all(resp.map(r=>r.json()))
-        setSbctyConstituency(data)
-    }
-    console.log(sbcty_constituency);
-
     const fetchChangeLogs = async () => {
         let id = editData.id
         if(addBtnLabel== 'county')id=editData[0].id
@@ -551,6 +538,7 @@ const system_setup = (props) => {
           },
           method:'GET',
         }).then(res => res.json()).then(data=>{
+            console.log(data);
          const res = data.revisions.map((item, ky)=>{
     
               return {
@@ -634,7 +622,7 @@ const system_setup = (props) => {
     //select options
     useEffect(async() => {
         let url = ''
-        if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department' || addBtnLabel ==='facility owner category' || addBtnLabel === 'facility type category' || addBtnLabel === 'regulatory body' || addBtnLabel === 'specialty' || addBtnLabel === 'category' || addBtnLabel === 'constituency'|| addBtnLabel === 'ward'){
+        if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department' || addBtnLabel ==='facility owner category' || addBtnLabel === 'facility type category' || addBtnLabel === 'regulatory body' || addBtnLabel === 'specialty' || addBtnLabel === 'category' ){
             if(addBtnLabel ==='facility department'){
                 url =`/api/system_setup/data/?resource=regulating_bodies&resourceCategory=Facilities&fields=id,name`                
             }
@@ -655,9 +643,6 @@ const system_setup = (props) => {
             }
             if(addBtnLabel ==='category'){
                 url =`/api/system_setup/data/?resource=service_categories&resourceCategory=ServiceCatalogue&fields=id,name`                
-            }
-            if(addBtnLabel ==='constituency' || addBtnLabel ==='ward'){
-                url =`/api/system_setup/data/?resource=counties&resourceCategory=AdminUnits&fields=id,name`                
             }
 
             const response = await fetch(url)
@@ -681,39 +666,27 @@ const system_setup = (props) => {
 
     }, [addBtnLabel, isAddForm])
 
-    //editData
     useEffect(async() => {
         if(editMode && editID !== ''){
             setTitle(`Edit ${addBtnLabel}`); 
-            let url = []
-            let resp = []
             let data = []
+            let url = []
             switch (addBtnLabel) {
                 case 'county':
                      url = [`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`, 
                     `/api/system_setup/data/?resource=constituencies&resourceCategory=${resourceCategory}&county=${editID}`,
                     `/api/system_setup/data/?resource=user_counties&resourceCategory=${resourceCategory}&county=${editID}`,
                     ]
-                     resp= await Promise.all(url.map(url=>fetch(url)))
-                     data = await Promise.all(resp.map(r=>r.json()))
+                    const resp= await Promise.all(url.map(url=>fetch(url)))
+                    const data = await Promise.all(resp.map(r=>r.json()))
                     setEditData(data)
                     setIsLoading(false)
                     break;
-                case 'constituency':
-                    url = [`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`, 
-                    `/api/system_setup/data/?resource=wards&resourceCategory=${resourceCategory}&constituency=${editID}`,
-                    ]
-                     resp= await Promise.all(url.map(url=>fetch(url)))
-                     data = await Promise.all(resp.map(r=>r.json()))
-                    setEditData(data)
-                    setIsLoading(false)
-                       break;
             
                 default:
                     const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`);
                     const _data = await response.json()
                     addBtnLabel === 'regulatory body' ? setContactList([..._data.contacts]): addBtnLabel === 'option group' ? setOptionGroup([..._data.options]) :null
-                    addBtnLabel === 'ward' ? fetchSbctyConstituency(_data.county.id) : null
                     setEditData(_data)
         
                     break;
@@ -725,7 +698,8 @@ const system_setup = (props) => {
         }
 
     }, [addBtnLabel, editID, editMode])
-console.log(editData, editMode, editID);
+
+    console.log({loading, l:editData.length, k: editData[2]?.results?.map(({id, user_full_name, user_email}) => ({id, user_full_name, user_email}))} );
   return (
   <>
             <Head>
@@ -791,7 +765,7 @@ console.log(editData, editMode, editID);
                         <PlusIcon className='text-white ml-2 h-5 w-5'/>
                         </button>
                         }
-                        {isAddForm && editMode && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' && addBtnLabel !== 'county' && addBtnLabel !== 'constituency' &&
+                        {isAddForm && editMode && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' &&
                         <button className='rounded bg-red-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setOpen(true)}}>
                         {`Delete `}
                         </button>
@@ -1125,7 +1099,7 @@ console.log(editData, editMode, editID);
                                                     case 'county':
                                                         return (
                                                         <>
-                                                            <form className='w-full h-full'  onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
+                                                            <form className='w-full h-full' onSubmit={() => console.log('submitting form')}>
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                         <label
                                                                             htmlFor={`add_${addBtnLabel}`}
@@ -1176,186 +1150,42 @@ console.log(editData, editMode, editID);
                                                                         </div>
                                                             </form>
                                                            &nbsp;
-                                                           {editMode &&
-                                                           <>
                                                            <ChangeLog/>
                                                             &nbsp;
 
-                                                            <Box sx={{ width: '100%', typography: 'body1' }}>
-                                                                <TabContext value={value}>
-                                                                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                                                    <TabList onChange={handleChange} aria-label="lab API tabs example">
-                                                                        <Tab label="Constituencies" value="1" />
-                                                                        <Tab label="County Users" value="2" />
-                                                                    </TabList>
-                                                                    </Box>
-                                                                    <TabPanel value="1">
-                                                                        <div className='col-span-4 w-full h-auto'>
-                                                                                <TableContainer sx={{ maxHeight: 440 }}>
-                                                                                        <Table stickyHeader aria-label="sticky table">
-                                                                                        <TableHead>
-                                                                                            <TableRow>
-                                                                                            {constituenciesColumns.map((column,i) => (
-                                                                                                <TableCell
-                                                                                                key={i}
-                                                                                                align={column.align}
-                                                                                                style={{ minWidth: column.minWidth, fontWeight:600 }}
-                                                                                                >
-                                                                                                {column.label}
-                                                                                                </TableCell>
-                                                                                            ))}
-                                                                                            </TableRow>
-                                                                                        </TableHead>
-                                                                                        <TableBody sx={{paddingX: 4}}>
-                                                                                            {editData[1]?.results.map((row) => {
-                                                                                                return (
-                                                                                                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                                                                                    {constituenciesColumns.map((column, i) => {
-                                                                                                    const value = row[column.id];
-                                                                                                    return (
-                                                                                                        <TableCell key={column.id} align={column.align}>
-                                                                                                            {
-                                                                                                                    column.format && typeof value === 'boolean'
-                                                                                                                        ? value.toString()
-                                                                                                                        :  column.format && typeof value === 'number'
-                                                                                                                        ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
-                                                                                                            
-                                                                                                            }
-                                                                                                        </TableCell>
-                                                                                                        
-                                                                                                    );
-                                                                                                    })}
-                                                                                                </TableRow>
-                                                                                                );
-                                                                                            })}
-                                                                                        </TableBody>
-                                                                                        </Table>
-                                                                                    </TableContainer>
-                                                                        </div>
-                                                                    </TabPanel>
-                                                                    <TabPanel value="2">
-                                                                    <div className='col-span-4 w-full h-auto'>
-                                                                    {loading ? <div>loading...</div>: 
-                                                                        <div style={{ height: 300, width: "100%" }}>
+                                                            <Tabs.Root
+                                                                orientation="horizontal"
+                                                                className="w-full flex flex-col tab-root"
+                                                                defaultValue="constituencies"
+                                                            >
+                                                                <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+                                                                    <Tabs.Tab
+                                                                        id={1}
+                                                                        value="constituencies"
+                                                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                                    >
+                                                                        Constituencies
+                                                                    </Tabs.Tab>
+                                                                    <Tabs.Tab
+                                                                        id={2}
+                                                                        value="county_users"
+                                                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                                    >
+                                                                        County Users
+                                                                    </Tabs.Tab>
+                                                                
+                                                                </Tabs.List>
 
-
-                                                                            <DataGrid
-                                                                               rows={editData[2]?.results?.map(({id,user_full_name, user_email,county_name,county_code,user}) => ({id,user_full_name, user_email,county_name,county_code,user}))|| [] }
-                                                                               columns={county_users}
-                                                                               autoHeight
-                                                                               pageSize={5}
-                                                                               rowsPerPageOptions={[5]}
-                                                                               disableSelectionOnClick
-                                                                               experimentalFeatures={{ newEditingApi: true }}
-                                                                               components={{
-                                                                                   Toolbar:GridToolbar,
-                                                                                 }}
-                                                                           />
-                                                                        </div>}
-                                                                    </div>                                                                    
-                                                                    </TabPanel>
-                                                                </TabContext>
-                                                            </Box>
-                                                            
-                                                            </>
-                                                            }
-
-                                                        </>
-                                                    
-                                                        )
-                                                        case 'constituency':
-                                                            return (
-                                                            <>
-                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
-                                                                    {/* Constituency Name */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                        
-                                                                            <label
-                                                                                htmlFor={`add_${addBtnLabel}_constituency_field`}
-                                                                                className='text-gray-600 capitalize text-sm'>
-                                                                                Constituency Name
-                                                                                <span className='text-medium leading-12 font-semibold'>
-                                                                                    {' '}
-                                                                                    *
-                                                                                </span>
-                                                                            </label>
-                                                                            <input
-                                                                                required
-                                                                                type='text'
-                                                                                placeholder='Constitency Name'
-                                                                                id={`add_${addBtnLabel}_constituency_field`}
-                                                                                name='name'
-                                                                                defaultValue={editData[0]?.name}
-                                                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                                                            />
-                                                                    </div>
-
-                                                                    {editMode &&
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                            Constitency Code
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <input
-                                                                            readOnly
-                                                                            type='text'
-                                                                            placeholder='Constituency Code'
-                                                                            id={`add_${addBtnLabel}`}
-                                                                            name='code'
-                                                                            defaultValue={editData[0]?.code}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                                                        />
-                                                                       
-                                                                    </div>}
-
-                                                                    {/* County */}
-                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-
-                                                                        <label
-                                                                            htmlFor={`add_${addBtnLabel}_county_field`}
-                                                                            className='text-gray-600 capitalize text-sm'>
-                                                                             County{' '}
-                                                                            <span className='text-medium leading-12 font-semibold'>
-                                                                                {' '}
-                                                                                *
-                                                                            </span>
-                                                                        </label>
-                                                                        <Select
-                                                                            options={selectOptionss}
-                                                                            required
-                                                                            placeholder='Select '
-                                                                            id={`add_${addBtnLabel}_county_field`}
-                                                                            name='county'
-                                                                            key={editData[0]?.county}
-                                                                            defaultValue={{value:editData[0]?.county, label:editData[0]?.county_name}}
-                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-                                                                        />
-
-                                        
-                                                                    </div>
-
-                                                                    <div className='flex items-center space-x-3 mt-4'>
-                                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
-                                                                        </div>
-                                                                </form>
-                                                             &nbsp;
-                                                             {editMode && 
-                                                             <>
-                                                             <ChangeLog/>   
-                                                             &nbsp;
-                                                             <div className='col-span-4 w-full h-auto'>
-                                                                <h3>{editData[0]?.name} Wards</h3>
+                                                                <Tabs.Panel
+                                                                 value="constituencies"
+                                                                 className="grow-1 py-1 px-4 tab-panel"
+                                                                >
+                                                                     <div className='col-span-4 w-full h-auto'>
                                                                             <TableContainer sx={{ maxHeight: 440 }}>
                                                                                     <Table stickyHeader aria-label="sticky table">
                                                                                     <TableHead>
                                                                                         <TableRow>
-                                                                                        {wardsColumns.map((column,i) => (
+                                                                                        {constituenciesColumns.map((column,i) => (
                                                                                             <TableCell
                                                                                             key={i}
                                                                                             align={column.align}
@@ -1370,7 +1200,7 @@ console.log(editData, editMode, editID);
                                                                                         {editData[1]?.results.map((row) => {
                                                                                             return (
                                                                                             <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                                                                                {wardsColumns.map((column, i) => {
+                                                                                                {constituenciesColumns.map((column, i) => {
                                                                                                 const value = row[column.id];
                                                                                                 return (
                                                                                                     <TableCell key={column.id} align={column.align}>
@@ -1391,24 +1221,45 @@ console.log(editData, editMode, editID);
                                                                                     </TableBody>
                                                                                     </Table>
                                                                                 </TableContainer>
-                                                                </div>
-                                                             </>
-                                                             
+                                                                    </div>
+                                                                </Tabs.Panel>
+                                                                <Tabs.Panel
+                                                                 value="county_users"
+                                                                 className="grow-1 py-1 px-4 tab-panel"
+                                                                >
+                                                                     <div className='col-span-4 w-full h-auto'>
+                                                                    {loading ? <div>loading...</div>: 
+                                                                     <DataGrid
+                                                                        rows={editData[2]?.results?.map(({id,user_full_name, user_email,county_name,county_code,user}) => ({id,user_full_name, user_email,county_name,county_code,user})) }
+                                                                        columns={county_users}
+                                                                        autoHeight
+                                                                        pageSize={5}
+                                                                        rowsPerPageOptions={[5]}
+                                                                        disableSelectionOnClick
+                                                                        experimentalFeatures={{ newEditingApi: true }}
+                                                                        components={{
+                                                                            Toolbar: CustomToolbar,
+                                                                          }}
+                                                                    />}
+                                                                            {/*  */}
+                                                                    </div>
+                                                                </Tabs.Panel>
+                                                            </Tabs.Root>
 
-                                                             }
-                                                            </>
+                                                        </>
+                                                    
                                                         )
-                                                        case 'ward':
+                                                        case 'constituency':
                                                             return (
                                                             
-                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
-                                                                    {/* Ward Name */}
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
+                                                                    {/* Constituency Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                         
                                                                             <label
-                                                                                htmlFor={`add_${addBtnLabel}_field`}
+                                                                                htmlFor={`add_${addBtnLabel}_constituency_field`}
                                                                                 className='text-gray-600 capitalize text-sm'>
-                                                                                Ward Name
+                                                                                Constituency Name
                                                                                 <span className='text-medium leading-12 font-semibold'>
                                                                                     {' '}
                                                                                     *
@@ -1417,9 +1268,8 @@ console.log(editData, editMode, editID);
                                                                             <input
                                                                                 required
                                                                                 type='text'
-                                                                                placeholder='Ward Name'
-                                                                                id={`add_${addBtnLabel}_field`}
-                                                                                name='name'
+                                                                                placeholder='Constitency Name'
+                                                                                name={`add_${addBtnLabel}_constituency_field`}
                                                                                 className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                             />
                                                                     </div>
@@ -1437,19 +1287,88 @@ console.log(editData, editMode, editID);
                                                                             </span>
                                                                         </label>
                                                                         <Select
-                                                                            options={selectOptionss}
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
+                                                                            required
+                                                                            placeholder='Select '
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_county_field`}
+                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        />
+
+                                        
+                                                                    </div>
+
+                                                                    <div className='flex items-center space-x-3 mt-4'>
+                                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        </div>
+                                                                </form>
+                                                        )
+                                                        case 'ward':
+                                                            return (
+                                                            
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={() => console.log('submitting form')}>
+                                                                    {/* Ward Name */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_field`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Ward Name
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    *
+                                                                                </span>
+                                                                            </label>
+                                                                            <input
+                                                                                required
+                                                                                type='text'
+                                                                                placeholder='Ward Name'
+                                                                                name={`add_${addBtnLabel}_field`}
+                                                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            />
+                                                                    </div>
+
+                                                                    {/* County */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                             County{' '}
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <Select
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
                                                                             required
                                                                             placeholder='Select county'
-                                                                            onChange={(e) => fetchSbctyConstituency(e.value)}
-                                                                            key={editData.county.id}
-                                                                            id={`add_${addBtnLabel}_county_field`}
-                                                                            name='county'
-                                                                            defaultValue={{value:editData.county.id, label:editData.county_name}}
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_county_field`}
                                                                             className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
                                                                     </div>
-                                                                    {sbcty_constituency.length > 0 && <>
-                                                                    
+
                                                                     {/* Sub County */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 
@@ -1463,13 +1382,20 @@ console.log(editData, editMode, editID);
                                                                             </span>
                                                                         </label>
                                                                         <Select
-                                                                            options={sbcty_constituency[1].results.map(({id, name}) => ({value:id, label:name}))}
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
                                                                             required
                                                                             placeholder='Select Sub County'
-                                                                            key={editData.sub_county}
-                                                                            id={`add_${addBtnLabel}_sub_county_field`}
-                                                                            name='sub_county'
-                                                                            defaultValue={{value:editData.sub_county, label:editData.sub_county_name}}
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_sub_county_field`}
                                                                             className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
                                                                     </div>
@@ -1487,22 +1413,25 @@ console.log(editData, editMode, editID);
                                                                             </span>
                                                                         </label>
                                                                         <Select
-                                                                            options={sbcty_constituency[0].results.map(({id, name}) => ({value:id, label:name}))}
+                                                                            options={[
+                                                                                {
+                                                                                    value: 'type-1',
+                                                                                    label: 'type-1',
+                                                                                },
+                                                                                {
+                                                                                    value: 'type-2',
+                                                                                    label: 'type-2',
+                                                                                },
+                                                                            ]}
                                                                             required
                                                                             placeholder='Select Constituency'
-                                                                            key={editData.constituency}
-                                                                            id={`add_${addBtnLabel}_constituency_field`}
-                                                                            name='constituency'
-                                                                            defaultValue={{value:editData.constituency, label:editData.constituency_name}}
+                                                                            onChange={() => console.log('changed type')}
+                                                                            name={`add_${addBtnLabel}_constituency_field`}
                                                                             className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
 
                                                                        
                                                                     </div>
-                                                                    
-                                                                    </>}
-                                                                    &nbsp;
-                                                                    {editMode && <ChangeLog/>}
 
                                                                     <div className='flex items-center space-x-3 mt-4'>
                                                                         <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
@@ -1513,8 +1442,7 @@ console.log(editData, editMode, editID);
                                                             )
                                                         case 'town':
                                                             return (
-                                                                <>
-                                                                <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full' onSubmit={() => console.log('submitting form')}>
                                                                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                         <label
                                                                             htmlFor={`add_${addBtnLabel}_town_field`}
@@ -1529,9 +1457,7 @@ console.log(editData, editMode, editID);
                                                                             required
                                                                             type='text'
                                                                             placeholder='Town Name'
-                                                                            id={`add_${addBtnLabel}_town_field`}
-                                                                            name="name"
-                                                                            defaultValue={editData.name}
+                                                                            name={`add_${addBtnLabel}_town_field`}
                                                                             className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                       
@@ -1542,9 +1468,6 @@ console.log(editData, editMode, editID);
                                                                             <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
                                                                     </div>
                                                                 </form>
-                                                                &nbsp;
-                                                                {editMode && <ChangeLog/>}
-                                                                </>
                                                             )
                                                         case 'category':
                                                             return (
