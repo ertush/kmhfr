@@ -31,14 +31,6 @@ export default async function postSystemSetupData(req, res) {
                 url = `${API_URL}/common/counties/${id}`
                 contentType = 'application/json;charset=utf-8';
             break; 
-            case 'constituency':
-                url = `${API_URL}/common/constituencies/${id}`
-                contentType = 'application/json;charset=utf-8';
-            break;
-            case 'town':
-                url = `${API_URL}/common/towns/${id}`
-                contentType = 'application/json;charset=utf-8';
-            break;
             case 'option group':
                 url = `${API_URL}/facilities/option_group_with_options/${id}`
                 contentType = 'application/json;charset=utf-8';
