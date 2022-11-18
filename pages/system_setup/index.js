@@ -1153,55 +1153,34 @@ const system_setup = (props) => {
                                                            <ChangeLog/>
                                                             &nbsp;
 
-                                                            <Tabs.Root
-                                                                orientation="horizontal"
-                                                                className="w-full flex flex-col tab-root"
-                                                                defaultValue="constituencies"
-                                                            >
-                                                                <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
-                                                                    <Tabs.Tab
-                                                                        id={1}
-                                                                        value="constituencies"
-                                                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                                    >
-                                                                        Constituencies
-                                                                    </Tabs.Tab>
-                                                                    <Tabs.Tab
-                                                                        id={2}
-                                                                        value="county_users"
-                                                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                                                    >
-                                                                        County Users
-                                                                    </Tabs.Tab>
-                                                                
-                                                                </Tabs.List>
+                                                            <Box sx={{ width: '100%', typography: 'body1' }}>
+                                                                <TabContext value={value}>
+                                                                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                                                    <TabList onChange={handleChange} aria-label="lab API tabs example">
+                                                                        <Tab label="Constituencies" value="1" />
+                                                                        <Tab label="County Users" value="2" />
+                                                                    </TabList>
+                                                                    </Box>
+                                                                    <TabPanel value="1">
+                                                                        <div className='col-span-4 w-full h-auto'>
+                                                                                <TableContainer sx={{ maxHeight: 300 }}>
+                                                                                        <Table stickyHeader aria-label="sticky table">
+                                                                                        <TableHead>
+                                                                                            <TableRow>
+                                                                                            {constituenciesColumns.map((column,i) => (
+                                                                                                <TableCell
+                                                                                                key={i}
+                                                                                                align={column.align}
+                                                                                                style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                                                                                >
+                                                                                                {column.label}
+                                                                                                </TableCell>
+                                                                                            ))}
+                                                                                            </TableRow>
+                                                                                        </TableHead>
+                                                                                        <TableBody sx={{paddingX: 4}}>
+                                                                                            {editData[1]?.results.map((row) => {
 
-                                                                <Tabs.Panel
-                                                                 value="constituencies"
-                                                                 className="grow-1 py-1 px-4 tab-panel"
-                                                                >
-                                                                     <div className='col-span-4 w-full h-auto'>
-                                                                            <TableContainer sx={{ maxHeight: 440 }}>
-                                                                                    <Table stickyHeader aria-label="sticky table">
-                                                                                    <TableHead>
-                                                                                        <TableRow>
-                                                                                        {constituenciesColumns.map((column,i) => (
-                                                                                            <TableCell
-                                                                                            key={i}
-                                                                                            align={column.align}
-                                                                                            style={{ minWidth: column.minWidth, fontWeight:600 }}
-                                                                                            >
-                                                                                            {column.label}
-                                                                                            </TableCell>
-                                                                                        ))}
-                                                                                        </TableRow>
-                                                                                    </TableHead>
-                                                                                    <TableBody sx={{paddingX: 4}}>
-                                                                                        {editData[1]?.results.map((row) => {
-                                                                                            return (
-                                                                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                                                                                {constituenciesColumns.map((column, i) => {
-                                                                                                const value = row[column.id];
                                                                                                 return (
                                                                                                     <TableCell key={column.id} align={column.align}>
                                                                                                         {
