@@ -8,6 +8,7 @@ import {
     PlusIcon,
 } from '@heroicons/react/solid';
 import Select from 'react-select';
+import Link from 'next/link'
 
 const FormData = require('form-data');
 
@@ -82,8 +83,8 @@ function AddAdminofffice(props) {
                 <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/')}>Home</span>{'>'}
-                            <span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/admin_offices')}>Adminoffices</span> {'>'}
+                            <Link href='/' className="text-green-500">Home</Link>{'>'}
+                            <Link href='/admin_offices' className="text-green-500">Adminoffices</Link> {'>'}
                             <span className="text-gray-500">Add Admin Office</span>
                         </div>
                     </div>

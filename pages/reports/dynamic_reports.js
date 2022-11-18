@@ -5,6 +5,7 @@ import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 // import { CheckBox } from '@mui/icons-material'
 
 import Select from 'react-select'
@@ -304,8 +305,8 @@ const DynamicReports = (props) => {
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-green-700" href="/">Home</a> {'>'}
-                                <span className="text-gray-500">Reports</span> {'>'}
+                                <Link className="text-green-700" href="/">Home</Link> {'>'}
+                                <span className="text-green-700">Reports</span> {'>'}
                                 <span className="text-gray-500">Dynamic Reports</span>
                             </div>
                            
