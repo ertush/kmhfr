@@ -165,17 +165,29 @@ export default async function submitFormData(req, res) {
               
             try {
                 console.log({url});
-                const resp = await fetch(url, {
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                        'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': contentType
-                    },
-                    method,
-                    body: method == 'GET' ? null:JSON.stringify(req.body)
-                })
+                const resp = await fetch(url, 
+                    url.includes('common/documents') ?
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                            'Accept': 'application/json, text/plain, */*',
+                        },
+                        method,
+                        body: req.body
+                    }
+                    :
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                            'Accept': 'application/json, text/plain, */*',
+                            'Content-Type': contentType
+                        },
+                        method,
+                        body: JSON.stringify(req.body)
+                    }
+                )
                 
-                return await resp.json()
+                return url.includes('common/documents') ? resp : await resp.json()
             }
             catch(err) {
                 console.error('Error posting facility basic details: ', err)
