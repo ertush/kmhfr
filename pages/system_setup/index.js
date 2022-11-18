@@ -1191,7 +1191,7 @@ console.log(editData, editMode, editID);
                                                                     </Box>
                                                                     <TabPanel value="1">
                                                                         <div className='col-span-4 w-full h-auto'>
-                                                                                <TableContainer sx={{ maxHeight: 440 }}>
+                                                                                <TableContainer sx={{ maxHeight: 300 }}>
                                                                                         <Table stickyHeader aria-label="sticky table">
                                                                                         <TableHead>
                                                                                             <TableRow>
