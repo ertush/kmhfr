@@ -9,7 +9,7 @@ import useDidMountEffect from '../../hooks/useDidMountEffect';
 import Head from 'next/dist/shared/lib/head'
 import { PlusIcon, TrashIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
-
+import * as Tabs from "@radix-ui/react-tabs";
 
 // MUI imports
 import ListSubheader from '@mui/material/ListSubheader';
@@ -37,11 +37,6 @@ import { hasSystemSetupPermissions } from '../../utils/checkPermissions';
 import moment from 'moment'
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 
@@ -1180,82 +1175,100 @@ console.log(editData, editMode, editID);
                                                            <ChangeLog/>
                                                             &nbsp;
 
-                                                            <Box sx={{ width: '100%', typography: 'body1' }}>
-                                                                <TabContext value={value}>
-                                                                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                                                    <TabList onChange={handleChange} aria-label="lab API tabs example">
-                                                                        <Tab label="Constituencies" value="1" />
-                                                                        <Tab label="County Users" value="2" />
-                                                                    </TabList>
-                                                                    </Box>
-                                                                    <TabPanel value="1">
-                                                                        <div className='col-span-4 w-full h-auto'>
-                                                                                <TableContainer sx={{ maxHeight: 440 }}>
-                                                                                        <Table stickyHeader aria-label="sticky table">
-                                                                                        <TableHead>
-                                                                                            <TableRow>
-                                                                                            {constituenciesColumns.map((column,i) => (
-                                                                                                <TableCell
-                                                                                                key={i}
-                                                                                                align={column.align}
-                                                                                                style={{ minWidth: column.minWidth, fontWeight:600 }}
-                                                                                                >
-                                                                                                {column.label}
-                                                                                                </TableCell>
-                                                                                            ))}
-                                                                                            </TableRow>
-                                                                                        </TableHead>
-                                                                                        <TableBody sx={{paddingX: 4}}>
-                                                                                            {editData[1]?.results.map((row) => {
+                                                            <Tabs.Root
+                                                                orientation="horizontal"
+                                                                className="w-full flex flex-col tab-root"
+                                                                defaultValue="constituencies"
+                                                            >
+                                                                <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+                                                                    <Tabs.Tab
+                                                                        id={1}
+                                                                        value="constituencies"
+                                                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                                    >
+                                                                        Constituencies
+                                                                    </Tabs.Tab>
+                                                                    <Tabs.Tab
+                                                                        id={2}
+                                                                        value="county_users"
+                                                                        className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                                                    >
+                                                                        County Users
+                                                                    </Tabs.Tab>
+                                                                
+                                                                </Tabs.List>
+
+                                                                <Tabs.Panel
+                                                                 value="constituencies"
+                                                                 className="grow-1 py-1 px-4 tab-panel"
+                                                                >
+                                                                     <div className='col-span-4 w-full h-auto'>
+                                                                            <TableContainer sx={{ maxHeight: 440 }}>
+                                                                                    <Table stickyHeader aria-label="sticky table">
+                                                                                    <TableHead>
+                                                                                        <TableRow>
+                                                                                        {constituenciesColumns.map((column,i) => (
+                                                                                            <TableCell
+                                                                                            key={i}
+                                                                                            align={column.align}
+                                                                                            style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                                                                            >
+                                                                                            {column.label}
+                                                                                            </TableCell>
+                                                                                        ))}
+                                                                                        </TableRow>
+                                                                                    </TableHead>
+                                                                                    <TableBody sx={{paddingX: 4}}>
+                                                                                        {editData[1]?.results.map((row) => {
+                                                                                            return (
+                                                                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                                                                                {constituenciesColumns.map((column, i) => {
+                                                                                                const value = row[column.id];
                                                                                                 return (
-                                                                                                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                                                                                    {constituenciesColumns.map((column, i) => {
-                                                                                                    const value = row[column.id];
-                                                                                                    return (
-                                                                                                        <TableCell key={column.id} align={column.align}>
-                                                                                                            {
-                                                                                                                    column.format && typeof value === 'boolean'
-                                                                                                                        ? value.toString()
-                                                                                                                        :  column.format && typeof value === 'number'
-                                                                                                                        ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
-                                                                                                            
-                                                                                                            }
-                                                                                                        </TableCell>
+                                                                                                    <TableCell key={column.id} align={column.align}>
+                                                                                                        {
+                                                                                                                column.format && typeof value === 'boolean'
+                                                                                                                    ? value.toString()
+                                                                                                                    :  column.format && typeof value === 'number'
+                                                                                                                    ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
                                                                                                         
-                                                                                                    );
-                                                                                                    })}
-                                                                                                </TableRow>
+                                                                                                        }
+                                                                                                    </TableCell>
+                                                                                                    
                                                                                                 );
-                                                                                            })}
-                                                                                        </TableBody>
-                                                                                        </Table>
-                                                                                    </TableContainer>
-                                                                        </div>
-                                                                    </TabPanel>
-                                                                    <TabPanel value="2">
-                                                                    <div className='col-span-4 w-full h-auto'>
+                                                                                                })}
+                                                                                            </TableRow>
+                                                                                            );
+                                                                                        })}
+                                                                                    </TableBody>
+                                                                                    </Table>
+                                                                                </TableContainer>
+                                                                    </div>
+                                                                </Tabs.Panel>
+                                                                <Tabs.Panel
+                                                                 value="county_users"
+                                                                 className="grow-1 py-1 px-4 tab-panel"
+                                                                >
+                                                                     <div className='col-span-4 w-full h-auto'>
                                                                     {loading ? <div>loading...</div>: 
-                                                                        <div style={{ height: 300, width: "100%" }}>
+                                                                     <DataGrid
+                                                                        rows={editData[2]?.results?.map(({id,user_full_name, user_email,county_name,county_code,user}) => ({id,user_full_name, user_email,county_name,county_code,user})) }
+                                                                        columns={county_users}
+                                                                        autoHeight
+                                                                        pageSize={5}
+                                                                        rowsPerPageOptions={[5]}
+                                                                        disableSelectionOnClick
+                                                                        experimentalFeatures={{ newEditingApi: true }}
+                                                                        components={{
+                                                                            Toolbar: GridToolbar,
+                                                                          }}
+                                                                    />}
+                                                                            {/*  */}
+                                                                    </div>
+                                                                </Tabs.Panel>
+                                                            </Tabs.Root>
 
-
-                                                                            <DataGrid
-                                                                               rows={editData[2]?.results?.map(({id,user_full_name, user_email,county_name,county_code,user}) => ({id,user_full_name, user_email,county_name,county_code,user}))|| [] }
-                                                                               columns={county_users}
-                                                                               autoHeight
-                                                                               pageSize={5}
-                                                                               rowsPerPageOptions={[5]}
-                                                                               disableSelectionOnClick
-                                                                               experimentalFeatures={{ newEditingApi: true }}
-                                                                               components={{
-                                                                                   Toolbar:GridToolbar,
-                                                                                 }}
-                                                                           />
-                                                                        </div>}
-                                                                    </div>                                                                    
-                                                                    </TabPanel>
-                                                                </TabContext>
-                                                            </Box>
-                                                            
+                                                           
                                                             </>
                                                             }
 
