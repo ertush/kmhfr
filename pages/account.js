@@ -8,6 +8,7 @@ import { ArrowsExpandIcon } from '@heroicons/react/outline'
 import dynamic from 'next/dynamic'
 import { Dialog, Transition } from '@headlessui/react'
 import { UserContext } from '../providers/user';
+import {Link} from 'next/link'
 
 const Account = (props) => {
     const [user, setUser] = useState(null)
@@ -79,8 +80,8 @@ const Account = (props) => {
             <MainLayout>
                 {user && user?.id ? <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
                     <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
-                        <div className="flex flex-row gap-2 text-sm md:text-base">
-                            <a className="text-green-700" href="/">Home</a> {'>'}
+                        <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                            <Link className="text-green-700" href="/">Home</Link> {'/'}
                             <span className="text-gray-500">Account settings</span>
                         </div>
                         <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (user.is_active ? "border-green-600" : "border-red-600")}>

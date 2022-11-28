@@ -182,12 +182,12 @@ const Facility = (props) => {
             <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
               <Link className="text-green-700" href="/">
                 Home
-              </Link>{" "}
-              {">"}
+              </Link>
+              {"/"}
               <Link className="text-green-700" href="/facilities">
                 Facilities
-              </Link>{" "}
-              {">"}
+              </Link>
+              {"/"}
               <span className="text-gray-500">
                 {facility?.official_name ?? ""} ( #
                 <i className="text-black">{facility?.code || "NO_CODE"}</i> )

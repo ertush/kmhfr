@@ -96,15 +96,15 @@ const Regulate = props => {
                     {/* Header */}
                     <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
                         {/* Breadcramps */}
-                        <div className="flex flex-row gap-2 text-sm md:text-base">
+                        <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
                             <Link className="text-green-700" href="/">
                                 Home
-                            </Link>{" "}
-                            {">"}
+                            </Link>
+                            {"/"}
                             <Link className="text-green-700" href="/facilities">
                                 Facilities
-                            </Link>{" "}
-                            {">"}
+                            </Link>
+                            {"/"}
                             <span className="text-gray-500">
                                 {facility?.official_name ?? ""} ( #
                                 <i className="text-black">{facility?.code || "NO_CODE"}</i> )

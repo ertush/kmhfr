@@ -119,7 +119,7 @@ const Home = (props) => {
                             {/* Bread Crumbs */}
 
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <Link className="text-green-800" href="/">Home</Link> {'>'}
+                                <Link className="text-green-800" href="/">Home</Link> {'/'}
                                 <span className="text-gray-500">Facilities</span>
                             </div>
 
