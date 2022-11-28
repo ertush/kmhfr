@@ -975,8 +975,8 @@ const EditFacility = (props) => {
                     <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
                         {/* Bread crumbs */}
                         <div className="flex flex-row gap-2 text-sm md:text-base">
-                            <Link className="text-green-700" href="/">Home</Link> {'>'}
-                            <Link className="text-green-700" href="/facilities">Facilities</Link> {'>'}
+                            <Link className="text-green-700" href="/">Home</Link> {'/'}
+                            <Link className="text-green-700" href="/facilities">Facilities</Link> {'/'}
                             <span className="text-gray-500">{official_name} ( #<i className="text-black">{code || "NO_CODE"}</i> )</span>
                         </div>
 

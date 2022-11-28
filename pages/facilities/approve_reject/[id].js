@@ -50,23 +50,27 @@ function ApproveReject(props) {
 
         <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
 
-            {/* Header */}
-            <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
+
                 {/* Breadcramps */}
-                <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
+               
+              <div className="flex flex-row cols-span-2 items-center text-start gap-3 text-sm md:text-base py-3 w-full">
                 <Link className="text-green-700" href="/">
                     Home
-                </Link>{" "}
-                {">"}
+                </Link>
+                {"/"}
                 <Link className="text-green-700" href="/facilities">
                     Facilities
-                </Link>{" "}
-                {">"}
-                <span className="text-gray-500">
-                    {facility?.official_name ?? ""} ( #
-                    <i className="text-black">{facility?.code || "NO_CODE"}</i> )
+                </Link>
+                {"/"}
+                <span className="text-gray-500 flex flex-row">
+                    <span>{facility?.official_name ?? ""} </span> 
+                    {/* <span>( # <i className="text-black flex">{facility?.code || "NO_CODE"}</i> )</span> */}
                 </span>
                 </div>
+
+            {/* Header */}
+            <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
+            
                 {/* Header Bunner  */}
                 <div
                 className={

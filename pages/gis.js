@@ -267,11 +267,11 @@ const Gis = (props) => {
             <>
               <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 pt-2 justify-between items-center w-full bg-gray-100">
                 {/* BREADCRUMB */}
-                <div className="flex flex-row gap-2 text-sm md:text-base py-2 px-3">
+                <div className="flex flex-row items-center justify-between gap-2 md:ml-6 text-sm md:text-base py-3">
                   <Link className="text-green-700" href="/">
                     Home
-                  </Link>{" "}
-                  {">"}
+                  </Link>
+                  {"/"}
                   <span className="text-gray-500">GIS Explorer</span>
                 </div>
 

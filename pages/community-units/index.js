@@ -11,9 +11,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
+import CommunityUnitSideMenu from '../../components/CommunityUnitSideMenu';
+
 
 const Home = (props) => {
 	const router = useRouter();
@@ -21,115 +20,13 @@ const Home = (props) => {
 	const filters = props?.filters;
 	const [drillDown, setDrillDown] = useState({});
 	const qf = props?.query?.qf || 'all';
-	const [currentQuickFilter, setCurrentQuickFilter] = useState(qf);
-	let multiFilters = [
-		'service_category',
-		'service',
-		'county',
-		'subcounty',
-		'ward',
-		'constituency',
-	];
-	let quickFilters = [
-		{
-			name: 'All Community Health Units',
-			id: 'all',
-			filters: Object.keys(filters),
-		},
-		{
-			name: 'Approved Community Health Units',
-			id: 'approved',
-			filters: [{ id: 'is_approved', value: true }],
-		},
-		{
-			name: 'New Community Health Units Pending Approval',
-			id: 'new_pending_approval',
-			filters: [
-				{ id: 'has_edits', value: false },
-				{ id: 'pending_approval', value: true },
-			],
-		},
-		{
-			name: 'Updated Community Health Units Pending Approval',
-			id: 'updated_pending_approval',
-			filters: [
-				{ id: 'has_edits', value: true },
-				{ id: 'is_approved', value: true },
-			],
-		},
-		{
-			name: 'Rejected Community Health Units',
-			id: 'rejected',
-			filters: [{ id: 'is_rejected', value: true }],
-		},
-	];
-
 
 	const [title, setTitle] = useState('Community Health Units') 
-	const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '')
-	const [approvedCHUSelected, setApprovedCHUSelected] = useState(false);
-    const [newCHUSelected, setNewCHUSelected] = useState(false);
-    const [updatedCHUSelected, setUpdatedCHUSelected] = useState(false);
-    const [rejectedCHUSelected, setRejectedCHUSelected] = useState(false);
-	const [chuFeedBack, setCHUFeedBack] = useState([])
-    const [allCHUSelected, setAllCHUSelected] = useState(false);
-
-  
-    const [feedBackCHUSelected, setFeedBackCHUSelected] = useState(false);
-    const [chuPendingApproval, setCHUPendingApproval] = useState(false);
 
 
-
-
-	const handleQuickFiltersClick = async (filter_id) => {
-    
-		let filter = {}	
-		if(filter_id !== 'feedback') {
-			
-		const qfilter = quickFilters.filter(({id}) => id === filter_id).map(f => f.filters.map(({id, value}) => ({id, value})))
-	
-		qfilter[0].forEach(({id, value}) => {filter[id] = value}) 
-	 
-		// if (filter_id === 'new_pending_approval') filter['is_complete'] = true;
-	
-		}
-	
-	   
-		switch(filter_id){
-			case 'all':
-				setCHUFeedBack([])
-				router.push({pathname:'/community-units', query: {qf: filter_id}})
-				break;
-			
-			case 'feedback':
-			
-				try {
-					const feedback = await fetch('/api/community_units/chu_filters/?path=chu_ratings&fields=comment,facility_id,facility_name,chu_name,created,rating&id=feedback')
-					const feedbackFacilities = (await feedback.json()).results
-	
-					setCHUFeedBack(feedbackFacilities)
-				   
-				}
-				catch (err){
-					console.error(err.message);
-				}
-			 
-				break;
-			default:
-				setCHUFeedBack([])
-				
-				// console.log({filter})
-	 
-				router.push({pathname: '/community-units', query: {qf: filter_id, ...filter}})
-				break;
-		}
-			
-	
-		}
-	
 	
 	useEffect(() => {
-		console.log({filters})
+		// console.log({filters})
 		let qry = props?.query;
 		delete qry.searchTerm;
 		delete qry.qf
@@ -155,10 +52,10 @@ const Home = (props) => {
 							{/* Bread Crumbs */}
 
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<a className='text-green-700' href='/'>
+								<Link className='text-green-700' href='/'>
 									Home
-								</a>{' '}
-								{'>'}
+								</Link>
+								{'/'}
 								<span className='text-gray-500'>Community Units</span>
 							</div>
 
@@ -285,146 +182,12 @@ const Home = (props) => {
 				    
 					  {/* Side Menu Filters*/}
 
-					<div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
-                        <List
-                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                    
-                        >
-						    {quickFilters.map((qf, i)=>{
-								return (
+					<CommunityUnitSideMenu
+					qf={qf}
+					filters={filters}
+					_pathId={props?.path.split('id=')[1]}
+					/>
 
-										<ListItemButton 
-										    key={qf.id}
-										    sx={(() => {
-												switch(qf.name){
-													case 'All Community Health Units':
-														return { backgroundColor: (allCHUSelected || pathId === 'all') ?  '#e7ebf0' : 'none' }
-													case 'Approved Community Health Units':
-														return { backgroundColor: (approvedCHUSelected || pathId === 'approved')  ?  '#e7ebf0' : 'none' }
-													case 'New Community Health Units Pending Approval':
-														return { backgroundColor: (newCHUSelected || pathId === 'new_pending_approval') ?  '#e7ebf0' : 'none' }
-													case 'Updated Community Health Units Pending Approval':
-														return { backgroundColor: (updatedCHUSelected  || pathId === 'updated_pending_approval') ?  '#e7ebf0' : 'none' }
-													case 'Rejected Community Health Units':
-														return { backgroundColor: (chuPendingApproval  || pathId === 'rejected') ?  '#e7ebf0' : 'none' }
-													case 'Feedback on Community Health Units':
-														return { backgroundColor: (feedBackCHUSelected || pathId == "feedback") ?  '#e7ebf0' : 'none' }
-												}
-											})()} 
-											name="rt"
-											onClick={(evt) => {
-												switch(qf.name){
-													case 'All Community Health Units':
-														setTitle('All Community Health Units')
-														setPathId('all')
-														setAllCHUSelected(true)
-														setApprovedCHUSelected(false)
-														setNewCHUSelected(false)
-														setUpdatedCHUSelected(false)
-														setCHUPendingApproval(false)
-														setRejectedCHUSelected(false)
-														setFeedBackCHUSelected(false)
-					
-														handleQuickFiltersClick('all')
-													break;
-													case 'Approved Community Health Units':
-														setTitle('Approved Community Health Units')
-														setAllCHUSelected(false)
-														setPathId('approved')
-														setApprovedCHUSelected(true)
-														setNewCHUSelected(false)
-														setUpdatedCHUSelected(false)
-														setCHUPendingApproval(false)
-														setRejectedCHUSelected(false)
-														setFeedBackCHUSelected(false)
-					
-														handleQuickFiltersClick('approved')
-													break;
-				
-													case 'New Community Health Units Pending Approval':
-														setTitle('Community Health Units Pending Approval')
-														setPathId('new_pending_approval')
-														setAllCHUSelected(false)
-														setApprovedCHUSelected(false)
-														setNewCHUSelected(true)
-														setUpdatedCHUSelected(false)
-														setCHUPendingApproval(false)
-														setRejectedCHUSelected(false)
-														setFeedBackCHUSelected(false)
-					
-														handleQuickFiltersClick('new_pending_approval')
-													break;
-													case 'Updated Community Health Units Pending Approval':
-														setTitle(' Community Health Units Pending Approval')
-														setPathId('updated_pending_approval')
-														setAllCHUSelected(false)
-														setApprovedCHUSelected(false)
-														setNewCHUSelected(false)
-														setUpdatedCHUSelected(true)
-														setCHUPendingApproval(false)
-														setRejectedCHUSelected(false)
-														setFeedBackCHUSelected(false)
-
-														handleQuickFiltersClick('updated_pending_approval')
-													break;
-													case 'Rejected Community Health Units':
-														setTitle('Rejected Community Health Units')
-														setPathId('rejected')
-														setAllCHUSelected(false)
-														setApprovedCHUSelected(false)
-														setNewCHUSelected(false)
-														setUpdatedCHUSelected(false)
-														setCHUPendingApproval(true)
-														setRejectedCHUSelected(false)
-														setFeedBackCHUSelected(false)
-
-														handleQuickFiltersClick('rejected')
-													break;
-													case 'Feedback on Community Health Units':
-														setTitle('Community Health Units Feedback From Public')
-														setPathId('feedback')
-														setAllCHUSelected(false)
-														setApprovedCHUSelected(false)
-														setNewCHUSelected(false)
-														setUpdatedCHUSelected(false)
-														setCHUPendingApproval(false)
-														setRejectedCHUSelected(false)
-														setFeedBackCHUSelected(true)
-					
-														handleQuickFiltersClick('feedback')
-													break;
-												}
-
-												setCurrentQuickFilter(qf.id);
-												let robj = {
-													pathname: '/community-units',
-													query: { },
-												};
-												if (qf.id === 'all') {
-													router.push(robj);
-													return;
-												}
-												quickFilters.forEach((q_f) => {
-													if (q_f.id === qf.id) {
-														q_f.filters.map((sf) => {
-															robj.query[sf.id] = sf.value;
-														});
-													}
-												});
-												console.log(robj);
-												router.push(robj);
-											}}
-										>
-											<ListItemText primary={qf.name} />
-										</ListItemButton>
-								)
-							})}
-                          
-                                
-                        </List>
-                    </div>
                      {/* Main body */}
 					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
 					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
@@ -609,7 +372,7 @@ const Home = (props) => {
 };
 
 Home.getInitialProps = async (ctx) => {
-	// console.log("=======================================")
+	
 	console.log(ctx.query)
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 	const fetchFilters = async (token) => {

@@ -59,10 +59,10 @@ const Upgrade = props => {
         <div className="w-full grid md:grid-cols-7 gap-4 px-1 md:px-4 py-2 my-4">
                 {/* Header */}
                 <div className="md:col-span-7 flex flex-col gap-3 md:gap-5 px-4">
-                            <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
+                            <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base">
                                 <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                    <Link className="text-green-700 cursor-pointer" href='/'>Home</Link>{'>'}
-                                    <Link className="text-green-700 cursor-pointer" href='/facilities'>Facilities</Link> {'>'}
+                                    <Link className="text-green-700 cursor-pointer" href='/'>Home</Link>{'/'}
+                                    <Link className="text-green-700 cursor-pointer" href='/facilities'>Facilities</Link> {'/'}
                                     <span className="text-gray-500">Upgrade</span>
                                 </div>
                             </div>

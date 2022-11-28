@@ -752,7 +752,7 @@ const system_setup = (props) => {
                         </Modal>}
                      {/* Bread Cumbs  */}
                      <div className="flex flex-row gap-2 text-sm md:text-base">
-                            <Link className="text-green-700" href="/">Home</Link> {'>'}
+                            <Link className="text-green-700" href="/">Home</Link> {'/'}
                             <span className="text-gray-500" >System setup</span>   
                     </div>
                     {/* Header Bunner */}

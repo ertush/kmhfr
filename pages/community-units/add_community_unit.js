@@ -12,6 +12,7 @@ import { FixedSizeList } from 'react-window';
 import{ChevronDoubleRightIcon,ChevronDoubleLeftIcon,TrashIcon} from '@heroicons/react/solid';
 import Select from 'react-select';
 import { useAlert } from "react-alert";
+import Link from 'next/dink';
 
 
 
@@ -130,14 +131,14 @@ const AddCommUnit=(props)=> {
 					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-4'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 							<div className='flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3'>
-								<a className='text-green-800' href='/'>
+								<Link className='text-green-800' href='/'>
 									Home
-								</a>{' '}
-								{'>'}
-								<a className='text-green-800' href='/community-units'>
+								</Link>
+								{'/'}
+								<Link className='text-green-800' href='/community-units'>
 									Community Units
-								</a>{' '}
-								{'>'}
+								</Link>
+								{'/'}
 								<span className='text-gray-500'>Add Community Unit</span>
 							</div>
 							<div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'></div>
