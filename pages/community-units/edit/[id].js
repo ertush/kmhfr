@@ -15,6 +15,9 @@ import Select from "react-select";
 import { UserContext } from "../../../providers/user";
 import { useRouter } from 'next/router'
 import { useAlert } from "react-alert";
+import CommunityUnitSideMenu from "../../../components/CommunityUnitSideMenu";
+import Link from 'next/link';
+
 
 const CommUnit = (props) => {
   const facilities = props.facility_data.results;
@@ -218,18 +221,18 @@ const CommUnit = (props) => {
       </Head>
 
       <MainLayout>
-        <div className="w-full grid grid-cols-1 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
-          <div className="col-span-4 flex flex-col items-start px-4 justify-start gap-3">
+        <div className="w-full grid grid-cols-1 md:grid-cols-7 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
+          <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
             {/* Breadcrumb */}
             <div className="flex flex-row gap-2 text-sm md:text-base">
-              <a className="text-green-700" href="/">
+              <Link className="text-green-700" href="/">
                 Home
-              </a>{" "}
-              {">"}
-              <a className="text-green-700" href="/community-units">
+              </Link>
+              {"  >  "}
+              <Link className="text-green-700" href="/community-units">
                 Community units
-              </a>{" "}
-              {">"}
+              </Link>
+              {"  >  "}
               <span className="text-gray-500">
                 {cu.name} ( #
                 <i className="text-black">{cu.code || "NO_CODE"}</i> )
@@ -239,7 +242,7 @@ const CommUnit = (props) => {
             {/* Header snippet */}
             <div
               className={
-                "col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
                 (cu.active ? "border-green-600" : "border-red-600")
               }
             >
@@ -308,8 +311,17 @@ const CommUnit = (props) => {
             </div>
           </div>
 
+          {/* Community Unit Side Menu */}
+          <div className="hidden md:col-span-1 md:flex md:mt-8">
+            <CommunityUnitSideMenu
+              	qf={'all'}
+                filters={[]}
+                _pathId={''}
+            />
+          </div>
+
           {/* Form */}
-          <div className="col-span-1 md:col-span-4 flex flex-col md:gap-3 mt-4">
+          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-4">
             <Tabs.Root
               orientation="horizontal"
               className="w-full flex flex-col tab-root"
@@ -725,7 +737,7 @@ const CommUnit = (props) => {
                       </div>
                       <div class="sticky top-0 right-10 w-full flex justify-end">
                         <button
-                          className="rounded bg-green-600 p-2 text-white flex text-md font-semibold "
+                          className="rounded bg-green-600 p-2 text-white flex text-md font-semibold mt-3"
                           onClick={handleContactAdd}
                         >
                           {`Add Contact`}

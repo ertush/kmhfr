@@ -305,8 +305,8 @@ const DynamicReports = (props) => {
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <Link className="text-green-700" href="/">Home</Link> {'>'}
-                                <span className="text-green-700">Reports</span> {'>'}
+                                <Link className="text-green-700" href="/">Home</Link> {'/'}
+                                <span className="text-green-700">Reports</span> {'/'}
                                 <span className="text-gray-500">Dynamic Reports</span>
                             </div>
                            
@@ -322,614 +322,188 @@ const DynamicReports = (props) => {
                                 
                                     <div className="flex flex-row items-center justify-start w-full gap-2">
                                     {filters && filters?.error ?
-                                        (<div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                                            <p>No filters.</p>
-                                        </div>)
+                                        (
+                                            <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                                <p>No filters.</p>
+                                            </div>
+                                        )
                                         : (
                                             <Accordion sx={{my:3, width:'100%', boxShadow:'none', border:'solid 1px #d5d8de', borderRadius:1}} expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
-                                                        <AccordionSummary
-                                                            expandIcon={<ExpandMoreIcon />}
-                                                            aria-controls="panel1a-content"
-                                                            id="panel1a-header"
-                                                            >
+                                                <AccordionSummary
+                                                    expandIcon={<ExpandMoreIcon />}
+                                                    aria-controls="panel1a-content"
+                                                    id="panel1a-header"
+                                                    >
+                                                    
+                                                    <h2 className='my-2 font-semibold text-xl text-black flex items-center space-x-2'>
+                                                    <FilterIcon className='w-6 h-6 text-black'/>
+                                                        <p> Filter Reports By...</p></h2>
+                                                </AccordionSummary>
+                                            <AccordionDetails>
+                                                <form action="/reports/dynamic_reports" className="grid grid-cols-7 gap-2 w-full m-1" ref={formRef} onSubmit={async (ev) => {
+                                                    ev.preventDefault()
+                                                    setIsLoading(true)
+                                    
+                                                    const fields = 'code,official_name,operation_status,approved,keph_level,facility_type_name,facility_type_parent,owner,owner_type,regulation_body,number_of_beds,number_of_cots,county,constituency,sub_county,ward,admission_status,facility_services,facility_infrastructure,facility_humanresources,created,closed'
+                                                    if (Object.keys(drillDown).length > 0) {
+                                                        let qry = Object.keys(drillDown).map(function (key) {
+                                                            let er = (key) + '=' + (drillDown[key]);
+                                                            return er
+                                                        }).join('&')
+                                                        let op = '?'
+
+                                                        // if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
+                                                        // setDrillDown({})
+                                                        if (router || typeof window == 'undefined') {
+                                                    
+                                                            const filterQuery = `${qry}&fields=${fields}`
+
+                                                            try{
+
                                                             
-                                                            <h2 className='my-2 font-semibold text-xl text-black flex items-center space-x-2'>
-                                                            <FilterIcon className='w-6 h-6 text-black'/>
-                                                               <p> Filter Reports By...</p></h2>
-                                                        </AccordionSummary>
-                                                        <AccordionDetails>
-                                            <form action="/reports/dynamic_reports" className="grid grid-cols-7 gap-2 w-full m-1" ref={formRef} onSubmit={async (ev) => {
-                                                ev.preventDefault()
-                                                setIsLoading(true)
-                                
-                                                const fields = 'code,official_name,operation_status,approved,keph_level,facility_type_name,facility_type_parent,owner,owner_type,regulation_body,number_of_beds,number_of_cots,county,constituency,sub_county,ward,admission_status,facility_services,created,closed'
-                                                if (Object.keys(drillDown).length > 0) {
-                                                    let qry = Object.keys(drillDown).map(function (key) {
-                                                        let er = (key) + '=' + (drillDown[key]);
-                                                        return er
-                                                     }).join('&')
-                                                    let op = '?'
+                                                                const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${fields}`)
+                                                                data.json().then(r => {
 
-                                                    // if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                    // setDrillDown({})
-                                                    if (router || typeof window == 'undefined') {
-                                                  
-                                                        const filterQuery = `${qry}&fields=${fields}`
-
-                                                        try{
-
-                                                          
-                                                            const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${fields}`)
-                                                             data.json().then(r => {
-
-                                                                const _lnlst = Array.from(r?.results, row => {
-                                                                    let dtpnt = {}
-                                                                    headers.forEach(col => {
-                                                                        if(col == 'facility_services'){
-                                                                            if(row[col].length > 0){
-                                                                                row[col].forEach(service => {dtpnt[col] = service.service_name})
+                                                                    const _lnlst = Array.from(r?.results, row => {
+                                                                        let dtpnt = {}
+                                                                        headers.forEach(col => {
+                                                                            if(col == 'facility_services'){
+                                                                                if(row[col].length > 0){
+                                                                                    row[col].forEach(service => {dtpnt[col] = service.service_name})
+                                                                                }
+                                                                            
                                                                             }
-                                                                           
-                                                                        }
-                                                                        else{
-                                                                            dtpnt[col] = row[col]
-                                                                        }
-                                                                        
+                                                                            else{
+                                                                                dtpnt[col] = row[col]
+                                                                            }
+                                                                            
+                                                                        })
+                                                                        return dtpnt
                                                                     })
-                                                                    return dtpnt
-                                                                })
 
-                                                                setlinelist(_lnlst)
-                                                           })
+                                                                    setlinelist(_lnlst)
+                                                            })
 
-                                                        //    Close Accordion
+                                                            //    Close Accordion
 
-                                                         setIsLoading(false)
-                                                         setIsAccordionExpanded(false)
-                                                        }
-                                                        catch(e) {
-                                                            console.error(e.message)
-                                                        }
+                                                            setIsLoading(false)
+                                                            setIsAccordionExpanded(false)
+                                                            }
+                                                            catch(e) {
+                                                                console.error(e.message)
+                                                            }
 
-                                                        // router.push(props.path + op + qry)
-                                                    } else {
-                                                        if (typeof window !== 'undefined' && window) {
-                                                            window.location.href = props.path + op + qry
+                                                            // router.push(props.path + op + qry)
+                                                        } else {
+                                                            if (typeof window !== 'undefined' && window) {
+                                                                window.location.href = props.path + op + qry
+                                                            }
                                                         }
                                                     }
-                                                }
 
-                                            
+                                                
 
-                                            }}>
-                                                 
-                                                        {filters && Object.keys(filters).length > 0 &&
-                                                            (() => {
-                                                            console.log({filters})
-                                                             const sorted = Object.keys(fltrs).sort()  
+                                                }}>
+                                                    
+                                                            {filters && Object.keys(filters).length > 0 &&
+                                                                (() => {
+                                                                console.log({filters})
+                                                                const sorted = Object.keys(fltrs).sort()  
 
-                                                             const sortOrder = [1, 0, 13, 2, 5, 6, 8, 7, 10, 9, 4, 3, 12, 11]
+                                                                const sortOrder = [1, 13, 14, 2, 5, 6, 8, 7, 10, 9, 4, 3, 12, 11]
 
-                                                            return sortOrder.map((v, i) => sorted.indexOf(sorted[i]) === v ? sorted[i] : sorted[v] )
+                                                                return sortOrder.map((v, i) => sorted.indexOf(sorted[i]) === v ? sorted[i] : sorted[v] )
 
-                                                            })(fltrs).map(ft => (
-                                                                <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                                    
-                                                                    <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-
-                                                                    {
-
-                                                                      (() => {
-                                                                        // let serviceOptions = [];
-                                                                        switch(ft) {
+                                                                })(fltrs).map(ft => (
+                                                                    <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                                         
-                                                                            // Service Category
-                                                                            case 'service_category':
+                                                                        <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
 
-                                                                                const handleServiceCategoryChange = async (ev) => {
+                                                                        {
 
-                                                                                    
-                                                                                    try{
-                                                                                        const data = await fetch(`/api/filters/services/?category=${ev.value}`)
-                                                                                       data.json().then(r => {
-                                                                                       const options = []
-                                                                                       r.results.forEach(({id, name}) => {
-                                                                                            options.push({
-                                                                                                value: id,
-                                                                                                label: name.toLocaleLowerCase()
-                                                                                            })  
-                                                                                       } )  
-
-
-                                                                                       setServiceOptions(options)
-                                                                                       setIsServiceOptionUpdate(!isServiceOptionsUpdate)
-                                                                                    })
-
-                                                                                    let nf = {}
-                                                                                    if (Array.isArray(ev)) {
-                                                                                        nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
-                                                                                    } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
-                                                                                        nf[ft] = ev.value
-                                                                                    } else {
-                                                                                        delete nf[ft]
-                                                                                        
-                                                                                    }
-                                                                                    setDrillDown({ ...drillDown, ...nf })
-                                                                                    }
-                                                                                    catch(e) {
-                                                                                        console.log(e.message)
-                                                                                    }
-                                                                                   
-                                                                                   
-    
-                                                                                }
-                                                                               
-                                                                                return (
-                                                                                       <Select 
-                                                                                        id={ft}
-                                                                                        name={ft}
-                                                                                        className="w-full p-1 rounded bg-gray-50"
-                                                                                        options={ 
-                                                                                            Array.from(filters[ft] || [],
-                                                                                            fltopt => {
-                                                                                                return {
-                                                                                                    value: fltopt.id, 
-                                                                                                    label: fltopt.name.toUpperCase()
-                                                                                                }
-                                                                                            })
-                                                                                        }
-                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                        onChange={handleServiceCategoryChange}
-                                                                                    />
-                                                                                
-                                                                                )
+                                                                        (() => {
+                                                                            // let serviceOptions = [];
+                                                                            switch(ft) {
                                                                             
-                                                                           
-                                                                            // Service
-                                                                            case 'service':
+                                                                                // Service Category
+                                                                                case 'service_category':
 
-                                                                               
+                                                                                    const handleServiceCategoryChange = async (ev) => {
 
-                                                                                return (
-                                                                                        <Select 
-                                                                                        id={ft}
-                                                                                        name={ft}
-                                                                                        isMulti
-                                                                                        
-                                                                                        className="w-full p-1 rounded bg-gray-50 col-start-1"
-                                                                                       
-                                                                                        options={serviceOptions}
-                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                        onChange={sl => {
-                                                                                            let nf = {}
-                                                                                            if (Array.isArray(sl)) {
-                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                                            } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                                                nf[ft] = sl.value
-                                                                                            } else {
-                                                                                                delete nf[ft]
-                                                                                                
-                                                                                            }
-                                                                                            setDrillDown({ ...drillDown, ...nf })
-                                                                                        }}
                                                                                       
-                                                                                    />
-                                                                                )
-                                                                            
-                                                                            // Infrastructure  Category
-                                                                            case 'infrastructure_category':
-
-                                                                                const handleInfrastructureCategoryChange = async (ev) => {
-
-                                                                                    
-                                                                                    try{
-                                                                                        const data = await fetch(`/api/filters/infrastructure/?category=${ev.value}`)
+                                                                                        try{
+                                                                                            const data = await fetch(`/api/filters/services/?category=${ev.value}`)
                                                                                         data.json().then(r => {
                                                                                         const options = []
                                                                                         r.results.forEach(({id, name}) => {
-                                                                                            options.push({
-                                                                                                value: id,
-                                                                                                label: name.toLocaleLowerCase()
-                                                                                            })  
+                                                                                                options.push({
+                                                                                                    value: id,
+                                                                                                    label: name.toLocaleLowerCase()
+                                                                                                })  
                                                                                         } )  
 
 
-                                                                                        setInfrastructureOptions(options)
-                                                                                        setIsInfrastructureOptionUpdate(!isInfrastructureOptionsUpdate)
-                                                                                    })
+                                                                                        setServiceOptions(options)
+                                                                                        setIsServiceOptionUpdate(!isServiceOptionsUpdate)
+                                                                                        })
 
-                                                                                    let nf = {}
-                                                                                    if (Array.isArray(ev)) {
-                                                                                        nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
-                                                                                    } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
-                                                                                        nf[ft] = ev.value
-                                                                                    } else {
-                                                                                        delete nf[ft]
-                                                                                        
-                                                                                    }
-                                                                                    setDrillDown({ ...drillDown, ...nf })
-                                                                                    }
-                                                                                    catch(e) {
-                                                                                        console.log(e.message)
-                                                                                    }
-                                                                                    
-                                                                                    
-    
-                                                                                }
-                                                                                
-                                                                                return (
-                                                                                        <Select 
-                                                                                        id={ft}
-                                                                                        name={ft}
-                                                                                        className="w-full p-1 rounded bg-gray-50"
-                                                                                        options={ 
-                                                                                            Array.from(filters[ft] || [],
-                                                                                            fltopt => {
-                                                                                                return {
-                                                                                                    value: fltopt.id, 
-                                                                                                    label: fltopt.name.toUpperCase()
-                                                                                                }
-                                                                                            })
+                                                                                        let nf = {}
+                                                                                        if (Array.isArray(ev)) {
+                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                        } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                            nf[ft] = ev.value
+                                                                                        } else {
+                                                                                            delete nf[ft]
+                                                                                            
                                                                                         }
-                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                        onChange={handleInfrastructureCategoryChange}
-                                                                                    />
-                                                                                
-                                                                                )
-                                                                            
-                                                                            
-                                                                            // Infrastructure
-                                                                            case 'infrastructure':
-
-                                                                                
-
-                                                                                return (
-                                                                                        <Select 
-                                                                                        id={ft}
-                                                                                        name={ft}
-                                                                                        isMulti
-                                                                                        
-                                                                                        className="w-full p-1 rounded bg-gray-50 col-start-1"
-                                                                                        
-                                                                                        options={infrastructureOptions}
-                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                        onChange={sl => {
-                                                                                            let nf = {}
-                                                                                            if (Array.isArray(sl)) {
-                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                                            } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                                                nf[ft] = sl.value
-                                                                                            } else {
-                                                                                                delete nf[ft]
-                                                                                                
-                                                                                            }
-                                                                                            setDrillDown({ ...drillDown, ...nf })
-                                                                                        }}
-                                                                                        
-                                                                                    />
-                                                                                )
-
-                                                                             // Speciality Category
-                                                                             case 'speciality_category':
-
-                                                                                const handleSpecialityCategoryChange = async (ev) => {
-
-                                                                                    
-                                                                                    try{
-                                                                                        const data = await fetch(`/api/filters/speciality/?category=${ev.value}`)
-                                                                                        data.json().then(r => {
-                                                                                        const options = []
-                                                                                        r.results.forEach(({id, name}) => {
-                                                                                            options.push({
-                                                                                                value: id,
-                                                                                                label: name.toLocaleLowerCase()
-                                                                                            })  
-                                                                                        } )  
-
-
-                                                                                        setSpecialityOptions(options)
-                                                                                        setIsSpecialityOptionUpdate(!isSpecialityOptionsUpdate)
-                                                                                    })
-
-                                                                                    let nf = {}
-                                                                                    if (Array.isArray(ev)) {
-                                                                                        nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
-                                                                                    } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
-                                                                                        nf[ft] = ev.value
-                                                                                    } else {
-                                                                                        delete nf[ft]
-                                                                                        
-                                                                                    }
-                                                                                    setDrillDown({ ...drillDown, ...nf })
-                                                                                    }
-                                                                                    catch(e) {
-                                                                                        console.log(e.message)
-                                                                                    }
+                                                                                        setDrillDown({ ...drillDown, ...nf })
+                                                                                        }
+                                                                                        catch(e) {
+                                                                                            console.log(e.message)
+                                                                                        }
                                                                                     
                                                                                     
-    
-                                                                                }
+        
+                                                                                    }
                                                                                 
-                                                                                return (
-                                                                                        <Select 
-                                                                                        id={ft}
-                                                                                        name={ft}
-                                                                                        className="w-full p-1 rounded bg-gray-50"
-                                                                                        options={ 
-                                                                                            Array.from(filters[ft] || [],
-                                                                                            fltopt => {
-                                                                                                return {
-                                                                                                    value: fltopt.id, 
-                                                                                                    label: fltopt.name.toUpperCase()
-                                                                                                }
-                                                                                            })
-                                                                                        }
-                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                        onChange={handleSpecialityCategoryChange}
-                                                                                    />
-                                                                                
-                                                                                )
-                                                                            
-                                                                            
-                                                                            // Speciality
-                                                                            case 'speciality':
-
-                                                                                
-                                                                                return (
-                                                                                        <Select 
-                                                                                        id={ft}
-                                                                                        name={ft}
-                                                                                        isMulti
-                                                                                        
-                                                                                        className="w-full p-1 rounded bg-gray-50 col-start-1"
-                                                                                        
-                                                                                        options={specialityOptions}
-                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                        onChange={sl => {
-                                                                                            let nf = {}
-                                                                                            if (Array.isArray(sl)) {
-                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                                            } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                                                nf[ft] = sl.value
-                                                                                            } else {
-                                                                                                delete nf[ft]
-                                                                                                
-                                                                                            }
-                                                                                            setDrillDown({ ...drillDown, ...nf })
-                                                                                        }}
-                                                                                        
-                                                                                    />
-                                                                                )
-
-                                                                            // County
-                                                                            case 'county':
-                                                                                const handleCountyCategoryChange = async (ev) => {
-
-                                                                                    try{ 
-                                                                                        const dataSubCounties = await fetch(`/api/filters/subcounty/?county=${ev.value}`)
-                                                                                        dataSubCounties.json().then(r => {
-                                                                                            const optionsSubCounty = []
-
-
-                                                                                            r.results.forEach(({id, name}) => {
-                                                                                                optionsSubCounty.push({
-                                                                                                    value: id,
-                                                                                                    label: name
-                                                                                                })  
-                                                                                            } )
-                                                                                        
-
-                                                                                        // sub county    
-
-                                                                                       setSubCountyOptions(optionsSubCounty)
-                                                                                       setIsSubCountyOptionsUpdate(!isSubCountyOptionsUpdate)
-
-                                                                                    })
-
-    
-                                                                                    }
-                                                                                    catch(e) {
-                                                                                        console.error(e.message)
-                                                                                    }
-
-                                                                                    try {
-                                                                                        const dataConstituencies = await fetch(`/api/filters/constituency/?county=${ev.value}`)
-                                                                                        dataConstituencies.json().then(r => {
-                                                                                        const optionsConstituency = []
-
-                                                                                        r.results.forEach(({id, name}) => {
-                                                                                            optionsConstituency.push({
-                                                                                                value: id,
-                                                                                                label: name
-                                                                                            })  
-                                                                                            } )  
-
-                                                                                  
-                                                                                        // set constituencies
-
-                                                                                        
-                                                                                        setIsConstituencyOptionsUpdate(!isConstituencyOptionsUpdate)
-
-                                                                                    })
-
-                                                                                    let nf = {}
-                                                                                    if (Array.isArray(ev)) {
-                                                                                        nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
-                                                                                    } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
-                                                                                        nf[ft] = ev.value
-                                                                                    } else {
-                                                                                        delete nf[ft]
-                                                                                        
-                                                                                    }
-                                                                                    setDrillDown({ ...drillDown, ...nf })
-
-                                                                                    }
-                                                                                    catch(e) {
-                                                                                        console.error(e.message)
-                                                                                    }
-                                                                                   
-                                                                                }
-
-                                                                                const options = Array.from(filters[ft] || [],
-                                                                                    fltopt => {
-                                                                                        return {
-                                                                                            value: fltopt.id, 
-                                                                                            label: fltopt.name
-                                                                                        }
-                                                                                    })
-                                                                                
-                                                                                    if(ft === 'county' || ft == 'sub_county' || ft == 'constituency') options.unshift({
-                                                                                        value:'#',
-                                                                                        label:'All'
-                                                                                    })
-
-
-
-                                                                                return (
-                                                                                    <Select 
-                                                                                    id={ft}
-                                                                                    name={ft}
-                                                                                    
-                                                                                    className="w-full p-1 rounded bg-gray-50"
-                                                                               
-                                                                                    options={options}
-
-                                                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                    value={
-                                                                                       
-                                                                                        {
-                                                                                            value: drillDown[ft] || dr?.county || '',
-                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.county)?.name || ''
-                                                                                        }
-                                                                                    }
-                                                                                    onChange={handleCountyCategoryChange}
-                                                                                    
-                                                                                    />
-                                                                                )
-
-                                                                            // Sub County
-                                                                            case 'sub_county':
-                                                                               
-
-                                                                                return (
-                                                                                    <Select 
-                                                                                    id={ft}
-                                                                                    name={ft}
-                                                                                   
-                                                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
-                                                                                  
-                                                                                    options={subCountyOptions}
-                                                                                    value={
-                                                                                       
-                                                                                        {
-                                                                                            value: drillDown[ft] || dr?.sub_county || '', 
-                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
-                                                                                        }
-                                                                                    }
-                                                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                    onChange={ev => {
-                                                                                       
-                                                                                        if(subCountyOptions !== []){
-                                                                                            let nf = {}
-                                                                                            if (Array.isArray(ev)) {
-                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
-                                                                                            } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
-                                                                                                nf[ft] = ev.value
-                                                                                            } else {
-                                                                                                delete nf[ft]
-                                                                                                
-                                                                                            }
-                                                                                            setDrillDown({ ...drillDown, ...nf })
-                                                                                        }
-                                                                                    }
-                                                                                    }
-                                                                                  
-                                                                                />
-                                                                                )
-
-                                                                            // Constitunecy
-                                                                            case 'constituency':
-                                                                                const handleConstituencyChange = async (ev) => {
-
-                                                                                    try{ 
-                                                                                        const dataConstituencies = await fetch(`/api/filters/ward/?sub_county=${ev.value}`)
-                                                                                        dataConstituencies.json().then(r => {
-                                                                                            const optionsWard = []
-                                                                                         
-                                                                                            r.results.forEach(({id, name}) => {
-                                                                                                optionsWard.push({
-                                                                                                    value: id,
-                                                                                                    label: name
-                                                                                                })  
-                                                                                            } )
-                                                                                        
-
-                                                                                        // sub county    
-
-                                                                                       setWardOptions(optionsWard)
-                                                                                       setIsWardOptionsUpdate(!isWardOptionsUpdate)
-
-                                                                                       let nf = {}
-                                                                                       if (Array.isArray(ev)) {
-                                                                                           nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
-                                                                                       } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
-                                                                                           nf[ft] = ev.value
-                                                                                       } else {
-                                                                                           delete nf[ft]
-                                                                                           
-                                                                                       }
-                                                                                       setDrillDown({ ...drillDown, ...nf })
-
-                                                                                    })
-
-    
-                                                                                    }
-                                                                                    catch(e) {
-                                                                                        console.error(e.message)
-                                                                                    }
-
-                                                                                }
-                                                                               
                                                                                     return (
                                                                                         <Select 
-                                                                                        id={ft}
-                                                                                        name={ft}
-                                                                                       
-                                                                                        className="w-full p-1 rounded bg-gray-50 col-start-1"
-                                                                                        options={subCountyOptions}
-                                                                                        value={
-                                                                                       
-                                                                                            {
-                                                                                                value: drillDown[ft] || dr?.sub_county || '', 
-                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
+                                                                                            id={ft}
+                                                                                            name={ft}
+                                                                                            className="w-full p-1 rounded bg-gray-50"
+                                                                                            options={ 
+                                                                                                Array.from(filters[ft] || [],
+                                                                                                fltopt => {
+                                                                                                    return {
+                                                                                                        value: fltopt.id, 
+                                                                                                        label: fltopt.name.toUpperCase()
+                                                                                                    }
+                                                                                                })
                                                                                             }
-                                                                                        }
-                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                        onChange={handleConstituencyChange}
-                                                                                      
+                                                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                            onChange={handleServiceCategoryChange}
                                                                                         />
+                                                                                    
                                                                                     )
+                                                                                
                                                                             
-                                                                                 // Ward
-                                                                                case 'ward':
-                                                                                        
-                                                                               
-                                                                                        return (
+                                                                                // Service
+                                                                                case 'service':
+
+                                                                                
+
+                                                                                    return (
                                                                                             <Select 
                                                                                             id={ft}
                                                                                             name={ft}
-                                                                                           
+                                                                                            isMulti
+                                                                                            
                                                                                             className="w-full p-1 rounded bg-gray-50 col-start-1"
-                                                                                            options={wardOptions}
-                                                                                            value={
-                                                                                       
-                                                                                                {
-                                                                                                    value: drillDown[ft] || dr?.ward || '',
-                                                                                                    label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.ward)?.name || ''
-                                                                                                }
-                                                                                            }
+                                                                                        
+                                                                                            options={serviceOptions}
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                             onChange={sl => {
+                                                                                             
                                                                                                 let nf = {}
                                                                                                 if (Array.isArray(sl)) {
                                                                                                     nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
@@ -941,276 +515,719 @@ const DynamicReports = (props) => {
                                                                                                 }
                                                                                                 setDrillDown({ ...drillDown, ...nf })
                                                                                             }}
-                                                                                          
-                                                                                            />
-                                                                                        )
-    
-                                                                            default:
-
-                                                                               return( <Select 
-                                                                                    
-                                                                                    isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
-                                                                                    options={
                                                                                         
-                                                                                       ft === 'keph_level' ?
-                                                                                       filteredKeph
-                                                                                       :
-                                                                                       facilityTypeCategories
-                                                                                        
-                                                                                       /* Array.from(filters[ft] || [],
-                                                                                            fltopt => {
-                                                                                                return {
-                                                                                                    value: fltopt.id, 
-                                                                                                    label: fltopt.name
-                                                                                                }
-                                                                                            })
-                                                                                        */
-                                                                                   
-                                                                                    }
-                                                                                    value={
-                                                                                   
-                                                                                       {
-                                                                                        value: drillDown[ft] || router?.query?.id || '', 
-                                                                                        label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== router?.query?.id)?.name || ''
-                                                                                        }
-  
-                                                                                    }
-                                                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                    onChange={sl => {
-
-                                                                                        // Hospital Keph Level Validation
+                                                                                        />
+                                                                                    )
                                                                                 
-                                                                                        if(ft === 'facility_type'){
-                                                                                            
-                                                                                            if(sl.label === 'MEDICAL CENTRE') console.log({sl})
+                                                                                // Infrastructure  Category
+                                                                                case 'infrastructure_category':
 
-                                                                                            switch (sl.label){
+                                                                                    const handleInfrastructureCategoryChange = async (ev) => {
 
-                                                                                                case 'HOSPITALS':
-                                                                                                    setFilteredKeph([
-                                                                                                        { value: "ed23da85-4c92-45af-80fa-9b2123769f49", label: "Level 6" },
-                                                                                                        { value: "7824068f-6533-4532-9775-f8ef200babd1", label: "Level 5" },
-                                                                                                        { value: "c0bb24c2-1a96-47ce-b327-f855121f354f", label: "Level 4" },
-                                                                                                ])
+                                                                                        
+                                                                                        try{
+                                                                                            const data = await fetch(`/api/filters/infrastructure/?category=${ev.value}`)
+                                                                                            data.json().then(r => {
+                                                                                            const options = []
+                                                                                            r.results.forEach(({id, name}) => {
+                                                                                                options.push({
+                                                                                                    value: id,
+                                                                                                    label: name.toLocaleLowerCase()
+                                                                                                })  
+                                                                                            } )  
 
-                                                                                                break;
 
-                                                                                                case 'DISPENSARY':
-                                                                                                    setFilteredKeph([
-                                                                                                        { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
-                                                                                                    ])
-
-                                                                                                    break;
-
-                                                                                                case 'STAND ALONE':
-                                                                                                     
-                                                                                                    setFilteredKeph([
-                                                                                                        { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
-                                                                                                    ])
-
-                                                                                                    break;
-
-                                                                                                case 'MEDICAL CENTRE':
-                                                                                                    console.log({ft})
-                                                                                                    setFilteredKeph([
-                                                                                                        { value: "174f7d48-3b57-4997-a743-888d97c5ec31", label: "Level 3" }
-                                                                                                    ])
-
-                                                                                                    break;
-
-                                                                                                case 'HEALTH CENTRE':
-                                                                                                    setFilteredKeph([
-                                                                                                        { value: "174f7d48-3b57-4997-a743-888d97c5ec31", label: "Level 3" }
-                                                                                                    ])
-
-                                                                                                    break;
-
-                                                                                                case 'NURSING HOME':
-                                                                                                    setFilteredKeph([
-                                                                                                        { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
-                                                                                                    ])
-
-                                                                                                    break;
-
-                                                                                                case 'MEDICAL CLINIC':
-                                                                                                    setFilteredKeph([
-                                                                                                        { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
-                                                                                                    ])
-
-                                                                                                    break;
-                                                                                            
-                                                                                            }
-                                                                                            
-                                                                                            
-                                                                                        }
+                                                                                            setInfrastructureOptions(options)
+                                                                                            setIsInfrastructureOptionUpdate(!isInfrastructureOptionsUpdate)
+                                                                                        })
 
                                                                                         let nf = {}
-                                                                                        if (Array.isArray(sl)) {
-                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
-                                                                                        } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                                                            nf[ft] = sl.value
+                                                                                        if (Array.isArray(ev)) {
+                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                        } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                            nf[ft] = ev.value
                                                                                         } else {
                                                                                             delete nf[ft]
                                                                                             
                                                                                         }
                                                                                         setDrillDown({ ...drillDown, ...nf })
-                                                                                    }} />)
-                                                                            }
-                                                                      })(ft)
-                                                                      
-                                                                    }
-                                                                </div>
-                                                            ))}
-                                                  
-                                                <div  className="col-md-2" >
-                                                    <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">From date:</label>
-                                                    <input  type="date" name="from_date" onChange={(e)=>setFromDate(e.target.value)} value={fromDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                                </div>
-                                                <div  className="col-md-2" >
-                                                    <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:</label>
-                                                    <input  type="date" name="to_date" onChange={(e)=>setToDate(e.target.value)} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                                </div>
+                                                                                        }
+                                                                                        catch(e) {
+                                                                                            console.log(e.message)
+                                                                                        }
+                                                                                        
+                                                                                        
+        
+                                                                                    }
+                                                                                    
+                                                                                    return (
+                                                                                            <Select 
+                                                                                            id={ft}
+                                                                                            name={ft}
+                                                                                            className="w-full p-1 rounded bg-gray-50"
+                                                                                            options={ 
+                                                                                                Array.from(filters[ft] || [],
+                                                                                                fltopt => {
+                                                                                                    return {
+                                                                                                        value: fltopt.id, 
+                                                                                                        label: fltopt.name.toUpperCase()
+                                                                                                    }
+                                                                                                })
+                                                                                            }
+                                                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                            onChange={handleInfrastructureCategoryChange}
+                                                                                        />
+                                                                                    
+                                                                                    )
+                                                                                
+                                                                                
+                                                                                // Infrastructure
+                                                                                case 'infrastructure':
 
-                                                <div className='col-md-2 flex-col  items-start'>
-                                                    {/* Has ICU Beds */}
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="has_icu_beds" className="text-gray-700 capitalize text-sm flex-grow">Has ICU beds</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_icu_beds" id="has_icu_beds" onChange={ev => {
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
-                                                            }} />
-                                                    
-                                                    </div>
-
-                                                    {/* Has HDU Beds */}
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has HDU beds</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_hdu_beds" id="has_hdu_beds" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                    </div>  
-
-                                                    {/* Has Martenity Beds */}
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                        <label htmlFor="has_martenity_beds" className="text-gray-700 capitalize text-sm flex-grow">Has Martenity beds</label>
-                                                        <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_martenity_beds" id="has_martenity_beds" onChange={ev => {
-                                                            setDrillDown({ ...drillDown, 'has_edits': true })
-                                                        }} />
-                                                
-                                                    </div> 
-                                                </div>
-                                                
-                                                <div className='col-md-2 flex-col  items-start'>
-
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="approved" className="text-gray-700 capitalize text-sm flex-grow">Approved</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="approved" id="approved" onChange={ev => {
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
-                                                            }} />
-                                                    
-                                                    </div>
-
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Complete</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="complete" onChange={ev => {
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
-                                                            }} />
-                                                    
-                                                    </div>
-
-                                                
-
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="has_cots" className="text-gray-700 capitalize text-sm flex-grow">Has cots</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_cots" id="has_cots" onChange={ev => {
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
-                                                            }} />
-                                                    
-                                                    </div>
-                                                </div>
-
-                                                <div className='col-md-2 flex-col  items-start'>
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="open_24_hrs" className="text-gray-700 capitalize text-sm flex-grow">Open 24 hours</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
-                                                            }} />
-                                                    
-                                                    </div>
-
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">Open weekends</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
-                                                            }} />
-                                                    
-                                                    </div>
-
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
-                                                            }} />
-                                                    
-                                                    </div>
-                                                </div>
-
-                                                <div className='col-md-2 flex-col  items-start'>
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="open_24_hrs" className="text-gray-700 capitalize text-sm flex-grow">Is classified</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
-                                                            }} />
-                                                    
-                                                    </div>
-
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">has general theatre</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
-                                                            }} />
-                                                    
-                                                    </div>
-
-                                                    <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">has maternity theatre</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
-                                                            }} />
-                                                    
-                                                    </div>
-                                                </div>
-
-                                                <div className='row-start-9 col-start-1 flex items-center space-x-3'>
-                                       
-                                                    <button 
-                                                    type='submit'                   
-                                                    className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">
-
-                                                {
-                                                    isLoading ?  
-                                                    (
-                                                        <svg role="status" className="inline w-4 h-4 mr-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
-                                                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
-                                                        </svg>
-                                                    )  :
-                                                    'Filter'
-                                                }
-                                                    </button>
-                                                <button  className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
-                                                       ev.preventDefault()
-                                                        setDrillDown({})
-                                                        setSubCountyOptions([])
-                                                        setWardOptions([])
-                                                        localStorage.setItem('dd_owners', JSON.stringify({county: '', sub_county:'', ward: ''}));
-                                                        router.push('/reports/dynamic_reports')
-                                                        // router.reload()
+                                                                                    return (
+                                                                                            <Select 
+                                                                                            id={ft}
+                                                                                            name={ft}
+                                                                                            isMulti
+                                                                                            
+                                                                                            className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                            
+                                                                                            options={infrastructureOptions}
+                                                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                            onChange={sl => {
+                                                                                                sl.preventDefault()
+                                                                                                let nf = {}
+                                                                                                if (Array.isArray(sl)) {
+                                                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                                } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                    nf[ft] = sl.value
+                                                                                                } else {
+                                                                                                    delete nf[ft]
                                                                                                     
-                                                    }}>Clear filters</button>
-                                                </div>
-                                                
-                                            </form>
+                                                                                                }
+                                                                                                setDrillDown({ ...drillDown, ...nf })
+                                                                                            }}
+                                                                                            
+                                                                                        />
+                                                                                    )
+
+                                                                                // Speciality Category
+                                                                                case 'speciality_category':
+
+                                                                                    const handleSpecialityCategoryChange = async (ev) => {
+                                                                                    
+                                                                                        
+                                                                                        try{
+                                                                                            const data = await fetch(`/api/filters/speciality/?category=${ev.value}`)
+                                                                                            data.json().then(r => {
+                                                                                            const options = []
+                                                                                            r.results.forEach(({id, name}) => {
+                                                                                                options.push({
+                                                                                                    value: id,
+                                                                                                    label: name.toLocaleLowerCase()
+                                                                                                })  
+                                                                                            } )  
+
+
+                                                                                            setSpecialityOptions(options)
+                                                                                            setIsSpecialityOptionUpdate(!isSpecialityOptionsUpdate)
+                                                                                        })
+
+                                                                                        let nf = {}
+                                                                                        if (Array.isArray(ev)) {
+                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                        } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                            nf[ft] = ev.value
+                                                                                        } else {
+                                                                                            delete nf[ft]
+                                                                                            
+                                                                                        }
+                                                                                        setDrillDown({ ...drillDown, ...nf })
+                                                                                        }
+                                                                                        catch(e) {
+                                                                                            console.log(e.message)
+                                                                                        }
+                                                                                        
+                                                                                        
+        
+                                                                                    }
+                                                                                    
+                                                                                    return (
+                                                                                            <Select 
+                                                                                            id={ft}
+                                                                                            name={ft}
+                                                                                            className="w-full p-1 rounded bg-gray-50"
+                                                                                            options={ 
+                                                                                                Array.from(filters[ft] || [],
+                                                                                                fltopt => {
+                                                                                                    return {
+                                                                                                        value: fltopt.id, 
+                                                                                                        label: fltopt.name.toUpperCase()
+                                                                                                    }
+                                                                                                })
+                                                                                            }
+                                                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                            onChange={handleSpecialityCategoryChange}
+                                                                                        />
+                                                                                    
+                                                                                    )
+                                                                                
+                                                                                
+                                                                                // Speciality
+                                                                                case 'speciality':
+
+                                                                                    
+                                                                                    return (
+                                                                                            <Select 
+                                                                                            id={ft}
+                                                                                            name={ft}
+                                                                                            isMulti
+                                                                                            
+                                                                                            className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                            
+                                                                                            options={specialityOptions}
+                                                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                            onChange={sl => {
+                                                                                                sl.preventDefault()
+                                                                                                let nf = {}
+                                                                                                if (Array.isArray(sl)) {
+                                                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                                } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                    nf[ft] = sl.value
+                                                                                                } else {
+                                                                                                    delete nf[ft]
+                                                                                                    
+                                                                                                }
+                                                                                                setDrillDown({ ...drillDown, ...nf })
+                                                                                            }}
+                                                                                            
+                                                                                        />
+                                                                                    )
+
+                                                                                // County
+                                                                                case 'county':
+                                                                                    const handleCountyCategoryChange = async (ev) => {
+
+                                                    
+                                                                                        try{ 
+                                                                                            const dataSubCounties = await fetch(`/api/filters/subcounty/?county=${ev.value}`)
+                                                                                            dataSubCounties.json().then(r => {
+                                                                                                const optionsSubCounty = []
+
+
+                                                                                                r.results.forEach(({id, name}) => {
+                                                                                                    optionsSubCounty.push({
+                                                                                                        value: id,
+                                                                                                        label: name
+                                                                                                    })  
+                                                                                                } )
+                                                                                            
+
+                                                                                            // sub county    
+
+                                                                                        setSubCountyOptions(optionsSubCounty)
+                                                                                        setIsSubCountyOptionsUpdate(!isSubCountyOptionsUpdate)
+
+                                                                                        })
+
+        
+                                                                                        }
+                                                                                        catch(e) {
+                                                                                            console.error(e.message)
+                                                                                        }
+
+                                                                                        try {
+                                                                                            const dataConstituencies = await fetch(`/api/filters/constituency/?county=${ev.value}`)
+                                                                                            dataConstituencies.json().then(r => {
+                                                                                            const optionsConstituency = []
+
+                                                                                            r.results.forEach(({id, name}) => {
+                                                                                                optionsConstituency.push({
+                                                                                                    value: id,
+                                                                                                    label: name
+                                                                                                })  
+                                                                                                } )  
+
+                                                                                    
+                                                                                            // set constituencies
+
+                                                                                            
+                                                                                            setIsConstituencyOptionsUpdate(!isConstituencyOptionsUpdate)
+
+                                                                                        })
+
+                                                                                        let nf = {}
+                                                                                        if (Array.isArray(ev)) {
+                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                        } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                            nf[ft] = ev.value
+                                                                                        } else {
+                                                                                            delete nf[ft]
+                                                                                            
+                                                                                        }
+                                                                                        setDrillDown({ ...drillDown, ...nf })
+
+                                                                                        }
+                                                                                        catch(e) {
+                                                                                            console.error(e.message)
+                                                                                        }
+                                                                                    
+                                                                                    }
+
+                                                                                    const options = Array.from(filters[ft] || [],
+                                                                                        fltopt => {
+                                                                                            return {
+                                                                                                value: fltopt.id, 
+                                                                                                label: fltopt.name
+                                                                                            }
+                                                                                        })
+                                                                                    
+                                                                                        if(ft === 'county' || ft == 'sub_county' || ft == 'constituency') options.unshift({
+                                                                                            value:'#',
+                                                                                            label:'All'
+                                                                                        })
+
+
+
+                                                                                    return (
+                                                                                        <Select 
+                                                                                        id={ft}
+                                                                                        name={ft}
+                                                                                        
+                                                                                        className="w-full p-1 rounded bg-gray-50"
+                                                                                
+                                                                                        options={options}
+
+                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                        value={
+                                                                                        
+                                                                                            {
+                                                                                                value: drillDown[ft] || dr?.county || '',
+                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.county)?.name || ''
+                                                                                            }
+                                                                                        }
+                                                                                        onChange={handleCountyCategoryChange}
+                                                                                        
+                                                                                        />
+                                                                                    )
+
+                                                                                // Sub County
+                                                                                case 'sub_county':
+                                                                                
+
+                                                                                    return (
+                                                                                        <Select 
+                                                                                        id={ft}
+                                                                                        name={ft}
+                                                                                    
+                                                                                        className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                    
+                                                                                        options={subCountyOptions}
+                                                                                        value={
+                                                                                        
+                                                                                            {
+                                                                                                value: drillDown[ft] || dr?.sub_county || '', 
+                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
+                                                                                            }
+                                                                                        }
+                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                        onChange={ev => {
+                                                                                        
+                                                                                            if(subCountyOptions !== []){
+                                                                                                let nf = {}
+                                                                                                if (Array.isArray(ev)) {
+                                                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                                } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                                    nf[ft] = ev.value
+                                                                                                } else {
+                                                                                                    delete nf[ft]
+                                                                                                    
+                                                                                                }
+                                                                                                setDrillDown({ ...drillDown, ...nf })
+                                                                                            }
+                                                                                        }
+                                                                                        }
+                                                                                    
+                                                                                    />
+                                                                                    )
+
+                                                                                // Constitunecy
+                                                                                case 'constituency':
+                                                                                    const handleConstituencyChange = async (ev) => {
+
+                                                                                        try{ 
+                                                                                            const dataConstituencies = await fetch(`/api/filters/ward/?sub_county=${ev.value}`)
+                                                                                            dataConstituencies.json().then(r => {
+                                                                                                const optionsWard = []
+                                                                                            
+                                                                                                r.results.forEach(({id, name}) => { 
+                                                                                                    optionsWard.push({
+                                                                                                        value: id,
+                                                                                                        label: name
+                                                                                                    })  
+                                                                                                } )
+                                                                                            
+
+                                                                                            // sub county    
+
+                                                                                        setWardOptions(optionsWard)
+                                                                                        setIsWardOptionsUpdate(!isWardOptionsUpdate)
+
+                                                                                        let nf = {}
+                                                                                        if (Array.isArray(ev)) {
+                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                        } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                            nf[ft] = ev.value
+                                                                                        } else {
+                                                                                            delete nf[ft]
+                                                                                            
+                                                                                        }
+                                                                                        setDrillDown({ ...drillDown, ...nf })
+
+                                                                                        })
+
+        
+                                                                                        }
+                                                                                        catch(e) {
+                                                                                            console.error(e.message)
+                                                                                        }
+
+                                                                                    }
+                                                                                
+                                                                                        return (
+                                                                                            <Select 
+                                                                                            id={ft}
+                                                                                            name={ft}
+                                                                                        
+                                                                                            className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                            options={subCountyOptions}
+                                                                                            value={
+                                                                                        
+                                                                                                {
+                                                                                                    value: drillDown[ft] || dr?.sub_county || '', 
+                                                                                                    label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
+                                                                                                }
+                                                                                            }
+                                                                                            placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                            onChange={handleConstituencyChange}
+                                                                                        
+                                                                                            />
+                                                                                        )
+                                                                                
+                                                                                    // Ward
+                                                                                    case 'ward':
+                                                                                            
+                                                                                
+                                                                                            return (
+                                                                                                <Select 
+                                                                                                id={ft}
+                                                                                                name={ft}
+                                                                                            
+                                                                                                className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                                options={wardOptions}
+                                                                                                value={
+                                                                                        
+                                                                                                    {
+                                                                                                        value: drillDown[ft] || dr?.ward || '',
+                                                                                                        label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.ward)?.name || ''
+                                                                                                    }
+                                                                                                }
+                                                                                                placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                                onChange={sl => {
+                                                                                                    let nf = {}
+                                                                                                    if (Array.isArray(sl)) {
+                                                                                                        nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                                    } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                        nf[ft] = sl.value
+                                                                                                    } else {
+                                                                                                        delete nf[ft]
+                                                                                                        
+                                                                                                    }
+                                                                                                    setDrillDown({ ...drillDown, ...nf })
+                                                                                                }}
+                                                                                            
+                                                                                                />
+                                                                                            )
+        
+                                                                                default:
+
+                                                                                return( <Select 
+                                                                                        
+                                                                                        isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                                                        options={
+                                                                                            
+                                                                                        ft === 'keph_level' ?
+                                                                                        filteredKeph
+                                                                                        :
+                                                                                        facilityTypeCategories
+                                                                                            
+                                                                                        /* Array.from(filters[ft] || [],
+                                                                                                fltopt => {
+                                                                                                    return {
+                                                                                                        value: fltopt.id, 
+                                                                                                        label: fltopt.name
+                                                                                                    }
+                                                                                                })
+                                                                                            */
+                                                                                    
+                                                                                        }
+                                                                                        value={
+                                                                                    
+                                                                                        {
+                                                                                            value: drillDown[ft] || router?.query?.id || '', 
+                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== router?.query?.id)?.name || ''
+                                                                                            }
+    
+                                                                                        }
+                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                        onChange={sl => {
+
+                                                                                            // Hospital Keph Level Validation
+                                                                                    
+                                                                                            if(ft === 'facility_type'){
+                                                                                                
+                                                                                                if(sl.label === 'MEDICAL CENTRE') console.log({sl})
+
+                                                                                                switch (sl.label){
+
+                                                                                                    case 'HOSPITALS':
+                                                                                                        setFilteredKeph([
+                                                                                                            { value: "ed23da85-4c92-45af-80fa-9b2123769f49", label: "Level 6" },
+                                                                                                            { value: "7824068f-6533-4532-9775-f8ef200babd1", label: "Level 5" },
+                                                                                                            { value: "c0bb24c2-1a96-47ce-b327-f855121f354f", label: "Level 4" },
+                                                                                                    ])
+
+                                                                                                    break;
+
+                                                                                                    case 'DISPENSARY':
+                                                                                                        setFilteredKeph([
+                                                                                                            { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
+                                                                                                        ])
+
+                                                                                                        break;
+
+                                                                                                    case 'STAND ALONE':
+                                                                                                        
+                                                                                                        setFilteredKeph([
+                                                                                                            { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
+                                                                                                        ])
+
+                                                                                                        break;
+
+                                                                                                    case 'MEDICAL CENTRE':
+                                                                                                        console.log({ft})
+                                                                                                        setFilteredKeph([
+                                                                                                            { value: "174f7d48-3b57-4997-a743-888d97c5ec31", label: "Level 3" }
+                                                                                                        ])
+
+                                                                                                        break;
+
+                                                                                                    case 'HEALTH CENTRE':
+                                                                                                        setFilteredKeph([
+                                                                                                            { value: "174f7d48-3b57-4997-a743-888d97c5ec31", label: "Level 3" }
+                                                                                                        ])
+
+                                                                                                        break;
+
+                                                                                                    case 'NURSING HOME':
+                                                                                                        setFilteredKeph([
+                                                                                                            { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
+                                                                                                        ])
+
+                                                                                                        break;
+
+                                                                                                    case 'MEDICAL CLINIC':
+                                                                                                        setFilteredKeph([
+                                                                                                            { value: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
+                                                                                                        ])
+
+                                                                                                        break;
+                                                                                                
+                                                                                                }
+                                                                                                
+                                                                                                
+                                                                                            }
+
+                                                                                            let nf = {}
+                                                                                            if (Array.isArray(sl)) {
+                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
+                                                                                            } else if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                                                nf[ft] = sl.value
+                                                                                            } else {
+                                                                                                delete nf[ft]
+                                                                                                
+                                                                                            }
+                                                                                            setDrillDown({ ...drillDown, ...nf })
+                                                                                        }} />)
+                                                                                }
+                                                                        })(ft)
+                                                                        
+                                                                        }
+                                                                    </div>
+                                                                ))}
+                                                    
+                                                    <div  className="col-md-2" >
+                                                        <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">From date:</label>
+                                                        <input  type="date" name="from_date" onChange={(e)=> { e.preventDefault(); setFromDate(e.target.value)}} value={fromDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    </div>
+                                                    <div  className="col-md-2" >
+                                                        <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:</label>
+                                                        <input  type="date" name="to_date" onChange={(e)=> {e.preventDefault(); setToDate(e.target.value)}} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    </div>
+
+                                                    <div className='col-md-2 flex-col  items-start'>
+                                                        {/* Has ICU Beds */}
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="has_icu_beds" className="text-gray-700 capitalize text-sm flex-grow">Has ICU beds</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_icu_beds" id="has_icu_beds" onChange={ev => {
+                                                                    ev.preventDefault()
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                        
+                                                        </div>
+
+                                                        {/* Has HDU Beds */}
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has HDU beds</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_hdu_beds" id="has_hdu_beds" onChange={ev => {
+                                                                ev.preventDefault()
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                        </div>  
+
+                                                        {/* Has Martenity Beds */}
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                            <label htmlFor="has_martenity_beds" className="text-gray-700 capitalize text-sm flex-grow">Has Martenity beds</label>
+                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_martenity_beds" id="has_martenity_beds" onChange={ev => {
+                                                                ev.preventDefault()
+                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                            }} />
+                                                    
+                                                        </div> 
+                                                    </div>
+                                                    
+                                                    <div className='col-md-2 flex-col  items-start'>
+
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="approved" className="text-gray-700 capitalize text-sm flex-grow">Approved</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="approved" id="approved" onChange={ev => {
+                                                                    ev.preventDefault()
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                        
+                                                        </div>
+
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Complete</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="complete" onChange={ev => {
+                                                                    ev.preventDefault()
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                        
+                                                        </div>
+
+                                                    
+
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="has_cots" className="text-gray-700 capitalize text-sm flex-grow">Has cots</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_cots" id="has_cots" onChange={ev => {
+                                                                    ev.preventDefault()
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                        
+                                                        </div>
+                                                    </div>
+
+                                                    <div className='col-md-2 flex-col  items-start'>
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="open_24_hrs" className="text-gray-700 capitalize text-sm flex-grow">Open 24 hours</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
+                                                                    ev.preventDefault()
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                        
+                                                        </div>
+
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">Open weekends</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                    ev.preventDefault()
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                        
+                                                        </div>
+
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
+                                                                    ev.preventDefault()
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                        
+                                                        </div>
+                                                    </div>
+
+                                                    <div className='col-md-2 flex-col  items-start'>
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="open_24_hrs" className="text-gray-700 capitalize text-sm flex-grow">Is classified</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
+                                                                    ev.preventDefault()
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                        
+                                                        </div>
+
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">has general theatre</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                    ev.preventDefault()
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                        
+                                                        </div>
+
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">has maternity theatre</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
+                                                                    ev.preventDefault()
+                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                }} />
+                                                        
+                                                        </div>
+                                                    </div>
+
+                                                    <div className='row-start-9 col-start-1 flex items-center space-x-3'>
+                                        
+                                                        <button 
+                                                        type='submit'                   
+                                                        className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">
+
+                                                    {
+                                                        isLoading ?  
+                                                        (
+                                                            <svg role="status" className="inline w-4 h-4 mr-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
+                                                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+                                                            </svg>
+                                                        )  :
+                                                        'Filter'
+                                                    }
+                                                        </button>
+                                                    <button  className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
+                                                        ev.preventDefault()
+                                                            setDrillDown({})
+                                                            setSubCountyOptions([])
+                                                            setWardOptions([])
+                                                            localStorage.setItem('dd_owners', JSON.stringify({county: '', sub_county:'', ward: ''}));
+                                                            router.push('/reports/dynamic_reports')
+                                                            // router.reload()
+                                                                                                        
+                                                        }}>Clear filters</button>
+                                                    </div>
+                                                    
+                                                </form>
+
                                             </AccordionDetails>
                                             </Accordion>  
                                         )
@@ -1299,6 +1316,7 @@ const DynamicReports = (props) => {
 
 
                                             <button onClick={ev => {
+                                                ev.preventDefault()
                                                 if (Object.keys(drillDown).length > 0) {
                                                     let qry = Object.keys(drillDown).map(function (key) {
                                                         let er = ''

@@ -7,6 +7,7 @@ import {ChevronDoubleLeftIcon, UserAddIcon, PlusIcon, PencilAltIcon} from '@hero
 import Select from 'react-select'; 
 import { withRouter } from 'next/router';
 import Alert from '@mui/material/Alert';
+import Link from 'next/link'
 
 const AddUser = (props)=> {
 	const [subCountyOptions, setSubCountyOptions] = useState([])
@@ -80,9 +81,6 @@ const AddUser = (props)=> {
 		return{ id: ft.id}
 	})
 
-	// console.log(userData);
-	// console.log(person_details);
-	// Object.keys(userData).map(fd => console.log(fd))
 
 	const handleBasicDetailsSubmit = async (event)=>{
 		event.preventDefault()
@@ -193,15 +191,15 @@ const AddUser = (props)=> {
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
         <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
 			<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
-				<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
+				<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base pb-3">
 					<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-						<span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/')}>Home</span>{'>'}
-						<span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/users')}>Users</span> {'>'}
+						<Link className="text-green-800" href='/'>Home</Link>{'/'}
+						<Link className="text-green-800" href='/users'>Users</Link>{'/'}
 						<span className="text-gray-500">{editMode? 'Edit user' : 'Add user'}</span>
 					</div>
 				</div>
 				<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password}</Alert>}</div>
-				<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+				<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 mb-3 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
 						<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 							
 							{editMode? <><PencilAltIcon className='ml-2 h-5 w-5' /> Edit user</> : <><UserAddIcon className='text-black ml-2 h-5 w-5'/> Add user </> }

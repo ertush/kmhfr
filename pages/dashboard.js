@@ -7,6 +7,7 @@ import BarChart from '../components/BarChart'
 import Select from 'react-select'
 import Download from '../components/Download'
 import { UserContext } from '../providers/user'
+import Link from 'next/link'
 
 const Dash = (props) => {
     const router = useRouter()
@@ -141,7 +142,7 @@ const Dash = (props) => {
                 <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4">
                     <div className="col-span-6 flex flex-col gap-3 md:gap-5 px-2">
                         <div className="flex flex-row gap-2 text-sm md:text-base py-3">
-                            <a className="text-green-700" href="/">Home</a> {'>'}
+                            <Link className="text-green-700" href="/">Home</Link> {'/'}
                             <span className="text-gray-500">Dashboard</span>
                         </div>
                         <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">

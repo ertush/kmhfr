@@ -18,6 +18,8 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Link from 'next/link';
+import CommunityUnitSideMenu from "../../components/CommunityUnitSideMenu";
 
 const CommUnit = (props) => {
   const Map = dynamic(
@@ -100,25 +102,29 @@ const CommUnit = (props) => {
       </Head>
 
       <MainLayout>
-        <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
-          <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
-            <div className="flex flex-row gap-2 text-sm md:text-base">
-              <a className="text-green-700" href="/">
+        <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
+          <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
+            
+            {/* Header */}
+            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+              <Link className="text-green-700" href="/">
                 Home
-              </a>{" "}
-              {">"}
-              <a className="text-green-700" href="/community-units">
+              </Link>
+              {"/"}
+              <Link className="text-green-700" href="/community-units">
                 Community units
-              </a>{" "}
-              {">"}
+              </Link>
+              {"/"}
               <span className="text-gray-500">
                 {cu.name} ( #
                 <i className="text-black">{cu.code || "NO_CODE"}</i> )
               </span>
             </div>
+
+
             <div
               className={
-                "col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
                 (cu.active ? "border-green-600" : "border-red-600")
               }
             >
@@ -181,10 +187,20 @@ const CommUnit = (props) => {
               </div>
               <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
             </div>
+
+          </div>
+
+          {/* Community Unit Side Menu */}
+          <div className="hidden md:col-span-1 md:flex md:mt-8">
+            <CommunityUnitSideMenu
+              	qf={'all'}
+                filters={[]}
+                _pathId={''}
+            />
           </div>
 
           {/* Left side */}
-            <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
+            <div className="col-span-5 md:col-span-4 flex flex-col gap-3 mt-4">
               {/* Approve/Reject, Edit Buttons */}
               <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                 <div className="flex flex-row justify-start items-center space-x-3 p-3">
@@ -705,10 +721,8 @@ const CommUnit = (props) => {
           {/* End of approval or reject validation */}
 
           {/* Aside / Right Side  */}
-          <aside className="flex flex-col col-span-5 md:col-span-2 gap-4 mt-5">
-            <h3 className="text-2xl tracking-tight font-semibold leading-5">
-              Map
-            </h3>
+          <aside className="flex flex-col md:col-span-2 md:col-span-2 gap-4 mt-8">
+           
 
             {cu?.lat_long && cu?.lat_long.length > 0 ? (
               <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
