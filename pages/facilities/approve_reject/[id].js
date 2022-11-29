@@ -50,23 +50,23 @@ function ApproveReject(props) {
 
         <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
 
-
+      
                 {/* Breadcramps */}
                
-              <div className="flex flex-row cols-span-2 items-center text-start gap-3 text-sm md:text-base py-3 w-full">
-                <Link className="text-green-700" href="/">
-                    Home
-                </Link>
-                {"/"}
-                <Link className="text-green-700" href="/facilities">
-                    Facilities
-                </Link>
-                {"/"}
-                <span className="text-gray-500 flex flex-row">
-                    <span>{facility?.official_name ?? ""} </span> 
-                    {/* <span>( # <i className="text-black flex">{facility?.code || "NO_CODE"}</i> )</span> */}
-                </span>
-                </div>
+            <div className="flex md:col-span-7 flex-row gap-2 text-sm md:text-base md:my-3">
+              <Link className="text-green-700" href="/">
+                Home
+              </Link>
+              {"/"}
+              <Link className="text-green-700" href="/facilities">
+                Facilities
+              </Link>
+              {"/"}
+              <span className="text-gray-500">
+                {facility?.official_name ?? ""} ( #
+                <i className="text-black">{facility?.code || "NO_CODE"}</i> )
+              </span>
+            </div>
 
             {/* Header */}
             <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
@@ -299,7 +299,7 @@ function ApproveReject(props) {
                         <button
                         type="submit"
                         className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
-                        onClick={() => reject = true}
+                        onClick={() => reject = facility?.is_approved ? true : false}
                         
                         >
                         { facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approve Facility" : "Validate Facility"}
@@ -307,7 +307,7 @@ function ApproveReject(props) {
                         <button
                         type="submit"
                         className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
-                        onClick={() => reject = false}
+                        onClick={() => reject = facility?.is_approved ? false : true}
                         
                         >
                         { facility?.has_edits ? 'Decline Updates' : 'Reject Facility'}
