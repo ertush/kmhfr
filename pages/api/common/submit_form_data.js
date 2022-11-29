@@ -137,11 +137,6 @@ export default async function submitFormData(req, res) {
                     contentType = 'application/json;charset=utf-8';
                     method = 'POST'
                     break
-                case `edit_admin_offices`:
-                    url = `${API_URL}/admin_offices/${req.query.id}`
-                    contentType = 'application/json;charset=utf-8';
-                    method = req.method;
-                    break
                 case `delete_admin_office`:
                     url = `${API_URL}/admin_offices/${req.query.id}`
                     contentType = 'application/json;charset=utf-8';
