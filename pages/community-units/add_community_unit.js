@@ -12,7 +12,7 @@ import { FixedSizeList } from 'react-window';
 import{ChevronDoubleRightIcon,ChevronDoubleLeftIcon,TrashIcon} from '@heroicons/react/solid';
 import Select from 'react-select';
 import { useAlert } from "react-alert";
-import Link from 'next/dink';
+import Link from 'next/link';
 
 
 
