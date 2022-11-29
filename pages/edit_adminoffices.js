@@ -147,8 +147,8 @@ function EditAdminOfffice(props) {
                     <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
                             <Link href='/' className="text-green-500">Home</Link>{'/'}
-                            <Link href='/admin_offices' className="text-green-500">Adminoffices</Link> {'/'}
-                            <span className="text-gray-500">Edit AdminOffice</span>
+                            <Link href='/admin_offices' className="text-green-500">Admin Offices</Link> {'/'}
+                            <span className="text-gray-500">Edit Admin Office</span>
                         </div>
                     </div>
                     <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
@@ -404,7 +404,7 @@ EditAdminOfffice.getInitialProps = async (ctx) => {
 
                 switch(option) {
                     case 'filtering_summaries':
-                        console.log('>>>>>>>>>>>>>')
+                        // console.log('>>>>>>>>>>>>>')
                         url = `${process.env.NEXT_PUBLIC_API_URL}/common/counties/?page_size=50&page=1`;
 
                         try{
@@ -453,7 +453,7 @@ EditAdminOfffice.getInitialProps = async (ctx) => {
                         break;
                     case 'admin_offices':
 
-                        url = `/api/common/submit_form_data/?path=edit_admin_offices&id=${ctx.query.id}`
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/admin_offices/${ctx.query.id}`
 
 
                         try{
