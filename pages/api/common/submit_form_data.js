@@ -12,7 +12,7 @@ export default async function submitFormData(req, res) {
         let url = ''
         let contentType = ''
         let method = ''
-        let params =''
+  
      
             switch (path) {
                 case 'facilities':
@@ -145,7 +145,7 @@ export default async function submitFormData(req, res) {
                 case `regulation_status`:
                     url = `${API_URL}/facilities/facility_regulation_status/`
                     contentType = 'application/json;charset=utf-8';
-                    method = req.method;
+                    method = 'PATCH';
                     break
                 case `facility_upgrade`:
                     url = `${API_URL}/facilities/facility_upgrade/`
