@@ -108,7 +108,7 @@ const Home = (props) => {
     return (
         <>
             <Head>
-                <title>KMHFL - Facilities</title>
+                <title>KHMFL - Facilities</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 

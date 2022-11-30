@@ -88,7 +88,7 @@ const Regulate = props => {
     return (
         <>
             <Head>
-                <title>KMHFL - Regulate Facility</title>
+                <title>KHMFL - Regulate Facility</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
