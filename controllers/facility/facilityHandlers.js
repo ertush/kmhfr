@@ -616,7 +616,7 @@ const handleServiceUpdates = async (event, stateSetters, alert, alert_message) =
 
     const [services, facilityId]  = stateSetters
     
-    const _payload = services.length > 0 ? services.map(({value}) => ({service: value})) : {services:[{service: null}]}
+    const _payload = services.length > 0 ? services.map(({id}) => ({service: id})) : {services:[{service: null}]}
 
     try{
 
