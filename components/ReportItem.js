@@ -49,7 +49,7 @@ function downloadCSV(){
 
     //create CSV file data in an array  
     var csvFileData = [  
-        ['KMHFL', '2018'],  
+        ['KHMFL', '2018'],  
         ['KHIS', '2020'],  
         ['DHIS', '2016'],  
         ['PWS', '2019'],  

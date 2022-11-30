@@ -53,9 +53,6 @@ export default function TrasnferListServices({categories, setServices, setRefres
 
 useMemo(() => {
      
-    // console.log({selectedRight, right})
-
-      
 
      setSelectedServiceRight(selectedRight)
      leftChecked = intersection(checked, left);

@@ -52,7 +52,7 @@ const Upgrade = props => {
     return (
         <>
         <Head>
-               <title>KMHFL - Upgrade Facility</title>
+               <title>KHMFL - Upgrade Facility</title>
                <link rel="icon" href="/favicon.ico" />
         </Head>
        <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>

@@ -1,6 +1,6 @@
-# KMHFL3 Frontend
+# KHMFL3 Frontend
 
-This is the frontend application for KMHFL with new features (GIS, Dynamic Reports). Phase 1 is to have it as a read-only data consumption app. Phase 2 and beyond is to add CRUD features.
+This is the frontend application for KHMFL with new features (GIS, Dynamic Reports). Phase 1 is to have it as a read-only data consumption app. Phase 2 and beyond is to add CRUD features.
 
 ## Tech stack
 
