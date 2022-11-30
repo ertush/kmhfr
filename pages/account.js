@@ -72,7 +72,7 @@ const Account = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - {user?.name || "My account"}</title>
+                <title>KHMFL - {user?.name || "My account"}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
