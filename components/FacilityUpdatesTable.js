@@ -40,7 +40,6 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                                 facilityUpdatedJson?.basic.map(({ human_field_name, display_value, field_name }, id) => (
                                     
                                     <TableRow key={id}>
-                                        {console.log({originalData})}
                                         <TableCell>
                                             {human_field_name}
                                         </TableCell>
@@ -51,7 +50,6 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                                             {display_value}
                                         </TableCell>
                                     </TableRow>
-
                                 ))
 
                             }

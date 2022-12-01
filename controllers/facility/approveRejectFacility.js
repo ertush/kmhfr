@@ -1,22 +1,20 @@
 
 import router from "next/router"
 
-const validateFacility = (facility_id, reject, comment, alert) => {
+const validateRejectFacility = (facility_id, reject, comment, alert) => {
 
+
+    console.log('validateRejectFacility', {reject, comment})
 
     if(comment && !reject){
         alert.success("Facility validated successfully")
     }else {
-        alert.error("Unable to validate facility")
+        alert.success("Facility rejected successfully")
     }
 
-    const payload ={
-        comment: comment,
-        facility: facility_id,
-        is_cancelled: reject,
-    }
     
     let url=`/api/common/submit_form_data/?path=validate_facility`
+    
 
     try{
          fetch(url, {
@@ -26,7 +24,11 @@ const validateFacility = (facility_id, reject, comment, alert) => {
                 
             },
             method: 'POST',
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                comment: comment,
+                facility: facility_id,
+                is_cancelled: reject,
+            })
         })
         .then(resp =>resp)
         .then(res =>{ 
@@ -49,20 +51,15 @@ const validateFacility = (facility_id, reject, comment, alert) => {
 
 const approveRejectFacility = (facility_id, comment, alert, reject) => {
 
-    if(comment){
-        alert.success(`Facility ${reject ? 'Approved' : 'Rejected'} successfully`)
+    console.log('approveRejectFacility',{reject, comment})
+
+    if(reject){
+        alert.success(`Facility Approved successfully`)
     }else {
-        alert.error(`Unable to ${reject ? 'Approve' : 'Reject'} facility`)
+        alert.success(`Facility Rejected successfully`)
     }
     
-    const payload = {
-        approved_national_level: reject,
-        comment,
-        facility: facility_id,
-        is_national_approval: reject,
-    }
-
-    // console.log(JSON.stringify(payload))
+ 
     let url=`/api/common/submit_form_data/?path=validate_facility`
     try{
          fetch(url, {
@@ -72,7 +69,12 @@ const approveRejectFacility = (facility_id, comment, alert, reject) => {
                 
             },
             method: 'POST',
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                approved_national_level: reject,
+                comment,
+                facility: facility_id,
+                is_national_approval: reject,
+            })
         })
         .then(resp =>resp)
         .then(res =>{ 
@@ -92,10 +94,55 @@ const approveRejectFacility = (facility_id, comment, alert, reject) => {
     }
   
 
-    // console.log({comment})
+
+}
+
+const approveRejectFacilityUpdates = (reject, alert, update_id) => {
+
+    console.log('approveRejectFacilityUpdates', {reject})
+
+    if(reject){
+        alert.success("Facility updates approved successfully")
+    }else {
+        alert.success("Facility updates rejected successfully")
+    }
+
+    let url=`/api/common/submit_form_data/?path=approve_reject_facility_updates&id=${update_id}`
+    
+
+    try{
+         fetch(url, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+                
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                approved: reject
+            })
+        })
+        .then(resp =>resp)
+        .then(res =>{ 
+            
+            if(res){
+                router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
+            }
+         
+        })
+        .catch(e=>{
+         console.error(e.message)
+        })
+    }catch (e){
+
+        console.error(e.message)
+    
+    }
+
 }
 
 export {
+    approveRejectFacilityUpdates,
+    validateRejectFacility,
     approveRejectFacility,
-    validateFacility
 }
