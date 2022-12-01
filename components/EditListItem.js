@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
+import { PlusIcon } from '@heroicons/react/solid';
 
 
 
 
 function EditListItem({initialSelectedItems, itemsCategory, setUpdatedItem, item}) {
     
-
-
     const itemOptions = ((options) => {
         return options.map(({name, subCategories, value}) => ({
             label: name,
@@ -43,7 +42,8 @@ function EditListItem({initialSelectedItems, itemsCategory, setUpdatedItem, item
         </div>
       );
 
-   
+    
+    const [currentItem, setCurrentItem] = useState(null)
     const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
     const result = []
 
@@ -68,14 +68,14 @@ function EditListItem({initialSelectedItems, itemsCategory, setUpdatedItem, item
   return (
     <form
                     name="list_item_form"
-                    className="flex flex-col w-full items-center justify-start gap-3"
+                    className="flex flex-col w-full items-start justify-start gap-3"
                     onSubmit={ev => ev.preventDefault()}
                   >
                     {/* Transfer list Container */}
                     <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                       Available Services
                     </span>
-                    <div className="flex items-center w-full h-auto">
+                    <div className="flex items-start gap-2 md:w-5/6 w-full h-auto">
                       <Select
                         options={itemOptions}
                         // isMulti
@@ -86,11 +86,8 @@ function EditListItem({initialSelectedItems, itemsCategory, setUpdatedItem, item
                                 // let latest_service = e[e.length - 1]
 
                                 // if(latest_service){
-                                setSelectedItems([
-                                    {id: e?.value, name: e?.label}, 
-                                    ...selectedItems,
-                                ])
-
+                               
+                                setCurrentItem({id: e?.value, name: e?.label})
 
                             // }
                         }
@@ -98,6 +95,18 @@ function EditListItem({initialSelectedItems, itemsCategory, setUpdatedItem, item
                         name="item_drop_down"
                         className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
                       />
+
+                      <button className="bg-green-700 rounded p-2 flex items-center justify-evenly gap-2" 
+                      onClick={() => {
+                        if(currentItem)
+                            setSelectedItems([
+                              currentItem,
+                              ...selectedItems,
+                          ])
+                      }}>
+                          <p className='text-white font-semibold'>Add</p>
+                          <PlusIcon className='w-4 h-4 text-white'/>
+                        </button>
                     </div>
                     <br />
 

@@ -112,15 +112,15 @@ function ApproveReject(props) {
                     ) : (
                         ""
                     )}
-                    {facility?.is_approved ? (
+                    {facility?.approved ? (
                         <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <CheckCircleIcon className="h-4 w-4" />
-                        Approved
+                        Validated
                         </span>
                     ) : (
                         <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <XCircleIcon className="h-4 w-4" />
-                        Not approved
+                        Not Validated
                         </span>
                     )}
                     {facility?.has_edits && (
