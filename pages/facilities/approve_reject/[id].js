@@ -2,7 +2,8 @@ import React, { useState } from'react'
 import MainLayout from '../../../components/MainLayout';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
 import {
-    validateFacility,
+   validateRejectFacility,
+    approveRejectFacilityUpdates,
     approveRejectFacility
   } from "../../../controllers/facility/approveRejectFacility";
 
@@ -29,7 +30,7 @@ function ApproveReject(props) {
     
 
   const [khisSynched, setKhisSynched] = useState(false);
-  const [facilityFeedBack, setFacilityFeedBack] = useState([])
+  const [facilityFeedBack, setFacilityFeedBack] = useState([]) 
   const [pathId, setPathId] = useState('') 
   const [allFctsSelected, setAllFctsSelected] = useState(false);
   const [title, setTitle] = useState('') 
@@ -111,15 +112,15 @@ function ApproveReject(props) {
                     ) : (
                         ""
                     )}
-                    {facility?.is_approved ? (
+                    {facility?.approved ? (
                         <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <CheckCircleIcon className="h-4 w-4" />
-                        Approved
+                        Validated
                         </span>
                     ) : (
                         <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <XCircleIcon className="h-4 w-4" />
-                        Not approved
+                        Not Validated
                         </span>
                     )}
                     {facility?.has_edits && (
@@ -265,12 +266,18 @@ function ApproveReject(props) {
                             comment:''
                         }}
                         onSubmit = {async ({comment}) => {
-                             console.log({comment}) // debug
-                            if (facility?.is_approved) 
+                            
+                            if (!facility?.approved && !facility?.has_edits) 
                             {
-                              approveRejectFacility(facility?.id, comment, alert, reject)
-                            } else {
-                                validateFacility(facility?.id, reject, comment, alert)
+                                validateRejectFacility(facility?.id, reject, comment, alert)
+                            } 
+
+                            if(facility?.approved && facility?.has_edits) {
+                              approveRejectFacilityUpdates(reject, alert, facility?.latest_update)
+                          }
+                            
+                            if(!facility?.approved_national_level && facility?.approved) {
+                                approveRejectFacility(facility?.id, comment, alert, reject)
                             }
                         }
                     }
@@ -278,6 +285,7 @@ function ApproveReject(props) {
                     <Form
                         className="space-y-3"
                     >
+                        {console.log({facility})}
                         {
                         !facility?.has_edits ?
                         <Field
@@ -299,7 +307,7 @@ function ApproveReject(props) {
                         <button
                         type="submit"
                         className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
-                        onClick={() => reject = facility?.is_approved ? true : false}
+                        onClick={() => reject = facility?.has_edits ? true : facility?.is_approved ? true : false}
                         
                         >
                         { facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approve Facility" : "Validate Facility"}
@@ -307,7 +315,7 @@ function ApproveReject(props) {
                         <button
                         type="submit"
                         className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
-                        onClick={() => reject = facility?.is_approved ? false : true}
+                        onClick={() => reject = facility?.has_edits ? false : facility?.is_approved ? false : true}
                         
                         >
                         { facility?.has_edits ? 'Decline Updates' : 'Reject Facility'}
