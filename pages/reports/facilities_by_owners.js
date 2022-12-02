@@ -98,7 +98,7 @@ const FacilitiesByOwners = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - Reports</title>
+                <title>KHMFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -106,7 +106,7 @@ const FacilitiesByOwners = (props) => {
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-green-700" href="/">Home</a> {'>'}
+                                <a className="text-green-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Static Reports</span> 
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>

@@ -69,7 +69,7 @@ const Groups = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - Reports</title>
+                <title>KHMFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -77,8 +77,8 @@ const Groups = (props) => {
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-green-700" href="/">Home</a> {'>'}
-                                <a className="text-green-700" href="/users/">Users</a> {'>'}
+                                <a className="text-green-700" href="/">Home</a> {'/'}
+                                <a className="text-green-700" href="/users/">Users</a> {'/'}
                                 <span className="text-gray-500">Groups</span> 
                             </div>
                             

@@ -1,7 +1,7 @@
 import React, { useState, Suspense, useEffect, useRef } from 'react';
 import router from 'next/router';
-import MainLayout from '../components/MainLayout';
-import { checkToken } from '../controllers/auth/auth';
+import MainLayout from '../../../components/MainLayout';
+import { checkToken } from '../../../controllers/auth/auth';
 import Link from 'next/link'
 import { Formik, Field, Form } from "formik";
 import {
@@ -13,7 +13,7 @@ import Select from 'react-select';
 
 const _ = require('underscore')
 
-function EditAdminOfffice(props) {
+function EditAdminOffice(props) {
 
     console.log({props})
     // Form drop down options
@@ -146,14 +146,14 @@ function EditAdminOfffice(props) {
                 <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <Link href='/' className="text-green-500">Home</Link>{'>'}
-                            <Link href='/admin_offices' className="text-green-500">Adminoffices</Link> {'>'}
-                            <span className="text-gray-500">Edit AdminOffice</span>
+                            <Link href='/' className="text-green-500">Home</Link>{'/'}
+                            <Link href='/admin_offices' className="text-green-500">Admin Offices</Link> {'/'}
+                            <span className="text-gray-500">Edit Admin Office</span>
                         </div>
                     </div>
                     <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                         <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                            {'Edit AdminOffice'}
+                            Edit Admin Office
                         </h2>
                         <button
                             type='button'
@@ -215,17 +215,19 @@ function EditAdminOfffice(props) {
                                 </div>
 
                                 {/* national */}
-                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                    <label
-                                        htmlFor='is_national'
-                                        className='text-gray-600 capitalize text-sm'>
-                                        <Field
+                                <div className='w-full flex flex-row items-center justify-start gap-1 mb-3'>
+                                    
+                                    <Field
                                             type ="checkbox"
                                             name='is_national'
                                             id='is_national'
                                             onClick={onCheck}
 
                                         />
+                                    <label
+                                        htmlFor='is_national'
+                                        className='text-gray-600 capitalize text-sm'>
+                                        
                                         Is National Office
                                     </label>
 
@@ -348,7 +350,7 @@ function EditAdminOfffice(props) {
                                         <span className='text-medium font-semibold text-black 'onClick={() => {router.push('admin_offices')}} >
                                                    Cancel
                                                 </span>
-                                    </button>
+                                    </button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
                                 </div>
                             </Form>
                         </Formik>
@@ -361,11 +363,8 @@ function EditAdminOfffice(props) {
     )
 }
 
-EditAdminOfffice.getInitialProps = async (ctx) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-    const id = ctx.query.id
-
+EditAdminOffice.getInitialProps = async (ctx) => {
+   
 
     const allOptions = []
     const options = [
@@ -389,7 +388,8 @@ EditAdminOfffice.getInitialProps = async (ctx) => {
             }
         }
     }
-    return checkToken(ctx.req, ctx.res).then(async (t) => {
+
+return checkToken(ctx.req, ctx.res).then(async (t) => {
         if (t.error) {
             throw new Error('Error checking token')
         } else {
@@ -404,10 +404,13 @@ EditAdminOfffice.getInitialProps = async (ctx) => {
 
                 switch(option) {
                     case 'filtering_summaries':
-                        console.log('>>>>>>>>>>>>>')
+
+                        // fetch counties
+
                         url = `${process.env.NEXT_PUBLIC_API_URL}/common/counties/?page_size=50&page=1`;
 
                         try{
+                            
 
                             const _data = await fetch(url, {
                                 headers: {
@@ -420,25 +423,35 @@ EditAdminOfffice.getInitialProps = async (ctx) => {
 
                             allOptions.push({counties})
 
+                            // fetch sub counties
+
                             if(_data.statusText == 'OK'){
 
-                                url = `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?page_size=20000&page=1`;
                                 try {
 
-                                    const _data = await fetch(url, {
+
+                                    url = `${process.env.NEXT_PUBLIC_API_URL}/common/sub_counties/?page_size=20000&page=1`;
+                                        
+
+                                    const __data = await fetch(url, {
                                         headers: {
                                             Authorization: 'Bearer ' + token,
                                             Accept: 'application/json',
                                         },
                                     })
 
-                                    let sub_counties = (await _data.json())?.results
+                                    let sub_counties = (await __data.json())?.results
 
                                     allOptions.push({sub_counties})
-                                }
-                                catch (e) {
 
                                 }
+
+                                catch (e) {
+                                    console.error('Unable to fetch sub counties: ', e.message)
+                                }
+                        
+                                  
+                                
                             }
 
                         }
@@ -453,21 +466,20 @@ EditAdminOfffice.getInitialProps = async (ctx) => {
                         break;
                     case 'admin_offices':
 
-                        url = `/api/common/submit_form_data/?path=edit_admin_offices&id=${ctx.query.id}`
-
+                        url = `/api/common/fetch_form_data/?path=admin_offices&id=${ctx.query.id}`
 
                         try{
 
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                                method: 'GET'
-                            })
+                            const _data = await fetch(url,
+                                {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									}
+                                })
 
                             let admin_offices  = (await _data.json())
-                            console.log(admin_offices)
+                            // console.log(admin_offices)
 
                             allOptions.push({admin_offices})
 
@@ -510,6 +522,8 @@ EditAdminOfffice.getInitialProps = async (ctx) => {
             }
         }, 1000);
     })
+
+
 }
 
-export default EditAdminOfffice;
+export default EditAdminOffice;

@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 
 // Controller imports
-import { checkToken } from "../controllers/auth/auth";
+import { checkToken } from "../../controllers/auth/auth";
 
 // Package imports
 import * as Tabs from "@radix-ui/react-tabs";
@@ -16,10 +16,10 @@ import * as Tabs from "@radix-ui/react-tabs";
 import Select from "react-select";
 
 // Components imports
-import MainLayout from "../components/MainLayout";
+import MainLayout from "../../components/MainLayout";
 
-import { hasGISPermissions } from "../utils/checkPermissions";
-import { PermissionContext } from "../providers/permissions";
+import { hasGISPermissions } from "../../utils/checkPermissions";
+import { PermissionContext } from "../../providers/permissions";
 
 const Gis = (props) => { 
   const router = useRouter();
@@ -218,7 +218,7 @@ const Gis = (props) => {
   };
 
   const Mapp = dynamic(
-    () => import("../components/GISMap"), // replace '@components/map' with your component's location
+    () => import("../../components/GISMap"), // replace '@components/map' with your component's location
     {
       loading: () => (
         <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
@@ -245,7 +245,7 @@ const Gis = (props) => {
   return (
     <div className="">
       <Head>
-        <title>KMHFL - GIS Explorer</title>
+        <title>KHMFL - GIS Explorer</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainLayout isLoading={false} isFullWidth={true}>
@@ -267,11 +267,11 @@ const Gis = (props) => {
             <>
               <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 pt-2 justify-between items-center w-full bg-gray-100">
                 {/* BREADCRUMB */}
-                <div className="flex flex-row gap-2 text-sm md:text-base py-2 px-3">
+                <div className="flex flex-row items-center justify-between gap-2 md:ml-6 text-sm md:text-base py-3">
                   <Link className="text-green-700" href="/">
                     Home
-                  </Link>{" "}
-                  {">"}
+                  </Link>
+                  {"/"}
                   <span className="text-gray-500">GIS Explorer</span>
                 </div>
 

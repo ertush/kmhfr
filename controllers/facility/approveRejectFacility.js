@@ -1,24 +1,65 @@
-const approveRejectFacility = (rejected, setState) => {
-    console.log("pppppppppppppppppp ------------>>>> "+rejected);
 
-    if (rejected) {
-        setState(false)
+import router from "next/router"
 
-    } else {
-        setState(true)
+const validateRejectFacility = (facility_id, reject, comment, alert) => {
 
+
+    console.log('validateRejectFacility', {reject, comment})
+
+    if(comment && !reject){
+        alert.success("Facility validated successfully")
+    }else {
+        alert.success("Facility rejected successfully")
+    }
+
+    
+    let url=`/api/common/submit_form_data/?path=validate_facility`
+    
+
+    try{
+         fetch(url, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+                
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                comment: comment,
+                facility: facility_id,
+                is_cancelled: reject,
+            })
+        })
+        .then(resp =>resp)
+        .then(res =>{ 
+            
+            if(res){
+                router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
+            }
+         
+        })
+        .catch(e=>{
+         console.error(e.message)
+        })
+    }catch (e){
+
+        console.error(e.message)
+    
     }
 
 }
 
-const validateFacility = (e, facility_id, reject,comment) => {
-    e.preventDefault();
+const approveRejectFacility = (facility_id, comment, alert, reject) => {
 
-    const payload ={
-        comment: comment,
-        facility: facility_id,
-        is_cancelled: reject,
+    console.log('approveRejectFacility',{reject, comment})
+
+    if(reject){
+        alert.success(`Facility Approved successfully`)
+    }else {
+        alert.success(`Facility Rejected successfully`)
     }
+    
+ 
     let url=`/api/common/submit_form_data/?path=validate_facility`
     try{
          fetch(url, {
@@ -28,44 +69,47 @@ const validateFacility = (e, facility_id, reject,comment) => {
                 
             },
             method: 'POST',
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                approved_national_level: reject,
+                comment,
+                facility: facility_id,
+                is_national_approval: reject,
+            })
         })
         .then(resp =>resp)
         .then(res =>{ 
-            
-            console.log(res)
-            // if(res.status==200){
-            // 	router.push('/users')
-            // }
+
+            if(res){
+                router.push('/facilities?qf=to_publish&to_publish=true') // redirect Facilties Pending Approval
+            }
+         
+         
         })
         .catch(e=>{
-          setStatus({status:'error', message: e})
+            console.error(e.message)
         })
     }catch (e){
 
-        setStatus({status:'error', message: e})
         console.error(e)
     }
-    // if(state){
-    //     ctx.is_approved = false;
-    // }else {
-    //     ctx.is_approved = true;
-    // }
+  
 
-    console.log({comment})
+
 }
 
-const approveFacility = (e, facility_id, comment) => {
-    e.preventDefault();
+const approveRejectFacilityUpdates = (reject, alert, update_id) => {
 
-    const payload ={
-        approved_national_level: true,
-        comment,
-        facility: facility_id,
-        is_national_approval: true,
+    console.log('approveRejectFacilityUpdates', {reject})
+
+    if(reject){
+        alert.success("Facility updates approved successfully")
+    }else {
+        alert.success("Facility updates rejected successfully")
     }
-    console.log(JSON.stringify(payload))
-    let url=`/api/common/submit_form_data/?path=validate_facility`
+
+    let url=`/api/common/submit_form_data/?path=approve_reject_facility_updates&id=${update_id}`
+    
+
     try{
          fetch(url, {
             headers:{
@@ -74,35 +118,31 @@ const approveFacility = (e, facility_id, comment) => {
                 
             },
             method: 'POST',
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                approved: reject
+            })
         })
         .then(resp =>resp)
         .then(res =>{ 
             
-            console.log(res)
-            // if(res.status==200){
-            // 	router.push('/users')
-            // }
+            if(res){
+                router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
+            }
+         
         })
         .catch(e=>{
-          setStatus({status:'error', message: e})
+         console.error(e.message)
         })
     }catch (e){
 
-        setStatus({status:'error', message: e})
-        console.error(e)
+        console.error(e.message)
+    
     }
-    // if(state){
-    //     ctx.is_approved = false;
-    // }else {
-    //     ctx.is_approved = true;
-    // }
 
-    console.log({comment})
 }
 
 export {
+    approveRejectFacilityUpdates,
+    validateRejectFacility,
     approveRejectFacility,
-    validateFacility,
-    approveFacility
 }

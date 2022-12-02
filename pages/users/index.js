@@ -116,15 +116,15 @@ const Users = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - Reports</title>
+                <title>KHMFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
                 <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
-                            <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <Link className="text-green-700" href="/">Home</Link> {'>'}
+                            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                                <Link className="text-green-700" href="/">Home</Link> {'/'}
                                 <span className="text-gray-500">Users</span> 
                             </div>
                         </div>

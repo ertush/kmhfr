@@ -256,13 +256,14 @@ function AddFacility(props) {
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
-	const [file, setFile]=useState([])
+	const [checklistFile, setChecklistFile] = useState(null)
+	const [licenseFile, setLicenseFile] = useState(null)
 	const [coordinatesError, setCoordinatesError] = useState(false)
 	
 	
     useEffect(() => {
 
-		console.log({props})
+		// console.log({props})
 
         const formIdState = window.sessionStorage.getItem('formId');
 
@@ -392,7 +393,7 @@ function AddFacility(props) {
   return (
 	<>
 		 <Head>
-                <title>KMHFL - Add Facility</title>
+                <title>KHMFL - Add Facility</title>
                 <link rel="icon" href="/favicon.ico" />
         </Head>
 
@@ -401,8 +402,8 @@ function AddFacility(props) {
 						<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
 							<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
 								<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-									<Link className="text-green-800" href="/">Home</Link> {'>'}
-									<Link className="text-green-800" href="/facilities/">Facilities</Link> {'>'}
+									<Link className="text-green-800" href="/">Home</Link> {'/'}
+									<Link className="text-green-800" href="/facilities/">Facilities</Link> {'/'}
 									<span className="text-gray-500">Add Facility</span>
 								</div>
 							</div>
@@ -520,7 +521,7 @@ function AddFacility(props) {
 															encType="multipart/form-data"
 															ref={basicDetailsRef}
 															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef], 'POST')}>
+															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef], 'POST', checklistFile)}>
 
 															{/* Facility Official Name */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1482,12 +1483,13 @@ function AddFacility(props) {
 																			*
 																		</span>
 																	</label>
+																	
 																	<input
 																		required
 																		ref={checklistFileRef}
 																		type='file'
 																		onChange={(e)=>{
-																			setFile(e.target.files[0])
+																			setChecklistFile(e.target.files[0])
 																		}}
 																		name='facility_checklist_document'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -2067,7 +2069,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-														<form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId], 'POST')}>
+														<form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId], 'POST', licenseFile)}>
 
 															{/* Regulatory Body */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -2109,7 +2111,7 @@ function AddFacility(props) {
 															<div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
 																<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																	<label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
-																	<input type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																	<input onChange={e => setLicenseFile(e.target.files[0])} type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 																</div>
 															</div>
 

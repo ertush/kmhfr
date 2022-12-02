@@ -12,7 +12,7 @@ export default async function submitFormData(req, res) {
         let url = ''
         let contentType = ''
         let method = ''
-        let params =''
+  
      
             switch (path) {
                 case 'facilities':
@@ -104,8 +104,12 @@ export default async function submitFormData(req, res) {
                     url = `${API_URL}/facilities/facility_approvals/`
                     contentType = 'application/json;charset=utf-8';
                     method = 'POST';
-                    break      
-                        
+                    break     
+                case `approve_reject_facility_updates`:
+                    url = `${API_URL}/facilities/facility_updates/${req.query.id}/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'PATCH';
+                    break  
                 case `approve_chul`:
                     url = `${API_URL}/chul/units/${req.query.id}/`
                     contentType = 'application/json;charset=utf-8';
@@ -137,11 +141,6 @@ export default async function submitFormData(req, res) {
                     contentType = 'application/json;charset=utf-8';
                     method = 'POST'
                     break
-                case `edit_admin_offices`:
-                    url = `${API_URL}/admin_offices/${req.query.id}`
-                    contentType = 'application/json;charset=utf-8';
-                    method = req.method;
-                    break
                 case `delete_admin_office`:
                     url = `${API_URL}/admin_offices/${req.query.id}`
                     contentType = 'application/json;charset=utf-8';
@@ -150,7 +149,12 @@ export default async function submitFormData(req, res) {
                 case `regulation_status`:
                     url = `${API_URL}/facilities/facility_regulation_status/`
                     contentType = 'application/json;charset=utf-8';
-                    method = req.method;
+                    method = 'PATCH';
+                    break
+                case `facility_upgrade`:
+                    url = `${API_URL}/facilities/facility_upgrade/`
+                    contentType = 'application/json;charset=utf-8';
+                    method = 'POST';
                     break
                 default:
 
@@ -160,17 +164,29 @@ export default async function submitFormData(req, res) {
               
             try {
                 console.log({url});
-                const resp = await fetch(url, {
-                    headers: {
-                        'Authorization': 'Bearer ' + token,
-                        'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': contentType
-                    },
-                    method,
-                    body: method == 'GET' ? null:JSON.stringify(req.body)
-                })
+                const resp = await fetch(url, 
+                    url.includes('common/documents') ?
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                            'Accept': 'application/json, text/plain, */*',
+                        },
+                        method,
+                        body: req.body
+                    }
+                    :
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + token,
+                            'Accept': 'application/json, text/plain, */*',
+                            'Content-Type': contentType
+                        },
+                        method,
+                        body: JSON.stringify(req.body)
+                    }
+                )
                 
-                return await resp.json()
+                return url.includes('common/documents') ? resp : await resp.json()
             }
             catch(err) {
                 console.error('Error posting facility basic details: ', err)

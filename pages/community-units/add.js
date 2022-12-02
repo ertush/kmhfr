@@ -9,14 +9,15 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import { FixedSizeList } from 'react-window';
-import{ChevronDoubleRightIcon,ChevronDoubleLeftIcon,TrashIcon} from '@heroicons/react/solid';
+import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon, TrashIcon } from '@heroicons/react/solid';
 import Select from 'react-select';
 import { useAlert } from "react-alert";
+import Link from 'next/link';
 
 
 
 
-const AddCommUnit=(props)=> {
+const AddCommunityUnit = (props) => {
 
 	const facilities = props.facility_data.results;
 	const serviceCtg = props.service_categories.results;
@@ -24,7 +25,7 @@ const AddCommUnit=(props)=> {
 	const alert = useAlert()
 
 	// Reference hooks for the services section
-	const {nameOptionRef, serviceCategoriesRef, optionRefBody} = useRef();
+	const { nameOptionRef, serviceCategoriesRef, optionRefBody } = useRef();
 
 	const [selected_facility, setSelectedFacility] = useState(null);
 	const [countyValue, setCountyValue] = useState('');
@@ -32,8 +33,8 @@ const AddCommUnit=(props)=> {
 	const [constituencyValue, setConstituencyValue] = useState('');
 	const [wardValue, setWardValue] = useState('');
 	const [chulId, setchulId] = useState('');
-	const [contactCHEW, setContactCHEW]=useState([{}])
-	const [contactList, setContactList]=useState([{}])
+	const [contactCHEW, setContactCHEW] = useState([{}])
+	const [contactList, setContactList] = useState([{}])
 	const [chewData, setChewData] = useState({});
 
 	// Services state
@@ -50,67 +51,63 @@ const AddCommUnit=(props)=> {
 
 	// Define serviceCategories
 	let serviceCategories = ((_services) => {
-		
+
 		const _serviceCategories = []
 		let _values = []
 		let _subCtgs = []
 
-		if(_services.length > 0){
-			_services.forEach(({name:ctg}) => {
-				let allOccurences = _services.filter(({name}) => name === ctg)
-				
-				allOccurences.forEach(({id, description}) => {
+		if (_services.length > 0) {
+			_services.forEach(({ name: ctg }) => {
+				let allOccurences = _services.filter(({ name }) => name === ctg)
+
+				allOccurences.forEach(({ id, description }) => {
 					_subCtgs.push(description)
 					_values.push(id)
 				})
-				
-				if(_serviceCategories.map(({name}) => name).indexOf(ctg) === -1){
+
+				if (_serviceCategories.map(({ name }) => name).indexOf(ctg) === -1) {
 					_serviceCategories.push({
 						name: ctg,
-						subCategories:_subCtgs,
-						value:_values
+						subCategories: _subCtgs,
+						value: _values
 					})
 				}
-				
+
 				_values = []
 				_subCtgs = []
-	
+
 			})
 		}
-		
+
 		return _serviceCategories
-	 })(props.service_categories.results ?? [])
+	})(props.service_categories.results ?? [])
 
 	const [formId, setFormId] = useState(0);
 	const handleAddClick = (e) => {
 		e.preventDefault();
-		setContactCHEW(s=>{
-			return [...s, {first_name: '', last_name: '', is_incharge: ''}]
+		setContactCHEW(s => {
+			return [...s, { first_name: '', last_name: '', is_incharge: '' }]
 		})
 	};
 
 	const handleContactAdd = (e) => {
 		e.preventDefault();
-		setContactList(s=>{
-			return [...s, {contact_type: '', contact: ''}]
+		setContactList(s => {
+			return [...s, { contact_type: '', contact: '' }]
 		})
 	};
-	useEffect(() =>
-	{
+	useEffect(() => {
 
 		const formIdState = window.sessionStorage.getItem('formId');
 
-		if (formIdState == undefined || formIdState == null || formIdState == '')
-		{
+		if (formIdState == undefined || formIdState == null || formIdState == '') {
 			window.sessionStorage.setItem('formId', 1);
 		}
 
 		setFormId(window.sessionStorage.getItem('formId'));
 
-		return () =>
-		{
-			if (window.sessionStorage.getItem('formId') == '3')
-			{
+		return () => {
+			if (window.sessionStorage.getItem('formId') == '3') {
 				window.sessionStorage.setItem('formId', 0);
 			}
 		};
@@ -130,14 +127,14 @@ const AddCommUnit=(props)=> {
 					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-4'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 							<div className='flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3'>
-								<a className='text-green-800' href='/'>
+								<Link className='text-green-800' href='/'>
 									Home
-								</a>{' '}
-								{'>'}
-								<a className='text-green-800' href='/community-units'>
+								</Link>
+								{'/'}
+								<Link className='text-green-800' href='/community-units'>
 									Community Units
-								</a>{' '}
-								{'>'}
+								</Link>
+								{'/'}
 								<span className='text-gray-500'>Add Community Unit</span>
 							</div>
 							<div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'></div>
@@ -165,14 +162,11 @@ const AddCommUnit=(props)=> {
 								className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50'
 								style={{ minHeight: '250px' }}>
 								{/* Form-changing switch statement */}
-								{(() =>
-								{
-									switch (parseInt(formId))
-									{
+								{(() => {
+									switch (parseInt(formId)) {
 										// Basic Details Case
 										case 0:
-											const handleBasicDetailsSubmit = (event) =>
-											{
+											const handleBasicDetailsSubmit = (event) => {
 												event.preventDefault();
 
 												let _id;
@@ -180,22 +174,21 @@ const AddCommUnit=(props)=> {
 												const formData = {};
 
 												const elements = [...event.target];
-												
-												elements.forEach(({ name, value, id }, index) =>
-												{
-													console.log({index: index, name:name, id:id, value:value});
-													if(name == 'contact_type' || name == 'contact'){
+
+												elements.forEach(({ name, value, id }, index) => {
+													console.log({ index: index, name: name, id: id, value: value });
+													if (name == 'contact_type' || name == 'contact') {
 														let data = [...contactList];
 														formData['contacts'] = {}
 														data[id][name] = value
-														formData['contacts'] = data.map(({contact_type, contact})=>{return{contact_type, contact}})
+														formData['contacts'] = data.map(({ contact_type, contact }) => { return { contact_type, contact } })
 
-													}else{
+													} else {
 
 														formData[name] = value;
 													}
 												});
-												
+
 												// Posting CHU basic details 
 												try {
 													fetch('/api/common/submit_form_data/?path=CHUs', {
@@ -216,12 +209,12 @@ const AddCommUnit=(props)=> {
 																setchulId(_id) //setting the state to the current CHUL
 															}
 															alert.success('CHU Basic Details Added Successfully')
-															
+
 														})
 												}
 
 												catch (e) {
-													alert.error('Error Occured: ' +e.message)
+													alert.error('Error Occured: ' + e.message)
 												}
 
 												// Set the formId to the next step
@@ -275,7 +268,7 @@ const AddCommUnit=(props)=> {
 															<Select
 																onChange={(value) => {
 																	setSelectedFacility(value);
-																	
+
 																	// list the facilities and their counties
 																	facilities.map((facility) => {
 																		if (facility.id === value.value) {
@@ -552,65 +545,65 @@ const AddCommUnit=(props)=> {
 															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 																Community Health Unit Contacts
 															</h4>
-														
-															{contactList.map((x,i)=>{
-															
-																return( 
-																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
-																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
-																	<label
-																		htmlFor='contact'
-																		className='text-gray-600 capitalize text-sm'
-																		>
-																		Contact Type
-																		<span className='text-medium leading-12 font-semibold'>
-																			{' '}
-																			*
-																		</span>
-																	</label>	
-																	<select
-																		required
-																		key={i}
-																		id={`${i}`}
-																		onChange={(e)=>{console.log(e)}}
-																		name='contact_type'
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 
-																	>
-																	{contact_type.map((ct, i) => (
-																		<option value={ct.id} key ={i}>{ct.name}</option>
-																	))}
-																	</select>
-																</div>	
-																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
-																	<label
-																		htmlFor='contact_text'
-																		className='text-gray-600 capitalize text-sm'>
-																		Contact Details
-																		<span className='text-medium leading-12 font-semibold'>
-																			{' '}
-																			*
-																		</span>
-																	</label>
-																	<input
-																		required
-																		type='text'
-																		name='contact'
-																		id={i}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
+															{contactList.map((x, i) => {
 
-														    </div>)
+																return (
+																	<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
+																		<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
+																			<label
+																				htmlFor='contact'
+																				className='text-gray-600 capitalize text-sm'
+																			>
+																				Contact Type
+																				<span className='text-medium leading-12 font-semibold'>
+																					{' '}
+																					*
+																				</span>
+																			</label>
+																			<select
+																				required
+																				key={i}
+																				id={`${i}`}
+																				onChange={(e) => { console.log(e) }}
+																				name='contact_type'
+																				className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+
+																			>
+																				{contact_type.map((ct, i) => (
+																					<option value={ct.id} key={i}>{ct.name}</option>
+																				))}
+																			</select>
+																		</div>
+																		<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
+																			<label
+																				htmlFor='contact_text'
+																				className='text-gray-600 capitalize text-sm'>
+																				Contact Details
+																				<span className='text-medium leading-12 font-semibold'>
+																					{' '}
+																					*
+																				</span>
+																			</label>
+																			<input
+																				required
+																				type='text'
+																				name='contact'
+																				id={i}
+																				className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			/>
+																		</div>
+
+																	</div>)
 															})
 															}
 
 														</div>
 														<div class="sticky top-0 right-10 w-full flex justify-end">
 															<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
-																onClick={handleContactAdd} 
-																>
-																	{`Add Contact`}
+																onClick={handleContactAdd}
+															>
+																{`Add Contact`}
 															</button>
 
 														</div>
@@ -637,20 +630,19 @@ const AddCommUnit=(props)=> {
 											);
 										// CHEWs Case
 										case 1:
-										    const handleChange = (e) => {
+											const handleChange = (e) => {
 
 												let data = [...contactCHEW];
-												const Obj={}
+												const Obj = {}
 												Obj['health_unit_workers'] = {}
-												e.target.type == 'checkbox'? data[e.target.id][e.target.name] = e.target.checked :data[e.target.id][e.target.name] = e.target.value
-												Obj['health_unit_workers'] = data.map(({first_name, last_name,is_incharge})=>{return{first_name, last_name,is_incharge}})
+												e.target.type == 'checkbox' ? data[e.target.id][e.target.name] = e.target.checked : data[e.target.id][e.target.name] = e.target.value
+												Obj['health_unit_workers'] = data.map(({ first_name, last_name, is_incharge }) => { return { first_name, last_name, is_incharge } })
 												setChewData({ ...chewData, ...Obj })
 											}
 
 											console.log(chewData);
 											// Handle CHEWs Case
-											const handleCHEWSubmit = (event) =>
-											{
+											const handleCHEWSubmit = (event) => {
 												event.preventDefault();
 
 												try {
@@ -664,13 +656,13 @@ const AddCommUnit=(props)=> {
 														},
 														method: 'PATCH',
 														body: JSON.stringify(chewData)
-													}).then(res => res.json()).then((res)=>{
-														if(res.details){
+													}).then(res => res.json()).then((res) => {
+														if (res.details) {
 															alert.error('Failed to add CHEW details')
-														  }else{
+														} else {
 															alert.success('CHEW details added successfully ')
-														  }   
-													}).catch(err=>{
+														}
+													}).catch(err => {
 														alert.error('An error occured: ' + err)
 
 													})
@@ -687,13 +679,12 @@ const AddCommUnit=(props)=> {
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
 
-											const handleCHEWPrevious = (event) =>
-											{
+											const handleCHEWPrevious = (event) => {
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 0);
 
-												console.log({  formId  })
+												console.log({ formId })
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -708,85 +699,85 @@ const AddCommUnit=(props)=> {
 														onSubmit={handleCHEWSubmit}>
 														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 															{contactCHEW.map((contact, index) => (
-															<div className='grid grid-cols-4 place-content-start gap-3 w-full' key={index}>
-																{/* First Name */}
-																<div className='col-start-1 col-span-1'>
-																	<label
-																		htmlFor='first_name' start
-																		className='block text-sm font-medium text-gray-700'>
-																		First Name
-																	</label>
-																	<input
-																		required
-																		id={index}
-																		type='text'
-																		name='first_name'
-																		onChange={(e)=>handleChange(e)}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
-																{/* Second Name */}
-																<div className='col-start-2 col-span-1'>
-																	<label
-																		htmlFor='last_name'
-																		className='block text-sm font-medium text-gray-700'>
-																		Second Name
-																	</label>
-																	<input
-																		required
-																		id={index}
-																		type='text'
-																		name='last_name'
-																		onChange={(e)=>handleChange(e)}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
-																{/* In charge */}
-																<div className='col-start-3 col-span-1'>
-																	<label
-																		htmlFor='is_incharge'
-																		className='block text-sm font-medium text-gray-700'>
-																		In Charge
-																	</label>
-																	<input
-																		name='is_incharge'
-																		id={index}
-																		type='checkbox'
-																		onChange={(e)=>handleChange(e)}
-																		className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
-																		/>
-																</div>
-
-																{/* Delete CHEW */}
-																<div className='col-start-4 col-span-1'>
-																	<label
-																		htmlFor='delete'
-																		className='block text-sm font-medium text-gray-700'>
-																		Delete
-																	</label>
-																	<div className='flex items-center'>
-																		{/* insert red button for deleting */}
-																		<button
-																			name='delete'
+																<div className='grid grid-cols-4 place-content-start gap-3 w-full' key={index}>
+																	{/* First Name */}
+																	<div className='col-start-1 col-span-1'>
+																		<label
+																			htmlFor='first_name' start
+																			className='block text-sm font-medium text-gray-700'>
+																			First Name
+																		</label>
+																		<input
+																			required
 																			id={index}
-																			type='button'
-																			className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 rounded border border-red-500 hover:border-transparent '
-																			onClick={() => {  }}>
-																			<TrashIcon class="w-4 h-4 text-red-500 group-hover:text-white" />
-																		</button>
+																			type='text'
+																			name='first_name'
+																			onChange={(e) => handleChange(e)}
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																		/>
+																	</div>
+																	{/* Second Name */}
+																	<div className='col-start-2 col-span-1'>
+																		<label
+																			htmlFor='last_name'
+																			className='block text-sm font-medium text-gray-700'>
+																			Second Name
+																		</label>
+																		<input
+																			required
+																			id={index}
+																			type='text'
+																			name='last_name'
+																			onChange={(e) => handleChange(e)}
+																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																		/>
+																	</div>
+																	{/* In charge */}
+																	<div className='col-start-3 col-span-1'>
+																		<label
+																			htmlFor='is_incharge'
+																			className='block text-sm font-medium text-gray-700'>
+																			In Charge
+																		</label>
+																		<input
+																			name='is_incharge'
+																			id={index}
+																			type='checkbox'
+																			onChange={(e) => handleChange(e)}
+																			className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
+																		/>
+																	</div>
+
+																	{/* Delete CHEW */}
+																	<div className='col-start-4 col-span-1'>
+																		<label
+																			htmlFor='delete'
+																			className='block text-sm font-medium text-gray-700'>
+																			Delete
+																		</label>
+																		<div className='flex items-center'>
+																			{/* insert red button for deleting */}
+																			<button
+																				name='delete'
+																				id={index}
+																				type='button'
+																				className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 rounded border border-red-500 hover:border-transparent '
+																				onClick={() => { }}>
+																				<TrashIcon class="w-4 h-4 text-red-500 group-hover:text-white" />
+																			</button>
+																		</div>
 																	</div>
 																</div>
-															</div>
 															))}
-														    <div class="sticky top-0 right-10 w-full flex justify-end">
-															<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
-																onClick={handleAddClick} 
+															<div class="sticky top-0 right-10 w-full flex justify-end">
+																<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
+																	onClick={handleAddClick}
 																>
 																	{`Add`}
 																	{/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}
-															</button>
+																</button>
 
-														</div>
+															</div>
 														</div>
 
 														{/* Basic Details and Services */}
@@ -814,30 +805,29 @@ const AddCommUnit=(props)=> {
 										// Services Case
 										case 2:
 											// Handle Service Form Submit
-											const handleServiceSubmit = (event) =>
-											{
+											const handleServiceSubmit = (event) => {
 												event.preventDefault();
 
-												const _payload = services.map(({value}) => ({service: value}))
+												const _payload = services.map(({ value }) => ({ service: value }))
 
 												_payload.forEach(obj => obj['health_unit'] = chulId)
-	
-												try{
+
+												try {
 													fetch(`/api/common/submit_form_data/?path=chul_services&id=${chulId}`, {
-														headers:{
+														headers: {
 															'Accept': 'application/json, text/plain, */*',
 															'Content-Type': 'application/json;charset=utf-8'
-															
+
 														},
-														method:'POST',
-														body: JSON.stringify({services:_payload})
+														method: 'POST',
+														body: JSON.stringify({ services: _payload })
 													})
 
 												}
-												catch(e){
-													console.error('Unable to patch CHU service details'. e.message)
+												catch (e) {
+													console.error('Unable to patch CHU service details'.e.message)
 												}
-												
+
 
 												window.sessionStorage.setItem('formId', 3);
 
@@ -845,8 +835,7 @@ const AddCommUnit=(props)=> {
 												setServices([])
 											};
 
-											const handleServicesPrevious = (event) =>
-											{
+											const handleServicesPrevious = (event) => {
 												event.preventDefault();
 
 												window.sessionStorage.setItem('formId', 1);
@@ -875,7 +864,7 @@ const AddCommUnit=(props)=> {
 																refreshForm4={refreshForm}
 															/>
 														</div>
-																												
+
 														{/* Service Category Table */}
 														<table className='w-full  h-auto my-4'>
 															<thead className='w-full'>
@@ -886,13 +875,13 @@ const AddCommUnit=(props)=> {
 															</thead>
 															<tbody ref={optionRefBody}>
 																{
-																	services.map(({subctg}) => subctg).map((service_categories, i) => (
+																	services.map(({ subctg }) => subctg).map((service_categories, i) => (
 																		<tr key={`${service_categories}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
 																			<td ref={nameOptionRef}>{service_categories}</td>
 																			<td ref={serviceCategoriesRef} className='ml-12 text-base'>Yes</td>
 																		</tr>
 																	))
-																}															
+																}
 															</tbody>
 														</table>
 
@@ -907,7 +896,7 @@ const AddCommUnit=(props)=> {
 															</button>
 															<button
 																type='submit'
-																
+
 																className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>
 																	Save
@@ -963,16 +952,15 @@ const AddCommUnit=(props)=> {
 	);
 }
 
-AddCommUnit.getInitialProps = async (ctx) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL
+AddCommunityUnit.getInitialProps = async (ctx) => {
+	const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 
 	return checkToken(ctx.req, ctx.res)
 		.then(async (t) => {
 			if (t.error) {
 				throw new Error('Error checking token');
-			} else
-			{
+			} else {
 				let token = t.token;
 				console.log('token', token);
 
@@ -986,7 +974,7 @@ AddCommUnit.getInitialProps = async (ctx) => {
 				})
 
 				let facility_data = await response.json();
-				console.log('facilities',facility_data)
+				console.log('facilities', facility_data)
 
 				if (facility_data.error) {
 					throw new Error('Error fetching facility data');
@@ -1004,10 +992,10 @@ AddCommUnit.getInitialProps = async (ctx) => {
 					})
 
 				let service_categories = await service_response.json();
-				console.log('services',service_categories)
+				console.log('services', service_categories)
 
 
-				if (service_categories.error){
+				if (service_categories.error) {
 					throw new Error('Error fetching the service categories');
 				}
 
@@ -1020,15 +1008,15 @@ AddCommUnit.getInitialProps = async (ctx) => {
 				})
 
 				// let contact_res = (await _data.json()).results.map(({id, name }) => {return {value:id, label:name}})
-				const defaultSelected ={id: '0', name: 'Select contact type', disabled:true};
+				const defaultSelected = { id: '0', name: 'Select contact type', disabled: true };
 
 				let contact_res = (await _data.json()).results
 				contact_res.unshift(defaultSelected)
 
-				if (contact_res.error){
+				if (contact_res.error) {
 					throw new Error('Error fetching the contact types');
 				}
-				
+
 				return {
 					token: token,
 					facility_data: facility_data,
@@ -1038,21 +1026,16 @@ AddCommUnit.getInitialProps = async (ctx) => {
 
 			}
 		})
-		.catch((err) =>
-		{
+		.catch((err) => {
 			console.log('Error checking token: ' + err);
-			if (typeof window !== 'undefined' && window)
-			{
-				if (ctx?.asPath)
-				{
+			if (typeof window !== 'undefined' && window) {
+				if (ctx?.asPath) {
 					window.location.href = ctx?.asPath;
-				} else
-				{
+				} else {
 					window.location.href = '/facilities';
 				}
 			}
-			setTimeout(() =>
-			{
+			setTimeout(() => {
 				return {
 					error: true,
 					err: err,
@@ -1062,4 +1045,4 @@ AddCommUnit.getInitialProps = async (ctx) => {
 		});
 };
 
-export default AddCommUnit;
+export default AddCommunityUnit; 

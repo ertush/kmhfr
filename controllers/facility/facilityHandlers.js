@@ -1,6 +1,6 @@
 
 // handleBasicDetailsSubmit
-const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
+const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
 
     const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef] = stateSetters
 
@@ -8,12 +8,12 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
     let _id, _ward
 
-    const formData = new FormData(basicDetailsRef.current)
+    const _formData = new FormData(basicDetailsRef.current)
 
     const _payload = {};
 
 
-    formData.forEach((v, k) => {
+    _formData.forEach((v, k) => {
         
         _payload [k] = (() => {
             // Accomodates format of facility checklist document
@@ -49,12 +49,10 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
 
 
     if(method === 'PATCH'){
-        _payload['sub_county'] = formData.get('sub_county_id');
+        _payload['sub_county'] = _formData.get('sub_county_id');
     }
 
 
-
-    
 
 
     // Post Facility Basic Details
@@ -68,6 +66,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
             method,
             body: JSON.stringify(_payload)
         })
+
         // Post Checklist document
         .then(async resp => {
 
@@ -76,32 +75,27 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method) => {
             _id = id
             _ward = ward
 
-            const payload = {
-                name: `${_payload['official_name']} Facility Checklist File`,
-                description: 'Facilities checklist file',
-                document_type: 'Facility_ChecKList',
-                facility_name:_payload['official_name'],
-                fyl: {
-                    filename:_payload['facility_checklist_document']
-                }
-
-
-            }
-
+            const formData = new FormData()
+            formData.append('name', `${_payload['official_name']} Facility Checklist File`)
+            formData.append('description', 'Facilities checklist file')
+            formData.append('document_type', 'Facility_ChecKList')
+            formData.append('facility_name', _payload['official_name'])
+            formData.append('fyl', file ?? undefined)
+            
+    
             if(resp){
 
-                
                 try {
                     const resp = await fetch('/api/common/submit_form_data/?path=documents', {
+
                         headers:{
                             'Accept': 'application/json, text/plain, */*',
-                            
                         },
                         method:'POST',
-                        body: JSON.stringify(payload)
+                        body: formData
                     })
 
-                    return (await resp.json())
+                    return resp
                 }
                 catch(e){
                     console.error('Unable to Post document')
@@ -307,14 +301,12 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
 };
 
 // handleRegulationSubmit
-const handleRegulationSubmit = (event, stateSetters, method) => {
+const handleRegulationSubmit = (event, stateSetters, method, file) => {
 
     const [setFormId, facilityId] = stateSetters
 
-
     event.preventDefault();
     
-
     // Post Facility Regulation Data
 
     const facilityRegDataA = {};
@@ -624,7 +616,7 @@ const handleServiceUpdates = async (event, stateSetters, alert, alert_message) =
 
     const [services, facilityId]  = stateSetters
     
-    const _payload = services.length > 0 ? services.map(({value}) => ({service: value})) : {services:[{service: null}]}
+    const _payload = services.length > 0 ? services.map(({id}) => ({service: id})) : {services:[{service: null}]}
 
     try{
 
@@ -663,6 +655,35 @@ const handleHrUpdates = async () => {
 
 }
 
+// handleFacilityUpgrades
+const handleFacilityUpgrades = async (payload, alert) => {
+
+    // console.log(Object.values(payload).indexOf(null), {payload})
+
+    try{
+
+        if(Object.values(payload).indexOf(null) === -1){
+            alert.success('Facility Upgraded Successfully')
+        } else {
+            alert.danger("Unable to upgrade facility")
+        }
+
+          const resp = await fetch(`/api/common/submit_form_data/?path=facility_upgrade`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method: 'POST',
+            body: JSON.stringify(payload)
+        })
+
+        return resp
+
+    }
+    catch(e){
+        console.error('Unable to upgrade facility: ', e.message)
+    }
+}
 
 export {
     handleBasicDetailsSubmit,
@@ -679,4 +700,5 @@ export {
     handleServiceUpdates,
     handleInfrastructureUpdates,
     handleHrUpdates,
+    handleFacilityUpgrades
 }

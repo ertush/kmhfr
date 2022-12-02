@@ -1,9 +1,9 @@
-import { PermissionContext } from '../providers/permissions'
-import { hasAdminOfficesPermissions } from '../utils/checkPermissions'
+import { PermissionContext } from '../../providers/permissions'
+import { hasAdminOfficesPermissions } from '../../utils/checkPermissions'
 import Link from 'next/link'
 import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect, useContext } from 'react'
-import { checkToken } from '../controllers/auth/auth'
+import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
 import List from '@mui/material/List';
@@ -18,7 +18,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 // components imports
-import MainLayout from '../components/MainLayout'
+import MainLayout from '../../components/MainLayout'
 
 
 const AdminOffices = (props) => {
@@ -27,10 +27,11 @@ const AdminOffices = (props) => {
 
     const userPermissions = useContext(PermissionContext)
 
-    const lnlst = props.data.results.map(({id, county_name, sub_county_name, name, is_national, phone_number, email}) => ({id, county_name, sub_county_name, name, is_national: is_national ==true ? 'Yes' : 'No', phone_number, email}))
+    const lnlst = props?.data?.results?.map(({id, county_name, sub_county_name, name, is_national, phone_number, email}) => ({id, county_name, sub_county_name, name, is_national: is_national ==true ? 'Yes' : 'No', phone_number, email}))
 
     useEffect(() => {
-        if(!hasAdminOfficesPermissions(/^admin_offices.view_.*$/, userPermissions)){
+        console.log({userPermissions})
+        if(hasAdminOfficesPermissions(/^admin_office.view_.*$/, userPermissions)){ // hasAdminOfficesPermissions should be negated with !
             router.push('/unauthorized')
         }
     }, [])
@@ -41,8 +42,7 @@ const AdminOffices = (props) => {
             <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold'
         onClick={() => {
             router.push({
-                pathname: `/edit_adminoffices`,
-                query: {id: params.data.id}
+                pathname: `/admin_offices/edit/${params.data.id}`
             })
         }}
     > View </button>
@@ -80,7 +80,7 @@ const AdminOffices = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - Reports</title>
+                <title>KHMFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -88,7 +88,7 @@ const AdminOffices = (props) => {
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-green-700" href="/">Home</a> {'>'}
+                                <a className="text-green-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Adminoffices</span>
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
@@ -97,7 +97,7 @@ const AdminOffices = (props) => {
                                     {'Admin Offices'}
                                 </h2>
                                 <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                        onClick={() => {router.push('add_adminoffices')}}
+                                        onClick={() => {router.push('admin_offices/add')}}
                                 >
                                     {`Add Admin Office `}
                                     <PlusIcon className='text-white ml-2 h-5 w-5'/>
@@ -116,7 +116,7 @@ const AdminOffices = (props) => {
                             <ListItemButton sx={{backgroundColor: officeTheme ? '#e7ebf0' : 'none' }} name="rt"
                                             onClick={()=>{
                                                 setOfficeTheme(true)
-                                                router.push('/admin_offices')
+                                                router.push('/admin_office')
 
                                             }}
                             >
@@ -264,7 +264,7 @@ AdminOffices.getInitialProps = async (ctx) => {
             const json = await r.json()
             return fetchFilters(token).then(ft => {
                 return {
-                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/admin_offices', current_url: url, api_url: API_URL
+                    data: json, query, filters: { ...ft }, token, path: ctx.asPath, tok: token || '/admin_office', current_url: url, api_url: API_URL
                 }
             })
         } catch (err) {
@@ -274,7 +274,7 @@ AdminOffices.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/admin_offices',
+                path: ctx.asPath || '/admin_office',
                 current_url: ''
             }
         }
@@ -293,7 +293,7 @@ AdminOffices.getInitialProps = async (ctx) => {
             if (ctx?.asPath) {
                 window.location.href = ctx?.asPath
             } else {
-                window.location.href = '/admin_offices'
+                window.location.href = '/admin_office'
             }
         }
         setTimeout(() => {
@@ -302,7 +302,7 @@ AdminOffices.getInitialProps = async (ctx) => {
                 err: err,
                 data: [],
                 query: {},
-                path: ctx.asPath || '/admin_offices',
+                path: ctx.asPath || '/admin_office',
                 current_url: ''
             }
         }, 1000);

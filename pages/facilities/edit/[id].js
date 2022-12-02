@@ -4,6 +4,7 @@ import { checkToken } from '../../../controllers/auth/auth'
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import Select from 'react-select'
 import MainLayout from '../../../components/MainLayout'
+import EditListItem from '../../../components/EditListItem';
 import { Formik, Field, Form } from "formik"; 
 import dynamic from 'next/dynamic'
 import router from 'next/router'
@@ -83,8 +84,7 @@ const EditFacility = (props) => {
     const [pathId, setPathId] = useState('') 
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('') 
-
-    const filters = props["3"]?.filters ?? []
+    const filters = []
 
 
     const facilityTypeOptions = props['1']?.facility_type_details?? []
@@ -542,6 +542,7 @@ const EditFacility = (props) => {
     const [refreshForm6, setRefreshForm6] = useState(false)
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
+    const [serviceUpdates, setServiceUpdates] = useState(null)
     
   
     const handleAddRegulatoryBody = (event) => {
@@ -965,19 +966,19 @@ const EditFacility = (props) => {
         <>
         
             <Head>
-                <title>KMHFL - {official_name}</title>
+                <title>KHMFL - {official_name}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
 
             <MainLayout>
-                <div className="w-full grid grid-cols-7 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
+                <div className="w-full grid md:grid-cols-7 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
                     {/* Heading */}
                     <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
                         {/* Bread crumbs */}
                         <div className="flex flex-row gap-2 text-sm md:text-base">
-                            <Link className="text-green-700" href="/">Home</Link> {'>'}
-                            <Link className="text-green-700" href="/facilities">Facilities</Link> {'>'}
+                            <Link className="text-green-700" href="/">Home</Link> {'/'}
+                            <Link className="text-green-700" href="/facilities">Facilities</Link> {'/'}
                             <span className="text-gray-500">{official_name} ( #<i className="text-black">{code || "NO_CODE"}</i> )</span>
                         </div>
 
@@ -2303,44 +2304,8 @@ const EditFacility = (props) => {
 
                                             ev.preventDefault()
 
-                                            let getServiceId
-                                      
-                                            if(btnDir === 'left'){ 
-                                             getServiceId = await (async () => {
-                                                
-                                                    // console.log({services})
-                                                    // fetch facility_id
-                                                    try{
-                                                       
-                                                       return (await (await fetch(`/api/facility/get_facility/?path=facility_services&id=${id}`)).json()).results
-                                                
-                                                    }catch(e){
-                                                        console.error('Unable to fetch facility_service_id: ', e.message)
-                                                    }
-                                                
-
-
-                                            })()
-
-                                            // getServiceId.then(value => {
-                                            //     console.log({value})
-                                            // }).catch(console.error)
-
-                                            // console.log({getServiceId})
-
-                                           }
-                                            else {
-
-                                            getServiceId = (() => services[services.length - 1])()
-
-                                            }
-
-
-                                            console.log({getServiceId})
-                                          
-  
-                                            
-                                               /* handleServiceUpdates(ev, [selectedServiceRight, id], alert, "Facility Services updated successfully")
+                                            console.log({serviceUpdates})
+                                               handleServiceUpdates(ev, [serviceUpdates, id], alert, "Facility Services updated successfully")
                                                 .then(({statusText}) => {
                                                     defer(() => setIsSavedChanges(true))
                                                     let update_id
@@ -2368,26 +2333,23 @@ const EditFacility = (props) => {
                                                         }
                                                     
                                                     })
-                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message))*/
+                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message))
                                                 }
                                          }>
                                                            
                                                     {/* Transfer list Container */}
                                                     <div className='flex items-center w-full h-auto min-h-[300px]'>                                  
-                                                    {/* {console.log({services})} */}
-                                                    <TrasnferListServices 
-                                                        categories={serviceOptions}
-                                                        setServices={setServices}
-                                                        setRefreshForm4={setRefreshForm4}
-                                                        refreshForm4={refreshForm4}
-														setBtnDirection={setBtnDir}
-                                                        selectedRight={serviceSelected}
-                                                        setSelectedServiceRight={setSelectedServiceRight}
-                                                    />
+ 
+                                                        <EditListItem 
+                                                        initialSelectedItems={serviceSelected}
+                                                        itemsCategory={serviceOptions}
+                                                        setUpdatedItem={setServiceUpdates}
+                                                        item={{name, official_name}}
+                                                        />
 
                                                     </div>
                                                     {/* Service Category Table */}
-                                                    <table className='w-full  h-auto my-4'>
+                                                    {/* <table className='w-full  h-auto my-4'>
                                                         <thead className='w-full'>
                                                             <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
                                                                 <td className='text-lg font-semibold text-indigo-900 '>Name</td>
@@ -2414,7 +2376,7 @@ const EditFacility = (props) => {
                                                             }
                                                         
                                                         </tbody>
-                                                    </table>
+                                                    </table> */}
                                                     
                                                     {/* Save btn */}
 
@@ -2636,7 +2598,7 @@ EditFacility.getInitialProps = async (ctx) => {
         } else {
 
             let token = t.token;
-				let url = '';
+			let url = '';
 				
 				
 

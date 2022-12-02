@@ -1,30 +1,22 @@
 import Head from "next/head";
-
 import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect, useContext, memo } from "react";
 import MainLayout from "../../components/MainLayout";
 import Link from 'next/link'
-import {
-  approveRejectFacility,
-  validateFacility,
-  approveFacility,
-} from "../../controllers/facility/approveRejectFacility";
+
 
 import {
   CheckCircleIcon,
   InformationCircleIcon,
   LockClosedIcon,
   XCircleIcon,
-  PencilAltIcon,
-  ChevronRightIcon,
 } from "@heroicons/react/solid";
 
-import { ChevronDownIcon } from "@heroicons/react/solid";
+
 import dynamic from "next/dynamic";
 import router from "next/router";
 import { UserContext } from "../../providers/user";
 import FacilityDetailsTabs from "../../components/FacilityDetailsTabs";
-import FacilityUpdatesTable from "../../components/FacilityUpdatesTable";
 
 
 import Backdrop from '@mui/material/Backdrop';
@@ -59,9 +51,7 @@ const Facility = (props) => {
 
 
   const [user, setUser] = useState(null);
-  const [isFacDetails, setIsFacDetails] = useState(true);
-  const [isApproveReject, setIsApproveReject] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState('')
+
   const [open, setOpen] = React.useState(true);
   const [isReasonRejected, setIsReasonRejected] = useState(false)
   const handleClose = () => setOpen(false);
@@ -82,8 +72,7 @@ const Facility = (props) => {
     if (userCtx) setUser(userCtx);
     
     return () => {
-      setIsFacDetails(true);
-      setIsApproveReject(false);
+    
     };
   }, []);
 
@@ -92,7 +81,7 @@ const Facility = (props) => {
   return (
     <>
       <Head>
-        <title>KMHFL - {facility?.official_name ?? ""}</title>
+        <title>KHMFL - {facility?.official_name ?? ""}</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="/assets/css/leaflet.css" />
       </Head>
@@ -155,7 +144,7 @@ const Facility = (props) => {
                         
                           if(reason_reopen.includes('complete')){ // Reopeninig criteria will be updated soon
                             setIsReasonRejected(false)
-                            router.push(`edit_facility/${facility?.id}`)
+                            router.push(`edit/${facility?.id}`)
                           } else{
                             setIsReasonRejected(true)
                           }
@@ -193,12 +182,12 @@ const Facility = (props) => {
             <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
               <Link className="text-green-700" href="/">
                 Home
-              </Link>{" "}
-              {">"}
+              </Link>
+              {"/"}
               <Link className="text-green-700" href="/facilities">
                 Facilities
-              </Link>{" "}
-              {">"}
+              </Link>
+              {"/"}
               <span className="text-gray-500">
                 {facility?.official_name ?? ""} ( #
                 <i className="text-black">{facility?.code || "NO_CODE"}</i> )
@@ -247,12 +236,12 @@ const Facility = (props) => {
                   {facility?.is_approved ? (
                     <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
-                      Approved
+                      Validated
                     </span>
                   ) : (
                     <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
-                      Not approved
+                      Not validated
                     </span>
                   )}
                   {facility?.has_edits && (
@@ -292,220 +281,65 @@ const Facility = (props) => {
                     stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
           </div>
           
-          {!isApproveReject ? (
-        
-            <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4">
+          <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4">
 
-              {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                <div className="flex flex-row justify-start items-center space-x-3 p-3">
-                  <button
-                    onClick={() =>
-                      approveRejectFacility(
-                        facility?.rejected,
-                        setIsApproveReject
-                      )
-                    }
-                 
-                    className={
-                      "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
-                       
-                    }
-                  >
-
-                  {/*  Dynamic Approve/reject Button  */}
-     
-                    Approve/Reject Facility
-                  </button>
-
-                  <button
-                    onClick={() => console.log(props.data)}
-                    className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
-                  >
-                    Print
-                  </button>
-                  {
-                      !facility?.closed && 
-                         <button
-                         onClick={() => router.push(`edit_facility/${facility?.id}`)}
-                         className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                       >
-                         Edit
-                       </button>
-                  }
-             
-                  <button
-                    onClick={() => router.push(`regulate/${facility?.id}`)}
-                    className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                  >
-                    Regulate
-                  </button>
-                  <button
-                    onClick={() => router.push("/facilities/upgrade")}
-                    className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                  >
-                    Upgrade
-                  </button>
-                  <button
-                    onClick={() => window.alert("Edit")}
-                    className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-
-              {/* Facility Details Tab Section */}
-                <FacilityDetailsTabs facility={facility}/>
-              </div>
-            ) : (
-               // Approval Rejection Section
-              <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4 mx-3">
-              <h3 className="text-2xl tracking-tight font-semibold leading-5">
-                Approve/Reject Facility
-              </h3>
-
-
-              {/* Facility details */}
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Functional Status
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.operation_status_name || " - "}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">Keph Level</label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.keph_level_name || " - "}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">Admission</label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.admission_status_name || " - "}
-                  </p>
-                </div>
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Facility Type
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.facility_type_name || " - "}
-                  </p>
-                </div>
-
-
-                <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                  <label className="col-span-1 text-gray-600">County</label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {facility?.county || " - "}
-                  </p>
-                </div>
-
-
-                {facility?.date_established && (
-                  <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
-                    <label className="col-span-1 text-gray-600">
-                      Date established
-                    </label>
-                    <p className="col-span-2 text-black font-medium text-base">
-                      {new Date(facility?.date_established).toLocaleDateString(
-                        "en-GB",
-                        { year: "numeric", month: "long", day: "numeric" }
-                      ) || " - "}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-
-              {/* Facility details hidden section */}
-               
-               <div className="col-start-1 col-span-1 ">
+            {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
+            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+              <div className="flex flex-row justify-start items-center space-x-3 p-3">
                 <button
-                  className="bg-green-500 font-semibold w-auto text-white flex text-left items-center p-2 h-auto rounded-md"
-                  onClick={() => {
-                    if (isFacDetails) {
-                      setIsFacDetails(false);
-                    } else {
-                      setIsFacDetails(true);
-                    }
-                  }}
-                >
-                  View More Facility Details
-                  {isFacDetails ? (
-                    <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
-                  ) : (
-                    <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" />
-                  )}
-                </button>
-                </div>
-            
-
-              {!isFacDetails && 
-              
-                <div className="border border-gray-100 rounded pb-2">
-                  <FacilityDetailsTabs facility={facility}/>
-                </div>
-               }
-
-              {/* Comments and Updates Section  */}
-
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
-                <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-                  {facility?.has_edits ? 'Updated Facility Details' : 'Approval / Rejection comment'}
-                </h3>
-                {facility?.is_approved}
-                <form
-                  className="space-y-3"
-                  onSubmit = {facility?.is_approved? (e) => approveFacility(e,facility?.id, rejectionReason) : (e) => validateFacility(e, facility?.id,reject, rejectionReason)}
-                
-                >
-                  {
-                  !facility?.has_edits ?
-                  <textarea
-                    cols="85"
-                    rows="auto"
-                    className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
-                    placeholder="Enter a comment"
-                    onChange={(e) => setRejectionReason(e.target.value)}
-                  ></textarea>
-                  :
-                  // Facility Updates Table
-                    <FacilityUpdatesTable facilityUpdatedJson={facility_updated_json} originalData={props["0"]}/>
-                  
+                  onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
+                  className={
+                    "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+                      
                   }
+                >
 
-                  <div className="flex justify-start items-center gap-4 mt-4">
-                  <button
-                    type="submit"
-                    className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
-                    onClick={(e) => reject = false}
-                    
-                  >
-                    { facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approve Facility" : "Validate Facility"}
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
-                    onClick={(e) => reject = true}
-                    
-                  >
-                    { facility?.has_edits ? 'Decline Updates' : 'Reject Facility'}
-                  </button>
-                  </div>
-                </form>
-                </div>
+                {/*  Dynamic Approve/reject Button  */}
+    
+                  Approve/Reject Facility
+                </button>
 
-              </div>
-              )}
+                <button
+                  onClick={() => console.log(props.data)}
+                  className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
+                >
+                  Print
+                </button>
+                {
+                    !facility?.closed && 
+                        <button
+                        onClick={() => router.push(`edit/${facility?.id}`)}
+                        className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
+                      >
+                        Edit
+                      </button>
+                }
             
-              
+                <button
+                  onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
+                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
+                >
+                  Regulate
+                </button>
+                <button
+                  onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
+                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
+                >
+                  Upgrade
+                </button>
+                <button
+                  onClick={() => window.alert("Edit")}
+                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+            {/* Facility Details Tab Section */}
+              <FacilityDetailsTabs facility={facility}/>
+          </div>
+
           {/* end facility approval */}
               
           <aside className="flex flex-col col-span-1 md:col-span-2 gap-4 md:mt-7">

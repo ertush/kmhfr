@@ -1,7 +1,7 @@
 import React, { useState, Suspense, useEffect, useRef } from 'react';
 import router from 'next/router';
-import MainLayout from '../components/MainLayout';
-import { checkToken } from '../controllers/auth/auth';
+import MainLayout from '../../components/MainLayout';
+import { checkToken } from '../../controllers/auth/auth';
 import {
     ChevronDoubleRightIcon,
     ChevronDoubleLeftIcon,
@@ -12,7 +12,7 @@ import Link from 'next/link'
 
 const FormData = require('form-data');
 
-function AddAdminofffice(props) {
+function AddAdminOffice(props) {
 
     // Form drop down options
     const countyOptions =  props['0']?.counties;
@@ -83,8 +83,8 @@ function AddAdminofffice(props) {
                 <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                            <Link href='/' className="text-green-500">Home</Link>{'>'}
-                            <Link href='/admin_offices' className="text-green-500">Adminoffices</Link> {'>'}
+                            <Link href='/' className="text-green-500">Home</Link>{'/'}
+                            <Link href='/admin_offices' className="text-green-500">Admin Offices</Link> {'/'}
                             <span className="text-gray-500">Add Admin Office</span>
                         </div>
                     </div>
@@ -134,16 +134,19 @@ function AddAdminofffice(props) {
                                 </div>
 
                                 {/* national */}
-                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                    <label
-                                        htmlFor='is_national'
-                                        className='text-gray-600 capitalize text-sm'>
-                                        <input
+                                <div className='w-full flex flex-row items-center justify-start gap-1 mb-3'>
+                                   
+                                    <input
                                             type ="checkbox"
                                             name='is_national'
                                             id='is_national'
                                             onClick={onCheck}
                                         />
+
+                                    <label
+                                        htmlFor='is_national'
+                                        className='text-gray-600 capitalize text-sm'>
+                                     
                                         Is National Office
                                     </label>
 
@@ -279,7 +282,7 @@ function AddAdminofffice(props) {
     )
 }
 
-AddAdminofffice.getInitialProps = async (ctx) => {
+AddAdminOffice.getInitialProps = async (ctx) => {
 
     const allOptions = []
 
@@ -367,4 +370,4 @@ AddAdminofffice.getInitialProps = async (ctx) => {
         });
 };
 
-export default AddAdminofffice;
+export default AddAdminOffice;

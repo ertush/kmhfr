@@ -108,7 +108,7 @@ const Home = (props) => {
     return (
         <>
             <Head>
-                <title>KMHFL - Facilities</title>
+                <title>KHMFL - Facilities</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
@@ -119,7 +119,7 @@ const Home = (props) => {
                             {/* Bread Crumbs */}
 
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <Link className="text-green-800" href="/">Home</Link> {'>'}
+                                <Link className="text-green-800" href="/">Home</Link> {'/'}
                                 <span className="text-gray-500">Facilities</span>
                             </div>
 
@@ -312,7 +312,7 @@ const Home = (props) => {
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Facility Button */}
                                    <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
-                                        <button  onClick={() => {router.push('/facilities/add_facility')}} className='flex items-center justify-center'>
+                                        <button  onClick={() => {router.push('/facilities/add')}} className='flex items-center justify-center'>
 
                                             <span className='text-base uppercase font-semibold'>Add Facility</span>
                                             <PlusIcon className="w-4 h-4 ml-2" />
@@ -421,7 +421,7 @@ const Home = (props) => {
                                                     </div>
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 flex flex-wrap items-center justify-evenly gap-x-2 gap-y-1 text-lg">
                                                         {(facility.operational || facility.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
-                                                        {!facility.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility.approved ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility.rejected ? "Rejected" : ""}</span>}
+                                                        {!facility.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility.approved_national_level ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility.rejected ? "Rejected" : ""}</span>}
                                                         {facility.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
                                                     </div>
                                                 </div>

@@ -1,12 +1,13 @@
 import Head from 'next/head'
-import MainLayout from '../components/MainLayout'
-import { checkToken } from '../controllers/auth/auth'
+import MainLayout from '../../components/MainLayout'
+import { checkToken } from '../../controllers/auth/auth'
 import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
-import BarChart from '../components/BarChart'
+import BarChart from '../../components/BarChart'
 import Select from 'react-select'
-import Download from '../components/Download'
-import { UserContext } from '../providers/user'
+import Download from '../../components/Download'
+import { UserContext } from '../../providers/user'
+import Link from 'next/link'
 
 const Dash = (props) => {
     const router = useRouter()
@@ -132,7 +133,7 @@ const Dash = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - Overview</title>
+                <title>KHMFL - Overview</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
@@ -141,7 +142,7 @@ const Dash = (props) => {
                 <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4">
                     <div className="col-span-6 flex flex-col gap-3 md:gap-5 px-2">
                         <div className="flex flex-row gap-2 text-sm md:text-base py-3">
-                            <a className="text-green-700" href="/">Home</a> {'>'}
+                            <Link className="text-green-700" href="/">Home</Link> {'/'}
                             <span className="text-gray-500">Dashboard</span>
                         </div>
                         <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">
@@ -633,14 +634,3 @@ export default Dash
 
 
 
-/*
-
-https://api.kmhfltest.health.go.ke/api/facilities/dashboard/
-
-https://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_month=true
-
-https://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_week=true
-
-https://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_three_months=true
-
-*/

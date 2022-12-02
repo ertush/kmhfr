@@ -3,20 +3,19 @@ import MainLayout from '../../../components/MainLayout'
 import Head from 'next/head'
 import router from 'next/router'
 import Select from 'react-select';
-import{ChevronDoubleRightIcon,ChevronDoubleLeftIcon,TrashIcon} from '@heroicons/react/solid';
 import {checkToken} from "../../../controllers/auth/auth";
-import FacilityDetailsTabs from "../../../components/FacilityDetailsTabs";
-import { ChevronDownIcon } from "@heroicons/react/solid";
+import { ChevronDownIcon, ChevronDoubleLeftIcon } from "@heroicons/react/solid";
+import Link from 'next/link'
 import {
     CheckCircleIcon,
-    InformationCircleIcon,
     LockClosedIcon,
     XCircleIcon,
-    PencilAltIcon,
     ChevronRightIcon,
 } from "@heroicons/react/solid";
 import * as Tabs from "@radix-ui/react-tabs";
 import { UserContext } from "../../../providers/user";
+import FacilitySideMenu from '../../../components/FacilitySideMenu'
+
 
 const Regulate = props => {
     const facility = props["0"]?.data;
@@ -25,6 +24,14 @@ const Regulate = props => {
     const [user, setUser] = useState(null);
     const formRef = useRef(null);
     const regulationRef = useRef(null)
+
+
+    const [khisSynched, setKhisSynched] = useState(false);
+    const [facilityFeedBack, setFacilityFeedBack] = useState([])
+    const [pathId, setPathId] = useState('') 
+    const [allFctsSelected, setAllFctsSelected] = useState(false);
+    const [title, setTitle] = useState('') 
+    const filters = []
 
     const userCtx = useContext(UserContext)
     let reject = ''
@@ -35,9 +42,9 @@ const Regulate = props => {
 
         return () => {
             setIsFacDetails(true);
-            // setIsApproveReject(false);
         };
     }, []);
+
     const handleSubmit = async (event,facility_id) => {
         // Stop the form from submitting and refreshing the page.
         event.preventDefault()
@@ -81,31 +88,32 @@ const Regulate = props => {
     return (
         <>
             <Head>
-                <title>KMHFL - Regulate Facility</title>
+                <title>KHMFL - Regulate Facility</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
-                    <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
+                <div className="w-full grid md:grid-cols-7 gap-4 px-1 md:px-4 py-2 my-4">
+                    {/* Header */}
+                    <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
                         {/* Breadcramps */}
-                        <div className="flex flex-row gap-2 text-sm md:text-base">
-                            <a className="text-green-700" href="/">
+                        <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                            <Link className="text-green-700" href="/">
                                 Home
-                            </a>{" "}
-                            {">"}
-                            <a className="text-green-700" href="/facilities">
+                            </Link>
+                            {"/"}
+                            <Link className="text-green-700" href="/facilities">
                                 Facilities
-                            </a>{" "}
-                            {">"}
+                            </Link>
+                            {"/"}
                             <span className="text-gray-500">
-                {facility?.official_name ?? ""} ( #
-                <i className="text-black">{facility?.code || "NO_CODE"}</i> )
-              </span>
+                                {facility?.official_name ?? ""} ( #
+                                <i className="text-black">{facility?.code || "NO_CODE"}</i> )
+                            </span>
                         </div>
                         {/* Header Bunner  */}
                         <div
                             className={
-                                "col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+                                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
                                 (facility?.regulation_status? "border-green-600" : "border-red-600")
                             }
                         >
@@ -114,57 +122,66 @@ const Regulate = props => {
                                     {facility?.official_name}
                                 </h1>
                                 <div className="flex gap-2 items-center w-full justify-between">
-                  <span
-                      className={
-                          "font-bold text-2xl " +
-                          (facility?.code ? "text-green-900" : "text-gray-400")
-                      }
-                  >
-                    #{facility?.code || "NO_CODE"}
+                                    <span
+                                        className={
+                                            "font-bold text-2xl " +
+                                            (facility?.code ? "text-green-900" : "text-gray-400")
+                                        }
+                                    >
+                                        #{facility?.code || "NO_CODE"}
 
-                  </span>
+                             </span>
 
                                 </div>
                             </div>
+
                             <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
-                                <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
+                                <div className="grid grid-cols-2 gap-2 w-full items-center justify-start md:justify-center">
                                     <label className="col-span-1 text-gray-600">
                                         Facility Type:
                                     </label>
-                                    <p className="col-span-2 text-black font-medium text-base">
+                                    <p className="col-start-2 text-black font-medium text-base">
                                         {facility?.facility_type_name || " - "}
                                     </p>
                                     <label className="col-span-1 text-gray-600">
                                         Regulation Status:
                                     </label>
-                                    <p className="col-span-2 text-black font-medium text-base">
+                                    <p className="col-start-2  text-black font-medium text-base">
                                         {facility?.regulatory_status_name || " - "}
                                     </p>
                                     <label className="col-span-1 text-gray-600">
                                         Operation Status:
                                     </label>
-                                    <p className="col-span-2 text-black font-medium text-base">
+                                    <p className="col-start-2  text-black font-medium text-base">
                                         {facility?.operation_status_name || " - "}
                                     </p>
 
                                     {facility?.closed && (
                                         <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <LockClosedIcon className="h-4 w-4" />
-                      Closed
-                    </span>
+                                            <LockClosedIcon className="h-4 w-4" />
+                                            Closed
+                                        </span>
                                     )}
                                 </div>
                             </div>
-                            <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
+                            {/* <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div> */}
                         </div>
                     </div>
 
-                    <div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-                        <div className=' w-full flex flex-col items-start p-3 rounded border border-gray-300/70 bg-gray-50'
-                             style={{ minHeight: '250px' }}>
+                    {/* Facility Side Menu Filters */}
+                    <div className="md:col-span-1  md:mt-8">
+                                <FacilitySideMenu 
+                                    filters={filters}
+                                    states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                                    stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
+                    </div>
+
+                    {/* Facility Regulate Form */}
+                    <div className='md:col-span-6 flex flex-col justify-start items-start px-1 md:px-4 w-full md:mt-7'>
+                        <div className='w-full flex flex-col items-start h-auto p-4 rounded border border-gray-300/70 bg-gray-50'>
                             {/* Facility details hidden section */}
 
-                            <div className="col-start-1 col-span-1 ">
+                            <div className="col-start-1 col-span-1 mb-4">
                                 <button
                                     className="bg-green-500 font-semibold w-auto text-white flex text-left items-center p-2 h-auto rounded-md"
                                     onClick={() => {
@@ -184,7 +201,7 @@ const Regulate = props => {
                                 </button>
                             </div>
                             {!isFacDetails &&
-                                <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
+                                <div className="col-span-5 md:col-span-3 flex flex-col gap-3 ">
                                     <Tabs.Root
                                         orientation="horizontal"
                                         className="w-full flex flex-col tab-root"
@@ -746,9 +763,9 @@ const Regulate = props => {
 
                             }
 
-                            <>
+                            
                                 <form
-                                    className='flex flex-col w-full items-start justify-start gap-3'
+                                    className='flex flex-col w-full items-start justify-start gap-3 mt-4'
                                     onSubmit = { (event) => handleSubmit(event, facility?.id)}
                                     ref={formRef}
                                 >
@@ -826,7 +843,7 @@ const Regulate = props => {
                                         </button>
                                     </div>
                                 </form>
-                            </>
+                            
 
                         </div>
                     </div>
