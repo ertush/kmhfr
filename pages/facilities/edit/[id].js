@@ -19,7 +19,9 @@ import {
     handleRegulationUpdates,
     handleServiceUpdates,
     handleInfrastructureUpdates,
-    handleHrUpdates
+    handleHrUpdates,
+    handleServiceDelete,
+    handleInfrastructureDelete
 } from '../../../controllers/facility/facilityHandlers';
 
 
@@ -36,6 +38,7 @@ import FacilitySideMenu from '../../../components/FacilitySideMenu';
 import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
 import { set } from 'nprogress';
+import EditListWithCount from '../../../components/EditListWithCount';
 
 
 
@@ -427,21 +430,24 @@ const EditFacility = (props) => {
 
   
     const serviceSelected = ((_services) => {
-        return _services.map(({category_name, service_name, service_id}) => ({
+        return _services.map(({category_name, service_name, service_id, id}) => ({
                     name: category_name,
                     subCategories: [
                         service_name
                     ],
                     value:[
                         service_id
-                    ]
+                    ],
+                    facility_service_id:id
                     
                 })
         )
     })(facility_services || [])  
 
+  
+
     const infrastructureSelected = ((_infrastructure) => {
-        return _infrastructure.map(({infrastructure_name, infrastructure}) => ({
+        return _infrastructure.map(({infrastructure_name, infrastructure, id, count}) => ({
 
                     name: props['16']?.infrastructure.length > 0 ? props['16']?.infrastructure.filter(({id}) => id === infrastructure)[0].category_name : '',
                   
@@ -450,11 +456,14 @@ const EditFacility = (props) => {
                     ],
                     value:[
                         infrastructure
-                    ]
+                    ],
+                    _id:id,
+                    count
                     
                 })
         )   
-    })(facility_infrastructure || [])  
+    })(facility_infrastructure || []) 
+     
 
     const hrSelected = ((_hr) => {
       
@@ -526,23 +535,24 @@ const EditFacility = (props) => {
 
 
     // Different form states
-    const [services, setServices] = useState([])
+    // const [services, setServices] = useState([])
     const [infrastructure, setInfrastructure] = useState([])
 	const [infrastructureCount, setInfrastructureCount] = useState([])    
 	const [hr, setHr] = useState([])
 	const [hrCount, setHrCount] = useState([])
     const [wardName, setWardName] = useState(ward_name)
-    const [contact, setContact] = useState('')
+    // const [contact, setContact] = useState('')
     const [refreshForm4, setRefreshForm4] = useState()
-    const [selectedServiceRight, setSelectedServiceRight] = useState()
+    // const [selectedServiceRight, setSelectedServiceRight] = useState()
     const [selectedInfraRight, setSelectedInfraRight] = useState()
     const [selectedHrRight, setSelectedHrRight] = useState()
     const [operationStatus, setOperationStatus] = useState('')
-	const [refreshForm5, setRefreshForm5] = useState(false)
+	// const [refreshForm5, setRefreshForm5] = useState(false)
     const [refreshForm6, setRefreshForm6] = useState(false)
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
     const [serviceUpdates, setServiceUpdates] = useState(null)
+    const [infrastructureUpdates, setInfrastructureUpdates] = useState(null)
     
   
     const handleAddRegulatoryBody = (event) => {
@@ -2298,14 +2308,15 @@ const EditFacility = (props) => {
                                 </Tabs.Panel>
                                 {/* Services */}
                                 <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
-                                    {/* {console.log({selectedServiceRight, services})} */}
+                                    
                                     <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
                                        async ev => {
 
-                                            ev.preventDefault()
+                                            ev.preventDefault()     
 
                                             console.log({serviceUpdates})
-                                               handleServiceUpdates(ev, [serviceUpdates, id], alert, "Facility Services updated successfully")
+
+                                             handleServiceUpdates(ev, [serviceUpdates, id], alert, "Facility Services updated successfully")
                                                 .then(({statusText}) => {
                                                     defer(() => setIsSavedChanges(true))
                                                     let update_id
@@ -2333,7 +2344,7 @@ const EditFacility = (props) => {
                                                         }
                                                     
                                                     })
-                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message))
+                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message)) 
                                                 }
                                          }>
                                                            
@@ -2343,41 +2354,14 @@ const EditFacility = (props) => {
                                                         <EditListItem 
                                                         initialSelectedItems={serviceSelected}
                                                         itemsCategory={serviceOptions}
+                                                        itemsCategoryName={'Services'}
                                                         setUpdatedItem={setServiceUpdates}
                                                         item={{name, official_name}}
+                                                        removeItemHandler={handleServiceDelete}
                                                         />
 
                                                     </div>
-                                                    {/* Service Category Table */}
-                                                    {/* <table className='w-full  h-auto my-4'>
-                                                        <thead className='w-full'>
-                                                            <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
-                                                                <td className='text-lg font-semibold text-indigo-900 '>Name</td>
-                                                                <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody ref={optionRefBody}>
-                                                            {
-                                                                selectedServiceRight && selectedServiceRight.length > 0 ? 
-
-                                                                selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
-                                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-                                                                        <td ref={nameOptionRef}>{service}</td>
-                                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-                                                                    </tr>
-                                                                ))
-                                                                :
-                                                                services.map(({subctg}) => subctg).map((service, i) => (
-                                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-                                                                        <td ref={nameOptionRef}>{service}</td>
-                                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-                                                                    </tr>
-                                                                ))
-                                                            }
-                                                        
-                                                        </tbody>
-                                                    </table> */}
-                                                    
+                                                      
                                                     {/* Save btn */}
 
                                                     <div className=" w-full flex justify-end h-auto mr-3">
@@ -2389,14 +2373,18 @@ const EditFacility = (props) => {
                                 </Tabs.Panel>
                                 {/* Infrastructure */}
                                 <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
-                                    <form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureUpdates(ev, [infrastructure, infrastructureCount, setFormId, facilityId], 'PATCH')}  className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                                    <form name="facility_infrastructure_form" 
+                                    onSubmit={ev => {
+                                        handleInfrastructureUpdates(ev, [infrastructureUpdates, id], alert, "Facility Infrastructure updated successfully")
+                                    }} 
+                                    className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
                                                             
                                         {/* Transfer list Container */}
                                         <div className='flex items-center w-full h-auto min-h-[300px]'>
                                         
                                         {/* Transfer List*/}
 
-                                        <TransferListInfrastructure 
+                                        {/* <TransferListInfrastructure 
                                             categories={
                                                 infrastructureOption
                                             } 
@@ -2407,11 +2395,22 @@ const EditFacility = (props) => {
                                             selectedInfraRight={infrastructureSelected}
                                             setSelectedInfraRight={setSelectedInfraRight}
                                             selectTitle='Infrastructure'
+                                            /> */}
+
+                                            <EditListWithCount 
+                                              initialSelectedItems={infrastructureSelected}
+                                              itemsCategory={infrastructureOption}
+                                              itemsCategoryName={'infrastructure'}
+                                              setUpdatedItem={setInfrastructureUpdates}
+                                              item={{name, official_name}}
+                                              removeItemHandler={handleInfrastructureDelete}
                                             />
+
+                                            {console.log({infrastructureUpdates})}
 
                                         </div>
                                         {/* Service Category Table */}
-                                        <table className='w-full  h-auto my-4'>
+                                        {/* <table className='w-full  h-auto my-4'>
                                             <thead className='w-full'>
                                                 <tr className='grid grid-cols-4 place-content-end border-b-4 border-gray-300'>
                                                     <td className='text-lg font-semibold text-indigo-900'>Name</td>
@@ -2455,7 +2454,7 @@ const EditFacility = (props) => {
                                             
                                             
                                             </tbody>
-                                        </table>
+                                        </table> */}
                                         
                                         {/* Save btn */}
 

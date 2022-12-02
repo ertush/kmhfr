@@ -644,8 +644,98 @@ const handleServiceUpdates = async (event, stateSetters, alert, alert_message) =
 
 }
 
+// handleServiceDelete
+
+const handleServiceDelete =  async (event, facility_service_id, alert) => {
+
+    try{
+
+        if(facility_service_id){
+            alert.success('Facility Service Deleted Successfully')
+        } else {
+            alert.danger("Unable to delete facility service")
+        }
+
+          const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_service&id=${facility_service_id}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+  
+        })
+
+        return resp
+
+    }
+    catch(e){
+        console.error('Unable to delete facility service', e.message)
+    }
+
+}
+
 // handleInfrastructureUpdates
-const handleInfrastructureUpdates = async () => {
+const handleInfrastructureUpdates = async (event, stateSetters, alert, alert_message) => {
+    event.preventDefault()
+
+    console.log({stateSetters})
+
+    // const [services, facilityId] = stateSetters
+    
+    // const _payload = services.length > 0 ? services.map(({id}) => ({service: id})) : {services:[{service: null}]}
+
+    // try{
+
+    //     if(_payload){
+    //         alert.success(alert_message)
+    //     } else {
+    //         alert.danger("Unable to update facility infrastructure")
+    //     }
+
+    //       const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+    //         headers:{
+    //             'Accept': 'application/json, text/plain, */*',
+    //             'Content-Type': 'application/json;charset=utf-8'
+    //         },
+    //         method: 'POST',
+    //         body: JSON.stringify({services:_payload})
+    //     })
+
+    //     return resp
+
+    // }
+    // catch(e){
+    //     console.error('Unable to patch facility Infrastructure details', e.message)
+    // }
+}
+
+// handleInfrastructureDelete
+
+const handleInfrastructureDelete = async (event, facility_infrastructure_id, alert) => {
+
+    console.log({facility_infrastructure_id})
+
+    // try{
+
+    //     if(facility_service_id){
+    //         alert.success('Facility Service Deleted Successfully')
+    //     } else {
+    //         alert.danger("Unable to delete facility service")
+    //     }
+
+    //       const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_infrastructure&id=${facility_infrastructure_id}`, {
+    //         headers:{
+    //             'Accept': 'application/json, text/plain, */*',
+    //             'Content-Type': 'application/json;charset=utf-8'
+    //         }
+  
+    //     })
+
+    //     return resp
+
+    // }
+    // catch(e){
+    //     console.error('Unable to delete facility service', e.message)
+    // }
 
 }
 
@@ -700,5 +790,7 @@ export {
     handleServiceUpdates,
     handleInfrastructureUpdates,
     handleHrUpdates,
-    handleFacilityUpgrades
+    handleFacilityUpgrades,
+    handleServiceDelete,
+    handleInfrastructureDelete
 }
