@@ -7,7 +7,7 @@ import { useAlert } from 'react-alert'
 
 
 
-function EditListItem({ initialSelectedItems, itemsCategory, setUpdatedItem, item, removeItemHandler}) {
+function EditListItem({ initialSelectedItems, itemsCategory, itemsCategoryName, setUpdatedItem, item, removeItemHandler}) {
 
   const alert = useAlert()
 
@@ -75,46 +75,51 @@ function EditListItem({ initialSelectedItems, itemsCategory, setUpdatedItem, ite
       className="flex flex-col w-full items-start justify-start gap-3"
       onSubmit={ev => ev.preventDefault()}
     >
-      {/* Transfer list Container */}
-      <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-        Available Services
-      </span>
-      <div className="flex items-start gap-2 md:w-5/6 w-full h-auto">
-        <Select
-          options={itemOptions}
-          formatGroupLabel={formatGroupLabel}
-          onChange={(e) => {
-            setCurrentItem({ id: e?.value, name: e?.label })
-          }
-          }
-          name="item_drop_down"
-          className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
-        />
+      {/* Item List Dropdown */}
+      <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+        <label
+          htmlFor='item_drop_down'
+          className='capitalize text-md  leading-tight tracking-tight'>
+          Available {itemsCategoryName}
+        </label>
+        <div className="flex items-start gap-2 md:w-5/6 w-full h-auto">
+          <Select
+            options={itemOptions}
+            formatGroupLabel={formatGroupLabel}
+            onChange={(e) => {
+              setCurrentItem({ id: e?.value, name: e?.label })
+            }
+            }
+            name="item_drop_down"
+            className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+          />
 
-        <button className="bg-green-700 rounded p-2 flex items-center justify-evenly gap-2"
-          onClick={e => {
-            e.preventDefault()
-            if (currentItem)
-              setSelectedItems([
-                currentItem,
-                ...selectedItems,
-              ])
-          }}>
-          <p className='text-white font-semibold'>Add</p>
-          <PlusIcon className='w-4 h-4 text-white' />
-        </button>
+          {/* Add Item Button */}
+          <button name="add_item_btn" className="bg-green-700 rounded p-2 flex items-center justify-evenly gap-2"
+            onClick={e => {
+              e.preventDefault()
+              if (currentItem)
+                setSelectedItems([
+                  currentItem,
+                  ...selectedItems,
+                ])
+            }}>
+            <p className='text-white font-semibold'>Add</p>
+            <PlusIcon className='w-4 h-4 text-white' />
+          </button>
+        </div>
       </div>
-      <br />
+      
 
-
+      {/* Item Selected Table */}
       <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-        Assigned Services
+        Assigned {itemsCategoryName}
       </span>{" "}
       <Table className="md:px-4">
         <TableBody>
           <TableRow>
             <TableCell>
-              <p className='text-base font-semibold'>Service</p>
+              <p className='text-base font-semibold'>{itemsCategoryName}</p>
             </TableCell>
             <TableCell className='text-xl font-semibold'>
               <p className='text-base font-semibold'>Action</p>
@@ -132,6 +137,7 @@ function EditListItem({ initialSelectedItems, itemsCategory, setUpdatedItem, ite
                   <TableCell>
                     <button
                       type="button"
+                      name="remove_item_btn"
                       onClick={async (e) => {
                         e.preventDefault()
                         let items = selectedItems

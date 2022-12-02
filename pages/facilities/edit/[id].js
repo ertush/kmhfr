@@ -20,7 +20,8 @@ import {
     handleServiceUpdates,
     handleInfrastructureUpdates,
     handleHrUpdates,
-    handleServiceDelete
+    handleServiceDelete,
+    handleInfrastructureDelete
 } from '../../../controllers/facility/facilityHandlers';
 
 
@@ -37,6 +38,7 @@ import FacilitySideMenu from '../../../components/FacilitySideMenu';
 import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
 import { set } from 'nprogress';
+import EditListWithCount from '../../../components/EditListWithCount';
 
 
 
@@ -445,7 +447,7 @@ const EditFacility = (props) => {
   
 
     const infrastructureSelected = ((_infrastructure) => {
-        return _infrastructure.map(({infrastructure_name, infrastructure}) => ({
+        return _infrastructure.map(({infrastructure_name, infrastructure, id, count}) => ({
 
                     name: props['16']?.infrastructure.length > 0 ? props['16']?.infrastructure.filter(({id}) => id === infrastructure)[0].category_name : '',
                   
@@ -454,11 +456,14 @@ const EditFacility = (props) => {
                     ],
                     value:[
                         infrastructure
-                    ]
+                    ],
+                    _id:id,
+                    count
                     
                 })
         )   
-    })(facility_infrastructure || [])  
+    })(facility_infrastructure || []) 
+     
 
     const hrSelected = ((_hr) => {
       
@@ -542,11 +547,12 @@ const EditFacility = (props) => {
     const [selectedInfraRight, setSelectedInfraRight] = useState()
     const [selectedHrRight, setSelectedHrRight] = useState()
     const [operationStatus, setOperationStatus] = useState('')
-	const [refreshForm5, setRefreshForm5] = useState(false)
+	// const [refreshForm5, setRefreshForm5] = useState(false)
     const [refreshForm6, setRefreshForm6] = useState(false)
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
     const [serviceUpdates, setServiceUpdates] = useState(null)
+    const [infrastructureUpdates, setInfrastructureUpdates] = useState(null)
     
   
     const handleAddRegulatoryBody = (event) => {
@@ -2348,6 +2354,7 @@ const EditFacility = (props) => {
                                                         <EditListItem 
                                                         initialSelectedItems={serviceSelected}
                                                         itemsCategory={serviceOptions}
+                                                        itemsCategoryName={'Services'}
                                                         setUpdatedItem={setServiceUpdates}
                                                         item={{name, official_name}}
                                                         removeItemHandler={handleServiceDelete}
@@ -2366,14 +2373,18 @@ const EditFacility = (props) => {
                                 </Tabs.Panel>
                                 {/* Infrastructure */}
                                 <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
-                                    <form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureUpdates(ev, [infrastructure, infrastructureCount, setFormId, facilityId], 'PATCH')}  className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                                    <form name="facility_infrastructure_form" 
+                                    onSubmit={ev => {
+                                        handleInfrastructureUpdates(ev, [infrastructureUpdates, id], alert, "Facility Infrastructure updated successfully")
+                                    }} 
+                                    className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
                                                             
                                         {/* Transfer list Container */}
                                         <div className='flex items-center w-full h-auto min-h-[300px]'>
                                         
                                         {/* Transfer List*/}
 
-                                        <TransferListInfrastructure 
+                                        {/* <TransferListInfrastructure 
                                             categories={
                                                 infrastructureOption
                                             } 
@@ -2384,11 +2395,22 @@ const EditFacility = (props) => {
                                             selectedInfraRight={infrastructureSelected}
                                             setSelectedInfraRight={setSelectedInfraRight}
                                             selectTitle='Infrastructure'
+                                            /> */}
+
+                                            <EditListWithCount 
+                                              initialSelectedItems={infrastructureSelected}
+                                              itemsCategory={infrastructureOption}
+                                              itemsCategoryName={'infrastructure'}
+                                              setUpdatedItem={setInfrastructureUpdates}
+                                              item={{name, official_name}}
+                                              removeItemHandler={handleInfrastructureDelete}
                                             />
+
+                                            {console.log({infrastructureUpdates})}
 
                                         </div>
                                         {/* Service Category Table */}
-                                        <table className='w-full  h-auto my-4'>
+                                        {/* <table className='w-full  h-auto my-4'>
                                             <thead className='w-full'>
                                                 <tr className='grid grid-cols-4 place-content-end border-b-4 border-gray-300'>
                                                     <td className='text-lg font-semibold text-indigo-900'>Name</td>
@@ -2432,7 +2454,7 @@ const EditFacility = (props) => {
                                             
                                             
                                             </tbody>
-                                        </table>
+                                        </table> */}
                                         
                                         {/* Save btn */}
 
