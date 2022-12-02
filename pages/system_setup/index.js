@@ -692,7 +692,7 @@ const system_setup = (props) => {
                      data = await Promise.all(resp.map(r=>r.json()))
                     setEditData(data)
                     setIsLoading(false)
-                    break;
+                break;
                 case 'constituency':
                     url = [`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`, 
                     `/api/system_setup/data/?resource=wards&resourceCategory=${resourceCategory}&constituency=${editID}`,
@@ -701,16 +701,17 @@ const system_setup = (props) => {
                      data = await Promise.all(resp.map(r=>r.json()))
                     setEditData(data)
                     setIsLoading(false)
-                       break;
+                break;
             
                 default:
-                    const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`);
+                    const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`)
                     const _data = await response.json()
+                    setEditData(_data)
+                    console.log(_data?.county?.id);
                     addBtnLabel === 'regulatory body' ? setContactList([..._data.contacts]): addBtnLabel === 'option group' ? setOptionGroup([..._data.options]) :null
                     addBtnLabel === 'ward' ? fetchSbctyConstituency(_data.county.id) : null
-                    setEditData(_data)
         
-                    break;
+                break;
             }
             
         }else{
@@ -823,7 +824,7 @@ console.log(editData, editMode, editID);
                                                 <ListItemText primary="Constituencies"/>
                                             </ListItemButton>
                                             {/* Wards */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'county_name', 'constituency_name', 'sub_county_name, county']); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward'); setEditMode(false); setEditID(null) }}>
+                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'county_name', 'constituency_name', 'sub_county_name', 'county']); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward'); setEditMode(false); setEditID(null) }}>
                                                 <ListItemText primary="Wards" />
                                             </ListItemButton>
                                             {/* Towns */}
@@ -1432,6 +1433,7 @@ console.log(editData, editMode, editID);
                                                                                 placeholder='Ward Name'
                                                                                 id={`add_${addBtnLabel}_field`}
                                                                                 name='name'
+                                                                                defaultValue={editData?.name}
                                                                                 className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                             />
                                                                     </div>
@@ -1453,10 +1455,10 @@ console.log(editData, editMode, editID);
                                                                             required
                                                                             placeholder='Select county'
                                                                             onChange={(e) => fetchSbctyConstituency(e.value)}
-                                                                            key={editData.county.id}
+                                                                            key={editData?.county?.id}
                                                                             id={`add_${addBtnLabel}_county_field`}
                                                                             name='county'
-                                                                            defaultValue={{value:editData.county.id, label:editData.county_name}}
+                                                                            defaultValue={{value:editData?.county?.id, label:editData?.county_name}}
                                                                             className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
                                                                     </div>
@@ -1478,10 +1480,10 @@ console.log(editData, editMode, editID);
                                                                             options={sbcty_constituency[1].results.map(({id, name}) => ({value:id, label:name}))}
                                                                             required
                                                                             placeholder='Select Sub County'
-                                                                            key={editData.sub_county}
+                                                                            key={editData?.sub_county}
                                                                             id={`add_${addBtnLabel}_sub_county_field`}
                                                                             name='sub_county'
-                                                                            defaultValue={{value:editData.sub_county, label:editData.sub_county_name}}
+                                                                            defaultValue={{value:editData?.sub_county, label:editData?.sub_county_name}}
                                                                             className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
                                                                     </div>
@@ -1502,10 +1504,10 @@ console.log(editData, editMode, editID);
                                                                             options={sbcty_constituency[0].results.map(({id, name}) => ({value:id, label:name}))}
                                                                             required
                                                                             placeholder='Select Constituency'
-                                                                            key={editData.constituency}
+                                                                            key={editData?.constituency}
                                                                             id={`add_${addBtnLabel}_constituency_field`}
                                                                             name='constituency'
-                                                                            defaultValue={{value:editData.constituency, label:editData.constituency_name}}
+                                                                            defaultValue={{value:editData?.constituency, label:editData?.constituency_name}}
                                                                             className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
 
