@@ -17,7 +17,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                         <>
                             {/* Facility Basic Details Updates */}
                             {
-                                facilityUpdatedJson?.basic.length > 0 &&
+                               facilityUpdatedJson?.basic && facilityUpdatedJson?.basic.length > 0 &&
                                 <>
                                     <TableRow><h2 className='text-lg font-bold'>Facility Basic Details</h2></TableRow>
                                     <TableRow>
@@ -36,7 +36,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             }
                             {
 
-                                facilityUpdatedJson?.basic.length > 0 &&
+                                facilityUpdatedJson?.basic && facilityUpdatedJson?.basic.length > 0 &&
                                 facilityUpdatedJson?.basic.map(({ human_field_name, display_value, field_name }, id) => (
                                     
                                     <TableRow key={id}>
@@ -57,7 +57,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
 
                             {/* Facility Services Updates */}
                             {
-                                facilityUpdatedJson?.services.length > 0 &&
+                                facilityUpdatedJson?.services && facilityUpdatedJson?.services.length > 0 &&
                                 <>
                                     <TableRow><h2 className='text-lg font-bold mt-6'>Facility Services</h2></TableRow>
                                     <TableRow>
@@ -72,7 +72,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             }
 
                             {
-                                facilityUpdatedJson?.services.length > 0 &&
+                                facilityUpdatedJson?.services && facilityUpdatedJson?.services.length > 0 &&
                                 facilityUpdatedJson?.services.map(({ name }, id) => (
 
                                     <TableRow key={id}>
@@ -125,7 +125,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
 
                             {/*  Facility HR Updates */}
                             {
-                                facilityUpdatedJson?.humanresources.length > 0 &&
+                                facilityUpdatedJson?.humanresources && facilityUpdatedJson?.humanresources.length > 0 &&
                                 <>
                                     <TableRow><h2 className='text-lg font-bold mt-6'>Facility HR</h2></TableRow>
                                     <TableRow>
@@ -142,7 +142,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                                 </>
                             }
                             {
-                                facilityUpdatedJson?.humanresources.length > 0 &&
+                                facilityUpdatedJson?.humanresources && facilityUpdatedJson?.humanresources.length > 0 &&
                                 facilityUpdatedJson?.humanresources.map(({ name, count }, id) => (
 
                                     <TableRow key={id}>
@@ -164,7 +164,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
 
                             {/* Facility Infrasructure Updates  */}
                             {
-                                facilityUpdatedJson?.infrastructure.length > 0 &&
+                                facilityUpdatedJson?.infrastructure && facilityUpdatedJson?.infrastructure.length > 0 &&
                                 <>
                                     <TableRow><h2 className='text-lg font-bold mt-6'>Facility Infrasructure</h2></TableRow>
                                     <TableRow>
@@ -182,7 +182,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             }
 
                             {
-                                facilityUpdatedJson?.infrastructure.length > 0 &&
+                                facilityUpdatedJson?.infrastructure && facilityUpdatedJson?.infrastructure.length > 0 &&
                                 facilityUpdatedJson?.infrastructure.map(({ name, count }, id) => (
 
                                     <TableRow key={id}>
@@ -204,7 +204,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
 
                             {/* Facility Units Updates */}
                             {
-                                facilityUpdatedJson?.units.length > 0 &&
+                                facilityUpdatedJson?.units && facilityUpdatedJson?.units.length > 0 &&
                                 <>
                                     <TableRow><h2 className='text-lg font-bold mt-6'>Facility Units</h2></TableRow>
                                     <TableRow>
@@ -225,7 +225,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                             }
 
                             {
-                                facilityUpdatedJson?.units.length > 0 &&
+                                facilityUpdatedJson?.units && facilityUpdatedJson?.units.length > 0 &&
                                 facilityUpdatedJson?.units.map(({ department_name, regulating_body_name, license_number, registration_number }, id) => (
 
                                     <TableRow key={id}>

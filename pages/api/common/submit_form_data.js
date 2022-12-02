@@ -60,9 +60,19 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
+                case 'delete_facility_service':                 
+                    url = `${API_URL}/facilities/facility_services/${req.query.id}/`;
+                    method = 'DELETE';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
                 case 'infrastructure':           
                     url = `${API_URL}/facilities/facilities/${req.query.id}/`;
                     method = 'PATCH';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
+                case 'delete_facility_infrastructure':                 
+                    url = `${API_URL}/facilities/facility_infrastructure/${req.query.id}/`;
+                    method = 'DELETE';
                     contentType = 'application/json;charset=utf-8';
                     break;
                 case 'hr':               
