@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
 import { PlusIcon } from '@heroicons/react/solid';
+import { useAlert } from 'react-alert'
 
 
 
 
-function EditListItem({ initialSelectedItems, itemsCategory, setUpdatedItem, item }) {
+function EditListItem({ initialSelectedItems, itemsCategory, setUpdatedItem, item, removeItemHandler}) {
+
+  const alert = useAlert()
 
   const itemOptions = ((options) => {
     return options.map(({ name, subCategories, value }) => ({
@@ -48,9 +51,9 @@ function EditListItem({ initialSelectedItems, itemsCategory, setUpdatedItem, ite
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
     const result = []
 
-    initialSelectedItems.map(({ subCategories, value }, i) => {
+    initialSelectedItems.map(({ subCategories, value, facility_service_id:item_id }) => {
 
-      result.push({ name: subCategories[0], id: value[0] })
+      result.push({ name: subCategories[0], id: value[0], item_id })
 
     })
 
@@ -120,16 +123,16 @@ function EditListItem({ initialSelectedItems, itemsCategory, setUpdatedItem, ite
 
           <>
             {selectedItems && selectedItems?.length > 0 ? (
-              selectedItems?.map(({ id, name }, _id) => (
+              selectedItems?.map(({ name, item_id }, _id) => (
                 <TableRow
-                  key={_id}
+                  key={item_id}
 
                 >
                   <TableCell>{name}</TableCell>
                   <TableCell>
                     <button
                       type="button"
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.preventDefault()
                         let items = selectedItems
                         items.splice(_id, 1)
@@ -137,6 +140,10 @@ function EditListItem({ initialSelectedItems, itemsCategory, setUpdatedItem, ite
                         setSelectedItems(
                           items
                         );
+
+                        // Delete facility service
+                        removeItemHandler(e, item_id, alert)
+
                       }}
                       className="flex items-center justify-center space-x-2 bg-red-400 rounded p-1 px-2"
                     >

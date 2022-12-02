@@ -644,6 +644,35 @@ const handleServiceUpdates = async (event, stateSetters, alert, alert_message) =
 
 }
 
+// handleServiceDelete
+
+const handleServiceDelete =  async (event, facility_service_id, alert) => {
+
+    try{
+
+        if(facility_service_id){
+            alert.success('Facility Service Deleted Successfully')
+        } else {
+            alert.danger("Unable to delete facility service")
+        }
+
+          const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_service&id=${facility_service_id}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+  
+        })
+
+        return resp
+
+    }
+    catch(e){
+        console.error('Unable to delete facility service', e.message)
+    }
+
+}
+
 // handleInfrastructureUpdates
 const handleInfrastructureUpdates = async () => {
 
@@ -700,5 +729,6 @@ export {
     handleServiceUpdates,
     handleInfrastructureUpdates,
     handleHrUpdates,
-    handleFacilityUpgrades
+    handleFacilityUpgrades,
+    handleServiceDelete
 }

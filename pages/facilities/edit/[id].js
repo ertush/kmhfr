@@ -19,7 +19,8 @@ import {
     handleRegulationUpdates,
     handleServiceUpdates,
     handleInfrastructureUpdates,
-    handleHrUpdates
+    handleHrUpdates,
+    handleServiceDelete
 } from '../../../controllers/facility/facilityHandlers';
 
 
@@ -427,18 +428,21 @@ const EditFacility = (props) => {
 
   
     const serviceSelected = ((_services) => {
-        return _services.map(({category_name, service_name, service_id}) => ({
+        return _services.map(({category_name, service_name, service_id, id}) => ({
                     name: category_name,
                     subCategories: [
                         service_name
                     ],
                     value:[
                         service_id
-                    ]
+                    ],
+                    facility_service_id:id
                     
                 })
         )
     })(facility_services || [])  
+
+  
 
     const infrastructureSelected = ((_infrastructure) => {
         return _infrastructure.map(({infrastructure_name, infrastructure}) => ({
@@ -526,15 +530,15 @@ const EditFacility = (props) => {
 
 
     // Different form states
-    const [services, setServices] = useState([])
+    // const [services, setServices] = useState([])
     const [infrastructure, setInfrastructure] = useState([])
 	const [infrastructureCount, setInfrastructureCount] = useState([])    
 	const [hr, setHr] = useState([])
 	const [hrCount, setHrCount] = useState([])
     const [wardName, setWardName] = useState(ward_name)
-    const [contact, setContact] = useState('')
+    // const [contact, setContact] = useState('')
     const [refreshForm4, setRefreshForm4] = useState()
-    const [selectedServiceRight, setSelectedServiceRight] = useState()
+    // const [selectedServiceRight, setSelectedServiceRight] = useState()
     const [selectedInfraRight, setSelectedInfraRight] = useState()
     const [selectedHrRight, setSelectedHrRight] = useState()
     const [operationStatus, setOperationStatus] = useState('')
@@ -2298,7 +2302,7 @@ const EditFacility = (props) => {
                                 </Tabs.Panel>
                                 {/* Services */}
                                 <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
-                                    {/* {console.log({selectedServiceRight, services})} */}
+                                    
                                     <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
                                        async ev => {
 
@@ -2306,7 +2310,7 @@ const EditFacility = (props) => {
 
                                             console.log({serviceUpdates})
 
-                                             /*  handleServiceUpdates(ev, [serviceUpdates, id], alert, "Facility Services updated successfully")
+                                             handleServiceUpdates(ev, [serviceUpdates, id], alert, "Facility Services updated successfully")
                                                 .then(({statusText}) => {
                                                     defer(() => setIsSavedChanges(true))
                                                     let update_id
@@ -2334,7 +2338,7 @@ const EditFacility = (props) => {
                                                         }
                                                     
                                                     })
-                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message)) */
+                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message)) 
                                                 }
                                          }>
                                                            
@@ -2346,6 +2350,7 @@ const EditFacility = (props) => {
                                                         itemsCategory={serviceOptions}
                                                         setUpdatedItem={setServiceUpdates}
                                                         item={{name, official_name}}
+                                                        removeItemHandler={handleServiceDelete}
                                                         />
 
                                                     </div>
