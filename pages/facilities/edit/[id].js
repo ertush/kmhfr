@@ -2302,10 +2302,11 @@ const EditFacility = (props) => {
                                     <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
                                        async ev => {
 
-                                            ev.preventDefault()
+                                            ev.preventDefault()     
 
                                             console.log({serviceUpdates})
-                                               handleServiceUpdates(ev, [serviceUpdates, id], alert, "Facility Services updated successfully")
+
+                                             /*  handleServiceUpdates(ev, [serviceUpdates, id], alert, "Facility Services updated successfully")
                                                 .then(({statusText}) => {
                                                     defer(() => setIsSavedChanges(true))
                                                     let update_id
@@ -2333,7 +2334,7 @@ const EditFacility = (props) => {
                                                         }
                                                     
                                                     })
-                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message))
+                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message)) */
                                                 }
                                          }>
                                                            
@@ -2348,36 +2349,7 @@ const EditFacility = (props) => {
                                                         />
 
                                                     </div>
-                                                    {/* Service Category Table */}
-                                                    {/* <table className='w-full  h-auto my-4'>
-                                                        <thead className='w-full'>
-                                                            <tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
-                                                                <td className='text-lg font-semibold text-indigo-900 '>Name</td>
-                                                                <td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody ref={optionRefBody}>
-                                                            {
-                                                                selectedServiceRight && selectedServiceRight.length > 0 ? 
-
-                                                                selectedServiceRight.map(ctg => ctg.subCategories).map((service, i) => (
-                                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-                                                                        <td ref={nameOptionRef}>{service}</td>
-                                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-                                                                    </tr>
-                                                                ))
-                                                                :
-                                                                services.map(({subctg}) => subctg).map((service, i) => (
-                                                                    <tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-                                                                        <td ref={nameOptionRef}>{service}</td>
-                                                                        <td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-                                                                    </tr>
-                                                                ))
-                                                            }
-                                                        
-                                                        </tbody>
-                                                    </table> */}
-                                                    
+                                                      
                                                     {/* Save btn */}
 
                                                     <div className=" w-full flex justify-end h-auto mr-3">
