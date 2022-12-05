@@ -20,13 +20,13 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
 
 
   const [currentItem, setCurrentItem] = useState(null)
-  const [currentCount, setCurrentCount] = useState(null)
+  const [itemCount, setItemCount] = useState(null)
+  const [countFieldIds, setCountFieldIds] = useState([])
   const [isRemoveItem, setIsRemoveItem] = useState(false)
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
-    const result = []
+  const result = []
 
     initialSelectedItems.map(({ subCategories, value, _id }) => {
-
       result.push({ name: subCategories[0], id: value[0], _id})
 
     })
@@ -39,11 +39,13 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
 
 
   useEffect(() => {
-    if(currentCount){
-        console.log({currentCount})
+    if(itemCount && currentItem){
+        setCurrentItem(() => {currentItem['count'] = itemCount; return currentItem})
+        setCountFieldIds([currentItem, ...countFieldIds])
+        
     }
     setUpdatedItem(selectedItems)
-  }, [selectedItems, isRemoveItem, currentCount])
+  }, [selectedItems, isRemoveItem, itemCount])
 
 
   const countRef = useRef(null)
@@ -81,6 +83,12 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                 initialSelectedItems.forEach(({_id, count}) => {
                     _initValues[_id] = count
                 })
+
+                if(countFieldIds.length > 0){
+                    countFieldIds.forEach(({id, count}) => {
+                        _initValues[id] = count
+                    })
+                }
 
                 return _initValues
             })()}
@@ -120,6 +128,11 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                         <button className="bg-green-700 rounded p-2 flex items-center justify-evenly gap-2"
                             onClick={e => {
                                 e.preventDefault()
+
+                                if(countRef.current){
+                                    setItemCount(countRef.current.value)
+                                }
+
                                 if (currentItem)
                                     setSelectedItems([
                                         currentItem,
@@ -190,8 +203,6 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                                              name={id}
                                              onChange={e => {
                                                 e.preventDefault()
-
-                                                setCurrentCount(e.target.value)
                                              }}
                                              className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
