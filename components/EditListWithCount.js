@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from 'react'
+import React, { useState, useEffect} from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
 import { PlusIcon } from '@heroicons/react/solid';
@@ -18,7 +18,6 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
     }))
   })(itemsCategory)
 
-
   const [currentItem, setCurrentItem] = useState(null)
   const [itemCount, setItemCount] = useState(null)
   const [countFieldIds, setCountFieldIds] = useState([])
@@ -26,12 +25,10 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
   const result = []
 
-    initialSelectedItems.map(({ subCategories, value, _id }) => {
-      result.push({ name: subCategories[0], id: value[0], _id})
+    initialSelectedItems.map(({ subCategories, value, _id, count }) => {
+      result.push({ name: subCategories[0], id: value[0], _id, count})
 
     })
-
-
 
     return result
 
@@ -48,7 +45,6 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
   }, [selectedItems, isRemoveItem, itemCount])
 
 
-  const countRef = useRef(null)
 
   const formatGroupLabel = (data) => (
     <div style={
@@ -77,6 +73,7 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
   );
 
     return (
+       
         <Formik
             initialValues={(() => {
                 const _initValues = {}
@@ -84,16 +81,13 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                     _initValues[_id] = count
                 })
 
-                if(countFieldIds.length > 0){
-                    countFieldIds.forEach(({id, count}) => {
-                        _initValues[id] = count
-                    })
-                }
 
                 return _initValues
             })()}
 
-            onSubmit={() => null}
+            onSubmit={values => {
+                console.log({values})
+            } }
         >
             <Form
                 name="list_item_with_count_form"
@@ -114,12 +108,10 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                             options={itemOptions}
                             formatGroupLabel={formatGroupLabel}
                             onChange={(e) => {
-                                if(countRef.current){
-                                    setCurrentItem({ id: e?.value, name: e?.label, count: countRef.current.value})
-                                } else {
-                                    setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
-                                }
-                               
+                            
+                            setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
+                                
+                            
                             }
                             }
                             name="available_items"
@@ -128,10 +120,6 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                         <button className="bg-green-700 rounded p-2 flex items-center justify-evenly gap-2"
                             onClick={e => {
                                 e.preventDefault()
-
-                                if(countRef.current){
-                                    setItemCount(countRef.current.value)
-                                }
 
                                 if (currentItem)
                                     setSelectedItems([
@@ -147,7 +135,7 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                 </div>
 
                 {/* Item Count */}
-                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                {/* <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                     <label
                         htmlFor='item_count'
                         className='capitalize text-md  leading-tight tracking-tight'>
@@ -159,7 +147,7 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                         name='item_count' 
                         className='flex-none md:w-5/6 w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' />
 
-                </div>
+                </div> */}
                 <br />
 
                 {/* Item Selected Table */}
@@ -192,19 +180,20 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                                             { 
                                             _id ?
                                             <Field
-                                             type='number'
-                                             name={_id}
-                                             className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            type='number'
+                                            name={_id}
+                                            className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
                                             :
                                             <Field
-                                             type='number'
-                                             value={countRef.current.value}
-                                             name={id}
-                                             onChange={e => {
+                                            type='number'
+                                            name={id}
+                                            defaultValue={1}
+                                            onChange={e => {
                                                 e.preventDefault()
-                                             }}
-                                             className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                                setItemCount(Number(e.target.value))
+                                            }}
+                                            className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
 
                                             }
@@ -235,23 +224,28 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                                     </TableRow>
                                 ))
                             ) : (
-                                <>
+                                <TableRow>
+                                    <TableCell>
                                     <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                         <p>
-                                            {item?.name || item?.official_name} has not listed
-                                            the {'item'} it offers. Add some below.
+                                            {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
                                         </p>
                                     </li>
-                                    <br />
-                                </>
+                                    </TableCell>
+                                </TableRow>
                             )}
                         </>
                     </TableBody>
                 </Table>
-
+                
+                {/* Hidden submit button */}
+                {/* <div className='w-full flex justify-end'>
+                    <button className='flex items-center text-center text-white space-x-2 font-semibold bg-green-500 rounded p-1 px-2' type="submit">Confirm</button>
+                </div> */}
 
             </Form>
         </Formik>
+        
      )
 }
 
