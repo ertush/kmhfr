@@ -554,6 +554,8 @@ const EditFacility = (props) => {
     const [serviceUpdates, setServiceUpdates] = useState(null)
     const [infrastructureUpdates, setInfrastructureUpdates] = useState(null)
     
+
+
   
     const handleAddRegulatoryBody = (event) => {
         event.preventDefault();
@@ -718,6 +720,8 @@ const EditFacility = (props) => {
     const serviceOptionRef = useRef(null)
     const nameOptionRef = useRef(null)
     const infrastructureBodyRef = useRef(null)
+
+    
 
     // Facility update data
     const {
@@ -2376,6 +2380,36 @@ const EditFacility = (props) => {
                                     <form name="facility_infrastructure_form" 
                                     onSubmit={ev => {
                                         handleInfrastructureUpdates(ev, [infrastructureUpdates, id], alert, "Facility Infrastructure updated successfully")
+
+                                        .then(({statusText}) => {
+                                            defer(() => setIsSavedChanges(true))
+                                             let update_id
+                                             if(statusText == 'OK'){
+
+                                                     fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
+
+                                                         const results = await resp.json()
+                                                         
+                                                         update_id = results?.latest_update
+                                                        
+                                                   
+                                                         if(update_id){
+                                                            
+                                                             try{
+                                                                 facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                 setFacilityUpdateData(facilityUpdateData)                                                     
+                                                             }
+                                                             catch(e){
+                                                                 console.error('Encountered error while fetching facility update data', e.message)
+                                                             }
+                                                         }
+                                                     })
+                                                     .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
+                                                 }
+                                               
+                                             })
+                                             .catch(e => console.error('unable to fetch facility data. Error:', e.message))
+                                        
                                     }} 
                                     className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
                                                             
@@ -2404,9 +2438,8 @@ const EditFacility = (props) => {
                                               setUpdatedItem={setInfrastructureUpdates}
                                               item={{name, official_name}}
                                               removeItemHandler={handleInfrastructureDelete}
+                                             
                                             />
-
-                                            {console.log({infrastructureUpdates})}
 
                                         </div>
                                         {/* Service Category Table */}
