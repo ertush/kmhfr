@@ -28,16 +28,13 @@ import {
 
 import FacilityContact from '../../../components/FacilityContact';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
-import TrasnferListServices from '../../../components/TrasnferListServices';
 import TransferListHr from '../../../components/TransferListHr';
-import TransferListInfrastructure from '../../../components/TransferListInfrastructure';
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
 
 
 import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
-import { set } from 'nprogress';
 import EditListWithCount from '../../../components/EditListWithCount';
 
 
@@ -445,9 +442,8 @@ const EditFacility = (props) => {
     })(facility_services || [])  
 
   
-
     const infrastructureSelected = ((_infrastructure) => {
-        return _infrastructure.map(({infrastructure_name, infrastructure, id, count}) => ({
+        return _infrastructure.map(({infrastructure_name, infrastructure, count}) => ({
 
                     name: props['16']?.infrastructure.length > 0 ? props['16']?.infrastructure.filter(({id}) => id === infrastructure)[0].category_name : '',
                   
@@ -457,12 +453,14 @@ const EditFacility = (props) => {
                     value:[
                         infrastructure
                     ],
-                    _id:id,
+                    _id:infrastructure,
                     count
                     
                 })
         )   
     })(facility_infrastructure || []) 
+
+    // console.log({facility_infrastructure})
      
 
     const hrSelected = ((_hr) => {
@@ -536,18 +534,13 @@ const EditFacility = (props) => {
 
     // Different form states
     // const [services, setServices] = useState([])
-    const [infrastructure, setInfrastructure] = useState([])
-	const [infrastructureCount, setInfrastructureCount] = useState([])    
+   
 	const [hr, setHr] = useState([])
 	const [hrCount, setHrCount] = useState([])
     const [wardName, setWardName] = useState(ward_name)
-    // const [contact, setContact] = useState('')
     const [refreshForm4, setRefreshForm4] = useState()
-    // const [selectedServiceRight, setSelectedServiceRight] = useState()
-    const [selectedInfraRight, setSelectedInfraRight] = useState()
     const [selectedHrRight, setSelectedHrRight] = useState()
     const [operationStatus, setOperationStatus] = useState('')
-	// const [refreshForm5, setRefreshForm5] = useState(false)
     const [refreshForm6, setRefreshForm6] = useState(false)
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
@@ -679,7 +672,6 @@ const EditFacility = (props) => {
     const [facilityTypeDetail, setFacilityTypeDetail] = useState('')
     const [subCountyOpt, setSubCountyOpt] = useState('')
 	const [wardOpt, setWardNameOpt] = useState('')
-    const [btnDir, setBtnDir] = useState(null)
     const [isPendingLicense, setIsPendingLicense] = useState(false)
     const [isPendingRegistration, setIsPendingRegistration] = useState(false)
 
@@ -1169,8 +1161,8 @@ const EditFacility = (props) => {
                                                             if(update_id){
                                                                
                                                                 try{
-                                                                    facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
-                                                                    setFacilityUpdateData(facilityUpdateData)                                                     
+                                                                    const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                    setFacilityUpdateData(_facilityUpdateData)                                                     
                                                                 }
                                                                 catch(e){
                                                                     console.error('Encountered error while fetching facility update data', e.message)
@@ -1718,8 +1710,8 @@ const EditFacility = (props) => {
                                                              if(update_id){
                                                                 
                                                                  try{
-                                                                     facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
-                                                                     setFacilityUpdateData(facilityUpdateData)                                                     
+                                                                    const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                     setFacilityUpdateData(_facilityUpdateData)                                                     
                                                                  }
                                                                  catch(e){
                                                                      console.error('Encountered error while fetching facility update data', e.message)
@@ -1890,8 +1882,8 @@ const EditFacility = (props) => {
                                                              if(update_id){
                                                                 
                                                                  try{
-                                                                     facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
-                                                                     setFacilityUpdateData(facilityUpdateData)                                                     
+                                                                     const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                     setFacilityUpdateData(_facilityUpdateData)                                                     
                                                                  }
                                                                  catch(e){
                                                                      console.error('Encountered error while fetching facility update data', e.message)
@@ -2095,8 +2087,8 @@ const EditFacility = (props) => {
                                                              if(update_id){
                                                                 
                                                                  try{
-                                                                     facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
-                                                                     setFacilityUpdateData(facilityUpdateData)                                                     
+                                                                     const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                     setFacilityUpdateData(_facilityUpdateData)                                                     
                                                                  }
                                                                  catch(e){
                                                                      console.error('Encountered error while fetching facility update data', e.message)
@@ -2336,8 +2328,8 @@ const EditFacility = (props) => {
                                                                     console.log({update_id})
                                                                     
                                                                     try{
-                                                                        facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
-                                                                        setFacilityUpdateData(facilityUpdateData)                                                     
+                                                                        const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                                                        setFacilityUpdateData(_facilityUpdateData)                                                     
                                                                     }
                                                                     catch(e){
                                                                         console.error('Encountered error while fetching facility update data', e.message)
@@ -2377,125 +2369,28 @@ const EditFacility = (props) => {
                                 </Tabs.Panel>
                                 {/* Infrastructure */}
                                 <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
-                                    <form name="facility_infrastructure_form" 
-                                    onSubmit={ev => {
-                                        handleInfrastructureUpdates(ev, [infrastructureUpdates, id], alert, "Facility Infrastructure updated successfully")
-
-                                        .then(({statusText}) => {
-                                            defer(() => setIsSavedChanges(true))
-                                             let update_id
-                                             if(statusText == 'OK'){
-
-                                                     fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
-
-                                                         const results = await resp.json()
-                                                         
-                                                         update_id = results?.latest_update
-                                                        
-                                                   
-                                                         if(update_id){
+                                    <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
                                                             
-                                                             try{
-                                                                 facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
-                                                                 setFacilityUpdateData(facilityUpdateData)                                                     
-                                                             }
-                                                             catch(e){
-                                                                 console.error('Encountered error while fetching facility update data', e.message)
-                                                             }
-                                                         }
-                                                     })
-                                                     .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
-                                                 }
-                                               
-                                             })
-                                             .catch(e => console.error('unable to fetch facility data. Error:', e.message))
-                                        
-                                    }} 
-                                    className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
-                                                            
-                                        {/* Transfer list Container */}
+                                        {/* Edit List With Count Container*/}
                                         <div className='flex items-center w-full h-auto min-h-[300px]'>
                                         
-                                        {/* Transfer List*/}
-
-                                        {/* <TransferListInfrastructure 
-                                            categories={
-                                                infrastructureOption
-                                            } 
-                                            setState={setInfrastructure}
-                                            setCount={setInfrastructureCount}
-                                            setRefreshForm5={setRefreshForm5}
-                                            refreshForm5={refreshForm5}
-                                            selectedInfraRight={infrastructureSelected}
-                                            setSelectedInfraRight={setSelectedInfraRight}
-                                            selectTitle='Infrastructure'
-                                            /> */}
-
+                                        {/* Edit List With Count*/}
                                             <EditListWithCount 
                                               initialSelectedItems={infrastructureSelected}
                                               itemsCategory={infrastructureOption}
                                               itemsCategoryName={'infrastructure'}
                                               setUpdatedItem={setInfrastructureUpdates}
+                                              itemId={id}
                                               item={{name, official_name}}
+                                              handleItemsUpdate={handleInfrastructureUpdates}
                                               removeItemHandler={handleInfrastructureDelete}
-                                             
+                                              setIsSavedChanges={setIsSavedChanges}
+                                              setItemsUpdateData={setFacilityUpdateData}
                                             />
 
                                         </div>
-                                        {/* Service Category Table */}
-                                        {/* <table className='w-full  h-auto my-4'>
-                                            <thead className='w-full'>
-                                                <tr className='grid grid-cols-4 place-content-end border-b-4 border-gray-300'>
-                                                    <td className='text-lg font-semibold text-indigo-900'>Name</td>
-                                                    <td className='text-lg font-semibold text-indigo-900'>Category</td>
-                                                    <td className='text-lg font-semibold text-indigo-900'>Present</td>
-                                                    <td className='text-lg font-semibold text-indigo-900'>Number</td>
-                                                </tr>
-                                            </thead>
-                                            <tbody ref={infrastructureBodyRef}>
-                                            
-                                                {
-                                                    selectedInfraRight && selectedInfraRight.length > 0 ? 
 
-                                                    selectedInfraRight.map(({subCategories, value:vs}, i) => (
-                                                                                            
-                                                
-
-                                                    <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                    
-                                                        <td className='text-lg text-black'>{subCategories[0]}</td>
-                                                        <td className='text-lg text-black'>{infrastructureOption.filter(({value}) =>  value.includes(vs[0]))[0].name}</td>
-
-                                                        <td className='text-lg text-black'>Yes</td>
-                                                        <td className='text-lg  text-black'>{facility_infrastructure.filter(({infrastructure}) => infrastructure === vs[0])[0].count}</td>
-                                                    </tr>
-                                                        
-                                                    
-                                                    ))
-
-                                                    :
-
-                                                    infrastructure.map(({subctg}) => subctg).map((_infrastructure, i) => (
-                                                        <tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                            <td className='text-lg text-black'>{_infrastructure}</td>
-                                                            <td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
-                                                            <td className='text-lg text-black'>Yes</td>
-                                                            <td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
-                                                        </tr>
-                                                    ))
-                                                }
-                                            
-                                            
-                                            </tbody>
-                                        </table> */}
-                                        
-                                        {/* Save btn */}
-
-                                        <div className=" w-full flex justify-end h-auto mr-3">
-                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
-                                        </div>
-
-                                    </form>
+                                    </div>
                                 </Tabs.Panel>
                                 {/* Human Resources */}
                                 <Tabs.Panel value="human_resource" className="grow-1 py-1 px-4 tab-panel">
