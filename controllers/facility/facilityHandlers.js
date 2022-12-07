@@ -674,18 +674,22 @@ const handleServiceDelete =  async (event, facility_service_id, alert) => {
 }
 
 // handleInfrastructureUpdates
-const handleInfrastructureUpdates = async (event, stateSetters, alert, alert_message) => {
-    event.preventDefault()
-
-    // console.log({stateSetters})
+const handleInfrastructureUpdates = async (stateSetters, alert) => {
+ 
 
     const [infraUpdateData, facilityId] = stateSetters
+
+    const payload = {
+        infrastructure: Object.keys(infraUpdateData).map((id, i) => ({infrastructure:id, count:Object.values(infraUpdateData)[i]}))
+    }
+
+    console.log({payload})
 
 
     try{
 
         if(infraUpdateData && facilityId){
-            alert.success(alert_message)
+            alert.success('Facility Infrastructure updated successfully')
         } else {
             alert.danger("Unable to update facility infrastructure")
         }
@@ -696,9 +700,7 @@ const handleInfrastructureUpdates = async (event, stateSetters, alert, alert_mes
                 'Content-Type': 'application/json;charset=utf-8'
             },
             method: 'POST',
-            body: JSON.stringify({
-                infrastructure: infraUpdateData.map(({count, id}) => ({infrastructure:id, count}))
-            })
+            body: JSON.stringify(payload)
         })
 
         return resp
@@ -717,10 +719,10 @@ const handleInfrastructureDelete = async (event, facility_infrastructure_id, ale
 
     try{
 
-        if(facility_service_id){
-            alert.success('Facility Service Deleted Successfully')
+        if(facility_infrastructure_id){
+            alert.success('Facility Infrastructure Deleted Successfully')
         } else {
-            alert.danger("Unable to delete facility service")
+            alert.danger("Unable to delete facility infrastructure")
         }
 
           const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_infrastructure&id=${facility_infrastructure_id}`, {
@@ -735,7 +737,7 @@ const handleInfrastructureDelete = async (event, facility_infrastructure_id, ale
 
     }
     catch(e){
-        console.error('Unable to delete facility service', e.message)
+        console.error('Unable to delete facility infrastructure', e.message)
     }
 
 }
