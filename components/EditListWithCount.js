@@ -1,13 +1,22 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState} from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
 import { PlusIcon } from '@heroicons/react/solid';
+import { defer } from 'underscore';
 import {Formik, Form, Field} from 'formik'
 
 import { useAlert } from 'react-alert'
 
-function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryName, setUpdatedItem, item, removeItemHandler}) {
-  
+function EditListWithCount({ 
+    initialSelectedItems, 
+    itemsCategory, 
+    itemsCategoryName, 
+    itemId, 
+    item, 
+    handleItemsUpdate, 
+    removeItemHandler, 
+    setIsSavedChanges, 
+    setItemsUpdateData}) {
   
   const alert = useAlert()
 
@@ -18,10 +27,10 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
     }))
   })(itemsCategory)
 
+
   const [currentItem, setCurrentItem] = useState(null)
-  const [itemCount, setItemCount] = useState(null)
-  const [countFieldIds, setCountFieldIds] = useState([])
-  const [isRemoveItem, setIsRemoveItem] = useState(false)
+  const [deletedItems, setDeletedItems] = useState([])
+
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
   const result = []
 
@@ -33,16 +42,6 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
     return result
 
   })() : []))
-
-
-  useEffect(() => {
-    if(itemCount && currentItem){
-        setCurrentItem(() => {currentItem['count'] = itemCount; return currentItem})
-        setCountFieldIds([currentItem, ...countFieldIds])
-        
-    }
-    setUpdatedItem(selectedItems)
-  }, [selectedItems, isRemoveItem, itemCount])
 
 
 
@@ -86,12 +85,49 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
             })()}
 
             onSubmit={values => {
-                console.log({values})
-            } }
-        >
+
+                // Update the list of values
+                deletedItems.forEach(([{_id}]) => {
+                    console.log({_id})
+                    delete values[_id]
+                })
+
+                handleItemsUpdate([values, itemId], alert)
+                .then(({statusText}) => {
+                    defer(() => setIsSavedChanges(true))
+                     let update_id
+                     if(statusText == 'OK'){
+
+                             fetch(`/api/facility/get_facility/?path=facilities&id=${itemId}`).then(async resp => {
+
+                                 const results = await resp.json()
+                                 
+                                 update_id = results?.latest_update
+                                
+                           
+                                 if(update_id){
+                                    
+                                     try{
+                                        const itemsUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                         setItemsUpdateData(itemsUpdateData)                                                     
+                                     }
+                                     catch(e){
+                                         console.error('Encountered error while fetching facility update data', e.message)
+                                     }
+                                 }
+                             })
+                             .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
+                         }
+                       
+                     })
+                     .catch(e => console.error('unable to fetch facility data. Error:', e.message))
+                
+            }} 
+            >
+
             <Form
                 name="list_item_with_count_form"
-                className="flex flex-col w-full items-start justify-start gap-3"
+                className="flex flex-col w-full items-start justify-start gap-3 md:mx-3"
 
             >
                 {/* Item List Dropdown */}
@@ -102,17 +138,15 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                         Available {itemsCategoryName}
                     </label>
 
-                    <div className="flex items-start gap-2 md:w-5/6 w-full h-auto">
+                    <div style={{maxWidth:'75%'}} className="flex items-start gap-2 w-full h-auto">
 
                         <Select
+                            
                             options={itemOptions}
                             formatGroupLabel={formatGroupLabel}
-                            onChange={(e) => {
-                            
-                            setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
-                                
-                            
-                            }
+                            onChange={(e) => { 
+                                setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
+                             }
                             }
                             name="available_items"
                             className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
@@ -134,21 +168,6 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                     </div>
                 </div>
 
-                {/* Item Count */}
-                {/* <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                    <label
-                        htmlFor='item_count'
-                        className='capitalize text-md  leading-tight tracking-tight'>
-                        {itemsCategoryName} Count
-                    </label>
-
-                    <input type="number"
-                        ref={countRef}
-                        name='item_count' 
-                        className='flex-none md:w-5/6 w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' />
-
-                </div> */}
-                <br />
 
                 {/* Item Selected Table */}
                 <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
@@ -179,20 +198,18 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                                         <TableCell>
                                             { 
                                             _id ?
+                                            // Edit Count
                                             <Field
                                             type='number'
                                             name={_id}
                                             className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
                                             :
+                                            // Add Count
                                             <Field
                                             type='number'
                                             name={id}
-                                            defaultValue={1}
-                                            onChange={e => {
-                                                e.preventDefault()
-                                                setItemCount(Number(e.target.value))
-                                            }}
+                                         
                                             className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
 
@@ -204,14 +221,13 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                                                 onClick={async (e) => {
                                                     e.preventDefault()
                                                     let items = selectedItems
-                                                    items.splice(__id, 1)
-                                                    setIsRemoveItem(!isRemoveItem)
+                                                    setDeletedItems([...deletedItems, items.splice(__id, 1)])
                                                     setSelectedItems(
                                                         items
                                                     );
 
                                                     // Delete facility service
-                                                    removeItemHandler(e, _id ?? id, alert)
+                                                    removeItemHandler(e, id ?? _id, alert)
 
                                                 }}
                                                 className="flex items-center justify-center space-x-2 bg-red-400 rounded p-1 px-2"
@@ -239,9 +255,11 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                 </Table>
                 
                 {/* Hidden submit button */}
-                {/* <div className='w-full flex justify-end'>
-                    <button className='flex items-center text-center text-white space-x-2 font-semibold bg-green-500 rounded p-1 px-2' type="submit">Confirm</button>
-                </div> */}
+                {/* Save btn */}
+
+                <div style={{maxWidth:'85%' }} className="w-full flex justify-end h-auto mt-3">
+                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
+                </div>
 
             </Form>
         </Formik>
