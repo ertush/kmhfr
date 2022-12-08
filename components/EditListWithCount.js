@@ -7,7 +7,9 @@ import {Formik, Form, Field} from 'formik'
 
 import { useAlert } from 'react-alert'
 
-function EditListWithCount({ 
+function EditListWithCount(props) {
+
+  const { 
     initialSelectedItems, 
     itemsCategory, 
     itemsCategoryName, 
@@ -16,9 +18,11 @@ function EditListWithCount({
     handleItemsUpdate, 
     removeItemHandler, 
     setIsSavedChanges, 
-    setItemsUpdateData}) {
+    setItemsUpdateData
+} = props
   
   const alert = useAlert()
+
 
   const itemOptions = ((options) => {
     return options.map(({ name, subCategories, value }) => ({
@@ -34,8 +38,8 @@ function EditListWithCount({
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
   const result = []
 
-    initialSelectedItems.map(({ subCategories, value, _id, count }) => {
-      result.push({ name: subCategories[0], id: value[0], _id, count})
+    initialSelectedItems.map(({ subCategories, id, meta_id, count }) => {
+      result.push({ name: subCategories[0], id, meta_id, count})
 
     })
 
@@ -76,8 +80,8 @@ function EditListWithCount({
         <Formik
             initialValues={(() => {
                 const _initValues = {}
-                initialSelectedItems.forEach(({_id, count}) => {
-                    _initValues[_id] = count
+                initialSelectedItems.forEach(({id, count}) => {
+                    _initValues[id] = count
                 })
 
 
@@ -87,9 +91,9 @@ function EditListWithCount({
             onSubmit={values => {
 
                 // Update the list of values
-                deletedItems.forEach(([{_id}]) => {
-                    console.log({_id})
-                    delete values[_id]
+                deletedItems.forEach(([{id}]) => {
+                   
+                    delete values[id]
                 })
 
                 handleItemsUpdate([values, itemId], alert)
@@ -139,13 +143,13 @@ function EditListWithCount({
                     </label>
 
                     <div style={{maxWidth:'75%'}} className="flex items-start gap-2 w-full h-auto">
-
+                     
                         <Select
                             
                             options={itemOptions}
                             formatGroupLabel={formatGroupLabel}
                             onChange={(e) => { 
-                                setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
+                                setCurrentItem({ id: e?.value, name: e?.label, count: 1})
                              }
                             }
                             name="available_items"
@@ -189,45 +193,36 @@ function EditListWithCount({
 
                         <>
                             {selectedItems && selectedItems?.length > 0 ? (
-                                selectedItems?.map(({ name, _id, id}, __id) => (
+                                selectedItems?.map(({ name, id, meta_id}, __id) => (
                                     <TableRow
-                                        key={_id ?? id}
+                                        key={id}
 
                                     >
                                         <TableCell>{name}</TableCell>
                                         <TableCell>
-                                            { 
-                                            _id ?
-                                            // Edit Count
-                                            <Field
-                                            type='number'
-                                            name={_id}
-                                            className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                                            />
-                                            :
-                                            // Add Count
+                                          
                                             <Field
                                             type='number'
                                             name={id}
-                                         
                                             className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
 
-                                            }
                                         </TableCell>
                                         <TableCell>
+                                          
                                             <button
                                                 type="button"
                                                 onClick={async (e) => {
                                                     e.preventDefault()
-                                                    let items = selectedItems
-                                                    setDeletedItems([...deletedItems, items.splice(__id, 1)])
+                                                    let _items = selectedItems
+                                                    setDeletedItems([...deletedItems, _items.splice(__id, 1)])
                                                     setSelectedItems(
-                                                        items
+                                                        _items
                                                     );
 
-                                                    // Delete facility service
-                                                    removeItemHandler(e, id ?? _id, alert)
+                                                  
+                                                    
+                                                    removeItemHandler(e, meta_id, alert)
 
                                                 }}
                                                 className="flex items-center justify-center space-x-2 bg-red-400 rounded p-1 px-2"
@@ -266,5 +261,6 @@ function EditListWithCount({
         
      )
 }
+
 
 export default EditListWithCount
