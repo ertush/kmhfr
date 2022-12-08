@@ -21,14 +21,15 @@ import {
     handleInfrastructureUpdates,
     handleHrUpdates,
     handleServiceDelete,
-    handleInfrastructureDelete
+    handleInfrastructureDelete,
+    handleHrDelete
 } from '../../../controllers/facility/facilityHandlers';
 
 
 
 import FacilityContact from '../../../components/FacilityContact';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
-import TransferListHr from '../../../components/TransferListHr';
+// import TransferListHr from '../../../components/TransferListHr';
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
 
@@ -209,6 +210,7 @@ const EditFacility = (props) => {
 		
 		return _hrOptions
 	 })(props['17'].hr ?? [])
+     
 
     // Facility data
     const {
@@ -443,29 +445,27 @@ const EditFacility = (props) => {
 
   
     const infrastructureSelected = ((_infrastructure) => {
-        return _infrastructure.map(({infrastructure_name, infrastructure, count}) => ({
+        return _infrastructure.map(({infrastructure_name, infrastructure, id, count}) => ({
 
                     name: props['16']?.infrastructure.length > 0 ? props['16']?.infrastructure.filter(({id}) => id === infrastructure)[0].category_name : '',
                   
                     subCategories: [
                         infrastructure_name
                     ],
-                    value:[
-                        infrastructure
-                    ],
-                    _id:infrastructure,
+                    id:infrastructure,
+                    meta_id:id,
                     count
                     
                 })
         )   
     })(facility_infrastructure || []) 
 
-    // console.log({facility_infrastructure})
+
      
 
     const hrSelected = ((_hr) => {
       
-        return _hr.map(({speciality_name, speciality}) => { 
+        return _hr.map(({speciality_name, speciality, id, count }) => { 
 
             const hrFilter = props['17']?.hr.filter(({id}) => id === speciality)
 
@@ -476,15 +476,17 @@ const EditFacility = (props) => {
                 subCategories: [
                     speciality_name
                 ],
-                value:[
-                    speciality
-                ]
+                id:speciality,
+                meta_id:id,
+                count
                 
             }
             return resultHr.name !== '' ? resultHr : []
             }
         )
     })(facility_specialists || [])
+
+ 
 
     const [user, setUser] = useState(null)
 
@@ -535,21 +537,21 @@ const EditFacility = (props) => {
     // Different form states
     // const [services, setServices] = useState([])
    
-	const [hr, setHr] = useState([])
-	const [hrCount, setHrCount] = useState([])
+	// const [hr, setHr] = useState([])
+	// const [hrCount, setHrCount] = useState([])
     const [wardName, setWardName] = useState(ward_name)
     const [refreshForm4, setRefreshForm4] = useState()
-    const [selectedHrRight, setSelectedHrRight] = useState()
+    // const [selectedHrRight, setSelectedHrRight] = useState()
     const [operationStatus, setOperationStatus] = useState('')
-    const [refreshForm6, setRefreshForm6] = useState(false)
+    // const [refreshForm6, setRefreshForm6] = useState(false)
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
     const [serviceUpdates, setServiceUpdates] = useState(null)
     const [infrastructureUpdates, setInfrastructureUpdates] = useState(null)
+    const [hrUpdates, setHrUpdates] = useState(null)
     
 
 
-  
     const handleAddRegulatoryBody = (event) => {
         event.preventDefault();
 
@@ -2146,7 +2148,7 @@ const EditFacility = (props) => {
                                             {/* Regulation Status */} 
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
-                                                {console.log({ownerTypeName, filteredRegulationStateOptions})}
+                                               
                                                 {
                                                 
                                                 ownerTypeName === 'Ministry of Health' ?
@@ -2310,7 +2312,7 @@ const EditFacility = (props) => {
 
                                             ev.preventDefault()     
 
-                                            console.log({serviceUpdates})
+                                        
 
                                              handleServiceUpdates(ev, [serviceUpdates, id], alert, "Facility Services updated successfully")
                                                 .then(({statusText}) => {
@@ -2325,7 +2327,7 @@ const EditFacility = (props) => {
                                                                 update_id = results?.latest_update
                                                                 
                                                                 if(update_id){
-                                                                    console.log({update_id})
+                                                                 
                                                                     
                                                                     try{
                                                                         const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
@@ -2394,77 +2396,30 @@ const EditFacility = (props) => {
                                 </Tabs.Panel>
                                 {/* Human Resources */}
                                 <Tabs.Panel value="human_resource" className="grow-1 py-1 px-4 tab-panel">
-                                    <form name="facility_services_form" onSubmit={ev => handleHrUpdates(ev, [hr, hrCount, facilityId, setFormId], 'PATCH')} className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
-                                                        
-                                                        {/* Transfer list Container */}
-                                                        <div className='flex items-center w-full h-auto min-h-[300px]'>
-                                                        
-                                                        {/* Transfer List*/}
-                                                        
-                                                        <TransferListHr 
-                                                            categories={hrOptions} 
-                                                            setState={setHr}
-                                                            setRefreshForm6={setRefreshForm6}
-                                                            refreshForm6={refreshForm6}
-                                                            setCount={setHrCount}
-                                                            selectTitle='HR Specialities'
-                                                            setSelectedHrRight={setSelectedHrRight}
-                                                            selectedHrRight={hrSelected}
-                                                        
-
-                                                        />
-
-                                                        </div>
-                                                        {/* Service Category Table */}
-                                                        <table className='w-full  h-auto my-4'>
-                                                            <thead className='w-full'>
-                                                                <tr className='grid grid-cols-3 place-content-end border-b-4 border-gray-300'>
-                                                                    <td className='text-lg font-semibold text-indigo-900'>Name</td>
-                                                                    <td className='text-lg font-semibold text-indigo-900'>Present</td>
-                                                                    <td className='text-lg font-semibold text-indigo-900'>Number</td>
-                                                                </tr>
-                                                            </thead>
-
-                                                            <tbody>
-                                                            
-                                                                {
-                                                                    selectedHrRight ? 
-
-                                                                    selectedHrRight?.map(({subCategories, value:vs}, i) => (
-                                                                                                                
-                                                                    
-                                                                    <tr key={`${subCategories[0]}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-                                                                    
-                                                                        <td className='text-lg text-black'>{subCategories[0]}</td>
-                                                                        <td className='text-lg text-black'>{hrOptions.filter(({value}) =>  value.includes(vs[0]))[0].name}</td>
-
-                                                                        <td className='text-lg text-black'>Yes</td>
-                                                                        <td className='text-lg  text-black'>{facility_specialists.filter(({speciality}) => speciality === vs[0])[0].count}</td>
-                                                                    </tr>
-                                                                    ))
-                                                                    :
-                                                                    
-                                                                    hr.map(({subctg}) => subctg).map((_hr, i) => (
-                                                                        <tr key={`${_hr}_${i}`} className='grid grid-cols-3 place-content-end border-b-2 border-gray-300'>
-                                                                            <td className='text-lg text-black'>{_hr}</td>
-                                                                            <td className='text-lg text-black'>Yes</td>
-                                                                            <td className='text-lg  text-black'>{hrCount.filter(({name}) => name == _hr)[0].val || 0}</td>
-                                                                        </tr>
-                                                                    ))
-                                                                }
-                                                            
-                                                            
-                                                            </tbody>
-                                                        </table>
-
-                                                        {/* Save btn */}
-
-                                                        <div className=" w-full flex justify-end h-auto mr-3">
-                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
-                                                        </div>
-                                                        
-                                                    
-                                    </form> 
+         
+                                        <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                                            
+                                            {/* Edit List With Count Container*/}
+                                            <div className='flex items-center w-full h-auto min-h-[300px]'>
+                                            
+                                            {/* Edit List With Count*/}
+                                                <EditListWithCount 
+                                                    initialSelectedItems={hrSelected}
+                                                    itemsCategory={hrOptions}
+                                                    itemsCategoryName={'Human resource'}
+                                                    setUpdatedItem={setHrUpdates}
+                                                    itemId={id}
+                                                    item={{name, official_name}}
+                                                    handleItemsUpdate={handleHrUpdates}
+                                                    removeItemHandler={handleHrDelete}
+                                                    setIsSavedChanges={setIsSavedChanges}
+                                                    setItemsUpdateData={setFacilityUpdateData}
+                                                />
+    
+                                            </div>
+    
+                                        </div>        
+                                  
                                 </Tabs.Panel>
             
                             </Tabs.Root>
@@ -2524,7 +2479,7 @@ EditFacility.getInitialProps = async (ctx) => {
             throw new Error('Error checking token')
         } else {
 
-            let token = t.token;
+            const token = t.token;
 			let url = '';
 				
 				
@@ -2545,7 +2500,7 @@ EditFacility.getInitialProps = async (ctx) => {
 										},
 									})
 
-									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division  ? {value:id, label:sub_division} : {value:id, label:name}) ?? [{value: '', label: ''}]
+									const results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division  ? {value:id, label:sub_division} : {value:id, label:name}) ?? [{value: '', label: ''}]
 
 							
 									allOptions.push({facility_types: results })
@@ -2572,7 +2527,7 @@ EditFacility.getInitialProps = async (ctx) => {
 										},
 									})
 		
-									let _results  = (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))
+									const _results  = (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))
 
 									allOptions.push({facility_type_details: _results })
 									

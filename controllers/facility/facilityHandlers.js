@@ -742,10 +742,69 @@ const handleInfrastructureDelete = async (event, facility_infrastructure_id, ale
 
 }
 
-
 // handleHrUpdates
-const handleHrUpdates = async () => {
+const handleHrUpdates = async (stateSetters, alert) => {
 
+    const [hrUpdateData, facilityId] = stateSetters
+
+    const payload = {
+        specialities: Object.keys(hrUpdateData).map((id, i) => ({speciality:id, count:Object.values(hrUpdateData)[i]}))
+    }
+
+    console.log({payload})
+
+
+    try{
+
+        if(hrUpdateData && facilityId){
+            alert.success('Facility Human Resource successfully updated')
+        } else {
+            alert.danger("Unable to update facility Human Resource")
+        }
+
+          const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            method: 'POST',
+            body: JSON.stringify(payload)
+        })
+
+        return resp
+
+    }
+    catch(e){
+        console.error('Unable to patch facility Human resources details', e.message)
+    }
+}
+
+// handleHrDelete
+const handleHrDelete = async (event, facility_hr_id, alert) => {
+    event.preventDefault()
+
+    try{
+
+        if(facility_hr_id){
+            alert.success('Facility Human resource Deleted Successfully')
+        } else {
+            alert.danger("Unable to delete facility Human resource")
+        }
+
+          const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_hr&id=${facility_hr_id}`, {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+  
+        })
+
+        return resp
+
+    }
+    catch(e){
+        console.error('Unable to delete facility hr', e.message)
+    }
 }
 
 // handleFacilityUpgrades
@@ -795,5 +854,6 @@ export {
     handleHrUpdates,
     handleFacilityUpgrades,
     handleServiceDelete,
+    handleHrDelete,
     handleInfrastructureDelete
 }

@@ -80,6 +80,11 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
+                case 'delete_facility_hr':
+                    url = `${API_URL}/facilities/facility_specialists/${req.query.id}/`;
+                    method = 'DELETE';
+                    contentType = 'application/json;charset=utf-8';
+                    break;
                 case 'users':
                     url = `${API_URL}/users/`
                     contentType = 'application/json;charset=utf-8';
