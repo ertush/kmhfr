@@ -152,14 +152,14 @@ function EditListWithCount(props) {
 
             >
                 {/* Item List Dropdown */}
-                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                <div className='w-full flex flex-col items-start justify-start gap-3 mb-3'>
                     <label
                         htmlFor='available_items'
                         className='capitalize text-md  leading-tight tracking-tight'>
                         Available {itemsCategoryName}
                     </label>
 
-                    <div style={{maxWidth:'75%'}} className="flex items-start gap-2 w-full h-auto">
+                    <div style={{maxWidth:'78%'}} className="flex items-start gap-2 w-full h-auto">
                      
                         <Select
                             
@@ -270,7 +270,7 @@ function EditListWithCount(props) {
                 {/* Hidden submit button */}
                 {/* Save btn */}
 
-                <div style={{maxWidth:'85%' }} className="w-full flex justify-end h-auto mt-3">
+                <div style={{maxWidth:'88%' }} className="w-full flex justify-end h-auto mt-3">
                     <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
                 </div>
 
