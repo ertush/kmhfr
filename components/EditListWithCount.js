@@ -34,6 +34,7 @@ function EditListWithCount(props) {
 
   const [currentItem, setCurrentItem] = useState(null)
   const [deletedItems, setDeletedItems] = useState([])
+ 
 
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
   const result = []
@@ -46,6 +47,16 @@ function EditListWithCount(props) {
     return result
 
   })() : []))
+
+  const initialValues = (() => {
+    const _initValues = {}
+    initialSelectedItems.forEach(({id, count}) => {
+        _initValues[id] = count
+    })
+
+
+    return _initValues
+})()
 
 
 
@@ -78,25 +89,31 @@ function EditListWithCount(props) {
     return (
        
         <Formik
-            initialValues={(() => {
-                const _initValues = {}
-                initialSelectedItems.forEach(({id, count}) => {
-                    _initValues[id] = count
-                })
-
-
-                return _initValues
-            })()}
+            initialValues={initialValues}
 
             onSubmit={values => {
 
                 // Update the list of values
                 deletedItems.forEach(([{id}]) => {
-                   
                     delete values[id]
                 })
 
-                handleItemsUpdate([values, itemId], alert)
+           
+                // Filter Edited fields only
+
+                const valueKeys = []
+                const disjointValues = {}
+
+                Object.values(values).filter((v, i) => {
+                    if (v !== Object.values(initialValues)[i]) valueKeys.push(Object.keys(values)[i]); 
+                    return v !== Object.values(initialValues)[i] 
+                   })[0]; 
+                   
+               for (let key in valueKeys) disjointValues[valueKeys[key]] = values[valueKeys[key]]; 
+
+            
+
+                handleItemsUpdate([disjointValues, itemId], alert)
                 .then(({statusText}) => {
                     defer(() => setIsSavedChanges(true))
                      let update_id
@@ -202,6 +219,7 @@ function EditListWithCount(props) {
                                         <TableCell>
                                           
                                             <Field
+                                            as='input'
                                             type='number'
                                             name={id}
                                             className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
