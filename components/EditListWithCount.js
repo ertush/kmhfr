@@ -1,25 +1,35 @@
 import React, { useState} from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
-import { PlusIcon } from '@heroicons/react/solid';
 import { defer } from 'underscore';
 import {Formik, Form, Field} from 'formik'
-
+import {
+	ChevronDoubleRightIcon,
+	ChevronDoubleLeftIcon,
+    PlusIcon
+} from '@heroicons/react/solid';
 import { useAlert } from 'react-alert'
 
-function EditListWithCount(props) {
+function EditListWithCount(
+    { 
+        initialSelectedItems, 
+        itemsCategory, 
+        itemsCategoryName, 
+        itemId, 
+        item, 
+        handleItemsSubmit,
+        handleItemsUpdate, 
+        removeItemHandler, 
+        setIsSavedChanges, 
+        setItemsUpdateData,
+        handleItemPrevious,
+        setNextItemCategory,
+        nextItemCategory,
+        previousItemCategory
+    }
+) {
 
-  const { 
-    initialSelectedItems, 
-    itemsCategory, 
-    itemsCategoryName, 
-    itemId, 
-    item, 
-    handleItemsUpdate, 
-    removeItemHandler, 
-    setIsSavedChanges, 
-    setItemsUpdateData
-} = props
+ 
   
   const alert = useAlert()
 
@@ -93,6 +103,8 @@ function EditListWithCount(props) {
 
             onSubmit={values => {
 
+                if(item){
+
                 // Update the list of values
                 deletedItems.forEach(([{id}]) => {
                     delete values[id]
@@ -133,15 +145,22 @@ function EditListWithCount(props) {
                                          setItemsUpdateData(itemsUpdateData)                                                     
                                      }
                                      catch(e){
-                                         console.error('Encountered error while fetching facility update data', e.message)
+                                         console.error('Encountered error while fetching item update data', e.message)
                                      }
                                  }
                              })
-                             .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
+                             .catch(e => console.error('unable to fetch item update data. Error:', e.message))                                
                          }
                        
                      })
-                     .catch(e => console.error('unable to fetch facility data. Error:', e.message))
+                     .catch(e => console.error('unable to fetch item data. Error:', e.message))
+                }
+
+                else {
+
+                    nextItemCategory === 'finish' ? handleItemsSubmit([values, setNextItemCategory], itemId, alert) :  handleItemsSubmit([values, setNextItemCategory, setSelectedItems], itemId)
+                    .catch(e => console.error('unable to submit item data. Error:', e.message))
+                }
                 
             }} 
             >
@@ -253,6 +272,7 @@ function EditListWithCount(props) {
                                     </TableRow>
                                 ))
                             ) : (
+                                item !== null &&
                                 <TableRow>
                                     <TableCell>
                                     <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
@@ -270,9 +290,30 @@ function EditListWithCount(props) {
                 {/* Hidden submit button */}
                 {/* Save btn */}
 
-                <div style={{maxWidth:'88%' }} className="w-full flex justify-end h-auto mt-3">
-                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
-                </div>
+                { 
+                    selectedItems.length > 0 && item !== null &&
+
+                   <div style={{maxWidth:'88%' }} className="w-full flex justify-end h-auto mt-3">
+                       <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
+                   </div>
+                }
+
+                {
+                    item === null &&
+
+                    <div className='flex justify-between items-center w-full mt-4' style={{maxWidth:'90%'}}>
+                        <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                            <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                            <span className='text-medium font-semibold text-black '>{previousItemCategory}</span>
+                        </button>
+                        <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+                            <span className='text-medium font-semibold text-white'>{nextItemCategory}</span>
+                            <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
+                        </button>
+                    </div>
+                }
+
+             
 
             </Form>
         </Formik>

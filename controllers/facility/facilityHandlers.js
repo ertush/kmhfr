@@ -426,46 +426,61 @@ const handleServiceSubmit = async (event, stateSetters, method) => {
 }
 
 // handleInfrastructureSubmit
-const handleInfrastructureSubmit = (event, stateSetters, method) => {
-    event.preventDefault()
+const handleInfrastructureSubmit = (stateSetters, facilityId) => {
+   
 
-    const [infrastructure, infrastructureCount, setFormId, facilityId] = stateSetters
+    const [formData, setFormId, setSelectedItems]  = stateSetters
 
-    const _payload = infrastructure.map(({value}, i) => ({count: i < infrastructureCount.length ? Number(infrastructureCount[i]['val'] ?? 0) : 0 , infrastructure: value}))
-
-    try{
-        fetch(`/api/common/submit_form_data/?path=infrastructure&id=${facilityId}`, {
-            headers:{
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
-                
-            },
-            method,
-            body: JSON.stringify({infrastructure:_payload})
+    const _payload = Object.values(formData).map((count, i) => 
+        ({
+            infrastructure: Object.keys(formData)[i],
+            count
         })
+    )
+
+    if(facilityId && _payload){
+
+        try{
+            fetch(`/api/common/submit_form_data/?path=infrastructure&id=${facilityId}`, {
+                headers:{
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json;charset=utf-8'
+                    
+                },
+                method:'POST',
+                body: JSON.stringify({infrastructure: _payload})
+            })
+
+        }
+        catch(e){
+            console.error('Unable to patch facility contacts details', e.message)
+        }
+
+        window.sessionStorage.setItem('formId', 6)
+        setFormId(window.sessionStorage.getItem('formId'))
+        setSelectedItems([])
+
 
     }
-    catch(e){
-        console.error('Unable to patch facility contacts details', e.message)
-    }
-
-    window.sessionStorage.setItem('formId', 6)
-    
-    
-    setFormId(window.sessionStorage.getItem('formId'))
 
 }
 
 
 // handleHrSubmit
-const handleHrSubmit = (event, stateSetters, method) => {
+const handleHrSubmit = (stateSetters, facilityId, alert) => {
 
-    const [hr, hrCount, facilityId, setFormId, alert] = stateSetters
-    event.preventDefault()
+    const [formData, setFormId] = stateSetters
+  
 
-    const _payload = hr.map(({value}, i) => ({count: i < hrCount.length ? Number(hrCount[i]['val'] ?? 0) : 0 , speciality: value}))
+    const _payload = Object.values(formData).map((count, i) => 
+        ({
+            speciality: Object.keys(formData)[i],
+            count
+        })
+    )
 
-    if(_payload){
+
+    if(_payload && facilityId){
         alert.success("Facility Created successfully")
     }else {
         alert.danger("Unable to create facility")
@@ -485,7 +500,7 @@ const handleHrSubmit = (event, stateSetters, method) => {
 
     }
     catch(e){
-        console.error('Unable to patch facility contacts details', e.message)
+        console.error('Unable to submit facility human resources details', e.message)
     }
 
 
