@@ -29,7 +29,6 @@ import {
 
 import FacilityContact from '../../../components/FacilityContact';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
-// import TransferListHr from '../../../components/TransferListHr';
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
 
@@ -547,8 +546,8 @@ const EditFacility = (props) => {
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
     const [serviceUpdates, setServiceUpdates] = useState(null)
-    const [infrastructureUpdates, setInfrastructureUpdates] = useState(null)
-    const [hrUpdates, setHrUpdates] = useState(null)
+  
+  
     
 
 
@@ -2381,13 +2380,17 @@ const EditFacility = (props) => {
                                               initialSelectedItems={infrastructureSelected}
                                               itemsCategory={infrastructureOption}
                                               itemsCategoryName={'infrastructure'}
-                                              setUpdatedItem={setInfrastructureUpdates}
                                               itemId={id}
                                               item={{name, official_name}}
+                                              handleItemsSubmit={() => null}
                                               handleItemsUpdate={handleInfrastructureUpdates}
                                               removeItemHandler={handleInfrastructureDelete}
                                               setIsSavedChanges={setIsSavedChanges}
                                               setItemsUpdateData={setFacilityUpdateData}
+                                              handleItemPrevious={() => null}
+                                              setNextItemCategory={() => null}
+                                              nextItemCategory={null}
+											  previousItemCategory={null}
                                             />
 
                                         </div>
@@ -2407,13 +2410,17 @@ const EditFacility = (props) => {
                                                     initialSelectedItems={hrSelected}
                                                     itemsCategory={hrOptions}
                                                     itemsCategoryName={'Human resource'}
-                                                    setUpdatedItem={setHrUpdates}
                                                     itemId={id}
                                                     item={{name, official_name}}
+                                                    handleItemsSubmit={() => null}
                                                     handleItemsUpdate={handleHrUpdates}
                                                     removeItemHandler={handleHrDelete}
                                                     setIsSavedChanges={setIsSavedChanges}
                                                     setItemsUpdateData={setFacilityUpdateData}
+                                                    handleItemPrevious={() => null}
+                                                    setNextItemCategory={() => null}
+                                                    nextItemCategory={null}
+													previousItemCategory={null}
                                                 />
     
                                             </div>

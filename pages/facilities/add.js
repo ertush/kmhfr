@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, Suspense, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAlert } from "react-alert";
 
 
@@ -14,7 +14,7 @@ import MainLayout from '../../components/MainLayout';
 import FacilityContact from '../../components/FacilityContact';
 import TrasnferListServices from '../../components/TrasnferListServices';
 import TransferListHr from '../../components/TransferListHr';
-import TransferListInfrastructure from '../../components/TransferListInfrastructure';
+import EditListWithCount from '../../components/EditListWithCount';
 
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
@@ -24,9 +24,7 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
+import FacilitySideMenu from '../../components/FacilitySideMenu';
 import Alert from '@mui/material/Alert';
 
 // Heroicons imports
@@ -54,7 +52,7 @@ import {
 
 
 const turf = require('@turf/turf');
-const FormData = require('form-data');
+// const FormData = require('form-data');
 const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
@@ -259,6 +257,14 @@ function AddFacility(props) {
 	const [checklistFile, setChecklistFile] = useState(null)
 	const [licenseFile, setLicenseFile] = useState(null)
 	const [coordinatesError, setCoordinatesError] = useState(false)
+
+
+	const [khisSynched, setKhisSynched] = useState(false);
+    const [facilityFeedBack, setFacilityFeedBack] = useState([])
+    const [pathId, setPathId] = useState('') 
+    const [allFctsSelected, setAllFctsSelected] = useState(false);
+    const [title, setTitle] = useState('');
+	const filters = []
 	
 	
     useEffect(() => {
@@ -373,23 +379,28 @@ function AddFacility(props) {
 	}
 
 	useEffect(() => {
+		const isLatLngInRegion = () => {
+			
+			if(longitude.length >= 9 && latitude.length >= 9){ 
+				let point = turf.point([longitude, latitude]);
+				
+				let polygon = turf.polygon(facilityCoordinates);
+				console.log({facilityCoordinates})
+				let found = turf.booleanPointInPolygon(point, polygon);
+				if(!found){
+					setCoordinatesError(true)
+				}else{
+					setCoordinatesError(false)
+				}
+			}
+		}
+
 		isLatLngInRegion()
 	} , [longitude, latitude])
 
 	useEffect(() => {}, [coordinatesError])
 	
-	const isLatLngInRegion=()=> {
-		if(longitude.length > 1 && latitude.length > 1){
-			let point = turf.point([longitude, latitude]);
-			let polygon = turf.polygon(facilityCoordinates);
-			let found = turf.booleanPointInPolygon(point, polygon);
-			if(!found){
-				setCoordinatesError(true)
-			}else{
-				setCoordinatesError(false)
-			}
-		}
-	}
+	
   return (
 	<>
 		 <Head>
@@ -418,7 +429,7 @@ function AddFacility(props) {
 
 						{/* Side Menu Filters */}
 
-						<div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
+						{/* <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
                         <List
                         sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
                         component="nav"
@@ -484,7 +495,15 @@ function AddFacility(props) {
                             </ListItemButton>
         
                         </List>
-                    	</div>
+                    	</div> */}
+
+						 {/* Facility Side Menu Filters */}
+						 <div className="md:col-span-1 md:mt-8">
+                            <FacilitySideMenu 
+                                filters={filters}
+                                states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                                stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
+                		</div>
 
 						{/* Stepper and Form */}
 						<div className='col-span-4 md:col-start-2 md:col-span-4 flex flex-col items-center border rounded pt-8 pb-4 gap-4 mt-2 order-last md:order-none'>
@@ -2266,63 +2285,31 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
-													<form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId], 'POST')}  className='flex flex-col w-full items-start justify-start gap-3'>
-														
-														{/* Transfer list Container */}
-														<div className='flex items-center w-full h-auto min-h-[300px]'>
-														
-														{/* Transfer List*/}
-														<TransferListInfrastructure 
-															categories={
-																infrastructureOption
-															} 
-															setState={setInfrastructure}
-															setCount={setInfrastructureCount}
-															setRefreshForm5={setRefreshForm5}
-															refreshForm5={refreshForm5}
-															selectTitle='Infrastructure'
-															setSelectedInfraRight={() => null}
-															selectedInfraRight={null}
-															/>
+													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
-														</div>
-														{/* Service Category Table */}
-														<table className='w-full  h-auto my-4'>
-															<thead className='w-full'>
-																<tr className='grid grid-cols-4 place-content-end border-b-4 border-gray-300'>
-																	<td className='text-lg font-semibold text-indigo-900'>Name</td>
-																	<td className='text-lg font-semibold text-indigo-900'>Category</td>
-																	<td className='text-lg font-semibold text-indigo-900'>Present</td>
-																	<td className='text-lg font-semibold text-indigo-900'>Number</td>
-																</tr>
-															</thead>
-															<tbody ref={infrastructureBodyRef}>
-																{
-																	infrastructure.map(({subctg}) => subctg).map((_infrastructure, i) => (
-																		<tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-																			<td className='text-lg text-black'>{_infrastructure}</td>
-																			<td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
-																			<td className='text-lg text-black'>Yes</td>
-																			<td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
-																		</tr>
-																	))
-																}
-															
-															
-															</tbody>
-														</table>
-														
-														<div className='flex justify-between items-center w-full'>
-															<button onClick={handleInfrastructurePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-																<span className='text-medium font-semibold text-black '>Services</span>
-															</button>
-															<button type={'submit'} className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>Human resources</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
-															</button>
-														</div>
-													</form>
+														{/* Edit List With Count Container*/}
+														<div className='flex items-center w-full h-auto min-h-[300px]'>
+                                        
+															{/* Edit List With Count*/}
+																<EditListWithCount 
+																initialSelectedItems={[]}
+																itemsCategory={infrastructureOption}
+																itemsCategoryName={'infrastructure'}
+																itemId={facilityId}
+																item={null}
+																handleItemsSubmit={handleInfrastructureSubmit}
+																handleItemsUpdate={() => null}
+																removeItemHandler={() => null}
+																setIsSavedChanges={null}
+																setItemsUpdateData={null}
+																handleItemPrevious={handleInfrastructurePrevious}
+																setNextItemCategory={setFormId}
+																nextItemCategory={'services'}
+																previousItemCategory={'human resources'}
+																/>
+
+															</div>
+													</div>
 												</>
 												)
 											case 6:
@@ -2340,65 +2327,33 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human resources</h4>
-													<form name="facility_services_form" onSubmit={ev => handleHrSubmit(ev, [hr, hrCount, facilityId, setFormId, alert], 'POST')} className='flex flex-col w-full items-start justify-start gap-3'>
-														
-														{/* Transfer list Container */}
+													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+
+														{/* Edit List With Count Container*/}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
-														
-														{/* Transfer List*/}
-														
-														<TransferListHr 
-															categories={hrOptions} 
-															setState={setHr}
-															setRefreshForm6={setRefreshForm6}
-															refreshForm6={refreshForm6}
-															setCount={setHrCount}
-															selectTitle='HR Specialities'
-															setSelectedHrRight={() => null}
-															selectedHrRight={null}
+                                        
+															{/* Edit List With Count*/}
+																<EditListWithCount 
+																initialSelectedItems={[]}
+																itemsCategory={hrOptions}
+																itemsCategoryName={'human resource'}
+																itemId={facilityId}
+																item={null}
+																handleItemsSubmit={handleHrSubmit}
+																handleItemsUpdate={() => null}
+																removeItemHandler={() => null}
+																setIsSavedChanges={null}
+																setItemsUpdateData={null}
+																handleItemPrevious={handleHrPrevious}
+																setNextItemCategory={setFormId}
+																nextItemCategory={'finish'}
+																previousItemCategory={'infrastructure'}
+																/>
 
-														/>
-
-														</div>
-														{/* Service Category Table */}
-														<table className='w-full  h-auto my-4'>
-															<thead className='w-full'>
-																<tr className='grid grid-cols-3 place-content-end border-b-4 border-gray-300'>
-																	<td className='text-lg font-semibold text-indigo-900'>Name</td>
-																	<td className='text-lg font-semibold text-indigo-900'>Present</td>
-																	<td className='text-lg font-semibold text-indigo-900'>Number</td>
-																</tr>
-															</thead>
-
-															<tbody>
-															
-																{
-																	
-																	hr.map(({subctg}) => subctg).map((_hr, i) => (
-																		<tr key={`${_hr}_${i}`} className='grid grid-cols-3 place-content-end border-b-2 border-gray-300'>
-																			<td className='text-lg text-black'>{_hr}</td>
-																			<td className='text-lg text-black'>Yes</td>
-																			<td className='text-lg  text-black'>{hrCount.filter(({name}) => name == _hr)[0].val || 0}</td>
-																		</tr>
-																	))
-																}
-															
-															
-															</tbody>
-														</table>
-														
-														<div className='flex justify-between items-center w-full'>
-															<button onClick={handleHrPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-																<span className='text-medium font-semibold text-black '>Infrastracture</span>
-															</button>
-															<button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>Finish</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
-															</button>
-														</div>
-													</form>
-												</>
+															</div>
+									
+													</div>
+													</>
 												)
 											default:
 												// 
