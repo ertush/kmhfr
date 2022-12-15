@@ -494,7 +494,7 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method,
+            method:'POST',
             body: JSON.stringify({specialities:_payload})
         })
 
