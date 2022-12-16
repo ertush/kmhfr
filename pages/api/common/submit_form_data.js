@@ -67,7 +67,7 @@ export default async function submitFormData(req, res) {
                     break;
                 case 'infrastructure':           
                     url = `${API_URL}/facilities/facilities/${req.query.id}/`;
-                    method = 'PATCH';
+                    method = 'POST';
                     contentType = 'application/json;charset=utf-8';
                     break;
                 case 'delete_facility_infrastructure':                 
@@ -77,7 +77,7 @@ export default async function submitFormData(req, res) {
                     break;
                 case 'hr':               
                     url = `${API_URL}/facilities/facilities/${req.query.id}/`;
-                    method = 'PATCH';
+                    method = 'POST';
                     contentType = 'application/json;charset=utf-8';
                     break;
                 case 'delete_facility_hr':

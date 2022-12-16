@@ -12,9 +12,10 @@ import Link from 'next/link';
 // Component imports
 import MainLayout from '../../components/MainLayout';
 import FacilityContact from '../../components/FacilityContact';
-import TrasnferListServices from '../../components/TrasnferListServices';
-import TransferListHr from '../../components/TransferListHr';
+// import TrasnferListServices from '../../components/TrasnferListServices';
+// import TransferListHr from '../../components/TransferListHr';
 import EditListWithCount from '../../components/EditListWithCount';
+import EditListItem from '../../components/EditListItem';
 
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
@@ -137,9 +138,9 @@ function AddFacility(props) {
 			_infrastructure.forEach(({category_name:ctg}) => {
 				let allOccurences = _infrastructure.filter(({category_name}) => category_name === ctg)
 				
-				allOccurences.forEach(({id, name}) => {
+				allOccurences.forEach(({id, name}) => { 
 					_subCtgs.push(name)
-					_values.push(id)
+					_values.push(id) 
 				})
 				
 				if(_infrastructureOptions.map(({name}) => name).indexOf(ctg) === -1){
@@ -427,75 +428,6 @@ function AddFacility(props) {
 					
 						</div>
 
-						{/* Side Menu Filters */}
-
-						{/* <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
-                        <List
-                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                    
-                        >	
-                            <ListItemButton name="rt"
-                                onClick={() => handleQuickFiltersClick('all') }
-                            >
-                                <ListItemText primary="All Facilities" />
-                            </ListItemButton>
-                            <ListItemButton 
-                                 onClick={() => handleQuickFiltersClick('approved_facilities') }
-                            >
-                                <ListItemText primary="Approved Facilities" />
-                            </ListItemButton>
-                            <ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('new_pending_validation') }
-                            >
-                                <ListItemText primary="New Facilities Pending Validation"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('updated_pending_validation') }
-                            >
-                                <ListItemText primary="Updated Facilities Pending Validation"/>
-                            </ListItemButton>
-
-							<ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('to_publish') }
-                            >
-                                <ListItemText primary="Facilities Pending Approval"/>
-                            </ListItemButton>
-
-							<ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('dhis_synced_facilities') }
-                            >
-                                <ListItemText primary="DHIS Synced Approved Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                              	onClick={() => handleQuickFiltersClick('failed_validation_facilities') }
-                            >
-                                <ListItemText primary="Failed Validation Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                             	onClick={() => handleQuickFiltersClick('rejected_facilities') }
-                            >
-                                <ListItemText primary="Rejected Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                              	onClick={() => handleQuickFiltersClick('closed_facilities') }
-                            >
-                                <ListItemText primary="Closed Facilities "/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                              	onClick={() => handleQuickFiltersClick('incomplete_facilities') }
-                            >
-                                <ListItemText primary="Incomplete Facilities"/>
-                            </ListItemButton>
-        
-                        </List>
-                    	</div> */}
 
 						 {/* Facility Side Menu Filters */}
 						 <div className="md:col-span-1 md:mt-8">
@@ -2209,8 +2141,8 @@ function AddFacility(props) {
 											case 4:
 												// Services Form
 	
-												const handleServicePrevious = (event) => {
-													event.preventDefault()
+												const handleServicePrevious = () => {
+												
 													window.sessionStorage.setItem('formId', 3)
 													
 													setFormId(window.sessionStorage.getItem('formId'))
@@ -2220,12 +2152,12 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
-														<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices], 'POST')}>
+														{/* <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices], 'POST')}> */}
 															
 															{/* Transfer list Container */}
-															<div className='flex items-center w-full h-auto min-h-[300px]'>
+															{/* <div className='flex items-center w-full h-auto min-h-[300px]'> */}
 																							
-															<TrasnferListServices 
+															{/* <TrasnferListServices 
 																categories={serviceOptions}
 																setServices={setServices}
 																setRefreshForm4={setRefreshForm4}
@@ -2233,11 +2165,37 @@ function AddFacility(props) {
 																setBtnDirection={() => null}
 																selectedRight={null}
 																setSelectedServiceRight={() => null}
-															/>
+															/> */}
 
-															</div>
+																<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                                                            
+																	{/* Transfer list Container */}
+																	<div className='flex items-center w-full h-auto min-h-[300px]'>                                  
+
+																			<EditListItem 
+																			initialSelectedItems={[]}
+																			itemsCategory={serviceOptions}
+																			itemsCategoryName={'Services'}
+																			setUpdatedItem={() => null}
+																			itemId={facilityId}
+																			item={null}
+																			removeItemHandler={() => null}
+																			handleItemsSubmit={handleServiceSubmit}
+																			handleItemsUpdate={() => null}
+																			setNextItemCategory={setFormId}
+																			nextItemCategory={'infrastructure'}
+																			previousItemCategory={'regulation'}
+																			handleItemPrevious={handleServicePrevious}
+																			/>
+
+																	</div>
+																</div>
+
+
+
+															{/* </div> */}
 															{/* Service Category Table */}
-															<table className='w-full  h-auto my-4'>
+															{/* <table className='w-full  h-auto my-4'>
 																<thead className='w-full'>
 																	<tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
 																		<td className='text-lg font-semibold text-indigo-900 '>Name</td>
@@ -2267,7 +2225,7 @@ function AddFacility(props) {
 																	<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
 																</button>
 															</div>
-														</form>
+														</form> */}
 													</>
 												)
 											case 5:
@@ -2294,6 +2252,7 @@ function AddFacility(props) {
 																<EditListWithCount 
 																initialSelectedItems={[]}
 																itemsCategory={infrastructureOption}
+																otherItemsCategory={null}
 																itemsCategoryName={'infrastructure'}
 																itemId={facilityId}
 																item={null}
@@ -2335,7 +2294,8 @@ function AddFacility(props) {
 															{/* Edit List With Count*/}
 																<EditListWithCount 
 																initialSelectedItems={[]}
-																itemsCategory={hrOptions}
+																itemsCategory={null}
+																otherItemsCategory={hrOptions}
 																itemsCategoryName={'human resource'}
 																itemId={facilityId}
 																item={null}

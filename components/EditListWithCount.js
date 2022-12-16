@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useState, useEffect} from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
 import { defer } from 'underscore';
@@ -13,7 +13,8 @@ import { useAlert } from 'react-alert'
 function EditListWithCount(
     { 
         initialSelectedItems, 
-        itemsCategory, 
+        itemsCategory,
+        otherItemsCategory, 
         itemsCategoryName, 
         itemId, 
         item, 
@@ -31,15 +32,19 @@ function EditListWithCount(
 
  
   
+   
+
   const alert = useAlert()
 
 
-  const itemOptions = ((options) => {
+  const [isFormSubmit, setIsFormSubmit] = useState(false)
+  const [itemOptions, setItemOptions] = useState(((options) => {
+    if (options == null) return [] 
     return options.map(({ name, subCategories, value }) => ({
       label: name,
       options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
     }))
-  })(itemsCategory)
+  })(itemsCategory))
 
 
   const [currentItem, setCurrentItem] = useState(null)
@@ -96,15 +101,33 @@ function EditListWithCount(
     </div>
   );
 
+  useEffect(() => {
+
+    // reset itemOptions
+    if(isFormSubmit && otherItemsCategory) setItemOptions(((options) => {
+        console.log({selectedItems, initialValues})
+        return options.map(({ name, subCategories, value }) => ({
+          label: name,
+          options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
+        }))
+      })(otherItemsCategory))
+
+     
+
+    return () => {
+        setIsFormSubmit(false)
+    }
+
+}, [isFormSubmit])
+
     return (
        
         <Formik
             initialValues={initialValues}
 
-            onSubmit={values => {
+            onSubmit={(values, { resetForm }) => {
 
                 if(item){
-
                 // Update the list of values
                 deletedItems.forEach(([{id}]) => {
                     delete values[id]
@@ -158,7 +181,7 @@ function EditListWithCount(
 
                 else {
 
-                    nextItemCategory === 'finish' ? handleItemsSubmit([values, setNextItemCategory], itemId, alert) :  handleItemsSubmit([values, setNextItemCategory, setSelectedItems], itemId)
+                    nextItemCategory === 'finish' ? handleItemsSubmit([values, setNextItemCategory], itemId, alert) :  handleItemsSubmit([values, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
                     .catch(e => console.error('unable to submit item data. Error:', e.message))
                 }
                 
@@ -287,7 +310,7 @@ function EditListWithCount(
                     </TableBody>
                 </Table>
                 
-                {/* Hidden submit button */}
+             
                 {/* Save btn */}
 
                 { 

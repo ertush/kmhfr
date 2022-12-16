@@ -1,3 +1,4 @@
+import router from "next/router";
 
 // handleBasicDetailsSubmit
 const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
@@ -429,7 +430,9 @@ const handleServiceSubmit = async (event, stateSetters, method) => {
 const handleInfrastructureSubmit = (stateSetters, facilityId) => {
    
 
-    const [formData, setFormId, setSelectedItems]  = stateSetters
+
+    const [formData, setFormId, setSelectedItems, setIsFormSubmit, resetForm]  = stateSetters 
+
 
     const _payload = Object.values(formData).map((count, i) => 
         ({
@@ -438,7 +441,9 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
         })
     )
 
-    if(facilityId && _payload){
+   
+
+    if(facilityId && _payload){ 
 
         try{
             fetch(`/api/common/submit_form_data/?path=infrastructure&id=${facilityId}`, {
@@ -459,6 +464,8 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
         window.sessionStorage.setItem('formId', 6)
         setFormId(window.sessionStorage.getItem('formId'))
         setSelectedItems([])
+        resetForm()
+        setIsFormSubmit(true)
 
 
     }
@@ -471,6 +478,7 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
 
     const [formData, setFormId] = stateSetters
   
+  
 
     const _payload = Object.values(formData).map((count, i) => 
         ({
@@ -479,8 +487,10 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
         })
     )
 
+   
 
-    if(_payload && facilityId){
+
+    if(facilityId && _payload){ 
         alert.success("Facility Created successfully")
     }else {
         alert.danger("Unable to create facility")

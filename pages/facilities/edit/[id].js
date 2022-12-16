@@ -2359,12 +2359,6 @@ const EditFacility = (props) => {
 
                                                     </div>
                                                       
-                                                    {/* Save btn */}
-
-                                                    <div className=" w-full flex justify-end h-auto mr-3">
-                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
-                                                    </div>
-                                              
                                          
                                     </form>
                                 </Tabs.Panel>
@@ -2379,6 +2373,7 @@ const EditFacility = (props) => {
                                             <EditListWithCount 
                                               initialSelectedItems={infrastructureSelected}
                                               itemsCategory={infrastructureOption}
+                                              otherItemsCategory={null}
                                               itemsCategoryName={'infrastructure'}
                                               itemId={id}
                                               item={{name, official_name}}
@@ -2408,7 +2403,8 @@ const EditFacility = (props) => {
                                             {/* Edit List With Count*/}
                                                 <EditListWithCount 
                                                     initialSelectedItems={hrSelected}
-                                                    itemsCategory={hrOptions}
+                                                    itemsCategory={null}
+                                                    otherItemsCategory={hrOptions}
                                                     itemsCategoryName={'Human resource'}
                                                     itemId={id}
                                                     item={{name, official_name}}
