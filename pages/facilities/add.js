@@ -12,9 +12,10 @@ import Link from 'next/link';
 // Component imports
 import MainLayout from '../../components/MainLayout';
 import FacilityContact from '../../components/FacilityContact';
-import TrasnferListServices from '../../components/TrasnferListServices';
-import TransferListHr from '../../components/TransferListHr';
+// import TrasnferListServices from '../../components/TrasnferListServices';
+// import TransferListHr from '../../components/TransferListHr';
 import EditListWithCount from '../../components/EditListWithCount';
+import EditListItem from '../../components/EditListItem';
 
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
@@ -46,6 +47,7 @@ import {
     handleRegulationSubmit,
     handleServiceSubmit,
     handleInfrastructureSubmit,
+	handleServiceUpdates,
     handleHrSubmit
 } from '../../controllers/facility/facilityHandlers';
 
@@ -69,15 +71,57 @@ function AddFacility(props) {
 
 	// Form drop down options
 
-     const facilityOptions = [
-		props['0']?.facility_types[0],  // STAND ALONE
-		props['0']?.facility_types[1],  // DISPENSARY 
-		props['0']?.facility_types[2],  // MEDICAL CLINIC
-		props['0']?.facility_types[8],  // NURSING HOME
-		props['0']?.facility_types[10], // HOSPITALS
-		props['0']?.facility_types[16], // HEALTH CENTRE
-		props['0']?.facility_types[25]  // MEDICAL CENTRE
-	]
+
+	const facilityOptions = (() => {
+		const f_types = [
+			'STAND ALONE',
+			'DISPENSARY',
+			'MEDICAL CLINIC',
+			'NURSING HOME',
+			'HOSPITALS',
+			'HEALTH CENTRE',
+			'MEDICAL CENTRE'
+		]
+
+		const all_ftypes = []
+
+
+		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division === f_types[type]))
+
+
+
+		return [{
+			label: all_ftypes[0].sub_division,
+			value: all_ftypes[0].parent
+		},
+		{
+			label: all_ftypes[1].sub_division,
+			value: all_ftypes[1].parent
+		},
+		{
+			label: all_ftypes[2].sub_division,
+			value: all_ftypes[2].parent
+		},
+		{
+			label: all_ftypes[3].sub_division,
+			value: all_ftypes[3].parent
+		},
+		{
+			label: all_ftypes[4].sub_division,
+			value: all_ftypes[4].parent
+		},
+		{
+			label: all_ftypes[5].sub_division,
+			value: all_ftypes[5].parent
+		}
+
+		]
+
+	})()
+
+
+	// console.log({facilityOptions})
+	 
 
 	 const facilityTypeOptions = props['1']?.facility_type_details
 	 const ownerOptions =  props['2']?.owners
@@ -137,9 +181,9 @@ function AddFacility(props) {
 			_infrastructure.forEach(({category_name:ctg}) => {
 				let allOccurences = _infrastructure.filter(({category_name}) => category_name === ctg)
 				
-				allOccurences.forEach(({id, name}) => {
+				allOccurences.forEach(({id, name}) => { 
 					_subCtgs.push(name)
-					_values.push(id)
+					_values.push(id) 
 				})
 				
 				if(_infrastructureOptions.map(({name}) => name).indexOf(ctg) === -1){
@@ -427,75 +471,6 @@ function AddFacility(props) {
 					
 						</div>
 
-						{/* Side Menu Filters */}
-
-						{/* <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
-                        <List
-                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                    
-                        >	
-                            <ListItemButton name="rt"
-                                onClick={() => handleQuickFiltersClick('all') }
-                            >
-                                <ListItemText primary="All Facilities" />
-                            </ListItemButton>
-                            <ListItemButton 
-                                 onClick={() => handleQuickFiltersClick('approved_facilities') }
-                            >
-                                <ListItemText primary="Approved Facilities" />
-                            </ListItemButton>
-                            <ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('new_pending_validation') }
-                            >
-                                <ListItemText primary="New Facilities Pending Validation"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('updated_pending_validation') }
-                            >
-                                <ListItemText primary="Updated Facilities Pending Validation"/>
-                            </ListItemButton>
-
-							<ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('to_publish') }
-                            >
-                                <ListItemText primary="Facilities Pending Approval"/>
-                            </ListItemButton>
-
-							<ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('dhis_synced_facilities') }
-                            >
-                                <ListItemText primary="DHIS Synced Approved Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                              	onClick={() => handleQuickFiltersClick('failed_validation_facilities') }
-                            >
-                                <ListItemText primary="Failed Validation Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                             	onClick={() => handleQuickFiltersClick('rejected_facilities') }
-                            >
-                                <ListItemText primary="Rejected Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                              	onClick={() => handleQuickFiltersClick('closed_facilities') }
-                            >
-                                <ListItemText primary="Closed Facilities "/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                              	onClick={() => handleQuickFiltersClick('incomplete_facilities') }
-                            >
-                                <ListItemText primary="Incomplete Facilities"/>
-                            </ListItemButton>
-        
-                        </List>
-                    	</div> */}
 
 						 {/* Facility Side Menu Filters */}
 						 <div className="md:col-span-1 md:mt-8">
@@ -2209,8 +2184,8 @@ function AddFacility(props) {
 											case 4:
 												// Services Form
 	
-												const handleServicePrevious = (event) => {
-													event.preventDefault()
+												const handleServicePrevious = () => {
+												
 													window.sessionStorage.setItem('formId', 3)
 													
 													setFormId(window.sessionStorage.getItem('formId'))
@@ -2220,54 +2195,30 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
-														<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices], 'POST')}>
-															
-															{/* Transfer list Container */}
-															<div className='flex items-center w-full h-auto min-h-[300px]'>
-																							
-															<TrasnferListServices 
-																categories={serviceOptions}
-																setServices={setServices}
-																setRefreshForm4={setRefreshForm4}
-																refreshForm4={refreshForm4}
-																setBtnDirection={() => null}
-																selectedRight={null}
-																setSelectedServiceRight={() => null}
-															/>
+																<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                                                            
+																	{/* Transfer list Container */}
+																	<div className='flex items-center w-full h-auto min-h-[300px]'>                                  
 
-															</div>
-															{/* Service Category Table */}
-															<table className='w-full  h-auto my-4'>
-																<thead className='w-full'>
-																	<tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
-																		<td className='text-lg font-semibold text-indigo-900 '>Name</td>
-																		<td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
-																	</tr>
-																</thead>
-																<tbody ref={optionRefBody}>
-																	{
-																		services.map(({subctg}) => subctg).map((service, i) => (
-																			<tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-																				<td ref={nameOptionRef}>{service}</td>
-																				<td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-																			</tr>
-																		))
-																	}
-																
-																</tbody>
-															</table>
-															
-															<div className='flex justify-between items-center w-full'>
-																<button onClick={handleServicePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																	<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-																	<span className='text-medium font-semibold text-black '>Regulation</span>
-																</button>
-																<button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																	<span className='text-medium font-semibold text-white'>Infrastructure</span>
-																	<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
-																</button>
-															</div>
-														</form>
+																			<EditListItem 
+																			initialSelectedItems={[]}
+																			itemsCategory={serviceOptions}
+																			itemsCategoryName={'Services'}
+																			setUpdatedItem={() => null}
+																			itemId={facilityId}
+																			setItems={setServices}
+																			item={null}
+																			removeItemHandler={() => null}
+																			handleItemsSubmit={handleServiceSubmit}
+																			handleItemsUpdate={handleServiceUpdates}
+																			setNextItemCategory={setFormId}
+																			nextItemCategory={'infrastructure'}
+																			previousItemCategory={'regulation'}
+																			handleItemPrevious={handleServicePrevious}
+																			/>
+
+																	</div>
+																</div>
 													</>
 												)
 											case 5:
@@ -2294,6 +2245,7 @@ function AddFacility(props) {
 																<EditListWithCount 
 																initialSelectedItems={[]}
 																itemsCategory={infrastructureOption}
+																otherItemsCategory={null}
 																itemsCategoryName={'infrastructure'}
 																itemId={facilityId}
 																item={null}
@@ -2335,7 +2287,8 @@ function AddFacility(props) {
 															{/* Edit List With Count*/}
 																<EditListWithCount 
 																initialSelectedItems={[]}
-																itemsCategory={hrOptions}
+																itemsCategory={null}
+																otherItemsCategory={hrOptions}
 																itemsCategoryName={'human resource'}
 																itemId={facilityId}
 																item={null}
@@ -2447,10 +2400,10 @@ AddFacility.getInitialProps = async (ctx) => {
 										},
 									})
 
-									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division ? {value:id, label:sub_division} : {value:id, label:name})
+									// let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division ? {value:id, label:sub_division} : {value:id, label:name})
 
 									
-									allOptions.push({facility_types: results })
+									allOptions.push({facility_types: (await _data.json()).results})
 									
 								}
 								catch(err) {

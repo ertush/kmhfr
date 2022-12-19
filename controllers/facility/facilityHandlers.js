@@ -1,3 +1,4 @@
+import router from "next/router";
 
 // handleBasicDetailsSubmit
 const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
@@ -259,7 +260,7 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
 
     try{
 
-        fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
+        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
 
             headers:{
                 'Accept': 'application/json, text/plain, */*',
@@ -371,7 +372,7 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
 
     payload.forEach(data => {
         try{
-            fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
+            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
                 headers:{
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json;charset=utf-8'
@@ -396,26 +397,26 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
 };
 
 // handleServiceSubmit
-const handleServiceSubmit = async (event, stateSetters, method) => {
-    event.preventDefault()
+const handleServiceSubmit = async (stateSetters, facilityId) => {
 
-    const [services,facilityId, setFormId, setServices]  = stateSetters
-    const _payload = services.map(({value}) => ({service: value}))
+    const [services, setFormId, setServices]  = stateSetters
+    const _payload = services.map(({id}) => ({service: id}))
+
 
     try{
-        fetch(`/api/common/submit_form_data/?path=services&id=${facilityId}`, {
+        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
             headers:{
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method,
+            method:'POST',
             body: JSON.stringify({services:_payload})
         })
 
     }
     catch(e){
-        console.error('Unable to patch facility contacts details', e.message)
+        console.error('Unable to submit facility services due to the following error: ', e.message)
     }
 
     window.sessionStorage.setItem('formId', 5)
@@ -429,7 +430,9 @@ const handleServiceSubmit = async (event, stateSetters, method) => {
 const handleInfrastructureSubmit = (stateSetters, facilityId) => {
    
 
-    const [formData, setFormId, setSelectedItems]  = stateSetters
+
+    const [formData, setFormId, setSelectedItems, setIsFormSubmit, resetForm]  = stateSetters 
+
 
     const _payload = Object.values(formData).map((count, i) => 
         ({
@@ -438,10 +441,12 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
         })
     )
 
-    if(facilityId && _payload){
+   
+
+    if(facilityId && _payload){ 
 
         try{
-            fetch(`/api/common/submit_form_data/?path=infrastructure&id=${facilityId}`, {
+            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
                 headers:{
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json;charset=utf-8'
@@ -459,6 +464,8 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
         window.sessionStorage.setItem('formId', 6)
         setFormId(window.sessionStorage.getItem('formId'))
         setSelectedItems([])
+        resetForm()
+        setIsFormSubmit(true)
 
 
     }
@@ -471,6 +478,7 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
 
     const [formData, setFormId] = stateSetters
   
+  
 
     const _payload = Object.values(formData).map((count, i) => 
         ({
@@ -479,8 +487,10 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
         })
     )
 
+   
 
-    if(_payload && facilityId){
+
+    if(facilityId && _payload){ 
         alert.success("Facility Created successfully")
     }else {
         alert.danger("Unable to create facility")
@@ -488,7 +498,7 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
     
 
     try{
-        fetch(`/api/common/submit_form_data/?path=hr&id=${facilityId}`, {
+        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
             headers:{
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
@@ -551,7 +561,7 @@ const handleGeolocationUpdates = async (formData, coordinates_id, alert) => {
 
 
     try{
-       const resp =  await fetch(`/api/common/submit_form_data/?path=geolocation_update&id=${coordinates_id}`, {
+       const resp =  await fetch(`/api/common/submit_form_data/?path=update_geolocation&id=${coordinates_id}`, {
             headers:{
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
@@ -625,9 +635,8 @@ const handleRegulationUpdates = async (formData, facility_id, alert, alert_messa
 }
 
 // handleServiceUpdates
-const handleServiceUpdates = async (event, stateSetters, alert, alert_message) => {
+const handleServiceUpdates = async (stateSetters, alert) => {
 
-    event.preventDefault()
 
     const [services, facilityId]  = stateSetters
     
@@ -636,9 +645,9 @@ const handleServiceUpdates = async (event, stateSetters, alert, alert_message) =
     try{
 
         if(_payload){
-            alert.success(alert_message)
+            alert.success('Successfully updated facility services')
         } else {
-            alert.danger("Unable to update facility regulation")
+            alert.danger("Unable to update facility services")
         }
 
           const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
@@ -662,6 +671,8 @@ const handleServiceUpdates = async (event, stateSetters, alert, alert_message) =
 // handleServiceDelete
 
 const handleServiceDelete =  async (event, facility_service_id, alert) => {
+
+    event.preventDefault();
 
     try{
 

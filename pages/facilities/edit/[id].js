@@ -2306,7 +2306,7 @@ const EditFacility = (props) => {
                                 {/* Services */}
                                 <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
                                     
-                                    <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
+                                    {/* <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
                                        async ev => {
 
                                             ev.preventDefault()     
@@ -2343,30 +2343,33 @@ const EditFacility = (props) => {
                                                     })
                                                     .catch(e => console.error('unable to fetch facility data. Error:', e.message)) 
                                                 }
-                                         }>
-                                                           
-                                                    {/* Transfer list Container */}
-                                                    <div className='flex items-center w-full h-auto min-h-[300px]'>                                  
- 
-                                                        <EditListItem 
-                                                        initialSelectedItems={serviceSelected}
-                                                        itemsCategory={serviceOptions}
-                                                        itemsCategoryName={'Services'}
-                                                        setUpdatedItem={setServiceUpdates}
-                                                        item={{name, official_name}}
-                                                        removeItemHandler={handleServiceDelete}
-                                                        />
+                                         }> */}
 
-                                                    </div>
+                                        <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                                            {/* Transfer list Container */}
+                                            <div className='flex items-center w-full h-auto min-h-[300px]'>
+
+                                                <EditListItem
+                                                    initialSelectedItems={serviceSelected}
+                                                    itemsCategory={serviceOptions}
+                                                    itemsCategoryName={'Services'}
+                                                    setUpdatedItem={setServiceUpdates}
+                                                    item={{ name, official_name }}
+                                                    itemId={null}
+                                                    setItems={() => null}
+                                                    removeItemHandler={handleServiceDelete}
+                                                    handleItemsUpdate={handleServiceUpdates}
+                                                    setNextItemCategory={() => null}
+                                                    nextItemCategory={null}
+                                                    previousItemCategory={null}
+                                                    handleItemPrevious={null}
+                                                />
+
+                                            </div>
+                                        </div>
                                                       
-                                                    {/* Save btn */}
-
-                                                    <div className=" w-full flex justify-end h-auto mr-3">
-                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
-                                                    </div>
-                                              
                                          
-                                    </form>
+                                    {/* </form> */}
                                 </Tabs.Panel>
                                 {/* Infrastructure */}
                                 <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
@@ -2379,6 +2382,7 @@ const EditFacility = (props) => {
                                             <EditListWithCount 
                                               initialSelectedItems={infrastructureSelected}
                                               itemsCategory={infrastructureOption}
+                                              otherItemsCategory={null}
                                               itemsCategoryName={'infrastructure'}
                                               itemId={id}
                                               item={{name, official_name}}
@@ -2408,7 +2412,8 @@ const EditFacility = (props) => {
                                             {/* Edit List With Count*/}
                                                 <EditListWithCount 
                                                     initialSelectedItems={hrSelected}
-                                                    itemsCategory={hrOptions}
+                                                    itemsCategory={null}
+                                                    otherItemsCategory={hrOptions}
                                                     itemsCategoryName={'Human resource'}
                                                     itemId={id}
                                                     item={{name, official_name}}
