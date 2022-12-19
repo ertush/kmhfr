@@ -47,6 +47,7 @@ import {
     handleRegulationSubmit,
     handleServiceSubmit,
     handleInfrastructureSubmit,
+	handleServiceUpdates,
     handleHrSubmit
 } from '../../controllers/facility/facilityHandlers';
 
@@ -2152,21 +2153,6 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
-														{/* <form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices], 'POST')}> */}
-															
-															{/* Transfer list Container */}
-															{/* <div className='flex items-center w-full h-auto min-h-[300px]'> */}
-																							
-															{/* <TrasnferListServices 
-																categories={serviceOptions}
-																setServices={setServices}
-																setRefreshForm4={setRefreshForm4}
-																refreshForm4={refreshForm4}
-																setBtnDirection={() => null}
-																selectedRight={null}
-																setSelectedServiceRight={() => null}
-															/> */}
-
 																<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
                                                             
 																	{/* Transfer list Container */}
@@ -2178,10 +2164,11 @@ function AddFacility(props) {
 																			itemsCategoryName={'Services'}
 																			setUpdatedItem={() => null}
 																			itemId={facilityId}
+																			setItems={setServices}
 																			item={null}
 																			removeItemHandler={() => null}
 																			handleItemsSubmit={handleServiceSubmit}
-																			handleItemsUpdate={() => null}
+																			handleItemsUpdate={handleServiceUpdates}
 																			setNextItemCategory={setFormId}
 																			nextItemCategory={'infrastructure'}
 																			previousItemCategory={'regulation'}
@@ -2190,42 +2177,6 @@ function AddFacility(props) {
 
 																	</div>
 																</div>
-
-
-
-															{/* </div> */}
-															{/* Service Category Table */}
-															{/* <table className='w-full  h-auto my-4'>
-																<thead className='w-full'>
-																	<tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
-																		<td className='text-lg font-semibold text-indigo-900 '>Name</td>
-																		<td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
-																	</tr>
-																</thead>
-																<tbody ref={optionRefBody}>
-																	{
-																		services.map(({subctg}) => subctg).map((service, i) => (
-																			<tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-																				<td ref={nameOptionRef}>{service}</td>
-																				<td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-																			</tr>
-																		))
-																	}
-																
-																</tbody>
-															</table>
-															
-															<div className='flex justify-between items-center w-full'>
-																<button onClick={handleServicePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																	<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-																	<span className='text-medium font-semibold text-black '>Regulation</span>
-																</button>
-																<button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																	<span className='text-medium font-semibold text-white'>Infrastructure</span>
-																	<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
-																</button>
-															</div>
-														</form> */}
 													</>
 												)
 											case 5:

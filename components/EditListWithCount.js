@@ -124,7 +124,6 @@ function EditListWithCount(
        
         <Formik
             initialValues={initialValues}
-
             onSubmit={(values, { resetForm }) => {
 
                 if(item){
@@ -181,7 +180,7 @@ function EditListWithCount(
 
                 else {
 
-                    nextItemCategory === 'finish' ? handleItemsSubmit([values, setNextItemCategory], itemId, alert) :  handleItemsSubmit([values, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
+                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, setNextItemCategory], itemId, alert) : /* Infrastructure */ handleItemsSubmit([values, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
                     .catch(e => console.error('unable to submit item data. Error:', e.message))
                 }
                 
@@ -196,7 +195,7 @@ function EditListWithCount(
                 {/* Item List Dropdown */}
                 <div className='w-full flex flex-col items-start justify-start gap-3 mb-3'>
                     <label
-                        htmlFor='available_items'
+                        htmlFor='available_items_with_count'
                         className='capitalize text-md  leading-tight tracking-tight'>
                         Available {itemsCategoryName}
                     </label>
@@ -211,7 +210,7 @@ function EditListWithCount(
                                 setCurrentItem({ id: e?.value, name: e?.label, count: 1})
                              }
                             }
-                            name="available_items"
+                            name="available_items_with_count"
                             className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
                         />
                         <button className="bg-green-700 rounded p-2 flex items-center justify-evenly gap-2"
@@ -259,7 +258,6 @@ function EditListWithCount(
                                     >
                                         <TableCell>{name}</TableCell>
                                         <TableCell>
-                                          
                                             <Field
                                             as='input'
                                             type='number'

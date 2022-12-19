@@ -13,6 +13,7 @@ import {
 
 function EditListItem({
   initialSelectedItems,
+  setItems,
   itemsCategory,
   itemsCategoryName,
   setUpdatedItem,
@@ -81,51 +82,29 @@ function EditListItem({
 
   })() : []))
 
-  const initialValues = (() => {
-    const _initValues = {}
-    initialSelectedItems.forEach(({id, count}) => {
-        _initValues[id] = count
-    })
-
-
-    return _initValues
-})()
 
 const [deletedItems, setDeletedItems] = useState([])
 
 
-  useEffect(() => {
-    setUpdatedItem(selectedItems)
-  }, [selectedItems, isRemoveItem])
+useEffect(() => {
+  setUpdatedItem(selectedItems)
+}, [selectedItems, isRemoveItem])
+
 
 
   return (
 <Formik
-  initialValues={initialValues}
-  onSubmit={values => {
+  initialValues={{}}
+  initialErrors={false}
+  onSubmit={() => {
+   
     if(item){
-      // Update the list of values
-      deletedItems.forEach(([{id}]) => {
-          delete values[id]
-      })
-
-
-      const valueKeys = []
-      const disjointValues = {}
-
-      Object.values(values).filter((v, i) => {
-          if (v !== Object.values(initialValues)[i]) valueKeys.push(Object.keys(values)[i]); 
-          return v !== Object.values(initialValues)[i] 
-         })[0]; 
-         
-     for (let key in valueKeys) disjointValues[valueKeys[key]] = values[valueKeys[key]]; 
-     handleItemsUpdate([disjointValues, itemId], alert)
-
+       handleItemsUpdate([selectedItems, itemId], alert)
     }
 
     else {
 
-         handleItemsSubmit([values, setNextItemCategory], itemId, alert)
+         handleItemsSubmit([selectedItems, setNextItemCategory, setItems], itemId)
          .catch(e => console.error('unable to submit item data. Error:', e.message))
     }
     
@@ -140,7 +119,7 @@ const [deletedItems, setDeletedItems] = useState([])
       {/* Item List Dropdown */}
       <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
         <label
-          htmlFor='item_drop_down'
+          htmlFor='item_drop_down_edit_list'
           className='capitalize text-md  leading-tight tracking-tight'>
           Available {itemsCategoryName}
         </label>
@@ -152,7 +131,7 @@ const [deletedItems, setDeletedItems] = useState([])
               setCurrentItem({ id: e?.value, name: e?.label })
             }
             }
-            name="item_drop_down"
+            name="item_drop_down_edit_list"
             className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
           />
 
@@ -189,13 +168,14 @@ const [deletedItems, setDeletedItems] = useState([])
           </TableRow>
 
           <>
+      
             {selectedItems && selectedItems?.length > 0 ? (
-              selectedItems?.map(({ name, item_id }, __id) => (
+              selectedItems?.map(({ name, id, item_id }, __id) => (
                 <TableRow
-                  key={item_id}
-
+                  key={id}
                 >
                   <TableCell>{name}</TableCell>
+
                   <TableCell>
                     <button
                       type="button"

@@ -397,11 +397,14 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
 };
 
 // handleServiceSubmit
-const handleServiceSubmit = async (event, stateSetters, method) => {
-    event.preventDefault()
+const handleServiceSubmit = async (stateSetters, facilityId) => {
 
-    const [services,facilityId, setFormId, setServices]  = stateSetters
-    const _payload = services.map(({value}) => ({service: value}))
+
+    console.log({stateSetters, facilityId})
+  
+    const [services, setFormId, setServices]  = stateSetters
+    const _payload = services.map(({id}) => ({service: id}))
+
 
     try{
         fetch(`/api/common/submit_form_data/?path=services&id=${facilityId}`, {
@@ -410,13 +413,13 @@ const handleServiceSubmit = async (event, stateSetters, method) => {
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method,
+            method:'POST',
             body: JSON.stringify({services:_payload})
         })
 
     }
     catch(e){
-        console.error('Unable to patch facility contacts details', e.message)
+        console.error('Unable to submit facility services due to the following error: ', e.message)
     }
 
     window.sessionStorage.setItem('formId', 5)
@@ -635,9 +638,8 @@ const handleRegulationUpdates = async (formData, facility_id, alert, alert_messa
 }
 
 // handleServiceUpdates
-const handleServiceUpdates = async (event, stateSetters, alert, alert_message) => {
+const handleServiceUpdates = async (stateSetters, alert) => {
 
-    event.preventDefault()
 
     const [services, facilityId]  = stateSetters
     
@@ -646,9 +648,9 @@ const handleServiceUpdates = async (event, stateSetters, alert, alert_message) =
     try{
 
         if(_payload){
-            alert.success(alert_message)
+            alert.success('Successfully updated facility services')
         } else {
-            alert.danger("Unable to update facility regulation")
+            alert.danger("Unable to update facility services")
         }
 
           const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
@@ -672,6 +674,8 @@ const handleServiceUpdates = async (event, stateSetters, alert, alert_message) =
 // handleServiceDelete
 
 const handleServiceDelete =  async (event, facility_service_id, alert) => {
+
+    event.preventDefault();
 
     try{
 
