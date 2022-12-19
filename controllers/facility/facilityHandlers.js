@@ -260,7 +260,7 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
 
     try{
 
-        fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
+        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
 
             headers:{
                 'Accept': 'application/json, text/plain, */*',
@@ -372,7 +372,7 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
 
     payload.forEach(data => {
         try{
-            fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
+            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
                 headers:{
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json;charset=utf-8'
@@ -399,15 +399,12 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
 // handleServiceSubmit
 const handleServiceSubmit = async (stateSetters, facilityId) => {
 
-
-    console.log({stateSetters, facilityId})
-  
     const [services, setFormId, setServices]  = stateSetters
     const _payload = services.map(({id}) => ({service: id}))
 
 
     try{
-        fetch(`/api/common/submit_form_data/?path=services&id=${facilityId}`, {
+        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
             headers:{
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
@@ -449,7 +446,7 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
     if(facilityId && _payload){ 
 
         try{
-            fetch(`/api/common/submit_form_data/?path=infrastructure&id=${facilityId}`, {
+            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
                 headers:{
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json;charset=utf-8'
@@ -501,7 +498,7 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
     
 
     try{
-        fetch(`/api/common/submit_form_data/?path=hr&id=${facilityId}`, {
+        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
             headers:{
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
@@ -564,7 +561,7 @@ const handleGeolocationUpdates = async (formData, coordinates_id, alert) => {
 
 
     try{
-       const resp =  await fetch(`/api/common/submit_form_data/?path=geolocation_update&id=${coordinates_id}`, {
+       const resp =  await fetch(`/api/common/submit_form_data/?path=update_geolocation&id=${coordinates_id}`, {
             headers:{
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
