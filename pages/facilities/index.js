@@ -334,7 +334,7 @@ const Home = (props) => {
                                         {({ active }) => (
                                             <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
+                                                if (dl_url.includes('?')) { dl_url += `&format=csv&access_token=${props.token}` } else { dl_url += `?format=csv&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 // window.open(dl_url, '_blank', 'noopener noreferrer')
                                                 window.location.href = dl_url
@@ -348,7 +348,7 @@ const Home = (props) => {
                                         {({ active }) => (
                                             <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
                                                 console.log('Downloading Excel. ' + dl_url || '')
                                                 // window.open(dl_url, '_blank', 'noopener noreferrer')
                                                 window.location.href = dl_url
@@ -622,7 +622,7 @@ Home.getInitialProps = async (ctx) => {
             .then(json => {
                 return fetchFilters(token).then(ft => {
                     return {
-                        data: json, query, filters: { ...ft }, path: ctx.asPath || '/facilities', current_url: current_url
+                        data: json, query,token, filters: { ...ft }, path: ctx.asPath || '/facilities', current_url: current_url
                     }
                 })
             }).catch(err => {

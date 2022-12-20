@@ -245,8 +245,8 @@ const FacilitiesByKephLevel = (props) => {
                                                 if (dl_url.includes('?')) { dl_url += `&format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}&access_token=${props.token}` } else { dl_url += `?format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 // router.push(dl_url, undefined, { shallow: true })
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
+                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
