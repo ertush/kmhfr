@@ -251,7 +251,7 @@ const FacilitiesCoordinates = (props) => {
                                                 e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 dl_url = dl_url.replace('facilities/facilities', 'facilities/material')
-                                                if (dl_url.includes('?')) { dl_url += `&format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` } else { dl_url += `?format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` }
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}&access_token=${props.token}` } else { dl_url += `?format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
                                             }}
