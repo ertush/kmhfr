@@ -363,7 +363,7 @@ const DynamicReports = (props) => {
                                                             
                                                                 const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${fields}`)
                                                                 data.json().then(r => {
-
+                                                                    if(r.status === "OK"){
                                                                     const _lnlst = Array.from(r?.results, row => {
                                                                         let dtpnt = {}
                                                                         headers.forEach(col => {
@@ -382,6 +382,7 @@ const DynamicReports = (props) => {
                                                                     })
 
                                                                     setlinelist(_lnlst)
+                                                                }
                                                             })
 
                                                             //    Close Accordion
@@ -407,12 +408,16 @@ const DynamicReports = (props) => {
                                                     
                                                             {filters && Object.keys(filters).length > 0 &&
                                                                 (() => {
-                                                                console.log({filters})
+                                                                // console.log({filters})
                                                                 const sorted = Object.keys(fltrs).sort()  
 
-                                                                const sortOrder = [1, 13, 14, 2, 5, 6, 8, 7, 10, 9, 4, 3, 12, 11]
+                                                                const sortOrder = [1,13, 14, 2, 5, 6, 8, 7, 10, 9, 4, 3, 12, 11]
 
-                                                                return sortOrder.map((v, i) => sorted.indexOf(sorted[i]) === v ? sorted[i] : sorted[v] )
+                                                                const sortedOrder = sortOrder.map((v, i) => sorted.indexOf(sorted[i]) === v ? sorted[i] : sorted[v] )
+
+                                                                console.log({sortedOrder})
+
+                                                                return sortedOrder
 
                                                                 })(fltrs).map(ft => (
                                                                     <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -595,7 +600,7 @@ const DynamicReports = (props) => {
                                                                                             options={infrastructureOptions}
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                             onChange={sl => {
-                                                                                                sl.preventDefault()
+                                                                                                
                                                                                                 let nf = {}
                                                                                                 if (Array.isArray(sl)) {
                                                                                                     nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
@@ -688,7 +693,7 @@ const DynamicReports = (props) => {
                                                                                             options={specialityOptions}
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                                                             onChange={sl => {
-                                                                                                sl.preventDefault()
+                                                                                             
                                                                                                 let nf = {}
                                                                                                 if (Array.isArray(sl)) {
                                                                                                     nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(sl, l_ => l_.value).join(',')
@@ -813,7 +818,46 @@ const DynamicReports = (props) => {
 
                                                                                 // Sub County
                                                                                 case 'sub_county':
-                                                                                
+                                                                                    const handleSubCountyChange = async (ev) => {
+
+                                                                                        try{ 
+                                                                                            const dataConstituencies = await fetch(`/api/filters/ward/?sub_county=${ev.value}`)
+                                                                                            dataConstituencies.json().then(r => {
+                                                                                                const optionsWard = []
+                                                                                            
+                                                                                                r.results.forEach(({id, name}) => { 
+                                                                                                    optionsWard.push({
+                                                                                                        value: id,
+                                                                                                        label: name
+                                                                                                    })  
+                                                                                                } )
+                                                                                            
+
+                                                                                            // sub county    
+
+                                                                                        setWardOptions(optionsWard)
+                                                                                        setIsWardOptionsUpdate(!isWardOptionsUpdate)
+
+                                                                                        let nf = {}
+                                                                                        if (Array.isArray(ev)) {
+                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                        } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                            nf[ft] = ev.value
+                                                                                        } else {
+                                                                                            delete nf[ft]
+                                                                                            
+                                                                                        }
+                                                                                        setDrillDown({ ...drillDown, ...nf })
+
+                                                                                        })
+
+        
+                                                                                        }
+                                                                                        catch(e) {
+                                                                                            console.error(e.message)
+                                                                                        }
+
+                                                                                    }
 
                                                                                     return (
                                                                                         <Select 
@@ -831,22 +875,7 @@ const DynamicReports = (props) => {
                                                                                             }
                                                                                         }
                                                                                         placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                                                        onChange={ev => {
-                                                                                        
-                                                                                            if(subCountyOptions !== []){
-                                                                                                let nf = {}
-                                                                                                if (Array.isArray(ev)) {
-                                                                                                    nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
-                                                                                                } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
-                                                                                                    nf[ft] = ev.value
-                                                                                                } else {
-                                                                                                    delete nf[ft]
-                                                                                                    
-                                                                                                }
-                                                                                                setDrillDown({ ...drillDown, ...nf })
-                                                                                            }
-                                                                                        }
-                                                                                        }
+                                                                                        onChange={handleSubCountyChange}
                                                                                     
                                                                                     />
                                                                                     )
@@ -917,7 +946,6 @@ const DynamicReports = (props) => {
                                                                                     // Ward
                                                                                     case 'ward':
                                                                                             
-                                                                                
                                                                                             return (
                                                                                                 <Select 
                                                                                                 id={ft}
@@ -929,7 +957,7 @@ const DynamicReports = (props) => {
                                                                                         
                                                                                                     {
                                                                                                         value: drillDown[ft] || dr?.ward || '',
-                                                                                                        label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.ward)?.name || ''
+                                                                                                        label: filters[ft].find(ct=> ct.id == drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.ward)?.name || ''
                                                                                                     }
                                                                                                 }
                                                                                                 placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -959,16 +987,20 @@ const DynamicReports = (props) => {
                                                                                         ft === 'keph_level' ?
                                                                                         filteredKeph
                                                                                         :
-                                                                                        facilityTypeCategories
+
+                                                                                        ft == 'facility_type' ?
+                                                                                        facilityTypeCategories 
+                                                                                        
+                                                                                        :
                                                                                             
-                                                                                        /* Array.from(filters[ft] || [],
+                                                                                         Array.from(filters[ft] || [],
                                                                                                 fltopt => {
                                                                                                     return {
                                                                                                         value: fltopt.id, 
                                                                                                         label: fltopt.name
                                                                                                     }
                                                                                                 })
-                                                                                            */
+                                                                                            
                                                                                     
                                                                                         }
                                                                                         value={
@@ -1081,17 +1113,17 @@ const DynamicReports = (props) => {
                                                                 <label htmlFor="has_icu_beds" className="text-gray-700 capitalize text-sm flex-grow">Has ICU beds</label>
                                                                 <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_icu_beds" id="has_icu_beds" onChange={ev => {
                                                                     ev.preventDefault()
-                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                    setDrillDown({ ...drillDown, 'has_icu_beds': true })
                                                                 }} />
                                                         
                                                         </div>
 
                                                         {/* Has HDU Beds */}
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                            <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Has HDU beds</label>
+                                                            <label htmlFor="has_hdu_beds" className="text-gray-700 capitalize text-sm flex-grow">Has HDU beds</label>
                                                             <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_hdu_beds" id="has_hdu_beds" onChange={ev => {
                                                                 ev.preventDefault()
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                setDrillDown({ ...drillDown, 'has_hdu_beds': true })
                                                             }} />
                                                     
                                                         </div>  
@@ -1101,7 +1133,7 @@ const DynamicReports = (props) => {
                                                             <label htmlFor="has_martenity_beds" className="text-gray-700 capitalize text-sm flex-grow">Has Martenity beds</label>
                                                             <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_martenity_beds" id="has_martenity_beds" onChange={ev => {
                                                                 ev.preventDefault()
-                                                                setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                setDrillDown({ ...drillDown, 'has_martenity_beds': true })
                                                             }} />
                                                     
                                                         </div> 
@@ -1113,7 +1145,7 @@ const DynamicReports = (props) => {
                                                                 <label htmlFor="approved" className="text-gray-700 capitalize text-sm flex-grow">Approved</label>
                                                                 <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="approved" id="approved" onChange={ev => {
                                                                     ev.preventDefault()
-                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                    setDrillDown({ ...drillDown, 'approved': true })
                                                                 }} />
                                                         
                                                         </div>
@@ -1133,7 +1165,7 @@ const DynamicReports = (props) => {
                                                                 <label htmlFor="has_cots" className="text-gray-700 capitalize text-sm flex-grow">Has cots</label>
                                                                 <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_cots" id="has_cots" onChange={ev => {
                                                                     ev.preventDefault()
-                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                    setDrillDown({ ...drillDown, 'has_cots': true })
                                                                 }} />
                                                         
                                                         </div>
@@ -1144,7 +1176,7 @@ const DynamicReports = (props) => {
                                                                 <label htmlFor="open_24_hrs" className="text-gray-700 capitalize text-sm flex-grow">Open 24 hours</label>
                                                                 <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
                                                                     ev.preventDefault()
-                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                    setDrillDown({ ...drillDown, 'open_24_hrs': true })
                                                                 }} />
                                                         
                                                         </div>
@@ -1153,7 +1185,7 @@ const DynamicReports = (props) => {
                                                                 <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">Open weekends</label>
                                                                 <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
                                                                     ev.preventDefault()
-                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                    setDrillDown({ ...drillDown, 'open_weekends': true })
                                                                 }} />
                                                         
                                                         </div>
@@ -1162,7 +1194,7 @@ const DynamicReports = (props) => {
                                                                 <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
                                                                 <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
                                                                     ev.preventDefault()
-                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                    setDrillDown({ ...drillDown, 'open_holidays': true })
                                                                 }} />
                                                         
                                                         </div>
@@ -1170,22 +1202,22 @@ const DynamicReports = (props) => {
 
                                                     <div className='col-md-2 flex-col  items-start'>
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                                <label htmlFor="open_24_hrs" className="text-gray-700 capitalize text-sm flex-grow">Is classified</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
+                                                                <label htmlFor="is_classified" className="text-gray-700 capitalize text-sm flex-grow">Is classified</label>
+                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="is_classified" id="is_classified" onChange={ev => {
                                                                     ev.preventDefault()
-                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                    setDrillDown({ ...drillDown, 'is_classified': true })
                                                                 }} />
                                                         
                                                         </div>
 
-                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                        {/* <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">has general theatre</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                <input type="ch`eckbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'has_edits': true })
                                                                 }} />
                                                         
-                                                        </div>
+                                                        </div> */}
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">has maternity theatre</label>
@@ -1220,8 +1252,8 @@ const DynamicReports = (props) => {
                                                             setSubCountyOptions([])
                                                             setWardOptions([])
                                                             localStorage.setItem('dd_owners', JSON.stringify({county: '', sub_county:'', ward: ''}));
-                                                            router.push('/reports/dynamic_reports')
-                                                            // router.reload()
+                                                            // router.push('/reports/dynamic_reports')
+                                                            router.reload()
                                                                                                         
                                                         }}>Clear filters</button>
                                                     </div>
@@ -1361,6 +1393,7 @@ const DynamicReports = (props) => {
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full ">
                             {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
+                                {console.log({linelist})}
                                 <AgGridReact
                                     // floatingFilter={true}
                                     sideBar={true} //{'filters'}
@@ -1373,7 +1406,8 @@ const DynamicReports = (props) => {
                                     rowData={linelist}>
                                         
                                     {headers.map((v_, i) => {
-                                        if(v_.length > 3){
+                                        // console.log({v_})
+                                        if(v_){
                                             return (
                                                 <AgGridColumn
                                                     pinned={i < 3}
