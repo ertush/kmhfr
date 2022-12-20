@@ -4,7 +4,7 @@ import MainLayout from '../../components/MainLayout'
 import { DotsHorizontalIcon, DownloadIcon, PencilIcon, PlusIcon } from '@heroicons/react/solid'
 
 import { checkToken } from '../../controllers/auth/auth'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon } from '@heroicons/react/outline'
@@ -15,25 +15,24 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
 import Alert from '@mui/material/Alert';
-
-import ListItemText from '@mui/material/ListItemText';
 import NativePickers from '../../components/date-picker'
-import { set } from 'nprogress'
+import { PermissionContext } from '../../providers/permissions'
+import FacilitySideMenu from '../../components/FacilitySideMenu'
+
+// import { set } from 'nprogress'
 
 
 const Home = (props) => {
     const router = useRouter()
-   
-    let facilities = props?.data?.results
-    let filters = props?.filters
-    let fltrs = filters
-    let [drillDown, setDrillDown] = useState({})
-    let qf = props?.query?.qf || 'all'
 
-    // console.log({path: props?.path, current_url:props?.current_url});
+    const permissions = useContext(PermissionContext)
+   
+    const facilities = props?.data?.results
+    const filters = props?.filters
+    let fltrs = filters
+    const [drillDown, setDrillDown] = useState({})
+    const qf = props?.query?.qf || 'all'
    
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -52,72 +51,10 @@ const Home = (props) => {
     delete fltrs.open_weekends
     delete fltrs.open_public_holidays
 
-    let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
-    let quickFilters = [
-        {
-            name: 'All',
-            id: 'all',
-            filters: Object.keys(filters),
-        },
-        {
-            name: 'Approved',
-            id: 'approved',
-            filters: [
-                { id: "approved", value: true },
-                { id: "approved_national_level", value: true },
-                { id: "rejected", value: false },
-            ],
-        },
-        {
-            name: 'New pending validation',
-            id: 'new_pending_validation',
-            filters: [
-                { id: "pending_approval", value: true },
-                { id: "has_edits", value: false },
-                
-            ],
-        },
-        {
-            name: 'Updated pending validation',
-            id: 'updated_pending_validation',
-            filters: [
-                { id: "has_edits", value: true },
-                { id: "pending_approval", value: true },
-            ],
-        },
-        {
-            name: 'Failed Validation',
-            id: 'failed_validation',
-            filters: [
-                { id: "rejected", value: true },
-            ],
-        },
-        {
-            name: 'Incomplete',
-            id: 'incomplete',
-            filters: [
-                { id: "incomplete", value: true },
-            ]
-        },
-        {
-            name: 'Rejected',
-            id: 'rejected',
-            filters: [
-                { id: "rejected_national", value: true },
-            ]
-        },
-        {
-            name: 'Closed',
-            id: 'closed',
-            filters: [
-                { id: "closed", value: true },
-            ]
-        }
-    ]
+    const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
 
+   
 
-
-  
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
     const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
@@ -125,31 +62,17 @@ const Home = (props) => {
 
     // quick filter themes
     
-    const [approvedFctsSelected, setApprovedFctsSelected] = useState(false);
-    const [newFtsSelected, setNewFctsSelected] = useState(false);
-    const [updatedFctsSelected, setUpdatedFctsSelected] = useState(false);
-    const [failedValidationFctsSelected, setFailedValidationFctsSelected] = useState(false);
-    const [rejectedFctsSelected, setRejectedFctsSelected] = useState(false);
-    const [closedFctsSelected, setClosedFctsSelected] = useState(false);
-    const [syncRegulatedFctsSelected, setSyncRegulatedFctsSelected] = useState(false);
-    const [incompleteFctsSelected, setIncompleteFctsSelected] = useState(false);
-    const [feedBackFctsSelected, setFeedBackFctsSelected] = useState(false);
+   
     const [khisSynched, setKhisSynched] = useState(false);
-
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
-    const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '')
+    const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '') 
     const [allFctsSelected, setAllFctsSelected] = useState(true);
 
-    if(allFctsSelected && pathId.length > 0){
-        setAllFctsSelected(false)
-    }
 
-   
-    
+
     useEffect(() => {
-        
-       
-      
+    
+        // console.log({permissions})
         let qry = props?.query
         
         delete qry.searchTerm
@@ -179,61 +102,13 @@ const Home = (props) => {
         
     }
 
-    const handleQuickFiltersClick = async (filter_id) => {
-    
-    let filter = {}
-    if(filter_id !== 'khis_synched' && filter_id !== 'feedback') {
-        
-    const qfilter = quickFilters.filter(({id}) => id === filter_id).map(f => f.filters.map(({id, value}) => ({id, value})))
- 
-    qfilter[0].forEach(({id, value}) => {filter[id] = value})
-
-    }
-
-   
-    switch(filter_id){
-        case 'all':
-            setFacilityFeedBack([])
-            setKhisSynched(false)
-            router.push({pathname:'/facilities', query: {qf: filter_id}})
-            break;
-        case 'khis_synched':
-            setFacilityFeedBack([])
-            setKhisSynched(true)
-            
-            break;
-        case 'feedback':
-            setKhisSynched(false)
-            try {
-                const feedback = await fetch('/api/facility/facility_filters/?path=facility_service_ratings&fields=county,sub_county,constituency,ward,comment,facility_id,facility_name,service_name,created,rating&id=feedback')
-                const feedbackFacilities = (await feedback.json()).results
-
-                setFacilityFeedBack(feedbackFacilities)
-               
-
-            }
-            catch (err){
-                console.error(err.message);
-            }
-         
-            break;
-        default:
-            setFacilityFeedBack([])
-            setKhisSynched(false)
-            let robj = {pathname: '/facilities', query: {qf: filter_id, ...filter}}
-            router.push(robj)
-            break;
-
-    }
-        
-
-    }
+  
 
 
     return (
         <>
             <Head>
-                <title>KMHFL - Facilities</title>
+                <title>KHMFL - Facilities</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
@@ -244,7 +119,7 @@ const Home = (props) => {
                             {/* Bread Crumbs */}
 
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <a className="text-green-800" href="/">Home</a> {'>'}
+                                <Link className="text-green-800" href="/">Home</Link> {'/'}
                                 <span className="text-gray-500">Facilities</span>
                             </div>
 
@@ -437,9 +312,9 @@ const Home = (props) => {
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Facility Button */}
                                    <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
-                                        <button  onClick={() => {router.push('/facilities/add_facility')}} className='flex items-center justify-center'>
+                                        <button  onClick={() => {router.push('/facilities/add')}} className='flex items-center justify-center'>
 
-                                            <span className='font-semibold uppercase'>Add Facility</span>
+                                            <span className='text-base uppercase font-semibold'>Add Facility</span>
                                             <PlusIcon className="w-4 h-4 ml-2" />
                                         </button>
                                     </Menu.Item>
@@ -447,7 +322,7 @@ const Home = (props) => {
                                      {/* Export Button */}
                                      <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <DownloadIcon className="w-5 h-5 mr-1" />
-                                        <span>Export</span>
+                                        <span className='text-base uppercase font-semibold'>Export</span>
                                         <ChevronDownIcon className="w-4 h-4 ml-2" />
                                     </Menu.Button>
                                 </div>
@@ -465,7 +340,7 @@ const Home = (props) => {
                                                 window.location.href = dl_url
                                             }}>
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>CSV</span>
+                                                <span className='text-base uppercase font-semibold'>CSV</span>
                                             </button>
                                         )}
                                     </Menu.Item>
@@ -490,235 +365,14 @@ const Home = (props) => {
                         </div>
                     </div>
 
+                  
+
                     {/* Side Menu Filters*/}
-
-                    <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
-                        <List
-                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                    
-                        >	
-                            <ListItemButton sx={{ backgroundColor: (allFctsSelected || pathId === 'all') ?  '#e7ebf0' : 'none' }} name="rt"
-                                onClick={(ev)=>{
-                                    setTitle('Facilities')
-                                    setPathId('all')
-                                    setAllFctsSelected(true)
-                                    setApprovedFctsSelected(false)
-                                    setNewFctsSelected(false)
-                                    setUpdatedFctsSelected(false)
-                                    setFailedValidationFctsSelected(false)                                  
-                                    setRejectedFctsSelected(false)
-                                    setClosedFctsSelected(false)
-                                    setIncompleteFctsSelected(false)
-                                    setSyncRegulatedFctsSelected(false)
-                                    setFeedBackFctsSelected(false)
-
-                                    handleQuickFiltersClick('all')
-                                    
-                                
-                                }}
-                            >
-                                <ListItemText primary="All Facilities" />
-                            </ListItemButton>
-                            <ListItemButton sx={{ backgroundColor: (approvedFctsSelected || pathId === 'new_pending_validation')  ?  '#e7ebf0' : 'none' }} 
-                                onClick={(ev)=>{
-                                    setTitle('Approved Facilities')
-                                    setAllFctsSelected(false)
-                                    setPathId('not_all')
-                                    setApprovedFctsSelected(true)
-                                    setNewFctsSelected(false)
-                                    setUpdatedFctsSelected(false)
-                                    setFailedValidationFctsSelected(false)                                   
-                                    setRejectedFctsSelected(false)
-                                    setClosedFctsSelected(false)
-                                    setIncompleteFctsSelected(false)
-                                    setSyncRegulatedFctsSelected(false)
-                                    setFeedBackFctsSelected(false)
-
-                                    handleQuickFiltersClick('approved')
-                                   
-                                
-                                }}
-                            >
-                                <ListItemText primary="Approved Facilities" />
-                            </ListItemButton>
-                            <ListItemButton sx={{ backgroundColor: (newFtsSelected || pathId === 'new_pending_validation') ?  '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setTitle('Validate New Facilities')
-                                setAllFctsSelected(false)
-                                setApprovedFctsSelected(false)
-                                setNewFctsSelected(true)
-                                setUpdatedFctsSelected(false)
-                                setFailedValidationFctsSelected(false)                              
-                                setRejectedFctsSelected(false)
-                                setClosedFctsSelected(false)
-                                setIncompleteFctsSelected(false)
-                                setSyncRegulatedFctsSelected(false)
-                                setFeedBackFctsSelected(false)
-
-                                handleQuickFiltersClick('new_pending_validation')
-                                
-                            
-                            }}
-                            >
-                                <ListItemText primary="New Facilities Pending Validation"/>
-                            </ListItemButton>
-
-                            <ListItemButton sx={{ backgroundColor: (updatedFctsSelected  || pathId === 'updated_pending_validation') ?  '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setTitle('Validate Updated Facilities')
-                                setAllFctsSelected(false)
-                                setApprovedFctsSelected(false)
-                                setNewFctsSelected(false)
-                                setUpdatedFctsSelected(true)
-                                setFailedValidationFctsSelected(false)
-                                setRejectedFctsSelected(false)
-                                setClosedFctsSelected(false)
-                                setIncompleteFctsSelected(false)
-                                setSyncRegulatedFctsSelected(false)
-                                setFeedBackFctsSelected(false)
-                                
-                                handleQuickFiltersClick('updated_pending_validation')
-                            
-                            }}
-                            >
-                                <ListItemText primary="Updated Facilities Pending Validation"/>
-                            </ListItemButton>
-
-                            <ListItemButton sx={{ backgroundColor: (failedValidationFctsSelected || pathId === 'failed_validation')?  '#e7ebf0' : 'none'}}
-                            onClick={()=>{
-                                setTitle('Rejected Facilities')
-                                setAllFctsSelected(false)
-                                setApprovedFctsSelected(false)
-                                setNewFctsSelected(false)
-                                setUpdatedFctsSelected(false)
-                                setFailedValidationFctsSelected(true)
-                                setRejectedFctsSelected(false)
-                                setClosedFctsSelected(false)
-                                setIncompleteFctsSelected(false)
-                                setSyncRegulatedFctsSelected(false)
-                                setFeedBackFctsSelected(false)
-                                
-                                handleQuickFiltersClick('failed_validation')
-                            }}
-                            >
-                                <ListItemText primary="Failed Validation Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton sx={{  backgroundColor: (rejectedFctsSelected || pathId === 'rejected') ?  '#e7ebf0' : 'none'}}
-                            onClick={()=>{
-                                setTitle('Rejected Facilities')
-                                setAllFctsSelected(false)
-                                setApprovedFctsSelected(false)
-                                setNewFctsSelected(false)
-                                setUpdatedFctsSelected(false)
-                                setFailedValidationFctsSelected(false)
-                                setRejectedFctsSelected(true)
-                                setClosedFctsSelected(false)
-                                setIncompleteFctsSelected(false)
-                                setSyncRegulatedFctsSelected(false)
-                                setFeedBackFctsSelected(false)
-
-                                handleQuickFiltersClick('rejected')
-                                
-                            
-                            }}
-                            >
-                                <ListItemText primary="Rejected Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton sx={{ backgroundColor: (closedFctsSelected || pathId == "closed") ?  '#e7ebf0' : 'none'}}
-                            onClick={()=>{
-                                setTitle('Closed Facilities')
-                                setAllFctsSelected(false)
-                                setApprovedFctsSelected(false)
-                                setNewFctsSelected(false)
-                                setUpdatedFctsSelected(false)
-                                setFailedValidationFctsSelected(false)
-                                setRejectedFctsSelected(false)
-                                setClosedFctsSelected(true)
-                                setIncompleteFctsSelected(false)
-                                setSyncRegulatedFctsSelected(false)
-                                setFeedBackFctsSelected(false)
-
-                                handleQuickFiltersClick('closed')
-                                
-                            
-                            }}
-                            >
-                                <ListItemText primary="Closed Facilities "/>
-                            </ListItemButton>
-
-                            <ListItemButton sx={{  backgroundColor: (incompleteFctsSelected || pathId == "incomplete")  ?  '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setTitle('Incomplete Facilities')
-                                setAllFctsSelected(false)
-                                setApprovedFctsSelected(false)
-                                setNewFctsSelected(false)
-                                setUpdatedFctsSelected(false)
-                                setFailedValidationFctsSelected(false)
-                                setRejectedFctsSelected(false)
-                                setClosedFctsSelected(false)
-                                setIncompleteFctsSelected(true)
-                                setSyncRegulatedFctsSelected(false)
-                                setFeedBackFctsSelected(false)
-                                
-                                handleQuickFiltersClick('incomplete')
-                            
-                            }}
-                            >
-                                <ListItemText primary="Incomplete Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton sx={{ backgroundColor: (syncRegulatedFctsSelected || pathId == "khis_synched")  ?  '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setTitle('Synchronize Regulated Facilities')
-                                setAllFctsSelected(false)
-                                setApprovedFctsSelected(false)
-                                setNewFctsSelected(false)
-                                setUpdatedFctsSelected(false)
-                                setFailedValidationFctsSelected(false)
-                                setRejectedFctsSelected(false)
-                                setClosedFctsSelected(false)
-                                setIncompleteFctsSelected(false)
-                                setSyncRegulatedFctsSelected(true)
-                                setFeedBackFctsSelected(false)
-
-                                handleQuickFiltersClick('khis_synched')
-               
-                            }}
-                            >
-                                <ListItemText primary="Synchronize Regulated Facilities"/>
-                            </ListItemButton>
-
-                            
-                            <ListItemButton sx={{ backgroundColor: (feedBackFctsSelected || pathId == "feedback") ?  '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setTitle('Facilities Feedback From Public')
-                                setAllFctsSelected(false)
-                                setApprovedFctsSelected(false)
-                                setNewFctsSelected(false)
-                                setUpdatedFctsSelected(false)
-                                setFailedValidationFctsSelected(false)
-                                setRejectedFctsSelected(false)
-                                setClosedFctsSelected(false)
-                                setIncompleteFctsSelected(false)
-                                setSyncRegulatedFctsSelected(false)
-                                setFeedBackFctsSelected(true)
-
-                                handleQuickFiltersClick('feedback')
-              
-                            }}
-                            >
-                                
-                                <ListItemText primary="Feedback on Facilities"/>
-                            </ListItemButton>
-                                
-                        </List>
-                    </div>
-
-                 
+                    <FacilitySideMenu 
+                    filters={filters}
+                    states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                    stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
+                   
                     
                     {/* Main Body */}
                     <div className="w-full md:col-span-4 md:col-start-2  col-span-5 md:h-auto">
@@ -767,7 +421,7 @@ const Home = (props) => {
                                                     </div>
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 flex flex-wrap items-center justify-evenly gap-x-2 gap-y-1 text-lg">
                                                         {(facility.operational || facility.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
-                                                        {!facility.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility.approved ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility.rejected ? "Rejected" : ""}</span>}
+                                                        {!facility.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility.approved_national_level ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility.rejected ? "Rejected" : ""}</span>}
                                                         {facility.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
                                                     </div>
                                                 </div>
@@ -814,15 +468,7 @@ const Home = (props) => {
                                                     <Alert severity="warning" sx={{width:'100%'}}>No facilities found <span onClick={() => {
                                                         setTitle('Facilities')
                                                         setAllFctsSelected(true)
-                                                        setApprovedFctsSelected(false)
-                                                        setNewFctsSelected(false)
-                                                        setUpdatedFctsSelected(false)
-                                                        setFailedValidationFctsSelected(false)                                  
-                                                        setRejectedFctsSelected(false)
-                                                        setClosedFctsSelected(false)
-                                                        setIncompleteFctsSelected(false)
-                                                        setSyncRegulatedFctsSelected(false)
-                                                        setFeedBackFctsSelected(false)
+                                                       
     
                                                         router.push({pathname:'/facilities', query: {qf: 'all'}})
                                                     }} className='hover:underline text-indigo-700 cursor-pointer'>back to all facilities</span>
@@ -857,7 +503,6 @@ const Home = (props) => {
                     </div>
 
                   
-                   
                     {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
@@ -907,6 +552,7 @@ Home.getInitialProps = async (ctx) => {
         let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
+        
         }
         if (ctx?.query?.q) {
             query.searchTerm = ctx.query.q
@@ -933,7 +579,9 @@ Home.getInitialProps = async (ctx) => {
             "number_of_beds", 
             "number_of_cots", 
             "incomplete",
-            "open_whole_day", 
+            "open_whole_day",
+            "to_publish", 
+            "dhis_synced_facilities",
             "open_weekends",
             "approved",
             "reporting_in_dhis",
@@ -948,21 +596,21 @@ Home.getInitialProps = async (ctx) => {
                 query[flt] = ctx?.query[flt]
                 url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
             }
+
+
+            // Remove approved field if fetching for Facilities pending approval
+            // if (flt === 'to_publish') url = url.replace('approved,', '')
+
+          
         })
-
-        // console.log({ctxAsPath: ctx.asPath});
-
-        // if(ctx?.query) {
-            
-        //     url = url.replace('/facilities/?', `${ctx?.asPath.replace(/qf=[a-z]*&/, '')}&`)
-         
-        // }
 
 
         let current_url = url + '&page_size=100'
         if (ctx?.query?.page) {
             url = `${url}&page=${ctx.query.page}`
         }
+
+    
 
 
         return fetch(url, {

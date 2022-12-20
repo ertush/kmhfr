@@ -28,20 +28,33 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferListInfrastructure({categories, setState, setCount, selectTitle}) {
+export default function TransferListInfrastructure({categories, setState, setCount, setRefreshForm5, refreshForm5, selectTitle, selectedInfraRight, setSelectedInfraRight}) {
 
+ 
   const [checked, setChecked] = React.useState([]);
+  const [newSelected, setNewSelected] = React.useState([])
   const [checkBoxChecked, setCheckBoxChecked] = React.useState([]);
   const [inputVal, setInputVal] = React.useState([])
   const [left, setLeft] = React.useState((categories ? (() => categories.map(({name}) => name))() : []));
-  const [right, setRight] = React.useState([]);
-  const [checkAll, setCheckAll] = React.useState(false);
+  const [right, setRight] = React.useState((selectedInfraRight ? (() => {
+  const result = []
 
+    new Set(selectedInfraRight.map(({name}) => name)).forEach(data => {
+        result.push(data)
+    })
+
+    return result
+  })() : []));
+
+  const [checkAll, setCheckAll] = React.useState(false);
+  const [selectedInfrastructure, setSelectedInfrastructure] =  React.useState({});
+ 
   let leftChecked = intersection(checked, left);
   let rightChecked = intersection(checked, right);
 
   useMemo(() => {
       
+      setSelectedInfraRight(selectedInfraRight)
       leftChecked = intersection(checked, left);
       rightChecked = intersection(checked, right);
     
@@ -63,20 +76,29 @@ export default function TransferListInfrastructure({categories, setState, setCou
 
     setChecked(newChecked);
     
-
   };
 
-  const handleCheckBoxToggle =  (value) => () => {
-    const currentIndex = checkBoxChecked.indexOf(value);
+  const handleCheckBoxToggle =  (infrastructure) => () => {
+    const currentIndex = checkBoxChecked.indexOf(infrastructure.subctg);
+
+    const crntIndex =  newSelected.indexOf(infrastructure)
    
     const newChecked = [...checkBoxChecked];
 
+    let allSelected = newSelected;
+    
+    setNewSelected((() => {allSelected.push(infrastructure); return allSelected}))
+
     if (currentIndex === -1) {
-      newChecked.push(value);
+      newChecked.push(infrastructure.subctg);
     } else {
       newChecked.splice(currentIndex, 1);
+      let selected = newSelected
+      selected.splice(crntIndex, 1)
+      setNewSelected(selected)
     }
 
+    setSelectedInfrastructure(newSelected)
     setCheckBoxChecked(newChecked);
 
   }
@@ -105,16 +127,12 @@ export default function TransferListInfrastructure({categories, setState, setCou
 
   }
 
-
-
   const handleAllRight = () => {
     setRight(right.concat(left));
     setLeft([]);
     setCheckAll(true);
 
-    setState((ctgs => {
-     return ctgs.map(({subCategories}) => subCategories)
-    })(categories));
+    setState(selectedInfrastructure)
  
   };
 
@@ -123,10 +141,10 @@ export default function TransferListInfrastructure({categories, setState, setCou
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
    
-    setState(checkBoxChecked)
     setCount(inputVal)
 
-    // console.log({inputVal})
+    setRefreshForm5(!refreshForm5)
+    setState(selectedInfrastructure)
    
   };
 
@@ -134,12 +152,19 @@ export default function TransferListInfrastructure({categories, setState, setCou
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
+
+    setState(right)
+
+    setSelectedInfraRight(selectedInfraRight.splice(selectedInfraRight.indexOf(selectedInfraRight.filter(({name}) => name === rightChecked[0])[0]), 1))
+    setRefreshForm5(!refreshForm5)
+    // console.log({selectedInfraRight, rightChecked})
   };
 
   const handleAllLeft = () => {
     setLeft(left.concat(right));
     setRight([]);
 
+    setNewSelected([])
     setState([]);
   };
 
@@ -149,7 +174,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
 
       const [_data] = data
 
-      const {name, subCategories} = _data === undefined ? {name:'Loading...', subCategories:[]} : _data
+      const {name, subCategories, value} = _data ?? {name:'Loading...', subCategories:[], value:[]} 
  
       return (
        
@@ -165,6 +190,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
         <AccordionDetails>
             <ListItem  key={1} component="div">
 
+
               <div className='flex-col items-start justify-start'>
               {
                 subCategories.map((subctg, i) => (
@@ -175,7 +201,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
       
                       <div key={i} className='w-full grid grid-cols-3 gap-x-2 place-content-center border-b-2 border-gray-300'>
                             <label htmlFor='item_exist_cnt' className='self-center'>{subctg}</label>
-                            <div  id='item_exist_cnt' className='flex items-center space-x-1 h-auto'>
+                            <div  id='item_exist_cnt' className={`flex items-center ${(name === "ROADS") ? 'justify-end' : ''}  space-x-1 h-auto`}>
                                 <label htmlFor='item_exist'>Yes</label>
 
                                 <Checkbox
@@ -183,41 +209,48 @@ export default function TransferListInfrastructure({categories, setState, setCou
                                     checked={checkBoxChecked.indexOf(subctg) !== -1}
                                     tabIndex={-1}
                                     disableRipple
-                                    onChange={handleCheckBoxToggle(subctg)}
+                                    onChange={handleCheckBoxToggle({subctg, value:value[i]})}
                                     inputProps={{
                                         'aria-labelledby': 'options',
                                     }}
                             />
                             </div> 
+
+                            {/*  debug {console.log({name})} */}
+
+                                {
+                                  !(name === "ROADS") &&
+                                
                                 <input
-                                    required
+                                    
                                     id={`${subctg}-${i}`}
                                     onChange={handleInputChange(subctg)}
                                     type='number'
                                     name='facility_official_name'
                                     className='flex-none w-full h-8 self-center bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                 />
+                              } 
     
                       </div>
-                  :
-                  
+                  :               
                         <>
                             {
-                                (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
+                                 (selectedInfraRight !== null ? (selectedInfraRight.map(ctg => {ctg => ctg.subCategories[0]}).indexOf(subctg) !== -1 || checkAll) : checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
                                 <Checkbox
                                 key={i}
-                                checked={checkAll ? true : checkBoxChecked.indexOf(subctg) !== -1}
+                                checked={checkAll ? true : selectedInfraRight !== null ? (selectedInfraRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1) : (checkBoxChecked.indexOf(subctg) !== -1)}
                                 tabIndex={-1}
                                 disableRipple
-                                onChange={handleCheckBoxToggle(subctg)}
+                                onChange={handleCheckBoxToggle({subctg, value:value[i]})}
                                 inputProps={{
                                     'aria-labelledby': 'options',
                                 }}
                                 />
                             }
                             {
-                            (checkBoxChecked.indexOf(subctg) !== -1 || checkAll) &&
-                            <ListItemText  primary={`${subctg} (0)`} sx={{borderBottom: '1px solid grey'}} />
+                              selectedInfraRight !== null &&
+                             (selectedInfraRight.map(ctg => ctg.subCategories[0]).indexOf(subctg) !== -1 || checkAll) &&
+                            <ListItemText  primary={`${subctg}`} sx={{borderBottom: '1px solid grey'}} />
                             }
                         </>
                         }
@@ -238,8 +271,9 @@ export default function TransferListInfrastructure({categories, setState, setCou
   }
 
   const customList = (items, isRight) => (
-    <Paper sx={{ width: 520, height: 300, overflow: 'auto', padding:1 }}>
-        
+    <Paper sx={{ width: 480, height: 300, overflow: 'auto', padding:1, margin:'auto' }}>
+    
+
       <List dense component="div" role="list">
         {items.map((_data, i) => {
 
@@ -256,25 +290,7 @@ export default function TransferListInfrastructure({categories, setState, setCou
               <ListItemIcon>
              
                 <Checkbox
-
-                  checked={
-                    checked.indexOf(_data) !== -1
-                    /*(() => {
-                      
-                      const foundCtgs = Array.from(checkBoxChecked, subCtg => {
-                        return categories.filter(_subCtg => {for(let i = 0 ; i < _subCtg.subCategories.length; i++) if(_subCtg.subCategories[i] === subCtg) return _subCtg.subCategories[i] === subCtg})[0] || [] 
-                      }) 
-
-                      // console.log({foundCtgs})
-
-                      const _eval = Array.from(foundCtgs, ctg => {
-                        if(ctg === _data) return true
-                      }) || []
-
-                      console.log(_eval, _data)
-
-                    return _eval.length > 0 ? true : checked.indexOf(_data) !== -1
-                  })()*/} 
+                  checked={checked.indexOf(_data) !== -1} 
                   tabIndex={-1}
                   disableRipple
                   onChange={handleToggle(_data)}
@@ -284,10 +300,8 @@ export default function TransferListInfrastructure({categories, setState, setCou
                 />
               
               </ListItemIcon>
-             
-              
 
-              {accordion(getCtgs(categories, _data), isRight)}
+              {_data !== '' && accordion(getCtgs(categories, _data), isRight)}
 
             </ListItem>
           );
@@ -298,17 +312,14 @@ export default function TransferListInfrastructure({categories, setState, setCou
   );
 
   return (
-    <Grid container spacing={2} justifyContent="evenly" alignItems="center"  sx={{flex: 100, boxShadow:'none', backgroundColor:'#f9fafb'}}>
-      <Grid item> 
-      <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Categories</h5>
-        <Grid container direction="column" justifyContent="start" alignItems="start" gap={2} >
-         
-            {customList(left, false)}  
-        </Grid>
+    <div className="flex items-center justify-start gap-6 w-full">
+      <div className='flex-col items-start gap-2'>
+        <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Categories</h5>
+        {customList(left, false)}  
+      </div>
       
-          </Grid>
-      <Grid item>
-        <Grid container direction="column" alignItems="center">
+
+        <div className='flex flex-col justify-center items-center gap-3'>
           <Button
             sx={{ my: 0.5 }}
             variant="outlined"
@@ -349,15 +360,13 @@ export default function TransferListInfrastructure({categories, setState, setCou
           >
             ≪
           </Button>
-        </Grid>
-      </Grid>
-      <Grid item>
-          <Grid container direction="column"  justifyContent="start" alignItems="start">
+        </div>
+      
+        <div className='flex-col items-start gap-2'>
           <h5 className="text-md uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">{selectTitle}</h5>
-            {customList(right, true)}
-          </Grid>
-          </Grid>
-    </Grid>
+          {customList(right, true)}
+        </div>
+    </div >
   );
 }
 

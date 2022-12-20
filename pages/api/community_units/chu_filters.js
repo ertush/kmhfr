@@ -2,51 +2,44 @@
 
 import { checkToken } from "../../../controllers/auth/auth";
 
-export default async function createFacility(req, res) {
+export default async function fetchCHUFilters(req, res) {
 
     
     const fetchData = async (token) => {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-        console.log({body: req.body})
+        const {path, filters, fields, id} = req.query
     
         let url = ''
       
 
-        // switch (id){
-        //     case 'khis_synched':
-        //         url = `${API_URL}/facilities/${path}/?${filters}&fields=${fields}` 
-        //     break;
-        //     case 'feedback':
-        //         url = `${API_URL}/facilities/${path}/?fields=${fields}` 
-        //     break;
+        switch (id){
+            case 'feedback':
+                url = `${API_URL}/chul/${path}/?fields=${fields}` 
+            break;
         
-        //     default:
-        //     break;
-        // }
-
-        url = `${API_URL}/facilities/facilities/` 
+            default:
+            break;
+        }
         
         
 
         try {
-            // console.log({url});
+            console.log({url});
           
             const resp = await fetch(url, {
                 headers: {
                     'Authorization': 'Bearer ' + token,
-                    'Accept': 'application/json, text/plain, */*',
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                method:'POST',
-                body: JSON.stringify(req.body)
+                    'Accept': 'application/json',
+                    
+                }
             })
             
             return resp.json()
         }
         catch(err) {
-            console.error('Error fetching facility_filters: ', err)
+            console.error('Error fetching chu_filters: ', err)
             return {
                 error: true,
                 err: err,
@@ -56,7 +49,7 @@ export default async function createFacility(req, res) {
         
     }
 
-    if (req.method === "POST") {
+    if (req.method === "GET") {
                                                                                     
         try {
             return checkToken(req, res).then(t => {

@@ -28,7 +28,7 @@ const Logout = props => {
     return (
         <>
             <Head>
-                <title>KMHFL - Log out</title>
+                <title>KHMFL - Log out</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout>

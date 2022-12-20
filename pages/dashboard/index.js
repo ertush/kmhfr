@@ -1,21 +1,19 @@
 import Head from 'next/head'
-// import Link from 'next/link'
-import MainLayout from '../components/MainLayout'
-// import { DotsHorizontalIcon, DownloadIcon, PencilIcon } from '@heroicons/react/solid'
-import { checkToken } from '../controllers/auth/auth'
-import React, { useState, useEffect, useMemo, useRef } from 'react'
+import MainLayout from '../../components/MainLayout'
+import { checkToken } from '../../controllers/auth/auth'
+import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
-// import { Menu } from '@headlessui/react'
-// import { ChevronDownIcon } from '@heroicons/react/outline'
-import BarChart from '../components/BarChart'
+import BarChart from '../../components/BarChart'
 import Select from 'react-select'
-import Download from '../components/Download'
+import Download from '../../components/Download'
+import { UserContext } from '../../providers/user'
+import Link from 'next/link'
 
 const Dash = (props) => {
     const router = useRouter()
-    // console.log('props:::', props)
-    // console.log('props:::', Object.keys(props))
-    // console.log('props.data:::', Object.keys(props?.data))
+
+    const userCtx = useContext(UserContext)
+
 
     let filters = props?.filters
     let [drillDown, setDrillDown] = useState({})
@@ -26,11 +24,11 @@ const Dash = (props) => {
     let sessToken =props?.tok
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-    const {owner_link, types_link, summary_link, chu_link, keph_link} = useRef()
+    const {owner_link, types_link, summary_link, chu_link, keph_link} = useRef(null)
 
     useEffect(() => {
 
-        // console.log({data: props?.data})
+
         let mtd = true
         if (mtd) {
             if (filters && Object.keys(filters).length > 0) {
@@ -47,12 +45,9 @@ const Dash = (props) => {
                     }
                 })
             }
-            if (typeof window !== 'undefined') {
-                let usr = window.sessionStorage.getItem('user')
-                if (usr && usr.length > 0) {
-                    setUser(JSON.parse(usr))
-                }
-            }
+           
+            if (userCtx) setUser(userCtx)
+        
         }
         return () => { mtd = false }
     }, [filters, subcounty])
@@ -106,6 +101,7 @@ const Dash = (props) => {
                 }
             })
     }
+    console.log(props.data);
     const totalSummary =[
         {name:'Total Facilities', count: `${props?.data.total_facilities || 0}` }, 
         {name:'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
@@ -137,7 +133,7 @@ const Dash = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - Overview</title>
+                <title>KHMFL - Overview</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
@@ -146,7 +142,7 @@ const Dash = (props) => {
                 <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4">
                     <div className="col-span-6 flex flex-col gap-3 md:gap-5 px-2">
                         <div className="flex flex-row gap-2 text-sm md:text-base py-3">
-                            <a className="text-green-700" href="/">Home</a> {'>'}
+                            <Link className="text-green-700" href="/">Home</Link> {'/'}
                             <span className="text-gray-500">Dashboard</span>
                         </div>
                         <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">
@@ -219,9 +215,10 @@ const Dash = (props) => {
                                                     }} />
                                             </div>
                                         ))}
-                                    {/* ~~~F L T R S~~~ */}
+                                        {/* ~~~F L T R S~~~ */}
 
-                                    {subcounty && Object.keys(subcounty).length > 0 &&
+                                    {/* {subcounty && Object.keys(subcounty).length > 0 &&
+
                                         Object.keys(subcounty).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
                                                 <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
@@ -272,10 +269,10 @@ const Dash = (props) => {
                                                     }} />
 
                                             </div>
-                                        ))}
+                                        ))} */}
                                         {/* subcounties */}
 
-                                        {wards && Object.keys(wards).length > 0 &&
+                                        {/* {wards && Object.keys(wards).length > 0 &&
                                         Object.keys(wards).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
                                                 <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
@@ -325,7 +322,7 @@ const Dash = (props) => {
                                                     }} />
 
                                             </div>
-                                        ))}
+                                        ))} */}
                                         {/* wards */}    
                                 </div>}
                                 {/* --- */}
@@ -335,7 +332,7 @@ const Dash = (props) => {
 
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility owners </h4> 
-                        <Download csvHeaders={csvHeaders} filename={'Facility_owners'} data={props?.data?.owner_types?.map((ot)=>{return {metric: ot.name, value:ot.count}})} csvLink={owner_link}/>
+                        <Download {...csvHeaders} filename={'Facility_owners'} data={props?.data?.owner_types?.map((ot)=>{return {metric: ot.name, value:ot.count}})} csvLink={owner_link}/>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -464,7 +461,7 @@ const Dash = (props) => {
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
                         <BarChart
                             title="Facilities & CHUs by county"
-                            categories={Array.from(props?.data?.county_summary, cs => cs.name) || []}
+                            categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
                             tooltipsuffix="#"
                             xaxistitle="County"
                             yaxistitle="Number"
@@ -472,11 +469,11 @@ const Dash = (props) => {
                                 let data = [];
                                 data.push({
                                     name: 'Facilities',
-                                    data: Array.from(props?.data?.county_summary, cs => parseFloat(cs.count)) || []
+                                    data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.count)) || []
                                 });
                                 data.push({
                                     name: 'CHUs',
-                                    data: Array.from(props?.data?.county_summary, cs => parseFloat(cs.chu_count)) || []
+                                    data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.chu_count)) || []
                                 });
                                 return data;
                             })() || []} />
@@ -486,12 +483,12 @@ const Dash = (props) => {
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility owners</h4>
                         <BarChart
                             title="Facility owners"
-                            categories={Array.from(props?.data?.owner_types, ot => ot.name) || []}
+                            categories={Array.from(props?.data?.owner_types ?? [], ot => ot.name) || []}
                             tooltipsuffix="#"
                             xaxistitle="Owner"
                             yaxistitle="Number"
                             data={(() => {
-                                return [{ name: "Owner", data: Array.from(props?.data?.owner_types, ot => parseFloat(ot.count)) || [] }];
+                                return [{ name: "Owner", data: Array.from(props?.data?.owner_types  ?? [], ot => parseFloat(ot.count)) || [] }];
                             })() || []} />
                     </div>
                     {/* Facility types - national summary - FILTERABLE (bar) 1/2 */}
@@ -499,12 +496,12 @@ const Dash = (props) => {
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility types</h4>
                         <BarChart
                             title="Facility types"
-                            categories={Array.from(props?.data?.types_summary, ts => ts.name) || []}
+                            categories={Array.from(props?.data?.types_summary ?? [], ts => ts.name) || []}
                             tooltipsuffix="#"
                             xaxistitle="Type"
                             yaxistitle="Number"
                             data={(() => {
-                                return [{ name: "Type", data: Array.from(props?.data?.types_summary, ts => parseFloat(ts.count)) || [] }];
+                                return [{ name: "Type", data: Array.from(props?.data?.types_summary ?? [], ts => parseFloat(ts.count)) || [] }];
                             })() || []} />
                     </div>
 
@@ -570,7 +567,7 @@ Dash.getInitialProps = async (ctx) => {
                 }
             }
         })
-        // console.log(`running: fetchData(${url}), token: ${token}`)       
+          
 
         return fetch(url, {
             headers: {
@@ -578,11 +575,7 @@ Dash.getInitialProps = async (ctx) => {
                 'Accept': 'application/json'
             }
         }).then(r => r.json())
-            // .then(json => {
-            //     return {
-            //         data: json, query, path: ctx.asPath || '/dashboard', current_url: url, api_url: process.env.NEXT_PUBLIC_API_URL
-            //     }
-            // })
+         
             .then(json => {
                 console.log({json});
                 return fetchFilters(token).then(ft => {
@@ -641,14 +634,3 @@ export default Dash
 
 
 
-/*
-
-https://api.kmhfltest.health.go.ke/api/facilities/dashboard/
-
-https://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_month=true
-
-https://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_week=true
-
-https://api.kmhfltest.health.go.ke/api/facilities/dashboard/?fields=recently_created&last_three_months=true
-
-*/

@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
@@ -13,22 +13,35 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
-
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import { PermissionContext } from '../../providers/permissions'
+import {  hasUsersPermission } from '../../utils/checkPermissions'
 
 
 const Users = (props) => {
-    // require('ag-grid-enterprise')
-    LicenseManager.setLicenseKey("test");
- 
-    // const { data, query, path, current_url } = props
-  
-    const router = useRouter()
 
+    LicenseManager.setLicenseKey("test");
+
+
+    const userPermissions = useContext(PermissionContext)
+
+    const router = useRouter()
+    console.log(router.query.status);
+    console.log(Object.keys(router.query).length)
+    const LinkCellRenderer = (params) =>{
+    return(
+        <Link
+        href={{ pathname: `/users/add_user/`,
+        query: { id: params.data.id } }}
+
+        ><a>{params.value}</a></Link>
+    )} 
 
     let columnDefs= [
-        {headerName: "Name", field: "name"},
+        {headerName: "Name", field: "name",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Employee number", field: "employee_number"},
         {headerName: "Email", field: "email"},
         {headerName: "County", field: "county_name"},
@@ -42,8 +55,8 @@ const Users = (props) => {
     const [usersTheme, setUsersTheme] = useState(true)
     const [inactiveUsersTheme, setInactiveUsersTheme] = useState(false)
     const [groupsTheme, setGroupsTheme] = useState(false)
-
- 
+    const [show, setShow]=useState(false)
+    const [showGroup, setShowGroup]=useState(false)
         
     const onGridReady = (params) => {
      
@@ -53,6 +66,7 @@ const Users = (props) => {
         const updateData = (data) => params.api.setRowData(data);
         const lnlst=  props.data.results.map((user)=>{
             return {
+                ...user,
                 name: user.first_name + ' '+user.last_name,
                 employee_number: user.employee_number,
                 email: user.email,
@@ -69,8 +83,14 @@ const Users = (props) => {
     };
 
     useEffect(()=>{
-        const lnlst=  props.data.results.map((user)=>{
+
+        if(!hasUsersPermission(/^users.view_mfluser$/, userPermissions)){
+            router.push('/unauthorized')
+        }
+        
+        const lnlst=  props.data?.results.map((user)=>{
             return {
+                ...user,
                 name: user.first_name + ' '+user.last_name,
                 employee_number: user.employee_number,
                 email: user.email,
@@ -80,25 +100,37 @@ const Users = (props) => {
             }
             
         })
-        // console.log(lnlst);
-     
         setUsers(lnlst)
-    },[props.data.results])
+        if( Object.keys(router.query).length > 0 && router.query.status !== undefined){
+            setShow(true)
+        }
 
+    },[props.data.results, router.query])
+
+    useEffect(()=>{
+      
+    if(userPermissions.find((r)=> r === 'auth.add_group') == undefined) setShowGroup(true)
+    
+        
+    },[])
     return (
         <div className="">
             <Head>
-                <title>KMHFL - Reports</title>
+                <title>KHMFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
                 <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
-                            <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-green-700" href="/">Home</a> {'>'}
+                            <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
+                                <Link className="text-green-700" href="/">Home</Link> {'/'}
                                 <span className="text-gray-500">Users</span> 
                             </div>
+                        </div>
+                            
+                           <Collapse in={show}>{Object.keys(router.query).length > 0 ? <div><Alert severity={router?.query.status} sx={{width:'100%'}} onClose={()=> setShow(false)}>{router?.query.message}</Alert></div>: null}</Collapse>
+                            
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 
@@ -110,7 +142,7 @@ const Users = (props) => {
                                     {`Add User `}
                                     <PlusIcon className='text-white ml-2 h-5 w-5'/>
                                 </button>
-                        </div>
+                        
                         </div>
                     </div>
                     <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
@@ -130,7 +162,7 @@ const Users = (props) => {
                                     setUsersTheme(true)
                                     setInactiveUsersTheme(false)
                                     setGroupsTheme(false)
-                                    router.push('/users?is_active=' + true)
+                                    router.push('/users?is_active=true')
                                 
                                 }}
                             >
@@ -141,23 +173,24 @@ const Users = (props) => {
                                     setUsersTheme(false)
                                     setInactiveUsersTheme(true)
                                     setGroupsTheme(false)
-                                    router.push('/users?is_active=' + false)
+                                    router.push('/users?is_active=false')
                                 
                                 }}
                             >
                                 <ListItemText primary="InActive Users" />
                             </ListItemButton>
+                            {!showGroup && 
                             <ListItemButton sx={{ backgroundColor: groupsTheme ? '#e7ebf0' : 'none' }}
-                            onClick={()=>{
-                                setUsersTheme(false)
-                                setInactiveUsersTheme(false)
-                                setGroupsTheme(true)
-                                router.push('/users/groups')
-                            
-                            }}
+                                onClick={()=>{
+                                    setUsersTheme(false)
+                                    setInactiveUsersTheme(false)
+                                    setGroupsTheme(true)
+                                    router.push('/users/groups')
+                                
+                                }}
                             >
                                 <ListItemText primary="Groups"/>
-                            </ListItemButton>
+                            </ListItemButton>}
                                 
                         </List>
                 </div>
@@ -207,9 +240,8 @@ const Users = (props) => {
                       
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
                                 <AgGridReact
-                                    // floatingFilter={true}
                                     rowStyle={{width: '100vw'}}
-                                    sideBar={true} //{'filters'}
+                                    sideBar={true}
                                     defaultColDef={{
                                         sortable: true,
                                         filter: true,
@@ -218,6 +250,9 @@ const Users = (props) => {
                                     onGridReady={onGridReady}
                                     rowData={users}
                                     columnDefs={columnDefs}
+                                    frameworkComponents={{
+                                        LinkCellRenderer
+                                      }}
                                     />
                             </div>
                         </div>
@@ -237,13 +272,6 @@ const Users = (props) => {
                                 <li className="text-sm text-gray-400 flex">
                                     <DotsHorizontalIcon className="h-3" />
                                 </li>
-                                {/* {props?.data?.far_pages.map(page => (
-                                    <li key={page} className="text-base text-gray-600">
-                                        <a href={'/?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
-                                            {page}
-                                        </a>
-                                    </li>
-                                ))} */}
 
                             </ul>}
 
@@ -273,9 +301,8 @@ Users.getInitialProps = async (ctx) => {
 // console.log(ctx.query.is_active);
 
     const fetchData = (token) => {
-        let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name'
+        let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=true'
         let query = { 'searchTerm': ''}
-        let id={'id': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
         }
@@ -302,7 +329,7 @@ Users.getInitialProps = async (ctx) => {
             console.log({page:ctx.query.page})
             url = `${url}&page=${ctx.query.page}`
         }
-        // console.log('running fetchData(' + url + ')')
+        
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

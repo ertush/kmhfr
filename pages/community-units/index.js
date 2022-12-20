@@ -3,7 +3,6 @@ import Link from 'next/link';
 import MainLayout from '../../components/MainLayout';
 import {
 	DotsHorizontalIcon,
-	PencilIcon,
     DownloadIcon,
     PlusIcon
 } from '@heroicons/react/solid';
@@ -12,78 +11,37 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
-import Select from 'react-select';
+import CommunityUnitSideMenu from '../../components/CommunityUnitSideMenu';
+
 
 const Home = (props) => {
 	const router = useRouter();
-	// console.log('props::: ',props)
-	let cus = props?.data?.results;
-	let filters = props?.filters;
-	let [drillDown, setDrillDown] = useState({});
-	let qf = props?.query?.qf || 'all';
-	let [currentQuickFilter, setCurrentQuickFilter] = useState(qf);
-	let multiFilters = [
-		'service_category',
-		'service',
-		'county',
-		'subcounty',
-		'ward',
-		'constituency',
-	];
-	let quickFilters = [
-		{
-			name: 'All',
-			id: 'all',
-			filters: Object.keys(filters),
-		},
-		{
-			name: 'Approved',
-			id: 'approved',
-			filters: [{ id: 'is_approved', value: true }],
-		},
-		{
-			name: 'New pending approval',
-			id: 'new_pending_approval',
-			filters: [
-				{ id: 'has_edits', value: false },
-				{ id: 'pending_approval', value: true },
-			],
-		},
-		{
-			name: 'Updated pending approval',
-			id: 'updated_pending_approval',
-			filters: [
-				{ id: 'has_edits', value: true },
-				{ id: 'pending_approval', value: true },
-			],
-		},
-		{
-			name: 'Rejected',
-			id: 'rejected',
-			filters: [{ id: 'is_rejected', value: true }],
-		},
-	];
+	const cus = props?.data?.results;
+	const filters = props?.filters;
+	const [drillDown, setDrillDown] = useState({});
+	const qf = props?.query?.qf || 'all';
+
+	const [title, setTitle] = useState('Community Health Units') 
+
+
+	
 	useEffect(() => {
+		// console.log({filters})
 		let qry = props?.query;
 		delete qry.searchTerm;
+		delete qry.qf
 		setDrillDown({ ...drillDown, ...qry });
 		if (filters && Object.keys(filters).length > 0) {
 			filters['status'] = filters['chu_status'];
 			delete filters['chu_status'];
 		}
-		// if (filters && Object.keys(filters).length > 0) {
-		//     Object.keys(filters).map(ft => {
-		//         if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-		//             setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-		//         }
-		//     })
-		// }
+
 	}, [filters]);
 
 	return (
 		<div className=''>
 			<Head>
-				<title>KMHFL - Community Units</title>
+				<title>KHMFL - Community Units</title>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 
@@ -91,66 +49,24 @@ const Home = (props) => {
 				<div className='w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4'>
 					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-4'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
+							{/* Bread Crumbs */}
+
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<a className='text-green-700' href='/'>
+								<Link className='text-green-700' href='/'>
 									Home
-								</a>{' '}
-								{'>'}
+								</Link>
+								{'/'}
 								<span className='text-gray-500'>Community Units</span>
 							</div>
-							<div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'>
-								{quickFilters.map((qf, i) => {
-									return (
-										<button
-											key={qf.id}
-											style={{ paddingTop: '2px', paddingBottom: '2px' }}
-											className={`bg-gray-100 border rounded-lg shadow-sm px-3 leading-tight font-medium hover:border-green-400 focus:ring-1 focus:ring-blue-500 text-sm ${
-												currentQuickFilter == qf.id
-													? 'bg-green-800 border-green-800 text-green-50'
-													: 'text-gray-800 border-gray-300'
-											}`}
-											onClick={(evt) => {
-												setCurrentQuickFilter(qf.id);
-												let robj = {
-													pathname: '/community-units',
-													query: { qf: qf.id },
-												};
-												if (qf.id === 'all') {
-													router.push(robj);
-													return;
-												}
-												quickFilters.forEach((q_f) => {
-													if (q_f.id === qf.id) {
-														q_f.filters.map((sf) => {
-															robj.query[sf.id] = sf.value;
-														});
-													}
-												});
-												router.push(robj);
-											}}>
-											{qf.name}
-										</button>
-									);
-								})}
-							</div>
+
+
 						</div>
-						{/* <details open className="bg-gray-100 p-1 rounded"><summary>Filters:</summary> <pre className="whitespace-pre-wrap">
-                            {JSON.stringify( 
-                                {...filters, ...{county:[],sub_county:[], ward: [], constituency: []}},
-                                null, 2
-                            ) }
-                        </pre></details> */}
-						{/* <details open className="bg-gray-100 p-1 rounded"><summary>Drilldown:</summary> <pre className="whitespace-pre-wrap">
-                            {JSON.stringify(drillDown, null, 2)}
-                        </pre></details> */}
+					
 
 						<div className='flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between'>
 							<div className='flex flex-col items-start justify-start gap-y-1'>
 								<h1 className='text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2'>
-									{props?.query?.searchTerm &&
-									props?.query?.searchTerm.length > 0
-										? `Community units matching '${props?.query?.searchTerm}'`
-										: 'All community units'}
+									{title}
 								</h1>
 								<h5 className='text-lg font-medium text-gray-800'>
 									{drillDown &&
@@ -176,17 +92,9 @@ const Home = (props) => {
 													})`
 											)
 											?.join(' & ')}`}
-									{props?.data?.count && props?.data?.count > 0 && (
-										<small className='text-gray-500 ml-2 text-base'>
-											{props?.data?.start_index || 0} -{' '}
-											{props?.data?.end_index || 0} of {props?.data?.count || 0}{' '}
-										</small>
-									)}
 								</h5>
-							</div>
-
-							{/* <small className="font-bold text-sm">{JSON.stringify(props?.query)}</small> */}
-							{/* ((((((( dropdown options to download data */}
+                           
+                            </div>
 							{props?.current_url && props?.current_url.length > 5 && (
 								<Menu as='div' className='relative'>
 									<div className='flex items-center space-x-6 w-auto'>
@@ -198,7 +106,7 @@ const Home = (props) => {
 													router.push('/community-units/add_community_unit');
 												}}
 												className='flex items-center justify-center'>
-												<span>Add Community Health Unit</span>
+												<span className='text-base uppercase font-semibold'>Add Community Health Unit</span>
 												<PlusIcon className='w-4 h-4 ml-2' />
 											</button>
 										</Menu.Item>
@@ -207,27 +115,13 @@ const Home = (props) => {
 											as='button'
 											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<DownloadIcon className='w-5 h-5 mr-1' />
-											<span>Export</span>
+											<span className='text-base uppercase font-semibold'>Export</span>
 											<ChevronDownIcon className='w-4 h-4 ml-2' />
 										</Menu.Button>
 									</div>
 									<Menu.Items
 										as='ul'
 										className='absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full'>
-										{/* <Menu.Item as="li" className="p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200">
-                                            {({ active }) => (
-                                                <button className={"flex items-center justify-start text-center hover:bg-gray-200 focus:bg-gray-200 text-gray-800 font-medium active:bg-gray-200 py-2 px-1 w-full " + (active ? 'bg-gray-200' : '')} onClick={() => {
-                                                    let dl_url = props?.current_url
-                                                    if (dl_url.includes('?')) { dl_url += '&format=pdf' } else { dl_url += '?format=pdf' }
-                                                    console.log('Downloading PDF. ' + dl_url || '')
-                                                    // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                    window.location.href = dl_url
-                                                }}>
-                                                    <DownloadIcon className="w-4 h-4 mr-1" />
-                                                    <span>PDF</span>
-                                                </button>
-                                            )}
-                                        </Menu.Item> */}
 										<Menu.Item
 											as='li'
 											className='p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200'>
@@ -281,10 +175,29 @@ const Home = (props) => {
 									</Menu.Items>
 								</Menu>
 							)}
-							{/* ))))))) dropdown options to download data */}
-						</div>
+
+							</div>
+							
 					</div>
-					<div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'>
+				    
+					  {/* Side Menu Filters*/}
+
+					<CommunityUnitSideMenu
+					qf={qf}
+					filters={filters}
+					_pathId={props?.path.split('id=')[1]}
+					/>
+
+                     {/* Main body */}
+					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
+					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+
+					    <div className='mx-4 float-right'>
+							 
+						    <h5 className="text-lg font-medium text-gray-800 float-right">
+                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
+                            </h5>
+						</div>
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
 							{/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
 							{cus && cus.length > 0 ? (
@@ -439,143 +352,9 @@ const Home = (props) => {
 							)}
 						</div>
 					</div>
-					<aside className='flex flex-col col-span-5 md:col-span-1 p-1 md:h-full'>
-						<details
-							className='rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z'
-							open>
-							<summary className='flex cursor-pointer w-full bg-white p-2'>
-								<h3 className='text-2xl tracking-tight font-bold leading-3'>
-									Filters
-								</h3>
-							</summary>
-							<div className='flex flex-col gap-2 p-2'>
-								{filters && filters?.error ? (
-									<div className='w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base'>
-										<p>No filters.</p>
-									</div>
-								) : (
-									<form
-										action='/'
-										onSubmit={(ev) => {
-											ev.preventDefault();
-											return false;
-										}}>
-										{filters &&
-											Object.keys(filters).length > 0 &&
-											Object.keys(filters).map((ft) => (
-												<div
-													key={ft}
-													className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-													<label
-														htmlFor={ft}
-														className='text-gray-600 capitalize text-sm'>
-														{ft.split('_').join(' ')}
-													</label>
-													{/* 
-                                                        <select name={ft} defaultValue={props?.query[ft] || ""} id={ft} className="w-full p-2 rounded bg-gray-100" onChange={sl => {
-                                                            let nf = {}
-                                                            nf[ft] = sl.target.value
-                                                            setDrillDown({ ...drillDown, ...nf })
-                                                            // updateFt(nf)
-                                                        }}>
-                                                            <option value="">All</option>
-                                                            {filters[ft].map(ft_opt => (
-                                                                <option key={ft_opt.id} value={ft_opt.id}>{ft_opt.name}</option>
-                                                            ))}
-                                                        </select>
-                                                         */}
-													<Select
-														isMulti={multiFilters.includes(ft)}
-														name={ft}
-														defaultValue={props?.query[ft] || ''}
-														id={ft}
-														className='w-full p-1 rounded bg-gray-50'
-														options={Array.from(filters[ft] || [], (fltopt) => {
-															return {
-																value: fltopt.id,
-																label: fltopt.name,
-															};
-														})}
-														placeholder={
-															ft.split('_').join(' ')[0].toUpperCase() +
-															ft.split('_').join(' ').slice(1)
-														}
-														onChange={(sl) => {
-															let nf = {};
-															if (Array.isArray(sl)) {
-																nf[ft] =
-																	(drillDown[ft] ? drillDown[ft] + ',' : '') +
-																	Array.from(sl, (l_) => l_.value).join(',');
-															} else if (
-																sl &&
-																sl !== null &&
-																typeof sl === 'object' &&
-																!Array.isArray(sl)
-															) {
-																nf[ft] = sl.value;
-															} else {
-																delete nf[ft];
-																// let rr = drillDown.filter(d => d.key !== ft)
-																// setDrilldown(rr)
-															}
-															console.log(nf);
-															setDrillDown({ ...drillDown, ...nf });
-														}}
-													/>
-												</div>
-											))}
-
-										<button
-											onClick={(ev) => {
-												if (Object.keys(drillDown).length > 0) {
-													let qry = Object.keys(drillDown)
-														.map(function (key) {
-															let er = '';
-															if (
-																props.path &&
-																!props.path.includes(key + '=')
-															) {
-																er =
-																	encodeURIComponent(key) +
-																	'=' +
-																	encodeURIComponent(drillDown[key]);
-															}
-															return er;
-														})
-														.join('&');
-													let op = '?';
-													if (
-														props.path &&
-														props.path.includes('?') &&
-														props.path.includes('=')
-													) {
-														op = '&';
-													}
-													console.log(props.path);
-													// setDrillDown({})
-													if (qry && qry.length > 0) {
-														router.push(props.path + op + qry);
-													}
-												}
-											}}
-											className='bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center'>
-											Filter
-										</button>
-										<div className='w-full flex items-center py-2 justify-center'>
-											<button
-												className='cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline'
-												onClick={(ev) => {
-													router.push('/community-units');
-												}}>
-												Clear filters
-											</button>
-										</div>
-									</form>
-								)}
-							</div>
-						</details>
-					</aside>
+					
 					{/* (((((( Floating div at bottom right of page */}
+
 					<div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
 						<h5 className='text-sm font-bold'>
 							<span className='text-gray-600 uppercase'>Limited results</span>
@@ -585,7 +364,7 @@ const Home = (props) => {
 							results.
 						</p>
 					</div>
-					{/* ))))))) */}
+				
 				</div>
 			</MainLayout>
 		</div>
@@ -593,42 +372,49 @@ const Home = (props) => {
 };
 
 Home.getInitialProps = async (ctx) => {
-	// console.log("=======================================")
-	// console.log(ctx.req)
+	
+	console.log(ctx.query)
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
-	const fetchFilters = (token) => {
-		// let filters_url = API_URL+'/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
+	const fetchFilters = async (token) => {
 		let filters_url =
 			API_URL +
 			'/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county';
 
-		return fetch(filters_url, {
-			headers: {
-				Authorization: 'Bearer ' + token,
-				Accept: 'application/json',
-			},
-		})
-			.then((r) => r.json())
-			.then((json) => {
-				return json;
-			})
-			.catch((err) => {
-				console.log('Error fetching filters: ', err);
-				return {
-					error: true,
-					err: err,
-					filters: [],
-					path: ctx.asPath || '/',
-				};
+		try {
+			const r = await fetch(filters_url, {
+				headers: {
+					Authorization: 'Bearer ' + token,
+					Accept: 'application/json',
+				},
 			});
+			const json = await r.json();
+			return json;
+		} catch (err) {
+			console.log('Error fetching filters: ', err);
+			return {
+				error: true,
+				err: err,
+				filters: [],
+				path: ctx.asPath || '/',
+			};
+		}
 	};
 
-	const fetchData = (token) => {
-		console.log(`TOKEN >>>>>>>>>>>>>>>>>>>>>${token}`);
-		// let url = API_URL+'/chul/units/?fields=id,code,official_name,facility_type_name,owner_name,county,sub_county,constituency_name,ward_name,updated,operation_status_name,sub_county_name,name,is_complete,in_complete_details,approved_national_level,has_edits,is_approved,rejected,keph_level,operation_status_name'
-		let url =
-			API_URL +
-			'/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency';
+	const fetchData = async (token) => {
+		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
+		let qry = ''
+		let url
+		if(ctx.query !== null){
+			qry = Object.keys(filterQuery).map(function (key) {
+				let er = (key) + '=' + (filterQuery[key]);
+				return er
+			 }).join('&')
+
+			 console.log(qry);
+			 url =API_URL + `/chul/units/?${qry}&fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
+		}else{
+			 url =API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
+		}
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {
 			query.searchTerm = ctx.query.q;
@@ -652,36 +438,34 @@ Home.getInitialProps = async (ctx) => {
 		if (ctx?.query?.page) {
 			url = `${url}&page=${ctx.query.page}`;
 		}
-		console.log('running fetchData(' + url + ')');
-		return fetch(url, {
-			headers: {
-				Authorization: 'Bearer ' + token,
-				Accept: 'application/json',
-			},
-		})
-			.then((r) => r.json())
-			.then((json) => {
-				return fetchFilters(token).then((ft) => {
-					return {
-						data: json,
-						query,
-						filters: { ...ft },
-						path: ctx.asPath || '/community-units',
-						current_url: current_url,
-					};
-				});
-			})
-			.catch((err) => {
-				console.log('Error fetching community units: ', err);
-				return {
-					error: true,
-					err: err,
-					data: [],
-					query: {},
-					path: ctx.asPath || '/community-units',
-					current_url: '',
-				};
+		// console.log('running fetchData(' + url + ')');
+		try {
+			const r = await fetch(url, {
+				headers: {
+					Authorization: 'Bearer ' + token,
+					Accept: 'application/json',
+				},
 			});
+			const json = await r.json();
+			const ft = await fetchFilters(token);
+			return {
+				data: json,
+				query,
+				filters: { ...ft },
+				path: ctx.asPath || '/community-units',
+				current_url: current_url,
+			};
+		} catch (err) {
+			console.log('Error fetching community units: ', err);
+			return {
+				error: true,
+				err: err,
+				data: [],
+				query: {},
+				path: ctx.asPath || '/community-units',
+				current_url: '',
+			};
+		}
 	};
 	return checkToken(ctx.req, ctx.res)
 		.then((t) => {

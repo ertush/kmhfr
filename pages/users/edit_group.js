@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import MainLayout from '../../components/MainLayout';
+import router from 'next/router';
 import { checkToken } from '../../controllers/auth/auth';
 import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, PencilAltIcon} from '@heroicons/react/solid';
 import Tooltip from '@mui/material/Tooltip';
@@ -15,43 +16,73 @@ const EditGroup=(props)=> {
 
     let permissions = props?.permissions[0].params.results
 	let group_details = props?.data
-
-	const [groupData, setGroupData]=useState({
-		name:                 {name: "name" ,  value: null },
-		permissions:          {name: "permissions", value: [] },
-		is_regulator:         {name: "is_regulator" , value: null },
-		is_national:          {name: "is_national",  value: null },
-		is_administrator:     {name: "is_administrator", value: null },
-		is_county_level:      {name: "is_county_level",  value: null },
-		is_sub_county_level:  {name: "is_sub_county_level", value: null },
-	})
+	const [groupData, setGroupData]=useState(props.data)
+	const [status, setStatus]=useState(null)
+	// console.log(groupData);
 
 	const handleOnChange =(val)=>{
 		// console.log(val);
 		if (val.target && val.target != undefined && val.target != null) {
-				const newObj = {}
-				newObj[val.target.name] = {}
-				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.value
-				setGroupData({ ...groupData, ...newObj })
-                if(val.target.type=="checkbox"){
-                const newObj = {}
-				newObj[val.target.name] = {}
-				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.checked
-				setGroupData({ ...groupData, ...newObj })
-                }
-		
-        }else{
+			const newObj = {}
+			newObj[val.target.name] = {}
+			newObj[val.target.name].name = val.target.name
+			val.target.type =="checkbox" ? newObj[val.target.name] = val.target.checked : newObj[val.target.name] = val.target.value
+			setGroupData({ ...groupData, ...newObj })
+		}else{
 			const newObj2={}
 			newObj2['permissions'] = {}
-			newObj2['permissions'].name = "permissions"
-			newObj2['permissions'].value = val.map((id)=>{return {value: id}})
+			newObj2['permissions'] = "permissions"
+			newObj2['permissions'] = val.map((id)=>{return {id: id.value, name:id.label, codename:id.codename}})
 			setGroupData({ ...groupData, ...newObj2 })
-        }
+		}
 	}
 
-	const handleGroupSubmit =()=>{
+	const handleGroupSubmit =(event)=>{
+		event.preventDefault()
+		try{
+			 fetch(`/api/common/submit_form_data/?path=edit&id=${props.data.id}`, {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json;charset=utf-8'
+					
+				},
+				method:'PATCH',
+				body: JSON.stringify(groupData).replace(',"":""','')
+			})
+			.then(resp =>resp.json())
+			.then(res => {
+				if(res.id !==undefined ){
+
+					router.push({pathname:'/users/groups',
+					 query:{status: 'success', message: 'Updated successfully'}
+					 
+					}, '/users/groups')
+				}else{
+					setStatus({status:'error', message: res})
+				}
+			})
+		}catch (e){
+			setStatus({status:'error', message: res})
+		}
+	}
+	const deleteGroup =(event)=>{
+		event.preventDefault()
+		try {
+			fetch(`/api/common/post_form_data/?path=delete&id=${props.data.id}`, {
+				headers:{
+					'Content-Type': 'application/json;charset=utf-8'
+				},
+				method:'DELETE',
+			})
+			.then(resp =>resp)
+			.then(res => {
+					router.push('/users/groups')
+				
+			})
+			
+		} catch (error) {
+			
+		}
 
 	}
 
@@ -62,16 +93,26 @@ const EditGroup=(props)=> {
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <a className="text-indigo-700" href="/">Home</a> {'>'}
-                                <a className="text-indigo-700" href="/users/groups">Groups</a> {'>'}
+                                <a className="text-indigo-700" href="/">Home</a> {'/'}
+                                <a className="text-indigo-700" href="/users/groups">Groups</a> {'/'}
                                 <span className="text-gray-500">Edit group</span>
                             </div>
                         </div>
+			        	<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password}</Alert>}</div>
+
                         <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <PencilAltIcon className='ml-2 h-5 w-5' />
                                     {'Edit Group'}
                                 </h2>
+								<button
+								type='button'
+								onClick={deleteGroup}
+								className='rounded bg-red-500 p-2 text-white flex text-md font-semibold '>
+								<span className='text-medium font-semibold text-white'>
+									Delete
+								</span>
+							</button>
                         </div>
                   
                     </div>

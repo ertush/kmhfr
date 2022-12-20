@@ -20,7 +20,7 @@ const DelayedLoginButton = () => {
     if (delayed === true) {
         return <a href="/auth/login" className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
     } else {
-        return <div className="p-3 w-16"> <LoadingAnimation size={6} /> </div>
+        return <div className="p-3 w-16"> <LoadingAnimation size={6} isLight={true} /> </div>
     }
 }
 
@@ -94,13 +94,13 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                 </>
             </div>
             <footer className="bg-black py-5 items-center justify-center flex flex-wrap gap-y-3 gap-x-4 text-gray-300 text-sm w-full">
-                <p>KMHFL V3 Beta</p>
+                <p>KHMFL V3 Beta</p>
                 <span className="text-lg text-gray-400">&middot;</span>
                 <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://health.go.ke" target="_blank" rel="noreferrer noopener">Ministry of Health</a>
                 <span className="text-lg text-gray-400">&middot;</span>
                 <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://healthit.uonbi.ac.ke" target="_blank" rel="noreferrer noopener">USAID HealthIT</a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://kmhfl.health.go.ke" target="_blank" rel="noreferrer noopener">KMHFL v2</a>
+                <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://kmhfl.health.go.ke" target="_blank" rel="noreferrer noopener">KHMFL v2</a>
             </footer>
         </div>
     );

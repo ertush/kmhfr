@@ -7,17 +7,24 @@ import {
   SearchIcon,
 } from "@heroicons/react/solid";
 import { UserCircleIcon } from "@heroicons/react/outline";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
-// import List from '@mui/material/List';
-// import ListItem from '@mui/material/ListItem';
-// import ListItemText from '@mui/material/ListItemText';
+import { PermissionContext } from "../providers/permissions";
+import { 
+  hasAdminOfficesPermissions, 
+  hasSystemSetupPermissions, 
+  hasUsersPermission,
+  hasGISPermissions
+ } from "../utils/checkPermissions"
 
 const DelayedLoginButton = () => {
+
+
   const [delayed, setDelayed] = useState(false);
   useEffect(() => {
+    // console.log({userCanViewUsers})
     let mtd = true;
     setTimeout(() => {
       if (mtd === true) {
@@ -48,12 +55,13 @@ const DelayedLoginButton = () => {
 };
 
 export default function HeaderLayout({
-  children,
-  isLoading,
   searchTerm,
-  isFullWidth,
-  classes,
 }) {
+
+  const userPermissions = useContext(PermissionContext)
+
+  // const userCanViewUsers = hasPermission(/^users.view_.*$/, userPermissions)
+  
   const router = useRouter();
   const activeClasses =
     "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4  border-green-600";
@@ -61,8 +69,15 @@ export default function HeaderLayout({
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [hideUserMenu, setHideUserMenu] = useState(false)
+  const [hideSystemSetupMenu, setHideSystemSetupMenu] = useState(false)
+  const [hideAdminOfficesMenu, setHideAdminOfficesMenu] = useState(false)
+  const [hideGISMenu, setHideGISMenu] = useState(false)
+
   const [user, setUser] = useState(null);
-  let API_URL = process.env.NEXT_PUBLIC_API_URL; // || "http://localhost:8000/api";
+  
+  let API_URL = process.env.NEXT_PUBLIC_API_URL; 
+
   if (
     typeof window !== "undefined" &&
     window.location.hostname === "127.0.0.1"
@@ -82,6 +97,8 @@ export default function HeaderLayout({
   // console.log('path::: ', path)
 
   useEffect(() => {
+
+    // console.log({userPermissions})
     let mtd = true;
     if (mtd) {
       let is_user_logged_in =
@@ -101,9 +118,8 @@ export default function HeaderLayout({
         typeof window !== "undefined" &&
         session_token !== null
       ) {
-        console.log("active session found");
-        // getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
-          // console.log({session_token: session_token.token, url: `${API_URL}/rest-auth/user`})
+        // console.log("active session found");
+  
         getUserDetails(session_token.token, API_URL + "/rest-auth/user/").then(
           (usr) => {
             // console.log({usr})
@@ -113,6 +129,30 @@ export default function HeaderLayout({
             } else {
               setIsLoggedIn(true);
               setUser(usr);
+
+              // Users View Permission  Check
+              
+              if(!hasUsersPermission(/^users.view_mfluser$/, userPermissions)){
+                setHideUserMenu(true)
+              }
+
+              // System Setup View Permission Check
+
+              if(!hasSystemSetupPermissions(/^common.add_county$/, userPermissions)){
+                setHideSystemSetupMenu(true)
+              }
+
+              // Admin Offices Permission Check
+
+              if(!hasAdminOfficesPermissions(/^admin_offices.view_.*$/, userPermissions)){
+                setHideAdminOfficesMenu(true)
+              }
+
+                // GIS Permission Check
+
+                if(!hasGISPermissions(/^mfl_gis.view_.*$/, userPermissions)){
+                  setHideGISMenu(true)
+                }
             }
           }
         );
@@ -121,6 +161,7 @@ export default function HeaderLayout({
         // router.push('/auth/login')
       }
     }
+    // console.log({userPermissions, hideMenu})
     return () => {
       mtd = false;
     };
@@ -128,15 +169,15 @@ export default function HeaderLayout({
 
   return (
     <header className="flex flex-wrap items-center justify-start gap-x-4 w-full p-1 max-w-screen-3xl">
-      <title>KMHFL 3</title>
+      <title>KHMFL 3</title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-3 md:gap-5">
         <div id="logo" className="mx:px-3 pb-1">
           <a
             href="/"
             className="leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative"
           >
-            <img src="/MOH.png" alt="KMHFL3" className="h-14" />
-            <span className="font-mono text-3xl leading-none">KMHFL</span>
+            <img src="/MOH.png" alt="KHMFL3" className="h-14" />
+            <span className="font-mono text-3xl leading-none">KHMFL</span>
             <span className="text-sm bg-yellow-300 rounded-sm shadow uppercase border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-4">
               V3 Alpha
             </span>
@@ -150,90 +191,123 @@ export default function HeaderLayout({
             {/* Dashboard / Home */}
             <li className="flex-wrap font-semibold">
               <Link href={isLoggedIn ? "/dashboard" : "/"}>
-                <a
-                  className={
-                    (currentPath == "/" || currentPath == "/dashboard"
+                <p
+                  className={`
+                  text-base 
+                  md:text-lg
+                  cursor-pointer
+                  ${ 
+                  (currentPath == "/" || currentPath == "/dashboard"
                       ? activeClasses
-                      : inactiveClasses) + " text-base md:text-lg"
-                  }
+                      : inactiveClasses) 
+                  }`}
                 >
                   {isLoggedIn ? "Dashboard" : "Home"}
-                </a>
+                </p>
               </Link>
             </li>
             {/* Facilities */}
             <li className="flex-wrap font-semibold">
               <Link href="/facilities">
-                <a
+                <p
                   className={
+                    `
+                    text-base
+                    md:text-lg
+                    cursor-pointer
+                    ${
                     (currentPath == "/facilities" ||
                     currentPath.includes("facility")
                       ? activeClasses
-                      : inactiveClasses) + " text-base md:text-lg"
-                  }
+                      : inactiveClasses)
+                      
+                    }`}
                 >
                   Facilities
-                </a>
+                </p>
               </Link>
             </li>
             {/* Community Units */}
             <li className="flex-wrap font-semibold">
               <Link href="/community-units">
-                <a
-                  className={
-                    (currentPath == "/community-units" ||
+                <p
+                  className={`
+                  text-base
+                  md:text-lg
+                  cursor-pointer
+                    ${(currentPath == "/community-units" ||
                     currentPath.includes("community-unit")
                       ? activeClasses
-                      : inactiveClasses) + " text-base md:text-lg"
-                  }
+                      : inactiveClasses)
+                  }`}
                 >
                   Community Units
-                </a>
+                </p>
               </Link>
             </li>
             {/* Users */}
+            {/* {console.log({hideUserMenu})} */}
+            {!hideUserMenu && 
             <li className="flex-wrap font-semibold">
               <Link href="/users">
-                <a
+                <p
                   className={
-                    (currentPath == "/users" ? activeClasses : inactiveClasses) +
-                    " text-base md:text-lg"
-                  }
+                    `
+                    text-base 
+                    md:text-lg
+                    cursor-pointer
+                    ${
+                    (currentPath == "/users" ? activeClasses : inactiveClasses) 
+
+                    }`}
                 >
                   Users
-                </a>
+                </p>
               </Link>
             </li>
+              }  
             {/* GIS */}
+            { !hideGISMenu && 
             <li className="flex-wrap font-semibold">
               <Link href="/gis">
-                <a
-                  className={
-                    (currentPath == "/gis" ||
+                <p
+                  className={`
+                  text-base 
+                  md:text-lg
+                  cursor-pointer
+                   ${ (currentPath == "/gis" ||
                     currentPath.includes("gis")
                       ? activeClasses
-                      : inactiveClasses) + " text-base md:text-lg"
-                  }
+                      : inactiveClasses) 
+                    }`}
                 >
                    GIS
-                </a>
+                </p>
               </Link>
             </li>
+            }
             {/* System setup */}
+            {
+              !hideSystemSetupMenu && 
             <li className="flex-wrap font-semibold">
               <Link href="/system_setup">
-                <a
-                  className={
+                <p
+                  className={`
+                  text-base
+                  md:text-lg
+                  cursor-pointer 
+                  ${ 
                     (currentPath == "/system_setup" ||
                     currentPath.includes("system_setup")
                       ? activeClasses
-                      : inactiveClasses) + " text-base md:text-lg"
-                  }
+                      : inactiveClasses)
+                                        } `}
                 >
                   System setup 
-                </a>
+                </p>
               </Link>
             </li>
+            }
            {/* Reports */}
               
               <Menu as="div" className="relative ">
@@ -241,11 +315,20 @@ export default function HeaderLayout({
                     as="div"
                     className="flex items-center justify-center gap-1 cursor-pointer"
                   >
-                    <span className={
+                    <span className={`
+                    text-base 
+                    md:text-lg 
+                    font-semibold 
+                    leading-none 
+                    p-0 
+                    hidden 
+                    sm:inline
+                    cursor-pointer
+                    ${
                       (currentPath == "/reports/static_reports" || currentPath == "/reports/dynamic_reports" 
                       ? activeClasses
-                      : inactiveClasses) + " text-base md:text-lg font-semibold leading-none p-0 hidden sm:inline"
-                      }>
+                      : inactiveClasses) 
+                    }`}>
                       Reports
                     </span>
                     <span className="leading-none p-0">
@@ -287,19 +370,24 @@ export default function HeaderLayout({
           </Menu>
           
           {/* Admin Offices */}
-           
+          {!hideAdminOfficesMenu && 
           <li className="flex-wrap font-semibold">
             <Link href="/admin_offices">
-              <a
-                className={
-                  (currentPath == "/admin_offices" ? activeClasses : inactiveClasses) +
-                  " text-base md:text-lg"
-                }
+              <p
+                className={`
+                text-base 
+                md:text-lg
+                cursor-pointer
+                ${
+                  (currentPath == "/admin_offices" ? activeClasses : inactiveClasses)
+                
+                }`}
               >
                 Admin Offices
-              </a>
+              </p>
             </Link>
           </li>
+          }
           
           </ul>
         </div>
@@ -356,7 +444,7 @@ export default function HeaderLayout({
                     href="https://kmhfltest.health.go.ke/"
                     target="_blank"
                   >
-                    KMHFL test <ExternalLinkIcon className="h-4 w-4 ml-2" />
+                    KHMFL test <ExternalLinkIcon className="h-4 w-4 ml-2" />
                   </a>
                 )}
               </Menu.Item>
@@ -369,7 +457,7 @@ export default function HeaderLayout({
                     href="https://kmhfl.health.go.ke/"
                     target="_blank"
                   >
-                    KMHFL live <ExternalLinkIcon className="h-4 w-4 ml-2" />
+                    KHMFL live <ExternalLinkIcon className="h-4 w-4 ml-2" />
                   </a>
                 )}
               </Menu.Item>

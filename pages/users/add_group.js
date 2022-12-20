@@ -7,21 +7,22 @@ import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
+import Alert from '@mui/material/Alert';
 
 
 const AddGroup = (props)=> {
 	const [selPermissions, setselPermissions] = useState([])
-
+	const [status, setStatus]=useState(null)
 	let permissions = props?.data?.results
 
 	const [groupData, setGroupData]=useState({
-		name:                 {name: "name" ,  value: null },
-		permissions:          {name: "permissions", value: [] },
-		is_regulator:         {name: "is_regulator" , value: null },
-		is_national:          {name: "is_national",  value: null },
-		is_administrator:     {name: "is_administrator", value: null },
-		is_county_level:      {name: "is_county_level",  value: null },
-		is_sub_county_level:  {name: "is_sub_county_level", value: null },
+		name: '',
+		permissions: [],
+		is_regulator:false,
+		is_national: false,
+		is_administrator: false,
+		is_county_level: false,
+		is_sub_county_level: false,
 	})
 
 	const handleOnChange =(val)=>{
@@ -30,28 +31,48 @@ const AddGroup = (props)=> {
 				const newObj = {}
 				newObj[val.target.name] = {}
 				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.value
+				val.target.type =="checkbox" ? newObj[val.target.name] = val.target.checked : newObj[val.target.name] = val.target.value
 				setGroupData({ ...groupData, ...newObj })
-                if(val.target.type=="checkbox"){
-                const newObj = {}
-				newObj[val.target.name] = {}
-				newObj[val.target.name].name = val.target.name
-				newObj[val.target.name].value = val.target.checked
-				setGroupData({ ...groupData, ...newObj })
-                }
-		
         }else{
 			const newObj2={}
 			newObj2['permissions'] = {}
-			newObj2['permissions'].name = "permissions"
-			newObj2['permissions'].value = val.map((id)=>{return {value: id}})
+			newObj2['permissions'] = "permissions"
+			newObj2['permissions'] = val.map((id)=>{return {id: id.value, name:id.label, codename:id.codename}})
 			setGroupData({ ...groupData, ...newObj2 })
         }
 	}
 
-	const handleGroupSubmit =()=>{
+	const handleGroupSubmit =(event)=>{
+		event.preventDefault()
+		try{
+			 fetch('/api/common/submit_form_data/?path=groups', {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json;charset=utf-8'
+				},
+				method:'POST',
+				body: JSON.stringify(groupData).replace(',"":""','')
+			})
+			.then(resp =>resp.json())
+			.then(res => {
+				if(res.id !==undefined ){
 
+					router.push({pathname:'/users/groups',
+					 query:{status: 'success', message: 'Added successfully'}
+					 
+					}, '/users/groups')
+				}else{
+					setStatus({status:'error', message: res})
+				}
+			})
+			.catch(e=>{
+				setStatus({status:'error', message: e})
+			})
+		}catch (e){
+			setStatus({status:'error', message: e})
+		}
 	}
+
 // console.log(groupData);
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
@@ -59,11 +80,12 @@ const AddGroup = (props)=> {
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-								<span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/')}>Home</span> {'>'}
-                                <span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/users/groups')}>Groups</span> {'>'}
+								<span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/')}>Home</span> {'/'}
+                                <span className="text-indigo-700 cursor-pointer" onClick={() => router.push('/users/groups')}>Groups</span> {'/'}
                                 <span className="text-gray-500">Add group</span>
                             </div>
                         </div>
+						<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message.detail}</Alert>}</div>
                         <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                    <UserGroupIcon className='text-black ml-2 h-5 w-5'/>
@@ -263,11 +285,12 @@ const AddGroup = (props)=> {
                                                                     Array.from(permissions || [],
 																		fltopt => {
 																			return {
-																				value: fltopt.id, label: fltopt.name
+																				value: fltopt.id, label: fltopt.name, codename: fltopt.codename
 																			}
 																		})
                                                                 } 
-                                                               onChange={(ev)=>{
+																simpleValue={false}
+                                                                onChange={(ev)=>{
                                                                 setselPermissions(ev)
                                                                 handleOnChange(
                                                                     ev
@@ -312,7 +335,6 @@ const AddGroup = (props)=> {
 									
                             </div>
                         </div>
-                        
 
                 
                
