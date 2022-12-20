@@ -1,52 +1,79 @@
-import React, { useState, useEffect, useRef} from 'react'
+import React, { useState, useEffect} from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
-import { PlusIcon } from '@heroicons/react/solid';
+import { defer } from 'underscore';
 import {Formik, Form, Field} from 'formik'
-
+import {
+	ChevronDoubleRightIcon,
+	ChevronDoubleLeftIcon,
+    PlusIcon
+} from '@heroicons/react/solid';
 import { useAlert } from 'react-alert'
 
-function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryName, setUpdatedItem, item, removeItemHandler}) {
+function EditListWithCount(
+    { 
+        initialSelectedItems, 
+        itemsCategory,
+        otherItemsCategory, 
+        itemsCategoryName, 
+        itemId, 
+        item, 
+        handleItemsSubmit,
+        handleItemsUpdate, 
+        removeItemHandler, 
+        setIsSavedChanges, 
+        setItemsUpdateData,
+        handleItemPrevious,
+        setNextItemCategory,
+        nextItemCategory,
+        previousItemCategory
+    }
+) {
+
+ 
   
-  
+   
+
   const alert = useAlert()
 
-  const itemOptions = ((options) => {
+
+  const [isFormSubmit, setIsFormSubmit] = useState(false)
+  const [itemOptions, setItemOptions] = useState(((options) => {
+    if (options == null) return [] 
     return options.map(({ name, subCategories, value }) => ({
       label: name,
       options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
     }))
-  })(itemsCategory)
+  })(itemsCategory))
 
 
   const [currentItem, setCurrentItem] = useState(null)
-  const [currentCount, setCurrentCount] = useState(null)
-  const [isRemoveItem, setIsRemoveItem] = useState(false)
+  const [deletedItems, setDeletedItems] = useState([])
+ 
+
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
-    const result = []
+  const result = []
 
-    initialSelectedItems.map(({ subCategories, value, _id }) => {
-
-      result.push({ name: subCategories[0], id: value[0], _id})
+    initialSelectedItems.map(({ subCategories, id, meta_id, count }) => {
+      result.push({ name: subCategories[0], id, meta_id, count})
 
     })
-
-
 
     return result
 
   })() : []))
 
-
-  useEffect(() => {
-    if(currentCount){
-        console.log({currentCount})
-    }
-    setUpdatedItem(selectedItems)
-  }, [selectedItems, isRemoveItem, currentCount])
+  const initialValues = (() => {
+    const _initValues = {}
+    initialSelectedItems.forEach(({id, count}) => {
+        _initValues[id] = count
+    })
 
 
-  const countRef = useRef(null)
+    return _initValues
+})()
+
+
 
   const formatGroupLabel = (data) => (
     <div style={
@@ -74,52 +101,122 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
     </div>
   );
 
+  useEffect(() => {
+
+    // reset itemOptions
+    if(isFormSubmit && otherItemsCategory) setItemOptions(((options) => {
+        console.log({selectedItems, initialValues})
+        return options.map(({ name, subCategories, value }) => ({
+          label: name,
+          options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
+        }))
+      })(otherItemsCategory))
+
+     
+
+    return () => {
+        setIsFormSubmit(false)
+    }
+
+}, [isFormSubmit])
+
     return (
+       
         <Formik
-            initialValues={(() => {
-                const _initValues = {}
-                initialSelectedItems.forEach(({_id, count}) => {
-                    _initValues[_id] = count
+            initialValues={initialValues}
+            onSubmit={(values, { resetForm }) => {
+
+                if(item){
+                // Update the list of values
+                deletedItems.forEach(([{id}]) => {
+                    delete values[id]
                 })
 
-                return _initValues
-            })()}
+           
+                // Filter Edited fields only
 
-            onSubmit={() => null}
-        >
+                const valueKeys = []
+                const disjointValues = {}
+
+                Object.values(values).filter((v, i) => {
+                    if (v !== Object.values(initialValues)[i]) valueKeys.push(Object.keys(values)[i]); 
+                    return v !== Object.values(initialValues)[i] 
+                   })[0]; 
+                   
+               for (let key in valueKeys) disjointValues[valueKeys[key]] = values[valueKeys[key]]; 
+
+            
+
+                handleItemsUpdate([disjointValues, itemId], alert)
+                .then(({statusText}) => {
+                    defer(() => setIsSavedChanges(true))
+                     let update_id
+                     if(statusText == 'OK'){
+
+                             fetch(`/api/facility/get_facility/?path=facilities&id=${itemId}`).then(async resp => {
+
+                                 const results = await resp.json()
+                                 
+                                 update_id = results?.latest_update
+                                
+                           
+                                 if(update_id){
+                                    
+                                     try{
+                                        const itemsUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                                         setItemsUpdateData(itemsUpdateData)                                                     
+                                     }
+                                     catch(e){
+                                         console.error('Encountered error while fetching item update data', e.message)
+                                     }
+                                 }
+                             })
+                             .catch(e => console.error('unable to fetch item update data. Error:', e.message))                                
+                         }
+                       
+                     })
+                     .catch(e => console.error('unable to fetch item data. Error:', e.message))
+                }
+
+                else {
+
+                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, setNextItemCategory], itemId, alert) : /* Infrastructure */ handleItemsSubmit([values, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
+                    .catch(e => console.error('unable to submit item data. Error:', e.message))
+                }
+                
+            }} 
+            >
+
             <Form
                 name="list_item_with_count_form"
-                className="flex flex-col w-full items-start justify-start gap-3"
+                className="flex flex-col w-full items-start justify-start gap-3 md:mx-3"
 
             >
                 {/* Item List Dropdown */}
-                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                <div className='w-full flex flex-col items-start justify-start gap-3 mb-3'>
                     <label
-                        htmlFor='available_items'
+                        htmlFor='available_items_with_count'
                         className='capitalize text-md  leading-tight tracking-tight'>
                         Available {itemsCategoryName}
                     </label>
 
-                    <div className="flex items-start gap-2 md:w-5/6 w-full h-auto">
-
+                    <div style={{maxWidth:'78%'}} className="flex items-start gap-2 w-full h-auto">
+                     
                         <Select
+                            
                             options={itemOptions}
                             formatGroupLabel={formatGroupLabel}
-                            onChange={(e) => {
-                                if(countRef.current){
-                                    setCurrentItem({ id: e?.value, name: e?.label, count: countRef.current.value})
-                                } else {
-                                    setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
-                                }
-                               
+                            onChange={(e) => { 
+                                setCurrentItem({ id: e?.value, name: e?.label, count: 1})
+                             }
                             }
-                            }
-                            name="available_items"
+                            name="available_items_with_count"
                             className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
                         />
                         <button className="bg-green-700 rounded p-2 flex items-center justify-evenly gap-2"
                             onClick={e => {
                                 e.preventDefault()
+
                                 if (currentItem)
                                     setSelectedItems([
                                         currentItem,
@@ -133,21 +230,6 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                     </div>
                 </div>
 
-                {/* Item Count */}
-                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                    <label
-                        htmlFor='item_count'
-                        className='capitalize text-md  leading-tight tracking-tight'>
-                        {itemsCategoryName} Count
-                    </label>
-
-                    <input type="number"
-                        ref={countRef}
-                        name='item_count' 
-                        className='flex-none md:w-5/6 w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' />
-
-                </div>
-                <br />
 
                 {/* Item Selected Table */}
                 <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
@@ -169,49 +251,36 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
 
                         <>
                             {selectedItems && selectedItems?.length > 0 ? (
-                                selectedItems?.map(({ name, _id, id}, __id) => (
+                                selectedItems?.map(({ name, id, meta_id}, __id) => (
                                     <TableRow
-                                        key={_id ?? id}
+                                        key={id}
 
                                     >
                                         <TableCell>{name}</TableCell>
                                         <TableCell>
-                                            { 
-                                            _id ?
                                             <Field
-                                             type='number'
-                                             name={_id}
-                                             className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                                            />
-                                            :
-                                            <Field
-                                             type='number'
-                                             value={countRef.current.value}
-                                             name={id}
-                                             onChange={e => {
-                                                e.preventDefault()
-
-                                                setCurrentCount(e.target.value)
-                                             }}
-                                             className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            as='input'
+                                            type='number'
+                                            name={id}
+                                            className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
 
-                                            }
                                         </TableCell>
                                         <TableCell>
+                                          
                                             <button
                                                 type="button"
                                                 onClick={async (e) => {
                                                     e.preventDefault()
-                                                    let items = selectedItems
-                                                    items.splice(__id, 1)
-                                                    setIsRemoveItem(!isRemoveItem)
+                                                    let _items = selectedItems
+                                                    setDeletedItems([...deletedItems, _items.splice(__id, 1)])
                                                     setSelectedItems(
-                                                        items
+                                                        _items
                                                     );
 
-                                                    // Delete facility service
-                                                    removeItemHandler(e, _id ?? id, alert)
+                                                  
+                                                    
+                                                    removeItemHandler(e, meta_id, alert)
 
                                                 }}
                                                 className="flex items-center justify-center space-x-2 bg-red-400 rounded p-1 px-2"
@@ -224,24 +293,54 @@ function EditListWithCount({ initialSelectedItems, itemsCategory, itemsCategoryN
                                     </TableRow>
                                 ))
                             ) : (
-                                <>
+                                item !== null &&
+                                <TableRow>
+                                    <TableCell>
                                     <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                         <p>
-                                            {item?.name || item?.official_name} has not listed
-                                            the {'item'} it offers. Add some below.
+                                            {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
                                         </p>
                                     </li>
-                                    <br />
-                                </>
+                                    </TableCell>
+                                </TableRow>
                             )}
                         </>
                     </TableBody>
                 </Table>
+                
+             
+                {/* Save btn */}
 
+                { 
+                    selectedItems.length > 0 && item !== null &&
+
+                   <div style={{maxWidth:'88%' }} className="w-full flex justify-end h-auto mt-3">
+                       <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
+                   </div>
+                }
+
+                {
+                    item === null &&
+
+                    <div className='flex justify-between items-center w-full mt-4' style={{maxWidth:'90%'}}>
+                        <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                            <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                            <span className='text-medium font-semibold text-black '>{previousItemCategory}</span>
+                        </button>
+                        <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+                            <span className='text-medium font-semibold text-white'>{nextItemCategory}</span>
+                            <ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
+                        </button>
+                    </div>
+                }
+
+             
 
             </Form>
         </Formik>
+        
      )
 }
+
 
 export default EditListWithCount

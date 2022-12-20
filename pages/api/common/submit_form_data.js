@@ -40,11 +40,6 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
-                case 'facility_data':
-                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
-                    method = 'PATCH';
-                    contentType = 'application/json;charset=utf-8';
-                    break;
                 case 'edit_chul':
                     url = `${API_URL}/chul/units/${req.query.id}/`;
                     method = 'PATCH';
@@ -55,29 +50,21 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;              
-                case 'services':                 
-                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
-                    method = 'PATCH';
-                    contentType = 'application/json;charset=utf-8';
-                    break;
                 case 'delete_facility_service':                 
                     url = `${API_URL}/facilities/facility_services/${req.query.id}/`;
                     method = 'DELETE';
                     contentType = 'application/json;charset=utf-8';
                     break;
-                case 'infrastructure':           
-                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
-                    method = 'PATCH';
-                    contentType = 'application/json;charset=utf-8';
-                    break;
+                
                 case 'delete_facility_infrastructure':                 
                     url = `${API_URL}/facilities/facility_infrastructure/${req.query.id}/`;
                     method = 'DELETE';
                     contentType = 'application/json;charset=utf-8';
                     break;
-                case 'hr':               
-                    url = `${API_URL}/facilities/facilities/${req.query.id}/`;
-                    method = 'PATCH';
+                
+                case 'delete_facility_hr':
+                    url = `${API_URL}/facilities/facility_specialists/${req.query.id}/`;
+                    method = 'DELETE';
                     contentType = 'application/json;charset=utf-8';
                     break;
                 case 'users':
@@ -140,7 +127,7 @@ export default async function submitFormData(req, res) {
                     method = 'PATCH';
                     contentType = 'application/json;charset=utf-8';
                     break;
-                case 'geolocation_update':      
+                case 'update_geolocation':      
                     console.log({coordinates: req.query.id})     
                     url = `${API_URL}/gis/facility_coordinates/${req.query.id}/`;
                     method = 'PATCH';

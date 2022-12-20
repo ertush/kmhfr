@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, Suspense, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAlert } from "react-alert";
 
 
@@ -12,9 +12,10 @@ import Link from 'next/link';
 // Component imports
 import MainLayout from '../../components/MainLayout';
 import FacilityContact from '../../components/FacilityContact';
-import TrasnferListServices from '../../components/TrasnferListServices';
-import TransferListHr from '../../components/TransferListHr';
-import TransferListInfrastructure from '../../components/TransferListInfrastructure';
+// import TrasnferListServices from '../../components/TrasnferListServices';
+// import TransferListHr from '../../components/TransferListHr';
+import EditListWithCount from '../../components/EditListWithCount';
+import EditListItem from '../../components/EditListItem';
 
 // Controller imports
 import { checkToken } from '../../controllers/auth/auth';
@@ -24,9 +25,7 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
+import FacilitySideMenu from '../../components/FacilitySideMenu';
 import Alert from '@mui/material/Alert';
 
 // Heroicons imports
@@ -48,13 +47,14 @@ import {
     handleRegulationSubmit,
     handleServiceSubmit,
     handleInfrastructureSubmit,
+	handleServiceUpdates,
     handleHrSubmit
 } from '../../controllers/facility/facilityHandlers';
 
 
 
 const turf = require('@turf/turf');
-const FormData = require('form-data');
+// const FormData = require('form-data');
 const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
@@ -71,15 +71,57 @@ function AddFacility(props) {
 
 	// Form drop down options
 
-     const facilityOptions = [
-		props['0']?.facility_types[0],  // STAND ALONE
-		props['0']?.facility_types[1],  // DISPENSARY 
-		props['0']?.facility_types[2],  // MEDICAL CLINIC
-		props['0']?.facility_types[8],  // NURSING HOME
-		props['0']?.facility_types[10], // HOSPITALS
-		props['0']?.facility_types[16], // HEALTH CENTRE
-		props['0']?.facility_types[25]  // MEDICAL CENTRE
-	]
+
+	const facilityOptions = (() => {
+		const f_types = [
+			'STAND ALONE',
+			'DISPENSARY',
+			'MEDICAL CLINIC',
+			'NURSING HOME',
+			'HOSPITALS',
+			'HEALTH CENTRE',
+			'MEDICAL CENTRE'
+		]
+
+		const all_ftypes = []
+
+
+		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division === f_types[type]))
+
+
+
+		return [{
+			label: all_ftypes[0].sub_division,
+			value: all_ftypes[0].parent
+		},
+		{
+			label: all_ftypes[1].sub_division,
+			value: all_ftypes[1].parent
+		},
+		{
+			label: all_ftypes[2].sub_division,
+			value: all_ftypes[2].parent
+		},
+		{
+			label: all_ftypes[3].sub_division,
+			value: all_ftypes[3].parent
+		},
+		{
+			label: all_ftypes[4].sub_division,
+			value: all_ftypes[4].parent
+		},
+		{
+			label: all_ftypes[5].sub_division,
+			value: all_ftypes[5].parent
+		}
+
+		]
+
+	})()
+
+
+	// console.log({facilityOptions})
+	 
 
 	 const facilityTypeOptions = props['1']?.facility_type_details
 	 const ownerOptions =  props['2']?.owners
@@ -139,9 +181,9 @@ function AddFacility(props) {
 			_infrastructure.forEach(({category_name:ctg}) => {
 				let allOccurences = _infrastructure.filter(({category_name}) => category_name === ctg)
 				
-				allOccurences.forEach(({id, name}) => {
+				allOccurences.forEach(({id, name}) => { 
 					_subCtgs.push(name)
-					_values.push(id)
+					_values.push(id) 
 				})
 				
 				if(_infrastructureOptions.map(({name}) => name).indexOf(ctg) === -1){
@@ -259,6 +301,14 @@ function AddFacility(props) {
 	const [checklistFile, setChecklistFile] = useState(null)
 	const [licenseFile, setLicenseFile] = useState(null)
 	const [coordinatesError, setCoordinatesError] = useState(false)
+
+
+	const [khisSynched, setKhisSynched] = useState(false);
+    const [facilityFeedBack, setFacilityFeedBack] = useState([])
+    const [pathId, setPathId] = useState('') 
+    const [allFctsSelected, setAllFctsSelected] = useState(false);
+    const [title, setTitle] = useState('');
+	const filters = []
 	
 	
     useEffect(() => {
@@ -373,23 +423,28 @@ function AddFacility(props) {
 	}
 
 	useEffect(() => {
+		const isLatLngInRegion = () => {
+			
+			if(longitude.length >= 9 && latitude.length >= 9){ 
+				let point = turf.point([longitude, latitude]);
+				
+				let polygon = turf.polygon(facilityCoordinates);
+				console.log({facilityCoordinates})
+				let found = turf.booleanPointInPolygon(point, polygon);
+				if(!found){
+					setCoordinatesError(true)
+				}else{
+					setCoordinatesError(false)
+				}
+			}
+		}
+
 		isLatLngInRegion()
 	} , [longitude, latitude])
 
 	useEffect(() => {}, [coordinatesError])
 	
-	const isLatLngInRegion=()=> {
-		if(longitude.length > 1 && latitude.length > 1){
-			let point = turf.point([longitude, latitude]);
-			let polygon = turf.polygon(facilityCoordinates);
-			let found = turf.booleanPointInPolygon(point, polygon);
-			if(!found){
-				setCoordinatesError(true)
-			}else{
-				setCoordinatesError(false)
-			}
-		}
-	}
+	
   return (
 	<>
 		 <Head>
@@ -416,75 +471,14 @@ function AddFacility(props) {
 					
 						</div>
 
-						{/* Side Menu Filters */}
 
-						<div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
-                        <List
-                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                        component="nav"
-                        aria-labelledby="nested-list-subheader"
-                    
-                        >	
-                            <ListItemButton name="rt"
-                                onClick={() => handleQuickFiltersClick('all') }
-                            >
-                                <ListItemText primary="All Facilities" />
-                            </ListItemButton>
-                            <ListItemButton 
-                                 onClick={() => handleQuickFiltersClick('approved_facilities') }
-                            >
-                                <ListItemText primary="Approved Facilities" />
-                            </ListItemButton>
-                            <ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('new_pending_validation') }
-                            >
-                                <ListItemText primary="New Facilities Pending Validation"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('updated_pending_validation') }
-                            >
-                                <ListItemText primary="Updated Facilities Pending Validation"/>
-                            </ListItemButton>
-
-							<ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('to_publish') }
-                            >
-                                <ListItemText primary="Facilities Pending Approval"/>
-                            </ListItemButton>
-
-							<ListItemButton 
-                            	 onClick={() => handleQuickFiltersClick('dhis_synced_facilities') }
-                            >
-                                <ListItemText primary="DHIS Synced Approved Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                              	onClick={() => handleQuickFiltersClick('failed_validation_facilities') }
-                            >
-                                <ListItemText primary="Failed Validation Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                             	onClick={() => handleQuickFiltersClick('rejected_facilities') }
-                            >
-                                <ListItemText primary="Rejected Facilities"/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                              	onClick={() => handleQuickFiltersClick('closed_facilities') }
-                            >
-                                <ListItemText primary="Closed Facilities "/>
-                            </ListItemButton>
-
-                            <ListItemButton 
-                              	onClick={() => handleQuickFiltersClick('incomplete_facilities') }
-                            >
-                                <ListItemText primary="Incomplete Facilities"/>
-                            </ListItemButton>
-        
-                        </List>
-                    	</div>
+						 {/* Facility Side Menu Filters */}
+						 <div className="md:col-span-1 md:mt-8">
+                            <FacilitySideMenu 
+                                filters={filters}
+                                states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
+                                stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
+                		</div>
 
 						{/* Stepper and Form */}
 						<div className='col-span-4 md:col-start-2 md:col-span-4 flex flex-col items-center border rounded pt-8 pb-4 gap-4 mt-2 order-last md:order-none'>
@@ -2190,8 +2184,8 @@ function AddFacility(props) {
 											case 4:
 												// Services Form
 	
-												const handleServicePrevious = (event) => {
-													event.preventDefault()
+												const handleServicePrevious = () => {
+												
 													window.sessionStorage.setItem('formId', 3)
 													
 													setFormId(window.sessionStorage.getItem('formId'))
@@ -2201,54 +2195,30 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
-														<form name="facility_services_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleServiceSubmit(ev, [services,facilityId, setFormId, setServices], 'POST')}>
-															
-															{/* Transfer list Container */}
-															<div className='flex items-center w-full h-auto min-h-[300px]'>
-																							
-															<TrasnferListServices 
-																categories={serviceOptions}
-																setServices={setServices}
-																setRefreshForm4={setRefreshForm4}
-																refreshForm4={refreshForm4}
-																setBtnDirection={() => null}
-																selectedRight={null}
-																setSelectedServiceRight={() => null}
-															/>
+																<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+                                                            
+																	{/* Transfer list Container */}
+																	<div className='flex items-center w-full h-auto min-h-[300px]'>                                  
 
-															</div>
-															{/* Service Category Table */}
-															<table className='w-full  h-auto my-4'>
-																<thead className='w-full'>
-																	<tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
-																		<td className='text-lg font-semibold text-indigo-900 '>Name</td>
-																		<td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
-																	</tr>
-																</thead>
-																<tbody ref={optionRefBody}>
-																	{
-																		services.map(({subctg}) => subctg).map((service, i) => (
-																			<tr key={`${service}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-																				<td ref={nameOptionRef}>{service}</td>
-																				<td ref={serviceOptionRef} className='ml-12 text-base'>Yes</td>
-																			</tr>
-																		))
-																	}
-																
-																</tbody>
-															</table>
-															
-															<div className='flex justify-between items-center w-full'>
-																<button onClick={handleServicePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																	<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-																	<span className='text-medium font-semibold text-black '>Regulation</span>
-																</button>
-																<button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																	<span className='text-medium font-semibold text-white'>Infrastructure</span>
-																	<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
-																</button>
-															</div>
-														</form>
+																			<EditListItem 
+																			initialSelectedItems={[]}
+																			itemsCategory={serviceOptions}
+																			itemsCategoryName={'Services'}
+																			setUpdatedItem={() => null}
+																			itemId={facilityId}
+																			setItems={setServices}
+																			item={null}
+																			removeItemHandler={() => null}
+																			handleItemsSubmit={handleServiceSubmit}
+																			handleItemsUpdate={handleServiceUpdates}
+																			setNextItemCategory={setFormId}
+																			nextItemCategory={'infrastructure'}
+																			previousItemCategory={'regulation'}
+																			handleItemPrevious={handleServicePrevious}
+																			/>
+
+																	</div>
+																</div>
 													</>
 												)
 											case 5:
@@ -2266,63 +2236,32 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
-													<form name="facility_infrastructure_form" onSubmit={ev => handleInfrastructureSubmit(ev, [infrastructure, infrastructureCount, setFormId, facilityId], 'POST')}  className='flex flex-col w-full items-start justify-start gap-3'>
-														
-														{/* Transfer list Container */}
-														<div className='flex items-center w-full h-auto min-h-[300px]'>
-														
-														{/* Transfer List*/}
-														<TransferListInfrastructure 
-															categories={
-																infrastructureOption
-															} 
-															setState={setInfrastructure}
-															setCount={setInfrastructureCount}
-															setRefreshForm5={setRefreshForm5}
-															refreshForm5={refreshForm5}
-															selectTitle='Infrastructure'
-															setSelectedInfraRight={() => null}
-															selectedInfraRight={null}
-															/>
+													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
-														</div>
-														{/* Service Category Table */}
-														<table className='w-full  h-auto my-4'>
-															<thead className='w-full'>
-																<tr className='grid grid-cols-4 place-content-end border-b-4 border-gray-300'>
-																	<td className='text-lg font-semibold text-indigo-900'>Name</td>
-																	<td className='text-lg font-semibold text-indigo-900'>Category</td>
-																	<td className='text-lg font-semibold text-indigo-900'>Present</td>
-																	<td className='text-lg font-semibold text-indigo-900'>Number</td>
-																</tr>
-															</thead>
-															<tbody ref={infrastructureBodyRef}>
-																{
-																	infrastructure.map(({subctg}) => subctg).map((_infrastructure, i) => (
-																		<tr key={`${_infrastructure}_${i}`} className='grid grid-cols-4 place-content-end border-b-2 border-gray-300'>
-																			<td className='text-lg text-black'>{_infrastructure}</td>
-																			<td className='text-lg text-black'>{infrastructureOption.filter(({subCategories}) => subCategories.includes(_infrastructure))[0].name}</td>
-																			<td className='text-lg text-black'>Yes</td>
-																			<td className='text-lg  text-black'>{infrastructureCount.filter(({name}) => name == _infrastructure)[0].val || 0}</td>
-																		</tr>
-																	))
-																}
-															
-															
-															</tbody>
-														</table>
-														
-														<div className='flex justify-between items-center w-full'>
-															<button onClick={handleInfrastructurePrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-																<span className='text-medium font-semibold text-black '>Services</span>
-															</button>
-															<button type={'submit'} className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>Human resources</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
-															</button>
-														</div>
-													</form>
+														{/* Edit List With Count Container*/}
+														<div className='flex items-center w-full h-auto min-h-[300px]'>
+                                        
+															{/* Edit List With Count*/}
+																<EditListWithCount 
+																initialSelectedItems={[]}
+																itemsCategory={infrastructureOption}
+																otherItemsCategory={null}
+																itemsCategoryName={'infrastructure'}
+																itemId={facilityId}
+																item={null}
+																handleItemsSubmit={handleInfrastructureSubmit}
+																handleItemsUpdate={() => null}
+																removeItemHandler={() => null}
+																setIsSavedChanges={null}
+																setItemsUpdateData={null}
+																handleItemPrevious={handleInfrastructurePrevious}
+																setNextItemCategory={setFormId}
+																nextItemCategory={'services'}
+																previousItemCategory={'human resources'}
+																/>
+
+															</div>
+													</div>
 												</>
 												)
 											case 6:
@@ -2340,65 +2279,34 @@ function AddFacility(props) {
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human resources</h4>
-													<form name="facility_services_form" onSubmit={ev => handleHrSubmit(ev, [hr, hrCount, facilityId, setFormId, alert], 'POST')} className='flex flex-col w-full items-start justify-start gap-3'>
-														
-														{/* Transfer list Container */}
+													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+
+														{/* Edit List With Count Container*/}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
-														
-														{/* Transfer List*/}
-														
-														<TransferListHr 
-															categories={hrOptions} 
-															setState={setHr}
-															setRefreshForm6={setRefreshForm6}
-															refreshForm6={refreshForm6}
-															setCount={setHrCount}
-															selectTitle='HR Specialities'
-															setSelectedHrRight={() => null}
-															selectedHrRight={null}
+                                        
+															{/* Edit List With Count*/}
+																<EditListWithCount 
+																initialSelectedItems={[]}
+																itemsCategory={null}
+																otherItemsCategory={hrOptions}
+																itemsCategoryName={'human resource'}
+																itemId={facilityId}
+																item={null}
+																handleItemsSubmit={handleHrSubmit}
+																handleItemsUpdate={() => null}
+																removeItemHandler={() => null}
+																setIsSavedChanges={null}
+																setItemsUpdateData={null}
+																handleItemPrevious={handleHrPrevious}
+																setNextItemCategory={setFormId}
+																nextItemCategory={'finish'}
+																previousItemCategory={'infrastructure'}
+																/>
 
-														/>
-
-														</div>
-														{/* Service Category Table */}
-														<table className='w-full  h-auto my-4'>
-															<thead className='w-full'>
-																<tr className='grid grid-cols-3 place-content-end border-b-4 border-gray-300'>
-																	<td className='text-lg font-semibold text-indigo-900'>Name</td>
-																	<td className='text-lg font-semibold text-indigo-900'>Present</td>
-																	<td className='text-lg font-semibold text-indigo-900'>Number</td>
-																</tr>
-															</thead>
-
-															<tbody>
-															
-																{
-																	
-																	hr.map(({subctg}) => subctg).map((_hr, i) => (
-																		<tr key={`${_hr}_${i}`} className='grid grid-cols-3 place-content-end border-b-2 border-gray-300'>
-																			<td className='text-lg text-black'>{_hr}</td>
-																			<td className='text-lg text-black'>Yes</td>
-																			<td className='text-lg  text-black'>{hrCount.filter(({name}) => name == _hr)[0].val || 0}</td>
-																		</tr>
-																	))
-																}
-															
-															
-															</tbody>
-														</table>
-														
-														<div className='flex justify-between items-center w-full'>
-															<button onClick={handleHrPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-																<span className='text-medium font-semibold text-black '>Infrastracture</span>
-															</button>
-															<button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>Finish</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white'/>
-															</button>
-														</div>
-													</form>
-												</>
+															</div>
+									
+													</div>
+													</>
 												)
 											default:
 												// 
@@ -2492,10 +2400,10 @@ AddFacility.getInitialProps = async (ctx) => {
 										},
 									})
 
-									let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division ? {value:id, label:sub_division} : {value:id, label:name})
+									// let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division ? {value:id, label:sub_division} : {value:id, label:name})
 
 									
-									allOptions.push({facility_types: results })
+									allOptions.push({facility_types: (await _data.json()).results})
 									
 								}
 								catch(err) {
