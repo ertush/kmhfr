@@ -5,15 +5,12 @@ import { useAlert } from "react-alert";
 
 // Next imports
 import Head from 'next/head';
-import router from 'next/router';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 // Component imports
 import MainLayout from '../../components/MainLayout';
 import FacilityContact from '../../components/FacilityContact';
-// import TrasnferListServices from '../../components/TrasnferListServices';
-// import TransferListHr from '../../components/TransferListHr';
 import EditListWithCount from '../../components/EditListWithCount';
 import EditListItem from '../../components/EditListItem';
 
@@ -54,7 +51,6 @@ import {
 
 
 const turf = require('@turf/turf');
-// const FormData = require('form-data');
 const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
@@ -71,7 +67,6 @@ function AddFacility(props) {
 
 	// Form drop down options
 
-
 	const facilityOptions = (() => {
 		const f_types = [
 			'STAND ALONE',
@@ -87,8 +82,6 @@ function AddFacility(props) {
 
 
 		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division === f_types[type]))
-
-
 
 		return [{
 			label: all_ftypes[0].sub_division,
@@ -119,9 +112,6 @@ function AddFacility(props) {
 
 	})()
 
-
-	// console.log({facilityOptions})
-	 
 
 	 const facilityTypeOptions = props['1']?.facility_type_details
 	 const ownerOptions =  props['2']?.owners
@@ -203,7 +193,6 @@ function AddFacility(props) {
 		return _infrastructureOptions
 	 })(props['16'].infrastructure ?? [])
 
-
 	 const hrOptions = ((_hr) => {
 		
 		const _hrOptions = []
@@ -239,10 +228,6 @@ function AddFacility(props) {
 
 	//  Refs
 
-    const nameOptionRef = useRef(null)
-    const serviceOptionRef = useRef(null)
-    const optionRefBody = useRef(null)
-    const infrastructureBodyRef = useRef(null)
 	const basicDetailsRef = useRef(null)
 	const kephLvlRef = useRef(null)
 	const regBodyRef = useRef(null)
@@ -258,24 +243,25 @@ function AddFacility(props) {
         'Human resources'
     ];
 
-
-    const [formId, setFormId] = useState(0) //0
+    const [formId, setFormId] = useState(0) 
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
 	const checklistFileRef = useRef(null)
-  
 
+	// Hours of Day Open Refs
+	const open24HrsRef = useRef(null)
+	const openLateNightRef = useRef(null)
+	const openNormalDayRef = useRef(null)
+	const openPublicHolidaysRef = useRef(null)
+	const openWeekendsRef = useRef(null)
+
+  
 
     // Services State data
     const [services, setServices] = useState([])
-    const [infrastructure, setInfrastructure] = useState([])
-	const [infrastructureCount, setInfrastructureCount] = useState([])
-	const [hr, setHr] = useState([])
-	const [hrCount, setHrCount] = useState([])
 	const [facilityOption, setFacilityOption] = useState('')
 	const [facilityOfficialName, setFacilityOfficialName] = useState('')
-	// const [geolocationData, setGeolocationData] = useState({})
 
 	const [ownerTypeOption, setOwnerTypeOption] = useState('')
 	const [latitude, setLatitude] = useState('')
@@ -308,6 +294,7 @@ function AddFacility(props) {
     const [pathId, setPathId] = useState('') 
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('');
+	const [is24hrsOpen, setIs24hrsOpen] = useState(false)
 	const filters = []
 	
 	
@@ -349,54 +336,6 @@ function AddFacility(props) {
         }
     }, [facilityOfficialName, facilityOption, formId, refreshForm4, refreshForm5, refreshForm6, latitude, geoJSON, longitude])
       
-
-	const handleQuickFiltersClick = (link) => {
-		switch(link){
-			case 'all':
-				router.push({pathname:'/facilities', query:{qf:'all', id:'not_all'}})
-				break;
-				
-			case 'approved_facilities':
-				
-				router.push({pathname:'/facilities', query:{qf:'approved', approved_national_level: true, rejected:false, id:'approved' }})
-				break;
-			case 'new_pending_validation':
-
-				router.push({pathname:'/facilities', query:{qf:'new_pending_validation', pending_approval:true, has_edits:false, id:'new_pending_validation'}})
-				break;
-			case 'updated_pending_validation':
-				
-				router.push({pathname:'/facilities', query:{qf:'updated_pending_validation', has_edits:true, pending_approval:true, id:'updated_pending_validation'} })
-				break;
-			case 'to_publish':
-			
-				router.push({pathname:'/facilities', query:{qf:'to_publish', to_publish:true, id:'to_publish'} })
-				break;
-			case 'dhis_synced_facilities':
-				
-				router.push({pathname:'/facilities', query:{qf:'dhis_synced_facilities', approved:true, approved_national_level:true, rejected:false, reporting_in_dhis:true, id:'dhis_synced_facilities'}})
-				break;
-			case 'failed_validation_facilities':
-			
-				router.push({pathname:'/facilities', query:{qf:'failed_validation', rejected:true, id:'failed_validation'}})
-				break;
-			case 'rejected_facilities':
-				
-				router.push({pathname:'/facilities', query:{qf:'rejected', rejected_national:true, id:'rejected'}})
-				break;
-			case 'closed_facilities':
-				
-				router.push({pathname:'/facilities', query:{qf:'closed', closed:true, id:'closed'}})
-				break;
-			case 'incomplete_facilities':
-				
-				router.push({pathname:'/facilities', query:{qf:'incomplete', incomplete:true, id:'incomplete'}})
-				break;
-		
-			default:
-				break;
-		}
-	}
 
 	if(facilityTypeDetail !== '' && kephLvlRef.current){
 		switch(facilityTypeDetail){
@@ -440,9 +379,50 @@ function AddFacility(props) {
 		}
 
 		isLatLngInRegion()
+
+		
+		
 	} , [longitude, latitude])
 
-	useEffect(() => {}, [coordinatesError])
+	// Validate Hours/Days of Operation
+
+	useEffect(() => {
+		if(open24HrsRef.current && is24hrsOpen){
+			open24HrsRef.current.checked = true
+		}  
+		if(open24HrsRef.current && !is24hrsOpen) {
+			open24HrsRef.current.checked = false
+		}
+
+		if(openLateNightRef.current && is24hrsOpen){
+			openLateNightRef.current.checked = true
+		}
+		if(openLateNightRef.current && !is24hrsOpen){
+			openLateNightRef.current.checked = false
+		}
+
+
+		if(openNormalDayRef.current && is24hrsOpen){
+			openNormalDayRef.current.checked = true
+		}
+		if(openNormalDayRef.current && !is24hrsOpen){
+			openNormalDayRef.current.checked = false
+		}
+
+		if(openPublicHolidaysRef.current && is24hrsOpen){
+			openPublicHolidaysRef.current.checked = true
+		}
+		if(openPublicHolidaysRef.current && !is24hrsOpen){
+			openPublicHolidaysRef.current.checked = false
+		}
+
+		if(openWeekendsRef.current && is24hrsOpen){
+			openWeekendsRef.current.checked = true
+		}
+		if(openWeekendsRef.current && !is24hrsOpen){
+			openWeekendsRef.current.checked = false
+		}
+	}, [is24hrsOpen])
 	
 	
   return (
@@ -1174,9 +1154,11 @@ function AddFacility(props) {
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
 																		type='checkbox'	
+																		ref={open24HrsRef}
 																		name='open_whole_day'
 																		id='open_24hrs'
 																		defaultValue={true}
+																		onChange={() => {setIs24hrsOpen(!is24hrsOpen)}}
 																		
 																		
 																	/>
@@ -1190,7 +1172,8 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
-																		type='checkbox'		
+																		type='checkbox'
+																		ref={openLateNightRef}		
 																		name='open_late_night'
 																		id='open_late_night'
 																		defaultValue={true}
@@ -1208,6 +1191,7 @@ function AddFacility(props) {
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
 																		type='checkbox'
+																		ref={openPublicHolidaysRef}
 																		name='open_public_holidays'
 																		id='open_public_holidays'
 																		defaultValue={true}
@@ -1224,7 +1208,8 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
-																		type='checkbox'	
+																		type='checkbox'
+																		ref={openWeekendsRef}	
 																		name='open_weekends'
 																		id='open_weekends'
 																		defaultValue={true}
@@ -1241,6 +1226,7 @@ function AddFacility(props) {
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
 																		type='checkbox'	
+																		ref={openNormalDayRef}
 																		name='open_normal_day'
 																		id='open_8_5'
 																		defaultValue={true}
@@ -2063,7 +2049,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-														<form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId], 'POST', licenseFile)}>
+														<form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId, facilityOfficialName], 'POST', licenseFile)}>
 
 															{/* Regulatory Body */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
@@ -2215,6 +2201,9 @@ function AddFacility(props) {
 																			nextItemCategory={'infrastructure'}
 																			previousItemCategory={'regulation'}
 																			handleItemPrevious={handleServicePrevious}
+																			setIsSaveAndFinish={() => null}
+
+																			
 																			/>
 
 																	</div>
@@ -2258,6 +2247,7 @@ function AddFacility(props) {
 																setNextItemCategory={setFormId}
 																nextItemCategory={'services'}
 																previousItemCategory={'human resources'}
+                                              					setIsSaveAndFinish={() => null}
 																/>
 
 															</div>
@@ -2301,6 +2291,7 @@ function AddFacility(props) {
 																setNextItemCategory={setFormId}
 																nextItemCategory={'finish'}
 																previousItemCategory={'infrastructure'}
+                                              					setIsSaveAndFinish={() => null}
 																/>
 
 															</div>

@@ -98,10 +98,8 @@ const Facility = (props) => {
                   open={open}
                   onClose={handleClose}
                   closeAfterTransition
-                  BackdropComponent={Backdrop}
-                  BackdropProps={{
-                  timeout: 500,
-                  }}
+                  slots={{backdrop:Backdrop}}
+                 
               >
                   <Fade in={open}>
                   <Box sx={

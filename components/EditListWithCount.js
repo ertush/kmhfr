@@ -9,6 +9,7 @@ import {
     PlusIcon
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert'
+// import FacilityUpgradeModal from './FacilityUpgradeModal';
 
 function EditListWithCount(
     { 
@@ -26,13 +27,11 @@ function EditListWithCount(
         handleItemPrevious,
         setNextItemCategory,
         nextItemCategory,
-        previousItemCategory
+        previousItemCategory,
+        setIsSaveAndFinish
     }
 ) {
 
- 
-  
-   
 
   const alert = useAlert()
 
@@ -44,7 +43,7 @@ function EditListWithCount(
       label: name,
       options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
     }))
-  })(itemsCategory))
+  })(itemsCategory ?? otherItemsCategory))
 
 
   const [currentItem, setCurrentItem] = useState(null)
@@ -54,10 +53,12 @@ function EditListWithCount(
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
   const result = []
 
-    initialSelectedItems.map(({ subCategories, id, meta_id, count }) => {
-      result.push({ name: subCategories[0], id, meta_id, count})
+   if(initialSelectedItems.length > 0){
+        initialSelectedItems.map(({ subCategories, id, meta_id, count }) => {
+        result.push({ name: subCategories[0], id, meta_id, count})
 
-    })
+        })
+    }
 
     return result
 
@@ -116,25 +117,28 @@ function EditListWithCount(
 
     return () => {
         setIsFormSubmit(false)
+        
     }
 
 }, [isFormSubmit])
 
     return (
-       
-        <Formik
+    
+          <Formik
             initialValues={initialValues}
+            initialErrors={false}
             onSubmit={(values, { resetForm }) => {
 
+                setIsSaveAndFinish(true)
+
                 if(item){
+
                 // Update the list of values
                 deletedItems.forEach(([{id}]) => {
                     delete values[id]
                 })
-
-           
+          
                 // Filter Edited fields only
-
                 const valueKeys = []
                 const disjointValues = {}
 
@@ -144,8 +148,6 @@ function EditListWithCount(
                    })[0]; 
                    
                for (let key in valueKeys) disjointValues[valueKeys[key]] = values[valueKeys[key]]; 
-
-            
 
                 handleItemsUpdate([disjointValues, itemId], alert)
                 .then(({statusText}) => {
@@ -192,6 +194,7 @@ function EditListWithCount(
                 className="flex flex-col w-full items-start justify-start gap-3 md:mx-3"
 
             >
+            
                 {/* Item List Dropdown */}
                 <div className='w-full flex flex-col items-start justify-start gap-3 mb-3'>
                     <label
@@ -338,6 +341,7 @@ function EditListWithCount(
 
             </Form>
         </Formik>
+     
         
      )
 }

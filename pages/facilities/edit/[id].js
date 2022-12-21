@@ -36,6 +36,7 @@ import FacilitySideMenu from '../../../components/FacilitySideMenu';
 import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
 import EditListWithCount from '../../../components/EditListWithCount';
+import FacilityUpgradeModal from '../../../components/FacilityUpgradeModal'
 
 
 
@@ -84,6 +85,8 @@ const EditFacility = (props) => {
     const [pathId, setPathId] = useState('') 
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('') 
+    const [isSaveAndFinishInfra, setIsSaveAndFinishInfra] = useState(false);
+    const [isSaveAndFinishService, setIsSaveAndFinishService] = useState(false)
     const filters = []
 
 
@@ -709,10 +712,10 @@ const EditFacility = (props) => {
     const facilityRegulatoryBodyRef = useRef(null)
     const regBodyRef = useRef(null)
     const facilityDeptNameRef = useRef(null)
-    const optionRefBody = useRef(null)
-    const serviceOptionRef = useRef(null)
-    const nameOptionRef = useRef(null)
-    const infrastructureBodyRef = useRef(null)
+    // const optionRefBody = useRef(null)
+    // const serviceOptionRef = useRef(null)
+    // const nameOptionRef = useRef(null)
+    // const infrastructureBodyRef = useRef(null)
 
     
 
@@ -806,6 +809,7 @@ const EditFacility = (props) => {
         }
 
         if(regulatoryBodyRef.current ){
+            console.log({regBodyOptions, regulatory_body})
             regulatoryBodyRef.current.state.value = regBodyOptions.filter(({value}) => value === regulatory_body)[0] || ''
         }
 
@@ -830,7 +834,8 @@ const EditFacility = (props) => {
 
    
     return () => {
-
+        setIsSaveAndFinishService(false)
+        setIsSaveAndFinishInfra(false)
     }
        
         
@@ -2155,7 +2160,7 @@ const EditFacility = (props) => {
                                                   //    Filtered Regulatory State Options
 
                                                   <Select 
-                                                  ref={regulatoryStateRef}
+                                                      ref={regulatoryStateRef}
                                                       options={filteredRegulationStateOptions || []} 
                                                       required
                                                       onChange={ev => {
@@ -2165,20 +2170,20 @@ const EditFacility = (props) => {
                                                       placeholder="Select Regulation Status"
                                                       name='regulation_status'
                                                       className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                               :
+                                                :
 
-                                               <Select 
-                                                        ref={regulatoryStateRef}
-                                                        options={regulationStateOptions || []} 
-                                                        required
-                                                        onChange={ev => {
-                                                            setIsPendingLicense(false)
-                                                            if(ev.label === 'Pending License') setIsPendingLicense(true)
-                                                        }}
-                                                        placeholder="Select Regulation Status"
-                                                        name='regulation_status'
-                                                        className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                              
+                                                <Select 
+                                                            ref={regulatoryStateRef}
+                                                            options={regulationStateOptions || []} 
+                                                            required
+                                                            onChange={ev => {
+                                                                setIsPendingLicense(false)
+                                                                if(ev.label === 'Pending License') setIsPendingLicense(true)
+                                                            }}
+                                                            placeholder="Select Regulation Status"
+                                                            name='regulation_status'
+                                                            className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                
                                                     }
 
                                                 </div>
@@ -2306,62 +2311,37 @@ const EditFacility = (props) => {
                                 {/* Services */}
                                 <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
                                     
-                                    {/* <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
-                                       async ev => {
-
-                                            ev.preventDefault()     
-
-                                        
-
-                                             handleServiceUpdates(ev, [serviceUpdates, id], alert, "Facility Services updated successfully")
-                                                .then(({statusText}) => {
-                                                    defer(() => setIsSavedChanges(true))
-                                                    let update_id
-                                                    if(statusText == 'OK'){
-
-                                                            fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
-    
-                                                                const results = await resp.json()
-                                                                
-                                                                update_id = results?.latest_update
-                                                                
-                                                                if(update_id){
-                                                                 
-                                                                    
-                                                                    try{
-                                                                        const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
-                                                                        setFacilityUpdateData(_facilityUpdateData)                                                     
-                                                                    }
-                                                                    catch(e){
-                                                                        console.error('Encountered error while fetching facility update data', e.message)
-                                                                    }
-                                                                }
-                                                            })
-                                                            .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
-                                                        }
-                                                    
-                                                    })
-                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message)) 
-                                                }
-                                         }> */}
-
                                         <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
-                                            {/* Transfer list Container */}
-                                            <div className='flex items-center w-full h-auto min-h-[300px]'>
 
+                                             {/* Display Facility Upgrade Modal */}
+
+                                             {
+                                                    isSaveAndFinishService && 
+                                                    <FacilityUpgradeModal 
+                                                        subject='Service'
+                                                        facilityId={id}
+                                                    />
+                                             }
+
+                                            {/* Edit list item Container */}
+                                            <div className='flex items-center w-full h-auto min-h-[300px]'>
+                              
                                                 <EditListItem
                                                     initialSelectedItems={serviceSelected}
                                                     itemsCategory={serviceOptions}
                                                     itemsCategoryName={'Services'}
                                                     setUpdatedItem={setServiceUpdates}
                                                     item={{ name, official_name }}
-                                                    itemId={null}
+                                                    itemId={id}
                                                     setItems={() => null}
                                                     removeItemHandler={handleServiceDelete}
                                                     handleItemsUpdate={handleServiceUpdates}
+                                                    setIsSavedChanges={setIsSavedChanges}
+                                                    setItemsUpdateData={setFacilityUpdateData}
                                                     setNextItemCategory={() => null}
                                                     nextItemCategory={null}
                                                     previousItemCategory={null}
+                                                    setIsSaveAndFinish={setIsSaveAndFinishService}
                                                     handleItemPrevious={null}
                                                 />
 
@@ -2374,6 +2354,18 @@ const EditFacility = (props) => {
                                 {/* Infrastructure */}
                                 <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
                                     <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+
+
+                                        {/* Display Facility Upgrade Modal */}
+
+                                        {
+                                                isSaveAndFinishInfra && 
+                                                <FacilityUpgradeModal 
+                                                    subject='infrastructure'
+                                                    facilityId={id}
+                                                />
+                                        }
+
                                                             
                                         {/* Edit List With Count Container*/}
                                         <div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2395,17 +2387,19 @@ const EditFacility = (props) => {
                                               setNextItemCategory={() => null}
                                               nextItemCategory={null}
 											  previousItemCategory={null}
+                                              setIsSaveAndFinish={setIsSaveAndFinishInfra}
                                             />
 
                                         </div>
 
                                     </div>
                                 </Tabs.Panel>
+
                                 {/* Human Resources */}
                                 <Tabs.Panel value="human_resource" className="grow-1 py-1 px-4 tab-panel">
          
                                         <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
-                                            
+
                                             {/* Edit List With Count Container*/}
                                             <div className='flex items-center w-full h-auto min-h-[300px]'>
                                             
@@ -2426,6 +2420,7 @@ const EditFacility = (props) => {
                                                     setNextItemCategory={() => null}
                                                     nextItemCategory={null}
 													previousItemCategory={null}
+                                                    setIsSaveAndFinish={() => null}
                                                 />
     
                                             </div>
