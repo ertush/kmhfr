@@ -1,26 +1,38 @@
 // React imports
-import React, { useEffect, useState  } from 'react';
+import React, { useEffect, useState, useContext  } from 'react';
 import router from 'next/router';
 import MainLayout from '../../components/MainLayout';
 import { checkToken } from '../../controllers/auth/auth';
 import {ChevronDoubleLeftIcon, UserAddIcon, PlusIcon, PencilAltIcon} from '@heroicons/react/solid';
 import Select from 'react-select'; 
 import { withRouter } from 'next/router';
+import Backdrop from '@mui/material/Backdrop';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import { useAlert } from "react-alert";
+import { UserContext } from '../../providers/user';
+import { hasUsersPermission } from '../../utils/checkPermissions';
 import Alert from '@mui/material/Alert';
 import Link from 'next/link'
 
 const AddUser = (props)=> {
 	const [subCountyOptions, setSubCountyOptions] = useState([])
 	const [editMode, setEditMode]= useState(false)
+	const alert = useAlert()
 	let groups = props[0]?.groups
 	let contact_types = props[1]?.contact_type
 	let counties = props[2]?.counties
 	let regbodies = props[3]?.regulating_bodies
 	let jobs = props[4]?.job_titles
 	let person_details =props[5]?.person_details 
+	const userCtx = useContext(UserContext);
 	const [contactList, setContactList]=useState([{}])
 	const [status, setStatus]=useState(null)
+	const [open, setOpen] = useState(false);
 	const [showErrorMessage, setShowErrorMessage] = useState(false);
+	const [add_user, setAddUserPermission] = useState(false);
+	const [delete_user, setDeleteUserPermission] = useState(false);
     const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
 
 
@@ -101,10 +113,9 @@ const AddUser = (props)=> {
 				
 				if(res.id !==undefined ){
 
-					router.push({pathname:'/users',
-					 query:{status: 'success', message: editMode? 'Updated successfully':'Added successfully'}
-					 
-					}, '/users')
+					router.push({pathname:'/users'})
+					alert.success(editMode? 'User updated successfully':'User added successfully')
+
 				}else{
 					setStatus({status:'error', message: res})
 				}
@@ -121,7 +132,7 @@ const AddUser = (props)=> {
 	const deleteUser=(event)=>{
 		event.preventDefault()
 		try {
-			fetch(`/api/common/post_form_data/?path=delete_user&id=${person_details.id}`, {
+			fetch(`/api/common/submit_form_data/?path=delete_user&id=${person_details.id}`, {
 				headers:{
 					'Content-Type': 'application/json;charset=utf-8'	
 				},
@@ -131,10 +142,11 @@ const AddUser = (props)=> {
 			.then(res => {
 				
 					router.push('/users/')
+					alert.success('User deleted successfully')
 			})
 			
 		} catch (error) {
-			
+			setStatus({status:'error', message: e})
 		}
 
 	}
@@ -187,8 +199,57 @@ const AddUser = (props)=> {
         }
     }, [userData.conf_password])
 
+	useEffect(() => {
+		if(hasUsersPermission(/^users.change_mfluser$/, userCtx.all_permissions)){
+			setAddUserPermission(true)
+		}
+		if(hasUsersPermission(/^users.delete_mfluser$/, userCtx.all_permissions)){
+			setDeleteUserPermission(true)
+		}
+	}, [userCtx])
+
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
+
+		{open && 
+			<Modal
+				aria-labelledby="transition-modal-title"
+				aria-describedby="transition-modal-description"
+				open={open}
+				onClose={()=>setOpen(false)}
+				closeAfterTransition
+				BackdropComponent={Backdrop}
+				BackdropProps={{
+				timeout: 500,
+				}}
+			>
+				<Fade in={open}>
+				<Box sx={
+					{
+						position: 'absolute',
+						top: '50%',
+						left: '50%',
+						transform: 'translate(-50%, -50%)',
+						width: 700,
+						bgcolor: 'background.paper',
+						borderRadius: '6px',
+						boxShadow: 24,
+						p: 4,
+					}
+				}>
+					<span className="flex gap-2">    
+							Are you sure you want to delete<b>{userData?.first_name + ' '+ userData?.last_name + ' '+ userData?.other_names}</b> ?
+					</span>
+					<div className='flex justify-start gap-4 mt-4'> 
+						<button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="button"  disabled={!delete_user} onClick={(e)=>{deleteUser(e);setOpen(false)}} >Delete</button>
+						<button className="bg-red-500 text-white font-semibold rounded p-2 text-center" 
+						onClick={()=> {setOpen(false)}} 
+						>Cancel</button>
+					</div>     
+				</Box>
+				</Fade>
+			</Modal>
+		}
         <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">
 			<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
 				<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base pb-3">
@@ -208,7 +269,7 @@ const AddUser = (props)=> {
 						
 							<button
 								type='button'
-								onClick={deleteUser}
+								onClick={()=>setOpen(true)}
 								className='rounded bg-red-500 p-2 text-white flex text-md font-semibold '>
 								<span className='text-medium font-semibold text-white'>
 									Delete
@@ -689,6 +750,7 @@ const AddUser = (props)=> {
 																</span>
 															</button>
 															<button
+															    disabled={!add_user}
 																type='submit'
 																className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '>
 																<span className='text-medium font-semibold text-white'>

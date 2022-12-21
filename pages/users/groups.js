@@ -17,19 +17,13 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 const Groups = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
- 
-    // const { data, query, path, current_url } = props
-  
+   
     const router = useRouter()
     const LinkCellRenderer = (params) =>{
-        // console.log(params);
     return(
         
         <Link
-        href={{ pathname: `/users/edit_group/`,
-        query: { id: params.data.id } }}
-        as={`/users/edit_group/${params.value}`}
-
+        href={{ pathname: `/users/edit/${params.data.id}` }}
         >{params.value}</Link>
     )} 
 
@@ -41,30 +35,16 @@ const Groups = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [groups, setGroups]=useState([])
-    const [show, setShow]=useState(false)
         
     const onGridReady = (params) => {
-        // console.log({api: params.api});
-        // console.log(params);
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst = props?.data?.results.map((group)=>{
-            return {
-                id: group.id,
-                name: group.name
-            }
-        })
+        const lnlst = props?.data?.results.map(({id, name})=>{return {id, name}})
         setGroups(lnlst)
         updateData(lnlst)
     };
-
-    useEffect(()=>{
-        if( Object.keys(router.query).length > 0){
-            setShow(true)
-        }
-    },[])
 
     return (
         <div className="">
@@ -82,7 +62,6 @@ const Groups = (props) => {
                                 <span className="text-gray-500">Groups</span> 
                             </div>
                             
-                            <Collapse in={show}>{Object.keys(router.query).length > 0 ? <div><Alert severity={router?.query.status} sx={{width:'100%'}} onClose={()=> setShow(false)}>{router?.query.message}</Alert></div>: null}</Collapse>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 
@@ -123,10 +102,9 @@ const Groups = (props) => {
 
                                 <button className="flex items-center rounded  bg-green-600 text-white justify-center space-x-2 text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
