@@ -54,8 +54,6 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
     }
 
 
-
-
     // Post Facility Basic Details
     try{
         fetch('/api/common/submit_form_data/?path=facilities', {
@@ -99,7 +97,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
                     return resp
                 }
                 catch(e){
-                    console.error('Unable to Post document')
+                    console.error('Unable to Post Checklist Document')
                 }
             }
         })
@@ -304,7 +302,7 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
 // handleRegulationSubmit
 const handleRegulationSubmit = (event, stateSetters, method, file) => {
 
-    const [setFormId, facilityId] = stateSetters
+    const [setFormId, facilityId, facility_name] = stateSetters
 
     event.preventDefault();
     
@@ -380,6 +378,37 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
                 },
                 method,
                 body: JSON.stringify(data)
+            })
+
+            // Post the license document
+            .then(async resp => {
+                
+                const formData = new FormData()
+                formData.append('name', `${facility_name} Facility license File`)
+                formData.append('description', 'Facilities license file')
+                formData.append('document_type', 'FACILITY_LICENSE')
+                formData.append('facility_name', facility_name)
+                formData.append('fyl', file ?? undefined)
+                
+        
+                if(resp){
+    
+                    try {
+                        const resp = await fetch('/api/common/submit_form_data/?path=documents', {
+    
+                            headers:{
+                                'Accept': 'application/json, text/plain, */*',
+                            },
+                            method:'POST',
+                            body: formData
+                        })
+    
+                        return resp
+                    }
+                    catch(e){
+                        console.error('Unable to Post License Document')
+                    }
+                }
             })
 
         }
@@ -493,7 +522,7 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
     if(facilityId && _payload){ 
         alert.success("Facility Created successfully")
     }else {
-        alert.danger("Unable to create facility")
+        alert.error("Unable to create facility")
     }
     
 
@@ -527,7 +556,7 @@ const handleBasicDetailsUpdates = async (formData, facility_id, alert) => {
     if(formData){
         alert.success("Facility Basic Details successfully updated")
     } else {
-        alert.danger("Unable to update facility geolocation data")
+        alert.error("Unable to update facility geolocation data")
     }
 
     try{
@@ -556,7 +585,7 @@ const handleGeolocationUpdates = async (formData, coordinates_id, alert) => {
     if(formData){
         alert.success("Facility Geolocation successfully updated")
     } else {
-        alert.danger("Unable to update facility geolocation data")
+        alert.error("Unable to update facility geolocation data")
     }
 
 
@@ -585,7 +614,7 @@ const handleFacilityContactsUpdates = async (formData, facility_id, alert) => {
     if(formData){
         alert.success("Facility Contacts successfully updated")
     } else {
-        alert.danger("Unable to update facility contacts data")
+        alert.error("Unable to update facility contacts data")
     }
  
     try{
@@ -612,7 +641,7 @@ const handleRegulationUpdates = async (formData, facility_id, alert, alert_messa
     if(formData){
         alert.success(alert_message)
     } else {
-        alert.danger("Unable to update facility regulation")
+        alert.error("Unable to update facility regulation")
     }
  
     try{
@@ -647,7 +676,7 @@ const handleServiceUpdates = async (stateSetters, alert) => {
         if(_payload){
             alert.success('Successfully updated facility services')
         } else {
-            alert.danger("Unable to update facility services")
+            alert.error("Unable to update facility services")
         }
 
           const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
@@ -679,7 +708,7 @@ const handleServiceDelete =  async (event, facility_service_id, alert) => {
         if(facility_service_id){
             alert.success('Facility Service Deleted Successfully')
         } else {
-            alert.danger("Unable to delete facility service")
+            alert.error("Unable to delete facility service")
         }
 
           const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_service&id=${facility_service_id}`, {
@@ -717,7 +746,7 @@ const handleInfrastructureUpdates = async (stateSetters, alert) => {
         if(infraUpdateData && facilityId){
             alert.success('Facility Infrastructure updated successfully')
         } else {
-            alert.danger("Unable to update facility infrastructure")
+            alert.error("Unable to update facility infrastructure")
         }
 
           const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
@@ -748,7 +777,7 @@ const handleInfrastructureDelete = async (event, facility_infrastructure_id, ale
         if(facility_infrastructure_id){
             alert.success('Facility Infrastructure Deleted Successfully')
         } else {
-            alert.danger("Unable to delete facility infrastructure")
+            alert.error("Unable to delete facility infrastructure")
         }
 
           const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_infrastructure&id=${facility_infrastructure_id}`, {
@@ -785,7 +814,7 @@ const handleHrUpdates = async (stateSetters, alert) => {
         if(hrUpdateData && facilityId){
             alert.success('Facility Human Resource successfully updated')
         } else {
-            alert.danger("Unable to update facility Human Resource")
+            alert.error("Unable to update facility Human Resource")
         }
 
           const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
@@ -814,7 +843,7 @@ const handleHrDelete = async (event, facility_hr_id, alert) => {
         if(facility_hr_id){
             alert.success('Facility Human resource Deleted Successfully')
         } else {
-            alert.danger("Unable to delete facility Human resource")
+            alert.error("Unable to delete facility Human resource")
         }
 
           const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_hr&id=${facility_hr_id}`, {
@@ -843,7 +872,7 @@ const handleFacilityUpgrades = async (payload, alert) => {
         if(Object.values(payload).indexOf(null) === -1){
             alert.success('Facility Upgraded Successfully')
         } else {
-            alert.danger("Unable to upgrade facility")
+            alert.error("Unable to upgrade facility")
         }
 
           const resp = await fetch(`/api/common/submit_form_data/?path=facility_upgrade`, {

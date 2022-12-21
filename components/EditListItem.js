@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
 import { useAlert } from 'react-alert'
-import {Formik, Form, Field} from 'formik'
+import {Formik, Form} from 'formik'
+import { defer } from 'underscore';
+
 import {
 	ChevronDoubleRightIcon,
 	ChevronDoubleLeftIcon,
@@ -25,7 +27,10 @@ function EditListItem({
   setNextItemCategory,
   nextItemCategory,
   previousItemCategory,
-  handleItemPrevious
+  handleItemPrevious,
+  setIsSavedChanges,
+  setItemsUpdateData,
+  setIsSaveAndFinish
 }) {
 
   const alert = useAlert()
@@ -98,8 +103,38 @@ useEffect(() => {
   initialErrors={false}
   onSubmit={() => {
    
+    setIsSaveAndFinish(true)
+
     if(item){
        handleItemsUpdate([selectedItems, itemId], alert)
+       .then(({statusText}) => {
+        defer(() => setIsSavedChanges(true))
+        let update_id
+        if(statusText == 'OK'){
+
+                fetch(`/api/facility/get_facility/?path=facilities&id=${itemId}`).then(async resp => {
+
+                    const results = await resp.json()
+                    
+                    update_id = results?.latest_update
+                    
+                    if(update_id){
+                     
+                        
+                        try{
+                            const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
+                            setItemsUpdateData(_facilityUpdateData)                                                     
+                        }
+                        catch(e){
+                            console.error('Encountered error while fetching facility update data', e.message)
+                        }
+                    }
+                })
+                .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
+            }
+        
+        })
+        .catch(e => console.error('unable to update facility data. Error:', e.message)) 
     }
 
     else {
@@ -229,7 +264,7 @@ useEffect(() => {
           </div>
         }
 
-{
+            {
                     item === null &&
 
                     <div className='flex justify-between items-center w-full mt-4' style={{maxWidth:'90%'}}>
