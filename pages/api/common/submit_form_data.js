@@ -179,7 +179,7 @@ export default async function submitFormData(req, res) {
                             'Content-Type': contentType
                         },
                         method,
-                        body: JSON.stringify(req.body)
+                        body: method == 'DELETE'? null: JSON.stringify(req.body)
                     }
                 )
                 

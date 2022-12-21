@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import MainLayout from '../../components/MainLayout';
 import { checkToken } from '../../controllers/auth/auth';
 import router from 'next/router';
-import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, UserGroupIcon, PlusIcon} from '@heroicons/react/solid';
+import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, UserGroupIcon} from '@heroicons/react/solid';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
-import Alert from '@mui/material/Alert';
-
+import { useAlert } from "react-alert";
+import { UserContext } from '../../providers/user';
+import { hasUsersPermission } from '../../utils/checkPermissions';
 
 const AddGroup = (props)=> {
 	const [selPermissions, setselPermissions] = useState([])
-	const [status, setStatus]=useState(null)
 	let permissions = props?.data?.results
+	const alert = useAlert()
+	const userCtx = useContext(UserContext);
+	const [add_permission, setAddPermission] = useState(false)
 
 	const [groupData, setGroupData]=useState({
 		name: '',
@@ -56,22 +59,25 @@ const AddGroup = (props)=> {
 			.then(resp =>resp.json())
 			.then(res => {
 				if(res.id !==undefined ){
-
-					router.push({pathname:'/users/groups',
-					 query:{status: 'success', message: 'Added successfully'}
-					 
-					}, '/users/groups')
+					router.push({pathname:'/users/groups'})
+					alert.success('Group added successfully ')
 				}else{
-					setStatus({status:'error', message: res})
+					alert.danger('Failed to add group')
 				}
 			})
 			.catch(e=>{
-				setStatus({status:'error', message: e})
+				alert.danger(e)
 			})
 		}catch (e){
-			setStatus({status:'error', message: e})
+			alert.danger(e)
 		}
 	}
+
+	useEffect(() => {
+		if(hasUsersPermission(/^auth.add_group$/, userCtx.all_permissions)){
+			setAddPermission(true)
+		  }
+	}, [userCtx])
 
 // console.log(groupData);
   return (
@@ -85,7 +91,6 @@ const AddGroup = (props)=> {
                                 <span className="text-gray-500">Add group</span>
                             </div>
                         </div>
-						<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message.detail}</Alert>}</div>
                         <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                    <UserGroupIcon className='text-black ml-2 h-5 w-5'/>
@@ -323,6 +328,7 @@ const AddGroup = (props)=> {
 																</span>
 															</button>
 															<button
+																disabled={!add_permission}
 																type='submit'
 																className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '>
 																<span className='text-medium font-semibold text-white'>

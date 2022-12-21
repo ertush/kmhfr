@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
-import MainLayout from '../../components/MainLayout';
+import React, { useState, useContext, useEffect } from 'react';
+import MainLayout from '../../../components/MainLayout';
 import router from 'next/router';
-import { checkToken } from '../../controllers/auth/auth';
+import { checkToken } from '../../../controllers/auth/auth';
 import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, PencilAltIcon} from '@heroicons/react/solid';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import DualListBox from 'react-dual-listbox';
-import { withRouter } from 'next/router'
+import { useAlert } from "react-alert";
+import { UserContext } from "../../../providers/user";
+import { hasUsersPermission } from '../../../utils/checkPermissions';
+import Backdrop from '@mui/material/Backdrop';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import Alert from '@mui/material/Alert';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 
 
@@ -17,8 +24,12 @@ const EditGroup=(props)=> {
     let permissions = props?.permissions[0].params.results
 	let group_details = props?.data
 	const [groupData, setGroupData]=useState(props.data)
-	const [status, setStatus]=useState(null)
-	// console.log(groupData);
+	const alert = useAlert()
+	const userCtx = useContext(UserContext);
+	const [add_permission, setAddPermission] = useState(false)
+	const [open, setOpen] = useState(false);
+	const [status, setStatus] = useState(null);
+	const [delete_permission, setDeletePermission] = useState(false)
 
 	const handleOnChange =(val)=>{
 		// console.log(val);
@@ -52,23 +63,21 @@ const EditGroup=(props)=> {
 			.then(resp =>resp.json())
 			.then(res => {
 				if(res.id !==undefined ){
-
-					router.push({pathname:'/users/groups',
-					 query:{status: 'success', message: 'Updated successfully'}
-					 
-					}, '/users/groups')
+					router.push({pathname:'/users/groups'})
+					alert.success('Group updated successfully ')
 				}else{
 					setStatus({status:'error', message: res})
 				}
 			})
 		}catch (e){
-			setStatus({status:'error', message: res})
+			setStatus({status:'error', message: e})
 		}
 	}
 	const deleteGroup =(event)=>{
+		console.log('delete group');
 		event.preventDefault()
 		try {
-			fetch(`/api/common/post_form_data/?path=delete&id=${props.data.id}`, {
+			fetch(`/api/common/submit_form_data/?path=delete&id=${props.data.id}`, {
 				headers:{
 					'Content-Type': 'application/json;charset=utf-8'
 				},
@@ -77,19 +86,68 @@ const EditGroup=(props)=> {
 			.then(resp =>resp)
 			.then(res => {
 					router.push('/users/groups')
-				
+					alert.success('Group deleted successfully ')
 			})
 			
 		} catch (error) {
-			
+			setStatus({status:'error', message: e})
+		
 		}
 
 	}
 
-// console.log(groupData);
+	useEffect(() => {
+		if(hasUsersPermission(/^auth.add_group$/, userCtx.all_permissions)){
+			setAddPermission(true)
+		}
+		if(hasUsersPermission(/^auth.delete_group$/, userCtx.all_permissions)){
+			setDeletePermission(true)
+		}
+	}, [userCtx])
+
+
+console.log(delete_permission);
   return (
     <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
         <div className="w-full grid grid-cols-5 gap-4 md:mx-4 my-4">
+		{open && 
+                       <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            open={open}
+                            onClose={()=>setOpen(false)}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                            timeout: 500,
+                            }}
+                        >
+                            <Fade in={open}>
+                            <Box sx={
+                                {
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: 700,
+                                    bgcolor: 'background.paper',
+                                    borderRadius: '6px',
+                                    boxShadow: 24,
+                                    p: 4,
+                                }
+                            }>
+                                <span className="flex gap-2">    
+                                      Are you sure you want to delete<b>{group_details?.name}</b> ?
+                                </span>
+                               <div className='flex justify-start gap-4 mt-4'>
+                                    <button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="button" onClick={(e)=>{deleteGroup(e);setOpen(false)}} disabled={!delete_permission} >Delete</button>
+                                    <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" 
+                                    onClick={()=> {setOpen(false)}} 
+                                    >Cancel</button>
+                                </div>     
+                            </Box>
+                            </Fade>
+                        </Modal>}
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
@@ -98,8 +156,7 @@ const EditGroup=(props)=> {
                                 <span className="text-gray-500">Edit group</span>
                             </div>
                         </div>
-			        	<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password}</Alert>}</div>
-
+						<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password || status?.message}</Alert>}</div>
                         <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <PencilAltIcon className='ml-2 h-5 w-5' />
@@ -107,7 +164,7 @@ const EditGroup=(props)=> {
                                 </h2>
 								<button
 								type='button'
-								onClick={deleteGroup}
+								onClick={()=>setOpen(true)}
 								className='rounded bg-red-500 p-2 text-white flex text-md font-semibold '>
 								<span className='text-medium font-semibold text-white'>
 									Delete
@@ -343,6 +400,7 @@ const EditGroup=(props)=> {
 																</span>
 															</button>
 															<button
+																disabled={!add_permission}
 																type='submit'
 																className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '>
 																<span className='text-medium font-semibold text-white'>
@@ -425,7 +483,7 @@ EditGroup.getInitialProps = async (ctx) => {
 		  }).then(r => r.json())
 			  .then(json => {
 					return {
-						data: json, query, token, permissions:{...paths}, path: ctx.asPath || '/users/edit_group', current_url: current_url 
+						data: json, query, token, permissions:{...paths}, path: ctx.asPath || '/users/edit', current_url: current_url 
 					}
 				  
 			  }).catch(err => {
@@ -435,7 +493,7 @@ EditGroup.getInitialProps = async (ctx) => {
 					  err: err,
 					  data: [],
 					  query: {},
-					  path: ctx.asPath || '/users/edit_group',
+					  path: ctx.asPath || '/users/edit',
 					  current_url: ''
 				  }
 			  })
@@ -454,7 +512,7 @@ EditGroup.getInitialProps = async (ctx) => {
 			  if (ctx?.asPath) {
 				  window.location.href = ctx?.asPath
 			  } else {
-				  window.location.href = '/users/edit_group'
+				  window.location.href = '/users/edit'
 			  }
 		  }
 		  setTimeout(() => {
@@ -463,7 +521,7 @@ EditGroup.getInitialProps = async (ctx) => {
 				  err: err,
 				  data: [],
 				  query: {},
-				  path: ctx.asPath || '/users/edit_group',
+				  path: ctx.asPath || '/users/edit',
 				  current_url: ''
 			  }
 		  }, 1000);
@@ -471,4 +529,4 @@ EditGroup.getInitialProps = async (ctx) => {
   
 }
   
-  export default withRouter(EditGroup)
+  export default EditGroup
