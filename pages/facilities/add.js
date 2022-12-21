@@ -2201,6 +2201,8 @@ function AddFacility(props) {
 																			nextItemCategory={'infrastructure'}
 																			previousItemCategory={'regulation'}
 																			handleItemPrevious={handleServicePrevious}
+																			setIsSaveAndFinish={() => null}
+
 																			
 																			/>
 
@@ -2245,7 +2247,6 @@ function AddFacility(props) {
 																setNextItemCategory={setFormId}
 																nextItemCategory={'services'}
 																previousItemCategory={'human resources'}
-																isSaveAndFinish={null}
                                               					setIsSaveAndFinish={() => null}
 																/>
 
@@ -2290,7 +2291,6 @@ function AddFacility(props) {
 																setNextItemCategory={setFormId}
 																nextItemCategory={'finish'}
 																previousItemCategory={'infrastructure'}
-																isSaveAndFinish={null}
                                               					setIsSaveAndFinish={() => null}
 																/>
 

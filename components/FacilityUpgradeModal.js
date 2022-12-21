@@ -48,7 +48,7 @@ function FacilityUpgradeModal({subject, facilityId}) {
         </span>
         <div className="flex-col items-start">
         <Typography id="transition-modal-title" variant='h7'> 
-        Changes to Facility {subject} successful. 
+          Changes to Facility {subject} successful. 
         </Typography>   
 
           <form className='my-3 flex-col gap-y-2'>

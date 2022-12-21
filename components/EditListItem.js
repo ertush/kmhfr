@@ -29,7 +29,8 @@ function EditListItem({
   previousItemCategory,
   handleItemPrevious,
   setIsSavedChanges,
-  setItemsUpdateData
+  setItemsUpdateData,
+  setIsSaveAndFinish
 }) {
 
   const alert = useAlert()
@@ -102,6 +103,8 @@ useEffect(() => {
   initialErrors={false}
   onSubmit={() => {
    
+    setIsSaveAndFinish(true)
+
     if(item){
        handleItemsUpdate([selectedItems, itemId], alert)
        .then(({statusText}) => {

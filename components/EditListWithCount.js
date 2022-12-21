@@ -28,7 +28,6 @@ function EditListWithCount(
         setNextItemCategory,
         nextItemCategory,
         previousItemCategory,
-        isSaveAndFinish,
         setIsSaveAndFinish
     }
 ) {
@@ -54,10 +53,12 @@ function EditListWithCount(
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
   const result = []
 
-    initialSelectedItems.map(({ subCategories, id, meta_id, count }) => {
-      result.push({ name: subCategories[0], id, meta_id, count})
+   if(initialSelectedItems.length > 0){
+        initialSelectedItems.map(({ subCategories, id, meta_id, count }) => {
+        result.push({ name: subCategories[0], id, meta_id, count})
 
-    })
+        })
+    }
 
     return result
 
@@ -125,6 +126,7 @@ function EditListWithCount(
     
           <Formik
             initialValues={initialValues}
+            initialErrors={false}
             onSubmit={(values, { resetForm }) => {
 
                 setIsSaveAndFinish(true)

@@ -85,7 +85,8 @@ const EditFacility = (props) => {
     const [pathId, setPathId] = useState('') 
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('') 
-    const [isSaveAndFinish, setIsSaveAndFinish] = useState(false);
+    const [isSaveAndFinishInfra, setIsSaveAndFinishInfra] = useState(false);
+    const [isSaveAndFinishService, setIsSaveAndFinishService] = useState(false)
     const filters = []
 
 
@@ -833,7 +834,8 @@ const EditFacility = (props) => {
 
    
     return () => {
-        setIsSaveAndFinish(false)
+        setIsSaveAndFinishService(false)
+        setIsSaveAndFinishInfra(false)
     }
        
         
@@ -2310,6 +2312,17 @@ const EditFacility = (props) => {
                                 <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
                                     
                                         <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+
+                                             {/* Display Facility Upgrade Modal */}
+
+                                             {
+                                                    isSaveAndFinishService && 
+                                                    <FacilityUpgradeModal 
+                                                        subject='Service'
+                                                        facilityId={id}
+                                                    />
+                                             }
+
                                             {/* Edit list item Container */}
                                             <div className='flex items-center w-full h-auto min-h-[300px]'>
                               
@@ -2328,6 +2341,7 @@ const EditFacility = (props) => {
                                                     setNextItemCategory={() => null}
                                                     nextItemCategory={null}
                                                     previousItemCategory={null}
+                                                    setIsSaveAndFinish={setIsSaveAndFinishService}
                                                     handleItemPrevious={null}
                                                 />
 
@@ -2345,7 +2359,7 @@ const EditFacility = (props) => {
                                         {/* Display Facility Upgrade Modal */}
 
                                         {
-                                                isSaveAndFinish && 
+                                                isSaveAndFinishInfra && 
                                                 <FacilityUpgradeModal 
                                                     subject='infrastructure'
                                                     facilityId={id}
@@ -2373,8 +2387,7 @@ const EditFacility = (props) => {
                                               setNextItemCategory={() => null}
                                               nextItemCategory={null}
 											  previousItemCategory={null}
-                                              isSaveAndFinish={isSaveAndFinish}
-                                              setIsSaveAndFinish={setIsSaveAndFinish}
+                                              setIsSaveAndFinish={setIsSaveAndFinishInfra}
                                             />
 
                                         </div>
@@ -2387,23 +2400,13 @@ const EditFacility = (props) => {
          
                                         <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
-                                              {/* Display Facility Upgrade Modal */}
-
-                                                {
-                                                        isSaveAndFinish && 
-                                                        <FacilityUpgradeModal 
-                                                            subject='Human resource'
-                                                            facilityId={id}
-                                                        />
-                                                }
-                                            
                                             {/* Edit List With Count Container*/}
                                             <div className='flex items-center w-full h-auto min-h-[300px]'>
                                             
                                             {/* Edit List With Count*/}
                                                 <EditListWithCount 
                                                     initialSelectedItems={hrSelected}
-                                                    itemsCategory={hrOptions}
+                                                    itemsCategory={null}
                                                     otherItemsCategory={hrOptions}
                                                     itemsCategoryName={'Human resource'}
                                                     itemId={id}
@@ -2417,8 +2420,7 @@ const EditFacility = (props) => {
                                                     setNextItemCategory={() => null}
                                                     nextItemCategory={null}
 													previousItemCategory={null}
-                                                    isSaveAndFinish={isSaveAndFinish}
-                                                    setIsSaveAndFinish={setIsSaveAndFinish}
+                                                    setIsSaveAndFinish={() => null}
                                                 />
     
                                             </div>
