@@ -2,7 +2,7 @@ import Head from 'next/head'
 // import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
-import React, { useState, useRef, useEffect, useMemo } from 'react'
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -12,7 +12,7 @@ import Select from 'react-select'
 
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 // import { Grid, GridOptions } from '@ag-grid-community/core';
-import { LicenseManager, EnterpriseCoreModule } from '@ag-grid-enterprise/core';
+import { LicenseManager } from '@ag-grid-enterprise/core';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -31,9 +31,9 @@ const DynamicReports = (props) => {
     // const { data, query, path, current_url } = props
     const router = useRouter()
     // Temporary fix folty Kirinyaga id
-    let filters = props?.filters
+    const filters = props?.filters
 
-    console.log({filters})
+    // console.log({filters})
     let fltrs = filters
 
     const formRef = useRef(null)
@@ -72,7 +72,6 @@ const DynamicReports = (props) => {
     ])
 
 
-
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
     filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
@@ -93,17 +92,36 @@ const DynamicReports = (props) => {
 
   
 
-    let qf = props?.query?.qf || 'all'
+    const qf = props?.query?.qf || 'all'
     // let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
-    let [drillDown, setDrillDown] = useState({})
-    let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
+    const [drillDown, setDrillDown] = useState({})
+    const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
    
 
-    let headers = [
-        "code", "official_name", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_parent", "owner_name", "owner_type_name", "regulatory_body_name", "number_of_beds", "number_of_cots", "county", "constituency_name", "sub_county_name", "ward_name", "admission_status", "facility_services", "created", "closed",
+    const headers = [
+        'code',
+        'official_name',
+        'operation_status_name',
+        'approved',
+        'keph_level_name',
+        'facility_type_parent',
+        'owner_type_name',
+        'regulatory_body_name',
+        'number_of_beds',
+        'number_of_cots',
+        'county',
+        'constituency',
+        'sub_county_name',
+        'ward_name',
+        'admission_status',
+        'facility_services',
+        'facility_infrastructure',
+        'facility_humanresources',
+        'created',
+        'closed'
     ]
 
-    let scoped_filters = [
+    const scoped_filters = [
         { "name": "keph_level_name", "options": [] },
         { "name": "facility_type_name", "options": [] },
         { "name": "facility_type_category", "options": [] },
@@ -142,11 +160,14 @@ const DynamicReports = (props) => {
 
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [linelist, setlinelist] = useState(null);
-    const [linelist2, setlinelist2] = useState(null);
+    const [lineList, setlineList] = useState(null);
+    const [lineList2, setlineList2] = useState(null);   
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
 
+    const gridRef = useRef(null)
+
+    
 
     const lnlst = Array.from(props?.data?.results, row => {
         let dtpnt = {}
@@ -155,6 +176,11 @@ const DynamicReports = (props) => {
         })
         return dtpnt
     })
+
+    const onBtExport = useCallback(() => {
+        if(gridRef.current) gridRef.current.api.exportDataAsCsv({fileName: 'Facility_filter_report'});
+      }, []);
+
     const onGridReady = (params) => {
         // console.log({api: params.api});
         setGridApi(params.api);
@@ -162,7 +188,7 @@ const DynamicReports = (props) => {
 
         const updateData = (data) => params.api.setRowData(data);
 
-        setlinelist(lnlst)
+        setlineList(lnlst)
         updateData(lnlst)
     };
 
@@ -202,10 +228,10 @@ const DynamicReports = (props) => {
 
     useEffect(()=>{
         if( fromDate !=='' && toDate !==''){
-            const results = linelist2?.filter(data=>new Date(moment(data.created).format('YYYY/MM/DD')).getTime() >= new Date(moment(fromDate).format('YYYY/MM/DD')).getTime() && new Date(moment(data.created).format('YYYY/MM/DD')).getTime() <= new Date(moment(toDate).format('YYYY/MM/DD')).getTime()).map((r)=>{return r})
-            setlinelist(results)
+            const results = lineList2?.filter(data=>new Date(moment(data.created).format('YYYY/MM/DD')).getTime() >= new Date(moment(fromDate).format('YYYY/MM/DD')).getTime() && new Date(moment(data.created).format('YYYY/MM/DD')).getTime() <= new Date(moment(toDate).format('YYYY/MM/DD')).getTime()).map((r)=>{return r})
+            setlineList(results)
         }else{
-            setlinelist(linelist2)
+            setlineList(lineList2)
         }
         
       }, [fromDate, toDate, filteredKeph])
@@ -287,8 +313,9 @@ const DynamicReports = (props) => {
 
     useEffect(() => {
         // setIsAccordionExpanded(true)
+        console.log({lineList})
        
-    }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate, isConstituencyOptionsUpdate, isWardOptionsUpdate, linelist, isLoading, filteredKeph])
+    }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate, isConstituencyOptionsUpdate, isWardOptionsUpdate, lineList, isLoading, filteredKeph])
 
 
     return (
@@ -343,45 +370,68 @@ const DynamicReports = (props) => {
                                                 <form action="/reports/dynamic_reports" className="grid grid-cols-7 gap-2 w-full m-1" ref={formRef} onSubmit={async (ev) => {
                                                     ev.preventDefault()
                                                     setIsLoading(true)
-                                    
-                                                    const fields = 'code,official_name,operation_status,approved,keph_level,facility_type_name,facility_type_parent,owner,owner_type,regulation_body,number_of_beds,number_of_cots,county,constituency,sub_county,ward,admission_status,facility_services,facility_infrastructure,facility_humanresources,created,closed'
-                                                    if (Object.keys(drillDown).length > 0) {
-                                                        let qry = Object.keys(drillDown).map(function (key) {
-                                                            let er = (key) + '=' + (drillDown[key]);
-                                                            return er
-                                                        }).join('&')
-                                                        let op = '?'
-
-                                                        // if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                        // setDrillDown({})
+                                
+                                                    
+                                                    if (drillDown) {
+                                                      
                                                         if (router || typeof window == 'undefined') {
                                                     
-                                                            const filterQuery = `${qry}&fields=${fields}`
+                                                            // remove unwanted properties from drillDown
+
+                                                            delete drillDown['service_category']
+                                                            delete drillDown['infrastructure_category']
+                                                            delete drillDown['speciality_category']
+                                                            delete drillDown['undefined']
 
                                                             try{
 
                                                             
-                                                                const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${fields}`)
+                                                                const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${headers}`)
                                                                 data.json().then(r => {
-                                                                    if(r.status === "OK"){
-                                                                    const _lnlst = Array.from(r?.results, row => {
+                                                                    // console.log({resp: r})
+                                                                    if(r){
+                                                                    const _lnlst = Array.from(r?.results ?? [], row => {
                                                                         let dtpnt = {}
                                                                         headers.forEach(col => {
-                                                                            if(col == 'facility_services'){
-                                                                                if(row[col].length > 0){
-                                                                                    row[col].forEach(service => {dtpnt[col] = service.service_name})
-                                                                                }
+                                                                            switch(col){
+                                                                                case 'facility_services':
+                                                                                    if(row[col].length > 0){
+                                                                                        let tempServices = [];
+                                                                                        row[col].forEach(service => {tempServices.push(service.service_name)});
+                                                                                        dtpnt[col] = tempServices.join(', ');
+                                                                                        tempServices = [];
+                                                                                    }
+                                                                                break;
+                                                                                case 'facility_infrastructure':
+                                                                                    if(row[col].length > 0){
+                                                                                        let tempInfra = [];
+                                                                                        row[col].forEach(infra => {tempInfra.push(infra.name)});
+                                                                                        dtpnt[col] = tempInfra.join(', ');
+                                                                                        tempInfra = [];
+                                                                                    }
+                                                                                break;
+                                                                                case 'facility_humanresources':
+                                                                                    if(row[col].length > 0){
+                                                                                        let tempHr = [];
+                                                                                        row[col].forEach(hr => {tempHr.push(hr.name)})
+                                                                                        dtpnt[col] = tempHr.join(', ')
+                                                                                        tempHr = [];
+                                                                                    }
+                                                                                break;
+                                                                                default:
+                                                                                    dtpnt[col] = row[col]
+                                                                                    break
                                                                             
                                                                             }
-                                                                            else{
-                                                                                dtpnt[col] = row[col]
-                                                                            }
-                                                                            
+                                                                        
+                                                                               
+                                                                    
                                                                         })
                                                                         return dtpnt
                                                                     })
 
-                                                                    setlinelist(_lnlst)
+                                                                    console.log({_lnlst})
+                                                                    setlineList(_lnlst)
                                                                 }
                                                             })
 
@@ -1111,7 +1161,7 @@ const DynamicReports = (props) => {
                                                         {/* Has ICU Beds */}
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="has_icu_beds" className="text-gray-700 capitalize text-sm flex-grow">Has ICU beds</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_icu_beds" id="has_icu_beds" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="has_icu_beds" id="has_icu_beds" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'has_icu_beds': true })
                                                                 }} />
@@ -1121,7 +1171,7 @@ const DynamicReports = (props) => {
                                                         {/* Has HDU Beds */}
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                             <label htmlFor="has_hdu_beds" className="text-gray-700 capitalize text-sm flex-grow">Has HDU beds</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_hdu_beds" id="has_hdu_beds" onChange={ev => {
+                                                            <input type="checkbox" value={true} name="has_hdu_beds" id="has_hdu_beds" onChange={ev => {
                                                                 ev.preventDefault()
                                                                 setDrillDown({ ...drillDown, 'has_hdu_beds': true })
                                                             }} />
@@ -1131,7 +1181,7 @@ const DynamicReports = (props) => {
                                                         {/* Has Martenity Beds */}
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                             <label htmlFor="has_martenity_beds" className="text-gray-700 capitalize text-sm flex-grow">Has Martenity beds</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_martenity_beds" id="has_martenity_beds" onChange={ev => {
+                                                            <input type="checkbox" value={true} name="has_martenity_beds" id="has_martenity_beds" onChange={ev => {
                                                                 ev.preventDefault()
                                                                 setDrillDown({ ...drillDown, 'has_martenity_beds': true })
                                                             }} />
@@ -1143,7 +1193,7 @@ const DynamicReports = (props) => {
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="approved" className="text-gray-700 capitalize text-sm flex-grow">Approved</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="approved" id="approved" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="approved" id="approved" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'approved': true })
                                                                 }} />
@@ -1152,7 +1202,7 @@ const DynamicReports = (props) => {
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Complete</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="complete" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="has_edits" id="complete" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'has_edits': true })
                                                                 }} />
@@ -1163,7 +1213,7 @@ const DynamicReports = (props) => {
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="has_cots" className="text-gray-700 capitalize text-sm flex-grow">Has cots</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_cots" id="has_cots" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="has_cots" id="has_cots" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'has_cots': true })
                                                                 }} />
@@ -1174,7 +1224,7 @@ const DynamicReports = (props) => {
                                                     <div className='col-md-2 flex-col  items-start'>
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="open_24_hrs" className="text-gray-700 capitalize text-sm flex-grow">Open 24 hours</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'open_24_hrs': true })
                                                                 }} />
@@ -1183,7 +1233,7 @@ const DynamicReports = (props) => {
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">Open weekends</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="open_weekends" id="open_weekends" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'open_weekends': true })
                                                                 }} />
@@ -1192,7 +1242,7 @@ const DynamicReports = (props) => {
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="open_holidays" id="open_holidays" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'open_holidays': true })
                                                                 }} />
@@ -1203,25 +1253,25 @@ const DynamicReports = (props) => {
                                                     <div className='col-md-2 flex-col  items-start'>
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="is_classified" className="text-gray-700 capitalize text-sm flex-grow">Is classified</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="is_classified" id="is_classified" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="is_classified" id="is_classified" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'is_classified': true })
                                                                 }} />
                                                         
                                                         </div>
 
-                                                        {/* <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                                <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">has general theatre</label>
-                                                                <input type="ch`eckbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="is_complete" className="text-gray-700 capitalize text-sm flex-grow">Is complete</label>
+                                                                <input type="checkbox" value={true} name="open_weekends" id="open_weekends" onChange={ev => {
                                                                     ev.preventDefault()
-                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                    setDrillDown({ ...drillDown, 'is_complete': true })
                                                                 }} />
                                                         
-                                                        </div> */}
+                                                        </div>
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">has maternity theatre</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="open_holidays" id="open_holidays" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'has_edits': true })
                                                                 }} />
@@ -1286,14 +1336,7 @@ const DynamicReports = (props) => {
                                     <span>Download Report</span>
                                 </button> */}
 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
-                                                e.preventDefault()
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
-                                                console.log('Downloading CSV. ' + dl_url || '')
-                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                window.location.href = dl_url
-                                            }}
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={onBtExport}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
                                                 <span>Export</span>
@@ -1394,17 +1437,18 @@ const DynamicReports = (props) => {
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full ">
                             {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
-                                {console.log({linelist})}
+                                {console.log({lineList})}
                                 <AgGridReact
                                     // floatingFilter={true}
-                                    sideBar={true} //{'filters'}
+                                    sideBar={true}
+                                    ref={gridRef}
                                     defaultColDef={{
                                         sortable: true,
                                         filter: true,
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={linelist}>
+                                    rowData={lineList}>
                                         
                                     {headers.map((v_, i) => {
                                         // console.log({v_})

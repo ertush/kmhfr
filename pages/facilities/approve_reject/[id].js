@@ -266,17 +266,18 @@ function ApproveReject(props) {
                             comment:''
                         }}
                         onSubmit = {async ({comment}) => {
-                            
+                            // if facility is not validated and has no edits
                             if (!facility?.approved && !facility?.has_edits) 
                             {
                                 validateRejectFacility(facility?.id, reject, comment, alert)
                             } 
-
+                            // if facility is validated and has edits
                             if(facility?.approved && facility?.has_edits) {
                               approveRejectFacilityUpdates(reject, alert, facility?.latest_update)
                           }
-                            
+                            // if facility is not approved and is validated
                             if(!facility?.approved_national_level && facility?.approved) {
+                              console.log('FACILITY WILL BE APPROVED')
                                 approveRejectFacility(facility?.id, comment, alert, reject)
                             }
                         }
