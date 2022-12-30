@@ -2,7 +2,7 @@ import Head from 'next/head'
 // import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
-import React, { useState, useRef, useEffect, useMemo } from 'react'
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -12,7 +12,7 @@ import Select from 'react-select'
 
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 // import { Grid, GridOptions } from '@ag-grid-community/core';
-import { LicenseManager, EnterpriseCoreModule } from '@ag-grid-enterprise/core';
+import { LicenseManager } from '@ag-grid-enterprise/core';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -31,7 +31,7 @@ const DynamicReports = (props) => {
     // const { data, query, path, current_url } = props
     const router = useRouter()
     // Temporary fix folty Kirinyaga id
-    let filters = props?.filters
+    const filters = props?.filters
 
     // console.log({filters})
     let fltrs = filters
@@ -92,27 +92,28 @@ const DynamicReports = (props) => {
 
   
 
-    let qf = props?.query?.qf || 'all'
+    const qf = props?.query?.qf || 'all'
     // let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
-    let [drillDown, setDrillDown] = useState({})
-    let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
+    const [drillDown, setDrillDown] = useState({})
+    const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
    
 
-    let headers = [
+    const headers = [
         'code',
         'official_name',
         'operation_status_name',
-        'approved,keph_level_name',
+        'approved',
+        'keph_level_name',
         'facility_type_parent',
         'owner_type_name',
-        'regulation_body_name',
+        'regulatory_body_name',
         'number_of_beds',
         'number_of_cots',
         'county',
         'constituency',
         'sub_county_name',
         'ward_name',
-        'admission_status_name',
+        'admission_status',
         'facility_services',
         'facility_infrastructure',
         'facility_humanresources',
@@ -120,7 +121,7 @@ const DynamicReports = (props) => {
         'closed'
     ]
 
-    let scoped_filters = [
+    const scoped_filters = [
         { "name": "keph_level_name", "options": [] },
         { "name": "facility_type_name", "options": [] },
         { "name": "facility_type_category", "options": [] },
@@ -164,8 +165,9 @@ const DynamicReports = (props) => {
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
 
+    const gridRef = useRef(null)
+
     
-    console.log({results: props?.data?.results})
 
     const lnlst = Array.from(props?.data?.results, row => {
         let dtpnt = {}
@@ -175,7 +177,9 @@ const DynamicReports = (props) => {
         return dtpnt
     })
 
-    // console.log({lnlst})
+    const onBtExport = useCallback(() => {
+        if(gridRef.current) gridRef.current.api.exportDataAsCsv({fileName: 'Facility_filter_report'});
+      }, []);
 
     const onGridReady = (params) => {
         // console.log({api: params.api});
@@ -366,30 +370,27 @@ const DynamicReports = (props) => {
                                                 <form action="/reports/dynamic_reports" className="grid grid-cols-7 gap-2 w-full m-1" ref={formRef} onSubmit={async (ev) => {
                                                     ev.preventDefault()
                                                     setIsLoading(true)
-                                    
-                                                    const fields = `code,official_name,operation_status_name,approved,keph_level_name,facility_type_parent,owner_type_name,regulation_body_name,number_of_beds,number_of_cots,county,constituency,sub_county_name,ward_name,admission_status_name,facility_services,facility_infrastructure,facility_humanresources,created,closed`;
+                                
                                                     
-                                                    if (Object.keys(drillDown).length > 0) {
-                                                        let qry = Object.keys(drillDown).map(function (key) {
-                                                            let er = (key) + '=' + (drillDown[key]);
-                                                            return er
-                                                        }).join('&')
-                                                        let op = '?'
-
-                                                        // if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                        // setDrillDown({})
+                                                    if (drillDown) {
+                                                      
                                                         if (router || typeof window == 'undefined') {
                                                     
-                                                            const filterQuery = `${qry}&fields=${fields}`
+                                                            // remove unwanted properties from drillDown
+
+                                                            delete drillDown['service_category']
+                                                            delete drillDown['infrastructure_category']
+                                                            delete drillDown['speciality_category']
+                                                            delete drillDown['undefined']
 
                                                             try{
 
                                                             
-                                                                const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${fields}`)
+                                                                const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${headers}`)
                                                                 data.json().then(r => {
                                                                     // console.log({resp: r})
-                                                                    if(r?.results.length > 0){
-                                                                    const _lnlst = Array.from(r?.results, row => {
+                                                                    if(r){
+                                                                    const _lnlst = Array.from(r?.results ?? [], row => {
                                                                         let dtpnt = {}
                                                                         headers.forEach(col => {
                                                                             switch(col){
@@ -1335,14 +1336,7 @@ const DynamicReports = (props) => {
                                     <span>Download Report</span>
                                 </button> */}
 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
-                                                e.preventDefault()
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
-                                                console.log('Downloading CSV. ' + dl_url || '')
-                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                window.location.href = dl_url
-                                            }}
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={onBtExport}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
                                                 <span>Export</span>
@@ -1446,7 +1440,8 @@ const DynamicReports = (props) => {
                                 {console.log({lineList})}
                                 <AgGridReact
                                     // floatingFilter={true}
-                                    sideBar={true} //{'filters'}
+                                    sideBar={true}
+                                    ref={gridRef}
                                     defaultColDef={{
                                         sortable: true,
                                         filter: true,
