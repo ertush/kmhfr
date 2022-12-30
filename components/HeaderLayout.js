@@ -64,7 +64,7 @@ export default function HeaderLayout({
   
   const router = useRouter();
   const activeClasses =
-    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4  border-green-600";
+    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4 rounded  border-green-600";
   const inactiveClasses =
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];

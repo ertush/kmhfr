@@ -5,7 +5,6 @@ export default async function filterReport(req, res) {
 
 
         
-
         const fetchData = (token) => {
             const API_URL = process.env.NEXT_PUBLIC_API_URL
             const filterQuery = JSON.parse(req.query.query)
@@ -15,7 +14,10 @@ export default async function filterReport(req, res) {
                return er
             }).join('&')
 
-            let url = `${API_URL}/facilities/facilities/?${qry}&fields=${req.query.fields}`
+            const url = `${API_URL}/facilities/facilities/?${qry}&fields=${req.query.fields}`
+
+            console.log({url})
+
             return fetch(url, {
                 headers: {
                     'Authorization': 'Bearer ' + token,
