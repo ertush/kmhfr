@@ -44,7 +44,8 @@ const ByWard = (props) => {
     const [facilities, setFacilities]=useState([])
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
-    const [title, setTitle] = useState(`Facilities with beds and cots in ${props?.query?.ward} Ward`)
+
+    const [title, setTitle] = useState(`Facilities with beds and cots ${window.document.location.href.split('&')[1].split('=')[1] ? 'in' : 'by'} ${window.document.location.href.split('&')[window.document.location.href.split('&').length - 1].split('=')[1].replaceAll('+', ' ')}`)
     const [label, setLabel]=useState('beds_cots')
 
      
@@ -56,9 +57,9 @@ const ByWard = (props) => {
         const updateData = (data) => params.api.setRowData(data);
 
         if(props.current_url.includes('chu')){       
-            lnlst = props.data.results.map(({code,name,facility_name,county,date_established,status,number_of_chvs,id})=>{return {code,name,facility_name,county,date_established,status,number_of_chvs,id}})
+            lnlst = props.data.results.map(({code,name,facility_name,county,date_established,status,number_of_chvs,id})=>({code,name,facility_name,county,date_established,status,number_of_chvs,id}))
         } else{
-            lnlst=  props.data.results.map(({facility_code,facility_name,facility_id,number_of_beds,number_of_cots})=>{return {facility_code, facility_name, number_of_beds, number_of_cots,facility_id }})
+            lnlst =  props.data.results.map(({facility_code,facility_name,facility_id,number_of_beds,number_of_cots})=>({facility_code, facility_name, number_of_beds, number_of_cots,facility_id }))
         }
      
         setFacilities(lnlst)

@@ -45,11 +45,12 @@ const ByCounty = (props) => {
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions", cellRendererFramework: function(params) {
+            console.log({params})
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.sub_county, level: 'sub_county', type: 'ndividual_facility_beds_and_cots' }
+                    query: { id: params.data.sub_county, level: 'sub_county', type: 'individual_facility_beds_and_cots', name: params?.data?.sub_county_name  }
                 })
             }}
             > View Facilities </button>
@@ -147,6 +148,16 @@ const ByCounty = (props) => {
                     pathname: `/reports/by_ward/`
                 })
                 break;
+            case 'keph-level':
+                router.push({
+                    pathname: `/reports/by_keph_level/`
+                })
+                break;
+            case 'owner':
+                router.push({
+                    pathname: `/reports/by_owner/`
+                })
+                break;
             default:
                 break;
         }
@@ -217,7 +228,13 @@ const ByCounty = (props) => {
                             </form>
                             {props.current_url.includes('beds_and_cots') &&
                             <Select
-                                options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
+                                options={[
+                                    {value: 'county' , label:'Beds and Cots (County)' }, 
+                                    {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},
+                                    {value: 'ward', label: 'Beds and Cots (Ward)'},
+                                    {value: 'keph-level', label: 'Beds and Cots (Keph Level)'},
+                                    {value: 'owner', label: 'Beds and Cots (Owner)'}
+                                    ] || []}
                                 required
                                 placeholder='Filter By:'
                                 onChange={(e) => setFilterOption(e.value)}
