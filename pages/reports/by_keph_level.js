@@ -15,28 +15,29 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
-const ByWard = (props) => {
+const ByKephLevel = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
-    const LinkCellRenderer = (params) =>{
-        let query = null
-        props.current_url.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' } 
-        : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count', level: 'ward'} 
-        : props.current_url.includes('beds_and_cots_by_ward') ?  query={ id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots', name: params.data.ward_name } 
-        : query= {id: params.data.ward}
+    // const LinkCellRenderer = (params) =>{
+    //     console.log({params})
+    //     let query = null
+    //     props.current_url.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' } 
+    //     : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count', level: 'ward'} 
+    //     : props.current_url.includes('beds_and_cots_by_keph_level') ?  query={ id: params.data.keph_level, level: 'ward', type: 'individual_facility_beds_and_cots', name: params.data.keph_level_name } 
+    //     : query= {id: params.data.ward}
 
-        // console.log({params})
-        return(
-            <Link
-            href={{ pathname: `/reports/by_facility/`,
-            query: query}}
+
+    //     return(
+    //         <Link
+    //         href={{ pathname: `/reports/by_facility/`,
+    //         query: query}}
     
-            ><a>{params.value}</a></Link>
-        )}
+    //         ><a>{params.value}</a></Link>
+    //     )}
 
     const [columns, setColumns]= useState([
-        {headerName: "Ward", field: "ward_name", cellRenderer: "LinkCellRenderer"},
+        {headerName: "Keph Level", field: "keph_level_name"}, /*cellRenderer: "LinkCellRenderer"*/
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
@@ -44,9 +45,9 @@ const ByWard = (props) => {
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots', name: params?.data?.ward_name }
+                    query: { id: params.data.ward, level:null, type: 'individual_facility_beds_and_cots', name:  `Keph ${params.data.keph_level_name}` }
                 })
-            }}  
+            }}
             > View Facilities </button>
           },}
     ])
@@ -56,7 +57,7 @@ const ByWard = (props) => {
     const [filtered, setFiltered]=useState([])
     const [filterOption, setFilterOption] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
-    const [title, setTitle] = useState('Beds and Cots by Ward')
+    const [title, setTitle] = useState('Beds and Cots by Keph Level')
     const [label, setLabel]=useState('beds_cots')
 
     const onGridReady = (params) => {
@@ -70,7 +71,7 @@ const ByWard = (props) => {
         }else if(props.current_url.includes('chu')){
             lnlst = props.data.results.map(({ward_name,ward_id, number_of_units, chvs, chews})=>{return {ward_name,ward_id, number_of_units, chvs, chews}})
         } else{
-            lnlst = props.data.results.map(({ward_name,ward, beds, cots})=>{return {ward_name,ward, beds, cots}})
+            lnlst = props.data.results.map(({keph_level_name ,keph_level, beds, cots})=>{return {keph_level_name ,keph_level, beds, cots}})
         }
      
         setFacilities(lnlst)
@@ -90,48 +91,49 @@ const ByWard = (props) => {
         }
             
     }
-    useEffect(() => {
-        filter(searchTerm)
-        if(props.path.includes('level=sub_county')){
-            setTitle('Facility Report by Ward')
-            setLabel('facilities_count')
-            setColumns([
-                {headerName: "Ward", field: "area_name"},
-                {headerName: "Number of Facilities", field: "number_of_facilities"},
-                {headerName: "Actions", cellRendererFramework: function(params) {
-                    return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
-                    onClick={() => {
-                        router.push({
-                            pathname: `/reports/dynamic_reports/`,
-                            query: { id: params.data.area_id, level: 'ward', type: 'facilities_count' }
-                        })
-                    }}
-                    > View Facilities </button>
-                  },}
-            ])
-        }
+    // useEffect(() => {
+    //     filter(searchTerm)
+    //     if(props.path.includes('level=sub_county')){
+    //         setTitle('Facility Report by Keph Level')
+    //         setLabel('facilities_count')
+    //         setColumns([
+    //             {headerName: "Keph Level", field: "keph_level_name"},
+    //             {headerName: "Beds", field: "beds"},
+    //             {headerName: "Cots", field: "cots"},
+    //             {headerName: "Actions", cellRendererFramework: function(params) {
+    //                 return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+    //                 onClick={() => {
+    //                     router.push({
+    //                         pathname: `/reports/dynamic_reports/`,
+    //                         query: { id: params.data.area_id, level: 'ward', type: 'facilities_count' }
+    //                     })
+    //                 }}
+    //                 > View Facilities </button>
+    //               },}
+    //         ])
+    //     }
 
-        if(props.current_url.includes('chu')){
-            setTitle('Community Health Units Report by Ward')
-            setLabel('chus_count')
-            setColumns([
-                {headerName: "Ward", field: "ward_name",   cellRenderer: "LinkCellRenderer"},
-                {headerName: "Number of Community Health Units", field: "number_of_units"},
-                {headerName: "Number of CHVs", field: "chvs"},
-                {headerName: "Number of CHEWs", field: "chews"},
-                {headerName: "Actions", cellRendererFramework: function(params) {
-                    return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
-                    onClick={() => {
-                        router.push({
-                            pathname: `/reports/by_facility/`,
-                            query: { id: params.data.ward_id, type: 'chu_count', level:'ward' }
-                        })
-                    }}
-                    > View CHUs </button>
-                },}
-                ])
-        }
-    }, [searchTerm, props.path])
+    //     if(props.current_url.includes('chu')){
+    //         setTitle('Community Health Units Report by Ward')
+    //         setLabel('chus_count')
+    //         setColumns([
+    //             {headerName: "Ward", field: "ward_name",   cellRenderer: "LinkCellRenderer"},
+    //             {headerName: "Number of Community Health Units", field: "number_of_units"},
+    //             {headerName: "Number of CHVs", field: "chvs"},
+    //             {headerName: "Number of CHEWs", field: "chews"},
+    //             {headerName: "Actions", cellRendererFramework: function(params) {
+    //                 return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+    //                 onClick={() => {
+    //                     router.push({
+    //                         pathname: `/reports/by_facility/`,
+    //                         query: { id: params.data.ward_id, type: 'chu_count', level:'ward' }
+    //                     })
+    //                 }}
+    //                 > View CHUs </button>
+    //             },}
+    //             ])
+    //     }
+    // }, [searchTerm, props.path])
 
     useEffect(()=>{ 
         switch (filterOption) {
@@ -230,13 +232,13 @@ const ByWard = (props) => {
                             </form>
                             {props.current_url.includes('beds_and_cots') &&
                             <Select
-                                options={[ 
-                                {value: 'county' , label:'Beds and Cots (County)' }, 
-                                {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},
-                                {value: 'ward', label: 'Beds and Cots (Ward)'},
-                                {value: 'keph-level', label: 'Beds and Cots (Keph Level)'},
-                                {value: 'owner', label: 'Beds and Cots (Owner)'}
-                                 ] || []}
+                                options={[
+                                    {value: 'county' , label:'Beds and Cots (County)' }, 
+                                    {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},
+                                    {value: 'ward', label: 'Beds and Cots (Ward)'},
+                                    {value: 'keph-level', label: 'Beds and Cots (Keph Level)'},
+                                    {value: 'owner', label: 'Beds and Cots (Owner)'}
+                                    ] || []}
                                 required
                                 placeholder='Filter By:'
                                 onChange={(e) => setFilterOption(e.value)}
@@ -251,7 +253,7 @@ const ByWard = (props) => {
                       
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
                             {console.log({filtered, columns})}
-
+                                
                                 <AgGridReact
                                     rowStyle={{width: '100vw'}}
                                     sideBar={true}
@@ -263,9 +265,9 @@ const ByWard = (props) => {
                                     onGridReady={onGridReady}
                                     rowData={filtered}
                                     columnDefs={columns}
-                                    frameworkComponents={{
+                                    /*frameworkComponents={{
                                         LinkCellRenderer
-                                      }}
+                                      }}*/
                                     />
                             </div>
                         </div>
@@ -309,7 +311,7 @@ const ByWard = (props) => {
     )
 }   
 
-ByWard.getInitialProps = async (ctx) => {
+ByKephLevel.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
    
 
@@ -322,13 +324,13 @@ ByWard.getInitialProps = async (ctx) => {
         if(sub_county_id && level !==undefined){
             url =API_URL + `/reporting/?sub_county=${sub_county_id}&report_type=${ctx.query.type}&report_level=${level}`
             
-        }else if(ctx.query.type =='beds_and_cots_by_ward' && level == undefined){
+        }else if(ctx.query.type =='beds_and_cots_by_keph_level' && level == undefined){
             url =API_URL + `/reporting/?constituency=${ctx.query.id}&report_type=${ctx.query.type}`
 
         }else if(ctx.query.type == 'ward'){
             url =API_URL + `/reporting/chul/?report_type=${ctx.query.type}&constituency=${sub_county_id}`
         }else{
-            url = API_URL + `/reporting/?report_type=beds_and_cots_by_ward`
+            url = API_URL + `/reporting/?report_type=beds_and_cots_by_keph_level`
         }
 
         let query = { 'searchTerm': ''}
@@ -336,9 +338,11 @@ ByWard.getInitialProps = async (ctx) => {
         
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
-            // console.log({page:ctx.query.page})
+            console.log({page:ctx.query.page})
             url = `${url}&page=${ctx.query.page}`
         }
+
+        console.log({url})
         
         try {
             const r = await fetch(url, {
@@ -394,4 +398,4 @@ ByWard.getInitialProps = async (ctx) => {
 
 }
 
-export default ByWard
+export default ByKephLevel

@@ -16,7 +16,7 @@ export default async function filterReport(req, res) {
 
             const url = `${API_URL}/facilities/facilities/?${qry}&fields=${req.query.fields}`
 
-            console.log({url})
+            console.log({url}) // debug
 
             return fetch(url, {
                 headers: {
