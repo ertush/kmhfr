@@ -375,7 +375,7 @@ const Home = (props) => {
                    
                     
                     {/* Main Body */}
-                    <div className="w-full md:col-span-4 md:col-start-2  col-span-5 md:h-auto">
+                    <div className="w-full md:col-span-4 md:col-start-2  col-span-5 md:h-auto md:mb-12">
                                     {/* Data Indicator section */}
                                     <h5 className="text-lg font-medium text-gray-800 float-right mr-4 mb-2">
                                                   

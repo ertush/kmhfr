@@ -23,7 +23,6 @@ const Home = (props) => {
 
 	const [title, setTitle] = useState('Community Health Units') 
 
-
 	
 	useEffect(() => {
 		// console.log({filters})
@@ -309,12 +308,24 @@ const Home = (props) => {
 									</Link>
 								</div>
 							)}
-							{cus && cus.length > 0 && (
+							{cus && cus.length >= 30 && (
 								<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
 									<li className='text-base text-gray-600'>
+		
 										<a
 											href={
-												'/community-units?page=' + props?.data?.current_page
+												(() => 
+												props.path.includes('?page') ?
+												props.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
+												:
+												props.path.includes('?q') && props.path.includes('&page') ?
+												props.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
+												:
+												props.path.includes('?q') ?
+												`${props.path}&page=${props?.data?.current_page}`                                    
+												:
+												`${props.path}?page=${props?.data?.current_page}`
+											)()
 											}
 											className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
 											{props?.data?.current_page}
@@ -323,8 +334,23 @@ const Home = (props) => {
 									{props?.data?.near_pages &&
 										props?.data?.near_pages.map((page) => (
 											<li key={page} className='text-base text-gray-600'>
+
 												<a
-													href={'/community-units?page=' + page}
+													href={
+														(() => 
+                                                            props.path.includes('?page') ?
+                                                            props.path.replace(/\?page=\d+/,`?page=${page}`)
+                                                            :
+                                                            props.path.includes('?q') && props.path.includes('&page') ?
+                                                            props.path.replace(/&page=\d+/, `&page=${page}`)
+                                                            :
+                                                            props.path.includes('?q') ?
+                                                            `${props.path}&page=${page}`
+                                                            :
+                                                            `${props.path}?page=${page}`
+                   
+                                                        )()
+													}
 													className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
 													{page}
 												</a>
@@ -333,13 +359,7 @@ const Home = (props) => {
 									<li className='text-sm text-gray-400 flex'>
 										<DotsHorizontalIcon className='h-3' />
 									</li>
-									{/* {props?.data?.far_pages.map(page => (
-                                    <li key={page} className="text-base text-gray-600">
-                                        <a href={'/?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
-                                            {page}
-                                        </a>
-                                    </li>
-                                ))} */}
+									
 								</ul>
 							)}
 						</div>

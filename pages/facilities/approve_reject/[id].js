@@ -305,22 +305,26 @@ function ApproveReject(props) {
                         }
 
                         <div className="flex justify-start items-center gap-4 mt-4">
+                        
                         <button
                         type="submit"
                         className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
                         onClick={() => reject = facility?.has_edits ? true : facility?.is_approved ? true : false}
                         
                         >
-                        { facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approve Facility" : "Validate Facility"}
+                        { facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? facility?.approved_national_level ?  "Reject Facility" : "Approve Facility" : "Validate Facility" }
                         </button>
+                        
+                        {!facility?.approved_national_level &&
                         <button
                         type="submit"
                         className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
                         onClick={() => reject = facility?.has_edits ? false : facility?.is_approved ? false : true}
                         
                         >
-                        { facility?.has_edits ? 'Decline Updates' : 'Reject Facility'}
+                        { facility?.has_edits ? 'Decline Updates' : facility?.approved_national_level ? '': 'Reject Facility'}
                         </button>
+                        }   
                         </div>
                     </Form>
                     </Formik>
