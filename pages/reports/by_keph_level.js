@@ -67,11 +67,11 @@ const ByKephLevel = (props) => {
 
         const updateData = (data) => params.api.setRowData(data);
         if(props.path.includes('level=sub_county')){
-            lnlst = props.data.results.map(({area_id,area_name, number_of_facilities})=>{return {area_name, number_of_facilities,area_id }})
-        }else if(props.current_url.includes('chu')){
-            lnlst = props.data.results.map(({ward_name,ward_id, number_of_units, chvs, chews})=>{return {ward_name,ward_id, number_of_units, chvs, chews}})
+            lnlst = props?.data?.results.map(({area_id,area_name, number_of_facilities})=>{return {area_name, number_of_facilities,area_id }})
+        }else if(props?.current_url?.includes('chu')){
+            lnlst = props?.data?.results.map(({ward_name,ward_id, number_of_units, chvs, chews})=>{return {ward_name,ward_id, number_of_units, chvs, chews}})
         } else{
-            lnlst = props.data.results.map(({keph_level_name ,keph_level, beds, cots})=>{return {keph_level_name ,keph_level, beds, cots}})
+            lnlst = props?.data?.results.map(({keph_level_name ,keph_level, beds, cots})=>{return {keph_level_name ,keph_level, beds, cots}})
         }
      
         setFacilities(lnlst)

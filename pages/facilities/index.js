@@ -463,7 +463,7 @@ const Home = (props) => {
                                                 </div>
                                                 )):(
                                                     
-                                                    (facilities.length === 0 && facilityFeedBack.length == 0 || khisSynched) &&
+                                                    (facilities?.length === 0 && facilityFeedBack?.length == 0 || khisSynched) &&
                                                     // No Facility feedback data found
                                                     <Alert severity="warning" sx={{width:'100%'}}>No facilities found <span onClick={() => {
                                                         setTitle('Facilities')
@@ -478,16 +478,41 @@ const Home = (props) => {
 
                                             }
 
-                                            {facilities && facilities.length > 0 && !khisSynched && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                                            {facilities && facilities?.length >= 30 && !khisSynched && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                                 <li className="text-base text-gray-600">
-                                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
+                                                    <Link href={
+                                                        (() => 
+                                                            props.path.includes('?page') ?
+                                                            props.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
+                                                            :
+                                                            props.path.includes('?q') && props.path.includes('&page') ?
+                                                            props.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
+                                                            :
+                                                            props.path.includes('?q') ?
+                                                            `${props.path}&page=${props?.data?.current_page}`                                    
+                                                            :
+                                                            `${props.path}?page=${props?.data?.current_page}`
+                                                        )()
+                                                    }>
+                                                        <a className="text-gray-400 font-semibold p-2 underline">{props?.data?.current_page}</a>
                                                     </Link>
                                                 </li>
                                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map((page, i) => (
                                                     <li key={i} className="text-base text-gray-600">
-                                                        <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
-                                                            <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
+                                                        <Link href={(() => 
+                                                            props.path.includes('?page') ?
+                                                            props.path.replace(/\?page=\d+/,`?page=${page}`)
+                                                            :
+                                                            props.path.includes('?q') && props.path.includes('&page') ?
+                                                            props.path.replace(/&page=\d+/, `&page=${page}`)
+                                                            :
+                                                            props.path.includes('?q') ?
+                                                            `${props.path}&page=${page}`
+                                                            :
+                                                            `${props.path}?page=${page}`
+                   
+                                                        )()}>
+                                                            <a className="text-blue-800 p-2 hover:underline">{page}</a>
                                                         </Link>
                                                     </li>
                                                 ))}
