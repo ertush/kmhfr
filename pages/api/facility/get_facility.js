@@ -81,7 +81,11 @@ export default async function fetchFacilityData(req, res) {
                 case `chu_status`:
                     params= JSON.parse(req.query.drilldown)
                     url = `${API_URL}/reporting/chul/?report_type=status&county=${params.county}&sub_county=${params.sub_county}&ward=${params.ward}`
-                break;  
+                break; 
+                
+                case `change_log`:
+                    url = `${API_URL}/facilities/facilities/${id}/?fields=__rev__&include_audit=true` 
+                break;
 
                 default:
                 break;
@@ -117,7 +121,7 @@ export default async function fetchFacilityData(req, res) {
         try {
             return checkToken(req, res).then(t => {
                 if (t?.error || t?.data?.error) {
-                    let err = new Error('Error checking token')
+                    let err = new Error('Error checking token') 
                     err.status = 401
                     res.status(401).json({
                         error: true,

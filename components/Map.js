@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet'
 // import MapData from '../assets/maps/counties.min.json'
 // import MapCenters from '../assets/maps/county-centers-coordinates'
@@ -24,4 +25,4 @@ const Map = ({ operational, lat, long, name, ward_name, code, geoJSON }) => {
     )
 }
 
-export default Map
+export default memo(Map)

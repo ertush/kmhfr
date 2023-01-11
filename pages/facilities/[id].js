@@ -1,12 +1,15 @@
 import Head from "next/head";
 import { checkToken } from "../../controllers/auth/auth";
-import React, { useState, useEffect, useContext, memo } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import MainLayout from "../../components/MainLayout";
 import Link from 'next/link'
 
 
+
 import {
   CheckCircleIcon,
+  ChevronRightIcon,
+  ChevronDownIcon,
   InformationCircleIcon,
   LockClosedIcon,
   XCircleIcon,
@@ -26,10 +29,11 @@ import Fade from '@mui/material/Fade';
 import {Formik, Form, Field} from 'formik'
 import Typography from '@mui/material/Typography';
 import FacilitySideMenu from "../../components/FacilitySideMenu";
+import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 
 
 const Facility = (props) => {
-  const Map = memo(dynamic(
+  const Map = dynamic(
     () => import("../../components/Map"), // replace '@components/map' with your component's location
     {
       loading: () => (
@@ -39,9 +43,9 @@ const Facility = (props) => {
       ),
       ssr: false, // This line is important. It's what prevents server-side render
     } 
-  ));
+  );
 
-  
+
   const facility = props["0"]?.data;
   const wardName = props["0"]?.data.ward_name;
   const center = props["1"]?.geoLocation.center;
@@ -63,8 +67,15 @@ const Facility = (props) => {
   const [allFctsSelected, setAllFctsSelected] = useState(false);
   const [title, setTitle] = useState('') 
 
+  const [isViewChangeLog, setIsViewChangeLog] = useState(false)
+  const [changeLogData, setChangeLogData] = useState(null)
 
   const userCtx = useContext(UserContext)
+
+  // const toggleIsViewChangeLog = useCallback(() => {
+     
+  // }, [isViewChangeLog])
+  
   let reject = ''
 
   useEffect(() => {
@@ -279,7 +290,8 @@ const Facility = (props) => {
                     stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
           </div>
           
-          <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4">
+
+          <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full flex flex-col gap-3 mt-4`}>
 
             {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
@@ -340,7 +352,7 @@ const Facility = (props) => {
 
           {/* end facility approval */}
               
-          <aside className="flex flex-col col-span-1 md:col-span-2 gap-4 md:mt-7">
+          <aside className={`flex flex-col col-span-1 ${isViewChangeLog ? 'md:col-span-3': 'md:col-span-2'} gap-4 md:mt-7`}>
             {/* <h3 className="text-2xl tracking-tight font-semibold leading-5">
               Map
             </h3> */}
@@ -367,21 +379,87 @@ const Facility = (props) => {
                 </div>
               </div>
             )}
-            <div className="flex flex-col gap-2 mt-3">
-              <h4 className="text-2xl text-gray-800">Recent activity</h4>
-              <ol className="list-decimal list-outside ml-4 flex flex-row gap-3">
-                <li className="bg-gray-50 w-full rounded-sm p-2">
-                  {facility?.latest_approval_or_rejection?.comment && (
-                    <p>{facility?.latest_approval_or_rejection?.comment}</p>
-                  )}
-                </li>
-              </ol>
+            <div className="flex flex-col items-start justify-center gap-2">
+              {/* View/Hide Change Log Btn*/}
+              <button 
+              onClick={async () => {
+                setIsViewChangeLog(!isViewChangeLog);
+
+                if(!isViewChangeLog){
+                  try{
+                      const resp = await fetch(`/api/facility/get_facility/?path=change_log&id=${facility?.id}`)
+                    // console.log({revisions: (await resp.json())})
+                      setChangeLogData((await resp.json()).revisions)
+   
+                  }
+                  catch(e){
+                    console.error(e.message)
+                  }
+                }
+
+              }}
+              className="bg-green-500 w-auto rounded w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
+              <span>{isViewChangeLog ? 'Hide Change Log' : 'View Change Log'}</span>
+              {
+                isViewChangeLog ?
+                <ChevronDownIcon className="w-6 h-6 text-base text-white"/>
+                :
+                <ChevronRightIcon className="w-6 h-6 text-base text-white"/>
+              }
+              </button>
+
+              {/* Change Log Table */}
+              {
+              isViewChangeLog &&
+              
+              <Table>
+              <TableBody className="w-full">
+                <TableRow>
+                  <TableCell className="font-semibold">Date</TableCell>
+                  <TableCell className="font-semibold">User</TableCell>
+                  <TableCell className="font-semibold">Updates</TableCell>
+                </TableRow>
+                
+               
+               
+                {
+                  changeLogData &&
+                  changeLogData.map(({updated_on, updated_by, updates}, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        {new Date(updated_on).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        {updated_by}
+                      </TableCell>
+                      <TableCell>
+                        {
+                          updates && updates.length > 0 &&
+                          updates.map(({old, new:_new, name}) => (
+                            <span className="grid grid-cols-2">
+                              <span className="font-semibold text-base md:col-start-1">{name}{" :"}</span>
+                              <span className="text-red-400 md:col-start-2">{old}
+                              <span className="text-black">{" >> "}</span>
+                              <span className="text-green-400">{_new}</span>
+                              </span>
+                              
+                            </span>
+                          ))
+                        }
+                      </TableCell>
+                    </TableRow>
+                  ))
+                  
+                }
+      
+              </TableBody>
+              </Table>
+            
+              }   
+              
             </div>
           </aside>
 
-
-          
-                    
         </div>
 
 
