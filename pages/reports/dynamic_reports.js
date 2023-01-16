@@ -33,7 +33,6 @@ const DynamicReports = (props) => {
     // Temporary fix folty Kirinyaga id
     const filters = props?.filters
 
-    // console.log({filters})
     let fltrs = filters
 
     const formRef = useRef(null)
@@ -113,7 +112,7 @@ const DynamicReports = (props) => {
         'constituency',
         'sub_county_name',
         'ward_name',
-        'admission_status',
+        'admission_status_name',
         'facility_services',
         'facility_infrastructure',
         'facility_humanresources',
@@ -156,7 +155,7 @@ const DynamicReports = (props) => {
             filter.options = options
         })
     }
-    // console.log('scoped_filters: ',scoped_filters)
+  
 
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
@@ -182,11 +181,12 @@ const DynamicReports = (props) => {
       }, []);
 
     const onGridReady = (params) => {
-        // console.log({api: params.api});
+   
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
+    
 
         setlineList(lnlst)
         updateData(lnlst)
@@ -264,7 +264,7 @@ const DynamicReports = (props) => {
      },[filteredKeph])
      
 
-//  console.log(drillDown)
+
     let dr ='' 
     if (typeof window !== 'undefined') {
         dr =JSON.parse(localStorage.getItem('dd_owners'))
@@ -313,7 +313,7 @@ const DynamicReports = (props) => {
 
     useEffect(() => {
         // setIsAccordionExpanded(true)
-        console.log({lineList})
+   
        
     }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate, isConstituencyOptionsUpdate, isWardOptionsUpdate, lineList, isLoading, filteredKeph])
 
@@ -388,7 +388,7 @@ const DynamicReports = (props) => {
                                                             
                                                                 const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${headers}`)
                                                                 data.json().then(r => {
-                                                                    // console.log({resp: r})
+                                                                 
                                                                     if(r){
                                                                     const _lnlst = Array.from(r?.results ?? [], row => {
                                                                         let dtpnt = {}
@@ -430,7 +430,6 @@ const DynamicReports = (props) => {
                                                                         return dtpnt
                                                                     })
 
-                                                                    console.log({_lnlst})
                                                                     setlineList(_lnlst)
                                                                 }
                                                             })
@@ -458,14 +457,14 @@ const DynamicReports = (props) => {
                                                     
                                                             {filters && Object.keys(filters).length > 0 &&
                                                                 (() => {
-                                                                // console.log({filters})
+                                                          
                                                                 const sorted = Object.keys(fltrs).sort()  
 
                                                                 const sortOrder = [1,13, 14, 2, 5, 6, 8, 7, 10, 9, 4, 3, 12, 11]
 
                                                                 const sortedOrder = sortOrder.map((v, i) => sorted.indexOf(sorted[i]) === v ? sorted[i] : sorted[v] )
 
-                                                                console.log({sortedOrder})
+                                                            
 
                                                                 return sortedOrder
 
@@ -769,6 +768,7 @@ const DynamicReports = (props) => {
                                                                                             dataSubCounties.json().then(r => {
                                                                                                 const optionsSubCounty = []
 
+                                                                                               
 
                                                                                                 r.results.forEach(({id, name}) => {
                                                                                                     optionsSubCounty.push({
@@ -776,6 +776,18 @@ const DynamicReports = (props) => {
                                                                                                         label: name
                                                                                                     })  
                                                                                                 } )
+
+                                                                                                /* 
+                                                                                                 Fetch All Sub counties for selected county then pass it to value prop below as a string
+                                                                                                 using this url 
+                                                                                                 http://localhost:8000/api/common/sub_counties/?county=95b08378-362e-4bf9-ad63-d685e1287db2&format=json&fields=id
+                                                                                                */
+
+                                                                                                console.log({label: ev.label})
+                                                                                                if(ev.label != 'All' || !ev.value.split(',').length > 1) optionsSubCounty.unshift({
+                                                                                                    value:'@',
+                                                                                                    label:'All'
+                                                                                                })
                                                                                             
 
                                                                                             // sub county    
@@ -837,8 +849,39 @@ const DynamicReports = (props) => {
                                                                                             }
                                                                                         })
                                                                                     
-                                                                                        if(ft === 'county' || ft == 'sub_county' || ft == 'constituency') options.unshift({
-                                                                                            value:'#',
+                                                                                        if(ft === 'county') options.unshift({
+                                                                                            value:[
+                                                                                                "95b08378-362e-4bf9-ad63-d685e1287db2",
+                                                                                                "bbc8803a-7d6f-411a-96f3-5f8472b40405",
+                                                                                                "b6b5db70-609a-4194-888d-7841e02e9045",
+                                                                                                "6c34a4b5-af53-44f9-9c1e-17fdf438dc1f",
+                                                                                                "3452caf6-ee29-4ac7-813e-49702fec8c41",
+                                                                                                "6f256e8c-5d8f-4f07-89a0-81e245081030",
+                                                                                                "fdde0ed3-33a8-4525-950e-41af384defb9",
+                                                                                                "72366abd-2797-4144-8c74-c831810ec0a2",
+                                                                                                "6746a019-8f92-4883-ae6d-2e4fd83c7a4e",
+                                                                                                "44cce67d-c163-4229-ac4a-c0b418601246",
+                                                                                                "ac84672f-db61-41b8-83f8-dc484060c86a",
+                                                                                                "cea1878f-be8a-46f9-9b3b-b6089977892f",
+                                                                                                "7a116274-e48c-4015-b763-c6443b0cdad1",
+                                                                                                "359719c8-25f3-49b3-8549-bd5fbb99f2c1",
+                                                                                                "93b9ddc8-a4c2-4c15-8b0b-599aa10af865",
+                                                                                                "b6f366e9-3050-40ca-9643-ddc7c18ccd96",
+                                                                                                "6c336c99-969b-4e9f-ad6b-c66f761ac9d5",
+                                                                                                "7c942357-44a8-49c9-9ca6-8247ad903b57",
+                                                                                                "ea02a4fd-f70f-4b8b-aff2-ae7c26b136fa",
+                                                                                                "c9001ff3-e484-45e9-930b-7657196e0556",
+                                                                                                "1283e6ea-077d-4d32-8099-6d6acb428fd1",
+                                                                                                "916c0672-76d9-454e-9688-1ad83b576735",
+                                                                                                "0a629644-41eb-44b8-a004-e56f06b3c006",
+                                                                                                "06850fa7-fbef-47b8-abb2-4954a444e1f0",
+                                                                                                "bb728208-372a-4ed3-aa5f-c1fda14cd720",
+                                                                                                "a6b6a2f0-0a63-4f52-a764-d2cc89f338ae",
+                                                                                                "b9781c38-b053-466e-b95c-af288e27a0e6",
+                                                                                                "ecbf61a6-cd6d-4806-99d8-9340572c0015",
+                                                                                                "bc7b4277-527e-441f-ae09-7faa1e63aee0",
+                                                                                                "1e8bc59a-6ea7-44dc-adfb-1d6cd82148bd"
+                                                                                            ].join(','),
                                                                                             label:'All'
                                                                                         })
 
@@ -858,7 +901,7 @@ const DynamicReports = (props) => {
                                                                                         
                                                                                             {
                                                                                                 value: drillDown[ft] || dr?.county || '',
-                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.county)?.name || ''
+                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.county)?.name || 'All' 
                                                                                             }
                                                                                         }
                                                                                         onChange={handleCountyCategoryChange}
@@ -1068,7 +1111,7 @@ const DynamicReports = (props) => {
                                                                                     
                                                                                             if(ft === 'facility_type'){
                                                                                                 
-                                                                                                if(sl.label === 'MEDICAL CENTRE') console.log({sl})
+                                                                                                if(sl.label === 'MEDICAL CENTRE') 
 
                                                                                                 switch (sl.label){
 
@@ -1097,7 +1140,7 @@ const DynamicReports = (props) => {
                                                                                                         break;
 
                                                                                                     case 'MEDICAL CENTRE':
-                                                                                                        console.log({ft})
+                                                                                              
                                                                                                         setFilteredKeph([
                                                                                                             { value: "174f7d48-3b57-4997-a743-888d97c5ec31", label: "Level 3" }
                                                                                                         ])
@@ -1283,29 +1326,29 @@ const DynamicReports = (props) => {
                                         
                                                         <button 
                                                         type='submit'                   
-                                                        className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">
+                                                        className="bg-white border-2 md:px-4 border-black text-black mx-auto flex items-center justify-center font-semibold px-1 py-1 h-[38px] text-base rounded w-auto mt-7 whitespace-nowrap text-center">
 
                                                     {
                                                         isLoading ?  
                                                         (
-                                                            <svg role="status" className="inline w-4 h-4 mr-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
-                                                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
-                                                            </svg>
-                                                        )  :
+                                                            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="12" r="3"><animate id="spinner_qFRN" begin="0;spinner_OcgL.end+0.25s" attributeName="cy" calcMode="spline" dur="0.6s" values="12;6;12" keySplines=".33,.66,.66,1;.33,0,.66,.33"/></circle><circle cx="12" cy="12" r="3"><animate begin="spinner_qFRN.begin+0.1s" attributeName="cy" calcMode="spline" dur="0.6s" values="12;6;12" keySplines=".33,.66,.66,1;.33,0,.66,.33"/></circle><circle cx="20" cy="12" r="3"><animate id="spinner_OcgL" begin="spinner_qFRN.begin+0.2s" attributeName="cy" calcMode="spline" dur="0.6s" values="12;6;12" keySplines=".33,.66,.66,1;.33,0,.66,.33"/></circle></svg>
+                                                        )
+                                                    
+                                                        :
                                                         'Filter'
                                                     }
-                                                        </button>
-                                                    <button  className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
+                                                     </button>
+                                                     <button  
+                                                        className="bg-white border-2 md:px-4 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-auto mt-7 whitespace-nowrap text-cente" 
+                                                        onClick={ev => {
                                                         ev.preventDefault()
                                                             setDrillDown({})
                                                             setSubCountyOptions([])
                                                             setWardOptions([])
                                                             localStorage.setItem('dd_owners', JSON.stringify({county: '', sub_county:'', ward: ''}));
-                                                            // router.push('/reports/dynamic_reports')
                                                             router.reload()
                                                                                                         
-                                                        }}>Clear filters</button>
+                                                        }}>Clear filters</button> 
                                                     </div>
                                                     
                                                 </form>
@@ -1327,14 +1370,9 @@ const DynamicReports = (props) => {
                                 </h5>
                                 
                             </div>
-                            {/* ((((((( dropdown options to download data */}
+                            {/* Dropdown options to download data */}
                             <div>
-                                {/* <button className={"flex items-center justify-start rounded bg-green-600 text-center hover:bg-green-900 focus:bg-black text-white font-semibold active:bg-black py-2 px-4 uppercase text-base w-full"} onClick={() => {
-                                    gridApi.exportDataAsCsv();
-                                }}>
-                                    <DownloadIcon className="w-4 h-4 mr-1" />
-                                    <span>Download Report</span>
-                                </button> */}
+                               
 
                                 <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={onBtExport}
                                             >
@@ -1342,7 +1380,7 @@ const DynamicReports = (props) => {
                                                 <span>Export</span>
                                 </button> 
                             </div>
-                            {/* ))))))) dropdown options to download data */}
+                         
 
                         </div>
                     </div>
@@ -1403,7 +1441,7 @@ const DynamicReports = (props) => {
                                                     }).join('&')
                                                     let op = '?'
                                                     if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                    // console.log(props.path)
+                                                
                                                     // setDrillDown({})
                                                     if (router || typeof window == 'undefined') {
                                                         router.push(props.path + op + qry)
@@ -1421,7 +1459,7 @@ const DynamicReports = (props) => {
                                                 <button className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline" onClick={ev => {
                                                     // router.push('/reports/dynamic_reports')
                                                     const fields = formRef.current.children
-                                                    // console.log({fields})
+                                               
                                                 }}>Clear filters</button>
                                             </div>
                                         </form>
@@ -1437,7 +1475,7 @@ const DynamicReports = (props) => {
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full ">
                             {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
-                                {console.log({lineList})}
+                              
                                 <AgGridReact
                                     // floatingFilter={true}
                                     sideBar={true}
@@ -1451,7 +1489,7 @@ const DynamicReports = (props) => {
                                     rowData={lineList}>
                                         
                                     {headers.map((v_, i) => {
-                                        // console.log({v_})
+                                      
                                         if(v_){
                                             return (
                                                 <AgGridColumn
@@ -1496,7 +1534,7 @@ const DynamicReports = (props) => {
 
 DynamicReports.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
-    // console.log(ctx.query)
+
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county%2Cinfrastructure%2Cinfrastructure_category%2Cspeciality%2Cspeciality_category'
 
@@ -1565,7 +1603,7 @@ DynamicReports.getInitialProps = async (ctx) => {
         }).then(r => r.json())
             .then(json => {
                 return fetchFilters(token).then(ft => {
-                    // console.log({ft})
+           
                     return {
                         data: json, query, token, filters: { ...ft }, path: ctx.asPath || '/reports/dynamic_reports', current_url: current_url 
                     }
