@@ -27,11 +27,11 @@ const Gis = (props) => {
   const userPermissions = useContext(PermissionContext)
 
   // Temporary fix faulty Kirinyaga id
-  let filters = (() => {
-    let filters = props?.filters;
+  const filters = (() => {
+    let _filters = props?.filters;
     // filters.county[0].id = 'ecbf61a6-cd6d-4806-99d8-9340572c0015' // correct Kirinyaga county id
 
-    return filters;
+    return _filters;
   })();
 
   let fltrs = filters;
@@ -56,7 +56,7 @@ const Gis = (props) => {
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  // console.log({ fltrs, filters });
+  console.log({ filters });
 
   filters["has_edits"] = [{ id: "has_edits", name: "Has edits" }];
   filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }];
