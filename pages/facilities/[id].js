@@ -79,7 +79,7 @@ const Facility = (props) => {
   let reject = ''
 
   useEffect(() => {
-    console.log({ props });
+   
     if (userCtx) setUser(userCtx);
     
     return () => {
@@ -388,7 +388,7 @@ const Facility = (props) => {
                 if(!isViewChangeLog){
                   try{
                       const resp = await fetch(`/api/facility/get_facility/?path=change_log&id=${facility?.id}`)
-                    // console.log({revisions: (await resp.json())})
+                    
                       setChangeLogData((await resp.json()).revisions)
    
                   }

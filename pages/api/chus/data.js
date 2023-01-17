@@ -4,53 +4,53 @@ import { checkToken } from "../../../controllers/auth/auth";
 
 export default async function chuData(req, res) {
 
-    
+
     const fetchData = async (token) => {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-        const {path, id} = req.query
-    
+        const { path, id } = req.query
+
         let url = ''
 
-        switch (path){
+        switch (path) {
             case 'changelog':
                 url = `${API_URL}/chul/units/${id}/?fields=__rev__&include_audit=true`
-            break;
+                break;
             case 'del_worker':
                 url = `${API_URL}/chul/workers/${id}/`
-            break;
-            
+                break;
+
             default:
-            break;
+                break;
         }
-        
+
 
         try {
-          
+
             const resp = await fetch(url, {
                 headers: {
                     'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json',
-                    
+
                 }
             })
-            
+
             return resp.json()
         }
-        catch(err) {
+        catch (err) {
             console.error('Error fetching system setup data: ', err)
             return {
                 error: true,
                 err: err,
-                api_url:API_URL
+                api_url: API_URL
             }
         }
-        
+
     }
 
-    if (req.method !== null ) {
-                                                                                    
+    if (req.method !== null) {
+
         try {
             return checkToken(req, res).then(t => {
                 if (t?.error || t?.data?.error) {
@@ -63,16 +63,16 @@ export default async function chuData(req, res) {
                     })
                 } else {
                     let token = t.token
-                   
+
                     return fetchData(token).then(dt => dt).then(data => {
-                    
+
                         res.status(200).json(data)
                         return
                     })
                 }
                 return
             })
-            
+
         } catch (err) {
             console.log("getData API error: ", err)
             res.status(500).json({
@@ -81,5 +81,5 @@ export default async function chuData(req, res) {
                 "message": err.message
             });
         }
-     }
+    }
 }

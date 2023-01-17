@@ -286,7 +286,7 @@ function ApproveReject(props) {
                     <Form
                         className="space-y-3"
                     >
-                        {console.log({facility})}
+                    
                         {
                         !facility?.has_edits ?
                         <Field

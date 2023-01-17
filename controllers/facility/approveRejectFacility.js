@@ -4,24 +4,24 @@ import router from "next/router"
 const validateRejectFacility = (facility_id, reject, comment, alert) => {
 
 
-    console.log('validateRejectFacility', {reject, comment})
 
-    if(comment && !reject){
+
+    if (comment && !reject) {
         alert.success("Facility validated successfully")
-    }else {
+    } else {
         alert.success("Facility rejected successfully")
     }
 
-    
-    let url=`/api/common/submit_form_data/?path=validate_facility`
-    
 
-    try{
-         fetch(url, {
-            headers:{
+    let url = `/api/common/submit_form_data/?path=validate_facility`
+
+
+    try {
+        fetch(url, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-                
+
             },
             method: 'POST',
             body: JSON.stringify({
@@ -30,43 +30,43 @@ const validateRejectFacility = (facility_id, reject, comment, alert) => {
                 is_cancelled: reject,
             })
         })
-        .then(resp =>resp)
-        .then(res =>{ 
-            
-            if(res){
-                router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
-            }
-         
-        })
-        .catch(e=>{
-         console.error(e.message)
-        })
-    }catch (e){
+            .then(resp => resp)
+            .then(res => {
+
+                if (res) {
+                    router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
+                }
+
+            })
+            .catch(e => {
+                console.error(e.message)
+            })
+    } catch (e) {
 
         console.error(e.message)
-    
+
     }
 
 }
 
 const approveRejectFacility = (facility_id, comment, alert, reject) => {
 
-    console.log('approveRejectFacility',{reject, comment})
 
-    if(reject){
+
+    if (reject) {
         alert.success(`Facility Approved successfully`)
-    }else {
+    } else {
         alert.success(`Facility Rejected successfully`)
     }
-    
- 
-    let url=`/api/common/submit_form_data/?path=validate_facility`
-    try{
-         fetch(url, {
-            headers:{
+
+
+    let url = `/api/common/submit_form_data/?path=validate_facility`
+    try {
+        fetch(url, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-                
+
             },
             method: 'POST',
             body: JSON.stringify({
@@ -76,67 +76,67 @@ const approveRejectFacility = (facility_id, comment, alert, reject) => {
                 is_national_approval: reject,
             })
         })
-        .then(resp =>resp)
-        .then(res =>{ 
+            .then(resp => resp)
+            .then(res => {
 
-            if(res){
-                router.push('/facilities?qf=to_publish&to_publish=true') // redirect Facilties Pending Approval
-            }
-         
-         
-        })
-        .catch(e=>{
-            console.error(e.message)
-        })
-    }catch (e){
+                if (res) {
+                    router.push('/facilities?qf=to_publish&to_publish=true') // redirect Facilties Pending Approval
+                }
+
+
+            })
+            .catch(e => {
+                console.error(e.message)
+            })
+    } catch (e) {
 
         console.error(e)
     }
-  
+
 
 
 }
 
 const approveRejectFacilityUpdates = (reject, alert, update_id) => {
 
-    console.log('approveRejectFacilityUpdates', {reject})
+  
 
-    if(reject){
+    if (reject) {
         alert.success("Facility updates approved successfully")
-    }else {
+    } else {
         alert.success("Facility updates rejected successfully")
     }
 
-    let url=`/api/common/submit_form_data/?path=approve_reject_facility_updates&id=${update_id}`
-    
+    let url = `/api/common/submit_form_data/?path=approve_reject_facility_updates&id=${update_id}`
 
-    try{
-         fetch(url, {
-            headers:{
+
+    try {
+        fetch(url, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-                
+
             },
             method: 'POST',
             body: JSON.stringify({
                 approved: reject
             })
         })
-        .then(resp =>resp)
-        .then(res =>{ 
-            
-            if(res){
-                router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
-            }
-         
-        })
-        .catch(e=>{
-         console.error(e.message)
-        })
-    }catch (e){
+            .then(resp => resp)
+            .then(res => {
+
+                if (res) {
+                    router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
+                }
+
+            })
+            .catch(e => {
+                console.error(e.message)
+            })
+    } catch (e) {
 
         console.error(e.message)
-    
+
     }
 
 }

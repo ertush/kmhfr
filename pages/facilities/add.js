@@ -300,7 +300,7 @@ function AddFacility(props) {
 	
     useEffect(() => {
 
-		// console.log({props})
+		
 
         const formIdState = window.sessionStorage.getItem('formId');
 
@@ -368,7 +368,7 @@ function AddFacility(props) {
 				let point = turf.point([longitude, latitude]);
 				
 				let polygon = turf.polygon(facilityCoordinates);
-				console.log({facilityCoordinates})
+				
 				let found = turf.booleanPointInPolygon(point, polygon);
 				if(!found){
 					setCoordinatesError(true)
@@ -453,7 +453,7 @@ function AddFacility(props) {
 
 
 						 {/* Facility Side Menu Filters */}
-						 <div className="md:col-span-1 md:mt-8">
+						 <div className="md:col-span-1 md:mt-3">
                             <FacilitySideMenu 
                                 filters={filters}
                                 states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
@@ -2183,7 +2183,7 @@ function AddFacility(props) {
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
 																<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
                                                             
-																	{/* Transfer list Container */}
+																	{/* Edit list Container */}
 																	<div className='flex items-center w-full h-auto min-h-[300px]'>                                  
 
 																			<EditListItem 

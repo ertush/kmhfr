@@ -72,7 +72,7 @@ const Home = (props) => {
 
     useEffect(() => {
     
-        // console.log({permissions})
+     
         let qry = props?.query
         
         delete qry.searchTerm

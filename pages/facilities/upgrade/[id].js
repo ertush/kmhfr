@@ -25,7 +25,7 @@ const Upgrade = props => {
     const [isFacilityServices, setIsFacilityServices] = useState(false);
     const filters = []
 
-    // console.log({props})
+  
 
     const kephOptions =  props['0']?.kephOptions.sort((a, b) => a < b) 
     const facilityServices =  props['1']?.services 

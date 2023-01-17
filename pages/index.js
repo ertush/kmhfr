@@ -75,14 +75,7 @@ const Home = (props) => {
                                 This visualizes administrative units (counties, constituencies, wards) and their facilities and Community Health Units. Users can also rate Facilities and Community Health Units.
                             </p>
                         </div>
-                        {/* <div className="col-span-2 md:col-span-1 border rounded-lg border-gray-300 shadow group hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
-                            <Link href="/reports">
-                                <a className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">Reports</a>
-                            </Link>
-                            <p className="text-base">
-                                A collection of reports on facilities and community health units in Kenya. You can view and export data from KHMFL in the reports section.
-                            </p>
-                        </div> */}
+                        
                         <div className="col-span-2 md:col-span-1 border rounded-lg border-gray-300 shadow group hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
                             <a href="https://mfl-api-docs.readthedocs.io/en/latest/" className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">KHMFL API</a>
                             <p className="text-base">
@@ -107,37 +100,6 @@ const Home = (props) => {
 Home.getInitialProps = async (ctx) => {
 
     return {loggedIn: false, token: null}
-
-    // return checkToken(ctx.req, ctx.res).then(t => {
-    //     if (t.error) {
-    //         if (typeof window !== 'undefined' && window) {
-    //             if (ctx?.asPath) {
-    //                 window.location.href = ctx?.asPath
-    //             } else {
-    //                 window.location.href = '/'
-    //             }
-    //         }
-    //         throw new Error('Error checking token')
-    //     } else {
-    //         if (typeof window !== 'undefined' && window) {
-    //             window.location.href = '/dashboard'
-    //         }
-    //         let token = t.token
-    //         return {loggedIn: true, token: token}
-    //     }
-    // }).catch(err => {
-    //     console.log('Error checking token: ', err)
-    //     if (typeof window !== 'undefined' && window) {
-    //         if (ctx?.asPath) {
-    //             window.location.href = ctx?.asPath
-    //         } else {
-    //             window.location.href = '/'
-    //         }
-    //     }
-    //     setTimeout(() => {
-    //         return {loggedIn: false, token: null}
-    //     }, 1000);
-    // })
 
 }
 

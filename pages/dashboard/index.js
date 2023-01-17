@@ -52,9 +52,7 @@ const Dash = (props) => {
         return () => { mtd = false }
     }, [filters, subcounty])
 
-    // console.log(filters);
-    // console.log(subcounty);
-    // console.log(props?.data)
+
 
     const fetchSubCounties = (county)=>{
 
@@ -101,7 +99,7 @@ const Dash = (props) => {
                 }
             })
     }
-    console.log(props.data);
+
     const totalSummary =[
         {name:'Total Facilities', count: `${props?.data.total_facilities || 0}` }, 
         {name:'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
@@ -506,7 +504,7 @@ const Dash = (props) => {
                     </div>
 
 
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -515,7 +513,7 @@ const Dash = (props) => {
                             For testing reasons, results are limited at the moment.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
             </MainLayout>
         </div>
@@ -577,7 +575,7 @@ Dash.getInitialProps = async (ctx) => {
         }).then(r => r.json())
          
             .then(json => {
-                console.log({json});
+             
                 return fetchFilters(token).then(ft => {
                     return {
                         data: json, query, filters: { ...ft }, path: ctx.asPath, tok: token || '/dashboard', current_url: url, api_url: API_URL
