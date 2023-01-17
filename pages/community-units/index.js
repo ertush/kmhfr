@@ -102,7 +102,7 @@ const Home = (props) => {
 											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<button
 												onClick={() => {
-													router.push('/community-units/add_community_unit');
+													router.push('/community-units/add');
 												}}
 												className='flex items-center justify-center'>
 												<span className='text-base uppercase font-semibold'>Add Community Health Unit</span>

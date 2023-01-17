@@ -118,7 +118,7 @@ function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 	}, [])
 
 	return (
-		<div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
+		<div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300 h-full'>
 			<List
 				sx={{ width: '100%', bgcolor: 'background.paper', flexGrow: 1 }}
 				component="nav"
