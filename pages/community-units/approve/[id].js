@@ -21,6 +21,7 @@ const CommUnit = (props) => {
 
   const router = useRouter()
   let cu = props.data;
+  
  	// Reference hooks for the services section
   const [user, setUser] = useState(null);
   const [isCHULDetails, setIsCHULDetails] = useState(true);
@@ -518,7 +519,7 @@ CommUnit.getInitialProps = async (ctx) => {
 					})
 
 				let service_categories = await service_response.json();
-				console.log('Service Categories', service_categories)
+
 
 				if (service_categories.error){
 					throw new Error('Error fetching the service categories');

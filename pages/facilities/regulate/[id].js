@@ -37,7 +37,7 @@ const Regulate = props => {
     let reject = ''
 
     useEffect(() => {
-        console.log({ props });
+       
         if (userCtx) setUser(userCtx);
 
         return () => {
@@ -855,7 +855,7 @@ const Regulate = props => {
 
 
 Regulate.getInitialProps = async (ctx) => {
-    console.log({ctx})
+
     const allOptions = []
 
     const options = [
@@ -886,7 +886,7 @@ Regulate.getInitialProps = async (ctx) => {
                 let _data;
                 let url =
                     `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`
-                console.log({url})
+              
                 return fetch(url, {
                     headers: {
                         Authorization: "Bearer " + token,

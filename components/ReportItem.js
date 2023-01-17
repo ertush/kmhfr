@@ -1,7 +1,6 @@
 // React imports
 import React from 'react';
 
-// Next imports
 
 // MUI imports
 import { ListItem, ListItemText } from '@mui/material';

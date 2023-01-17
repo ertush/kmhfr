@@ -12,19 +12,19 @@ import { Menu } from "@headlessui/react";
 import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
 import { PermissionContext } from "../providers/permissions";
-import { 
-  hasAdminOfficesPermissions, 
-  hasSystemSetupPermissions, 
+import {
+  hasAdminOfficesPermissions,
+  hasSystemSetupPermissions,
   hasUsersPermission,
   hasGISPermissions
- } from "../utils/checkPermissions"
+} from "../utils/checkPermissions"
 
 const DelayedLoginButton = () => {
 
 
   const [delayed, setDelayed] = useState(false);
   useEffect(() => {
-    // console.log({userCanViewUsers})
+   
     let mtd = true;
     setTimeout(() => {
       if (mtd === true) {
@@ -60,8 +60,7 @@ export default function HeaderLayout({
 
   const userPermissions = useContext(PermissionContext)
 
-  // const userCanViewUsers = hasPermission(/^users.view_.*$/, userPermissions)
-  
+
   const router = useRouter();
   const activeClasses =
     "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4 rounded  border-green-600";
@@ -75,8 +74,8 @@ export default function HeaderLayout({
   const [hideGISMenu, setHideGISMenu] = useState(false)
 
   const [user, setUser] = useState(null);
-  
-  let API_URL = process.env.NEXT_PUBLIC_API_URL; 
+
+  let API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   if (
     typeof window !== "undefined" &&
@@ -94,11 +93,11 @@ export default function HeaderLayout({
   } else {
     path = "/facilities";
   }
-  // console.log('path::: ', path)
+
 
   useEffect(() => {
 
-    // console.log({userPermissions})
+ 
     let mtd = true;
     if (mtd) {
       let is_user_logged_in =
@@ -110,7 +109,7 @@ export default function HeaderLayout({
       if (is_user_logged_in) {
         session_token = JSON.parse(
           window.document.cookie.split("access_token=")[1].split(";")[0]
-        );  
+        );
       }
 
       if (
@@ -118,11 +117,11 @@ export default function HeaderLayout({
         typeof window !== "undefined" &&
         session_token !== null
       ) {
-        // console.log("active session found");
-  
+      
+
         getUserDetails(session_token.token, API_URL + "/rest-auth/user/").then(
           (usr) => {
-            // console.log({usr})
+        
             if (usr.error || usr.detail) {
               setIsLoggedIn(false);
               setUser(null);
@@ -131,28 +130,28 @@ export default function HeaderLayout({
               setUser(usr);
 
               // Users View Permission  Check
-              
-              if(!hasUsersPermission(/^users.view_mfluser$/, userPermissions)){
+
+              if (!hasUsersPermission(/^users.view_mfluser$/, userPermissions)) {
                 setHideUserMenu(true)
               }
 
               // System Setup View Permission Check
 
-              if(!hasSystemSetupPermissions(/^common.add_county$/, userPermissions)){
+              if (!hasSystemSetupPermissions(/^common.add_county$/, userPermissions)) {
                 setHideSystemSetupMenu(true)
               }
 
               // Admin Offices Permission Check
 
-              if(!hasAdminOfficesPermissions(/^admin_offices.view_.*$/, userPermissions)){
+              if (!hasAdminOfficesPermissions(/^admin_offices.view_.*$/, userPermissions)) {
                 setHideAdminOfficesMenu(true)
               }
 
-                // GIS Permission Check
+              // GIS Permission Check
 
-                if(!hasGISPermissions(/^mfl_gis.view_.*$/, userPermissions)){
-                  setHideGISMenu(true)
-                }
+              if (!hasGISPermissions(/^mfl_gis.view_.*$/, userPermissions)) {
+                setHideGISMenu(true)
+              }
             }
           }
         );
@@ -161,7 +160,7 @@ export default function HeaderLayout({
         // router.push('/auth/login')
       }
     }
-    // console.log({userPermissions, hideMenu})
+
     return () => {
       mtd = false;
     };
@@ -196,11 +195,10 @@ export default function HeaderLayout({
                   text-base 
                   md:text-lg
                   cursor-pointer
-                  ${ 
-                  (currentPath == "/" || currentPath == "/dashboard"
+                  ${(currentPath == "/" || currentPath == "/dashboard"
                       ? activeClasses
-                      : inactiveClasses) 
-                  }`}
+                      : inactiveClasses)
+                    }`}
                 >
                   {isLoggedIn ? "Dashboard" : "Home"}
                 </p>
@@ -215,12 +213,11 @@ export default function HeaderLayout({
                     text-base
                     md:text-lg
                     cursor-pointer
-                    ${
-                    (currentPath == "/facilities" ||
-                    currentPath.includes("facility")
+                    ${(currentPath == "/facilities" ||
+                      currentPath.includes("facility")
                       ? activeClasses
                       : inactiveClasses)
-                      
+
                     }`}
                 >
                   Facilities
@@ -236,86 +233,84 @@ export default function HeaderLayout({
                   md:text-lg
                   cursor-pointer
                     ${(currentPath == "/community-units" ||
-                    currentPath.includes("community-unit")
+                      currentPath.includes("community-unit")
                       ? activeClasses
                       : inactiveClasses)
-                  }`}
+                    }`}
                 >
                   Community Units
                 </p>
               </Link>
             </li>
             {/* Users */}
-            {/* {console.log({hideUserMenu})} */}
-            {!hideUserMenu && 
-            <li className="flex-wrap font-semibold">
-              <Link href="/users">
-                <p
-                  className={
-                    `
+         
+            {!hideUserMenu &&
+              <li className="flex-wrap font-semibold">
+                <Link href="/users">
+                  <p
+                    className={
+                      `
                     text-base 
                     md:text-lg
                     cursor-pointer
-                    ${
-                    (currentPath == "/users" ? activeClasses : inactiveClasses) 
+                    ${(currentPath == "/users" ? activeClasses : inactiveClasses)
 
-                    }`}
-                >
-                  Users
-                </p>
-              </Link>
-            </li>
-              }  
+                      }`}
+                  >
+                    Users
+                  </p>
+                </Link>
+              </li>
+            }
             {/* GIS */}
-            { !hideGISMenu && 
-            <li className="flex-wrap font-semibold">
-              <Link href="/gis">
-                <p
-                  className={`
+            {!hideGISMenu &&
+              <li className="flex-wrap font-semibold">
+                <Link href="/gis">
+                  <p
+                    className={`
                   text-base 
                   md:text-lg
                   cursor-pointer
-                   ${ (currentPath == "/gis" ||
-                    currentPath.includes("gis")
-                      ? activeClasses
-                      : inactiveClasses) 
-                    }`}
-                >
-                   GIS
-                </p>
-              </Link>
-            </li>
+                   ${(currentPath == "/gis" ||
+                        currentPath.includes("gis")
+                        ? activeClasses
+                        : inactiveClasses)
+                      }`}
+                  >
+                    GIS
+                  </p>
+                </Link>
+              </li>
             }
             {/* System setup */}
             {
-              !hideSystemSetupMenu && 
-            <li className="flex-wrap font-semibold">
-              <Link href="/system_setup">
-                <p
-                  className={`
+              !hideSystemSetupMenu &&
+              <li className="flex-wrap font-semibold">
+                <Link href="/system_setup">
+                  <p
+                    className={`
                   text-base
                   md:text-lg
                   cursor-pointer 
-                  ${ 
-                    (currentPath == "/system_setup" ||
-                    currentPath.includes("system_setup")
-                      ? activeClasses
-                      : inactiveClasses)
-                                        } `}
-                >
-                  System setup 
-                </p>
-              </Link>
-            </li>
-            }
-           {/* Reports */}
-              
-              <Menu as="div" className="relative ">
-                  <Menu.Button
-                    as="div"
-                    className="flex items-center justify-center gap-1 cursor-pointer"
+                  ${(currentPath == "/system_setup" ||
+                        currentPath.includes("system_setup")
+                        ? activeClasses
+                        : inactiveClasses)
+                      } `}
                   >
-                    <span className={`
+                    System setup
+                  </p>
+                </Link>
+              </li>
+            }
+            {/* Reports */}
+
+            <Menu as="div" className="relative ">
+              <Menu.Button
+                as="div"
+                className="flex items-center justify-center gap-1 cursor-pointer"
+              >
+                <span className={`
                     text-base 
                     md:text-lg 
                     font-semibold 
@@ -324,71 +319,67 @@ export default function HeaderLayout({
                     hidden 
                     sm:inline
                     cursor-pointer
-                    ${
-                      (currentPath == "/reports/static_reports" || currentPath == "/reports/dynamic_reports" 
-                      ? activeClasses
-                      : inactiveClasses) 
-                    }`}>
-                      Reports
-                    </span>
-                    <span className="leading-none p-0">
-                      <ChevronDownIcon className="h-4 w-5" />
-                    </span>
-                  </Menu.Button>
-                  <Menu.Items
-                    as="ul"
-                    className="list-none flex flex-col items-center bg-white outline-none shadow-md font-semibold justify-start gap-2 p-3 absolute mt-3 text-gray-800 right-0 w-40 rounded"
-                  >
-                  <Menu.Item as="li" className="flex items-center w-full gap-1">
-                    {({ active }) => (
-                      <Link
-                        className={`w-full hover:text-gray-400  font-medium flex items-center ${
-                          active && "text-green-400"
+                    ${(currentPath == "/reports/static_reports" || currentPath == "/reports/dynamic_reports"
+                    ? activeClasses
+                    : inactiveClasses)
+                  }`}>
+                  Reports
+                </span>
+                <span className="leading-none p-0">
+                  <ChevronDownIcon className="h-4 w-5" />
+                </span>
+              </Menu.Button>
+              <Menu.Items
+                as="ul"
+                className="list-none flex flex-col items-center bg-white outline-none shadow-md font-semibold justify-start gap-2 p-3 absolute mt-3 text-gray-800 right-0 w-40 rounded"
+              >
+                <Menu.Item as="li" className="flex items-center w-full gap-1">
+                  {({ active }) => (
+                    <Link
+                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
                         }`}
-                        href="/reports/dynamic_reports"
-                        target="_blank"
-                      >
-                        Dynamic Reports 
-                      </Link>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item as="li" className="flex items-center w-full gap-1">
-                    {({ active }) => (
-                      <Link
-                        className={`w-full hover:text-gray-400  font-medium flex items-center ${
-                          active && "text-green-400"
+                      href="/reports/dynamic_reports"
+                      target="_blank"
+                    >
+                      Dynamic Reports
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item as="li" className="flex items-center w-full gap-1">
+                  {({ active }) => (
+                    <Link
+                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
                         }`}
-                        href="/reports/static_reports"
-                        target="_blank"
-                      >
-                        Static Reports  
-                      </Link>
-                    )}
-                  </Menu.Item>
-              
-            </Menu.Items>
-          </Menu>
-          
-          {/* Admin Offices */}
-          {!hideAdminOfficesMenu && 
-          <li className="flex-wrap font-semibold">
-            <Link href="/admin_offices">
-              <p
-                className={`
+                      href="/reports/static_reports"
+                      target="_blank"
+                    >
+                      Static Reports
+                    </Link>
+                  )}
+                </Menu.Item>
+
+              </Menu.Items>
+            </Menu>
+
+            {/* Admin Offices */}
+            {!hideAdminOfficesMenu &&
+              <li className="flex-wrap font-semibold">
+                <Link href="/admin_offices">
+                  <p
+                    className={`
                 text-base 
                 md:text-lg
                 cursor-pointer
-                ${
-                  (currentPath == "/admin_offices" ? activeClasses : inactiveClasses)
-                
-                }`}
-              >
-                Admin Offices
-              </p>
-            </Link>
-          </li>
-          }
-          
+                ${(currentPath == "/admin_offices" ? activeClasses : inactiveClasses)
+
+                      }`}
+                  >
+                    Admin Offices
+                  </p>
+                </Link>
+              </li>
+            }
+
           </ul>
         </div>
       </nav>
@@ -434,13 +425,12 @@ export default function HeaderLayout({
               as="ul"
               className="list-none flex flex-col items-center justify-start gap-2 p-3 absolute mt-3 bg-black right-0 text-white w-40 rounded"
             >
-          
+
               <Menu.Item as="li" className="flex items-center w-full gap-1">
                 {({ active }) => (
                   <a
-                    className={`w-full hover:text-green-400 font-medium flex items-center ${
-                      active && "text-green-400"
-                    }`}
+                    className={`w-full hover:text-green-400 font-medium flex items-center ${active && "text-green-400"
+                      }`}
                     href="https://kmhfltest.health.go.ke/"
                     target="_blank"
                   >
@@ -451,9 +441,8 @@ export default function HeaderLayout({
               <Menu.Item as="li" className="flex items-center w-full gap-1">
                 {({ active }) => (
                   <a
-                    className={`w-full hover:text-green-400 font-medium flex items-center ${
-                      active && "text-green-400"
-                    }`}
+                    className={`w-full hover:text-green-400 font-medium flex items-center ${active && "text-green-400"
+                      }`}
                     href="https://kmhfl.health.go.ke/"
                     target="_blank"
                   >
@@ -467,9 +456,8 @@ export default function HeaderLayout({
               >
                 {({ active }) => (
                   <a
-                    className={`w-full hover:text-green-400 font-medium ${
-                      active && "text-green-400"
-                    }`}
+                    className={`w-full hover:text-green-400 font-medium ${active && "text-green-400"
+                      }`}
                     href="/logout"
                   >
                     Log out

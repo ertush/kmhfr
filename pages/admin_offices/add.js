@@ -1,11 +1,9 @@
-import React, { useState, Suspense, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import router from 'next/router';
 import MainLayout from '../../components/MainLayout';
 import { checkToken } from '../../controllers/auth/auth';
 import {
-    ChevronDoubleRightIcon,
     ChevronDoubleLeftIcon,
-    PlusIcon,
 } from '@heroicons/react/solid';
 import Select from 'react-select';
 import Link from 'next/link'
@@ -15,67 +13,64 @@ const FormData = require('form-data');
 function AddAdminOffice(props) {
 
     // Form drop down options
-    const countyOptions =  props['0']?.counties;
-    const subCountyOptions =  props['1']?.sub_counties;
-    const [formData, setFormData] = useState('');
-    const [status, setStatus]=useState(null)
+    const countyOptions = props['0']?.counties;
+    const subCountyOptions = props['1']?.sub_counties;
+    const [status, setStatus] = useState(null)
 
     const [county, setCounty] = useState('');
-    const [hide, setHide]=useState(false)
+    const [hide, setHide] = useState(false)
 
     // Drop down select options data
-
     const formRef = useRef(null)
     const countyRef = useRef(null)
     const subCountyRef = useRef(null)
 
     function onCheck(e) {
         const checked = e.target.checked;
-            setHide(!hide)
+        setHide(!hide)
     }
 
 
     const [subCountyOpt, setSubCountyOpt] = useState('');
-        const handleSubmit = async (event) => {
+    const handleSubmit = async (event) => {
         // Stop the form from submitting and refreshing the page.
         event.preventDefault()
-            let _payload = {}
+        let _payload = {}
         const formData = new FormData(formRef.current)
-            formData.forEach((v, k) => {
-                _payload[k] = v
+        formData.forEach((v, k) => {
+            _payload[k] = v
+        })
+        _payload['county'] = countyRef.current.state?.value?.value
+        _payload['sub_county'] = subCountyRef.current.state?.value?.value
+
+        let url = '/api/common/submit_form_data/?path=admin_offices'
+        try {
+            fetch(url, {
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json;charset=utf-8'
+
+                },
+                method: 'POST',
+                body: JSON.stringify(_payload)
             })
-            _payload['county'] = countyRef.current.state?.value?.value
-            _payload['sub_county'] = subCountyRef.current.state?.value?.value
+                .then(resp => resp)
+                .then(res => {
 
-                let url='/api/common/submit_form_data/?path=admin_offices'
-                try{
-                    fetch(url, {
-                        headers:{
-                            'Accept': 'application/json, text/plain, */*',
-                            'Content-Type': 'application/json;charset=utf-8'
+                    if (res.status == 200) {
+                        router.push('/admin_offices')
+                    }
+                })
+                .catch(e => {
+                    setStatus({ status: 'error', message: e })
+                })
+        } catch (e) {
 
-                        },
-                        method:'POST',
-                        body: JSON.stringify(_payload)
-                    })
-                        .then(resp =>resp)
-                        .then(res =>{
+            setStatus({ status: 'error', message: e })
+            console.error(e)
+        }
 
-                            // console.log(res.json)
-                            if(res.status==200){
-                                router.push('/admin_offices')
-                            }
-                        })
-                        .catch(e=>{
-                            setStatus({status:'error', message: e})
-                        })
-                }catch (e){
-
-                    setStatus({status:'error', message: e})
-                    console.error(e)
-                }
-                console.log(_payload)
-            }
+    }
 
     return (
         <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
@@ -93,7 +88,7 @@ function AddAdminOffice(props) {
                             {'New Admin Office'}
                         </h2>
                         <button className='rounded bg-red-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('add_adminoffices')}}
+                            onClick={() => { router.push('add_adminoffices') }}
                         >
                             {`Delete `}
                         </button>
@@ -103,12 +98,10 @@ function AddAdminOffice(props) {
 
                 <div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
                     <div className=' w-full flex flex-col items-start p-3 rounded border border-gray-300/70 bg-gray-50'
-                         style={{ minHeight: '250px' }}>
+                        style={{ minHeight: '250px' }}>
 
                         <>
-                            {/*<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>*/}
-                            {/*    Bio Details*/}
-                            {/*</h4>*/}
+
                             <form
                                 className='flex flex-col w-full items-start justify-start gap-3'
                                 onSubmit={handleSubmit}
@@ -121,9 +114,9 @@ function AddAdminOffice(props) {
                                         className='text-gray-600 capitalize text-sm'>
                                         Office Name
                                         <span className='text-medium leading-12 font-semibold'>
-																	{' '}
+                                            {' '}
                                             *
-																</span>
+                                        </span>
                                     </label>
                                     <input
                                         required
@@ -135,18 +128,18 @@ function AddAdminOffice(props) {
 
                                 {/* national */}
                                 <div className='w-full flex flex-row items-center justify-start gap-1 mb-3'>
-                                   
+
                                     <input
-                                            type ="checkbox"
-                                            name='is_national'
-                                            id='is_national'
-                                            onClick={onCheck}
-                                        />
+                                        type="checkbox"
+                                        name='is_national'
+                                        id='is_national'
+                                        onClick={onCheck}
+                                    />
 
                                     <label
                                         htmlFor='is_national'
                                         className='text-gray-600 capitalize text-sm'>
-                                     
+
                                         Is National Office
                                     </label>
 
@@ -167,56 +160,54 @@ function AddAdminOffice(props) {
                                                 ref={countyRef}
                                                 placeholder='Select County'
                                                 onChange={async (ev) => {
-                                                    if( ev.value.length > 0){
+                                                    if (ev.value.length > 0) {
 
-                                                setCounty(String(ev.label).toLocaleUpperCase())
+                                                        setCounty(String(ev.label).toLocaleUpperCase())
 
-                                                try{
-                                                    const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
+                                                        try {
+                                                            const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
 
-                                                    setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
+                                                            setSubCountyOpt((await resp.json()).results.map(({ id, name }) => ({ value: id, label: name })) ?? [])
 
 
-                                                }
-                                                catch(e){
-                                                    console.error('Unable to fetch sub_county options')
-                                                    setSubCountyOpt(null)
-                                                }
-                                            }else{
-                                                return setSubCountyOpt(null)
-                                            }
-                                        }}
-                                        name='county'
-                                        // value={county}   name="county" onChange={e => setCounty(e)}
-                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
-                                    />
-                                </div>
-
-                                {/* Sub County */}
-                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                    <label
-                                        htmlFor='sub_county'
-                                        className='text-gray-600 capitalize text-sm'>
-                                        Sub-County
-                                        <span className='text-medium leading-12 font-semibold'>
-																	{' '}
-                                            *
-																</span>
-                                    </label>
-                                    <Select
-                                        options={subCountyOpt ?? subCountyOptions}
-                                        // required
-                                        ref={subCountyRef}
-                                        placeholder='Select Sub County'
-                                        name='sub_county'
-                                        id='sub_county'
-                                        // value={subCounty}   name="subCounty" onChange={e => setSubCounty(e)}
+                                                        }
+                                                        catch (e) {
+                                                            console.error('Unable to fetch sub_county options')
+                                                            setSubCountyOpt(null)
+                                                        }
+                                                    } else {
+                                                        return setSubCountyOpt(null)
+                                                    }
+                                                }}
+                                                name='county'
 
                                                 className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                             />
                                         </div>
+
+                                        {/* Sub County */}
+                                        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                            <label
+                                                htmlFor='sub_county'
+                                                className='text-gray-600 capitalize text-sm'>
+                                                Sub-County
+                                                <span className='text-medium leading-12 font-semibold'>
+                                                    {' '}
+                                                    *
+                                                </span>
+                                            </label>
+                                            <Select
+                                                options={subCountyOpt ?? subCountyOptions}
+
+                                                ref={subCountyRef}
+                                                placeholder='Select Sub County'
+                                                name='sub_county'
+                                                id='sub_county'
+                                                className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                            />
+                                        </div>
                                     </>
-                                    )}
+                                )}
 
 
                                 {/* Email */}
@@ -226,15 +217,14 @@ function AddAdminOffice(props) {
                                         className='text-gray-600 capitalize text-sm'>
                                         Email
                                         <span className='text-medium leading-12 font-semibold'>
-																	{' '}
+                                            {' '}
                                             *
-																</span>
+                                        </span>
                                     </label>
                                     <input
                                         required
                                         type='email'
                                         name='email'
-                                        // value={state.email} onChange={handleChange}
                                         className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
@@ -257,18 +247,17 @@ function AddAdminOffice(props) {
 
                                 {/* Cancel & Save */}
                                 <div className='flex justify-between items-center w-full'>
-                                    <button type='submit' className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
-                                            // onClick={() => {router.push('admin_offices')}}
-                                        >
-											<span className='text-medium font-semibold text-white'>
-												Save
-											</span>
+                                    <button type='submit' className='rounded bg-green-600 p-2 text-white flex text-md font-semibold'
+                                    >
+                                        <span className='text-medium font-semibold text-white'>
+                                            Save
+                                        </span>
                                     </button>
                                     <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
                                         <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-                                        <span className='text-medium font-semibold text-black ' onClick={() => {router.push('admin_offices')}}>
-																	Cancel
-																</span>
+                                        <span className='text-medium font-semibold text-black ' onClick={() => { router.push('admin_offices') }}>
+                                            Cancel
+                                        </span>
                                     </button>
                                 </div>
                             </form>
@@ -303,21 +292,21 @@ AddAdminOffice.getInitialProps = async (ctx) => {
                 let url = '';
 
 
-                for(let i = 0; i < options.length; i++) {
+                for (let i = 0; i < options.length; i++) {
                     const option = options[i]
                     let fields = ''
                     let _obj = {}
 
-                    if(option === 'counties') fields = 'id,name&page_size=47'
-                    if(option === 'sub_counties') fields = 'id,name,county'
-                    if(option === 'wards') fields = 'id,name,sub_county,constituency'
-                    if(option === 'constituencies') fields = 'id,name,county'
+                    if (option === 'counties') fields = 'id,name&page_size=47'
+                    if (option === 'sub_counties') fields = 'id,name,county'
+                    if (option === 'wards') fields = 'id,name,sub_county,constituency'
+                    if (option === 'constituencies') fields = 'id,name,county'
 
 
                     url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=${fields}`;
 
 
-                    try{
+                    try {
 
                         const _data = await fetch(url, {
                             headers: {
@@ -326,14 +315,14 @@ AddAdminOffice.getInitialProps = async (ctx) => {
                             },
                         })
 
-                        _obj[option] = (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))
+                        _obj[option] = (await _data.json()).results.map(({ id, name }) => ({ value: id, label: name }))
 
 
                         allOptions.push(_obj)
 
 
                     }
-                    catch(err) {
+                    catch (err) {
                         console.log(`Error fetching ${option}: `, err);
                         allOptions.push({
                             error: true,

@@ -25,7 +25,7 @@ const Home = (props) => {
 
 	
 	useEffect(() => {
-		// console.log({filters})
+		
 		let qry = props?.query;
 		delete qry.searchTerm;
 		delete qry.qf
@@ -102,7 +102,7 @@ const Home = (props) => {
 											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<button
 												onClick={() => {
-													router.push('/community-units/add_community_unit');
+													router.push('/community-units/add');
 												}}
 												className='flex items-center justify-center'>
 												<span className='text-base uppercase font-semibold'>Add Community Health Unit</span>
@@ -365,7 +365,7 @@ const Home = (props) => {
 						</div>
 					</div>
 					
-					{/* (((((( Floating div at bottom right of page */}
+					{/*  Floating div at bottom right of page */}
 
 					<div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
 						<h5 className='text-sm font-bold'>

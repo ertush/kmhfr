@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import MainLayout from '../../components/MainLayout';
-import TrasnferListServices from '../../components/TrasnferListServices';
-import { renderMenuItem } from '../../components/renderMenuItem';
+import EditListItem from '../../components/EditListItem';
 import { checkToken } from '../../controllers/auth/auth';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import { FixedSizeList } from 'react-window';
+import CommunityUnitSideMenu from '../../components/CommunityUnitSideMenu';
 import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon, TrashIcon } from '@heroicons/react/solid';
 import Select from 'react-select';
 import { useAlert } from "react-alert";
@@ -19,13 +18,12 @@ import Link from 'next/link';
 
 const AddCommunityUnit = (props) => {
 
-	const facilities = props.facility_data.results;
-	const serviceCtg = props.service_categories.results;
-	const contact_type = props.contact_type;
+	const facilities = props['0']?.facility_data ?? []
+	const serviceCtg = props['1']?.service_category ?? []
+	const contact_type = props['2']?.contact_type ?? []
 	const alert = useAlert()
 
-	// Reference hooks for the services section
-	const { nameOptionRef, serviceCategoriesRef, optionRefBody } = useRef();
+	const qf = props?.query?.qf || 'all';
 
 	const [selected_facility, setSelectedFacility] = useState(null);
 	const [countyValue, setCountyValue] = useState('');
@@ -35,11 +33,12 @@ const AddCommunityUnit = (props) => {
 	const [chulId, setchulId] = useState('');
 	const [contactCHEW, setContactCHEW] = useState([{}])
 	const [contactList, setContactList] = useState([{}])
-	const [chewData, setChewData] = useState({});
+
 
 	// Services state
 	const [services, setServices] = useState([])
-	const [refreshForm, setRefreshForm] = useState(false)
+	const chewFormRef = useRef(null)
+
 
 
 	// Define registration steps
@@ -49,24 +48,24 @@ const AddCommunityUnit = (props) => {
 		'Services',
 	];
 
-	// Define serviceCategories
-	let serviceCategories = ((_services) => {
 
-		const _serviceCategories = []
+	const serviceOptions = ((_services) => {
+
+		const _serviceOptions = []
 		let _values = []
 		let _subCtgs = []
 
 		if (_services.length > 0) {
-			_services.forEach(({ name: ctg }) => {
-				let allOccurences = _services.filter(({ name }) => name === ctg)
+			_services.forEach(({ category_name: ctg }) => {
+				let allOccurences = _services.filter(({ category_name }) => category_name === ctg)
 
-				allOccurences.forEach(({ id, description }) => {
-					_subCtgs.push(description)
+				allOccurences.forEach(({ id, name }) => {
+					_subCtgs.push(name)
 					_values.push(id)
 				})
 
-				if (_serviceCategories.map(({ name }) => name).indexOf(ctg) === -1) {
-					_serviceCategories.push({
+				if (_serviceOptions.map(({ name }) => name).indexOf(ctg) === -1) {
+					_serviceOptions.push({
 						name: ctg,
 						subCategories: _subCtgs,
 						value: _values
@@ -79,8 +78,9 @@ const AddCommunityUnit = (props) => {
 			})
 		}
 
-		return _serviceCategories
-	})(props.service_categories.results ?? [])
+		return _serviceOptions
+	})(serviceCtg ?? [])
+
 
 	const [formId, setFormId] = useState(0);
 	const handleAddClick = (e) => {
@@ -120,6 +120,7 @@ const AddCommunityUnit = (props) => {
 				<title> KMFHL - Add Community Unit</title>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
+
 			{/* Main Layout */}
 			<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 				<div className='w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4'>
@@ -139,6 +140,22 @@ const AddCommunityUnit = (props) => {
 							</div>
 							<div className='flex flex-wrap items-center justify-evenly gap-x-3 gap-y-2 text-sm md:text-base py-3'></div>
 						</div>
+
+
+						<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+							<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+								{'New Community Unit'}
+							</h2>
+						</div>
+					</div>
+
+					{/* Side Menu Filters*/}
+					<div className="md:col-span-1 md:mt-3 h-full">
+						<CommunityUnitSideMenu
+							qf={qf}
+							filters={[]}
+							_pathId={''}
+						/>
 					</div>
 
 					{/* Stepper and Form */}
@@ -147,8 +164,8 @@ const AddCommunityUnit = (props) => {
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
 							<Box sx={{ width: '100%' }}>
 								<Stepper activeStep={parseInt(formId)} alternativeLabel>
-									{steps.map((label) => (
-										<Step key={label}>
+									{steps.map((label, i) => (
+										<Step key={i}>
 											<StepLabel>{label}</StepLabel>
 										</Step>
 									))}
@@ -176,7 +193,7 @@ const AddCommunityUnit = (props) => {
 												const elements = [...event.target];
 
 												elements.forEach(({ name, value, id }, index) => {
-													console.log({ index: index, name: name, id: id, value: value });
+
 													if (name == 'contact_type' || name == 'contact') {
 														let data = [...contactList];
 														formData['contacts'] = {}
@@ -279,7 +296,7 @@ const AddCommunityUnit = (props) => {
 																		}
 																	}
 																	);
-																	console.log(countyValue);
+
 																}}
 
 																options={facilities.map((facility) => {
@@ -447,6 +464,7 @@ const AddCommunityUnit = (props) => {
 																		</label>
 																		<input
 																			value={countyValue}
+																			onChange={() => null}
 																			type='text'
 																			name='facility_county'
 																			id='facility_county'
@@ -469,6 +487,7 @@ const AddCommunityUnit = (props) => {
 																		</label>
 																		<input
 																			value={subCountyValue}
+																			onChange={() => null}
 																			type='text'
 																			name='facility_sub_county'
 																			id='facility_sub_county'
@@ -491,6 +510,7 @@ const AddCommunityUnit = (props) => {
 																		</label>
 																		<input
 																			value={constituencyValue}
+																			onChange={() => null}
 																			type='text'
 																			name='facility_constituency'
 																			id='facility_constituency'
@@ -513,6 +533,7 @@ const AddCommunityUnit = (props) => {
 																		</label>
 																		<input
 																			value={wardValue}
+																			onChange={() => null}
 																			type='text'
 																			name='facility_ward'
 																			id='facility_ward'
@@ -532,11 +553,10 @@ const AddCommunityUnit = (props) => {
 															</label>
 															<input
 																required
-																type='number'
+																type='text'
 																name='location'
 																id='location'
 																placeholder='Description of the area of coverage'
-																min={0}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -550,7 +570,7 @@ const AddCommunityUnit = (props) => {
 
 																return (
 																	<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
-																		<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
+																		<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 																			<label
 																				htmlFor='contact'
 																				className='text-gray-600 capitalize text-sm'
@@ -565,13 +585,12 @@ const AddCommunityUnit = (props) => {
 																				required
 																				key={i}
 																				id={`${i}`}
-																				onChange={(e) => { console.log(e) }}
 																				name='contact_type'
 																				className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 
 																			>
 																				{contact_type.map((ct, i) => (
-																					<option value={ct.id} key={i}>{ct.name}</option>
+																					<option value={ct.id} onChange={() => null} key={i}>{ct.name}</option>
 																				))}
 																			</select>
 																		</div>
@@ -599,7 +618,7 @@ const AddCommunityUnit = (props) => {
 															}
 
 														</div>
-														<div class="sticky top-0 right-10 w-full flex justify-end">
+														<div className="sticky top-0 right-10 w-full flex justify-end">
 															<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
 																onClick={handleContactAdd}
 															>
@@ -630,53 +649,53 @@ const AddCommunityUnit = (props) => {
 											);
 										// CHEWs Case
 										case 1:
-											const handleChange = (e) => {
 
-												let data = [...contactCHEW];
-												const Obj = {}
-												Obj['health_unit_workers'] = {}
-												e.target.type == 'checkbox' ? data[e.target.id][e.target.name] = e.target.checked : data[e.target.id][e.target.name] = e.target.value
-												Obj['health_unit_workers'] = data.map(({ first_name, last_name, is_incharge }) => { return { first_name, last_name, is_incharge } })
-												setChewData({ ...chewData, ...Obj })
-											}
-
-											console.log(chewData);
 											// Handle CHEWs Case
 											const handleCHEWSubmit = (event) => {
 												event.preventDefault();
 
-												try {
+												const formData = chewFormRef.current ? new FormData(chewFormRef.current) : null
 
-													fetch(`/api/common/submit_form_data/?path=chul_data&id=${chulId}`, {
+												if (formData) {
 
-														headers: {
-															'Accept': 'application/json, text/plain, */*',
-															'Content-Type': 'application/json;charset=utf-8'
+													try {
 
-														},
-														method: 'PATCH',
-														body: JSON.stringify(chewData)
-													}).then(res => res.json()).then((res) => {
-														if (res.details) {
-															alert.error('Failed to add CHEW details')
-														} else {
-															alert.success('CHEW details added successfully ')
-														}
-													}).catch(err => {
-														alert.error('An error occured: ' + err)
+														fetch(`/api/common/submit_form_data/?path=chul_data&id=${chulId}`, {
 
-													})
+															headers: {
+																'Accept': 'application/json, text/plain */*',
+																'Content-Type': 'application/json;charset=utf-8'
+
+															},
+															method: 'PATCH',
+															body: JSON.stringify({
+																first_name: formData.get('first_name'),
+																last_name: formData.get('last_name'),
+																is_incharge: formData.get('is_incharge') == 'on' ? true : false
+
+															})
+														}).then(res => res.json()).then((res) => {
+															if (res.details) {
+																alert.error('Failed to add CHEW details')
+															} else {
+																alert.success('CHEW details added successfully ')
+															}
+														}).catch(err => {
+															alert.error('An error occured: ' + err)
+
+														})
+													}
+													catch (e) {
+														alert.error('An error occured: ' + e.message)
+
+														console.error('Unable to patch facility contacts details'.e.message)
+													}
+
+													window.sessionStorage.setItem('formId', 2);
+
+													setFormId(window.sessionStorage.getItem('formId'));
+
 												}
-												catch (e) {
-													alert.error('An error occured: ' + e.message)
-
-													console.error('Unable to patch facility contacts details'.e.message)
-												}
-
-
-												window.sessionStorage.setItem('formId', 2);
-
-												setFormId(window.sessionStorage.getItem('formId'));
 											};
 
 											const handleCHEWPrevious = (event) => {
@@ -684,7 +703,7 @@ const AddCommunityUnit = (props) => {
 
 												window.sessionStorage.setItem('formId', 0);
 
-												console.log({ formId })
+
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -694,30 +713,29 @@ const AddCommunityUnit = (props) => {
 														CHEWs: Community Health Extension Workers
 													</h4>
 													<form
+														ref={chewFormRef}
 														name='chews_form'
 														className='flex flex-col w-full items-start justify-start gap-3'
 														onSubmit={handleCHEWSubmit}>
-														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+														<div className='w-full flex flex-col items-start justify-start gap-4 mb-3 p-2'>
 															{contactCHEW.map((contact, index) => (
-																<div className='grid grid-cols-4 place-content-start gap-3 w-full' key={index}>
+																<div className='flex flex-row items-center justify-between md:mx-1 gap-4 w-full' key={index}>
 																	{/* First Name */}
-																	<div className='col-start-1 col-span-1'>
+																	<div className='flex-col gap-2'>
 																		<label
-																			htmlFor='first_name' start
+																			htmlFor='first_name'
 																			className='block text-sm font-medium text-gray-700'>
 																			First Name
 																		</label>
 																		<input
 																			required
-																			id={index}
 																			type='text'
 																			name='first_name'
-																			onChange={(e) => handleChange(e)}
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																	{/* Second Name */}
-																	<div className='col-start-2 col-span-1'>
+																	<div className='flex-col gap-2'>
 																		<label
 																			htmlFor='last_name'
 																			className='block text-sm font-medium text-gray-700'>
@@ -728,12 +746,11 @@ const AddCommunityUnit = (props) => {
 																			id={index}
 																			type='text'
 																			name='last_name'
-																			onChange={(e) => handleChange(e)}
 																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																	{/* In charge */}
-																	<div className='col-start-3 col-span-1'>
+																	<div className='flex-col gap-2'>
 																		<label
 																			htmlFor='is_incharge'
 																			className='block text-sm font-medium text-gray-700'>
@@ -743,13 +760,12 @@ const AddCommunityUnit = (props) => {
 																			name='is_incharge'
 																			id={index}
 																			type='checkbox'
-																			onChange={(e) => handleChange(e)}
 																			className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
 																		/>
 																	</div>
 
 																	{/* Delete CHEW */}
-																	<div className='col-start-4 col-span-1'>
+																	<div className='flex-col gap-2'>
 																		<label
 																			htmlFor='delete'
 																			className='block text-sm font-medium text-gray-700'>
@@ -763,27 +779,27 @@ const AddCommunityUnit = (props) => {
 																				type='button'
 																				className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 rounded border border-red-500 hover:border-transparent '
 																				onClick={() => { }}>
-																				<TrashIcon class="w-4 h-4 text-red-500 group-hover:text-white" />
+																				<TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
 																			</button>
 																		</div>
 																	</div>
 																</div>
 															))}
-															<div class="sticky top-0 right-10 w-full flex justify-end">
+															<div className="sticky top-0 right-10 w-full flex justify-end mt-3">
 																<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
 																	onClick={handleAddClick}
 																>
 																	{`Add`}
-																	{/* <PlusIcon className='text-white ml-2 h-5 w-5'/> */}
+
 																</button>
 
 															</div>
 														</div>
 
 														{/* Basic Details and Services */}
-														<div className='flex justify-between md:grid md:grid-cols-4 items-center w-full'>
+														<div className='flex justify-between items-center w-full p-2'>
 															<button
-																className='flex items-center md:col-start-1 justify-start md:w-36 space-x-2 p-1 border-2 border-black rounded px-2'
+																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'
 																onClick={handleCHEWPrevious}>
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
 																<span className='text-medium font-semibold text-black '>
@@ -792,7 +808,7 @@ const AddCommunityUnit = (props) => {
 															</button>
 															<button
 																type='submit'
-																className='flex items-center md:col-start-4 justify-start md:w-36 space-x-2 bg-green-500 rounded p-1 px-2'>
+																className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>
 																	Services
 																</span>
@@ -805,10 +821,11 @@ const AddCommunityUnit = (props) => {
 										// Services Case
 										case 2:
 											// Handle Service Form Submit
-											const handleServiceSubmit = (event) => {
-												event.preventDefault();
+											const handleServiceSubmit = (stateSetters, chulId) => {
 
-												const _payload = services.map(({ value }) => ({ service: value }))
+												const [services, setFormId, setServices] = stateSetters
+												console.log({services});
+												const _payload = services.map(({ id }) => ({ service: id }))
 
 												_payload.forEach(obj => obj['health_unit'] = chulId)
 
@@ -848,63 +865,38 @@ const AddCommunityUnit = (props) => {
 														Services Offered
 													</h4>
 
-													<form
+													<div
 														name='chu_services_form'
 														className='flex flex-col w-full items-start justify-start gap-3'
-														onSubmit={handleServiceSubmit}>
-														{/* Transfer list Container */}
-														<div className='flex items-center w-full h-auto min-h-[300px]'>
-															{/* serviceCategories.map(ctg => ctg.name) */}
-															<TrasnferListServices
-																categories={serviceCategories}
-																setServices={setServices}
-																setRefreshForm4={setRefreshForm}
-																selectedRight={null}
-																setSelectedServiceRight={() => null}
-																refreshForm4={refreshForm}
-															/>
+													>
+														<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+
+															{/* Edit list Item Container */}
+															<div className='flex items-center w-full h-auto min-h-[300px]'>
+
+																<EditListItem
+																	initialSelectedItems={[]}
+																	itemsCategory={serviceOptions} //serviceOptions
+																	itemsCategoryName={'Services'}
+																	setUpdatedItem={() => null}
+																	itemId={chulId} //chulId
+																	setItems={setServices}
+																	item={null}
+																	removeItemHandler={() => null}
+																	handleItemsSubmit={handleServiceSubmit} //handleServiceSubmit
+																	handleItemsUpdate={() => null} //handleServiceUpdates
+																	setNextItemCategory={setFormId}
+																	nextItemCategory={'Save'}
+																	previousItemCategory={'CHEWS'}
+																	handleItemPrevious={handleServicesPrevious} //handleServicePrevious
+																	setIsSaveAndFinish={() => null}
+
+
+																/>
+
+															</div>
 														</div>
-
-														{/* Service Category Table */}
-														<table className='w-full  h-auto my-4'>
-															<thead className='w-full'>
-																<tr className='grid grid-cols-2 place-content-end border-b-4 border-gray-300'>
-																	<td className='text-lg font-semibold text-indigo-900 '>Name</td>
-																	<td className='text-lg font-semibold text-indigo-900 ml-12'>Service Option</td>
-																</tr>
-															</thead>
-															<tbody ref={optionRefBody}>
-																{
-																	services.map(({ subctg }) => subctg).map((service_categories, i) => (
-																		<tr key={`${service_categories}_${i}`} className='grid grid-cols-2 place-content-end border-b-2 border-gray-300'>
-																			<td ref={nameOptionRef}>{service_categories}</td>
-																			<td ref={serviceCategoriesRef} className='ml-12 text-base'>Yes</td>
-																		</tr>
-																	))
-																}
-															</tbody>
-														</table>
-
-														<div className='flex justify-between items-center w-full'>
-															<button
-																onClick={handleServicesPrevious}
-																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																<span className='text-medium font-semibold text-black '>
-																	CHEWs
-																</span>
-															</button>
-															<button
-																type='submit'
-
-																className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>
-																	Save
-																</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-															</button>
-														</div>
-													</form>
+													</div>
 												</>
 											);
 									}
@@ -913,29 +905,9 @@ const AddCommunityUnit = (props) => {
 						</div>
 					</div>
 
-					{/* Aside */}
-					<aside className='flex flex-col col-span-5 md:col-span-1 p-1 md:h-full'>
-						<details
-							title='Menu filters'
-							className='rounded bg-transparent py-2 text-basez flex flex-col w-full md:stickyz md:top-2z'
-							open>
-							<Box
-								sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
-							>
-								<FixedSizeList
-									height={400}
-									width={360}
-									itemSize={46}
-									itemCount={9}
-									overscanCount={5}
-								>
-									{renderMenuItem}
-								</FixedSizeList>
-							</Box>
-						</details>
-					</aside>
 
-					{/* (((((( Floating div at bottom right of page */}
+
+					{/* Floating div at bottom right of page */}
 					<div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
 						<h5 className='text-sm font-bold'>
 							<span className='text-gray-600 uppercase'>Limited results</span>
@@ -945,7 +917,7 @@ const AddCommunityUnit = (props) => {
 							results.
 						</p>
 					</div>
-					{/* ))))))) */}
+
 				</div>
 			</MainLayout>
 		</>
@@ -953,7 +925,14 @@ const AddCommunityUnit = (props) => {
 }
 
 AddCommunityUnit.getInitialProps = async (ctx) => {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+	const allOptions = []
+
+	const options = [
+		'facilities',
+		'services',
+		'contact_types',
+	]
 
 
 	return checkToken(ctx.req, ctx.res)
@@ -962,67 +941,95 @@ AddCommunityUnit.getInitialProps = async (ctx) => {
 				throw new Error('Error checking token');
 			} else {
 				let token = t.token;
-				console.log('token', token);
+				let url = '';
 
-				// Prefetch the facility data details
-				let url = `${API_URL}/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
-				const response = await fetch(url, {
-					headers: {
-						Authorization: 'Bearer ' + token,
-						Accept: 'application/json',
-					},
-				})
+				for (let i = 0; i < options.length; i++) {
+					const option = options[i]
+					switch (option) {
+						case 'facilities':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
 
-				let facility_data = await response.json();
-				console.log('facilities', facility_data)
+							try {
 
-				if (facility_data.error) {
-					throw new Error('Error fetching facility data');
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},
+								})
+
+
+								allOptions.push({ facility_data: (await _data.json()).results })
+
+							}
+							catch (err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									facility_types: [],
+								});
+							}
+
+							break;
+						case 'contact_types':
+							url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=id,name`;
+
+							try {
+
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									},
+								})
+
+
+
+								allOptions.push({ contact_type: (await _data.json()).results })
+
+
+							}
+							catch (err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									facility_types: [],
+								});
+							}
+							break;
+
+						case 'services':
+
+							url = `${process.env.NEXT_PUBLIC_API_URL}/chul/${option}/?page_size=100&ordering=name`;
+
+							try {
+
+								const _data = await fetch(url, {
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									}
+								})
+
+								allOptions.push({ service_category: (await _data.json()).results })
+
+							}
+							catch (err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err,
+									service: [],
+								})
+							}
+
+							break;
+					}
 				}
 
-				// Fetch the service options
-				let service_url = `${API_URL}/chul/services/?page_size=100&ordering=name`;
-
-				const service_response = await fetch(service_url,
-					{
-						headers: {
-							Authorization: 'Bearer ' + token,
-							Accept: 'application/json',
-						},
-					})
-
-				let service_categories = await service_response.json();
-				console.log('services', service_categories)
-
-
-				if (service_categories.error) {
-					throw new Error('Error fetching the service categories');
-				}
-
-				let contact_url = `${API_URL}/common/contact_types/?fields=id,name`;
-				const _data = await fetch(contact_url, {
-					headers: {
-						Authorization: 'Bearer ' + token,
-						Accept: 'application/json',
-					},
-				})
-
-				// let contact_res = (await _data.json()).results.map(({id, name }) => {return {value:id, label:name}})
-				const defaultSelected = { id: '0', name: 'Select contact type', disabled: true };
-
-				let contact_res = (await _data.json()).results
-				contact_res.unshift(defaultSelected)
-
-				if (contact_res.error) {
-					throw new Error('Error fetching the contact types');
-				}
-
-				return {
-					token: token,
-					facility_data: facility_data,
-					service_categories: service_categories,
-					contact_type: contact_res
-				};
+				return allOptions
 
 			}
 		})
