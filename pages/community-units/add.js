@@ -176,7 +176,7 @@ const AddCommunityUnit = (props) => {
 												const elements = [...event.target];
 
 												elements.forEach(({ name, value, id }, index) => {
-													console.log({ index: index, name: name, id: id, value: value });
+													
 													if (name == 'contact_type' || name == 'contact') {
 														let data = [...contactList];
 														formData['contacts'] = {}
@@ -279,7 +279,7 @@ const AddCommunityUnit = (props) => {
 																		}
 																	}
 																	);
-																	console.log(countyValue);
+																	
 																}}
 
 																options={facilities.map((facility) => {
@@ -565,7 +565,6 @@ const AddCommunityUnit = (props) => {
 																				required
 																				key={i}
 																				id={`${i}`}
-																				onChange={(e) => { console.log(e) }}
 																				name='contact_type'
 																				className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 
@@ -640,7 +639,6 @@ const AddCommunityUnit = (props) => {
 												setChewData({ ...chewData, ...Obj })
 											}
 
-											console.log(chewData);
 											// Handle CHEWs Case
 											const handleCHEWSubmit = (event) => {
 												event.preventDefault();
@@ -684,7 +682,7 @@ const AddCommunityUnit = (props) => {
 
 												window.sessionStorage.setItem('formId', 0);
 
-												console.log({ formId })
+											
 
 												setFormId(window.sessionStorage.getItem('formId'));
 											};
@@ -935,7 +933,7 @@ const AddCommunityUnit = (props) => {
 						</details>
 					</aside>
 
-					{/* (((((( Floating div at bottom right of page */}
+					{/* Floating div at bottom right of page */}
 					<div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
 						<h5 className='text-sm font-bold'>
 							<span className='text-gray-600 uppercase'>Limited results</span>
@@ -945,7 +943,7 @@ const AddCommunityUnit = (props) => {
 							results.
 						</p>
 					</div>
-					{/* ))))))) */}
+				
 				</div>
 			</MainLayout>
 		</>
@@ -962,7 +960,7 @@ AddCommunityUnit.getInitialProps = async (ctx) => {
 				throw new Error('Error checking token');
 			} else {
 				let token = t.token;
-				console.log('token', token);
+				
 
 				// Prefetch the facility data details
 				let url = `${API_URL}/facilities/facilities/?fields=id,name,county,sub_county_name,constituency,ward_name&page=1&page_size=500`;
@@ -974,7 +972,7 @@ AddCommunityUnit.getInitialProps = async (ctx) => {
 				})
 
 				let facility_data = await response.json();
-				console.log('facilities', facility_data)
+				
 
 				if (facility_data.error) {
 					throw new Error('Error fetching facility data');
@@ -992,7 +990,7 @@ AddCommunityUnit.getInitialProps = async (ctx) => {
 					})
 
 				let service_categories = await service_response.json();
-				console.log('services', service_categories)
+				
 
 
 				if (service_categories.error) {
@@ -1007,7 +1005,7 @@ AddCommunityUnit.getInitialProps = async (ctx) => {
 					},
 				})
 
-				// let contact_res = (await _data.json()).results.map(({id, name }) => {return {value:id, label:name}})
+			
 				const defaultSelected = { id: '0', name: 'Select contact type', disabled: true };
 
 				let contact_res = (await _data.json()).results

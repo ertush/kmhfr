@@ -30,13 +30,13 @@ const CommUnit = (props) => {
   // State of the different tabs
   const [chulId, setchulId] = useState("");
   const [formData, setFormData] = useState({});
-  const [contactCHEW, setContactCHEW] = useState([... cu.health_unit_workers]);
+  const [contactCHEW, setContactCHEW] = useState([...cu.health_unit_workers]);
   const [contactList, setContactList] = useState([...cu.contacts]);
   const contact_type = props.contact_type;
   const [countyValue, setCountyValue] = useState('');
-	const [subCountyValue, setSubCountyValue] = useState('');
-	const [constituencyValue, setConstituencyValue] = useState('');
-	const [wardValue, setWardValue] = useState('');
+  const [subCountyValue, setSubCountyValue] = useState('');
+  const [constituencyValue, setConstituencyValue] = useState('');
+  const [wardValue, setWardValue] = useState('');
 
   // Services states
   const [selectedServices, setSelectedServices] = useState(cu.services);
@@ -44,7 +44,7 @@ const CommUnit = (props) => {
   const [user, setUser] = useState(null);
 
   const userCtx = useContext(UserContext);
-  let operation_status =[
+  let operation_status = [
     {
       value: "2943e6c1-a581-461e-85a4-b9f25a2674ab",
       label: "Closed",
@@ -80,20 +80,20 @@ const CommUnit = (props) => {
         ? (data[e.target.id][e.target.name] = e.target.checked)
         : (data[e.target.id][e.target.name] = e.target.value);
       newObj["health_unit_workers"] = data.map((hu_w) => {
-          return { 
-            ...hu_w,
-            first_name: hu_w.first_name, 
-            last_name: hu_w.last_name, 
-            is_incharge: hu_w.is_incharge
-          };
-        }
+        return {
+          ...hu_w,
+          first_name: hu_w.first_name,
+          last_name: hu_w.last_name,
+          is_incharge: hu_w.is_incharge
+        };
+      }
       );
       setFormData({ ...formData, ...newObj });
-    }else if(e.target.name == 'contact_type' || e.target.name == 'contact'){
+    } else if (e.target.name == 'contact_type' || e.target.name == 'contact') {
       let data = [...contactList];
       newObj['contacts'] = {}
       data[e.target.id][e.target.name] = e.target.value
-      newObj['contacts'] = data.map((s)=>{return{...s,contact_type:s.contact_type, contact: s.contact}})
+      newObj['contacts'] = data.map((s) => { return { ...s, contact_type: s.contact_type, contact: s.contact } })
       setFormData({ ...formData, ...newObj });
     } else {
       newObj[e.target.name] = {};
@@ -128,7 +128,7 @@ const CommUnit = (props) => {
         console.log(err);
       }
     } else {
-      const l= formData.health_unit_workers.splice(index, 1)
+      const l = formData.health_unit_workers.splice(index, 1)
       setContactCHEW((current) => current.filter((item, ind) => ind !== index));
     }
   };
@@ -148,11 +148,12 @@ const CommUnit = (props) => {
       })
         .then((res) => res.json())
         .then((res) => {
-          if(res.details){
+          if (res.details) {
             alert.danger('Failed to update Community Unit')
-          }else{
+          } else {
             alert.success('Community Unit Updated successfully ')
-          }        });
+          }
+        });
     } catch (e) {
       alert.danger("Unable to update CHU edit details".e.message)
     }
@@ -167,13 +168,13 @@ const CommUnit = (props) => {
           "Content-Type": "application/json;charset=utf-8",
         },
         method: "PATCH",
-        body: JSON.stringify({ ...formData } ),
+        body: JSON.stringify({ ...formData }),
       })
         .then((res) => res.json())
         .then((res) => {
-          if(res.details){
+          if (res.details) {
             alert.danger('Failed to update Community Unit')
-          }else{
+          } else {
             alert.success('Community Unit Updated successfully ')
           }
         });
@@ -185,7 +186,7 @@ const CommUnit = (props) => {
   const handleServices = async (event) => {
     event.preventDefault();
 
-    const _payload = selectedServices.map((s) => ({  health_unit: s.health_unit, service: s.service }));
+    const _payload = selectedServices.map((s) => ({ health_unit: s.health_unit, service: s.service }));
 
     try {
       fetch(`/api/common/submit_form_data/?path=edit_chul&id=${cu?.id}`, {
@@ -193,12 +194,12 @@ const CommUnit = (props) => {
           Accept: "application/json, text/plain, */*",
           "Content-Type": "application/json;charset=utf-8",
         },
-        method:'PATCH',
+        method: 'PATCH',
         body: JSON.stringify({ services: _payload }),
-      }).then(res=>res.json()).then((res)=>{
-        if(res.details){
+      }).then(res => res.json()).then((res) => {
+        if (res.details) {
           alert.danger('Failed to update Community Unit')
-        }else{
+        } else {
           alert.success('Community Unit Updated successfully ')
         }
         router.push('/community-units')
@@ -306,7 +307,7 @@ const CommUnit = (props) => {
                 </div>
               </div>
               <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2">
-                {}
+                { }
               </div>
             </div>
           </div>
@@ -314,9 +315,9 @@ const CommUnit = (props) => {
           {/* Community Unit Side Menu */}
           <div className="hidden md:col-span-1 md:flex md:mt-8">
             <CommunityUnitSideMenu
-              	qf={'all'}
-                filters={[]}
-                _pathId={''}
+              qf={'all'}
+              filters={[]}
+              _pathId={''}
             />
           </div>
 
@@ -414,9 +415,9 @@ const CommUnit = (props) => {
                             label: facility.name,
                           };
                         })}
-                        value ={{
-                          value: formData?.facility !== undefined? formData.facility : cu.facility||"", 
-                          label:formData?.facility !== undefined? facilities.find(fc=> fc.id == formData.facility).name : cu.facility_name||"",
+                        value={{
+                          value: formData?.facility !== undefined ? formData.facility : cu.facility || "",
+                          label: formData?.facility !== undefined ? facilities.find(fc => fc.id == formData.facility).name : cu.facility_name || "",
                         }}
                         name="facility"
                         className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
@@ -437,9 +438,9 @@ const CommUnit = (props) => {
                       </label>
                       <Select
                         options={operation_status}
-                        value ={{
-                          value: formData?.status !== undefined? formData.status : cu.status||"", 
-                          label:formData?.status !== undefined? operation_status.find(op=>op.value == formData.status).label : cu.status_name||"",
+                        value={{
+                          value: formData?.status !== undefined ? formData.status : cu.status || "",
+                          label: formData?.status !== undefined ? operation_status.find(op => op.value == formData.status).label : cu.status_name || "",
                         }}
                         onChange={(value) =>
                           handleChange({
@@ -694,7 +695,7 @@ const CommUnit = (props) => {
                                   key={i}
                                   id={`${i}`}
                                   name="contact_type"
-                                  onChange={(e)=>{handleChange(e)}}
+                                  onChange={(e) => { handleChange(e) }}
                                   defaultValue={
                                     cu.contacts[i]?.contact_type || ""
                                   }
@@ -727,7 +728,7 @@ const CommUnit = (props) => {
                                   name="contact"
                                   id={i}
                                   defaultValue={cu.contacts[i]?.contact || ""}
-                                  onChange={(e)=>{handleChange(e)}}
+                                  onChange={(e) => { handleChange(e) }}
                                   className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                 />
                               </div>
@@ -754,13 +755,13 @@ const CommUnit = (props) => {
                           </span>
                         </button>
                       </div>
-                      
+
                       <div className="flex items-center w-full justify-end">
-                        
+
                         <button
                           type="submit"
                           className="flex items-right justify-end space-x-2 bg-blue-500 rounded p-1 px-2"
-                          onClick={()=>{
+                          onClick={() => {
                             router.push('/community-units')
                           }}
                         >
@@ -781,7 +782,7 @@ const CommUnit = (props) => {
                         </button>
 
                       </div>
-                      
+
 
 
                     </div>
@@ -800,87 +801,88 @@ const CommUnit = (props) => {
                     <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                       {contactCHEW && contactCHEW.length > 0 ? (
                         contactCHEW.map((contact, index) => {
-                        return(
-                          <div
-                            className="grid grid-cols-4 place-content-start gap-3 w-full"
-                            key={`${contact}~${index}`}
-                          >
-                            {/* First Name */}
-                            <div className="col-start-1 col-span-1">
-                              <label
-                                htmlFor="first_name"
-                                start
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                First Name
-                              </label>
-                              <input
-                                required
-                                type="text"
-                                id={index}
-                                name="first_name"
-                                onChange={(e) => handleChange(e)}
-                                value={formData.health_unit_workers !== undefined? formData?.health_unit_workers[index]?.first_name : cu.health_unit_workers[index]?.first_name||""}
-                                className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                              />
-                            </div>
-                            {/* Second Name */}
-                            <div className="col-start-2 col-span-1">
-                              <label
-                                htmlFor="last_name"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                Second Name
-                              </label>
-                              <input
-                                required
-                                type="text"
-                                id={index}
-                                name="last_name"
-                                onChange={(e) => handleChange(e)}
-                                value={formData.health_unit_workers !== undefined? formData?.health_unit_workers[index]?.last_name : cu.health_unit_workers[index]?.last_name || ""}
-                                className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                              />
-                            </div>
-                            {/* In charge */}
-                            <div className="col-start-3 col-span-1">
-                              <label
-                                htmlFor="is_incharge"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                In Charge
-                              </label>
-                              <input
-                                name="is_incharge"
-                                id={index}
-                                type="checkbox"
-                                onChange={(e) => handleChange(e)}
-                                checked={formData.health_unit_workers !== undefined? formData?.health_unit_workers[index]?.is_incharge : cu.health_unit_workers[index]?.is_incharge || false}
-                                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                              />
-                            </div>
-
-                            {/* Delete CHEW */}
-
-                            <div className="col-start-4 col-span-1">
-                              <div className="flex items-center">
-                                {/* insert red button for deleting */}
-                                <button
-                                  type="button"
-                                  name="delete"
-                                  onClick={(e) => {
-                                    remove(e, index, contact.id);
-                                  }}
-                                  className="flex items-center justify-start space-x-2 bg-red-600 rounded p-1 px-2"
+                          return (
+                            <div
+                              className="grid grid-cols-4 place-content-start gap-3 w-full"
+                              key={`${contact}~${index}`}
+                            >
+                              {/* First Name */}
+                              <div className="col-start-1 col-span-1">
+                                <label
+                                  htmlFor="first_name"
+                                  start
+                                  className="block text-sm font-medium text-gray-700"
                                 >
-                                  <span className="text-medium font-semibold text-white">
-                                    Remove
-                                  </span>
-                                </button>
+                                  First Name
+                                </label>
+                                <input
+                                  required
+                                  type="text"
+                                  id={index}
+                                  name="first_name"
+                                  onChange={(e) => handleChange(e)}
+                                  value={formData.health_unit_workers !== undefined ? formData?.health_unit_workers[index]?.first_name : cu.health_unit_workers[index]?.first_name || ""}
+                                  className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                />
+                              </div>
+                              {/* Second Name */}
+                              <div className="col-start-2 col-span-1">
+                                <label
+                                  htmlFor="last_name"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
+                                  Second Name
+                                </label>
+                                <input
+                                  required
+                                  type="text"
+                                  id={index}
+                                  name="last_name"
+                                  onChange={(e) => handleChange(e)}
+                                  value={formData.health_unit_workers !== undefined ? formData?.health_unit_workers[index]?.last_name : cu.health_unit_workers[index]?.last_name || ""}
+                                  className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                />
+                              </div>
+                              {/* In charge */}
+                              <div className="col-start-3 col-span-1">
+                                <label
+                                  htmlFor="is_incharge"
+                                  className="block text-sm font-medium text-gray-700"
+                                >
+                                  In Charge
+                                </label>
+                                <input
+                                  name="is_incharge"
+                                  id={index}
+                                  type="checkbox"
+                                  onChange={(e) => handleChange(e)}
+                                  checked={formData.health_unit_workers !== undefined ? formData?.health_unit_workers[index]?.is_incharge : cu.health_unit_workers[index]?.is_incharge || false}
+                                  className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                                />
+                              </div>
+
+                              {/* Delete CHEW */}
+
+                              <div className="col-start-4 col-span-1">
+                                <div className="flex items-center">
+                                  {/* insert red button for deleting */}
+                                  <button
+                                    type="button"
+                                    name="delete"
+                                    onClick={(e) => {
+                                      remove(e, index, contact.id);
+                                    }}
+                                    className="flex items-center justify-start space-x-2 bg-red-600 rounded p-1 px-2"
+                                  >
+                                    <span className="text-medium font-semibold text-white">
+                                      Remove
+                                    </span>
+                                  </button>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        )})
+                          )
+                        })
                       ) : (
                         <>
                           <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
@@ -902,13 +904,13 @@ const CommUnit = (props) => {
 
                     {/* Save Changes */}
                     <div className="flex justify-between items-center w-full">
-                    <button
+                      <button
                         type="submit"
                         className="flex items-center justify-start space-x-2 bg-red-500 rounded p-1 px-2"
                       >
                         <ChevronDoubleLeftIcon className="w-4 h-4 text-white" />
                         <span className="text-medium font-semibold text-white">
-                        Basic Details
+                          Basic Details
                         </span>
                       </button>
                       <button
@@ -916,7 +918,7 @@ const CommUnit = (props) => {
                         className="flex items-center justify-end space-x-2 bg-green-500 rounded p-1 px-2"
                       >
                         <span className="text-medium font-semibold text-white">
-                        Save Changes
+                          Save Changes
                         </span>
                         <ChevronDoubleRightIcon className="w-4 h-4 text-white" />
                       </button>
@@ -953,7 +955,7 @@ const CommUnit = (props) => {
                         onChange={(e) =>
                           setSelectedServices([
                             ...selectedServices,
-                            {  health_unit: cu?.id,service: e.value,name:e.label },
+                            { health_unit: cu?.id, service: e.value, name: e.label },
                           ])
                         }
                         name="services"
@@ -1018,7 +1020,7 @@ const CommUnit = (props) => {
                       </tbody>
                     </table>
                     <div className="flex justify-between items-center w-full">
-                    <button
+                      <button
                         type="submit"
                         className="flex items-center justify-start space-x-2 bg-red-500 rounded p-1 px-2"
                       >
@@ -1101,7 +1103,7 @@ CommUnit.getInitialProps = async (ctx) => {
         });
 
         let service_categories = await service_response.json();
-        console.log("Service Categories", service_categories);
+
 
         if (service_categories.error) {
           throw new Error("Error fetching the service categories");
@@ -1174,7 +1176,6 @@ CommUnit.getInitialProps = async (ctx) => {
           })
             .then((r) => r.json())
             .then((json) => {
-              console.log(json);
               return {
                 data: json,
               };

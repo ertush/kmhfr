@@ -25,7 +25,7 @@ const Home = (props) => {
 
 	
 	useEffect(() => {
-		// console.log({filters})
+		
 		let qry = props?.query;
 		delete qry.searchTerm;
 		delete qry.qf
@@ -365,7 +365,7 @@ const Home = (props) => {
 						</div>
 					</div>
 					
-					{/* (((((( Floating div at bottom right of page */}
+					{/*  Floating div at bottom right of page */}
 
 					<div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
 						<h5 className='text-sm font-bold'>

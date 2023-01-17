@@ -16,25 +16,10 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
 const ByOwner = (props) => {
-    // require('ag-grid-enterprise')
+   
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
-    // const LinkCellRenderer = (params) =>{
-    //     console.log({params})
-    //     let query = null
-    //     props.current_url.includes('facility_count_by_county') ? query = { id: params.data.area_id, type:'facility_count_by_county',level:'ward' } 
-    //     : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count', level: 'ward'} 
-    //     : props.current_url.includes('beds_and_cots_by_keph_level') ?  query={ id: params.data.keph_level, level: 'ward', type: 'individual_facility_beds_and_cots', name: params.data.keph_level_name } 
-    //     : query= {id: params.data.ward}
-
-
-    //     return(
-    //         <Link
-    //         href={{ pathname: `/reports/by_facility/`,
-    //         query: query}}
     
-    //         ><a>{params.value}</a></Link>
-    //     )}
 
     const [columns, setColumns]= useState([
         {headerName: "Owner", field: "owner_name"}, /*cellRenderer: "LinkCellRenderer"*/
@@ -252,7 +237,7 @@ const ByOwner = (props) => {
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
                       
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
-                            {console.log({filtered, columns})}
+                           
                                 
                                 <AgGridReact
                                     rowStyle={{width: '100vw'}}
@@ -295,7 +280,7 @@ const ByOwner = (props) => {
 
 
 
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -304,7 +289,7 @@ const ByOwner = (props) => {
                             For testing reasons, downloads are limited to the first 1000 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
             </MainLayout >
         </div>
@@ -338,11 +323,11 @@ ByOwner.getInitialProps = async (ctx) => {
         
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
-            console.log({page:ctx.query.page})
+       
             url = `${url}&page=${ctx.query.page}`
         }
 
-        console.log({url})
+    
         
         try {
             const r = await fetch(url, {

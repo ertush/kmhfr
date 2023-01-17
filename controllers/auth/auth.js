@@ -45,7 +45,7 @@ const getToken = (req, res, refresh_token, creds) => {
     bod.client_id = process.env.CLIENT_ID
     bod.client_secret = process.env.CLIENT_SECRET
 
-    console.log({ token_url: process.env.TOKEN_URL })
+  
     return fetch(process.env.TOKEN_URL, {
         'method': 'POST',
         'headers': {

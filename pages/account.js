@@ -8,7 +8,7 @@ import { Dialog} from '@headlessui/react'
 import { UserContext } from '../providers/user';
 import Link from 'next/link'
 
-const Account = (props) => {
+const Account = () => {
     const [user, setUser] = useState(null)
     const [showEditBasic, setShowEditBasic] = useState(false)
     const [showEditContacts, setShowEditContacts] = useState(false)
@@ -43,7 +43,7 @@ const Account = (props) => {
             }
         }
         
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       
         let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
         let session_token = null
         if (is_user_logged_in) {
@@ -65,7 +65,7 @@ const Account = (props) => {
                 }
             })
         }
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      
     }, [])
     return (
         <div className="">
@@ -249,7 +249,7 @@ const Account = (props) => {
                                             </div> : ""
                                         ))}
                                     </div>
-                                    {/* <small>{JSON.stringify(userContact, null, 2)}</small> */}
+                                  
                                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
                                         <h3 className="text-lg leading-tight underline text-gray-700 font-medium">Location:</h3>
                                         <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -359,9 +359,7 @@ const Account = (props) => {
                                                                             }
                                                                         }} />
                                                                     </div>
-                                                                    {/* <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
-                                                                        <input type="submit" value="Save new contact" className="bg-black text-white rounded py-2 px-4 text-base font-medium hover:text-green-300" />
-                                                                    </div> */}
+                                                                 
                                                                 </form>
 
                                                                 <div className="flex flex-wrap gap-3 items-center justify-around w-full">

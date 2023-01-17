@@ -809,7 +809,7 @@ const EditFacility = (props) => {
         }
 
         if(regulatoryBodyRef.current ){
-            console.log({regBodyOptions, regulatory_body})
+            
             regulatoryBodyRef.current.state.value = regBodyOptions.filter(({value}) => value === regulatory_body)[0] || ''
         }
 

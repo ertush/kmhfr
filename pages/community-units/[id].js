@@ -202,7 +202,7 @@ const CommunityUnit = (props) => {
                   {"Approve/Reject"}
                 </button>}
                 <button
-                  onClick={() => console.log(cu.name)}
+                  onClick={() => null}
                   className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
                 >
                   Print

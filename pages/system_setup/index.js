@@ -194,7 +194,7 @@ const system_setup = (props) => {
                         { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                     ])
                     
-                    // console.log({data: _data.results});
+                   
                     setRows(Array.from(_data.results, ({id, name, category_name, numbers}) => ({id, name, category_name, numbers})))
                   }
                   else{
@@ -235,7 +235,7 @@ const system_setup = (props) => {
                                 { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                             ])
                             
-                            console.log({data:_data.results})
+                          
 
                             setRows(Array.from(_data.results, ({id, name, description}) => ({id, name, description})))
                             break;
@@ -250,7 +250,7 @@ const system_setup = (props) => {
                                         { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                                     ])
                                     
-                                    // console.log({data:_data.results})
+                                    
                                     setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
                                     break;
 
@@ -261,7 +261,7 @@ const system_setup = (props) => {
                                         { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                                     ])
 
-                                    // console.log({data:_data.results})
+                                   
                                     setRows(Array.from(_data.results, ({id, name, sub_division}) => ({id, name, sub_division})))
                                     break;  
 
@@ -276,7 +276,7 @@ const system_setup = (props) => {
                                 { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                             ])
                             
-                            console.log({data:_data.results})
+                          
 
                             setRows(Array.from(_data.results, ({id, name, is_public_visible}) => ({id, name, is_public_visible:is_public_visible ? 'Yes' : 'No'})))
 
@@ -288,7 +288,7 @@ const system_setup = (props) => {
                                 { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                             ])
                             
-                            console.log({data:_data.results})
+                         
 
                             setRows(Array.from(_data.results, ({id, name, is_public_visible}) => ({id, name, is_public_visible:is_public_visible ? 'Yes' : 'No'})))
                             break;
@@ -302,7 +302,7 @@ const system_setup = (props) => {
                                 { id: 'created', label: 'Date', minWidth: 100 },
                                 
                             ])
-                            // console.log({data:_data.results})
+                           
 
                             setRows(Array.from(_data.results, ({id, facility_name, service_name, comment, rating, date}) => ({id, facility_name, service_name, comment, rating, date})))
                             break;

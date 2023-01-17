@@ -56,7 +56,7 @@ const Gis = (props) => {
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log({ filters });
+
 
   filters["has_edits"] = [{ id: "has_edits", name: "Has edits" }];
   filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }];
@@ -168,7 +168,7 @@ const Gis = (props) => {
   const [toDate, setToDate] = useState("");
 
   const onGridReady = (params) => {
-    console.log({ api: params.api });
+  
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
 
@@ -2159,7 +2159,7 @@ const Gis = (props) => {
           )}
         </>
 
-        {/* (((((( Floating div at bottom right of page */}
+        {/* Floating div at bottom right of page */}
         <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
           <h5 className="text-sm font-bold">
             <span className="text-gray-600 uppercase">Limited results</span>
@@ -2169,7 +2169,7 @@ const Gis = (props) => {
             results.
           </p>
         </div>
-        {/* ))))))) */}
+      
       </MainLayout>
     </div>
   );

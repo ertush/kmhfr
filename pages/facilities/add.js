@@ -300,7 +300,7 @@ function AddFacility(props) {
 	
     useEffect(() => {
 
-		// console.log({props})
+		
 
         const formIdState = window.sessionStorage.getItem('formId');
 
@@ -368,7 +368,7 @@ function AddFacility(props) {
 				let point = turf.point([longitude, latitude]);
 				
 				let polygon = turf.polygon(facilityCoordinates);
-				console.log({facilityCoordinates})
+				
 				let found = turf.booleanPointInPolygon(point, polygon);
 				if(!found){
 					setCoordinatesError(true)
