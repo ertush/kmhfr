@@ -2177,7 +2177,7 @@ const Gis = (props) => {
 
 Gis.getInitialProps = async (ctx) => {
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL || "https://api.kmhfltest.health.go.ke/api";
+    process.env.NEXT_PUBLIC_API_URL
   let host = ctx.req ? ctx.req.headers.host : window.location.hostname;
   let yesItIsUnits =
     (ctx?.query &&
