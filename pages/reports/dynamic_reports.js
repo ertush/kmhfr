@@ -761,15 +761,13 @@ const DynamicReports = (props) => {
                                                                                 // County
                                                                                 case 'county':
                                                                                     const handleCountyCategoryChange = async (ev) => {
-
+                                                                                        let all_sub_counties
                                                     
                                                                                         try{ 
                                                                                             const dataSubCounties = await fetch(`/api/filters/subcounty/?county=${ev.value}`)
-                                                                                            dataSubCounties.json().then(r => {
+                                                                                            dataSubCounties.json().then(async (r) => {
                                                                                                 const optionsSubCounty = []
-
-                                                                                               
-
+     
                                                                                                 r.results.forEach(({id, name}) => {
                                                                                                     optionsSubCounty.push({
                                                                                                         value: id,
@@ -777,21 +775,18 @@ const DynamicReports = (props) => {
                                                                                                     })  
                                                                                                 } )
 
-                                                                                                /* 
-                                                                                                 Fetch All Sub counties for selected county then pass it to value prop below as a string
-                                                                                                 using this url 
-                                                                                                 http://localhost:8000/api/common/sub_counties/?county=95b08378-362e-4bf9-ad63-d685e1287db2&format=json&fields=id
-                                                                                                */
-
-                                                                                                console.log({label: ev.label})
-                                                                                                if(ev.label != 'All' || !ev.value.split(',').length > 1) optionsSubCounty.unshift({
-                                                                                                    value:'@',
+                                                                                                if(optionsSubCounty.length > 0 ){
+                                                                                                    all_sub_counties = (await (await fetch(`/api/common/fetch_form_data/?path=sub_counties&id=${ev.value}`)).json()).results
+                                                                                                }
+          
+                                                                                                if(ev.label != 'All' && all_sub_counties) optionsSubCounty.unshift({
+                                                                                                    value: all_sub_counties.map(({id}) => id).join(','),
                                                                                                     label:'All'
                                                                                                 })
                                                                                             
 
                                                                                             // sub county    
-
+                                                                                           console.log({optionsSubCounty})
                                                                                         setSubCountyOptions(optionsSubCounty)
                                                                                         setIsSubCountyOptionsUpdate(!isSubCountyOptionsUpdate)
 
@@ -912,42 +907,56 @@ const DynamicReports = (props) => {
                                                                                 // Sub County
                                                                                 case 'sub_county':
                                                                                     const handleSubCountyChange = async (ev) => {
+                                                                                        let all_wards
 
-                                                                                        try{ 
-                                                                                            const dataConstituencies = await fetch(`/api/filters/ward/?sub_county=${ev.value}`)
-                                                                                            dataConstituencies.json().then(r => {
-                                                                                                const optionsWard = []
-                                                                                            
-                                                                                                r.results.forEach(({id, name}) => { 
-                                                                                                    optionsWard.push({
-                                                                                                        value: id,
-                                                                                                        label: name
-                                                                                                    })  
-                                                                                                } )
-                                                                                            
-
-                                                                                            // sub county    
-
-                                                                                        setWardOptions(optionsWard)
-                                                                                        setIsWardOptionsUpdate(!isWardOptionsUpdate)
-
-                                                                                        let nf = {}
-                                                                                        if (Array.isArray(ev)) {
-                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
-                                                                                        } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
-                                                                                            nf[ft] = ev.value
-                                                                                        } else {
-                                                                                            delete nf[ft]
-                                                                                            
-                                                                                        }
-                                                                                        setDrillDown({ ...drillDown, ...nf })
-
-                                                                                        })
-
-        
-                                                                                        }
-                                                                                        catch(e) {
+                                                                                        try{
+                                                                                            all_wards = (await (await fetch(`/api/common/fetch_form_data/?path=wards&id=${ev.value}`)).json()).results
+                                                                                        }catch(e){
                                                                                             console.error(e.message)
+                                                                                        }
+
+                                                                                        if(ev.label !== 'All'){
+                                                                                            try{ 
+                                                                                                const dataConstituencies = await fetch(`/api/filters/ward/?sub_county=${ev.value}`)
+                                                                                                dataConstituencies.json().then(r => {
+                                                                                                    const optionsWard = []
+                                                                                                
+                                                                                                    r.results.forEach(({id, name}) => { 
+                                                                                                        optionsWard.push({
+                                                                                                            value: id,
+                                                                                                            label: name
+                                                                                                        })  
+                                                                                                    } )
+                                                                                                
+
+                                                                                                // sub county
+                                                                                                
+                                                                                                if((ev.label != 'All' || !ev.value.split(',').length > 1) && all_wards) optionsWard.unshift({
+                                                                                                    value: all_wards.map(({id}) => id).join(','),
+                                                                                                    label:'All'
+                                                                                                })
+
+                                                                                            setWardOptions(optionsWard)
+                                                                                            setIsWardOptionsUpdate(!isWardOptionsUpdate)
+
+                                                                                            let nf = {}
+                                                                                            if (Array.isArray(ev)) {
+                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                            } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                                nf[ft] = ev.value
+                                                                                            } else {
+                                                                                                delete nf[ft]
+                                                                                                
+                                                                                            }
+                                                                                            setDrillDown({ ...drillDown, ...nf })
+
+                                                                                            })
+
+            
+                                                                                            }
+                                                                                            catch(e) {
+                                                                                                console.error(e.message)
+                                                                                            }
                                                                                         }
 
                                                                                     }
@@ -964,7 +973,7 @@ const DynamicReports = (props) => {
                                                                                         
                                                                                             {
                                                                                                 value: drillDown[ft] || dr?.sub_county || '', 
-                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
+                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || 'All' || ''
                                                                                             }
                                                                                         }
                                                                                         placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -977,6 +986,7 @@ const DynamicReports = (props) => {
                                                                                 case 'constituency':
                                                                                     const handleConstituencyChange = async (ev) => {
 
+                                                                                        if(ev.label !== 'All'){
                                                                                         try{ 
                                                                                             const dataConstituencies = await fetch(`/api/filters/ward/?sub_county=${ev.value}`)
                                                                                             dataConstituencies.json().then(r => {
@@ -1013,6 +1023,7 @@ const DynamicReports = (props) => {
                                                                                         catch(e) {
                                                                                             console.error(e.message)
                                                                                         }
+                                                                                    }
 
                                                                                     }
                                                                                 
@@ -1027,7 +1038,7 @@ const DynamicReports = (props) => {
                                                                                         
                                                                                                 {
                                                                                                     value: drillDown[ft] || dr?.sub_county || '', 
-                                                                                                    label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
+                                                                                                    label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || 'All' || ''
                                                                                                 }
                                                                                             }
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -1050,7 +1061,7 @@ const DynamicReports = (props) => {
                                                                                         
                                                                                                     {
                                                                                                         value: drillDown[ft] || dr?.ward || '',
-                                                                                                        label: filters[ft].find(ct=> ct.id == drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.ward)?.name || ''
+                                                                                                        label: filters[ft].find(ct=> ct.id == drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.ward)?.name || 'All' || ''
                                                                                                     }
                                                                                                 }
                                                                                                 placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
