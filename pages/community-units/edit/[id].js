@@ -803,11 +803,11 @@ const CommUnit = (props) => {
                         contactCHEW.map((contact, index) => {
                           return (
                             <div
-                              className="grid grid-cols-4 place-content-start gap-3 w-full"
+                              className="flex flex-row items-center justify-between md:mx-1 gap-4 w-full"
                               key={`${contact}~${index}`}
                             >
                               {/* First Name */}
-                              <div className="col-start-1 col-span-1">
+                              <div className="flex-col gap-2">
                                 <label
                                   htmlFor="first_name"
                                   start
@@ -826,7 +826,7 @@ const CommUnit = (props) => {
                                 />
                               </div>
                               {/* Second Name */}
-                              <div className="col-start-2 col-span-1">
+                              <div className="flex-col gap-2">
                                 <label
                                   htmlFor="last_name"
                                   className="block text-sm font-medium text-gray-700"
@@ -844,7 +844,7 @@ const CommUnit = (props) => {
                                 />
                               </div>
                               {/* In charge */}
-                              <div className="col-start-3 col-span-1">
+                              <div className="flex-col gap-2">
                                 <label
                                   htmlFor="is_incharge"
                                   className="block text-sm font-medium text-gray-700"
@@ -863,7 +863,7 @@ const CommUnit = (props) => {
 
                               {/* Delete CHEW */}
 
-                              <div className="col-start-4 col-span-1">
+                              <div className="flex-col gap-2">
                                 <div className="flex items-center">
                                   {/* insert red button for deleting */}
                                   <button

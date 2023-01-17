@@ -553,11 +553,10 @@ const AddCommunityUnit = (props) => {
 															</label>
 															<input
 																required
-																type='number'
+																type='text'
 																name='location'
 																id='location'
 																placeholder='Description of the area of coverage'
-																min={0}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -825,7 +824,8 @@ const AddCommunityUnit = (props) => {
 											const handleServiceSubmit = (stateSetters, chulId) => {
 
 												const [services, setFormId, setServices] = stateSetters
-												const _payload = services.map(({ value }) => ({ service: value }))
+												console.log({services});
+												const _payload = services.map(({ id }) => ({ service: id }))
 
 												_payload.forEach(obj => obj['health_unit'] = chulId)
 
