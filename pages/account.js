@@ -1,14 +1,12 @@
 import Head from 'next/head'
 import * as Tabs from '@radix-ui/react-tabs';
-import { checkToken, getUserContacts } from '../controllers/auth/auth'
+import { getUserContacts } from '../controllers/auth/auth'
 import React, { useState, useEffect, useContext } from 'react';
 import MainLayout from '../components/MainLayout'
-import { CheckCircleIcon, InformationCircleIcon, LocationMarkerIcon, LockClosedIcon, XCircleIcon, XIcon } from '@heroicons/react/solid'
-import { ArrowsExpandIcon } from '@heroicons/react/outline'
-import dynamic from 'next/dynamic'
-import { Dialog, Transition } from '@headlessui/react'
+import { CheckCircleIcon, XCircleIcon, XIcon } from '@heroicons/react/solid'
+import { Dialog} from '@headlessui/react'
 import { UserContext } from '../providers/user';
-import {Link} from 'next/link'
+import Link from 'next/link'
 
 const Account = (props) => {
     const [user, setUser] = useState(null)

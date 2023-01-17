@@ -2,7 +2,7 @@ import React from 'react';
 
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-// require('highcharts/modules/exporting')(Highcharts);
+
 
 
 
@@ -64,12 +64,8 @@ const BarChart = props => {
             className="flex flex-col items-start justify-center p-2 w-full"
         >
             <hr className="my-2 border-b border-gray-300" />
-            {/* <p>
-                {props.title.includes('wner') && <pre>
-                    {JSON.stringify(props, null, 2)}
-                </pre>}
-            </p> */}
-            <div className="flex flex-col items-center justify-center w-full p-2 rounded bg-white shadow" style={{minHeight: '350px'}}>
+          
+            <div className="flex flex-col items-center justify-center w-full p-2 rounded bg-white shadow" style={{ minHeight: '350px' }}>
                 <div className="w-full p-0">
                     {props.data.length <= 0 ? (
                         <div className="p-2 bg-blue-200 border rounded border-blue-600 shadow-sm">
