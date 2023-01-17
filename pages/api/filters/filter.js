@@ -14,7 +14,7 @@ export default async function filterReport(req, res) {
             return er
         }).join('&')
 
-        const url = `${API_URL}/facilities/facilities/?${qry}&fields=${req.query.fields}&page_size=16000`
+        const url = `${API_URL}/facilities/facilities/?${qry}&fields=${req.query.fields}&page_size=100`
 
 
 
