@@ -824,7 +824,6 @@ const AddCommunityUnit = (props) => {
 											const handleServiceSubmit = (stateSetters, chulId) => {
 
 												const [services, setFormId, setServices] = stateSetters
-												console.log({services});
 												const _payload = services.map(({ id }) => ({ service: id }))
 
 												_payload.forEach(obj => obj['health_unit'] = chulId)
