@@ -1,13 +1,16 @@
+const FormData = require('form-data');
 const Cookies = require('cookies')
 const cookieCutter = require('cookie-cutter')
-
+// require('dotenv').config({ path: `${__dirname}/../../.env.local` })
 
 const getToken = (req, res, refresh_token, creds) => {
     const cookies = new Cookies(req, res)
     console.log('running getToken')
+    // console.log('------------getToken: ', creds)
     const isServer = !!req
     const isBrowser = !req
-    const bod = {}
+    const bod = {} //new FormData();
+    let ct
     if (isBrowser) {
         console.log('running getToken in the BROWSER')
         ct = cookieCutter.get('access_token')
@@ -19,7 +22,7 @@ const getToken = (req, res, refresh_token, creds) => {
             return ct
         } else {
             console.log('Refreshing the page...')
-
+            // window.location.reload()
         }
     } else if (isServer) {
         console.log('running getToken in the SERVER')
@@ -45,13 +48,13 @@ const getToken = (req, res, refresh_token, creds) => {
     bod.client_id = process.env.CLIENT_ID
     bod.client_secret = process.env.CLIENT_SECRET
 
-  
+    console.log({token_url: process.env.TOKEN_URL})
     return fetch(process.env.TOKEN_URL, {
         'method': 'POST',
         'headers': {
             "Accept": "application/json",
             'cache-control': "no-cache",
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/x-www-form-urlencoded", //"multipart/form-data; boundary=---011000010111000001101001",
             "Authorization": "Basic " + Buffer.from(process.env.CLIENT_ID + ":" + process.env.CLIENT_SECRET).toString('base64')
         },
         'body': new URLSearchParams(bod).toString() //bod
@@ -59,7 +62,7 @@ const getToken = (req, res, refresh_token, creds) => {
         .then(rs => rs.json())
         .then(response => {
             let tk = response;
-
+            ////
             if (tk && tk.access_token && tk.expires_in && tk.access_token.length > 0) {
                 console.log('Token refreshed.')
                 let expiry = new Date(new Date().getTime() + (parseInt(tk.expires_in) * 1000))
@@ -84,11 +87,11 @@ const getToken = (req, res, refresh_token, creds) => {
                 } else if (isServer) {
                     cookies.set('access_token', "{}", { expires: new Date(0), maxAge: 0, overwrite: true, httpOnly: false })
                 }
-
+                // res.redirect('/auth/login?was='+req.url+'&h=0')
                 return { error: true, ...tk };
             }
         }).then(json => {
-
+            // console.log('New token: ', json)
             return json;
         }).catch(err => {
             console.log('Error in getToken: ', err)
@@ -99,20 +102,20 @@ const getToken = (req, res, refresh_token, creds) => {
 const checkToken = async (req, res, isProtected, creds) => {
     const cookies = new Cookies(req, res)
     let crds = creds || null
-
+    // console.log('------------checkToken: ', creds)
     const isServer = !!req
     const isBrowser = !req
     let ct
     if (isBrowser && typeof window != "undefined") {
         console.log('running checkToken in the BROWSER')
         ct = cookieCutter.get('access_token')
-
+        // console.log("B checkToken ct == ", ct)
         if (ct && ct != null && ct != undefined && new Date(ct.expires) > Date.now()) {
-            console.log('B Token is valid')
+            console.log('B Token is valid')//: ', ct)
             return ct
         } else {
             console.log('Refreshing entire page...')
-
+            // window.location.reload()
         }
     } else if (isServer) {
         console.log('running checkToken in the SERVER')
@@ -120,9 +123,9 @@ const checkToken = async (req, res, isProtected, creds) => {
         if (typeof ct == "string") {
             ct = JSON.parse(ct)
         }
-
+        // console.log("S checkToken ct == ", ct)
         if (ct && ct != null && ct != undefined && new Date(ct.expires) > Date.now()) {
-            console.log('S Token is valid')
+            console.log('S Token is valid')//: ', ct)
             return ct
         }
     }
@@ -130,12 +133,12 @@ const checkToken = async (req, res, isProtected, creds) => {
     if (!ct || ct == null || ct == undefined || (ct && JSON.parse(ct).expires > Date.now())) {
         console.log('Token expired. Refreshing...')
         if (req && req.asPath != '/api/login' && req.asPath != '/auth/login') {//check if protected page too
-
+            // res.writeHead(301, { Location: '/auth/login?was=' + req.asPath + '&h=1' })
             console.log('page not protected')
             res.writeHead(301, { Location: '/auth/login?was=' + encodeURIComponent(req.url) + '&h=1' })
             res.end()
             return { error: true, message: 'Token expired. Refreshing...' }
-        } else if (!req || typeof window != "undefined") {
+        }else if(!req || typeof window != "undefined"){
             window.location.href = '/auth/login?h=1'
         }
         let refresh_token
@@ -148,7 +151,7 @@ const checkToken = async (req, res, isProtected, creds) => {
                 return tkn;
             } else {
                 console.log('Error refreshing token: ', tk)
-
+                // res.redirect('/auth/login?was='+encodeURIComponent(req.url))
                 return { error: true, ...tk };
             }
         })
@@ -160,7 +163,8 @@ const checkToken = async (req, res, isProtected, creds) => {
 }
 
 const logUserIn = (req, res, creds, was) => {
-
+    // console.log({creds})
+    // console.log('------------logUserIn: ', creds)
     return getToken(req, res, null, creds).then(tk => {
         if (tk.error) {
             console.log('Error in LogIn: ', tk)
@@ -186,7 +190,7 @@ const getUserDetails = async (token, url) => {
             console.log('Saved session: ', savedSession)
             return savedSession
         }
-
+        // console.log('W getUserDetails URL: ',url)
     }
 
     return fetch(url, {
@@ -199,7 +203,7 @@ const getUserDetails = async (token, url) => {
     })
         .then(j => j.json())
         .then(response => {
-
+            // console.log('=================== getUserDetails returned: ', response)
             if (response.detail || response.error) {
                 console.log('Error in getUserDetails: ', response)
                 return {
@@ -207,7 +211,7 @@ const getUserDetails = async (token, url) => {
                 }
             }
             if (typeof window !== "undefined") {
-
+                // console.log('getUserDetails returning ', response)
                 window.sessionStorage.setItem('user', JSON.stringify(response))
             }
             return response
@@ -231,7 +235,7 @@ const getUserContacts = async (token, url) => {
     })
         .then(j => j.json())
         .then(response => {
-
+            // console.log('=================== getUserContacts returned: ', response)
             if (response.detail || response.error) {
                 console.log('Error in getUserContacts: ', response)
                 return {
@@ -255,13 +259,13 @@ const saveUser = async (token, url, payload) => {
             'headers': {
                 "Accept": "application/json",
                 'cache-control': "no-cache",
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/x-www-form-urlencoded", //"multipart/form-data; boundary=---011000010111000001101001",
                 "Authorization": "Bearer " + token
             },
             'body': payload
         }).then(j => j.json())
             .then(response => {
-
+                // console.log('=================== saveUser returned: ', response)
                 if (response.detail || response.error) {
                     console.log('Error in saveUser: ', response)
                     return {
