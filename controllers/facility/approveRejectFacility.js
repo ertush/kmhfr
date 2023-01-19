@@ -7,9 +7,9 @@ const validateRejectFacility = (facility_id, reject, comment, alert) => {
 
 
     if (comment && !reject) {
-        alert.success("Facility validated successfully")
-    } else {
         alert.success("Facility rejected successfully")
+    } else {
+        alert.success("Facility validated successfully")
     }
 
 

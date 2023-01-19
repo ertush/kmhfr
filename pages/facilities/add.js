@@ -31,7 +31,8 @@ import {
 	ChevronDoubleLeftIcon,
 	PlusIcon,
 } from '@heroicons/react/solid';
-import { XCircleIcon } from '@heroicons/react/outline';
+// import { XCircleIcon } from '@heroicons/react/outline';
+import FacilityDeptRegulationFactory from '../../components/generateFacilityDeptRegulation'
 
 // Package imports
 import Select from 'react-select';
@@ -255,6 +256,7 @@ function AddFacility(props) {
 	const openNormalDayRef = useRef(null)
 	const openPublicHolidaysRef = useRef(null)
 	const openWeekendsRef = useRef(null)
+	const _regBodyRef = useRef(null)
 
   
 
@@ -295,17 +297,18 @@ function AddFacility(props) {
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('');
 	const [is24hrsOpen, setIs24hrsOpen] = useState(false)
+	const [isRegBodyChange, setIsRegBodyChange] = useState(false)
+	const [facilityDepts, setFacilityDepts] = useState([0])
 	const filters = []
 	
 	
     useEffect(() => {
 
 		
-
         const formIdState = window.sessionStorage.getItem('formId');
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
-            window.sessionStorage.setItem('formId', 5); //0
+            window.sessionStorage.setItem('formId', 0); //0 set form to basic details
         }
         
         setFormId(window.sessionStorage.getItem('formId'));
@@ -423,6 +426,8 @@ function AddFacility(props) {
 			openWeekendsRef.current.checked = false
 		}
 	}, [is24hrsOpen])
+
+	useEffect(() => {console.log({facilityDepts})}, [isRegBodyChange, facilityDepts])
 	
 	
   return (
@@ -627,7 +632,7 @@ function AddFacility(props) {
 																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 																					return [
 																						facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
-																						facilityTypeOptions.filter(({label}) => label == 'Comprehensive health Centre')[0] || {}
+																						facilityTypeOptions.filter(({label}) => label == 'Comprehensive Health Centre')[0] || {}
 																						]
 
 																				case 'MEDICAL CENTRE':
@@ -809,7 +814,10 @@ function AddFacility(props) {
 																					ownerOptions.filter(({label}) => label == "Public Institution - Parastatal")[0] || {},
 																					ownerOptions.filter(({label}) => label == 'Ministry of Health')[0] || {},
 																					ownerOptions.filter(({label}) => label == 'Armed Forces')[0] || {},
-																					ownerOptions.filter(({label}) => label == 'Public Institution - Academic')[0] || {},
+																					ownerOptions.filter(({label}) => label == 'Kenya Police Service')[0] || {},
+																					ownerOptions.filter(({label}) => label == 'National Youth Service')[0] || {},
+																					ownerOptions.filter(({label}) => label == 'Prisons')[0] || {}
+
 																				]																				
 																				
 																			case 'Faith Based Organization':																		
@@ -843,6 +851,7 @@ function AddFacility(props) {
 																<Select
 																	ref={kephLvlRef}
 																	options={kephOptions ?? []}
+																	isOptionDisabled={(option) => true}
 																	placeholder='Select a KEPH Level..'
 																	name='keph_level'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -854,7 +863,7 @@ function AddFacility(props) {
 																<label
 																	htmlFor='number_of_beds'
 																	className='text-gray-600 capitalize text-sm'>
-																	Number of functional general beds
+																	Total Functional In-patient beds
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
 																		*
@@ -1028,11 +1037,11 @@ function AddFacility(props) {
 																	Facility Catchment Population
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
-																		*
+																		
 																	</span>
 																</label>
 																<input
-																	required
+																	
 																	type='number'
 																	name='facility_catchment_population'
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -2055,8 +2064,14 @@ function AddFacility(props) {
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																	<label htmlFor="regulatory_body" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
 																	<Select 
-																		options={regBodyOptions || []} 
+																		ref={_regBodyRef}
+																		options={((regOptions) => {
+
+																			return regOptions.filter(({label}) => !(label === 'Other'))
+
+																		})(regBodyOptions || [])} 
 																		required
+																		onChange={() => setIsRegBodyChange(!isRegBodyChange)}
 																		placeholder="Select Regulatory Body"
 																		name='regulatory_body'
 																		className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
@@ -2067,7 +2082,25 @@ function AddFacility(props) {
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																<label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
 																<Select 
-																		options={regulationStateOptions || []} 
+																		options={((regStateOpts) => {
+																			
+																				let filteredRegState
+																				if(_regBodyRef.current){
+																				
+																					if(_regBodyRef.current?.state?.value?.label == 'Ministry of Health'){
+																						filteredRegState = regStateOpts.filter(({label}) => !(label.match(/.*Gazett.*/) !== null))		
+																					}
+																					else {
+																						filteredRegState = regStateOpts
+																					}
+																				} 
+																				else{
+																					filteredRegState = regStateOpts
+																				}
+	
+																				return filteredRegState
+																				
+																		})(regulationStateOptions || [])} 
 																		required
 																		placeholder="Select Regulation Status"
 																		name='regulation_status'
@@ -2109,7 +2142,7 @@ function AddFacility(props) {
 
 																
 																{/* Name */}
-																<Select options={facilityDeptOptions || []} 
+																{/* <Select options={facilityDeptOptions || []} 
 																	required
 																	placeholder="Select Name"
 																	onChange={
@@ -2121,24 +2154,42 @@ function AddFacility(props) {
 																		}
 																	}
 																	name="facility_dept_name" 
-																	className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+																	className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> */}
 																
 																{/* Regulatory Body */}
-																<input type="text" disabled ref={regBodyRef} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																{/* <input type="text" disabled ref={regBodyRef} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
 
 																{/* License No. */}
-																<input type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																{/* <input type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
 										
-																<div className='col-start-4 flex items-center space-x-2 w-full'>
+																{/* <div className='col-start-4 flex items-center space-x-2 w-full'> */}
 																	{/* Reg No. */}
-																	<input type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																	{/* <input type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
 																
 																	{/* Delete Btn */}
 
-																	<button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
-																</div>
+																	{/* <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button> */}
+																{/* </div> */}
+
+															
 
 																{/* add other fields */}
+															    <div className='flex-col items-start justify-start gap-y-4'>
+																	{
+																		facilityDepts.map((_, i) => (
+																			<FacilityDeptRegulationFactory
+																			key={i}
+																			index={i}
+																			facilityDepts={facilityDepts}
+																			isRegBodyChange={isRegBodyChange}
+																			setIsRegBodyChange={setIsRegBodyChange}
+																			setFacilityDepts={setFacilityDepts}
+																			facilityDeptOptions={facilityDeptOptions}
+																		/>
+																		))
+																	}
+																</div>	
+																
 															
 																
 															</div>
@@ -2146,7 +2197,7 @@ function AddFacility(props) {
 														
 															{/* Add btn */}
 															<div className='w-full flex justify-end items-center mt-2'>
-																<button onClick={handleAddRegulatoryBody} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+																<button onClick={(e) => {e.preventDefault();  setFacilityDepts([...facilityDepts, (facilityDepts[facilityDepts.length - 1] + facilityDepts.length)])}} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																	<PlusIcon className='w-4 h-4 text-white'/>
 																	<p className='text-medium font-semibold text-white'>Add</p>
 																</button>
