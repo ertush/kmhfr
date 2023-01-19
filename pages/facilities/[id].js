@@ -30,9 +30,15 @@ import {Formik, Form, Field} from 'formik'
 import Typography from '@mui/material/Typography';
 import FacilitySideMenu from "../../components/FacilitySideMenu";
 import { Table, TableBody, TableCell, TableRow } from "@mui/material";
+import { PermissionContext } from "../../providers/permissions";
+import { hasApproveRejectPermissions } from "../../utils/checkPermissions";
 
 
 const Facility = (props) => {
+
+  const userPermissions = useContext(PermissionContext)
+  // console.log({userPermissions, can_approve_rejetc_facility: hasApproveRejectPermissions(/^facilities.change_facilityapproval$/, userPermissions)})
+
   const Map = dynamic(
     () => import("../../components/Map"), // replace '@components/map' with your component's location
     {
@@ -50,7 +56,7 @@ const Facility = (props) => {
   const wardName = props["0"]?.data.ward_name;
   const center = props["1"]?.geoLocation.center;
   const geoLocationData = props["1"]?.geoLocation;
-  const {facility_updated_json } = props["2"]?.updates;
+  // const {facility_updated_json } = props["2"]?.updates;
   const filters = props["3"]?.filters ?? []
 
 
@@ -296,6 +302,10 @@ const Facility = (props) => {
             {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <div className="flex flex-row justify-start items-center space-x-3 p-3">
+
+                {/* Render button conditionally */}
+                {
+                  hasApproveRejectPermissions(/^facilities.change_facilityapproval$/, userPermissions) &&
                 <button
                   onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
                   className={
@@ -308,6 +318,7 @@ const Facility = (props) => {
     
                   Approve/Reject Facility
                 </button>
+                } 
 
                 <button
                   onClick={() => console.log(props.data)}
