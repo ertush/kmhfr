@@ -41,11 +41,19 @@ const hasGISPermissions = (searchTerm, permissions) => {
     return found.length > 0
 }
 
+const hasApproveRejectPermissions =  (searchTerm, permissions) => {
+
+    const found = permissions ? permissions.filter(permission => permission.match(searchTerm) !== null) : []
+
+    return found.length > 0
+}
+
 
 export {
     hasUsersPermission,
     hasSystemSetupPermissions,
     hasAdminOfficesPermissions,
-    hasGISPermissions
+    hasGISPermissions,
+    hasApproveRejectPermissions
     
 }
