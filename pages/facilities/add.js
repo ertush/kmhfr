@@ -35,8 +35,9 @@ import {
 import FacilityDeptRegulationFactory from '../../components/generateFacilityDeptRegulation'
 
 // Package imports
-// import Select from 'react-select';
-const Select = dynamic(import('react-select'), { ssr: false })
+
+import Select from 'react-select';
+// const Select = dynamic(import('react-select'), { ssr: false })  // This import prevents refs from loading but fixes the server, client side mismatch warning
 
 
 import { 

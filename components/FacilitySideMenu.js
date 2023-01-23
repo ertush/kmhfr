@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import router from 'next/router'
+import { hasApproveRejectPermissions } from '../utils/checkPermissions';
+import { PermissionContext } from '../providers/permissions';
 
 function FacilitySideMenu({ states, stateSetters, filters }) {
+
+    const userPermissions = useContext(PermissionContext)
+
+    console.log({userPermissions})
 
     const quickFilters = [
         {
@@ -299,6 +305,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 </ListItemButton>
 
                 {/* Facilities Pending Approval  */}
+                {
+
+                 hasApproveRejectPermissions(/^facilities.delete_facilityapproval$/, userPermissions) && // confirm permission
+                 
                 <ListItemButton sx={{ backgroundColor: (facilitiesPendingApproval || pathId === 'to_publish') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
                         setTitle('Facilities Pending Approval')
@@ -322,8 +332,12 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 >
                     <ListItemText primary="Facilities Pending Approval" />
                 </ListItemButton>
+                }
 
                 {/* Approved DHIS Synced Facilities */}
+                {
+                    hasApproveRejectPermissions(/^facilities.delete_facilityapproval$/, userPermissions) && // confirm permission
+
                 <ListItemButton sx={{ backgroundColor: (DHISSyncedFacilities || pathId === 'dhis_synced_facilities') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
                         setTitle('DHIS Synced Approved Facilities')
@@ -347,6 +361,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 >
                     <ListItemText primary="Approved DHIS Synced Facilities" />
                 </ListItemButton>
+                }
 
                 {/* Failed Validation Facilities */}
                 <ListItemButton sx={{ backgroundColor: (failedValidationFctsSelected || pathId === 'failed_validation') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}

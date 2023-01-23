@@ -315,8 +315,13 @@ const Facility = (props) => {
                 >
 
                 {/*  Dynamic Approve/reject Button  */}
-    
-                  Approve/Reject Facility
+                  
+                    {
+                      facility?.is_approved ?
+                     'Approve/Reject Facility':
+                     'Validate/Reject Facility'
+                    }
+                  
                 </button>
                 } 
 
