@@ -33,7 +33,7 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import { PermissionContext } from '../../providers/permissions';
-import { hasSystemSetupPermissions } from '../../utils/checkPermissions';
+import { hasPermission } from '../../utils/checkPermissions';
 import moment from 'moment'
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
@@ -115,7 +115,7 @@ const system_setup = (props) => {
       };
     
     useEffect(() => {
-        if(!hasSystemSetupPermissions(/^common.add_county$/, userPermissions)){
+        if(!hasPermission(/^common.add_county$/, userPermissions)){
             router.push('/unauthorized')
         }
 

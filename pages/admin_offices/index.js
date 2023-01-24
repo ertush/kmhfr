@@ -1,5 +1,5 @@
 import { PermissionContext } from '../../providers/permissions'
-import { hasAdminOfficesPermissions } from '../../utils/checkPermissions'
+import { hasPermission } from '../../utils/checkPermissions'
 import Link from 'next/link'
 import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect, useContext } from 'react'
@@ -31,7 +31,7 @@ const AdminOffices = (props) => {
 
     useEffect(() => {
 
-        if (hasAdminOfficesPermissions(/^admin_office.view_.*$/, userPermissions)) { // hasAdminOfficesPermissions should be negated with !
+        if (hasPermission(/^admin_office.view_.*$/, userPermissions)) { // hasPermission should be negated with !
             router.push('/unauthorized')
         }
     }, [])

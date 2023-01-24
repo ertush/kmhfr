@@ -8,7 +8,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import DualListBox from 'react-dual-listbox';
 import { useAlert } from "react-alert";
 import { UserContext } from "../../../providers/user";
-import { hasUsersPermission } from '../../../utils/checkPermissions';
+import { hasPermission } from '../../../utils/checkPermissions';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -97,10 +97,10 @@ const EditGroup=(props)=> {
 	}
 
 	useEffect(() => {
-		if(hasUsersPermission(/^auth.add_group$/, userCtx.all_permissions)){
+		if(hasPermission(/^auth.add_group$/, userCtx.all_permissions)){
 			setAddPermission(true)
 		}
-		if(hasUsersPermission(/^auth.delete_group$/, userCtx.all_permissions)){
+		if(hasPermission(/^auth.delete_group$/, userCtx.all_permissions)){
 			setDeletePermission(true)
 		}
 	}, [userCtx])

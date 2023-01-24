@@ -3,7 +3,7 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import router from 'next/router'
-import { hasApproveRejectPermissions } from '../utils/checkPermissions';
+import { hasPermission } from '../utils/checkPermissions';
 import { PermissionContext } from '../providers/permissions';
 
 function FacilitySideMenu({ states, stateSetters, filters }) {
@@ -204,6 +204,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
             >
                 {/* All Facilities */}
+              
                 <ListItemButton sx={{ backgroundColor: (allFctsSelected || pathId === 'all') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }} name="rt"
                     onClick={(ev) => {
                         setTitle('Facilities')
@@ -227,8 +228,12 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 >
                     <ListItemText primary="All Facilities" />
                 </ListItemButton>
+                    
 
                 {/* Approved Facilities */}
+                {
+
+                hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <ListItemButton sx={{ backgroundColor: (approvedFctsSelected || pathId === 'approved') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={(ev) => {
                         setTitle('Approved Facilities')
@@ -253,8 +258,13 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 >
                     <ListItemText primary="Approved Facilities" />
                 </ListItemButton>
+                }
 
                 {/* New Facilities Pending Validation */}
+
+                {
+
+                hasPermission(/^facilities.view_facilityapproval$/, userPermissions) &&
                 <ListItemButton sx={{ backgroundColor: (newFtsSelected || pathId === 'new_pending_validation') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
                         setTitle('Validate New Facilities')
@@ -278,8 +288,12 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 >
                     <ListItemText primary="New Facilities Pending Validation" />
                 </ListItemButton>
+                }
 
                 {/* Update Facilities Pending Validation */}
+                {
+
+                hasPermission(/^facilities.view_facilityapproval$/, userPermissions) &&
                 <ListItemButton sx={{ backgroundColor: (updatedFctsSelected || pathId === 'updated_pending_validation') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
                         setTitle('Validate Updated Facilities')
@@ -303,11 +317,12 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 >
                     <ListItemText primary="Updated Facilities Pending Validation" />
                 </ListItemButton>
+                }
 
                 {/* Facilities Pending Approval  */}
                 {
 
-                 hasApproveRejectPermissions(/^facilities.delete_facilityapproval$/, userPermissions) && // confirm permission
+                 hasPermission(/^facilities.view_facilityapproval$/, userPermissions) && // confirm permission
                  
                 <ListItemButton sx={{ backgroundColor: (facilitiesPendingApproval || pathId === 'to_publish') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
@@ -336,7 +351,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 {/* Approved DHIS Synced Facilities */}
                 {
-                    hasApproveRejectPermissions(/^facilities.delete_facilityapproval$/, userPermissions) && // confirm permission
+                    hasPermission(/^facilities.view_facilityapproval$/, userPermissions) && // confirm permission
 
                 <ListItemButton sx={{ backgroundColor: (DHISSyncedFacilities || pathId === 'dhis_synced_facilities') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
@@ -364,6 +379,9 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 }
 
                 {/* Failed Validation Facilities */}
+                {
+
+                hasPermission(/^facilities.view_rejected_facilities$/, userPermissions) &&
                 <ListItemButton sx={{ backgroundColor: (failedValidationFctsSelected || pathId === 'failed_validation') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
                         setTitle('Failed Validation Facilities')
@@ -386,8 +404,12 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 >
                     <ListItemText primary="Failed Validation Facilities" />
                 </ListItemButton>
+                }
 
                 {/* Rejected Facilities */}
+                {
+
+                hasPermission(/^facilities.view_rejected_facilities$/, userPermissions) &&
                 <ListItemButton sx={{ backgroundColor: (rejectedFctsSelected || pathId === 'rejected') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
                         setTitle('Rejected Facilities')
@@ -410,8 +432,12 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 >
                     <ListItemText primary="Rejected Facilities" />
                 </ListItemButton>
+                }
 
                 {/* Closed Facilities */}
+                {
+
+                hasPermission(/^facilities.view_closed_facilities$/, userPermissions) &&
                 <ListItemButton sx={{ backgroundColor: (closedFctsSelected || pathId == "closed") ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
                         setTitle('Closed Facilities')
@@ -433,10 +459,15 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                     }}
                 >
+                
                     <ListItemText primary="Closed Facilities " />
-                </ListItemButton>
+                </ListItemButton>       
+                }
 
                 {/* Incomplete Facilities */}
+                {
+
+                hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <ListItemButton sx={{ backgroundColor: (incompleteFctsSelected || pathId == "incomplete") ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
                         setTitle('Incomplete Facilities')
@@ -460,9 +491,13 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 >
                     <ListItemText primary="Incomplete Facilities" />
                 </ListItemButton>
+                }
 
                 {/* Synchronize Regulated Facilities */}
-                <ListItemButton sx={{ backgroundColor: (syncRegulatedFctsSelected || pathId == "khis_synched") ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
+                {
+
+              hasPermission(/^facilities.view_facility$/, userPermissions) &&
+               <ListItemButton sx={{ backgroundColor: (syncRegulatedFctsSelected || pathId == "khis_synched") ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
                         setTitle('Synchronize Regulated Facilities')
                         setPathId('khis_synched')
@@ -485,8 +520,12 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 >
                     <ListItemText primary="Synchronize Regulated Facilities" />
                 </ListItemButton>
+                }
 
                 {/* Feedback on Facilities */}
+                {
+
+                hasPermission(/^facilities.view_facilityservicerating$/, userPermissions) &&
                 <ListItemButton sx={{ backgroundColor: (feedBackFctsSelected || pathId == "feedback") ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }}
                     onClick={() => {
                         setTitle('Facilities Feedback From Public')
@@ -511,6 +550,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                     <ListItemText primary="Feedback on Facilities" />
                 </ListItemButton>
+                }
 
             </List>
         </div>

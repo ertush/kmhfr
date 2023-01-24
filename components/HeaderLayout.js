@@ -13,10 +13,7 @@ import { getUserDetails } from "../controllers/auth/auth";
 import LoadingAnimation from "./LoadingAnimation";
 import { PermissionContext } from "../providers/permissions";
 import {
-  hasAdminOfficesPermissions,
-  hasSystemSetupPermissions,
-  hasUsersPermission,
-  hasGISPermissions
+  hasPermission
 } from "../utils/checkPermissions"
 
 const DelayedLoginButton = () => {
@@ -128,30 +125,7 @@ export default function HeaderLayout({
             } else {
               setIsLoggedIn(true);
               setUser(usr);
-
-              // Users View Permission  Check
-
-              if (!hasUsersPermission(/^users.view_mfluser$/, userPermissions)) {
-                setHideUserMenu(true)
-              }
-
-              // System Setup View Permission Check
-
-              if (!hasSystemSetupPermissions(/^common.add_county$/, userPermissions)) {
-                setHideSystemSetupMenu(true)
-              }
-
-              // Admin Offices Permission Check
-
-              if (!hasAdminOfficesPermissions(/^admin_offices.view_.*$/, userPermissions)) {
-                setHideAdminOfficesMenu(true)
-              }
-
-              // GIS Permission Check
-
-              if (!hasGISPermissions(/^mfl_gis.view_.*$/, userPermissions)) {
-                setHideGISMenu(true)
-              }
+              
             }
           }
         );
@@ -205,6 +179,7 @@ export default function HeaderLayout({
               </Link>
             </li>
             {/* Facilities */}
+            {hasPermission(/^facilities.view_facility$/, userPermissions) &&
             <li className="flex-wrap font-semibold">
               <Link href="/facilities">
                 <p
@@ -224,7 +199,9 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
+            }
             {/* Community Units */}
+            {hasPermission(/^chul.view_communityhealthunit$/, userPermissions) &&
             <li className="flex-wrap font-semibold">
               <Link href="/community-units">
                 <p
@@ -242,9 +219,10 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
+            }
             {/* Users */}
          
-            {!hideUserMenu &&
+            {hasPermission(/^users.view_mfluser$/, userPermissions) &&
               <li className="flex-wrap font-semibold">
                 <Link href="/users">
                   <p
@@ -263,7 +241,7 @@ export default function HeaderLayout({
               </li>
             }
             {/* GIS */}
-            {!hideGISMenu &&
+            {hasPermission(/^mfl_gis.view_.*$/, userPermissions) &&
               <li className="flex-wrap font-semibold">
                 <Link href="/gis">
                   <p
@@ -284,7 +262,8 @@ export default function HeaderLayout({
             }
             {/* System setup */}
             {
-              !hideSystemSetupMenu &&
+              hasPermission(/^common.add_county$/, userPermissions) &&
+              hasPermission(/^common.delete_county$/, userPermissions) &&
               <li className="flex-wrap font-semibold">
                 <Link href="/system_setup">
                   <p
@@ -362,7 +341,7 @@ export default function HeaderLayout({
             </Menu>
 
             {/* Admin Offices */}
-            {!hideAdminOfficesMenu &&
+            { hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) &&
               <li className="flex-wrap font-semibold">
                 <Link href="/admin_offices">
                   <p

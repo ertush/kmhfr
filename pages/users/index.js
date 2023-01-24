@@ -18,7 +18,7 @@ import Collapse from '@mui/material/Collapse';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { PermissionContext } from '../../providers/permissions'
-import {  hasUsersPermission } from '../../utils/checkPermissions'
+import {  hasPermission } from '../../utils/checkPermissions'
 
 
 const Users = (props) => {
@@ -84,7 +84,7 @@ const Users = (props) => {
 
     useEffect(()=>{
 
-        if(!hasUsersPermission(/^users.view_mfluser$/, userPermissions)){
+        if(!hasPermission(/^users.view_mfluser$/, userPermissions)){
             router.push('/unauthorized')
         }
         
