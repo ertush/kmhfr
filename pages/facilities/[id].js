@@ -318,7 +318,7 @@ const Facility = (props) => {
                 {/*  Dynamic Approve/reject Button  */}
                   
                     {
-                      facility?.is_approved ?
+                      facility?.is_approved ? //&& hasPermission(/^facilities.delete_facilityapproval$/, userPermissions)
                      'Approve/Reject Facility':
                      'Validate/Reject Facility'
                     }
@@ -353,7 +353,8 @@ const Facility = (props) => {
                 </button>
                 }
                 {
-                  hasPermission(/^facilities.delete_facilityapproval$/, userPermissions) &&
+                  hasPermission(/^facilities.change_facility$/, userPermissions) &&
+                  hasPermission(/^facilities.add_facilityservice$/, userPermissions) &&
                 <button
                   onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"

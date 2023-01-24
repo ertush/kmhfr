@@ -52,7 +52,6 @@ const validateRejectFacility = (facility_id, reject, comment, alert) => {
 const approveRejectFacility = (facility_id, comment, alert, reject) => {
 
 
-
     if (reject) {
         alert.success(`Facility Approved successfully`)
     } else {
@@ -80,7 +79,7 @@ const approveRejectFacility = (facility_id, comment, alert, reject) => {
             .then(res => {
 
                 if (res) {
-                    router.push('/facilities?qf=to_publish&to_publish=true') // redirect Facilties Pending Approval
+                    router.push('/facilities?qf=approved&approved=true&approved_national_level=true&rejected=false') // redirect Facilties Pending Approval
                 }
 
 
@@ -126,7 +125,7 @@ const approveRejectFacilityUpdates = (reject, alert, update_id) => {
             .then(res => {
 
                 if (res) {
-                    router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
+                    router.push('/facilities?qf=updated_pending_validation&has_edits=true&pending_approval=true') // redirect to New Facilties Pending Validation
                 }
 
             })
