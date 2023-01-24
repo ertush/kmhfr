@@ -18,7 +18,7 @@ import Select from "react-select";
 // Components imports
 import MainLayout from "../../components/MainLayout";
 
-import { hasGISPermissions } from "../../utils/checkPermissions";
+import { hasPermission } from "../../utils/checkPermissions";
 import { PermissionContext } from "../../providers/permissions";
 
 const Gis = (props) => { 
@@ -187,7 +187,7 @@ const Gis = (props) => {
 
   useEffect(() => {
 
-    if(!hasGISPermissions(/^mfl_gis.view_.*$/, userPermissions)){
+    if(!hasPermission(/^mfl_gis.view_.*$/, userPermissions)){
       router.push('/unauthorized')
   }
 

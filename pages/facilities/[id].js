@@ -31,13 +31,13 @@ import Typography from '@mui/material/Typography';
 import FacilitySideMenu from "../../components/FacilitySideMenu";
 import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { PermissionContext } from "../../providers/permissions";
-import { hasApproveRejectPermissions } from "../../utils/checkPermissions";
+import { hasPermission } from "../../utils/checkPermissions";
 
 
 const Facility = (props) => {
 
   const userPermissions = useContext(PermissionContext)
-  // console.log({userPermissions, can_approve_rejetc_facility: hasApproveRejectPermissions(/^facilities.change_facilityapproval$/, userPermissions)})
+  // console.log({userPermissions, can_approve_rejetc_facility: hasPermission(/^facilities.change_facilityapproval$/, userPermissions)})
 
   const Map = dynamic(
     () => import("../../components/Map"), // replace '@components/map' with your component's location
@@ -305,7 +305,8 @@ const Facility = (props) => {
 
                 {/* Render button conditionally */}
                 {
-                  hasApproveRejectPermissions(/^facilities.change_facilityapproval$/, userPermissions) &&
+                  hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
+                  hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <button
                   onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
                   className={
@@ -315,8 +316,13 @@ const Facility = (props) => {
                 >
 
                 {/*  Dynamic Approve/reject Button  */}
-    
-                  Approve/Reject Facility
+                  
+                    {
+                      facility?.is_approved ? //&& hasPermission(/^facilities.delete_facilityapproval$/, userPermissions)
+                     'Approve/Reject Facility':
+                     'Validate/Reject Facility'
+                    }
+                  
                 </button>
                 } 
 
@@ -327,7 +333,8 @@ const Facility = (props) => {
                   Print
                 </button>
                 {
-                    !facility?.closed && 
+                    !facility?.closed &&
+                    hasPermission(/^facilities.change_facility$/, userPermissions) &&
                         <button
                         onClick={() => router.push(`edit/${facility?.id}`)}
                         className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
@@ -335,19 +342,26 @@ const Facility = (props) => {
                         Edit
                       </button>
                 }
-            
+                {
+                  hasPermission(/^facilities.add_facilityregulationstatus$/, userPermissions) &&
+                  hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <button
                   onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                 >
                   Regulate
                 </button>
+                }
+                {
+                  hasPermission(/^facilities.change_facility$/, userPermissions) &&
+                  hasPermission(/^facilities.add_facilityservice$/, userPermissions) &&
                 <button
                   onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                 >
                   Upgrade
                 </button>
+                }
                 <button
                   onClick={() => window.alert("Edit")}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
