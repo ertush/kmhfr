@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, createContext } from 'react';
 import { useAlert } from "react-alert";
 
 
@@ -35,7 +35,9 @@ import {
 import FacilityDeptRegulationFactory from '../../components/generateFacilityDeptRegulation'
 
 // Package imports
+
 import Select from 'react-select';
+// const Select = dynamic(import('react-select'), { ssr: false })  // This import prevents refs from loading but fixes the server, client side mismatch warning
 
 
 import { 
@@ -50,6 +52,7 @@ import {
 } from '../../controllers/facility/facilityHandlers';
 
 
+export const FacilityDeptContext = createContext(null)
 
 const turf = require('@turf/turf');
 const WardMap = dynamic(
@@ -231,7 +234,7 @@ function AddFacility(props) {
 
 	const basicDetailsRef = useRef(null)
 	const kephLvlRef = useRef(null)
-	const regBodyRef = useRef(null)
+	// const regBodyRef = useRef(null)
 
 
     const steps = [
@@ -298,7 +301,19 @@ function AddFacility(props) {
     const [title, setTitle] = useState('');
 	const [is24hrsOpen, setIs24hrsOpen] = useState(false)
 	const [isRegBodyChange, setIsRegBodyChange] = useState(false)
-	const [facilityDepts, setFacilityDepts] = useState([0])
+	const [facilityDepts, setFacilityDepts] = useState([
+		(() => (
+			<FacilityDeptRegulationFactory
+				key={0}
+				index={0}
+				facilityDepts={[]}
+				isRegBodyChange={isRegBodyChange}
+				setIsRegBodyChange={setIsRegBodyChange}
+				setFacilityDepts={() => null}
+				facilityDeptOptions={facilityDeptOptions}
+			/>
+		))()
+	]) // [0]
 	const filters = []
 	
 	
@@ -427,8 +442,8 @@ function AddFacility(props) {
 		}
 	}, [is24hrsOpen])
 
-	useEffect(() => {console.log({facilityDepts})}, [isRegBodyChange, facilityDepts])
-	
+	useEffect(() => {/*console.log({facilityDepts})*/}, [isRegBodyChange, facilityDepts])
+
 	
   return (
 	<>
@@ -636,7 +651,7 @@ function AddFacility(props) {
 																						]
 
 																				case 'MEDICAL CENTRE':
-																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
+																					if(kephLvlRef.current) console.log(kephLvlRef.current); kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
 																				
@@ -1938,122 +1953,6 @@ function AddFacility(props) {
 													setFormId(window.sessionStorage.getItem('formId'));
 												};
 
-												const handleAddRegulatoryBody = (event) => {
-													event.preventDefault();
-
-													const divContainer = facilityRegulatoryBodyRef.current;
-
-													const dropDownRgBody = document.createElement('select');
-
-													dropDownRgBody.setAttribute(
-														'style',
-														`
-													width:100%; 
-													border: 1px solid hsl(0, 0%, 80%); 
-													border-radius: 4px; 
-													padding: 2px; 
-													background-color: hsl(0, 0%, 100%); 
-													display: grid; 
-													min-height: 38px;
-													`
-													);
-
-													dropDownRgBody.setAttribute(
-														'placeholder',
-														'Select Service'
-													);
-
-													dropDownRgBody.setAttribute(
-														'name',
-														'dropdown_rgbody_name'
-													);
-
-													const option0 = document.createElement('option');
-													option0.innerText = 'Select Fcaility Department';
-													option0.value = 'Select Fcaility Department';
-
-													const option1 = document.createElement('option');
-													option1.innerText = 'Clinical Officers';
-													option1.value = 'Clinical Officers';
-
-													const option2 = document.createElement('option');
-													option2.innerText = 'Nurses and specialist';
-													option2.value = 'Nurses and specialist';
-
-													const option3 = document.createElement('option');
-													option3.innerText = 'Medical Officers';
-													option3.value = 'Medical Officers';
-
-													const option4 = document.createElement('option');
-													option4.innerText = 'Dental';
-													option4.value = 'Dental';
-
-													const option5 = document.createElement('option');
-													option5.innerText = 'Nutrition';
-													option5.value = 'Nutrition';
-
-													const option6 = document.createElement('option');
-													option6.innerText = 'Occupational Health';
-													option6.value = 'Occupational Health';
-
-													const option7 = document.createElement('option');
-													option7.innerText = 'Physiotherapy';
-													option7.value = 'Physiotherapy';
-
-													const option8 = document.createElement('option');
-													option8.innerText = 'X-Ray';
-													option8.value = 'X-Ray';
-
-													const option9 = document.createElement('option');
-													option9.innerText = 'Pharmacy';
-													option9.value = 'Pharmacy';
-
-													const option10 = document.createElement('option');
-													option10.innerText = 'Laboratory';
-													option10.value = 'Laboratory';
-
-													const option11 = document.createElement('option');
-													option11.innerText = 'Optical';
-													option11.value = 'Optical';
-
-													const inputRgBody =
-														divContainer.childNodes[6].cloneNode(true);
-													inputRgBody.setAttribute('name', 'regulatory_body');
-
-													const inputLicenseNo =
-														divContainer.childNodes[6].cloneNode(true);
-													inputLicenseNo.setAttribute('name', 'license_no');
-
-													const inputRegNo =
-														divContainer.childNodes[6].cloneNode(true);
-													inputRegNo.setAttribute('name', 'regulatory_no');
-
-													const delBtn = document.createElement('button');
-													delBtn.addEventListener('click', (ev) => {
-														ev.preventDefault();
-													});
-													delBtn.innerText = '';
-													delBtn.setAttribute(
-														'style',
-														`
-													padding: 1px;
-													border-radius: 2px;
-													background-color: rosered;
-													font-weight:400;
-													width:auto;
-													height:auto;
-
-													`)
-
-													
-													divContainer.appendChild(dropDownRgBody.getRootNode())
-													divContainer.appendChild(inputRgBody)
-													divContainer.appendChild(inputLicenseNo)
-													divContainer.appendChild(inputRegNo)
-													divContainer.appendChild(delBtn.getRootNode())
-
-												}
-
 
 												return (
 													<>  
@@ -2129,9 +2028,9 @@ function AddFacility(props) {
 															</div>
 
 															{/* Facility Departments Regulation  */}
-
 															<h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
 															<div className='grid grid-cols-4 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityRegulatoryBodyRef}>
+															
 															{/* Contact Headers */}
 																<h3 className='text-medium font-semibold text-blue-900'>Name</h3>
 																<h3 className='text-medium font-semibold text-blue-900'>Regulatory Body</h3>
@@ -2140,52 +2039,13 @@ function AddFacility(props) {
 									
 																<hr className='col-span-4'/>
 
-																
-																{/* Name */}
-																{/* <Select options={facilityDeptOptions || []} 
-																	required
-																	placeholder="Select Name"
-																	onChange={
-																		e => {
-																			if(regBodyRef.current){
-																			
-																				regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
-																			}
-																		}
-																	}
-																	name="facility_dept_name" 
-																	className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> */}
-																
-																{/* Regulatory Body */}
-																{/* <input type="text" disabled ref={regBodyRef} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
-
-																{/* License No. */}
-																{/* <input type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
-										
-																{/* <div className='col-start-4 flex items-center space-x-2 w-full'> */}
-																	{/* Reg No. */}
-																	{/* <input type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
-																
-																	{/* Delete Btn */}
-
-																	{/* <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button> */}
-																{/* </div> */}
-
-															
-
 																{/* add other fields */}
 															    <div className='flex-col items-start justify-start gap-y-4'>
 																	{
-																		facilityDepts.map((_, i) => (
-																			<FacilityDeptRegulationFactory
-																			key={i}
-																			index={i}
-																			facilityDepts={facilityDepts}
-																			isRegBodyChange={isRegBodyChange}
-																			setIsRegBodyChange={setIsRegBodyChange}
-																			setFacilityDepts={setFacilityDepts}
-																			facilityDeptOptions={facilityDeptOptions}
-																		/>
+																		facilityDepts.map((facilityDept, i) => (
+														
+																			facilityDept
+																		
 																		))
 																	}
 																</div>	
@@ -2197,7 +2057,23 @@ function AddFacility(props) {
 														
 															{/* Add btn */}
 															<div className='w-full flex justify-end items-center mt-2'>
-																<button onClick={(e) => {e.preventDefault();  setFacilityDepts([...facilityDepts, (facilityDepts[facilityDepts.length - 1] + facilityDepts.length)])}} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+																<button onClick={(e) => {e.preventDefault();  setFacilityDepts([
+																	...facilityDepts, 
+																	(() => (
+																		<FacilityDeptContext.Provider value={facilityDepts} key={(facilityDepts.length + 1) - 1}>
+																			<FacilityDeptRegulationFactory
+																			key={(facilityDepts.length + 1) - 1}
+																			index={(facilityDepts.length + 1) - 1}
+																			isRegBodyChange={isRegBodyChange}
+																			setIsRegBodyChange={setIsRegBodyChange}
+																			setFacilityDepts={setFacilityDepts}
+																			facilityDeptOptions={facilityDeptOptions}
+																			/>
+																		</FacilityDeptContext.Provider>
+																	))()
+
+																	/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
+																	])}} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																	<PlusIcon className='w-4 h-4 text-white'/>
 																	<p className='text-medium font-semibold text-white'>Add</p>
 																</button>

@@ -162,7 +162,12 @@ function ApproveReject(props) {
 
             <div className="col-span-1 md:col-span-6 md:w-full flex flex-col gap-3 md:mt-8 mx-3">
                     <h3 className="text-2xl tracking-tight font-semibold leading-5">
-                    Approve/Reject Facility
+                    {
+                      facility?.is_approved ?
+                     'Approve/Reject Facility':
+                     'Validate/Reject Facility'
+                    }
+
                     </h3>
 
 

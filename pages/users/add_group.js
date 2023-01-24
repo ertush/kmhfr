@@ -9,7 +9,7 @@ import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { useAlert } from "react-alert";
 import { UserContext } from '../../providers/user';
-import { hasUsersPermission } from '../../utils/checkPermissions';
+import { hasPermission } from '../../utils/checkPermissions';
 
 const AddGroup = (props)=> {
 	const [selPermissions, setselPermissions] = useState([])
@@ -74,7 +74,7 @@ const AddGroup = (props)=> {
 	}
 
 	useEffect(() => {
-		if(hasUsersPermission(/^auth.add_group$/, userCtx.all_permissions)){
+		if(hasPermission(/^auth.add_group$/, userCtx.all_permissions)){
 			setAddPermission(true)
 		  }
 	}, [userCtx])

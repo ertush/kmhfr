@@ -12,7 +12,7 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import { useAlert } from "react-alert";
 import { UserContext } from '../../providers/user';
-import { hasUsersPermission } from '../../utils/checkPermissions';
+import { hasPermission } from '../../utils/checkPermissions';
 import Alert from '@mui/material/Alert';
 import Link from 'next/link'
 
@@ -200,10 +200,10 @@ const AddUser = (props)=> {
     }, [userData.conf_password])
 
 	useEffect(() => {
-		if(hasUsersPermission(/^users.change_mfluser$/, userCtx.all_permissions)){
+		if(hasPermission(/^users.change_mfluser$/, userCtx.all_permissions)){
 			setAddUserPermission(true)
 		}
-		if(hasUsersPermission(/^users.delete_mfluser$/, userCtx.all_permissions)){
+		if(hasPermission(/^users.delete_mfluser$/, userCtx.all_permissions)){
 			setDeleteUserPermission(true)
 		}
 	}, [userCtx])

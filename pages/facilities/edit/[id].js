@@ -537,23 +537,16 @@ const EditFacility = (props) => {
 
 
     // Different form states
-    // const [services, setServices] = useState([])
-   
-	// const [hr, setHr] = useState([])
-	// const [hrCount, setHrCount] = useState([])
+  
     const [wardName, setWardName] = useState(ward_name)
     const [refreshForm4, setRefreshForm4] = useState()
-    // const [selectedHrRight, setSelectedHrRight] = useState()
     const [operationStatus, setOperationStatus] = useState('')
-    // const [refreshForm6, setRefreshForm6] = useState(false)
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
     const [serviceUpdates, setServiceUpdates] = useState(null)
   
   
     
-
-
     const handleAddRegulatoryBody = (event) => {
         event.preventDefault();
 
@@ -712,19 +705,12 @@ const EditFacility = (props) => {
     const facilityRegulatoryBodyRef = useRef(null)
     const regBodyRef = useRef(null)
     const facilityDeptNameRef = useRef(null)
-    // const optionRefBody = useRef(null)
-    // const serviceOptionRef = useRef(null)
-    // const nameOptionRef = useRef(null)
-    // const infrastructureBodyRef = useRef(null)
-
+   
     
 
     // Facility update data
     const {
-        updated,
-        updated_by,
         facility_updated_json,
-        created_by_name,
     } = facilityUpdateData ?? {updated: new Date(), updated_by: '', facility_updated_json: [], created_by_name: ''}
 
 
@@ -2065,11 +2051,10 @@ const EditFacility = (props) => {
 
                                         onSubmit={formData => {
                                             
-
                                             const regulatoryBody = regulatoryBodyRef.current  ? regulatoryBodyRef.current.state.value.value : ''
                                             const regulationStatus = regulatoryStateRef.current ? regulatoryStateRef.current.state.value.value : ''
-                                            const facilityRegulatingBody = regBodyRef.current ? regBodyRef.current.value : ''
-                                            const facilityUnit =  facilityDeptNameRef.current  ? facilityDeptNameRef.current.state.value.value : ''
+                                            // const facilityRegulatingBody = regBodyRef.current ? regBodyRef.current.value : ''
+                                            // const facilityUnit =  facilityDeptNameRef.current  ? facilityDeptNameRef.current.state.value.value : ''
 
                                             const payload = {...formData, regulatory_body:regulatoryBody, regulation_status:regulationStatus}
 
@@ -2160,29 +2145,29 @@ const EditFacility = (props) => {
                                                   //    Filtered Regulatory State Options
 
                                                   <Select 
-                                                      ref={regulatoryStateRef}
-                                                      options={filteredRegulationStateOptions || []} 
-                                                      required
-                                                      onChange={ev => {
-                                                          setIsPendingLicense(false)
-                                                          if(ev.label === 'Pending License') setIsPendingLicense(true)
-                                                      }}
-                                                      placeholder="Select Regulation Status"
-                                                      name='regulation_status'
-                                                      className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                    ref={regulatoryStateRef}
+                                                    options={filteredRegulationStateOptions || []} 
+                                                    required
+                                                    onChange={ev => {
+                                                        setIsPendingLicense(false)
+                                                        if(ev.label === 'Pending License') setIsPendingLicense(true)
+                                                    }}
+                                                    placeholder="Select Regulation Status"
+                                                    name='regulation_status'
+                                                    className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                 :
 
                                                 <Select 
-                                                            ref={regulatoryStateRef}
-                                                            options={regulationStateOptions || []} 
-                                                            required
-                                                            onChange={ev => {
-                                                                setIsPendingLicense(false)
-                                                                if(ev.label === 'Pending License') setIsPendingLicense(true)
-                                                            }}
-                                                            placeholder="Select Regulation Status"
-                                                            name='regulation_status'
-                                                            className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                    ref={regulatoryStateRef}
+                                                    options={regulationStateOptions || []} 
+                                                    required
+                                                    onChange={ev => {
+                                                        setIsPendingLicense(false)
+                                                        if(ev.label === 'Pending License') setIsPendingLicense(true)
+                                                    }}
+                                                    placeholder="Select Regulation Status"
+                                                    name='regulation_status'
+                                                    className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                 
                                                     }
 
