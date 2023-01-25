@@ -964,7 +964,7 @@ const EditFacility = (props) => {
         <>
         
             <Head>
-                <title>KHMFL - {official_name}</title>
+                <title>KMHFL - {official_name}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>

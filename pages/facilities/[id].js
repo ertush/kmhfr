@@ -100,7 +100,7 @@ const Facility = (props) => {
   return (
     <>
       <Head>
-        <title>KHMFL - {facility?.official_name ?? ""}</title>
+        <title>KMHFL - {facility?.official_name ?? ""}</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="/assets/css/leaflet.css" />
       </Head>

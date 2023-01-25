@@ -131,7 +131,7 @@ const Dash = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KHMFL - Overview</title>
+                <title>KMHFL - Overview</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
