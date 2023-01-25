@@ -263,7 +263,7 @@ function ApproveReject(props) {
 
                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
                     <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-                        {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Validate/Reject newly created facility"}
+                        {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Comment on the validation"}
                     </h3>
                     {facility?.is_approved}
                     <Formik

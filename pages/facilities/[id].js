@@ -32,12 +32,16 @@ import FacilitySideMenu from "../../components/FacilitySideMenu";
 import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { PermissionContext } from "../../providers/permissions";
 import { hasPermission } from "../../utils/checkPermissions";
+import { UserGroupContext } from "../../providers/userGroup";
+import { belongsToUserGroup } from "../../utils/checkUserGroup";
 
 
 const Facility = (props) => {
 
   const userPermissions = useContext(PermissionContext)
-  // console.log({userPermissions, can_approve_rejetc_facility: hasPermission(/^facilities.change_facilityapproval$/, userPermissions)})
+  const userGroup = useContext(UserGroupContext)
+  const userCtx = useContext(UserContext)
+
 
   const Map = dynamic(
     () => import("../../components/Map"), // replace '@components/map' with your component's location
@@ -76,11 +80,9 @@ const Facility = (props) => {
   const [isViewChangeLog, setIsViewChangeLog] = useState(false)
   const [changeLogData, setChangeLogData] = useState(null)
 
-  const userCtx = useContext(UserContext)
 
-  // const toggleIsViewChangeLog = useCallback(() => {
-     
-  // }, [isViewChangeLog])
+
+
   
   let reject = ''
 
@@ -303,10 +305,15 @@ const Facility = (props) => {
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <div className="flex flex-row justify-start items-center space-x-3 p-3">
 
-                {/* Render button conditionally */}
+                {/* Render button conditionally for both facility approval and validation*/}
                 {
                   hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
                   hasPermission(/^facilities.view_facility$/, userPermissions) &&
+                  (!belongsToUserGroup(userGroup, 'County Health Records Information Officer') || 
+                  (belongsToUserGroup(userGroup, 'County Health Records Information Officer') && facility.has_edits)) &&
+                  facility?.is_approved &&
+
+                  
                 <button
                   onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
                   className={
@@ -314,15 +321,33 @@ const Facility = (props) => {
                       
                   }
                 >
+                  {
+                   facility.has_edits ? 'Validate Facility Updates' : 'Approve/Reject Facility'
+                  }
+  
+                </button>
+                } 
 
-                {/*  Dynamic Approve/reject Button  */}
+{
+                  hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
+                  hasPermission(/^facilities.view_facility$/, userPermissions) &&
+                  (
+                  belongsToUserGroup(userGroup, 'County Health Records Information Officer') ||
+                  belongsToUserGroup(userGroup, 'National Administrators') ||
+                  belongsToUserGroup(userGroup, 'Superusers') 
+                  ) &&
+                  !facility?.is_approved &&
+
                   
-                    {
-                      facility?.is_approved ? //&& hasPermission(/^facilities.delete_facilityapproval$/, userPermissions)
-                     'Approve/Reject Facility':
-                     'Validate/Reject Facility'
-                    }
-                  
+                <button
+                  onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
+                  className={
+                    "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+                      
+                  }
+                >
+                   Validate/Reject Facility
+  
                 </button>
                 } 
 
