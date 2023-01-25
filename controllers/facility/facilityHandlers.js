@@ -507,7 +507,7 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
 // handleHrSubmit
 const handleHrSubmit = (stateSetters, facilityId, alert) => {
 
-    const [formData, setFormId] = stateSetters
+    const [formData, _] = stateSetters // removed setFormId
 
 
 
@@ -517,8 +517,6 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
         count
     })
     )
-
-
 
 
     if (facilityId && _payload) {
@@ -545,9 +543,12 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
     }
 
 
-    window.sessionStorage.setItem('formId', 0)
+    // Instead of resetting form to basic detils form redirect to facility details view
 
-    setFormId(window.sessionStorage.getItem('formId'))
+    // window.sessionStorage.setItem('formId', 0)
+
+    // setFormId(window.sessionStorage.getItem('formId'))
+    router.push(`/facilities/${facilityId}`)
 
 }
 

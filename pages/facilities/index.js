@@ -388,10 +388,12 @@ const Home = (props) => {
                                             {/* Facilities View */}
                                             {facilities && facilities.length > 0 && facilityFeedBack.length === 0 && !khisSynched &&
                                             facilities.map((facility, index) => (
-                                                <div key={index} className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
+                                                <div key={index} 
+                                                title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
+                                                className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
                                                         <h3 className="text-2xl w-full">
-                                                            <a href={'/facilities/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
+                                                            <a href={'/facilities/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 " >
                                                                 <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility.official_name || facility.official_name || facility.name}
                                                             </a>
                                                         </h3>

@@ -1,15 +1,38 @@
 
-import { useRef, useContext } from "react"
+import { useRef, useContext, useEffect } from "react"
 import { XCircleIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
 import { FacilityDeptContext } from "../pages/facilities/add"
 
-const FacilityDeptRegulationFactory = ({facilityDeptOptions, setFacilityDepts, setIsRegBodyChange, isRegBodyChange, index}) => {
+const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptId, regNo, licenseNo, setFacilityDepts, setIsRegBodyChange, isRegBodyChange, index}) => {
 
 
     const facilityDepts = useContext(FacilityDeptContext)
 
     const regBodyRef = useRef(null)
+
+    const facilityDeptLicenseRef = useRef(null)
+    const facilityDeptRegNoRef = useRef(null)
+
+
+
+
+    useEffect(() => {
+
+        if(regBodyRef.current){
+            regBodyRef.current.value = facilityDeptOptions.find(({value}) => value === facilityDeptId).label
+        }
+
+        if(facilityDeptLicenseRef.current){
+            facilityDeptLicenseRef.current.value = licenseNo
+        }
+
+        if(facilityDeptRegNoRef.current){
+            facilityDeptRegNoRef.current.value = regNo
+        }
+
+    }, [])
+
     return (
         <div className="w-full flex items-center justify-between gap-3 mt-3" id={`facility-dept-wrapper-${index}`}> 
              { console.log("Add", {index, facilityDepts}) }
@@ -30,14 +53,14 @@ const FacilityDeptRegulationFactory = ({facilityDeptOptions, setFacilityDepts, s
                 className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
             
             {/* Regulatory Body */}
-            <input  id={`facility-dept-reg-body-${index}`} type="text" disabled ref={regBodyRef} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+            <input ref={regBodyRef} id={`facility-dept-reg-body-${index}`} type="text" disabled  name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
             {/* License No. */}
-            <input   id={`facility-dept-license_no-${index}`} type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+            <input ref={facilityDeptLicenseRef}  id={`facility-dept-license_no-${index}`} type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
             <div className='flex items-center space-x-2 w-full'>
                 {/* Reg No. */}
-                <input   id={`facility-dept-reg_no-${index}`} type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                <input ref={facilityDeptRegNoRef}  id={`facility-dept-reg_no-${index}`} type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
             
                 {/* Delete Btn */}
                 <button 

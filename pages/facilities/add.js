@@ -309,6 +309,9 @@ function AddFacility(props) {
 				facilityDepts={[]}
 				isRegBodyChange={isRegBodyChange}
 				setIsRegBodyChange={setIsRegBodyChange}
+				regNo={null}
+				licenseNo={null}
+				facilityDeptId={null}
 				setFacilityDepts={() => null}
 				facilityDeptOptions={facilityDeptOptions}
 			/>
@@ -2067,6 +2070,9 @@ function AddFacility(props) {
 																			isRegBodyChange={isRegBodyChange}
 																			setIsRegBodyChange={setIsRegBodyChange}
 																			setFacilityDepts={setFacilityDepts}
+																			facilityDeptId={null} 
+																			regNo={null} 
+																			licenseNo={null}
 																			facilityDeptOptions={facilityDeptOptions}
 																			/>
 																		</FacilityDeptContext.Provider>
