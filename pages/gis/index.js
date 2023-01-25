@@ -245,7 +245,7 @@ const Gis = (props) => {
   return (
     <div className="">
       <Head>
-        <title>KHMFL - GIS Explorer</title>
+        <title>KMHFL - GIS Explorer</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainLayout isLoading={false} isFullWidth={true}>

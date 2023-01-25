@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic'
 import router from 'next/router'
 import { useAlert } from "react-alert";
 import Link from 'next/link';
+import FacilityDeptRegulationFactory from '../../../components/generateFacilityDeptRegulation'
 
 
 import { 
@@ -66,18 +67,55 @@ const EditFacility = (props) => {
     // Alert 
     const alert = useAlert();
 
-   
-    // Form drop down options
-    const facilityOptions = [
-		props['0']?.facility_types[0],  // STAND ALONE
-		props['0']?.facility_types[1],  // DISPENSARY 
-		props['0']?.facility_types[2],  // MEDICAL CLINIC
-		props['0']?.facility_types[8],  // NURSING HOME
-		props['0']?.facility_types[10], // HOSPITALS
-		props['0']?.facility_types[16], // HEALTH CENTRE
-		props['0']?.facility_types[25]  // MEDICAL CENTRE
-	]
 
+    const facilityOptions = (() => {
+		const f_types = [
+			'STAND ALONE',
+			'DISPENSARY',
+			'MEDICAL CLINIC',
+			'NURSING HOME',
+			'HOSPITALS',
+			'HEALTH CENTRE',
+			'MEDICAL CENTRE'
+		]
+
+		const all_ftypes = []
+
+       
+
+		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division == f_types[type]))
+
+
+        console.log({all_ftypes})
+
+		return [{
+			label: all_ftypes[0].sub_division,
+			value: all_ftypes[0].parent
+		},
+		{
+			label: all_ftypes[1].sub_division,
+			value: all_ftypes[1].parent
+		},
+		{
+			label: all_ftypes[2].sub_division,
+			value: all_ftypes[2].parent
+		},
+		{
+			label: all_ftypes[3].sub_division,
+			value: all_ftypes[3].parent
+		},
+		{
+			label: all_ftypes[4].sub_division,
+			value: all_ftypes[4].parent
+		},
+		{
+			label: all_ftypes[5].sub_division,
+			value: all_ftypes[5].parent
+		}
+
+		]
+
+	})()
 
 
     const [khisSynched, setKhisSynched] = useState(false);
@@ -275,6 +313,8 @@ const EditFacility = (props) => {
         regulatory_body_name
  
     } = props['18']?.data ?? {}
+
+    console.log({regulatory_body})
 
     const basicDetailsData =   {
         official_name,
@@ -539,7 +579,6 @@ const EditFacility = (props) => {
     // Different form states
   
     const [wardName, setWardName] = useState(ward_name)
-    const [refreshForm4, setRefreshForm4] = useState()
     const [operationStatus, setOperationStatus] = useState('')
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
@@ -825,7 +864,7 @@ const EditFacility = (props) => {
     }
        
         
-    }, [isSavedChanges, refreshForm4])
+    }, [isSavedChanges])
 
 
     const handleAddContact = (event) => {
@@ -964,7 +1003,7 @@ const EditFacility = (props) => {
         <>
         
             <Head>
-                <title>KHMFL - {official_name}</title>
+                <title>KMHFL - {official_name}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
@@ -2238,9 +2277,9 @@ const EditFacility = (props) => {
 
                                                 <hr className='col-span-4'/>
 
-                                                
+                                                {console.log({facility_units})}
                                                 {/* Name */}
-                                                <Select options={facilityDeptOptions || []} 
+                                                {/* <Select options={facilityDeptOptions || []} 
                                                     required
                                                     placeholder="Select Name"
                                                     ref={facilityDeptNameRef}
@@ -2253,21 +2292,39 @@ const EditFacility = (props) => {
                                                         }
                                                     }
                                                     name="facility_dept_name" 
-                                                    className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                    className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> */}
                                                 
                                                 {/* Regulatory Body */}
-                                                <input type="text" ref={regBodyRef} disabled name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                {/* <input type="text" ref={regBodyRef} disabled name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
 
                                                 {/* License No. */}
-                                                <Field type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                {/* <Field type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
 
-                                                <div className='col-start-4 flex items-center space-x-2 w-full'>
+                                                {/* <div className='col-start-4 flex items-center space-x-2 w-full'> */}
                                                     {/* Reg No. */}
-                                                    <Field type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                    {/* <Field type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
                                                 
                                                     {/* Delete Btn */}
 
-                                                    <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+                                                    {/* <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button> */}
+                                                {/* </div> */}
+                                                <div className='flex-col items-start justify-start gap-y-4'>
+                                                {
+                                                    facility_units.map(({id, unit_name, registration_number, license_number}, i) => (
+                                                        <FacilityDeptRegulationFactory
+                                                        key={i}
+                                                        index={i}
+                                                        isRegBodyChange={null}
+                                                        setIsRegBodyChange={() => null}
+                                                        setFacilityDepts={() => null}
+                                                        regNo={registration_number}
+                                                        licenseNo={license_number}
+                                                        facilityDeptId={id}
+                                                        facilityDeptOptions={[{label:unit_name, value:id}]}
+                                                    />
+                                                    ))
+                                                    
+                                                }
                                                 </div>
 
                                                 {/* add other fields */}
@@ -2492,10 +2549,7 @@ EditFacility.getInitialProps = async (ctx) => {
 										},
 									})
 
-									const results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division  ? {value:id, label:sub_division} : {value:id, label:name}) ?? [{value: '', label: ''}]
-
-							
-									allOptions.push({facility_types: results })
+                                    allOptions.push({facility_types: (await _data.json()).results})
 									
 								}
 								catch(err) {

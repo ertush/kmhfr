@@ -386,7 +386,7 @@ function FacilityDetailsTabs({ facility }) {
               </h3>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
-                  Beds
+                  Total inpatient beds: 
                 </label>
                 <p className="col-span-2 text-black font-medium text-base">
                   {facility?.number_of_beds}
@@ -402,6 +402,14 @@ function FacilityDetailsTabs({ facility }) {
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
+                  Maternity beds
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.number_of_maternity_beds}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
                   Emergency casualty beds
                 </label>
                 <p className="col-span-2 text-black font-medium text-base">
@@ -410,7 +418,7 @@ function FacilityDetailsTabs({ facility }) {
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
-                  ICU beds
+                  Intensive Care Unit beds
                 </label>
                 <p className="col-span-2 text-black font-medium text-base">
                   {facility?.number_of_icu_beds}
@@ -418,12 +426,26 @@ function FacilityDetailsTabs({ facility }) {
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
-                  HDU beds
+                  High Dependency Unit beds
                 </label>
                 <p className="col-span-2 text-black font-medium text-base">
                   {facility?.number_of_hdu_beds}
                 </p>
               </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                  Isolation beds
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.number_of_isolation_beds}
+                </p>
+              </div>
+              
+            </div>
+            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+              <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
+                Surgical Theatres:
+              </h3>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   General theatres
