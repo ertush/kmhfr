@@ -142,15 +142,15 @@ export default function HeaderLayout({
 
   return (
     <header className="flex flex-wrap items-center justify-start gap-x-4 w-full p-1 max-w-screen-3xl">
-      <title>KHMFL 3</title>
+      <title>KMHFL 3</title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-3 md:gap-5">
         <div id="logo" className="mx:px-3 pb-1">
           <a
             href="/"
             className="leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative"
           >
-            <img src="/MOH.png" alt="KHMFL3" className="h-14" />
-            <span className="font-mono text-3xl leading-none">KHMFL</span>
+            <img src="/MOH.png" alt="KMHFL3" className="h-14" />
+            <span className="font-mono text-3xl leading-none">KMHFL</span>
             <span className="text-sm bg-yellow-300 rounded-sm shadow uppercase border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-4">
               V3 Alpha
             </span>
@@ -413,7 +413,7 @@ export default function HeaderLayout({
                     href="https://kmhfltest.health.go.ke/"
                     target="_blank"
                   >
-                    KHMFL test <ExternalLinkIcon className="h-4 w-4 ml-2" />
+                    KMHFL test <ExternalLinkIcon className="h-4 w-4 ml-2" />
                   </a>
                 )}
               </Menu.Item>
@@ -425,7 +425,7 @@ export default function HeaderLayout({
                     href="https://kmhfl.health.go.ke/"
                     target="_blank"
                   >
-                    KHMFL live <ExternalLinkIcon className="h-4 w-4 ml-2" />
+                    KMHFL live <ExternalLinkIcon className="h-4 w-4 ml-2" />
                   </a>
                 )}
               </Menu.Item>
