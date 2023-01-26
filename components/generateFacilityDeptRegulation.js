@@ -4,30 +4,31 @@ import { XCircleIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
 import { FacilityDeptContext } from "../pages/facilities/add"
 
-const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptId, regNo, licenseNo, setFacilityDepts, setIsRegBodyChange, isRegBodyChange, index}) => {
+const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptValue, facilityDeptRegBody, regNo, licenseNo, setFacilityDepts, setIsRegBodyChange, isRegBodyChange, index}) => {
 
 
     const facilityDepts = useContext(FacilityDeptContext)
 
     const regBodyRef = useRef(null)
-
+    const facilityOptionsRef = useRef(null)
     const facilityDeptLicenseRef = useRef(null)
     const facilityDeptRegNoRef = useRef(null)
 
-
-
-
     useEffect(() => {
 
-        if(regBodyRef.current){
-            regBodyRef.current.value = facilityDeptOptions.find(({value}) => value === facilityDeptId).label
+        if(facilityOptionsRef.current && facilityDeptValue){
+            facilityOptionsRef.current.state.value = facilityDeptValue
         }
 
-        if(facilityDeptLicenseRef.current){
+        if(regBodyRef.current && facilityDeptRegBody){
+            regBodyRef.current.value = facilityDeptRegBody; 
+        }
+
+        if(facilityDeptLicenseRef.current && licenseNo){
             facilityDeptLicenseRef.current.value = licenseNo
         }
 
-        if(facilityDeptRegNoRef.current){
+        if(facilityDeptRegNoRef.current && regNo){
             facilityDeptRegNoRef.current.value = regNo
         }
 
@@ -35,10 +36,11 @@ const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptId, reg
 
     return (
         <div className="w-full flex items-center justify-between gap-3 mt-3" id={`facility-dept-wrapper-${index}`}> 
-             { console.log("Add", {index, facilityDepts}) }
+             {/* { console.log("Add", {index, facilityDepts}) } */}
             {/* Name */}
             <Select options={facilityDeptOptions || []} 
                 required
+                ref={facilityOptionsRef}
                 id={`facility-dept-name-${index}`}
                 placeholder="Select Name"
                 onChange={

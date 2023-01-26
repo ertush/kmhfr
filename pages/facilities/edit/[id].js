@@ -38,7 +38,7 @@ import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
 import EditListWithCount from '../../../components/EditListWithCount';
 import FacilityUpgradeModal from '../../../components/FacilityUpgradeModal'
-
+import {FacilityDeptContext} from '../../../pages/facilities/add'
 
 
 const _ = require('underscore') 
@@ -842,9 +842,9 @@ const EditFacility = (props) => {
             regulatoryStateRef.current.state.value = regulationStateOptions.filter(({label}) => label === regulatory_status_name)[0] || ''
         }
         
-        if(facilityDeptNameRef.current ){
-            facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
-        }
+        // if(facilityDeptNameRef.current ){
+        //     facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
+        // }
 
         if(otherContactRef.current ){
             otherContactRef.current.state.value = _officerName.contacts && _officerName.contacts.length > 0 ? _officerName?.contacts[0].type : ''
@@ -2309,8 +2309,10 @@ const EditFacility = (props) => {
                                                     {/* <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button> */}
                                                 {/* </div> */}
                                                 <div className='flex-col items-start justify-start gap-y-4'>
+                                                    {console.log({facility_units})}
                                                 {
-                                                    facility_units.map(({id, unit_name, registration_number, license_number}, i) => (
+                                                    facility_units.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
+                                                
                                                         <FacilityDeptRegulationFactory
                                                         key={i}
                                                         index={i}
@@ -2319,9 +2321,11 @@ const EditFacility = (props) => {
                                                         setFacilityDepts={() => null}
                                                         regNo={registration_number}
                                                         licenseNo={license_number}
-                                                        facilityDeptId={id}
-                                                        facilityDeptOptions={[{label:unit_name, value:id}]}
+                                                        facilityDeptRegBody={regulating_body_name}
+                                                        facilityDeptValue={[{value:id, label:unit_name}]}
+                                                        facilityDeptOptions={facilityDeptOptions}
                                                     />
+                                                
                                                     ))
                                                     
                                                 }
