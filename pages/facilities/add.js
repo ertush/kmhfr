@@ -261,6 +261,9 @@ function AddFacility(props) {
 	const openWeekendsRef = useRef(null)
 	const _regBodyRef = useRef(null)
 
+	//Form Refs
+	const facilityRegulationFormRef = useRef(null)
+
   
 
     // Services State data
@@ -1961,7 +1964,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-														<form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId, facilityOfficialName], 'POST', licenseFile)}>
+														<form  ref={facilityRegulationFormRef} name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId, facilityOfficialName, facilityRegulationFormRef, facilityDeptOptions], 'POST', licenseFile)}>
 
 															{/* Regulatory Body */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">

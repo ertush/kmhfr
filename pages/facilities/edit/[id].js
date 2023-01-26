@@ -2277,53 +2277,25 @@ const EditFacility = (props) => {
 
                                                 <hr className='col-span-4'/>
 
-                                                {console.log({facility_units})}
+                                              
                                                 {/* Name */}
-                                                {/* <Select options={facilityDeptOptions || []} 
-                                                    required
-                                                    placeholder="Select Name"
-                                                    ref={facilityDeptNameRef}
-                                                    onChange={
-                                                        e => {
-                                                            if(regBodyRef.current){
-                                                            
-                                                                regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
-                                                            }
-                                                        }
-                                                    }
-                                                    name="facility_dept_name" 
-                                                    className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> */}
-                                                
-                                                {/* Regulatory Body */}
-                                                {/* <input type="text" ref={regBodyRef} disabled name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
-
-                                                {/* License No. */}
-                                                {/* <Field type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
-
-                                                {/* <div className='col-start-4 flex items-center space-x-2 w-full'> */}
-                                                    {/* Reg No. */}
-                                                    {/* <Field type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
-                                                
-                                                    {/* Delete Btn */}
-
-                                                    {/* <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button> */}
-                                                {/* </div> */}
+                                          
                                                 <div className='flex-col items-start justify-start gap-y-4'>
-                                                    {console.log({facility_units})}
+                                                
                                                 {
                                                     facility_units.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
                                                 
                                                         <FacilityDeptRegulationFactory
-                                                        key={i}
-                                                        index={i}
-                                                        isRegBodyChange={null}
-                                                        setIsRegBodyChange={() => null}
-                                                        setFacilityDepts={() => null}
-                                                        regNo={registration_number}
-                                                        licenseNo={license_number}
-                                                        facilityDeptRegBody={regulating_body_name}
-                                                        facilityDeptValue={[{value:id, label:unit_name}]}
-                                                        facilityDeptOptions={facilityDeptOptions}
+                                                            key={i}
+                                                            index={i}
+                                                            isRegBodyChange={null}
+                                                            setIsRegBodyChange={() => null}
+                                                            setFacilityDepts={() => null}
+                                                            regNo={registration_number}
+                                                            licenseNo={license_number}
+                                                            facilityDeptRegBody={regulating_body_name}
+                                                            facilityDeptValue={[{value:id, label:unit_name}]}
+                                                            facilityDeptOptions={facilityDeptOptions}
                                                     />
                                                 
                                                     ))

@@ -302,7 +302,7 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
 // handleRegulationSubmit
 const handleRegulationSubmit = (event, stateSetters, method, file) => {
 
-    const [setFormId, facilityId, facility_name] = stateSetters
+    const [setFormId, facilityId, facility_name, facilityRegulationFormRef, facilityDeptOptions] = stateSetters
 
     event.preventDefault();
 
@@ -311,120 +311,215 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
     const facilityRegDataA = {};
     const facilityRegDataB = {};
 
+    const formData = new FormData(facilityRegulationFormRef.current)
 
-    const elements = [...event.target];
+    // const elements = [...event.target];
+
+    // console.log({formData, elements})
+
+    // const payload = []
+
+
+    // elements.forEach(({ name, value }) => {
+    //     switch (name) {
+    //         case 'license_number':
+    //             facilityRegDataA[name] = value
+    //             break;
+    //         case 'registration_number':
+    //             facilityRegDataA[name] = value
+    //             break;
+    //         case 'regulation_status':
+    //             facilityRegDataA[name] = value
+    //             break;
+    //         case 'regulatory_body':
+    //             facilityRegDataA[name] = value
+    //             break;
+    //         case 'facility_dept_name':
+    //             facilityRegDataB['0'] = {
+    //                 unit: value,
+    //             }
+    //             break;
+    //         case 'facility_dept_name-0':
+    //             facilityRegDataB['0'] = {
+    //                 unit: value,
+    //             }
+    //             break;
+    //         case 'facility_regulatory_body':
+    //             facilityRegDataB['1'] = {
+    //                 regulation_body_name: value,
+    //             }
+    //             break;
+    //         case 'facility_registration_number':
+    //             facilityRegDataB['2'] = {
+    //                 registration_number: value,
+    //             }
+    //             break;
+    //         case 'facility_license_number':
+    //             facilityRegDataB['3'] = {
+    //                 license_number: value,
+    //             }
+    //             break;
+
+
+    //     }
+
+    // });
+
+
+
+    // payload.push(facilityRegDataA)
+    // payload.push({
+    //     units: [{
+    //         unit: facilityRegDataB['0'].unit,
+    //         regulation_body_name: facilityRegDataB['1'].regulation_body_name,
+    //         registration_number: facilityRegDataB['2'].registration_number,
+    //         license_number: facilityRegDataB['3'].license_number
+    //     }]
+    // })
+
+     
+
+    // console.log({formData})
+
+
+
+    // console.log({values: formData.values().map(v => v)})
+   
+    const facilityDeptEntries = [...formData.entries()]
+
+    // const payload = ((obj, arr, entries) => {
+    //     for(let i in entries) obj[entries[i][0]] = entries[i][1]; arr.push(obj)
+    //     return arr
+    // })({}, [], facilityDeptEntries.filter(field => !(field[0].match(/.+_\d$/) !== null))) 
+    
+    // payload.push(
+    //     ((obj, arr, entries) => {
+    //         // let _units = {}
+    //         for(let x = 0; x < 1; x++) {
+
+    //          for (let i = 0; i < (4 * (entries.filter(field => field[0].match(/^unit_\d$/) !== null).length)); i++) obj[entries[i][0]] = entries[i][1]; arr.push(obj)
+
+    //         }
+
+    //         // for( let l = 0; l < 4; l++){
+    //         //     _units[arr[0]] = arr[arr]
+    //         // }
+    //         return {units: arr}
+    //     })({}, [], facilityDeptEntries.filter(field => field[0].match(/.+_\d$/) !== null))
+    // )
 
     const payload = []
 
-
-    elements.forEach(({ name, value }) => {
-        switch (name) {
-            case 'license_number':
-                facilityRegDataA[name] = value
-                break;
-            case 'registration_number':
-                facilityRegDataA[name] = value
-                break;
-            case 'regulation_status':
-                facilityRegDataA[name] = value
-                break;
-            case 'regulatory_body':
-                facilityRegDataA[name] = value
-                break;
-            case 'facility_dept_name':
+    facilityDeptEntries.forEach((fieldArray, i) => {
+        console.log(fieldArray)
+        switch(fieldArray[0]){
+            case 'facility_unit':
                 facilityRegDataB['0'] = {
-                    unit: value,
+                    unit: fieldArray[1]
                 }
                 break;
             case 'facility_regulatory_body':
                 facilityRegDataB['1'] = {
-                    regulation_body_name: value,
-                }
-                break;
-            case 'facility_registration_number':
-                facilityRegDataB['2'] = {
-                    registration_number: value,
+                    regulatory_body: fieldArray[1]
                 }
                 break;
             case 'facility_license_number':
-                facilityRegDataB['3'] = {
-                    license_number: value,
+                facilityRegDataB['2'] = {
+                    license_number: fieldArray[1]
                 }
                 break;
-
-
-        }
-
-    });
-
-
-
-    payload.push(facilityRegDataA)
-    payload.push({
-        units: [{
-            unit: facilityRegDataB['0'].unit,
-            regulation_body_name: facilityRegDataB['1'].regulation_body_name,
-            registration_number: facilityRegDataB['2'].registration_number,
-            license_number: facilityRegDataB['3'].license_number
-        }]
-    })
-
-
-    payload.forEach(data => {
-        try {
-            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-                headers: {
-                    'Accept': 'application/json, text/plain, */*',
-                    'Content-Type': 'application/json;charset=utf-8'
-
-                },
-                method,
-                body: JSON.stringify(data)
-            })
-
-                // Post the license document
-                .then(async resp => {
-
-                    const formData = new FormData()
-                    formData.append('name', `${facility_name} Facility license File`)
-                    formData.append('description', 'Facilities license file')
-                    formData.append('document_type', 'FACILITY_LICENSE')
-                    formData.append('facility_name', facility_name)
-                    formData.append('fyl', file ?? undefined)
-
-
-                    if (resp) {
-
-                        try {
-                            const resp = await fetch('/api/common/submit_form_data/?path=documents', {
-
-                                headers: {
-                                    'Accept': 'application/json, text/plain, */*',
-                                },
-                                method: 'POST',
-                                body: formData
-                            })
-
-                            return resp
-                        }
-                        catch (e) {
-                            console.error('Unable to Post License Document')
-                        }
-                    }
-                })
-
-        }
-        catch (e) {
-            console.error('Unable to patch facility contacts details', e.message)
+            case 'facility_registration_number':
+                facilityRegDataB['3'] = {
+                    registration_number: fieldArray[1]
+                }
+                break;
+            case 'license_number':
+                facilityRegDataA[fieldArray[0]] = fieldArray[1]
+                break;
+            case 'registration_number':
+                facilityRegDataA[fieldArray[0]] = fieldArray[1]
+                break;
+            case 'regulation_status':
+                facilityRegDataA[fieldArray[0]] = fieldArray[1]
+                break;
+            case 'regulatory_body':
+                facilityRegDataA[fieldArray[0]] = fieldArray[1]
+                break;
+            
+           
+    
         }
     })
 
 
+    // payload.push(facilityRegDataA)
+    // payload.push({
+    //     units: [{
+    //         unit: facilityRegDataB['0'].unit,
+    //         regulation_body_name: facilityRegDataB['1'].regulatory_body,
+    //         registration_number: facilityRegDataB['2'].registration_number,
+    //         license_number: facilityRegDataB['3'].license_number
+    //     }]
+    // })
+    
+    // console.log({payload})
 
 
-    window.sessionStorage.setItem('formId', 4);
+    // payload.forEach(data => {
+    //     try {
+    //         fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+    //             headers: {
+    //                 'Accept': 'application/json, text/plain, */*',
+    //                 'Content-Type': 'application/json;charset=utf-8'
 
-    setFormId(window.sessionStorage.getItem('formId'));
+    //             },
+    //             method,
+    //             body: JSON.stringify(data)
+    //         })
+
+    //             // Post the license document
+    //             .then(async resp => {
+
+    //                 const formData = new FormData()
+    //                 formData.append('name', `${facility_name} Facility license File`)
+    //                 formData.append('description', 'Facilities license file')
+    //                 formData.append('document_type', 'FACILITY_LICENSE')
+    //                 formData.append('facility_name', facility_name)
+    //                 formData.append('fyl', file ?? undefined)
+
+
+    //                 if (resp) {
+
+    //                     try {
+    //                         const resp = await fetch('/api/common/submit_form_data/?path=documents', {
+
+    //                             headers: {
+    //                                 'Accept': 'application/json, text/plain, */*',
+    //                             },
+    //                             method: 'POST',
+    //                             body: formData
+    //                         })
+
+    //                         return resp
+    //                     }
+    //                     catch (e) {
+    //                         console.error('Unable to Post License Document')
+    //                     }
+    //                 }
+    //             })
+
+    //     }
+    //     catch (e) {
+    //         console.error('Unable to patch facility contacts details', e.message)
+    //     }
+    // })
+
+
+
+
+    // window.sessionStorage.setItem('formId', 4);
+
+    // setFormId(window.sessionStorage.getItem('formId'));
 };
 
 // handleServiceSubmit
