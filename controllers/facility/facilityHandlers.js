@@ -304,7 +304,8 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
 // handleRegulationSubmit
 const handleRegulationSubmit = (event, stateSetters, method, file) => {
 
-    const [setFormId, facilityId, facility_name, facilityRegulationFormRef, facilityDeptOptions] = stateSetters
+
+    const [setFormId, facilityId, facility_name] = stateSetters
 
     event.preventDefault();
 
@@ -313,80 +314,123 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
     const facilityRegDataA = {};
     const facilityRegDataB = {};
 
-    const formData = new FormData(facilityRegulationFormRef.current)
 
-    // const elements = [...event.target];
+    const elements = [...event.target];
 
-    // console.log({formData, elements})
-
-    // const payload = []
+    const payload = []
 
 
-    // elements.forEach(({ name, value }) => {
-    //     switch (name) {
-    //         case 'license_number':
-    //             facilityRegDataA[name] = value
-    //             break;
-    //         case 'registration_number':
-    //             facilityRegDataA[name] = value
-    //             break;
-    //         case 'regulation_status':
-    //             facilityRegDataA[name] = value
-    //             break;
-    //         case 'regulatory_body':
-    //             facilityRegDataA[name] = value
-    //             break;
-    //         case 'facility_dept_name':
-    //             facilityRegDataB['0'] = {
-    //                 unit: value,
-    //             }
-    //             break;
-    //         case 'facility_dept_name-0':
-    //             facilityRegDataB['0'] = {
-    //                 unit: value,
-    //             }
-    //             break;
-    //         case 'facility_regulatory_body':
-    //             facilityRegDataB['1'] = {
-    //                 regulation_body_name: value,
-    //             }
-    //             break;
-    //         case 'facility_registration_number':
-    //             facilityRegDataB['2'] = {
-    //                 registration_number: value,
-    //             }
-    //             break;
-    //         case 'facility_license_number':
-    //             facilityRegDataB['3'] = {
-    //                 license_number: value,
-    //             }
-    //             break;
+    elements.forEach(({ name, value }) => {
+        switch (name) {
+            case 'license_number':
+                facilityRegDataA[name] = value
+                break;
+            case 'registration_number':
+                facilityRegDataA[name] = value
+                break;
+            case 'regulation_status':
+                facilityRegDataA[name] = value
+                break;
+            case 'regulatory_body':
+                facilityRegDataA[name] = value
+                break;
+            case 'facility_dept_name':
+                facilityRegDataB['0'] = {
+                    unit: value,
+                }
+                break;
+            case 'facility_regulatory_body':
+                facilityRegDataB['1'] = {
+                    regulation_body_name: value,
+                }
+                break;
+            case 'facility_registration_number':
+                facilityRegDataB['2'] = {
+                    registration_number: value,
+                }
+                break;
+            case 'facility_license_number':
+                facilityRegDataB['3'] = {
+                    license_number: value,
+                }
+                break;
 
 
-    //     }
+        }
 
-    // });
+    });
 
 
 
-    // payload.push(facilityRegDataA)
-    // payload.push({
-    //     units: [{
-    //         unit: facilityRegDataB['0'].unit,
-    //         regulation_body_name: facilityRegDataB['1'].regulation_body_name,
-    //         registration_number: facilityRegDataB['2'].registration_number,
-    //         license_number: facilityRegDataB['3'].license_number
-    //     }]
-    // })
-
-     
-
-    // console.log({formData})
+    payload.push(facilityRegDataA)
+    payload.push({
+        units: [{
+            unit: facilityRegDataB['0'].unit,
+            regulation_body_name: facilityRegDataB['1'].regulation_body_name,
+            registration_number: facilityRegDataB['2'].registration_number,
+            license_number: facilityRegDataB['3'].license_number
+        }]
+    })
 
 
+    payload.forEach(data => {
+        try {
+            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json;charset=utf-8'
 
-    // console.log({values: formData.values().map(v => v)})
+                },
+                method,
+                body: JSON.stringify(data)
+            })
+
+                // Post the license document
+                .then(async resp => {
+
+                    const formData = new FormData()
+                    formData.append('name', `${facility_name} Facility license File`)
+                    formData.append('description', 'Facilities license file')
+                    formData.append('document_type', 'FACILITY_LICENSE')
+                    formData.append('facility_name', facility_name)
+                    formData.append('fyl', file ?? undefined)
+
+
+                    if (resp) {
+
+                        try {
+                            const resp = await fetch('/api/common/submit_form_data/?path=documents', {
+
+                                headers: {
+                                    'Accept': 'application/json, text/plain, */*',
+                                },
+                                method: 'POST',
+                                body: formData
+                            })
+
+                            return resp
+                        }
+                        catch (e) {
+                            console.error('Unable to Post License Document')
+                        }
+                    }
+                })
+
+        }
+        catch (e) {
+            console.error('Unable to patch facility contacts details', e.message)
+        }
+    })
+
+
+
+
+    window.sessionStorage.setItem('formId', 4);
+
+    setFormId(window.sessionStorage.getItem('formId'));
+
    
+   /*
     const facilityDeptEntries = [...formData.entries()]
 
     const facilityDeptUnitEntries = facilityDeptEntries.filter(field =>  field[0].match(/^facility_.+$/) !== null)
@@ -394,10 +438,10 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
     const payload =
         ((obj, arr, entries) => {
         
-            for(let i = 0; i < entries.length; i++){
+            for(let i = 0; i < entries.length / 4; i++){
                 for(let col = 0; col < 4; col++){
-                    console.log(entries[col][0], entries[col][1])
-                    obj[entries[i][0]] = entries[i][1];
+                    console.log(entries[col][0], entries[col][0])
+                    obj[entries[col][0]] = entries[col][1];
 
                 }
                 arr.push(obj)
@@ -409,147 +453,92 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
     
 
     console.log({facilityDeptEntries, facilityDeptUnitEntries, payload})
-    // const payload = []
-
-    // let fArray = []
-
-    // facilityDeptEntries.forEach(fieldArray => {
-    //      fArray = [...fArray, ...fieldArray]
-    // })
-
-    // const evenNums = (l) => { const a = []; for(let i = 0; i < l; i++){ if(!((i % 2) == 0)) { continue; } else {a.push(i)}} return a;  }
-
-    // console.log({fArray, payload})
-
-    // // const facilityDepts = fArray.filter(field => field.match(/^facility_.+/) !== null)
-
-    // const facilityDeptsObj = ((arr, obj, ar) => {
-
-    //     evenNums(arr.length).forEach(num => {
-        
-    //     if(!Object.keys(obj).includes(arr[num])){
-    //         obj[arr[num]]=arr[num+1]
-    //     }else{
-    //         ar.push(obj)
-    //     }
-        
-    //     })
+    */
     
-    //     return ar
-    //     })(fArray, {}, [])
+    /* let fArray = []
 
-    // console.log({facilityDeptsObj})
+    facilityDeptEntries.forEach(fieldArray => {
+         fArray = [...fArray, ...fieldArray]
+    })
 
-    // facilityDeptEntries.forEach((fieldArray, i) => {
-    //     // console.log(fieldArray)
-    //     switch(fieldArray[0]){
-    //         case 'facility_unit':
-    //             facilityRegDataB['0'] = {
-    //                 unit: fieldArray[1]
-    //             }
-    //             break;
-    //         case 'facility_regulatory_body':
-    //             facilityRegDataB['1'] = {
-    //                 regulatory_body: fieldArray[1]
-    //             }
-    //             break;
-    //         case 'facility_license_number':
-    //             facilityRegDataB['2'] = {
-    //                 license_number: fieldArray[1]
-    //             }
-    //             break;
-    //         case 'facility_registration_number':
-    //             facilityRegDataB['3'] = {
-    //                 registration_number: fieldArray[1]
-    //             }
-    //             break;
-    //         case 'license_number':
-    //             facilityRegDataA[fieldArray[0]] = fieldArray[1]
-    //             break;
-    //         case 'registration_number':
-    //             facilityRegDataA[fieldArray[0]] = fieldArray[1]
-    //             break;
-    //         case 'regulation_status':
-    //             facilityRegDataA[fieldArray[0]] = fieldArray[1]
-    //             break;
-    //         case 'regulatory_body':
-    //             facilityRegDataA[fieldArray[0]] = fieldArray[1]
-    //             break;
+    const evenNums = (l) => { const a = []; for(let i = 0; i < l; i++){ if(!((i % 2) == 0)) { continue; } else {a.push(i)}} return a;  }
+
+    console.log({fArray, payload})
+
+    // const facilityDepts = fArray.filter(field => field.match(/^facility_.+/) !== null)
+
+    const facilityDeptsObj = ((arr, obj, ar) => {
+
+        evenNums(arr.length).forEach(num => {
+        
+        if(!Object.keys(obj).includes(arr[num])){
+            obj[arr[num]]=arr[num+1]
+        }else{
+            ar.push(obj)
+        }
+        
+        })
+    
+        return ar
+        })(fArray, {}, [])
+
+    console.log({facilityDeptsObj})
+
+    facilityDeptEntries.forEach((fieldArray, i) => {
+        // console.log(fieldArray)
+        switch(fieldArray[0]){
+            case 'facility_unit':
+                facilityRegDataB['0'] = {
+                    unit: fieldArray[1]
+                }
+                break;
+            case 'facility_regulatory_body':
+                facilityRegDataB['1'] = {
+                    regulatory_body: fieldArray[1]
+                }
+                break;
+            case 'facility_license_number':
+                facilityRegDataB['2'] = {
+                    license_number: fieldArray[1]
+                }
+                break;
+            case 'facility_registration_number':
+                facilityRegDataB['3'] = {
+                    registration_number: fieldArray[1]
+                }
+                break;
+            case 'license_number':
+                facilityRegDataA[fieldArray[0]] = fieldArray[1]
+                break;
+            case 'registration_number':
+                facilityRegDataA[fieldArray[0]] = fieldArray[1]
+                break;
+            case 'regulation_status':
+                facilityRegDataA[fieldArray[0]] = fieldArray[1]
+                break;
+            case 'regulatory_body':
+                facilityRegDataA[fieldArray[0]] = fieldArray[1]
+                break;
             
            
     
-    //     }
-    // })
+        }
+    })
 
 
-    // payload.push(facilityRegDataA)
-    // payload.push({
-    //     units: [{
-    //         unit: facilityRegDataB['0'].unit,
-    //         regulation_body_name: facilityRegDataB['1'].regulatory_body,
-    //         registration_number: facilityRegDataB['2'].registration_number,
-    //         license_number: facilityRegDataB['3'].license_number
-    //     }]
-    // })
+    payload.push(facilityRegDataA)
+    payload.push({
+        units: [{
+            unit: facilityRegDataB['0'].unit,
+            regulation_body_name: facilityRegDataB['1'].regulatory_body,
+            registration_number: facilityRegDataB['2'].registration_number,
+            license_number: facilityRegDataB['3'].license_number
+        }]
+    })
     
-    // console.log({payload})
+ 
+    */
 
-
-    // payload.forEach(data => {
-    //     try {
-    //         fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-    //             headers: {
-    //                 'Accept': 'application/json, text/plain, */*',
-    //                 'Content-Type': 'application/json;charset=utf-8'
-
-    //             },
-    //             method,
-    //             body: JSON.stringify(data)
-    //         })
-
-    //             // Post the license document
-    //             .then(async resp => {
-
-    //                 const formData = new FormData()
-    //                 formData.append('name', `${facility_name} Facility license File`)
-    //                 formData.append('description', 'Facilities license file')
-    //                 formData.append('document_type', 'FACILITY_LICENSE')
-    //                 formData.append('facility_name', facility_name)
-    //                 formData.append('fyl', file ?? undefined)
-
-
-    //                 if (resp) {
-
-    //                     try {
-    //                         const resp = await fetch('/api/common/submit_form_data/?path=documents', {
-
-    //                             headers: {
-    //                                 'Accept': 'application/json, text/plain, */*',
-    //                             },
-    //                             method: 'POST',
-    //                             body: formData
-    //                         })
-
-    //                         return resp
-    //                     }
-    //                     catch (e) {
-    //                         console.error('Unable to Post License Document')
-    //                     }
-    //                 }
-    //             })
-
-    //     }
-    //     catch (e) {
-    //         console.error('Unable to patch facility contacts details', e.message)
-    //     }
-    // })
-
-
-
-
-    // window.sessionStorage.setItem('formId', 4);
-
-    // setFormId(window.sessionStorage.getItem('formId'));
 };
 
 // handleServiceSubmit
