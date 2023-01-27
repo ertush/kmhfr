@@ -118,9 +118,7 @@ const Regulate = props => {
                             }
                         >
                             <div className="col-span-6 md:col-span-3">
-                                <h1 className="text-4xl tracking-tight font-bold leading-tight">
-                                    {facility?.official_name}
-                                </h1>
+                                <a href={`/facilities/${facility?.id}`} className="text-4xl tracking-tight hover:text-green-600 font-bold leading-tight">{facility?.official_name}</a>
                                 <div className="flex gap-2 items-center w-full justify-between">
                                     <span
                                         className={

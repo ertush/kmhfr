@@ -1022,7 +1022,7 @@ const EditFacility = (props) => {
                         {/* Header */}
                         <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (is_approved ? "border-green-600" : "border-green-600")}>
                             <div className="col-span-6 md:col-span-3">
-                                <h1 className="text-4xl tracking-tight font-bold leading-tight">{official_name}</h1>
+                                <a href={`/facilities/${id}`} className="text-4xl tracking-tight hover:text-green-600 font-bold leading-tight">{official_name}</a>
                                 <div className="flex gap-2 items-center w-full justify-between">
                                     <span className={"font-bold text-2xl " + (code ? "text-green-900" : "text-gray-400")}>#{code || "NO_CODE"}</span>
                                     <p className="text-gray-600 leading-tight">{keph_level_name && "KEPH " + keph_level_name}</p>
@@ -1616,6 +1616,26 @@ const EditFacility = (props) => {
                                                                 ref={countyRef}
                                                                 required
                                                                 placeholder="Select County"
+                                                                onChange={async (ev) => {
+                                                                    if( ev.value.length > 0){
+
+                                                                        // setCounty(String(ev.label).toLocaleUpperCase())
+
+                                                                        try{
+                                                                            const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
+
+                                                                            setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
+
+                                                                            
+                                                                        }
+                                                                        catch(e){
+                                                                            console.error('Unable to fetch sub_county options')
+                                                                            setSubCountyOpt(null)
+                                                                        }
+                                                                    }else{
+                                                                        return setSubCountyOpt(null)
+                                                                    }
+                                                                }}
                                                                 name="county_id" 
                                                                 className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                             </div>
@@ -1644,6 +1664,22 @@ const EditFacility = (props) => {
                                                                 options={subCountyOpt ?? constituencyOptions} 
                                                                 required
                                                                 placeholder="Select Constituency"
+                                                                onChange={async (ev) => {
+                                                                    if( ev.value.length > 0){
+                                                                        try{
+                                                                            const resp = await fetch(`/api/filters/ward/?sub_county=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
+
+                                                                            setWardNameOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
+
+                                                                        }
+                                                                        catch(e){
+                                                                            console.error('Unable to fetch sub_county options')
+                                                                            setWardNameOpt(null)
+                                                                        }
+                                                                    }else{
+                                                                        return setWardNameOpt(null)
+                                                                    }
+                                                                }}
                                                                 name="constituency_id" 
                                                                 className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                             </div>

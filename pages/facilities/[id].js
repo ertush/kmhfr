@@ -66,9 +66,11 @@ const Facility = (props) => {
 
   const [user, setUser] = useState(null);
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const [openCloseModal, setOpenCloseModal] = useState(true)
   const [isReasonRejected, setIsReasonRejected] = useState(false)
   const handleClose = () => setOpen(false);
+  const handleCloseModal = () => {setOpenCloseModal(false); setIsClosingFacility(false)};
 
 
   const [khisSynched, setKhisSynched] = useState(false);
@@ -79,6 +81,7 @@ const Facility = (props) => {
 
   const [isViewChangeLog, setIsViewChangeLog] = useState(false)
   const [changeLogData, setChangeLogData] = useState(null)
+  const [isClosingFacility, setIsClosingFacility] = useState(false)
 
 
 
@@ -91,9 +94,9 @@ const Facility = (props) => {
     if (userCtx) setUser(userCtx);
     
     return () => {
-    
+      setIsClosingFacility(false)
     };
-  }, []);
+  }, [isClosingFacility]);
 
 
 
@@ -105,6 +108,7 @@ const Facility = (props) => {
         <link rel="stylesheet" href="/assets/css/leaflet.css" />
       </Head>
 
+      <React.StrictMode>
       <MainLayout>
         <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
           {/* Closed Facility Modal */}
@@ -190,6 +194,86 @@ const Facility = (props) => {
                   </Box>
                   </Fade>
               </Modal>
+          }
+
+          {/* Modal for closing facility */}
+
+          {
+             isClosingFacility &&
+              <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              open={true}
+              onClose={handleCloseModal}
+              closeAfterTransition
+              slots={{backdrop:Backdrop}}
+             
+          >
+              <Fade in={true}>
+              <Box sx={
+                  {
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: 400,
+                      bgcolor: 'background.paper',
+                      borderRadius: '6px',
+                      borderLeft: 'solid 10px red',
+                      boxShadow: 24,
+                      p: 4,
+                  }
+              }>
+                  <span className="flex gap-2">
+                    <InformationCircleIcon className="w-8 h-8 text-red-500"/>
+                    <Typography id="transition-modal-title" variant="h6" component="h2">      
+                       Are you sure you want to close <strong>{facility?.official_name}</strong>
+                    </Typography>    
+                  </span>
+                  
+                  <div className="flex-col items-start">
+                    <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                      Please state the reason for closing This facility
+                    </Typography>
+                    <Formik 
+                    initialValues={
+                      {
+                        reason_close: ''
+                      }
+                    }
+                    onSubmit={/*({reason_close}) => {
+                    
+                      if(reason_close.includes('complete')){ // Reopeninig criteria will be updated soon
+                        setIsReasonRejected(false)
+                        router.push(`edit/${facility?.id}`)
+                      } else{
+                        setIsReasonRejected(true)
+                      }
+
+                      
+
+                    }*/() => null} >
+
+                      <Form className='my-3 flex-col gap-y-2'>
+                        <Field
+                        as='textarea'
+                        cols={'30'}
+                        rows={'6'}
+                        name='reason_close'
+                        className='border-2 border-gray-400 rounded'
+                        >
+                        </Field>
+                        <div className='flex justify-start gap-4 mt-4'>
+                            <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" type="submit">Close Facility</button>
+                            <button className="bg-indigo-500 text-white font-semibold rounded p-2 text-center" onClick={handleCloseModal}>Cancel</button>
+                        </div>
+                      </Form>
+                    </Formik>
+                  </div>
+                  
+              </Box>
+              </Fade>
+          </Modal>
           }
 
 
@@ -388,7 +472,7 @@ const Facility = (props) => {
                 </button>
                 }
                 <button
-                  onClick={() => window.alert("Edit")}
+                  onClick={() => {setIsClosingFacility(true) ; setOpenCloseModal(true)}}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                 >
                   Close
@@ -514,6 +598,7 @@ const Facility = (props) => {
 
 
       </MainLayout>
+      </React.StrictMode>
     </>
   );
 };

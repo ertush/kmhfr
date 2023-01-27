@@ -1,3 +1,5 @@
+import { letterSpacing } from "@mui/system";
+import { Col } from "antd";
 import router from "next/router";
 
 // handleBasicDetailsSubmit
@@ -387,69 +389,97 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
    
     const facilityDeptEntries = [...formData.entries()]
 
-    // const payload = ((obj, arr, entries) => {
-    //     for(let i in entries) obj[entries[i][0]] = entries[i][1]; arr.push(obj)
-    //     return arr
-    // })({}, [], facilityDeptEntries.filter(field => !(field[0].match(/.+_\d$/) !== null))) 
+    const facilityDeptUnitEntries = facilityDeptEntries.filter(field =>  field[0].match(/^facility_.+$/) !== null)
+
+    const payload =
+        ((obj, arr, entries) => {
+        
+            for(let i = 0; i < entries.length; i++){
+                for(let col = 0; col < 4; col++){
+                    console.log(entries[col][0], entries[col][1])
+                    obj[entries[i][0]] = entries[i][1];
+
+                }
+                arr.push(obj)
+            }
+
+            return arr
+
+        })({}, [], facilityDeptUnitEntries)
     
-    // payload.push(
-    //     ((obj, arr, entries) => {
-    //         // let _units = {}
-    //         for(let x = 0; x < 1; x++) {
 
-    //          for (let i = 0; i < (4 * (entries.filter(field => field[0].match(/^unit_\d$/) !== null).length)); i++) obj[entries[i][0]] = entries[i][1]; arr.push(obj)
+    console.log({facilityDeptEntries, facilityDeptUnitEntries, payload})
+    // const payload = []
 
-    //         }
+    // let fArray = []
 
-    //         // for( let l = 0; l < 4; l++){
-    //         //     _units[arr[0]] = arr[arr]
-    //         // }
-    //         return {units: arr}
-    //     })({}, [], facilityDeptEntries.filter(field => field[0].match(/.+_\d$/) !== null))
-    // )
+    // facilityDeptEntries.forEach(fieldArray => {
+    //      fArray = [...fArray, ...fieldArray]
+    // })
 
-    const payload = []
+    // const evenNums = (l) => { const a = []; for(let i = 0; i < l; i++){ if(!((i % 2) == 0)) { continue; } else {a.push(i)}} return a;  }
 
-    facilityDeptEntries.forEach((fieldArray, i) => {
-        console.log(fieldArray)
-        switch(fieldArray[0]){
-            case 'facility_unit':
-                facilityRegDataB['0'] = {
-                    unit: fieldArray[1]
-                }
-                break;
-            case 'facility_regulatory_body':
-                facilityRegDataB['1'] = {
-                    regulatory_body: fieldArray[1]
-                }
-                break;
-            case 'facility_license_number':
-                facilityRegDataB['2'] = {
-                    license_number: fieldArray[1]
-                }
-                break;
-            case 'facility_registration_number':
-                facilityRegDataB['3'] = {
-                    registration_number: fieldArray[1]
-                }
-                break;
-            case 'license_number':
-                facilityRegDataA[fieldArray[0]] = fieldArray[1]
-                break;
-            case 'registration_number':
-                facilityRegDataA[fieldArray[0]] = fieldArray[1]
-                break;
-            case 'regulation_status':
-                facilityRegDataA[fieldArray[0]] = fieldArray[1]
-                break;
-            case 'regulatory_body':
-                facilityRegDataA[fieldArray[0]] = fieldArray[1]
-                break;
+    // console.log({fArray, payload})
+
+    // // const facilityDepts = fArray.filter(field => field.match(/^facility_.+/) !== null)
+
+    // const facilityDeptsObj = ((arr, obj, ar) => {
+
+    //     evenNums(arr.length).forEach(num => {
+        
+    //     if(!Object.keys(obj).includes(arr[num])){
+    //         obj[arr[num]]=arr[num+1]
+    //     }else{
+    //         ar.push(obj)
+    //     }
+        
+    //     })
+    
+    //     return ar
+    //     })(fArray, {}, [])
+
+    // console.log({facilityDeptsObj})
+
+    // facilityDeptEntries.forEach((fieldArray, i) => {
+    //     // console.log(fieldArray)
+    //     switch(fieldArray[0]){
+    //         case 'facility_unit':
+    //             facilityRegDataB['0'] = {
+    //                 unit: fieldArray[1]
+    //             }
+    //             break;
+    //         case 'facility_regulatory_body':
+    //             facilityRegDataB['1'] = {
+    //                 regulatory_body: fieldArray[1]
+    //             }
+    //             break;
+    //         case 'facility_license_number':
+    //             facilityRegDataB['2'] = {
+    //                 license_number: fieldArray[1]
+    //             }
+    //             break;
+    //         case 'facility_registration_number':
+    //             facilityRegDataB['3'] = {
+    //                 registration_number: fieldArray[1]
+    //             }
+    //             break;
+    //         case 'license_number':
+    //             facilityRegDataA[fieldArray[0]] = fieldArray[1]
+    //             break;
+    //         case 'registration_number':
+    //             facilityRegDataA[fieldArray[0]] = fieldArray[1]
+    //             break;
+    //         case 'regulation_status':
+    //             facilityRegDataA[fieldArray[0]] = fieldArray[1]
+    //             break;
+    //         case 'regulatory_body':
+    //             facilityRegDataA[fieldArray[0]] = fieldArray[1]
+    //             break;
             
            
     
-        }
-    })
+    //     }
+    // })
 
 
     // payload.push(facilityRegDataA)
