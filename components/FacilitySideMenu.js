@@ -10,7 +10,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
     const userPermissions = useContext(PermissionContext)
 
-    console.log({userPermissions})
+
 
     const quickFilters = [
         {

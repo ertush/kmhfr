@@ -34,6 +34,7 @@ import { PermissionContext } from "../../providers/permissions";
 import { hasPermission } from "../../utils/checkPermissions";
 import { UserGroupContext } from "../../providers/userGroup";
 import { belongsToUserGroup } from "../../utils/checkUserGroup";
+import { useAlert } from "react-alert";
 
 
 const Facility = (props) => {
@@ -66,9 +67,11 @@ const Facility = (props) => {
 
   const [user, setUser] = useState(null);
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const [openCloseModal, setOpenCloseModal] = useState(true)
   const [isReasonRejected, setIsReasonRejected] = useState(false)
   const handleClose = () => setOpen(false);
+  const handleCloseModal = () => {setOpenCloseModal(false); setIsClosingFacility(false)};
 
 
   const [khisSynched, setKhisSynched] = useState(false);
@@ -79,8 +82,11 @@ const Facility = (props) => {
 
   const [isViewChangeLog, setIsViewChangeLog] = useState(false)
   const [changeLogData, setChangeLogData] = useState(null)
+  const [isClosingFacility, setIsClosingFacility] = useState(false)
 
 
+  const _ = require('underscore')
+  const alert = useAlert()
 
 
   
@@ -89,11 +95,10 @@ const Facility = (props) => {
   useEffect(() => {
    
     if (userCtx) setUser(userCtx);
-    
+  
     return () => {
-    
     };
-  }, []);
+  }, [isClosingFacility]);
 
 
 
@@ -154,20 +159,42 @@ const Facility = (props) => {
                         <Formik 
                         initialValues={
                           {
-                            reason_reopen: ''
+                            closing_reason: ''
                           }
                         }
-                        onSubmit={({reason_reopen}) => {
-                        
-                          if(reason_reopen.includes('complete')){ // Reopeninig criteria will be updated soon
-                            setIsReasonRejected(false)
-                            router.push(`edit/${facility?.id}`)
-                          } else{
-                            setIsReasonRejected(true)
-                          }
+                        onSubmit={async ({closing_reason}) => {
+                    
+                          try {
+                            const resp = await fetch(`/api/common/submit_form_data?path=close_facility&id=${facility?.id}`, {
+                              headers: {
+                                  'Accept': 'application/json, text/plain, */*',
+                                  'Content-Type': 'application/json;charset=utf-8'
+                  
+                              },
+                              method: 'POST',
+                              body: JSON.stringify({
+                                closed: false,
+                                closing_reason
+                              })
+                          })
 
+                         
+                         
+
+                          if(resp.ok){
+                              alert.success("Facility Reopened successfully")
+                              _.defer(() => {
+                                handleClose()
+
+                                router.push('/facilities')
+                              })
                           
-
+                          }
+    
+                          }catch(e){
+                             console.error(e.message)
+                          }
+    
                         }} >
 
                           <Form className='my-3 flex-col gap-y-2'>
@@ -175,13 +202,13 @@ const Facility = (props) => {
                             as='textarea'
                             cols={'30'}
                             rows={'6'}
-                            name='reason_reopen'
+                            name='closing_reason'
                             className='border-2 border-gray-400 rounded'
                             >
                             </Field>
                             <div className='flex justify-start gap-4 mt-4'>
                                 <button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="submit">Reopen</button>
-                                <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" onClick={() => router.push('/facilities')}>Cancel</button>
+                                <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" onClick={handleClose}>Cancel</button>
                             </div>
                           </Form>
                         </Formik>
@@ -190,6 +217,116 @@ const Facility = (props) => {
                   </Box>
                   </Fade>
               </Modal>
+          }
+
+          {/* Modal for closing facility */}
+
+          {
+             isClosingFacility &&
+              <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              open={true}
+              onClose={handleCloseModal}
+              closeAfterTransition
+              slots={{backdrop:Backdrop}}
+             
+          >
+              <Fade in={true}>
+              <Box sx={
+                  {
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: 400,
+                      bgcolor: 'background.paper',
+                      borderRadius: '6px',
+                      borderLeft: 'solid 10px red',
+                      boxShadow: 24,
+                      p: 4,
+                  }
+              }>
+                  <span className="grid grid-cols-4 gap-2">
+                    <InformationCircleIcon className="w-12 h-12 text-red-500 col-start-1"/>
+                    <Typography id="transition-modal-title" variant="h6" component="h2" className="col-start-2 col-span-3">      
+                       Are you sure you want to close <strong>{facility?.official_name}</strong>
+                    </Typography>    
+                  </span>
+                  
+                  <div className="flex-col items-start">
+                  <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                      Please state the reason for closing this facility
+                    </Typography>
+                    <Formik 
+                    initialValues={
+                      {
+                        closing_reason: ''
+                      }
+                    }
+                    onSubmit={async ({closing_reason}) => {
+                    
+                      try {
+                        const resp = await fetch(`/api/common/submit_form_data?path=close_facility&id=${facility?.id}`, {
+                          headers: {
+                              'Accept': 'application/json, text/plain, */*',
+                              'Content-Type': 'application/json;charset=utf-8'
+              
+                          },
+                          method: 'POST',
+                          body: JSON.stringify({
+                            closed: true,
+                            closing_reason
+                          })
+                      })
+                    
+                     
+                        
+                      if(resp.ok){
+                          alert.success("Facility Closed successfully")
+                          _.defer(() => {
+                            handleCloseModal()
+
+                            router.push('/facilities?qf=closed&closed=true')
+                          })
+                      
+                      }
+
+                      }catch(e){
+                         console.error(e.message)
+                      }
+
+                    }} >
+
+                      <Form className='my-3 flex-col gap-y-2'>
+                        <Field
+                        as='textarea'
+                        cols={'30'}
+                        rows={'6'}
+                        name='closing_reason'
+                        className='border-2 border-gray-400 rounded'
+                        >
+                        </Field>
+
+                        <div className="grid grid-rows-1 gap-2 mt-2">
+                          <Typography>
+                            Closing Date: {new Date().toLocaleDateString()} 
+                          </Typography>
+
+                        </div>
+
+                        <div className='flex justify-start gap-4 mt-4'>
+                            <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" type="submit">Close Facility</button>
+                            <button className="bg-indigo-500 text-white font-semibold rounded p-2 text-center" onClick={handleCloseModal}>Cancel</button>
+                        </div>
+                      </Form>
+                    </Formik>
+                  </div>
+                  
+                  
+              </Box>
+              </Fade>
+          </Modal>
           }
 
 
@@ -388,7 +525,7 @@ const Facility = (props) => {
                 </button>
                 }
                 <button
-                  onClick={() => window.alert("Edit")}
+                  onClick={() => setIsClosingFacility(true)}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                 >
                   Close

@@ -153,6 +153,11 @@ export default async function submitFormData(req, res) {
                 contentType = 'application/json;charset=utf-8';
                 method = 'POST';
                 break
+            case `close_facility`:
+                url = `${API_URL}/facilities/facilities/${req.query.id}`
+                contentType = 'application/json;charset=utf-8';
+                method = 'PATCH';
+                break
             default:
 
 
