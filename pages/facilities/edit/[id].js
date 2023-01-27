@@ -38,7 +38,7 @@ import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
 import EditListWithCount from '../../../components/EditListWithCount';
 import FacilityUpgradeModal from '../../../components/FacilityUpgradeModal'
-
+import {FacilityDeptContext} from '../../../pages/facilities/add'
 
 
 const _ = require('underscore') 
@@ -842,9 +842,9 @@ const EditFacility = (props) => {
             regulatoryStateRef.current.state.value = regulationStateOptions.filter(({label}) => label === regulatory_status_name)[0] || ''
         }
         
-        if(facilityDeptNameRef.current ){
-            facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
-        }
+        // if(facilityDeptNameRef.current ){
+        //     facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
+        // }
 
         if(otherContactRef.current ){
             otherContactRef.current.state.value = _officerName.contacts && _officerName.contacts.length > 0 ? _officerName?.contacts[0].type : ''
@@ -1022,7 +1022,7 @@ const EditFacility = (props) => {
                         {/* Header */}
                         <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (is_approved ? "border-green-600" : "border-green-600")}>
                             <div className="col-span-6 md:col-span-3">
-                                <h1 className="text-4xl tracking-tight font-bold leading-tight">{official_name}</h1>
+                                <a href={`/facilities/${id}`} className="text-4xl tracking-tight hover:text-green-600 font-bold leading-tight">{official_name}</a>
                                 <div className="flex gap-2 items-center w-full justify-between">
                                     <span className={"font-bold text-2xl " + (code ? "text-green-900" : "text-gray-400")}>#{code || "NO_CODE"}</span>
                                     <p className="text-gray-600 leading-tight">{keph_level_name && "KEPH " + keph_level_name}</p>
@@ -1616,6 +1616,26 @@ const EditFacility = (props) => {
                                                                 ref={countyRef}
                                                                 required
                                                                 placeholder="Select County"
+                                                                onChange={async (ev) => {
+                                                                    if( ev.value.length > 0){
+
+                                                                        // setCounty(String(ev.label).toLocaleUpperCase())
+
+                                                                        try{
+                                                                            const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
+
+                                                                            setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
+
+                                                                            
+                                                                        }
+                                                                        catch(e){
+                                                                            console.error('Unable to fetch sub_county options')
+                                                                            setSubCountyOpt(null)
+                                                                        }
+                                                                    }else{
+                                                                        return setSubCountyOpt(null)
+                                                                    }
+                                                                }}
                                                                 name="county_id" 
                                                                 className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                             </div>
@@ -1644,6 +1664,22 @@ const EditFacility = (props) => {
                                                                 options={subCountyOpt ?? constituencyOptions} 
                                                                 required
                                                                 placeholder="Select Constituency"
+                                                                onChange={async (ev) => {
+                                                                    if( ev.value.length > 0){
+                                                                        try{
+                                                                            const resp = await fetch(`/api/filters/ward/?sub_county=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
+
+                                                                            setWardNameOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
+
+                                                                        }
+                                                                        catch(e){
+                                                                            console.error('Unable to fetch sub_county options')
+                                                                            setWardNameOpt(null)
+                                                                        }
+                                                                    }else{
+                                                                        return setWardNameOpt(null)
+                                                                    }
+                                                                }}
                                                                 name="constituency_id" 
                                                                 className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                             </div>
@@ -2277,51 +2313,27 @@ const EditFacility = (props) => {
 
                                                 <hr className='col-span-4'/>
 
-                                                {console.log({facility_units})}
+                                              
                                                 {/* Name */}
-                                                {/* <Select options={facilityDeptOptions || []} 
-                                                    required
-                                                    placeholder="Select Name"
-                                                    ref={facilityDeptNameRef}
-                                                    onChange={
-                                                        e => {
-                                                            if(regBodyRef.current){
-                                                            
-                                                                regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
-                                                            }
-                                                        }
-                                                    }
-                                                    name="facility_dept_name" 
-                                                    className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" /> */}
-                                                
-                                                {/* Regulatory Body */}
-                                                {/* <input type="text" ref={regBodyRef} disabled name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
-
-                                                {/* License No. */}
-                                                {/* <Field type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
-
-                                                {/* <div className='col-start-4 flex items-center space-x-2 w-full'> */}
-                                                    {/* Reg No. */}
-                                                    {/* <Field type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" /> */}
-                                                
-                                                    {/* Delete Btn */}
-
-                                                    {/* <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button> */}
-                                                {/* </div> */}
+                                          
                                                 <div className='flex-col items-start justify-start gap-y-4'>
+                                                
                                                 {
-                                                    facility_units.map(({id, unit_name, registration_number, license_number}, i) => (
+                                                    facility_units.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
+                                                
                                                         <FacilityDeptRegulationFactory
-                                                        key={i}
-                                                        index={i}
-                                                        isRegBodyChange={null}
-                                                        setIsRegBodyChange={() => null}
-                                                        setFacilityDepts={() => null}
-                                                        regNo={registration_number}
-                                                        licenseNo={license_number}
-                                                        facilityDeptId={id}
-                                                        facilityDeptOptions={[{label:unit_name, value:id}]}
+                                                            key={i}
+                                                            index={i}
+                                                            isRegBodyChange={null}
+                                                            setIsRegBodyChange={() => null}
+                                                            setFacilityDepts={() => null}
+                                                            regNo={registration_number}
+                                                            licenseNo={license_number}
+                                                            facilityDeptRegBody={regulating_body_name}
+                                                            facilityDeptValue={[{value:id, label:unit_name}]}
+                                                            facilityDeptOptions={facilityDeptOptions}
                                                     />
+                                                
                                                     ))
                                                     
                                                 }

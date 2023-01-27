@@ -63,7 +63,7 @@ function FacilityDetailsTabs({ facility }) {
                 <p className="text-black font-medium text-base flex">
                   {facility?.closed ? (
                     <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
-                      Closed {facility?.closed_date || ""}
+                      Closed on {new Date(facility?.closed_date).toLocaleDateString() || ""}
                     </span>
                   ) : (
                     <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
@@ -78,9 +78,7 @@ function FacilityDetailsTabs({ facility }) {
                     Facility closure reason
                   </label>
                   <p className="text-black font-medium text-base">
-                    {facility?.closed_date && (
-                      <>{facility?.closed_date}. </>
-                    )}{" "}
+                    
                     {facility?.closing_reason || ""}
                   </p>
                 </div>
