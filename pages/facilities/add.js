@@ -1529,30 +1529,50 @@ function AddFacility(props) {
 													</>
 												);
 											case 1:
-												// Geolocation Form
+											// Geolocation Form
 
-												const handleGeolocationPrevious = (event) => {
-													event.preventDefault();
-													window.sessionStorage.setItem('formId', 0);
+											const handleGeolocationPrevious = (event) => {
+												event.preventDefault();
+												window.sessionStorage.setItem('formId', 0);
 
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
+												setFormId(window.sessionStorage.getItem('formId'));
+											};
 
-												return (
-													<>
-														<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-															Geolocation Details
-														</h4>
-														<form
-															name='geolocation_form'
-															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId], 'POST')}>
-															{/* Collection Date */}
-															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+											return (
+												<>
+													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														Geolocation Details
+													</h4>
+													<form
+														name='geolocation_form'
+														className='flex flex-col w-full items-start justify-start gap-3'
+														onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId])}>
+														{/* Collection Date */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<label
+																htmlFor='collection_date'
+																className='text-gray-600 capitalize text-sm'>
+																Collection date:
+																<span className='text-medium leading-12 font-semibold'>
+																	{' '}
+																	*
+																</span>
+															</label>
+															<input
+																required
+																type='date'
+																name='collection_date'
+																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+															/>
+														</div>
+
+														{/* Lon/Lat */}
+														<div className='grid grid-cols-2 gap-4 place-content-start w-full'>
+															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
 																<label
-																	htmlFor='collection_date'
+																	htmlFor='longitude'
 																	className='text-gray-600 capitalize text-sm'>
-																	Collection date:
+																	Longitude
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
 																		*
@@ -1560,88 +1580,68 @@ function AddFacility(props) {
 																</label>
 																<input
 																	required
-																	type='date'
-																	name='collection_date'
+																	type='decimal'
+																	name='longitude'
+																	onChange={ev => setLongitude(ev.target.value)}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
 
-															{/* Lon/Lat */}
-															<div className='grid grid-cols-2 gap-4 place-content-start w-full'>
-																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
-																	<label
-																		htmlFor='longitude'
-																		className='text-gray-600 capitalize text-sm'>
-																		Longitude
-																		<span className='text-medium leading-12 font-semibold'>
-																			{' '}
-																			*
-																		</span>
-																	</label>
-																	<input
-																		required
-																		type='decimal'
-																		name='longitude'
-																		onChange={ev => setLongitude(ev.target.value)}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
-
-																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
-																	<label
-																		htmlFor='latitude'
-																		className='text-gray-600 capitalize text-sm'>
-																		Latitude
-																		<span className='text-medium leading-12 font-semibold'>
-																			{' '}
-																			*
-																		</span>
-																	</label>
-																	<input
-																		required
-																		type='decimal'
-																		name='latitude'
-																		onChange={ev => setLatitude(ev.target.value)}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
-															<>{coordinatesError && <Alert severity="error" sx={{width:'100%'}}> Please enter the right coordinates</Alert>}</>
-															</div>
-
-															{/* Ward Geo Map */}
-															<div className='w-full h-auto'>																		
-																<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																	{
-																		 geoJSON &&
-
-																		<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
-																
-																	}	
-																	</div>
-															</div>
-
-															{/* Next/Previous Form  */}
-															<div className='flex justify-between items-center w-full'>
-																<button
-																	onClick={handleGeolocationPrevious}
-																	className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																	<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																	<span className='text-medium font-semibold text-black '>
-																		Basic Details
+															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
+																<label
+																	htmlFor='latitude'
+																	className='text-gray-600 capitalize text-sm'>
+																	Latitude
+																	<span className='text-medium leading-12 font-semibold'>
+																		{' '}
+																		*
 																	</span>
-																</button>
-																<button
-																	type='submit'
-																	className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																	<span className='text-medium font-semibold text-white'>
-																		Facility Contacts
-																	</span>
-																	<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-																</button>
+																</label>
+																<input
+																	required
+																	type='decimal'
+																	name='latitude'
+																	onChange={ev => setLatitude(ev.target.value)}
+																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																/>
 															</div>
-														</form>
-													</>
-												);
+														<>{coordinatesError && <Alert severity="error" sx={{width:'100%'}}> Please enter the right coordinates</Alert>}</>
+														</div>
+
+														{/* Ward Geo Map */}
+														<div className='w-full h-auto'>																		
+															<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
+																{
+																	 geoJSON &&
+
+																	<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
+															
+																}	
+																</div>
+														</div>
+
+														{/* Next/Previous Form  */}
+														<div className='flex justify-between items-center w-full'>
+															<button
+																onClick={handleGeolocationPrevious}
+																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
+																<span className='text-medium font-semibold text-black '>
+																	Basic Details
+																</span>
+															</button>
+															<button
+																type='submit'
+																className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+																<span className='text-medium font-semibold text-white'>
+																	Facility Contacts
+																</span>
+																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+															</button>
+														</div>
+													</form>
+												</>
+											);
 											case 2:
 												// Facility Contacts Form
 
@@ -1792,7 +1792,7 @@ function AddFacility(props) {
 														<form
 															className='flex flex-col w-full items-start justify-start gap-3'
 															name='facility_contacts_form'
-															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId], 'POST')}>
+															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId])}>
 															{/* Contacts */}
 
 															<div

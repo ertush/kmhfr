@@ -1,7 +1,6 @@
-import router from "next/router";
 
 // handleBasicDetailsSubmit
-const handleBasicDetailsSubmit = async (event, stateSetters, file) => {
+const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
 
     const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef] = stateSetters
 
@@ -15,18 +14,18 @@ const handleBasicDetailsSubmit = async (event, stateSetters, file) => {
 
 
     _formData.forEach((v, k) => {
-
-        _payload[k] = (() => {
+        
+        _payload [k] = (() => {
             // Accomodates format of facility checklist document
             if (k === "facility_checklist_document") {
-                return { fileName: v.name }
+                return {fileName: v.name}
             }
 
-            if (v.match(/^true$/) !== null) {
+            if(v.match(/^true$/) !== null) {
                 return Boolean(v)
             }
 
-            if (v.match(/^false$/) !== null) {
+            if(v.match(/^false$/) !== null) {
                 return Boolean(false)
             }
 
@@ -37,80 +36,82 @@ const handleBasicDetailsSubmit = async (event, stateSetters, file) => {
 
     // Add officer in charge to payload8
     _payload['officer_in_charge'] = {
-        name: '',
-        reg_no: '',
-        contacts: [
+        name:'',
+        reg_no:'',
+        contacts:[
             {
-                type: '',
-                contact: ''
+                type:'',
+                contact:''
             }
         ]
     }
 
 
 
-    if (method === 'PATCH') {
+    if(method === 'PATCH'){
         _payload['sub_county'] = _formData.get('sub_county_id');
     }
 
 
+
+
     // Post Facility Basic Details
-    try {
+    try{
         fetch('/api/common/submit_form_data/?path=facilities', {
-            headers: {
+            headers:{
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-
+                
             },
             method,
             body: JSON.stringify(_payload)
         })
 
-            // Post Checklist document
-            .then(async resp => {
+        // Post Checklist document
+        .then(async resp => {
 
-                const { id, ward } = (await resp.json())
+            const {id, ward} = (await resp.json())
 
-                _id = id
-                _ward = ward
+            _id = id
+            _ward = ward
 
-                const formData = new FormData()
-                formData.append('name', `${_payload['official_name']} Facility Checklist File`)
-                formData.append('description', 'Facilities checklist file')
-                formData.append('document_type', 'Facility_ChecKList')
-                formData.append('facility_name', _payload['official_name'])
-                formData.append('fyl', file ?? undefined)
+            const formData = new FormData()
+            formData.append('name', `${_payload['official_name']} Facility Checklist File`)
+            formData.append('description', 'Facilities checklist file')
+            formData.append('document_type', 'Facility_ChecKList')
+            formData.append('facility_name', _payload['official_name'])
+            formData.append('fyl', file ?? undefined)
+            
+    
+            if(resp){
 
+                try {
+                    const resp = await fetch('/api/common/submit_form_data/?path=documents', {
 
-                if (resp) {
+                        headers:{
+                            'Accept': 'application/json, text/plain, */*',
+                        },
+                        method:'POST',
+                        body: formData
+                    })
 
-                    try {
-                        const resp = await fetch('/api/common/submit_form_data/?path=documents', {
-
-                            headers: {
-                                'Accept': 'application/json, text/plain, */*',
-                            },
-                            method: 'POST',
-                            body: formData
-                        })
-
-                        return resp
-                    }
-                    catch (e) {
-                        console.error('Unable to Post Checklist Document')
-                    }
+                    return resp
                 }
-            })
-            //  fetch data for Geolocation form
-            .then(async (resp) => {
-                if (resp) {
+                catch(e){
+                    console.error('Unable to Post document')
+                }
+            }
+        })
+        //  fetch data for Geolocation form
+        .then(async (resp) => {
+            if(resp){
 
-
+                                                                            
                     setFacilityId(_id) //set facility Id
-
+                    
                     let _data
-
-                    try {
+                                                                    
+                    try{
                         const response = await fetch(`/api/facility/get_facility/?path=wards&id=${_ward}`)
 
                         _data = await response.json()
@@ -118,47 +119,47 @@ const handleBasicDetailsSubmit = async (event, stateSetters, file) => {
                         setFacilityCoordinates(_data.ward_boundary.geometry.coordinates)
                         setGeoJSON(JSON.parse(JSON.stringify(_data?.ward_boundary)))
 
-                        const [lng, lat] = _data?.ward_boundary.properties.center.coordinates
+                        const [lng, lat] = _data?.ward_boundary.properties.center.coordinates 
 
                         setCenter(JSON.parse(JSON.stringify([lat, lng])))
                         setWardName(_data?.name)
 
-
-                    } catch (e) {
+                    
+                    }catch(e){
                         console.error(e.message)
                         return {
-                            error: e.message,
-                            id: null
+                            error:e.message,
+                            id:null
                         }
                     }
-
-                }
+                
             }
+        }
+            
+        )
 
-            )
 
-
-    } catch (e) {
+    }catch(e){
         console.error(e.message)
         return {
-            error: e.message,
-            id: null
+            error:e.message,
+            id:null
         }
     }
 
-
+    
 
     // Change form Id
-    window.sessionStorage.setItem('formId', 1);
+    window.sessionStorage.setItem('formId', 1); 
 
     setFormId(window.sessionStorage.getItem('formId'));
 };
 
 // handleGeolocationSubmit
-const handleGeolocationSubmit = (event, stateSetters, method) => {
+const handleGeolocationSubmit = (event, stateSetters) => {
 
     const [setFormId, facilityId] = stateSetters
-
+    
     event.preventDefault();
 
     const geolocationData = {};
@@ -166,23 +167,23 @@ const handleGeolocationSubmit = (event, stateSetters, method) => {
     const elements = [...event.target];
 
     elements.forEach(({ name, value }) => {
-
+        
         geolocationData[name] = (() => {
             switch (name) {
                 case 'collection_date':
-                    return new Date(value)
+                    return  new Date(value)
                 case 'latitude':
-                    return value.match(/^\-$/) !== null ? 0.000000 : value
+                    return  value.match(/^\-$/) !== null ? 0.000000 : value
                 case 'longitude':
-                    return value.match(/^\-$/) !== null ? 0.000000 : value
+                    return  value.match(/^\-$/) !== null ? 0.000000 : value
                 default:
 
                     return value
             }
-        })()
+        })() 
     });
 
-
+    
 
     geolocationData['facility'] = facilityId ?? ''
 
@@ -194,28 +195,28 @@ const handleGeolocationSubmit = (event, stateSetters, method) => {
     // Set missing geolocationData i.e coordinates & facility
 
     geolocationData['coordinates'] = {
-        coordinates: [
+        coordinates : [														
             geolocationData.longitude,
             geolocationData.latitude
         ],
         type: 'Point'
     }
 
-
+    
     // Post Geolocation Details
 
-    try {
+    try{
         fetch('/api/common/submit_form_data/?path=gis', {
-            headers: {
+            headers:{
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-
+                
             },
-            method,
-            body: JSON.stringify(geolocationData).replace(',"":""', '')
+            method: 'POST',
+            body: JSON.stringify(geolocationData).replace(',"":""','')
         })
     }
-    catch (e) {
+    catch(e){
         console.error('Unable to post geolocation details')
     }
 
@@ -225,7 +226,7 @@ const handleGeolocationSubmit = (event, stateSetters, method) => {
 };
 
 // handleFacilityContactsSubmit
-const handleFacilityContactsSubmit = (event, stateSetters, method) => {
+const handleFacilityContactsSubmit = (event, stateSetters) => {
 
     const [setFormId, facilityId] = stateSetters
     event.preventDefault();
@@ -235,12 +236,12 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
     const elements = [...event.target];
 
     elements.forEach(({ name, value }) => {
-
-        contactFormData[name] = value
+        
+        contactFormData[name] = value 
     });
 
 
-    const payload = {
+    const payload  = {
         contacts: [
             {
                 contact: contactFormData['contact'],
@@ -256,20 +257,20 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
     }
 
 
-    try {
+    try{
 
-        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+        fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
 
-            headers: {
+            headers:{
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-
+                
             },
-            method,
-            body: JSON.stringify(payload).replace(',"":""', '')
+            method: 'POST',
+            body: JSON.stringify(payload).replace(',"":""','')
         })
     }
-    catch (e) {
+    catch(e){
         console.error('Unable to patch facility contacts details', e.message)
     }
 
@@ -282,7 +283,7 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
         'contact_details_others'
     );
 
-
+    
 
     if (dropDowns.length > 0) {
         dropDowns.forEach((dropDown) => {
@@ -300,7 +301,7 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
 };
 
 // handleRegulationSubmit
-const handleRegulationSubmit = (event, stateSetters, method, file) => {
+const handleRegulationSubmit = (event, stateSetters, file) => {
 
     event.preventDefault()
 
@@ -353,7 +354,7 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
 
     })(filteredDeptUnitEntries, filteredDeptOtherEntries)
 
-    console.log({payload}) // debug
+    // console.log({payload}) // debug
 
 
     payload.forEach(data => {
@@ -413,6 +414,7 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
     setFormId(window.sessionStorage.getItem('formId'));
 
 };
+
 
 // handleServiceSubmit
 const handleServiceSubmit = async (stateSetters, facilityId) => {
