@@ -263,6 +263,7 @@ function AddFacility(props) {
 
 	//Form Refs
 	const facilityRegulationFormRef = useRef(null)
+	const facilityContactsFormRef = useRef(null)
 
   
 
@@ -1790,9 +1791,10 @@ function AddFacility(props) {
 															Facility Contact
 														</h4>
 														<form
+															ref={facilityContactsFormRef}
 															className='flex flex-col w-full items-start justify-start gap-3'
 															name='facility_contacts_form'
-															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId])}>
+															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId, facilityContactsFormRef])}>
 															{/* Contacts */}
 
 															<div

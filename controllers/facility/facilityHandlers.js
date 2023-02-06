@@ -228,38 +228,38 @@ const handleGeolocationSubmit = (event, stateSetters) => {
 // handleFacilityContactsSubmit
 const handleFacilityContactsSubmit = (event, stateSetters) => {
 
-    const [setFormId, facilityId] = stateSetters
     event.preventDefault();
-
+    const [setFormId, facilityId, facilityContactsFormRef] = stateSetters
+    
     const contactFormData = {};
 
-    const elements = [...event.target];
+    const formData = new FormData(facilityContactsFormRef.current)
 
-    elements.forEach(({ name, value }) => {
-        
-        contactFormData[name] = value 
-    });
+    const contactEntries = [...formData.entries()]
 
+    for (let i in contactEntries) contactFormData[contactEntries[i][0]] = contactEntries[i][1];
 
     const payload  = {
-        contacts: [
-            {
-                contact: contactFormData['contact'],
-                contact_type: contactFormData['contact_type']
+            contacts: [
+                {
+                    contact: contactFormData['contact'],
+                    contact_type: contactFormData['contact_type']
+                }
+            ],
+            officer_in_charge: {
+                name: contactFormData['name'],
+                reg_no: contactFormData['reg_no'],
+                title: contactFormData['title']
+    
             }
-        ],
-        officer_in_charge: {
-            name: contactFormData['name'],
-            reg_no: contactFormData['reg_no'],
-            title: contactFormData['title']
-
-        }
     }
 
 
+ 
+
     try{
 
-        fetch(`/api/common/submit_form_data/?path=facility_data&id=${facilityId}`, {
+        fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
 
             headers:{
                 'Accept': 'application/json, text/plain, */*',
@@ -276,26 +276,7 @@ const handleFacilityContactsSubmit = (event, stateSetters) => {
 
     window.sessionStorage.setItem('formId', 3);
 
-    const dropDowns = document.getElementsByName(
-        'dropdown_contact_types'
-    );
-    const inputs = document.getElementsByName(
-        'contact_details_others'
-    );
 
-    
-
-    if (dropDowns.length > 0) {
-        dropDowns.forEach((dropDown) => {
-            dropDown.remove();
-        });
-    }
-
-    if (inputs.length > 0) {
-        inputs.forEach((input) => {
-            input.remove();
-        });
-    }
 
     setFormId(window.sessionStorage.getItem('formId'));
 };
