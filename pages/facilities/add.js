@@ -33,7 +33,7 @@ import {
 } from '@heroicons/react/solid';
 // import { XCircleIcon } from '@heroicons/react/outline';
 import FacilityDeptRegulationFactory from '../../components/generateFacilityDeptRegulation'
-
+import FacilityOfficerFactory from '../../components/generateOfficerContacts';
 // Package imports
 
 import Select from 'react-select';
@@ -263,6 +263,7 @@ function AddFacility(props) {
 
 	//Form Refs
 	const facilityRegulationFormRef = useRef(null)
+	const facilityContactsFormRef = useRef(null)
 
   
 
@@ -321,6 +322,16 @@ function AddFacility(props) {
 			/>
 		))()
 	]) // [0]
+
+
+	const [facilityContacts, setFacilityContacts] = useState([
+		(() => (
+			<FacilityOfficerFactory
+				contactTypeOptions={contactTypeOptions}
+				index={0}
+			/>
+		))()
+	])
 	const filters = []
 	
 	
@@ -1529,30 +1540,50 @@ function AddFacility(props) {
 													</>
 												);
 											case 1:
-												// Geolocation Form
+											// Geolocation Form
 
-												const handleGeolocationPrevious = (event) => {
-													event.preventDefault();
-													window.sessionStorage.setItem('formId', 0);
+											const handleGeolocationPrevious = (event) => {
+												event.preventDefault();
+												window.sessionStorage.setItem('formId', 0);
 
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
+												setFormId(window.sessionStorage.getItem('formId'));
+											};
 
-												return (
-													<>
-														<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-															Geolocation Details
-														</h4>
-														<form
-															name='geolocation_form'
-															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId], 'POST')}>
-															{/* Collection Date */}
-															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+											return (
+												<>
+													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														Geolocation Details
+													</h4>
+													<form
+														name='geolocation_form'
+														className='flex flex-col w-full items-start justify-start gap-3'
+														onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId])}>
+														{/* Collection Date */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<label
+																htmlFor='collection_date'
+																className='text-gray-600 capitalize text-sm'>
+																Collection date:
+																<span className='text-medium leading-12 font-semibold'>
+																	{' '}
+																	*
+																</span>
+															</label>
+															<input
+																required
+																type='date'
+																name='collection_date'
+																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+															/>
+														</div>
+
+														{/* Lon/Lat */}
+														<div className='grid grid-cols-2 gap-4 place-content-start w-full'>
+															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
 																<label
-																	htmlFor='collection_date'
+																	htmlFor='longitude'
 																	className='text-gray-600 capitalize text-sm'>
-																	Collection date:
+																	Longitude
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
 																		*
@@ -1560,88 +1591,68 @@ function AddFacility(props) {
 																</label>
 																<input
 																	required
-																	type='date'
-																	name='collection_date'
+																	type='decimal'
+																	name='longitude'
+																	onChange={ev => setLongitude(ev.target.value)}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
 
-															{/* Lon/Lat */}
-															<div className='grid grid-cols-2 gap-4 place-content-start w-full'>
-																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
-																	<label
-																		htmlFor='longitude'
-																		className='text-gray-600 capitalize text-sm'>
-																		Longitude
-																		<span className='text-medium leading-12 font-semibold'>
-																			{' '}
-																			*
-																		</span>
-																	</label>
-																	<input
-																		required
-																		type='decimal'
-																		name='longitude'
-																		onChange={ev => setLongitude(ev.target.value)}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
-
-																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
-																	<label
-																		htmlFor='latitude'
-																		className='text-gray-600 capitalize text-sm'>
-																		Latitude
-																		<span className='text-medium leading-12 font-semibold'>
-																			{' '}
-																			*
-																		</span>
-																	</label>
-																	<input
-																		required
-																		type='decimal'
-																		name='latitude'
-																		onChange={ev => setLatitude(ev.target.value)}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
-															<>{coordinatesError && <Alert severity="error" sx={{width:'100%'}}> Please enter the right coordinates</Alert>}</>
-															</div>
-
-															{/* Ward Geo Map */}
-															<div className='w-full h-auto'>																		
-																<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																	{
-																		 geoJSON &&
-
-																		<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
-																
-																	}	
-																	</div>
-															</div>
-
-															{/* Next/Previous Form  */}
-															<div className='flex justify-between items-center w-full'>
-																<button
-																	onClick={handleGeolocationPrevious}
-																	className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																	<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																	<span className='text-medium font-semibold text-black '>
-																		Basic Details
+															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
+																<label
+																	htmlFor='latitude'
+																	className='text-gray-600 capitalize text-sm'>
+																	Latitude
+																	<span className='text-medium leading-12 font-semibold'>
+																		{' '}
+																		*
 																	</span>
-																</button>
-																<button
-																	type='submit'
-																	className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																	<span className='text-medium font-semibold text-white'>
-																		Facility Contacts
-																	</span>
-																	<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-																</button>
+																</label>
+																<input
+																	required
+																	type='decimal'
+																	name='latitude'
+																	onChange={ev => setLatitude(ev.target.value)}
+																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																/>
 															</div>
-														</form>
-													</>
-												);
+														<>{coordinatesError && <Alert severity="error" sx={{width:'100%'}}> Please enter the right coordinates</Alert>}</>
+														</div>
+
+														{/* Ward Geo Map */}
+														<div className='w-full h-auto'>																		
+															<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
+																{
+																	 geoJSON &&
+
+																	<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
+															
+																}	
+																</div>
+														</div>
+
+														{/* Next/Previous Form  */}
+														<div className='flex justify-between items-center w-full'>
+															<button
+																onClick={handleGeolocationPrevious}
+																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
+																<span className='text-medium font-semibold text-black '>
+																	Basic Details
+																</span>
+															</button>
+															<button
+																type='submit'
+																className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+																<span className='text-medium font-semibold text-white'>
+																	Facility Contacts
+																</span>
+																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+															</button>
+														</div>
+													</form>
+												</>
+											);
 											case 2:
 												// Facility Contacts Form
 
@@ -1652,137 +1663,137 @@ function AddFacility(props) {
 													setFormId(window.sessionStorage.getItem('formId'));
 												};
 
-												const handleAddContact = (event) => {
-													event.preventDefault();
+												// const handleAddContact = (event) => {
+												// 	event.preventDefault();
 
-													const divContainer = facilityContactRef.current;
+												// 	const divContainer = facilityContactRef.current;
 
-													const dropDown = document.createElement('select');
+												// 	const dropDown = document.createElement('select');
 
-													dropDown.setAttribute(
-														'style',
-														`
-													width:100%; 
-													border: 1px solid hsl(0, 0%, 80%); 
-													border-radius: 4px; 
-													padding: 2px; 
-													background-color: hsl(0, 0%, 100%); 
-													display: grid; 
-													min-height: 38px;
-													`
-													);
+												// 	dropDown.setAttribute(
+												// 		'style',
+												// 		`
+												// 	width:100%; 
+												// 	border: 1px solid hsl(0, 0%, 80%); 
+												// 	border-radius: 4px; 
+												// 	padding: 2px; 
+												// 	background-color: hsl(0, 0%, 100%); 
+												// 	display: grid; 
+												// 	min-height: 38px;
+												// 	`
+												// 	);
 
-													dropDown.setAttribute(
-														'placeholder',
-														'Select Contact Type'
-													);
+												// 	dropDown.setAttribute(
+												// 		'placeholder',
+												// 		'Select Contact Type'
+												// 	);
 
-													dropDown.setAttribute('name', 'dropdown_contact_types');
+												// 	dropDown.setAttribute('name', 'dropdown_contact_types');
 
-													const option1 = document.createElement('option');
-													option1.innerText = 'Select Contact Type';
-													option1.value = 'Select Contact Type';
+												// 	const option1 = document.createElement('option');
+												// 	option1.innerText = 'Select Contact Type';
+												// 	option1.value = 'Select Contact Type';
 
-													const option2 = document.createElement('option');
-													option2.innerText = 'POSTAL';
-													option2.value = 'POSTAL';
+												// 	const option2 = document.createElement('option');
+												// 	option2.innerText = 'POSTAL';
+												// 	option2.value = 'POSTAL';
 
-													const option3 = document.createElement('option');
-													option3.innerText = 'FAX';
-													option3.value = 'FAX';
+												// 	const option3 = document.createElement('option');
+												// 	option3.innerText = 'FAX';
+												// 	option3.value = 'FAX';
 
-													const option4 = document.createElement('option');
-													option4.innerText = 'LANDLINE';
-													option4.value = 'LANDLINE';
+												// 	const option4 = document.createElement('option');
+												// 	option4.innerText = 'LANDLINE';
+												// 	option4.value = 'LANDLINE';
 
-													const option5 = document.createElement('option');
-													option5.innerText = 'MOBILE';
-													option5.value = 'MOBILE';
+												// 	const option5 = document.createElement('option');
+												// 	option5.innerText = 'MOBILE';
+												// 	option5.value = 'MOBILE';
 
-													const option6 = document.createElement('option');
-													option6.innerText = 'EMAIL';
-													option6.value = 'EMAIL';
+												// 	const option6 = document.createElement('option');
+												// 	option6.innerText = 'EMAIL';
+												// 	option6.value = 'EMAIL';
 
-													dropDown.appendChild(option1.getRootNode());
-													dropDown.appendChild(option2.getRootNode());
-													dropDown.appendChild(option3.getRootNode());
-													dropDown.appendChild(option4.getRootNode());
-													dropDown.appendChild(option5.getRootNode());
-													dropDown.appendChild(option6.getRootNode());
+												// 	dropDown.appendChild(option1.getRootNode());
+												// 	dropDown.appendChild(option2.getRootNode());
+												// 	dropDown.appendChild(option3.getRootNode());
+												// 	dropDown.appendChild(option4.getRootNode());
+												// 	dropDown.appendChild(option5.getRootNode());
+												// 	dropDown.appendChild(option6.getRootNode());
 
-													divContainer.appendChild(dropDown.getRootNode());
-													const input =
-														divContainer.childNodes[4].cloneNode(true);
-													input.setAttribute('name', 'contact_details_others');
+												// 	divContainer.appendChild(dropDown.getRootNode());
+												// 	const input =
+												// 		divContainer.childNodes[4].cloneNode(true);
+												// 	input.setAttribute('name', 'contact_details_others');
 
-													divContainer.appendChild(input);
-												};
+												// 	divContainer.appendChild(input);
+												// };
 
-												const handleAddContact2 = (event) => {
-													event.preventDefault();
+												// const handleAddContact2 = (event) => {
+												// 	event.preventDefault();
 
-													const divContainer = facilityContact2Ref.current;
+												// 	const divContainer = facilityContact2Ref.current;
 
-													const dropDown = document.createElement('select');
+												// 	const dropDown = document.createElement('select');
 
-													dropDown.setAttribute(
-														'style',
-														`
-													width:100%; 
-													border: 1px solid hsl(0, 0%, 80%); 
-													border-radius: 4px; 
-													padding: 2px; 
-													background-color: hsl(0, 0%, 100%); 
-													display: grid; 
-													min-height: 38px;
-													`
-													);
+												// 	dropDown.setAttribute(
+												// 		'style',
+												// 		`
+												// 	width:100%; 
+												// 	border: 1px solid hsl(0, 0%, 80%); 
+												// 	border-radius: 4px; 
+												// 	padding: 2px; 
+												// 	background-color: hsl(0, 0%, 100%); 
+												// 	display: grid; 
+												// 	min-height: 38px;
+												// 	`
+												// 	);
 
-													dropDown.setAttribute(
-														'placeholder',
-														'Select Contact Type'
-													);
+												// 	dropDown.setAttribute(
+												// 		'placeholder',
+												// 		'Select Contact Type'
+												// 	);
 
-													dropDown.setAttribute('name', 'dropdown_contact_types');
+												// 	dropDown.setAttribute('name', 'dropdown_contact_types');
 
-													const option1 = document.createElement('option');
-													option1.innerText = 'Select Contact Type';
-													option1.value = 'Select Contact Type';
+												// 	const option1 = document.createElement('option');
+												// 	option1.innerText = 'Select Contact Type';
+												// 	option1.value = 'Select Contact Type';
 
-													const option2 = document.createElement('option');
-													option2.innerText = 'POSTAL';
-													option2.value = 'POSTAL';
+												// 	const option2 = document.createElement('option');
+												// 	option2.innerText = 'POSTAL';
+												// 	option2.value = 'POSTAL';
 
-													const option3 = document.createElement('option');
-													option3.innerText = 'FAX';
-													option3.value = 'FAX';
+												// 	const option3 = document.createElement('option');
+												// 	option3.innerText = 'FAX';
+												// 	option3.value = 'FAX';
 
-													const option4 = document.createElement('option');
-													option4.innerText = 'LANDLINE';
-													option4.value = 'LANDLINE';
+												// 	const option4 = document.createElement('option');
+												// 	option4.innerText = 'LANDLINE';
+												// 	option4.value = 'LANDLINE';
 
-													const option5 = document.createElement('option');
-													option5.innerText = 'MOBILE';
-													option5.value = 'MOBILE';
+												// 	const option5 = document.createElement('option');
+												// 	option5.innerText = 'MOBILE';
+												// 	option5.value = 'MOBILE';
 
-													const option6 = document.createElement('option');
-													option6.innerText = 'EMAIL';
-													option6.value = 'EMAIL';
+												// 	const option6 = document.createElement('option');
+												// 	option6.innerText = 'EMAIL';
+												// 	option6.value = 'EMAIL';
 
-													dropDown.appendChild(option1.getRootNode());
-													dropDown.appendChild(option2.getRootNode());
-													dropDown.appendChild(option3.getRootNode());
-													dropDown.appendChild(option4.getRootNode());
-													dropDown.appendChild(option5.getRootNode());
-													dropDown.appendChild(option6.getRootNode());
+												// 	dropDown.appendChild(option1.getRootNode());
+												// 	dropDown.appendChild(option2.getRootNode());
+												// 	dropDown.appendChild(option3.getRootNode());
+												// 	dropDown.appendChild(option4.getRootNode());
+												// 	dropDown.appendChild(option5.getRootNode());
+												// 	dropDown.appendChild(option6.getRootNode());
 
-													divContainer.appendChild(dropDown.getRootNode());
-													const input =
-														divContainer.childNodes[4].cloneNode(true);
-													input.setAttribute('name', 'contact_details_others');
+												// 	divContainer.appendChild(dropDown.getRootNode());
+												// 	const input =
+												// 		divContainer.childNodes[4].cloneNode(true);
+												// 	input.setAttribute('name', 'contact_details_others');
 
-													divContainer.appendChild(input);
-												};
+												// 	divContainer.appendChild(input);
+												// };
 
 												return (
 													<>
@@ -1790,9 +1801,10 @@ function AddFacility(props) {
 															Facility Contact
 														</h4>
 														<form
+															ref={facilityContactsFormRef}
 															className='flex flex-col w-full items-start justify-start gap-3'
 															name='facility_contacts_form'
-															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId], 'POST')}>
+															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId, facilityContactsFormRef])}>
 															{/* Contacts */}
 
 															<div
@@ -1809,14 +1821,25 @@ function AddFacility(props) {
 
 																{/* Contact Type / Contact Details */}
 
-																<FacilityContact 
+																{/* <FacilityContact 
 																contactDetail={_contactDetail}
 																inputContactRef={null} 
 																setContactDetail={setContactDetail} 
 																contactTypeOptions={contactTypeOptions} 
 																contact={''} 
 																names={['contact_type', 'contact']} 
-																id={'facility'} />
+																id={'facility'} /> */}
+
+																{/* add other fields */}
+															    <div className='flex-col items-start justify-start gap-y-4'>
+																	{
+																		facilityContacts.map((facilityContact, i) => (
+														
+																			facilityContact
+																		
+																		))
+																	}
+																</div>	
 																
 
 																
@@ -1825,7 +1848,20 @@ function AddFacility(props) {
 
 															<div className='w-full flex justify-end items-center'>
 																<button
-																	onClick={handleAddContact}
+																	onClick={(e) => {e.preventDefault();  setFacilityContacts([
+																		...facilityContacts, 
+																		(() => (
+																			// <FacilityDeptContext.Provider value={facilityDepts} key={(facilityDepts.length + 1) - 1}>
+																				<FacilityOfficerFactory
+																				contactTypeOptions={contactTypeOptions}
+																				index={(facilityContacts.length + 1) - 1}
+																				
+																				/>
+																			// </FacilityDeptContext.Provider>
+																		))()
+	
+																		/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
+																		])}}
 																	className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																	<PlusIcon className='w-4 h-4 text-white' />
 																	<p className='text-medium font-semibold text-white'>
@@ -1919,7 +1955,7 @@ function AddFacility(props) {
 
 																<div className='w-full flex justify-end items-center mt-2'>
 																	<button
-																		onClick={handleAddContact2}
+																		onClick={() => null}
 																		className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																		<PlusIcon className='w-4 h-4 text-white' />
 																		<p className='text-medium font-semibold text-white'>
@@ -1964,7 +2000,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-														<form  ref={facilityRegulationFormRef} name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId, facilityOfficialName, facilityRegulationFormRef, facilityDeptOptions], 'POST', licenseFile)}>
+														<form  ref={facilityRegulationFormRef} name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId, facilityOfficialName, facilityRegulationFormRef], licenseFile)}>
 
 															{/* Regulatory Body */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
