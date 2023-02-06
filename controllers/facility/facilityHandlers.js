@@ -1,9 +1,7 @@
-import { letterSpacing } from "@mui/system";
-import { Col } from "antd";
 import router from "next/router";
 
 // handleBasicDetailsSubmit
-const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
+const handleBasicDetailsSubmit = async (event, stateSetters, file) => {
 
     const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef] = stateSetters
 
@@ -304,73 +302,58 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
 // handleRegulationSubmit
 const handleRegulationSubmit = (event, stateSetters, method, file) => {
 
+    event.preventDefault()
 
-    const [setFormId, facilityId, facility_name] = stateSetters
+    const [setFormId, facilityId, facility_name, facilityRegulationFormRef] = stateSetters
 
-    event.preventDefault();
+    const formData = new FormData(facilityRegulationFormRef.current)
+   
+    const facilityDeptEntries = [...formData.entries()]
 
-    // Post Facility Regulation Data
+    const filteredDeptUnitEntries = facilityDeptEntries.filter(field =>  field[0].match(/^facility_.+$/) !== null)
 
-    const facilityRegDataA = {};
-    const facilityRegDataB = {};
+    const filteredDeptOtherEntries = facilityDeptEntries.filter(field =>  !(field[0].match(/^facility_.+$/) !== null))
 
+    const payload = ((unitEntries, otherEntries) => {
+     
 
-    const elements = [...event.target];
+            // Facility Regulation form data
+            const _payload = []
+            const _otherEntObj = {}
+            
+            for (let e in otherEntries) _otherEntObj[otherEntries[e][0]] = otherEntries[e][1]
 
-    const payload = []
+            delete _otherEntObj.license_document;
 
+            _payload.push(_otherEntObj)
 
-    elements.forEach(({ name, value }) => {
-        switch (name) {
-            case 'license_number':
-                facilityRegDataA[name] = value
-                break;
-            case 'registration_number':
-                facilityRegDataA[name] = value
-                break;
-            case 'regulation_status':
-                facilityRegDataA[name] = value
-                break;
-            case 'regulatory_body':
-                facilityRegDataA[name] = value
-                break;
-            case 'facility_dept_name':
-                facilityRegDataB['0'] = {
-                    unit: value,
-                }
-                break;
-            case 'facility_regulatory_body':
-                facilityRegDataB['1'] = {
-                    regulation_body_name: value,
-                }
-                break;
-            case 'facility_registration_number':
-                facilityRegDataB['2'] = {
-                    registration_number: value,
-                }
-                break;
-            case 'facility_license_number':
-                facilityRegDataB['3'] = {
-                    license_number: value,
-                }
-                break;
+             // Facility Dept Regulation
+
+             const _unitEntArrObjs = unitEntries.filter(ar => ar[0] === 'facility_unit').map(() => Object())
+
+             let p = 0; 
+
+             for( let i in unitEntries){ 
+                 // clean up the key by removing prefix facility_
+                _unitEntArrObjs[p][
+                    unitEntries[i][0].replace('facility_', '')
+                ] = unitEntries[i][1]; 
+
+                if(unitEntries[i][0] == 'facility_registration_number') { 
+                    p+=1 
+                } 
+            }
+
+            _payload.push({
+                units:_unitEntArrObjs
+            })
+            
+            return _payload
 
 
-        }
+    })(filteredDeptUnitEntries, filteredDeptOtherEntries)
 
-    });
-
-
-
-    payload.push(facilityRegDataA)
-    payload.push({
-        units: [{
-            unit: facilityRegDataB['0'].unit,
-            regulation_body_name: facilityRegDataB['1'].regulation_body_name,
-            registration_number: facilityRegDataB['2'].registration_number,
-            license_number: facilityRegDataB['3'].license_number
-        }]
-    })
+    console.log({payload}) // debug
 
 
     payload.forEach(data => {
@@ -381,7 +364,7 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
                     'Content-Type': 'application/json;charset=utf-8'
 
                 },
-                method,
+                method: 'POST',
                 body: JSON.stringify(data)
             })
 
@@ -428,116 +411,6 @@ const handleRegulationSubmit = (event, stateSetters, method, file) => {
     window.sessionStorage.setItem('formId', 4);
 
     setFormId(window.sessionStorage.getItem('formId'));
-
-   
-   /*
-    const facilityDeptEntries = [...formData.entries()]
-
-    const facilityDeptUnitEntries = facilityDeptEntries.filter(field =>  field[0].match(/^facility_.+$/) !== null)
-
-    const payload =
-        ((obj, arr, entries) => {
-        
-            for(let i = 0; i < entries.length / 4; i++){
-                for(let col = 0; col < 4; col++){
-                    console.log(entries[col][0], entries[col][0])
-                    obj[entries[col][0]] = entries[col][1];
-
-                }
-                arr.push(obj)
-            }
-
-            return arr
-
-        })({}, [], facilityDeptUnitEntries)
-    
-
-    console.log({facilityDeptEntries, facilityDeptUnitEntries, payload})
-    */
-    
-    /* let fArray = []
-
-    facilityDeptEntries.forEach(fieldArray => {
-         fArray = [...fArray, ...fieldArray]
-    })
-
-    const evenNums = (l) => { const a = []; for(let i = 0; i < l; i++){ if(!((i % 2) == 0)) { continue; } else {a.push(i)}} return a;  }
-
-    console.log({fArray, payload})
-
-    // const facilityDepts = fArray.filter(field => field.match(/^facility_.+/) !== null)
-
-    const facilityDeptsObj = ((arr, obj, ar) => {
-
-        evenNums(arr.length).forEach(num => {
-        
-        if(!Object.keys(obj).includes(arr[num])){
-            obj[arr[num]]=arr[num+1]
-        }else{
-            ar.push(obj)
-        }
-        
-        })
-    
-        return ar
-        })(fArray, {}, [])
-
-    console.log({facilityDeptsObj})
-
-    facilityDeptEntries.forEach((fieldArray, i) => {
-        // console.log(fieldArray)
-        switch(fieldArray[0]){
-            case 'facility_unit':
-                facilityRegDataB['0'] = {
-                    unit: fieldArray[1]
-                }
-                break;
-            case 'facility_regulatory_body':
-                facilityRegDataB['1'] = {
-                    regulatory_body: fieldArray[1]
-                }
-                break;
-            case 'facility_license_number':
-                facilityRegDataB['2'] = {
-                    license_number: fieldArray[1]
-                }
-                break;
-            case 'facility_registration_number':
-                facilityRegDataB['3'] = {
-                    registration_number: fieldArray[1]
-                }
-                break;
-            case 'license_number':
-                facilityRegDataA[fieldArray[0]] = fieldArray[1]
-                break;
-            case 'registration_number':
-                facilityRegDataA[fieldArray[0]] = fieldArray[1]
-                break;
-            case 'regulation_status':
-                facilityRegDataA[fieldArray[0]] = fieldArray[1]
-                break;
-            case 'regulatory_body':
-                facilityRegDataA[fieldArray[0]] = fieldArray[1]
-                break;
-            
-           
-    
-        }
-    })
-
-
-    payload.push(facilityRegDataA)
-    payload.push({
-        units: [{
-            unit: facilityRegDataB['0'].unit,
-            regulation_body_name: facilityRegDataB['1'].regulatory_body,
-            registration_number: facilityRegDataB['2'].registration_number,
-            license_number: facilityRegDataB['3'].license_number
-        }]
-    })
-    
- 
-    */
 
 };
 
