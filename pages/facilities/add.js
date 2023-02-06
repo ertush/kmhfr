@@ -33,7 +33,7 @@ import {
 } from '@heroicons/react/solid';
 // import { XCircleIcon } from '@heroicons/react/outline';
 import FacilityDeptRegulationFactory from '../../components/generateFacilityDeptRegulation'
-
+import FacilityOfficerFactory from '../../components/generateOfficerContacts';
 // Package imports
 
 import Select from 'react-select';
@@ -322,6 +322,16 @@ function AddFacility(props) {
 			/>
 		))()
 	]) // [0]
+
+
+	const [facilityContacts, setFacilityContacts] = useState([
+		(() => (
+			<FacilityOfficerFactory
+				contactTypeOptions={contactTypeOptions}
+				index={0}
+			/>
+		))()
+	])
 	const filters = []
 	
 	
@@ -1653,137 +1663,137 @@ function AddFacility(props) {
 													setFormId(window.sessionStorage.getItem('formId'));
 												};
 
-												const handleAddContact = (event) => {
-													event.preventDefault();
+												// const handleAddContact = (event) => {
+												// 	event.preventDefault();
 
-													const divContainer = facilityContactRef.current;
+												// 	const divContainer = facilityContactRef.current;
 
-													const dropDown = document.createElement('select');
+												// 	const dropDown = document.createElement('select');
 
-													dropDown.setAttribute(
-														'style',
-														`
-													width:100%; 
-													border: 1px solid hsl(0, 0%, 80%); 
-													border-radius: 4px; 
-													padding: 2px; 
-													background-color: hsl(0, 0%, 100%); 
-													display: grid; 
-													min-height: 38px;
-													`
-													);
+												// 	dropDown.setAttribute(
+												// 		'style',
+												// 		`
+												// 	width:100%; 
+												// 	border: 1px solid hsl(0, 0%, 80%); 
+												// 	border-radius: 4px; 
+												// 	padding: 2px; 
+												// 	background-color: hsl(0, 0%, 100%); 
+												// 	display: grid; 
+												// 	min-height: 38px;
+												// 	`
+												// 	);
 
-													dropDown.setAttribute(
-														'placeholder',
-														'Select Contact Type'
-													);
+												// 	dropDown.setAttribute(
+												// 		'placeholder',
+												// 		'Select Contact Type'
+												// 	);
 
-													dropDown.setAttribute('name', 'dropdown_contact_types');
+												// 	dropDown.setAttribute('name', 'dropdown_contact_types');
 
-													const option1 = document.createElement('option');
-													option1.innerText = 'Select Contact Type';
-													option1.value = 'Select Contact Type';
+												// 	const option1 = document.createElement('option');
+												// 	option1.innerText = 'Select Contact Type';
+												// 	option1.value = 'Select Contact Type';
 
-													const option2 = document.createElement('option');
-													option2.innerText = 'POSTAL';
-													option2.value = 'POSTAL';
+												// 	const option2 = document.createElement('option');
+												// 	option2.innerText = 'POSTAL';
+												// 	option2.value = 'POSTAL';
 
-													const option3 = document.createElement('option');
-													option3.innerText = 'FAX';
-													option3.value = 'FAX';
+												// 	const option3 = document.createElement('option');
+												// 	option3.innerText = 'FAX';
+												// 	option3.value = 'FAX';
 
-													const option4 = document.createElement('option');
-													option4.innerText = 'LANDLINE';
-													option4.value = 'LANDLINE';
+												// 	const option4 = document.createElement('option');
+												// 	option4.innerText = 'LANDLINE';
+												// 	option4.value = 'LANDLINE';
 
-													const option5 = document.createElement('option');
-													option5.innerText = 'MOBILE';
-													option5.value = 'MOBILE';
+												// 	const option5 = document.createElement('option');
+												// 	option5.innerText = 'MOBILE';
+												// 	option5.value = 'MOBILE';
 
-													const option6 = document.createElement('option');
-													option6.innerText = 'EMAIL';
-													option6.value = 'EMAIL';
+												// 	const option6 = document.createElement('option');
+												// 	option6.innerText = 'EMAIL';
+												// 	option6.value = 'EMAIL';
 
-													dropDown.appendChild(option1.getRootNode());
-													dropDown.appendChild(option2.getRootNode());
-													dropDown.appendChild(option3.getRootNode());
-													dropDown.appendChild(option4.getRootNode());
-													dropDown.appendChild(option5.getRootNode());
-													dropDown.appendChild(option6.getRootNode());
+												// 	dropDown.appendChild(option1.getRootNode());
+												// 	dropDown.appendChild(option2.getRootNode());
+												// 	dropDown.appendChild(option3.getRootNode());
+												// 	dropDown.appendChild(option4.getRootNode());
+												// 	dropDown.appendChild(option5.getRootNode());
+												// 	dropDown.appendChild(option6.getRootNode());
 
-													divContainer.appendChild(dropDown.getRootNode());
-													const input =
-														divContainer.childNodes[4].cloneNode(true);
-													input.setAttribute('name', 'contact_details_others');
+												// 	divContainer.appendChild(dropDown.getRootNode());
+												// 	const input =
+												// 		divContainer.childNodes[4].cloneNode(true);
+												// 	input.setAttribute('name', 'contact_details_others');
 
-													divContainer.appendChild(input);
-												};
+												// 	divContainer.appendChild(input);
+												// };
 
-												const handleAddContact2 = (event) => {
-													event.preventDefault();
+												// const handleAddContact2 = (event) => {
+												// 	event.preventDefault();
 
-													const divContainer = facilityContact2Ref.current;
+												// 	const divContainer = facilityContact2Ref.current;
 
-													const dropDown = document.createElement('select');
+												// 	const dropDown = document.createElement('select');
 
-													dropDown.setAttribute(
-														'style',
-														`
-													width:100%; 
-													border: 1px solid hsl(0, 0%, 80%); 
-													border-radius: 4px; 
-													padding: 2px; 
-													background-color: hsl(0, 0%, 100%); 
-													display: grid; 
-													min-height: 38px;
-													`
-													);
+												// 	dropDown.setAttribute(
+												// 		'style',
+												// 		`
+												// 	width:100%; 
+												// 	border: 1px solid hsl(0, 0%, 80%); 
+												// 	border-radius: 4px; 
+												// 	padding: 2px; 
+												// 	background-color: hsl(0, 0%, 100%); 
+												// 	display: grid; 
+												// 	min-height: 38px;
+												// 	`
+												// 	);
 
-													dropDown.setAttribute(
-														'placeholder',
-														'Select Contact Type'
-													);
+												// 	dropDown.setAttribute(
+												// 		'placeholder',
+												// 		'Select Contact Type'
+												// 	);
 
-													dropDown.setAttribute('name', 'dropdown_contact_types');
+												// 	dropDown.setAttribute('name', 'dropdown_contact_types');
 
-													const option1 = document.createElement('option');
-													option1.innerText = 'Select Contact Type';
-													option1.value = 'Select Contact Type';
+												// 	const option1 = document.createElement('option');
+												// 	option1.innerText = 'Select Contact Type';
+												// 	option1.value = 'Select Contact Type';
 
-													const option2 = document.createElement('option');
-													option2.innerText = 'POSTAL';
-													option2.value = 'POSTAL';
+												// 	const option2 = document.createElement('option');
+												// 	option2.innerText = 'POSTAL';
+												// 	option2.value = 'POSTAL';
 
-													const option3 = document.createElement('option');
-													option3.innerText = 'FAX';
-													option3.value = 'FAX';
+												// 	const option3 = document.createElement('option');
+												// 	option3.innerText = 'FAX';
+												// 	option3.value = 'FAX';
 
-													const option4 = document.createElement('option');
-													option4.innerText = 'LANDLINE';
-													option4.value = 'LANDLINE';
+												// 	const option4 = document.createElement('option');
+												// 	option4.innerText = 'LANDLINE';
+												// 	option4.value = 'LANDLINE';
 
-													const option5 = document.createElement('option');
-													option5.innerText = 'MOBILE';
-													option5.value = 'MOBILE';
+												// 	const option5 = document.createElement('option');
+												// 	option5.innerText = 'MOBILE';
+												// 	option5.value = 'MOBILE';
 
-													const option6 = document.createElement('option');
-													option6.innerText = 'EMAIL';
-													option6.value = 'EMAIL';
+												// 	const option6 = document.createElement('option');
+												// 	option6.innerText = 'EMAIL';
+												// 	option6.value = 'EMAIL';
 
-													dropDown.appendChild(option1.getRootNode());
-													dropDown.appendChild(option2.getRootNode());
-													dropDown.appendChild(option3.getRootNode());
-													dropDown.appendChild(option4.getRootNode());
-													dropDown.appendChild(option5.getRootNode());
-													dropDown.appendChild(option6.getRootNode());
+												// 	dropDown.appendChild(option1.getRootNode());
+												// 	dropDown.appendChild(option2.getRootNode());
+												// 	dropDown.appendChild(option3.getRootNode());
+												// 	dropDown.appendChild(option4.getRootNode());
+												// 	dropDown.appendChild(option5.getRootNode());
+												// 	dropDown.appendChild(option6.getRootNode());
 
-													divContainer.appendChild(dropDown.getRootNode());
-													const input =
-														divContainer.childNodes[4].cloneNode(true);
-													input.setAttribute('name', 'contact_details_others');
+												// 	divContainer.appendChild(dropDown.getRootNode());
+												// 	const input =
+												// 		divContainer.childNodes[4].cloneNode(true);
+												// 	input.setAttribute('name', 'contact_details_others');
 
-													divContainer.appendChild(input);
-												};
+												// 	divContainer.appendChild(input);
+												// };
 
 												return (
 													<>
@@ -1811,14 +1821,25 @@ function AddFacility(props) {
 
 																{/* Contact Type / Contact Details */}
 
-																<FacilityContact 
+																{/* <FacilityContact 
 																contactDetail={_contactDetail}
 																inputContactRef={null} 
 																setContactDetail={setContactDetail} 
 																contactTypeOptions={contactTypeOptions} 
 																contact={''} 
 																names={['contact_type', 'contact']} 
-																id={'facility'} />
+																id={'facility'} /> */}
+
+																{/* add other fields */}
+															    <div className='flex-col items-start justify-start gap-y-4'>
+																	{
+																		facilityContacts.map((facilityContact, i) => (
+														
+																			facilityContact
+																		
+																		))
+																	}
+																</div>	
 																
 
 																
@@ -1827,7 +1848,20 @@ function AddFacility(props) {
 
 															<div className='w-full flex justify-end items-center'>
 																<button
-																	onClick={handleAddContact}
+																	onClick={(e) => {e.preventDefault();  setFacilityContacts([
+																		...facilityContacts, 
+																		(() => (
+																			// <FacilityDeptContext.Provider value={facilityDepts} key={(facilityDepts.length + 1) - 1}>
+																				<FacilityOfficerFactory
+																				contactTypeOptions={contactTypeOptions}
+																				index={(facilityContacts.length + 1) - 1}
+																				
+																				/>
+																			// </FacilityDeptContext.Provider>
+																		))()
+	
+																		/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
+																		])}}
 																	className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																	<PlusIcon className='w-4 h-4 text-white' />
 																	<p className='text-medium font-semibold text-white'>
@@ -1921,7 +1955,7 @@ function AddFacility(props) {
 
 																<div className='w-full flex justify-end items-center mt-2'>
 																	<button
-																		onClick={handleAddContact2}
+																		onClick={() => null}
 																		className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																		<PlusIcon className='w-4 h-4 text-white' />
 																		<p className='text-medium font-semibold text-white'>

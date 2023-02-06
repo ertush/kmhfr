@@ -38,6 +38,8 @@ const FacilityContact = ({
 
       <input type="text" ref={inputContactRef} onChange={ev => { if (typeof (setContactDetail) === 'function') setContactDetail(ev.target.value) }} name={names[1]} id={id} className="flex-none col-start-2 w-full bg-gray-50 rounded flex-grow border-2 placeholder-gray-500 border-gray-200 px-2 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
+      
+
     </>
   )
 }
