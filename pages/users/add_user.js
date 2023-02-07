@@ -12,7 +12,7 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import { useAlert } from "react-alert";
 import { UserContext } from '../../providers/user';
-import { hasUsersPermission } from '../../utils/checkPermissions';
+import { hasPermission } from '../../utils/checkPermissions';
 import Alert from '@mui/material/Alert';
 import Link from 'next/link'
 
@@ -200,10 +200,10 @@ const AddUser = (props)=> {
     }, [userData.conf_password])
 
 	useEffect(() => {
-		if(hasUsersPermission(/^users.change_mfluser$/, userCtx.all_permissions)){
+		if(hasPermission(/^users.change_mfluser$/, userCtx.all_permissions)){
 			setAddUserPermission(true)
 		}
-		if(hasUsersPermission(/^users.delete_mfluser$/, userCtx.all_permissions)){
+		if(hasPermission(/^users.delete_mfluser$/, userCtx.all_permissions)){
 			setDeleteUserPermission(true)
 		}
 	}, [userCtx])
@@ -766,7 +766,7 @@ const AddUser = (props)=> {
                         
 
                    
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -775,7 +775,7 @@ const AddUser = (props)=> {
                             For testing reasons, downloads are limited to the first 100 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
     </MainLayout>
   )

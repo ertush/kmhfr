@@ -54,7 +54,7 @@ const OfficersInCharge = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KHMFL - Reports</title>
+                <title>KMHFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -85,9 +85,10 @@ const OfficersInCharge = (props) => {
 
                                 <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -144,7 +145,7 @@ const OfficersInCharge = (props) => {
 
                     </main>
 
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -153,7 +154,7 @@ const OfficersInCharge = (props) => {
                             For testing reasons, downloads are limited to the first 1000 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
             </MainLayout >
         </div>
@@ -177,7 +178,7 @@ OfficersInCharge.getInitialProps = async (ctx) => {
         
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
-            console.log({page:ctx.query.page})
+            
             url = `${url}?page=${ctx.query.page}`
         }
         

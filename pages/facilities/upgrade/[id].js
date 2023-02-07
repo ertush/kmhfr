@@ -25,7 +25,7 @@ const Upgrade = props => {
     const [isFacilityServices, setIsFacilityServices] = useState(false);
     const filters = []
 
-    // console.log({props})
+  
 
     const kephOptions =  props['0']?.kephOptions.sort((a, b) => a < b) 
     const facilityServices =  props['1']?.services 
@@ -52,7 +52,7 @@ const Upgrade = props => {
     return (
         <>
         <Head>
-               <title>KHMFL - Upgrade Facility</title>
+               <title>KMHFL - Upgrade Facility</title>
                <link rel="icon" href="/favicon.ico" />
         </Head>
        <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>

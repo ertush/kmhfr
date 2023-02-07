@@ -1,6 +1,6 @@
 // import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getUserDetails } from '../controllers/auth/auth'
 import LoadingAnimation from './LoadingAnimation';
 import HeaderLayout from './HeaderLayout';
@@ -26,13 +26,10 @@ const DelayedLoginButton = () => {
 
 export default function MainLayout({ children, isLoading, searchTerm, isFullWidth, classes }) {
     const router = useRouter()
-    const activeClasses = "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-2 border-green-600"
-    const inactiveClasses = "text-gray-700 hover:text-black focus:text-black active:text-black"
-    const currentPath = router.asPath.split('?', 1)[0]
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [user, setUser] = useState(null)
     let API_URL = process.env.NEXT_PUBLIC_API_URL
-    if(typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
+    if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
         API_URL = 'http://localhost:8000/api'
     }
 
@@ -45,7 +42,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     } else {
         path = '/facilities'
     }
-    // console.log('path::: ', path)
+  
 
     useEffect(() => {
         let mtd = true
@@ -59,7 +56,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
 
             if (is_user_logged_in && typeof window !== 'undefined' && session_token !== null) {
                 console.log('active session found')
-                // getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
+              
                 getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr => {
                     if (usr.error || usr.detail) {
                         setIsLoggedIn(false)
@@ -71,7 +68,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                 })
             } else {
                 console.log('no session. Refreshing...')
-                // router.push('/auth/login')
+            
             }
         }
         return () => { mtd = false }
@@ -84,7 +81,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                 <HeaderLayout>
 
                 </HeaderLayout>
-                
+
             </div>
             <div className={"min-h-screen w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
                 <>
@@ -94,13 +91,13 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                 </>
             </div>
             <footer className="bg-black py-5 items-center justify-center flex flex-wrap gap-y-3 gap-x-4 text-gray-300 text-sm w-full">
-                <p>KHMFL V3 Beta</p>
+                <p>KMHFL V3 Beta</p>
                 <span className="text-lg text-gray-400">&middot;</span>
                 <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://health.go.ke" target="_blank" rel="noreferrer noopener">Ministry of Health</a>
                 <span className="text-lg text-gray-400">&middot;</span>
                 <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://healthit.uonbi.ac.ke" target="_blank" rel="noreferrer noopener">USAID HealthIT</a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://kmhfl.health.go.ke" target="_blank" rel="noreferrer noopener">KHMFL v2</a>
+                <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://kmhfl.health.go.ke" target="_blank" rel="noreferrer noopener">KMHFL v2</a>
             </footer>
         </div>
     );

@@ -18,14 +18,17 @@ export default async function fetchFormData(req, res) {
                 case 'admin_offices':
                     url = `${API_URL}/${path}/${id}/` 
                 break;
-
-               
+                case 'sub_counties':
+                    url = `${API_URL}/common/${path}/?county=${id}&fields=id`
+                break;
+                case 'wards':
+                    url = `${API_URL}/common/${path}/?sub_county=${id}&fields=id`
+                break;
                 default:
                 break;
             }
 
             try {
-                console.log({url});
                 const resp = await fetch(url, {
                     headers: {
                         'Authorization': 'Bearer ' + token,

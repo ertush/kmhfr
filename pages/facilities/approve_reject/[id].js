@@ -162,7 +162,12 @@ function ApproveReject(props) {
 
             <div className="col-span-1 md:col-span-6 md:w-full flex flex-col gap-3 md:mt-8 mx-3">
                     <h3 className="text-2xl tracking-tight font-semibold leading-5">
-                    Approve/Reject Facility
+                    {
+                      facility?.is_approved ?
+                     'Approve/Reject Facility':
+                     'Validate/Reject Facility'
+                    }
+
                     </h3>
 
 
@@ -258,7 +263,7 @@ function ApproveReject(props) {
 
                     <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
                     <h3 className="text-gray-900 font-semibold leading-16 text-medium">
-                        {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Validate/Reject newly created facility"}
+                        {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Comment on the validation"}
                     </h3>
                     {facility?.is_approved}
                     <Formik
@@ -266,17 +271,18 @@ function ApproveReject(props) {
                             comment:''
                         }}
                         onSubmit = {async ({comment}) => {
-                            
+                            // if facility is not validated and has no edits
                             if (!facility?.approved && !facility?.has_edits) 
                             {
                                 validateRejectFacility(facility?.id, reject, comment, alert)
                             } 
-
+                            // if facility is validated and has edits
                             if(facility?.approved && facility?.has_edits) {
                               approveRejectFacilityUpdates(reject, alert, facility?.latest_update)
                           }
-                            
+                            // if facility is not approved and is validated
                             if(!facility?.approved_national_level && facility?.approved) {
+                              console.log('FACILITY WILL BE APPROVED')
                                 approveRejectFacility(facility?.id, comment, alert, reject)
                             }
                         }
@@ -285,7 +291,7 @@ function ApproveReject(props) {
                     <Form
                         className="space-y-3"
                     >
-                        {console.log({facility})}
+                    
                         {
                         !facility?.has_edits ?
                         <Field
@@ -304,22 +310,26 @@ function ApproveReject(props) {
                         }
 
                         <div className="flex justify-start items-center gap-4 mt-4">
+                        
                         <button
                         type="submit"
                         className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
                         onClick={() => reject = facility?.has_edits ? true : facility?.is_approved ? true : false}
                         
                         >
-                        { facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approve Facility" : "Validate Facility"}
+                        { facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? facility?.approved_national_level ?  "Reject Facility" : "Approve Facility" : "Validate Facility" }
                         </button>
+                        
+                        {!facility?.approved_national_level &&
                         <button
                         type="submit"
                         className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
                         onClick={() => reject = facility?.has_edits ? false : facility?.is_approved ? false : true}
                         
                         >
-                        { facility?.has_edits ? 'Decline Updates' : 'Reject Facility'}
+                        { facility?.has_edits ? 'Decline Updates' : facility?.approved_national_level ? '': 'Reject Facility'}
                         </button>
+                        }   
                         </div>
                     </Form>
                     </Formik>

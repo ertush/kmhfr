@@ -37,7 +37,7 @@ const Regulate = props => {
     let reject = ''
 
     useEffect(() => {
-        console.log({ props });
+       
         if (userCtx) setUser(userCtx);
 
         return () => {
@@ -88,7 +88,7 @@ const Regulate = props => {
     return (
         <>
             <Head>
-                <title>KHMFL - Regulate Facility</title>
+                <title>KMHFL - Regulate Facility</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
@@ -118,9 +118,7 @@ const Regulate = props => {
                             }
                         >
                             <div className="col-span-6 md:col-span-3">
-                                <h1 className="text-4xl tracking-tight font-bold leading-tight">
-                                    {facility?.official_name}
-                                </h1>
+                                <a href={`/facilities/${facility?.id}`} className="text-4xl tracking-tight hover:text-green-600 font-bold leading-tight">{facility?.official_name}</a>
                                 <div className="flex gap-2 items-center w-full justify-between">
                                     <span
                                         className={
@@ -855,7 +853,7 @@ const Regulate = props => {
 
 
 Regulate.getInitialProps = async (ctx) => {
-    console.log({ctx})
+
     const allOptions = []
 
     const options = [
@@ -886,7 +884,7 @@ Regulate.getInitialProps = async (ctx) => {
                 let _data;
                 let url =
                     `${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/`
-                console.log({url})
+              
                 return fetch(url, {
                     headers: {
                         Authorization: "Bearer " + token,

@@ -1,13 +1,11 @@
-import React, { useState, Suspense, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import router from 'next/router';
 import MainLayout from '../../../components/MainLayout';
 import { checkToken } from '../../../controllers/auth/auth';
 import Link from 'next/link'
 import { Formik, Field, Form } from "formik";
 import {
-    ChevronDoubleRightIcon,
     ChevronDoubleLeftIcon,
-    PlusIcon,
 } from '@heroicons/react/solid';
 import Select from 'react-select';
 
@@ -15,7 +13,6 @@ const _ = require('underscore')
 
 function EditAdminOffice(props) {
 
-    console.log({props})
     // Form drop down options
     const  counties = props['0']?.counties ?? {counties: []};
     const  sub_counties = props['1']?.sub_counties ?? {sub_counties: []};
@@ -82,7 +79,7 @@ function EditAdminOffice(props) {
                 .then(resp =>resp)
                 .then(res =>{
 
-                    console.log(res.json)
+
                     if(res.status==200){
                         router.push('/admin_offices')
                     }
@@ -95,7 +92,7 @@ function EditAdminOffice(props) {
             setStatus({status:'error', message: e})
             console.error(e)
         }
-        console.log(_payload)
+     
     }
     useEffect(() => {
 
@@ -111,7 +108,7 @@ function EditAdminOffice(props) {
                 countyRef.current.state.value = countyOptions.filter(({value}) => value === county)[0] || ''
             }
             if(subCountyRef.current){
-                console.log({subCountyOptions})
+        
                 subCountyRef.current.state.value = subCountyOptions.filter(({value}) => value === sub_county)[0] || '----'
             }
 
@@ -479,7 +476,7 @@ return checkToken(ctx.req, ctx.res).then(async (t) => {
                                 })
 
                             let admin_offices  = (await _data.json())
-                            // console.log(admin_offices)
+                           
 
                             allOptions.push({admin_offices})
 

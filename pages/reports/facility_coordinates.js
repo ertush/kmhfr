@@ -104,7 +104,7 @@ const FacilitiesCoordinates = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KHMFL - Reports</title>
+                <title>KMHFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -251,9 +251,10 @@ const FacilitiesCoordinates = (props) => {
                                                 e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 dl_url = dl_url.replace('facilities/facilities', 'facilities/material')
-                                                if (dl_url.includes('?')) { dl_url += `&format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` } else { dl_url += `?format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}` }
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}&access_token=${props.token}` } else { dl_url += `?format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -305,7 +306,7 @@ const FacilitiesCoordinates = (props) => {
 
 
 
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -314,7 +315,7 @@ const FacilitiesCoordinates = (props) => {
                             For testing reasons, downloads are limited to the first 1000 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
             </MainLayout >
         </div>
@@ -359,7 +360,7 @@ FacilitiesCoordinates.getInitialProps = async (ctx) => {
         
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
-            console.log({page:ctx.query.page})
+         
             url = `${url}?page=${ctx.query.page}`
         }
         

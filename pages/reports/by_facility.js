@@ -44,7 +44,8 @@ const ByWard = (props) => {
     const [facilities, setFacilities]=useState([])
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
-    const [title, setTitle] = useState(`Facilities with beds and cots in ${props?.query?.ward} Ward`)
+
+    const [title, setTitle] = useState(`Facilities with beds and cots ${window.document.location.href.split('&')[1].split('=')[1] ? 'in' : 'by'} ${window.document.location.href.split('&')[window.document.location.href.split('&').length - 1].split('=')[1].replaceAll('+', ' ')}`)
     const [label, setLabel]=useState('beds_cots')
 
      
@@ -56,9 +57,9 @@ const ByWard = (props) => {
         const updateData = (data) => params.api.setRowData(data);
 
         if(props.current_url.includes('chu')){       
-            lnlst = props.data.results.map(({code,name,facility_name,county,date_established,status,number_of_chvs,id})=>{return {code,name,facility_name,county,date_established,status,number_of_chvs,id}})
+            lnlst = props.data.results.map(({code,name,facility_name,county,date_established,status,number_of_chvs,id})=>({code,name,facility_name,county,date_established,status,number_of_chvs,id}))
         } else{
-            lnlst=  props.data.results.map(({facility_code,facility_name,facility_id,number_of_beds,number_of_cots})=>{return {facility_code, facility_name, number_of_beds, number_of_cots,facility_id }})
+            lnlst =  props.data.results.map(({facility_code,facility_name,facility_id,number_of_beds,number_of_cots})=>({facility_code, facility_name, number_of_beds, number_of_cots,facility_id }))
         }
      
         setFacilities(lnlst)
@@ -98,7 +99,7 @@ const ByWard = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KHMFL - Reports</title>
+                <title>KMHFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -144,10 +145,10 @@ const ByWard = (props) => {
                                 <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
                                                 e.preventDefault()
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
+                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -205,7 +206,7 @@ const ByWard = (props) => {
 
 
 
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -214,7 +215,7 @@ const ByWard = (props) => {
                             For testing reasons, downloads are limited to the first 1000 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
             </MainLayout >
         </div>
@@ -253,7 +254,7 @@ ByWard.getInitialProps = async (ctx) => {
    
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
-            console.log({page:ctx.query.page})
+          
             url = `${url}&page=${ctx.query.page}`
         }
         

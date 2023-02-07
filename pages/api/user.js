@@ -1,6 +1,6 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { getUserDetails, logUserIn } from "../../controllers/auth/auth";
+
+import { getUserDetails } from "../../controllers/auth/auth";
 
 export default async function getUser(req, res) {
     if (req.method === "POST" && req.body.token && req.body.url) {

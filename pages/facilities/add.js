@@ -1,19 +1,16 @@
 // React imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, createContext } from 'react';
 import { useAlert } from "react-alert";
 
 
 // Next imports
 import Head from 'next/head';
-import router from 'next/router';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 // Component imports
 import MainLayout from '../../components/MainLayout';
 import FacilityContact from '../../components/FacilityContact';
-// import TrasnferListServices from '../../components/TrasnferListServices';
-// import TransferListHr from '../../components/TransferListHr';
 import EditListWithCount from '../../components/EditListWithCount';
 import EditListItem from '../../components/EditListItem';
 
@@ -34,10 +31,13 @@ import {
 	ChevronDoubleLeftIcon,
 	PlusIcon,
 } from '@heroicons/react/solid';
-import { XCircleIcon } from '@heroicons/react/outline';
-
+// import { XCircleIcon } from '@heroicons/react/outline';
+import FacilityDeptRegulationFactory from '../../components/generateFacilityDeptRegulation'
+import FacilityOfficerFactory from '../../components/generateOfficerContacts';
 // Package imports
+
 import Select from 'react-select';
+// const Select = dynamic(import('react-select'), { ssr: false })  // This import prevents refs from loading but fixes the server, client side mismatch warning
 
 
 import { 
@@ -52,9 +52,9 @@ import {
 } from '../../controllers/facility/facilityHandlers';
 
 
+export const FacilityDeptContext = createContext(null)
 
 const turf = require('@turf/turf');
-// const FormData = require('form-data');
 const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
@@ -71,7 +71,6 @@ function AddFacility(props) {
 
 	// Form drop down options
 
-
 	const facilityOptions = (() => {
 		const f_types = [
 			'STAND ALONE',
@@ -87,8 +86,6 @@ function AddFacility(props) {
 
 
 		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division === f_types[type]))
-
-
 
 		return [{
 			label: all_ftypes[0].sub_division,
@@ -119,9 +116,6 @@ function AddFacility(props) {
 
 	})()
 
-
-	// console.log({facilityOptions})
-	 
 
 	 const facilityTypeOptions = props['1']?.facility_type_details
 	 const ownerOptions =  props['2']?.owners
@@ -203,7 +197,6 @@ function AddFacility(props) {
 		return _infrastructureOptions
 	 })(props['16'].infrastructure ?? [])
 
-
 	 const hrOptions = ((_hr) => {
 		
 		const _hrOptions = []
@@ -239,13 +232,9 @@ function AddFacility(props) {
 
 	//  Refs
 
-    const nameOptionRef = useRef(null)
-    const serviceOptionRef = useRef(null)
-    const optionRefBody = useRef(null)
-    const infrastructureBodyRef = useRef(null)
 	const basicDetailsRef = useRef(null)
 	const kephLvlRef = useRef(null)
-	const regBodyRef = useRef(null)
+	// const regBodyRef = useRef(null)
 
 
     const steps = [
@@ -258,24 +247,30 @@ function AddFacility(props) {
         'Human resources'
     ];
 
-
-    const [formId, setFormId] = useState(0) //0
+    const [formId, setFormId] = useState(0) 
     const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
 	const checklistFileRef = useRef(null)
-  
 
+	// Hours of Day Open Refs
+	const open24HrsRef = useRef(null)
+	const openLateNightRef = useRef(null)
+	const openNormalDayRef = useRef(null)
+	const openPublicHolidaysRef = useRef(null)
+	const openWeekendsRef = useRef(null)
+	const _regBodyRef = useRef(null)
+
+	//Form Refs
+	const facilityRegulationFormRef = useRef(null)
+	const facilityContactsFormRef = useRef(null)
+
+  
 
     // Services State data
     const [services, setServices] = useState([])
-    const [infrastructure, setInfrastructure] = useState([])
-	const [infrastructureCount, setInfrastructureCount] = useState([])
-	const [hr, setHr] = useState([])
-	const [hrCount, setHrCount] = useState([])
 	const [facilityOption, setFacilityOption] = useState('')
 	const [facilityOfficialName, setFacilityOfficialName] = useState('')
-	// const [geolocationData, setGeolocationData] = useState({})
 
 	const [ownerTypeOption, setOwnerTypeOption] = useState('')
 	const [latitude, setLatitude] = useState('')
@@ -308,17 +303,45 @@ function AddFacility(props) {
     const [pathId, setPathId] = useState('') 
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('');
+	const [is24hrsOpen, setIs24hrsOpen] = useState(false)
+	const [isRegBodyChange, setIsRegBodyChange] = useState(false)
+	const [facilityDepts, setFacilityDepts] = useState([
+		(() => (
+			<FacilityDeptRegulationFactory
+				key={0}
+				index={0}
+				facilityDepts={[]}
+				isRegBodyChange={isRegBodyChange}
+				setIsRegBodyChange={setIsRegBodyChange}
+				regNo={null}
+				licenseNo={null}
+				facilityDeptRegBody={null}
+				facilityDeptValue={null}
+				setFacilityDepts={() => null}
+				facilityDeptOptions={facilityDeptOptions}
+			/>
+		))()
+	]) // [0]
+
+
+	const [facilityContacts, setFacilityContacts] = useState([
+		(() => (
+			<FacilityOfficerFactory
+				contactTypeOptions={contactTypeOptions}
+				index={0}
+			/>
+		))()
+	])
 	const filters = []
 	
 	
     useEffect(() => {
 
-		// console.log({props})
-
+		
         const formIdState = window.sessionStorage.getItem('formId');
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
-            window.sessionStorage.setItem('formId', 5); //0
+            window.sessionStorage.setItem('formId', 0); //0 set form to basic details
         }
         
         setFormId(window.sessionStorage.getItem('formId'));
@@ -349,54 +372,6 @@ function AddFacility(props) {
         }
     }, [facilityOfficialName, facilityOption, formId, refreshForm4, refreshForm5, refreshForm6, latitude, geoJSON, longitude])
       
-
-	const handleQuickFiltersClick = (link) => {
-		switch(link){
-			case 'all':
-				router.push({pathname:'/facilities', query:{qf:'all', id:'not_all'}})
-				break;
-				
-			case 'approved_facilities':
-				
-				router.push({pathname:'/facilities', query:{qf:'approved', approved_national_level: true, rejected:false, id:'approved' }})
-				break;
-			case 'new_pending_validation':
-
-				router.push({pathname:'/facilities', query:{qf:'new_pending_validation', pending_approval:true, has_edits:false, id:'new_pending_validation'}})
-				break;
-			case 'updated_pending_validation':
-				
-				router.push({pathname:'/facilities', query:{qf:'updated_pending_validation', has_edits:true, pending_approval:true, id:'updated_pending_validation'} })
-				break;
-			case 'to_publish':
-			
-				router.push({pathname:'/facilities', query:{qf:'to_publish', to_publish:true, id:'to_publish'} })
-				break;
-			case 'dhis_synced_facilities':
-				
-				router.push({pathname:'/facilities', query:{qf:'dhis_synced_facilities', approved:true, approved_national_level:true, rejected:false, reporting_in_dhis:true, id:'dhis_synced_facilities'}})
-				break;
-			case 'failed_validation_facilities':
-			
-				router.push({pathname:'/facilities', query:{qf:'failed_validation', rejected:true, id:'failed_validation'}})
-				break;
-			case 'rejected_facilities':
-				
-				router.push({pathname:'/facilities', query:{qf:'rejected', rejected_national:true, id:'rejected'}})
-				break;
-			case 'closed_facilities':
-				
-				router.push({pathname:'/facilities', query:{qf:'closed', closed:true, id:'closed'}})
-				break;
-			case 'incomplete_facilities':
-				
-				router.push({pathname:'/facilities', query:{qf:'incomplete', incomplete:true, id:'incomplete'}})
-				break;
-		
-			default:
-				break;
-		}
-	}
 
 	if(facilityTypeDetail !== '' && kephLvlRef.current){
 		switch(facilityTypeDetail){
@@ -429,7 +404,7 @@ function AddFacility(props) {
 				let point = turf.point([longitude, latitude]);
 				
 				let polygon = turf.polygon(facilityCoordinates);
-				console.log({facilityCoordinates})
+				
 				let found = turf.booleanPointInPolygon(point, polygon);
 				if(!found){
 					setCoordinatesError(true)
@@ -440,15 +415,58 @@ function AddFacility(props) {
 		}
 
 		isLatLngInRegion()
+
+		
+		
 	} , [longitude, latitude])
 
-	useEffect(() => {}, [coordinatesError])
-	
+	// Validate Hours/Days of Operation
+
+	useEffect(() => {
+		if(open24HrsRef.current && is24hrsOpen){
+			open24HrsRef.current.checked = true
+		}  
+		if(open24HrsRef.current && !is24hrsOpen) {
+			open24HrsRef.current.checked = false
+		}
+
+		if(openLateNightRef.current && is24hrsOpen){
+			openLateNightRef.current.checked = true
+		}
+		if(openLateNightRef.current && !is24hrsOpen){
+			openLateNightRef.current.checked = false
+		}
+
+
+		if(openNormalDayRef.current && is24hrsOpen){
+			openNormalDayRef.current.checked = true
+		}
+		if(openNormalDayRef.current && !is24hrsOpen){
+			openNormalDayRef.current.checked = false
+		}
+
+		if(openPublicHolidaysRef.current && is24hrsOpen){
+			openPublicHolidaysRef.current.checked = true
+		}
+		if(openPublicHolidaysRef.current && !is24hrsOpen){
+			openPublicHolidaysRef.current.checked = false
+		}
+
+		if(openWeekendsRef.current && is24hrsOpen){
+			openWeekendsRef.current.checked = true
+		}
+		if(openWeekendsRef.current && !is24hrsOpen){
+			openWeekendsRef.current.checked = false
+		}
+	}, [is24hrsOpen])
+
+	useEffect(() => {/*console.log({facilityDepts})*/}, [isRegBodyChange, facilityDepts])
+
 	
   return (
 	<>
 		 <Head>
-                <title>KHMFL - Add Facility</title>
+                <title>KMHFL - Add Facility</title>
                 <link rel="icon" href="/favicon.ico" />
         </Head>
 
@@ -473,7 +491,7 @@ function AddFacility(props) {
 
 
 						 {/* Facility Side Menu Filters */}
-						 <div className="md:col-span-1 md:mt-8">
+						 <div className="md:col-span-1 md:mt-3">
                             <FacilitySideMenu 
                                 filters={filters}
                                 states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
@@ -647,11 +665,11 @@ function AddFacility(props) {
 																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 																					return [
 																						facilityTypeOptions.filter(({label}) => label == 'Basic Health Centre')[0] || {},
-																						facilityTypeOptions.filter(({label}) => label == 'Comprehensive health Centre')[0] || {}
+																						facilityTypeOptions.filter(({label}) => label == 'Comprehensive Health Centre')[0] || {}
 																						]
 
 																				case 'MEDICAL CENTRE':
-																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
+																					if(kephLvlRef.current) console.log(kephLvlRef.current); kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
 																				
@@ -829,7 +847,10 @@ function AddFacility(props) {
 																					ownerOptions.filter(({label}) => label == "Public Institution - Parastatal")[0] || {},
 																					ownerOptions.filter(({label}) => label == 'Ministry of Health')[0] || {},
 																					ownerOptions.filter(({label}) => label == 'Armed Forces')[0] || {},
-																					ownerOptions.filter(({label}) => label == 'Public Institution - Academic')[0] || {},
+																					ownerOptions.filter(({label}) => label == 'Kenya Police Service')[0] || {},
+																					ownerOptions.filter(({label}) => label == 'National Youth Service')[0] || {},
+																					ownerOptions.filter(({label}) => label == 'Prisons')[0] || {}
+
 																				]																				
 																				
 																			case 'Faith Based Organization':																		
@@ -863,6 +884,7 @@ function AddFacility(props) {
 																<Select
 																	ref={kephLvlRef}
 																	options={kephOptions ?? []}
+																	isOptionDisabled={(option) => true}
 																	placeholder='Select a KEPH Level..'
 																	name='keph_level'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
@@ -874,7 +896,7 @@ function AddFacility(props) {
 																<label
 																	htmlFor='number_of_beds'
 																	className='text-gray-600 capitalize text-sm'>
-																	Number of functional general beds
+																	Total Functional In-patient beds
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
 																		*
@@ -1048,11 +1070,11 @@ function AddFacility(props) {
 																	Facility Catchment Population
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
-																		*
+																		
 																	</span>
 																</label>
 																<input
-																	required
+																	
 																	type='number'
 																	name='facility_catchment_population'
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1174,9 +1196,11 @@ function AddFacility(props) {
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
 																		type='checkbox'	
+																		ref={open24HrsRef}
 																		name='open_whole_day'
 																		id='open_24hrs'
 																		defaultValue={true}
+																		onChange={() => {setIs24hrsOpen(!is24hrsOpen)}}
 																		
 																		
 																	/>
@@ -1190,7 +1214,8 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
-																		type='checkbox'		
+																		type='checkbox'
+																		ref={openLateNightRef}		
 																		name='open_late_night'
 																		id='open_late_night'
 																		defaultValue={true}
@@ -1208,6 +1233,7 @@ function AddFacility(props) {
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
 																		type='checkbox'
+																		ref={openPublicHolidaysRef}
 																		name='open_public_holidays'
 																		id='open_public_holidays'
 																		defaultValue={true}
@@ -1224,7 +1250,8 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
-																		type='checkbox'	
+																		type='checkbox'
+																		ref={openWeekendsRef}	
 																		name='open_weekends'
 																		id='open_weekends'
 																		defaultValue={true}
@@ -1241,6 +1268,7 @@ function AddFacility(props) {
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
 																		type='checkbox'	
+																		ref={openNormalDayRef}
 																		name='open_normal_day'
 																		id='open_8_5'
 																		defaultValue={true}
@@ -1512,30 +1540,50 @@ function AddFacility(props) {
 													</>
 												);
 											case 1:
-												// Geolocation Form
+											// Geolocation Form
 
-												const handleGeolocationPrevious = (event) => {
-													event.preventDefault();
-													window.sessionStorage.setItem('formId', 0);
+											const handleGeolocationPrevious = (event) => {
+												event.preventDefault();
+												window.sessionStorage.setItem('formId', 0);
 
-													setFormId(window.sessionStorage.getItem('formId'));
-												};
+												setFormId(window.sessionStorage.getItem('formId'));
+											};
 
-												return (
-													<>
-														<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
-															Geolocation Details
-														</h4>
-														<form
-															name='geolocation_form'
-															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId], 'POST')}>
-															{/* Collection Date */}
-															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+											return (
+												<>
+													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														Geolocation Details
+													</h4>
+													<form
+														name='geolocation_form'
+														className='flex flex-col w-full items-start justify-start gap-3'
+														onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId])}>
+														{/* Collection Date */}
+														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+															<label
+																htmlFor='collection_date'
+																className='text-gray-600 capitalize text-sm'>
+																Collection date:
+																<span className='text-medium leading-12 font-semibold'>
+																	{' '}
+																	*
+																</span>
+															</label>
+															<input
+																required
+																type='date'
+																name='collection_date'
+																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+															/>
+														</div>
+
+														{/* Lon/Lat */}
+														<div className='grid grid-cols-2 gap-4 place-content-start w-full'>
+															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
 																<label
-																	htmlFor='collection_date'
+																	htmlFor='longitude'
 																	className='text-gray-600 capitalize text-sm'>
-																	Collection date:
+																	Longitude
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
 																		*
@@ -1543,88 +1591,68 @@ function AddFacility(props) {
 																</label>
 																<input
 																	required
-																	type='date'
-																	name='collection_date'
+																	type='decimal'
+																	name='longitude'
+																	onChange={ev => setLongitude(ev.target.value)}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
 
-															{/* Lon/Lat */}
-															<div className='grid grid-cols-2 gap-4 place-content-start w-full'>
-																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-1'>
-																	<label
-																		htmlFor='longitude'
-																		className='text-gray-600 capitalize text-sm'>
-																		Longitude
-																		<span className='text-medium leading-12 font-semibold'>
-																			{' '}
-																			*
-																		</span>
-																	</label>
-																	<input
-																		required
-																		type='decimal'
-																		name='longitude'
-																		onChange={ev => setLongitude(ev.target.value)}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
-
-																<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
-																	<label
-																		htmlFor='latitude'
-																		className='text-gray-600 capitalize text-sm'>
-																		Latitude
-																		<span className='text-medium leading-12 font-semibold'>
-																			{' '}
-																			*
-																		</span>
-																	</label>
-																	<input
-																		required
-																		type='decimal'
-																		name='latitude'
-																		onChange={ev => setLatitude(ev.target.value)}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																	/>
-																</div>
-															<>{coordinatesError && <Alert severity="error" sx={{width:'100%'}}> Please enter the right coordinates</Alert>}</>
-															</div>
-
-															{/* Ward Geo Map */}
-															<div className='w-full h-auto'>																		
-																<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
-																	{
-																		 geoJSON &&
-
-																		<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
-																
-																	}	
-																	</div>
-															</div>
-
-															{/* Next/Previous Form  */}
-															<div className='flex justify-between items-center w-full'>
-																<button
-																	onClick={handleGeolocationPrevious}
-																	className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-																	<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																	<span className='text-medium font-semibold text-black '>
-																		Basic Details
+															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3 col-start-2'>
+																<label
+																	htmlFor='latitude'
+																	className='text-gray-600 capitalize text-sm'>
+																	Latitude
+																	<span className='text-medium leading-12 font-semibold'>
+																		{' '}
+																		*
 																	</span>
-																</button>
-																<button
-																	type='submit'
-																	className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-																	<span className='text-medium font-semibold text-white'>
-																		Facility Contacts
-																	</span>
-																	<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-																</button>
+																</label>
+																<input
+																	required
+																	type='decimal'
+																	name='latitude'
+																	onChange={ev => setLatitude(ev.target.value)}
+																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																/>
 															</div>
-														</form>
-													</>
-												);
+														<>{coordinatesError && <Alert severity="error" sx={{width:'100%'}}> Please enter the right coordinates</Alert>}</>
+														</div>
+
+														{/* Ward Geo Map */}
+														<div className='w-full h-auto'>																		
+															<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
+																{
+																	 geoJSON &&
+
+																	<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
+															
+																}	
+																</div>
+														</div>
+
+														{/* Next/Previous Form  */}
+														<div className='flex justify-between items-center w-full'>
+															<button
+																onClick={handleGeolocationPrevious}
+																className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
+																<span className='text-medium font-semibold text-black '>
+																	Basic Details
+																</span>
+															</button>
+															<button
+																type='submit'
+																className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
+																<span className='text-medium font-semibold text-white'>
+																	Facility Contacts
+																</span>
+																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+															</button>
+														</div>
+													</form>
+												</>
+											);
 											case 2:
 												// Facility Contacts Form
 
@@ -1635,137 +1663,137 @@ function AddFacility(props) {
 													setFormId(window.sessionStorage.getItem('formId'));
 												};
 
-												const handleAddContact = (event) => {
-													event.preventDefault();
+												// const handleAddContact = (event) => {
+												// 	event.preventDefault();
 
-													const divContainer = facilityContactRef.current;
+												// 	const divContainer = facilityContactRef.current;
 
-													const dropDown = document.createElement('select');
+												// 	const dropDown = document.createElement('select');
 
-													dropDown.setAttribute(
-														'style',
-														`
-													width:100%; 
-													border: 1px solid hsl(0, 0%, 80%); 
-													border-radius: 4px; 
-													padding: 2px; 
-													background-color: hsl(0, 0%, 100%); 
-													display: grid; 
-													min-height: 38px;
-													`
-													);
+												// 	dropDown.setAttribute(
+												// 		'style',
+												// 		`
+												// 	width:100%; 
+												// 	border: 1px solid hsl(0, 0%, 80%); 
+												// 	border-radius: 4px; 
+												// 	padding: 2px; 
+												// 	background-color: hsl(0, 0%, 100%); 
+												// 	display: grid; 
+												// 	min-height: 38px;
+												// 	`
+												// 	);
 
-													dropDown.setAttribute(
-														'placeholder',
-														'Select Contact Type'
-													);
+												// 	dropDown.setAttribute(
+												// 		'placeholder',
+												// 		'Select Contact Type'
+												// 	);
 
-													dropDown.setAttribute('name', 'dropdown_contact_types');
+												// 	dropDown.setAttribute('name', 'dropdown_contact_types');
 
-													const option1 = document.createElement('option');
-													option1.innerText = 'Select Contact Type';
-													option1.value = 'Select Contact Type';
+												// 	const option1 = document.createElement('option');
+												// 	option1.innerText = 'Select Contact Type';
+												// 	option1.value = 'Select Contact Type';
 
-													const option2 = document.createElement('option');
-													option2.innerText = 'POSTAL';
-													option2.value = 'POSTAL';
+												// 	const option2 = document.createElement('option');
+												// 	option2.innerText = 'POSTAL';
+												// 	option2.value = 'POSTAL';
 
-													const option3 = document.createElement('option');
-													option3.innerText = 'FAX';
-													option3.value = 'FAX';
+												// 	const option3 = document.createElement('option');
+												// 	option3.innerText = 'FAX';
+												// 	option3.value = 'FAX';
 
-													const option4 = document.createElement('option');
-													option4.innerText = 'LANDLINE';
-													option4.value = 'LANDLINE';
+												// 	const option4 = document.createElement('option');
+												// 	option4.innerText = 'LANDLINE';
+												// 	option4.value = 'LANDLINE';
 
-													const option5 = document.createElement('option');
-													option5.innerText = 'MOBILE';
-													option5.value = 'MOBILE';
+												// 	const option5 = document.createElement('option');
+												// 	option5.innerText = 'MOBILE';
+												// 	option5.value = 'MOBILE';
 
-													const option6 = document.createElement('option');
-													option6.innerText = 'EMAIL';
-													option6.value = 'EMAIL';
+												// 	const option6 = document.createElement('option');
+												// 	option6.innerText = 'EMAIL';
+												// 	option6.value = 'EMAIL';
 
-													dropDown.appendChild(option1.getRootNode());
-													dropDown.appendChild(option2.getRootNode());
-													dropDown.appendChild(option3.getRootNode());
-													dropDown.appendChild(option4.getRootNode());
-													dropDown.appendChild(option5.getRootNode());
-													dropDown.appendChild(option6.getRootNode());
+												// 	dropDown.appendChild(option1.getRootNode());
+												// 	dropDown.appendChild(option2.getRootNode());
+												// 	dropDown.appendChild(option3.getRootNode());
+												// 	dropDown.appendChild(option4.getRootNode());
+												// 	dropDown.appendChild(option5.getRootNode());
+												// 	dropDown.appendChild(option6.getRootNode());
 
-													divContainer.appendChild(dropDown.getRootNode());
-													const input =
-														divContainer.childNodes[4].cloneNode(true);
-													input.setAttribute('name', 'contact_details_others');
+												// 	divContainer.appendChild(dropDown.getRootNode());
+												// 	const input =
+												// 		divContainer.childNodes[4].cloneNode(true);
+												// 	input.setAttribute('name', 'contact_details_others');
 
-													divContainer.appendChild(input);
-												};
+												// 	divContainer.appendChild(input);
+												// };
 
-												const handleAddContact2 = (event) => {
-													event.preventDefault();
+												// const handleAddContact2 = (event) => {
+												// 	event.preventDefault();
 
-													const divContainer = facilityContact2Ref.current;
+												// 	const divContainer = facilityContact2Ref.current;
 
-													const dropDown = document.createElement('select');
+												// 	const dropDown = document.createElement('select');
 
-													dropDown.setAttribute(
-														'style',
-														`
-													width:100%; 
-													border: 1px solid hsl(0, 0%, 80%); 
-													border-radius: 4px; 
-													padding: 2px; 
-													background-color: hsl(0, 0%, 100%); 
-													display: grid; 
-													min-height: 38px;
-													`
-													);
+												// 	dropDown.setAttribute(
+												// 		'style',
+												// 		`
+												// 	width:100%; 
+												// 	border: 1px solid hsl(0, 0%, 80%); 
+												// 	border-radius: 4px; 
+												// 	padding: 2px; 
+												// 	background-color: hsl(0, 0%, 100%); 
+												// 	display: grid; 
+												// 	min-height: 38px;
+												// 	`
+												// 	);
 
-													dropDown.setAttribute(
-														'placeholder',
-														'Select Contact Type'
-													);
+												// 	dropDown.setAttribute(
+												// 		'placeholder',
+												// 		'Select Contact Type'
+												// 	);
 
-													dropDown.setAttribute('name', 'dropdown_contact_types');
+												// 	dropDown.setAttribute('name', 'dropdown_contact_types');
 
-													const option1 = document.createElement('option');
-													option1.innerText = 'Select Contact Type';
-													option1.value = 'Select Contact Type';
+												// 	const option1 = document.createElement('option');
+												// 	option1.innerText = 'Select Contact Type';
+												// 	option1.value = 'Select Contact Type';
 
-													const option2 = document.createElement('option');
-													option2.innerText = 'POSTAL';
-													option2.value = 'POSTAL';
+												// 	const option2 = document.createElement('option');
+												// 	option2.innerText = 'POSTAL';
+												// 	option2.value = 'POSTAL';
 
-													const option3 = document.createElement('option');
-													option3.innerText = 'FAX';
-													option3.value = 'FAX';
+												// 	const option3 = document.createElement('option');
+												// 	option3.innerText = 'FAX';
+												// 	option3.value = 'FAX';
 
-													const option4 = document.createElement('option');
-													option4.innerText = 'LANDLINE';
-													option4.value = 'LANDLINE';
+												// 	const option4 = document.createElement('option');
+												// 	option4.innerText = 'LANDLINE';
+												// 	option4.value = 'LANDLINE';
 
-													const option5 = document.createElement('option');
-													option5.innerText = 'MOBILE';
-													option5.value = 'MOBILE';
+												// 	const option5 = document.createElement('option');
+												// 	option5.innerText = 'MOBILE';
+												// 	option5.value = 'MOBILE';
 
-													const option6 = document.createElement('option');
-													option6.innerText = 'EMAIL';
-													option6.value = 'EMAIL';
+												// 	const option6 = document.createElement('option');
+												// 	option6.innerText = 'EMAIL';
+												// 	option6.value = 'EMAIL';
 
-													dropDown.appendChild(option1.getRootNode());
-													dropDown.appendChild(option2.getRootNode());
-													dropDown.appendChild(option3.getRootNode());
-													dropDown.appendChild(option4.getRootNode());
-													dropDown.appendChild(option5.getRootNode());
-													dropDown.appendChild(option6.getRootNode());
+												// 	dropDown.appendChild(option1.getRootNode());
+												// 	dropDown.appendChild(option2.getRootNode());
+												// 	dropDown.appendChild(option3.getRootNode());
+												// 	dropDown.appendChild(option4.getRootNode());
+												// 	dropDown.appendChild(option5.getRootNode());
+												// 	dropDown.appendChild(option6.getRootNode());
 
-													divContainer.appendChild(dropDown.getRootNode());
-													const input =
-														divContainer.childNodes[4].cloneNode(true);
-													input.setAttribute('name', 'contact_details_others');
+												// 	divContainer.appendChild(dropDown.getRootNode());
+												// 	const input =
+												// 		divContainer.childNodes[4].cloneNode(true);
+												// 	input.setAttribute('name', 'contact_details_others');
 
-													divContainer.appendChild(input);
-												};
+												// 	divContainer.appendChild(input);
+												// };
 
 												return (
 													<>
@@ -1773,9 +1801,10 @@ function AddFacility(props) {
 															Facility Contact
 														</h4>
 														<form
+															ref={facilityContactsFormRef}
 															className='flex flex-col w-full items-start justify-start gap-3'
 															name='facility_contacts_form'
-															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId], 'POST')}>
+															onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId, facilityContactsFormRef])}>
 															{/* Contacts */}
 
 															<div
@@ -1792,14 +1821,25 @@ function AddFacility(props) {
 
 																{/* Contact Type / Contact Details */}
 
-																<FacilityContact 
+																{/* <FacilityContact 
 																contactDetail={_contactDetail}
 																inputContactRef={null} 
 																setContactDetail={setContactDetail} 
 																contactTypeOptions={contactTypeOptions} 
 																contact={''} 
 																names={['contact_type', 'contact']} 
-																id={'facility'} />
+																id={'facility'} /> */}
+
+																{/* add other fields */}
+															    <div className='flex-col items-start justify-start gap-y-4'>
+																	{
+																		facilityContacts.map((facilityContact, i) => (
+														
+																			facilityContact
+																		
+																		))
+																	}
+																</div>	
 																
 
 																
@@ -1808,7 +1848,20 @@ function AddFacility(props) {
 
 															<div className='w-full flex justify-end items-center'>
 																<button
-																	onClick={handleAddContact}
+																	onClick={(e) => {e.preventDefault();  setFacilityContacts([
+																		...facilityContacts, 
+																		(() => (
+																			// <FacilityDeptContext.Provider value={facilityDepts} key={(facilityDepts.length + 1) - 1}>
+																				<FacilityOfficerFactory
+																				contactTypeOptions={contactTypeOptions}
+																				index={(facilityContacts.length + 1) - 1}
+																				
+																				/>
+																			// </FacilityDeptContext.Provider>
+																		))()
+	
+																		/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
+																		])}}
 																	className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																	<PlusIcon className='w-4 h-4 text-white' />
 																	<p className='text-medium font-semibold text-white'>
@@ -1902,7 +1955,7 @@ function AddFacility(props) {
 
 																<div className='w-full flex justify-end items-center mt-2'>
 																	<button
-																		onClick={handleAddContact2}
+																		onClick={() => null}
 																		className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																		<PlusIcon className='w-4 h-4 text-white' />
 																		<p className='text-medium font-semibold text-white'>
@@ -1943,134 +1996,24 @@ function AddFacility(props) {
 													setFormId(window.sessionStorage.getItem('formId'));
 												};
 
-												const handleAddRegulatoryBody = (event) => {
-													event.preventDefault();
-
-													const divContainer = facilityRegulatoryBodyRef.current;
-
-													const dropDownRgBody = document.createElement('select');
-
-													dropDownRgBody.setAttribute(
-														'style',
-														`
-													width:100%; 
-													border: 1px solid hsl(0, 0%, 80%); 
-													border-radius: 4px; 
-													padding: 2px; 
-													background-color: hsl(0, 0%, 100%); 
-													display: grid; 
-													min-height: 38px;
-													`
-													);
-
-													dropDownRgBody.setAttribute(
-														'placeholder',
-														'Select Service'
-													);
-
-													dropDownRgBody.setAttribute(
-														'name',
-														'dropdown_rgbody_name'
-													);
-
-													const option0 = document.createElement('option');
-													option0.innerText = 'Select Fcaility Department';
-													option0.value = 'Select Fcaility Department';
-
-													const option1 = document.createElement('option');
-													option1.innerText = 'Clinical Officers';
-													option1.value = 'Clinical Officers';
-
-													const option2 = document.createElement('option');
-													option2.innerText = 'Nurses and specialist';
-													option2.value = 'Nurses and specialist';
-
-													const option3 = document.createElement('option');
-													option3.innerText = 'Medical Officers';
-													option3.value = 'Medical Officers';
-
-													const option4 = document.createElement('option');
-													option4.innerText = 'Dental';
-													option4.value = 'Dental';
-
-													const option5 = document.createElement('option');
-													option5.innerText = 'Nutrition';
-													option5.value = 'Nutrition';
-
-													const option6 = document.createElement('option');
-													option6.innerText = 'Occupational Health';
-													option6.value = 'Occupational Health';
-
-													const option7 = document.createElement('option');
-													option7.innerText = 'Physiotherapy';
-													option7.value = 'Physiotherapy';
-
-													const option8 = document.createElement('option');
-													option8.innerText = 'X-Ray';
-													option8.value = 'X-Ray';
-
-													const option9 = document.createElement('option');
-													option9.innerText = 'Pharmacy';
-													option9.value = 'Pharmacy';
-
-													const option10 = document.createElement('option');
-													option10.innerText = 'Laboratory';
-													option10.value = 'Laboratory';
-
-													const option11 = document.createElement('option');
-													option11.innerText = 'Optical';
-													option11.value = 'Optical';
-
-													const inputRgBody =
-														divContainer.childNodes[6].cloneNode(true);
-													inputRgBody.setAttribute('name', 'regulatory_body');
-
-													const inputLicenseNo =
-														divContainer.childNodes[6].cloneNode(true);
-													inputLicenseNo.setAttribute('name', 'license_no');
-
-													const inputRegNo =
-														divContainer.childNodes[6].cloneNode(true);
-													inputRegNo.setAttribute('name', 'regulatory_no');
-
-													const delBtn = document.createElement('button');
-													delBtn.addEventListener('click', (ev) => {
-														ev.preventDefault();
-													});
-													delBtn.innerText = '';
-													delBtn.setAttribute(
-														'style',
-														`
-													padding: 1px;
-													border-radius: 2px;
-													background-color: rosered;
-													font-weight:400;
-													width:auto;
-													height:auto;
-
-													`)
-
-													
-													divContainer.appendChild(dropDownRgBody.getRootNode())
-													divContainer.appendChild(inputRgBody)
-													divContainer.appendChild(inputLicenseNo)
-													divContainer.appendChild(inputRegNo)
-													divContainer.appendChild(delBtn.getRootNode())
-
-												}
-
 
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-														<form  name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId], 'POST', licenseFile)}>
+														<form  ref={facilityRegulationFormRef} name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId, facilityOfficialName, facilityRegulationFormRef], licenseFile)}>
 
 															{/* Regulatory Body */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																	<label htmlFor="regulatory_body" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
 																	<Select 
-																		options={regBodyOptions || []} 
+																		ref={_regBodyRef}
+																		options={((regOptions) => {
+
+																			return regOptions.filter(({label}) => !(label === 'Other'))
+
+																		})(regBodyOptions || [])} 
 																		required
+																		onChange={() => setIsRegBodyChange(!isRegBodyChange)}
 																		placeholder="Select Regulatory Body"
 																		name='regulatory_body'
 																		className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
@@ -2081,7 +2024,25 @@ function AddFacility(props) {
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																<label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
 																<Select 
-																		options={regulationStateOptions || []} 
+																		options={((regStateOpts) => {
+																			
+																				let filteredRegState
+																				if(_regBodyRef.current){
+																				
+																					if(_regBodyRef.current?.state?.value?.label == 'Ministry of Health'){
+																						filteredRegState = regStateOpts.filter(({label}) => !(label.match(/.*Gazett.*/) !== null))		
+																					}
+																					else {
+																						filteredRegState = regStateOpts
+																					}
+																				} 
+																				else{
+																					filteredRegState = regStateOpts
+																				}
+	
+																				return filteredRegState
+																				
+																		})(regulationStateOptions || [])} 
 																		required
 																		placeholder="Select Regulation Status"
 																		name='regulation_status'
@@ -2110,9 +2071,9 @@ function AddFacility(props) {
 															</div>
 
 															{/* Facility Departments Regulation  */}
-
 															<h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
 															<div className='grid grid-cols-4 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityRegulatoryBodyRef}>
+															
 															{/* Contact Headers */}
 																<h3 className='text-medium font-semibold text-blue-900'>Name</h3>
 																<h3 className='text-medium font-semibold text-blue-900'>Regulatory Body</h3>
@@ -2121,38 +2082,17 @@ function AddFacility(props) {
 									
 																<hr className='col-span-4'/>
 
-																
-																{/* Name */}
-																<Select options={facilityDeptOptions || []} 
-																	required
-																	placeholder="Select Name"
-																	onChange={
-																		e => {
-																			if(regBodyRef.current){
-																			
-																				regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
-																			}
-																		}
-																	}
-																	name="facility_dept_name" 
-																	className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-																
-																{/* Regulatory Body */}
-																<input type="text" disabled ref={regBodyRef} name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-
-																{/* License No. */}
-																<input type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-										
-																<div className='col-start-4 flex items-center space-x-2 w-full'>
-																	{/* Reg No. */}
-																	<input type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-																
-																	{/* Delete Btn */}
-
-																	<button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
-																</div>
-
 																{/* add other fields */}
+															    <div className='flex-col items-start justify-start gap-y-4'>
+																	{
+																		facilityDepts.map((facilityDept, i) => (
+														
+																			facilityDept
+																		
+																		))
+																	}
+																</div>	
+																
 															
 																
 															</div>
@@ -2160,7 +2100,27 @@ function AddFacility(props) {
 														
 															{/* Add btn */}
 															<div className='w-full flex justify-end items-center mt-2'>
-																<button onClick={handleAddRegulatoryBody} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+																<button onClick={(e) => {e.preventDefault();  setFacilityDepts([
+																	...facilityDepts, 
+																	(() => (
+																		<FacilityDeptContext.Provider value={facilityDepts} key={(facilityDepts.length + 1) - 1}>
+																			<FacilityDeptRegulationFactory
+																			key={(facilityDepts.length + 1) - 1}
+																			index={(facilityDepts.length + 1) - 1}
+																			isRegBodyChange={isRegBodyChange}
+																			setIsRegBodyChange={setIsRegBodyChange}
+																			setFacilityDepts={setFacilityDepts}
+																			facilityDeptRegBody={null} 
+																			facilityDeptValue={null}
+																			regNo={null} 
+																			licenseNo={null}
+																			facilityDeptOptions={facilityDeptOptions}
+																			/>
+																		</FacilityDeptContext.Provider>
+																	))()
+
+																	/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
+																	])}} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																	<PlusIcon className='w-4 h-4 text-white'/>
 																	<p className='text-medium font-semibold text-white'>Add</p>
 																</button>
@@ -2197,7 +2157,7 @@ function AddFacility(props) {
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
 																<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
                                                             
-																	{/* Transfer list Container */}
+																	{/* Edit list Container */}
 																	<div className='flex items-center w-full h-auto min-h-[300px]'>                                  
 
 																			<EditListItem 
@@ -2215,6 +2175,9 @@ function AddFacility(props) {
 																			nextItemCategory={'infrastructure'}
 																			previousItemCategory={'regulation'}
 																			handleItemPrevious={handleServicePrevious}
+																			setIsSaveAndFinish={() => null}
+
+																			
 																			/>
 
 																	</div>
@@ -2258,6 +2221,7 @@ function AddFacility(props) {
 																setNextItemCategory={setFormId}
 																nextItemCategory={'services'}
 																previousItemCategory={'human resources'}
+                                              					setIsSaveAndFinish={() => null}
 																/>
 
 															</div>
@@ -2301,6 +2265,7 @@ function AddFacility(props) {
 																setNextItemCategory={setFormId}
 																nextItemCategory={'finish'}
 																previousItemCategory={'infrastructure'}
+                                              					setIsSaveAndFinish={() => null}
 																/>
 
 															</div>

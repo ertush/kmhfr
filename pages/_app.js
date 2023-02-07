@@ -4,6 +4,7 @@ import NProgress from 'nprogress';
 import { Router } from 'next/router';
 import { positions, Provider } from "react-alert";
 import { PermissionContext } from '../providers/permissions';
+import { UserGroupContext } from '../providers/userGroup';
 import { UserContext } from '../providers/user';
 import AlertTemplate from "react-alert-template-basic";
 
@@ -30,6 +31,13 @@ function MyApp({ Component, pageProps }) {
         return user
         
         })()}>
+        <UserGroupContext.Provider value={(() => {
+           let userGroup
+           if (typeof window !== "undefined") {
+                 userGroup = JSON.parse(window.sessionStorage.getItem('user'))?.groups[0]?.name
+         }
+         return userGroup
+        })()}>
         <PermissionContext.Provider value={(() => {
           let userPermissions
           if (typeof window !== "undefined") {
@@ -40,6 +48,7 @@ function MyApp({ Component, pageProps }) {
         })()}>
           <Component {...pageProps} />
         </PermissionContext.Provider>
+        </UserGroupContext.Provider>
       </UserContext.Provider>
      
     </Provider>

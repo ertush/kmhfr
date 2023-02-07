@@ -18,7 +18,7 @@ import Select from "react-select";
 // Components imports
 import MainLayout from "../../components/MainLayout";
 
-import { hasGISPermissions } from "../../utils/checkPermissions";
+import { hasPermission } from "../../utils/checkPermissions";
 import { PermissionContext } from "../../providers/permissions";
 
 const Gis = (props) => { 
@@ -27,11 +27,11 @@ const Gis = (props) => {
   const userPermissions = useContext(PermissionContext)
 
   // Temporary fix faulty Kirinyaga id
-  let filters = (() => {
-    let filters = props?.filters;
+  const filters = (() => {
+    let _filters = props?.filters;
     // filters.county[0].id = 'ecbf61a6-cd6d-4806-99d8-9340572c0015' // correct Kirinyaga county id
 
-    return filters;
+    return _filters;
   })();
 
   let fltrs = filters;
@@ -56,7 +56,7 @@ const Gis = (props) => {
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  // console.log({ fltrs, filters });
+
 
   filters["has_edits"] = [{ id: "has_edits", name: "Has edits" }];
   filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }];
@@ -168,7 +168,7 @@ const Gis = (props) => {
   const [toDate, setToDate] = useState("");
 
   const onGridReady = (params) => {
-    console.log({ api: params.api });
+  
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
 
@@ -187,7 +187,7 @@ const Gis = (props) => {
 
   useEffect(() => {
 
-    if(!hasGISPermissions(/^mfl_gis.view_.*$/, userPermissions)){
+    if(!hasPermission(/^mfl_gis.view_.*$/, userPermissions)){
       router.push('/unauthorized')
   }
 
@@ -245,7 +245,7 @@ const Gis = (props) => {
   return (
     <div className="">
       <Head>
-        <title>KHMFL - GIS Explorer</title>
+        <title>KMHFL - GIS Explorer</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainLayout isLoading={false} isFullWidth={true}>
@@ -2159,7 +2159,7 @@ const Gis = (props) => {
           )}
         </>
 
-        {/* (((((( Floating div at bottom right of page */}
+        {/* Floating div at bottom right of page */}
         <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
           <h5 className="text-sm font-bold">
             <span className="text-gray-600 uppercase">Limited results</span>
@@ -2169,7 +2169,7 @@ const Gis = (props) => {
             results.
           </p>
         </div>
-        {/* ))))))) */}
+      
       </MainLayout>
     </div>
   );
@@ -2177,7 +2177,7 @@ const Gis = (props) => {
 
 Gis.getInitialProps = async (ctx) => {
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL || "https://api.kmhfltest.health.go.ke/api";
+    process.env.NEXT_PUBLIC_API_URL
   let host = ctx.req ? ctx.req.headers.host : window.location.hostname;
   let yesItIsUnits =
     (ctx?.query &&

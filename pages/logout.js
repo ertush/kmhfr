@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import MainLayout from '../components/MainLayout'
 
 const Logout = props => {
@@ -28,7 +28,7 @@ const Logout = props => {
     return (
         <>
             <Head>
-                <title>KHMFL - Log out</title>
+                <title>KMHFL - Log out</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout>
@@ -54,7 +54,7 @@ Logout.getInitialProps = async () => {
     })
         // .then(re => re.json())
         .then((response) => {
-            console.log(':::::::::::::::::::: response ===== ', response)
+           
             if (response.error || response.detail) {
                 return { error: true, ...response }
             }

@@ -1,4 +1,3 @@
-import router from "next/router";
 
 // handleBasicDetailsSubmit
 const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
@@ -157,7 +156,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
 };
 
 // handleGeolocationSubmit
-const handleGeolocationSubmit = (event, stateSetters, method) => {
+const handleGeolocationSubmit = (event, stateSetters) => {
 
     const [setFormId, facilityId] = stateSetters
     
@@ -213,7 +212,7 @@ const handleGeolocationSubmit = (event, stateSetters, method) => {
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method,
+            method: 'POST',
             body: JSON.stringify(geolocationData).replace(',"":""','')
         })
     }
@@ -227,36 +226,36 @@ const handleGeolocationSubmit = (event, stateSetters, method) => {
 };
 
 // handleFacilityContactsSubmit
-const handleFacilityContactsSubmit = (event, stateSetters, method) => {
+const handleFacilityContactsSubmit = (event, stateSetters) => {
 
-    const [setFormId, facilityId] = stateSetters
     event.preventDefault();
-
+    const [setFormId, facilityId, facilityContactsFormRef] = stateSetters
+    
     const contactFormData = {};
 
-    const elements = [...event.target];
+    const formData = new FormData(facilityContactsFormRef.current)
 
-    elements.forEach(({ name, value }) => {
-        
-        contactFormData[name] = value 
-    });
+    const contactEntries = [...formData.entries()]
 
+    for (let i in contactEntries) contactFormData[contactEntries[i][0]] = contactEntries[i][1];
 
     const payload  = {
-        contacts: [
-            {
-                contact: contactFormData['contact'],
-                contact_type: contactFormData['contact_type']
+            contacts: [
+                {
+                    contact: contactFormData['contact'],
+                    contact_type: contactFormData['contact_type']
+                }
+            ],
+            officer_in_charge: {
+                name: contactFormData['name'],
+                reg_no: contactFormData['reg_no'],
+                title: contactFormData['title']
+    
             }
-        ],
-        officer_in_charge: {
-            name: contactFormData['name'],
-            reg_no: contactFormData['reg_no'],
-            title: contactFormData['title']
-
-        }
     }
 
+
+ 
 
     try{
 
@@ -267,7 +266,7 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
                 'Content-Type': 'application/json;charset=utf-8'
                 
             },
-            method,
+            method: 'POST',
             body: JSON.stringify(payload).replace(',"":""','')
         })
     }
@@ -277,150 +276,152 @@ const handleFacilityContactsSubmit = (event, stateSetters, method) => {
 
     window.sessionStorage.setItem('formId', 3);
 
-    const dropDowns = document.getElementsByName(
-        'dropdown_contact_types'
-    );
-    const inputs = document.getElementsByName(
-        'contact_details_others'
-    );
 
-    
-
-    if (dropDowns.length > 0) {
-        dropDowns.forEach((dropDown) => {
-            dropDown.remove();
-        });
-    }
-
-    if (inputs.length > 0) {
-        inputs.forEach((input) => {
-            input.remove();
-        });
-    }
 
     setFormId(window.sessionStorage.getItem('formId'));
 };
 
 // handleRegulationSubmit
-const handleRegulationSubmit = (event, stateSetters, method, file) => {
+const handleRegulationSubmit = (event, stateSetters, file) => {
 
-    const [setFormId, facilityId] = stateSetters
+    event.preventDefault()
 
-    event.preventDefault();
-    
-    // Post Facility Regulation Data
+    const [setFormId, facilityId, facility_name, facilityRegulationFormRef] = stateSetters
 
-    const facilityRegDataA = {};
-    const facilityRegDataB = {};
-
-
-    const elements = [...event.target];
-
-    const payload = []
-
+    const formData = new FormData(facilityRegulationFormRef.current)
    
-    elements.forEach(({ name, value }) => {
-        switch(name){
-            case 'license_number':
-                facilityRegDataA[name] = value
-                break;
-            case 'registration_number':
-                facilityRegDataA[name] = value
-                break;
-            case 'regulation_status':
-                facilityRegDataA[name] = value
-                break;
-            case 'regulatory_body':
-                facilityRegDataA[name] = value
-                break;
-            case 'facility_dept_name':
-                facilityRegDataB['0'] = {
-                    unit: value,
-                }
-                break;
-            case 'facility_regulatory_body':
-                facilityRegDataB['1'] = {
-                    regulation_body_name: value,
-                }
-                break;
-            case 'facility_registration_number':
-            facilityRegDataB['2'] = {
-                registration_number: value,
+    const facilityDeptEntries = [...formData.entries()]
+
+    const filteredDeptUnitEntries = facilityDeptEntries.filter(field =>  field[0].match(/^facility_.+$/) !== null)
+
+    const filteredDeptOtherEntries = facilityDeptEntries.filter(field =>  !(field[0].match(/^facility_.+$/) !== null))
+
+    const payload = ((unitEntries, otherEntries) => {
+     
+
+            // Facility Regulation form data
+            const _payload = []
+            const _otherEntObj = {}
+            
+            for (let e in otherEntries) _otherEntObj[otherEntries[e][0]] = otherEntries[e][1]
+
+            delete _otherEntObj.license_document;
+
+            _payload.push(_otherEntObj)
+
+             // Facility Dept Regulation
+
+             const _unitEntArrObjs = unitEntries.filter(ar => ar[0] === 'facility_unit').map(() => Object())
+
+             let p = 0; 
+
+             for( let i in unitEntries){ 
+                 // clean up the key by removing prefix facility_
+                _unitEntArrObjs[p][
+                    unitEntries[i][0].replace('facility_', '')
+                ] = unitEntries[i][1]; 
+
+                if(unitEntries[i][0] == 'facility_registration_number') { 
+                    p+=1 
+                } 
             }
-            break;
-            case 'facility_license_number':
-            facilityRegDataB['3'] = {
-                license_number: value,
-            }
-            break;	
+
+            _payload.push({
+                units:_unitEntArrObjs
+            })
+            
+            return _payload
 
 
-        }
-        
-    });
+    })(filteredDeptUnitEntries, filteredDeptOtherEntries)
 
+    // console.log({payload}) // debug
 
-
-    payload.push(facilityRegDataA)
-    payload.push({units:[{
-        unit: facilityRegDataB['0'].unit, 
-        regulation_body_name:facilityRegDataB['1'].regulation_body_name,
-        registration_number:facilityRegDataB['2'].registration_number,
-        license_number:facilityRegDataB['3'].license_number
-    }]})
-    
 
     payload.forEach(data => {
-        try{
+        try {
             fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-                headers:{
+                headers: {
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json;charset=utf-8'
-                    
+
                 },
-                method,
+                method: 'POST',
                 body: JSON.stringify(data)
             })
 
+                // Post the license document
+                .then(async resp => {
+
+                    const formData = new FormData()
+                    formData.append('name', `${facility_name} Facility license File`)
+                    formData.append('description', 'Facilities license file')
+                    formData.append('document_type', 'FACILITY_LICENSE')
+                    formData.append('facility_name', facility_name)
+                    formData.append('fyl', file ?? undefined)
+
+
+                    if (resp) {
+
+                        try {
+                            const resp = await fetch('/api/common/submit_form_data/?path=documents', {
+
+                                headers: {
+                                    'Accept': 'application/json, text/plain, */*',
+                                },
+                                method: 'POST',
+                                body: formData
+                            })
+
+                            return resp
+                        }
+                        catch (e) {
+                            console.error('Unable to Post License Document')
+                        }
+                    }
+                })
+
         }
-        catch(e){
+        catch (e) {
             console.error('Unable to patch facility contacts details', e.message)
         }
     })
 
-    
+
 
 
     window.sessionStorage.setItem('formId', 4);
 
     setFormId(window.sessionStorage.getItem('formId'));
+
 };
+
 
 // handleServiceSubmit
 const handleServiceSubmit = async (stateSetters, facilityId) => {
 
-    const [services, setFormId, setServices]  = stateSetters
-    const _payload = services.map(({id}) => ({service: id}))
+    const [services, setFormId, setServices] = stateSetters
+    const _payload = services.map(({ id }) => ({ service: id }))
 
 
-    try{
+    try {
         fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-            headers:{
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-                
+
             },
-            method:'POST',
-            body: JSON.stringify({services:_payload})
+            method: 'POST',
+            body: JSON.stringify({ services: _payload })
         })
 
     }
-    catch(e){
+    catch (e) {
         console.error('Unable to submit facility services due to the following error: ', e.message)
     }
 
     window.sessionStorage.setItem('formId', 5)
-    
+
     setFormId(window.sessionStorage.getItem('formId'))
     setServices([])
 
@@ -428,36 +429,36 @@ const handleServiceSubmit = async (stateSetters, facilityId) => {
 
 // handleInfrastructureSubmit
 const handleInfrastructureSubmit = (stateSetters, facilityId) => {
-   
 
 
-    const [formData, setFormId, setSelectedItems, setIsFormSubmit, resetForm]  = stateSetters 
+
+    const [formData, setFormId, setSelectedItems, setIsFormSubmit, resetForm] = stateSetters
 
 
-    const _payload = Object.values(formData).map((count, i) => 
-        ({
-            infrastructure: Object.keys(formData)[i],
-            count
-        })
+    const _payload = Object.values(formData).map((count, i) =>
+    ({
+        infrastructure: Object.keys(formData)[i],
+        count
+    })
     )
 
-   
 
-    if(facilityId && _payload){ 
 
-        try{
+    if (facilityId && _payload) {
+
+        try {
             fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-                headers:{
+                headers: {
                     'Accept': 'application/json, text/plain, */*',
                     'Content-Type': 'application/json;charset=utf-8'
-                    
+
                 },
-                method:'POST',
-                body: JSON.stringify({infrastructure: _payload})
+                method: 'POST',
+                body: JSON.stringify({ infrastructure: _payload })
             })
 
         }
-        catch(e){
+        catch (e) {
             console.error('Unable to patch facility contacts details', e.message)
         }
 
@@ -476,47 +477,48 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
 // handleHrSubmit
 const handleHrSubmit = (stateSetters, facilityId, alert) => {
 
-    const [formData, setFormId] = stateSetters
-  
-  
+    const [formData, _] = stateSetters // removed setFormId
 
-    const _payload = Object.values(formData).map((count, i) => 
-        ({
-            speciality: Object.keys(formData)[i],
-            count
-        })
+
+
+    const _payload = Object.values(formData).map((count, i) =>
+    ({
+        speciality: Object.keys(formData)[i],
+        count
+    })
     )
 
-   
 
-
-    if(facilityId && _payload){ 
+    if (facilityId && _payload) {
         alert.success("Facility Created successfully")
-    }else {
-        alert.danger("Unable to create facility")
+    } else {
+        alert.error("Unable to create facility")
     }
-    
 
-    try{
+
+    try {
         fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-            headers:{
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
-                
+
             },
-            method:'POST',
-            body: JSON.stringify({specialities:_payload})
+            method: 'POST',
+            body: JSON.stringify({ specialities: _payload })
         })
 
     }
-    catch(e){
+    catch (e) {
         console.error('Unable to submit facility human resources details', e.message)
     }
 
 
-    window.sessionStorage.setItem('formId', 0)
-    
-    setFormId(window.sessionStorage.getItem('formId'))
+    // Instead of resetting form to basic detils form redirect to facility details view
+
+    // window.sessionStorage.setItem('formId', 0)
+
+    // setFormId(window.sessionStorage.getItem('formId'))
+    router.push(`/facilities/${facilityId}`)
 
 }
 
@@ -524,112 +526,112 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
 // handleBasicDetailsUpdate
 const handleBasicDetailsUpdates = async (formData, facility_id, alert) => {
 
-    if(formData){
+    if (formData) {
         alert.success("Facility Basic Details successfully updated")
     } else {
-        alert.danger("Unable to update facility geolocation data")
+        alert.error("Unable to update facility geolocation data")
     }
 
-    try{
-       const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
-            headers:{
+    try {
+        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            method:'POST',
+            method: 'POST',
             body: JSON.stringify(formData)
         })
 
-   
 
-    return resp
+
+        return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Error msg:', e.message)
     }
 }
 
 // handleGeolocationDataUpdate
 const handleGeolocationUpdates = async (formData, coordinates_id, alert) => {
-   
-    if(formData){
+
+    if (formData) {
         alert.success("Facility Geolocation successfully updated")
     } else {
-        alert.danger("Unable to update facility geolocation data")
+        alert.error("Unable to update facility geolocation data")
     }
 
 
-    try{
-       const resp =  await fetch(`/api/common/submit_form_data/?path=update_geolocation&id=${coordinates_id}`, {
-            headers:{
+    try {
+        const resp = await fetch(`/api/common/submit_form_data/?path=update_geolocation&id=${coordinates_id}`, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            method:'POST',
+            method: 'POST',
             body: JSON.stringify(formData)
         })
 
-     
 
-    return resp
+
+        return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Error msg:', e.message)
     }
 }
 
 // handleFacilityContactUpdates
 const handleFacilityContactsUpdates = async (formData, facility_id, alert) => {
-    if(formData){
+    if (formData) {
         alert.success("Facility Contacts successfully updated")
     } else {
-        alert.danger("Unable to update facility contacts data")
+        alert.error("Unable to update facility contacts data")
     }
- 
-    try{
-       const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
-            headers:{
+
+    try {
+        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+            headers: {
                 'Content-Type': 'application/json;charset=utf-8;*/*'
             },
-            method:'POST',
+            method: 'POST',
             body: JSON.stringify(formData)
         })
 
-    
 
-    return resp
+
+        return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Error msg:', e.message)
     }
 }
 
 // handleRegulationUpdate
 const handleRegulationUpdates = async (formData, facility_id, alert, alert_message) => {
-    if(formData){
+    if (formData) {
         alert.success(alert_message)
     } else {
-        alert.danger("Unable to update facility regulation")
+        alert.error("Unable to update facility regulation")
     }
- 
-    try{
-       const resp =  await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
-            headers:{
+
+    try {
+        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+            headers: {
                 'Content-Type': 'application/json;charset=utf-8;*/*'
             },
-            method:'POST',
+            method: 'POST',
             body: JSON.stringify(formData)
         })
 
-    
 
-    return resp
+
+        return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Error msg:', e.message)
     }
 }
@@ -638,31 +640,31 @@ const handleRegulationUpdates = async (formData, facility_id, alert, alert_messa
 const handleServiceUpdates = async (stateSetters, alert) => {
 
 
-    const [services, facilityId]  = stateSetters
-    
-    const _payload = services.length > 0 ? services.map(({id}) => ({service: id})) : {services:[{service: null}]}
+    const [services, facilityId] = stateSetters
 
-    try{
+    const _payload = services.length > 0 ? services.map(({ id }) => ({ service: id })) : { services: [{ service: null }] }
 
-        if(_payload){
+    try {
+
+        if (_payload) {
             alert.success('Successfully updated facility services')
         } else {
-            alert.danger("Unable to update facility services")
+            alert.error("Unable to update facility services")
         }
 
-          const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-            headers:{
+        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             },
             method: 'POST',
-            body: JSON.stringify({services:_payload})
+            body: JSON.stringify({ services: _payload })
         })
 
         return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Unable to patch facility services details', e.message)
     }
 
@@ -670,30 +672,30 @@ const handleServiceUpdates = async (stateSetters, alert) => {
 
 // handleServiceDelete
 
-const handleServiceDelete =  async (event, facility_service_id, alert) => {
+const handleServiceDelete = async (event, facility_service_id, alert) => {
 
     event.preventDefault();
 
-    try{
+    try {
 
-        if(facility_service_id){
+        if (facility_service_id) {
             alert.success('Facility Service Deleted Successfully')
         } else {
-            alert.danger("Unable to delete facility service")
+            alert.error("Unable to delete facility service")
         }
 
-          const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_service&id=${facility_service_id}`, {
-            headers:{
+        const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_service&id=${facility_service_id}`, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             }
-  
+
         })
 
         return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Unable to delete facility service', e.message)
     }
 
@@ -701,27 +703,26 @@ const handleServiceDelete =  async (event, facility_service_id, alert) => {
 
 // handleInfrastructureUpdates
 const handleInfrastructureUpdates = async (stateSetters, alert) => {
- 
+
 
     const [infraUpdateData, facilityId] = stateSetters
 
     const payload = {
-        infrastructure: Object.keys(infraUpdateData).map((id, i) => ({infrastructure:id, count:Object.values(infraUpdateData)[i]}))
+        infrastructure: Object.keys(infraUpdateData).map((id, i) => ({ infrastructure: id, count: Object.values(infraUpdateData)[i] }))
     }
 
-    console.log({payload})
 
 
-    try{
+    try {
 
-        if(infraUpdateData && facilityId){
+        if (infraUpdateData && facilityId) {
             alert.success('Facility Infrastructure updated successfully')
         } else {
-            alert.danger("Unable to update facility infrastructure")
+            alert.error("Unable to update facility infrastructure")
         }
 
-          const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-            headers:{
+        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             },
@@ -732,7 +733,7 @@ const handleInfrastructureUpdates = async (stateSetters, alert) => {
         return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Unable to patch facility Infrastructure details', e.message)
     }
 }
@@ -743,26 +744,26 @@ const handleInfrastructureDelete = async (event, facility_infrastructure_id, ale
 
     event.preventDefault()
 
-    try{
+    try {
 
-        if(facility_infrastructure_id){
+        if (facility_infrastructure_id) {
             alert.success('Facility Infrastructure Deleted Successfully')
         } else {
-            alert.danger("Unable to delete facility infrastructure")
+            alert.error("Unable to delete facility infrastructure")
         }
 
-          const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_infrastructure&id=${facility_infrastructure_id}`, {
-            headers:{
+        const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_infrastructure&id=${facility_infrastructure_id}`, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             }
-  
+
         })
 
         return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Unable to delete facility infrastructure', e.message)
     }
 
@@ -774,22 +775,22 @@ const handleHrUpdates = async (stateSetters, alert) => {
     const [hrUpdateData, facilityId] = stateSetters
 
     const payload = {
-        specialities: Object.keys(hrUpdateData).map((id, i) => ({speciality:id, count:Object.values(hrUpdateData)[i]}))
+        specialities: Object.keys(hrUpdateData).map((id, i) => ({ speciality: id, count: Object.values(hrUpdateData)[i] }))
     }
 
-    console.log({payload})
+    
 
 
-    try{
+    try {
 
-        if(hrUpdateData && facilityId){
+        if (hrUpdateData && facilityId) {
             alert.success('Facility Human Resource successfully updated')
         } else {
-            alert.danger("Unable to update facility Human Resource")
+            alert.error("Unable to update facility Human Resource")
         }
 
-          const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
-            headers:{
+        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             },
@@ -800,7 +801,7 @@ const handleHrUpdates = async (stateSetters, alert) => {
         return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Unable to patch facility Human resources details', e.message)
     }
 }
@@ -809,26 +810,26 @@ const handleHrUpdates = async (stateSetters, alert) => {
 const handleHrDelete = async (event, facility_hr_id, alert) => {
     event.preventDefault()
 
-    try{
+    try {
 
-        if(facility_hr_id){
+        if (facility_hr_id) {
             alert.success('Facility Human resource Deleted Successfully')
         } else {
-            alert.danger("Unable to delete facility Human resource")
+            alert.error("Unable to delete facility Human resource")
         }
 
-          const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_hr&id=${facility_hr_id}`, {
-            headers:{
+        const resp = await fetch(`/api/common/submit_form_data/?path=delete_facility_hr&id=${facility_hr_id}`, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             }
-  
+
         })
 
         return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Unable to delete facility hr', e.message)
     }
 }
@@ -836,18 +837,18 @@ const handleHrDelete = async (event, facility_hr_id, alert) => {
 // handleFacilityUpgrades
 const handleFacilityUpgrades = async (payload, alert) => {
 
-    // console.log(Object.values(payload).indexOf(null), {payload})
+  
 
-    try{
+    try {
 
-        if(Object.values(payload).indexOf(null) === -1){
+        if (Object.values(payload).indexOf(null) === -1) {
             alert.success('Facility Upgraded Successfully')
         } else {
-            alert.danger("Unable to upgrade facility")
+            alert.error("Unable to upgrade facility")
         }
 
-          const resp = await fetch(`/api/common/submit_form_data/?path=facility_upgrade`, {
-            headers:{
+        const resp = await fetch(`/api/common/submit_form_data/?path=facility_upgrade`, {
+            headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json;charset=utf-8'
             },
@@ -858,7 +859,7 @@ const handleFacilityUpgrades = async (payload, alert) => {
         return resp
 
     }
-    catch(e){
+    catch (e) {
         console.error('Unable to upgrade facility: ', e.message)
     }
 }

@@ -2,7 +2,7 @@ import Head from 'next/head'
 // import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
-import React, { useState, useRef, useEffect, useMemo } from 'react'
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -12,7 +12,7 @@ import Select from 'react-select'
 
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 // import { Grid, GridOptions } from '@ag-grid-community/core';
-import { LicenseManager, EnterpriseCoreModule } from '@ag-grid-enterprise/core';
+import { LicenseManager } from '@ag-grid-enterprise/core';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -31,9 +31,8 @@ const DynamicReports = (props) => {
     // const { data, query, path, current_url } = props
     const router = useRouter()
     // Temporary fix folty Kirinyaga id
-    let filters = props?.filters
+    const filters = props?.filters
 
-    console.log({filters})
     let fltrs = filters
 
     const formRef = useRef(null)
@@ -72,7 +71,6 @@ const DynamicReports = (props) => {
     ])
 
 
-
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
     filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
@@ -93,17 +91,36 @@ const DynamicReports = (props) => {
 
   
 
-    let qf = props?.query?.qf || 'all'
+    const qf = props?.query?.qf || 'all'
     // let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
-    let [drillDown, setDrillDown] = useState({})
-    let multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
+    const [drillDown, setDrillDown] = useState({})
+    const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
    
 
-    let headers = [
-        "code", "official_name", "operation_status_name", "approved", "keph_level_name", "facility_type_name", "facility_type_parent", "owner_name", "owner_type_name", "regulatory_body_name", "number_of_beds", "number_of_cots", "county", "constituency_name", "sub_county_name", "ward_name", "admission_status", "facility_services", "created", "closed",
+    const headers = [
+        'code',
+        'official_name',
+        'operation_status_name',
+        'approved',
+        'keph_level_name',
+        'facility_type_parent',
+        'owner_type_name',
+        'regulatory_body_name',
+        'number_of_beds',
+        'number_of_cots',
+        'county',
+        'constituency',
+        'sub_county_name',
+        'ward_name',
+        'admission_status_name',
+        'facility_services',
+        'facility_infrastructure',
+        'facility_humanresources',
+        'created',
+        'closed'
     ]
 
-    let scoped_filters = [
+    const scoped_filters = [
         { "name": "keph_level_name", "options": [] },
         { "name": "facility_type_name", "options": [] },
         { "name": "facility_type_category", "options": [] },
@@ -138,15 +155,18 @@ const DynamicReports = (props) => {
             filter.options = options
         })
     }
-    // console.log('scoped_filters: ',scoped_filters)
+  
 
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [linelist, setlinelist] = useState(null);
-    const [linelist2, setlinelist2] = useState(null);
+    const [lineList, setlineList] = useState(null);
+    const [lineList2, setlineList2] = useState(null);   
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
 
+    const gridRef = useRef(null)
+
+    
 
     const lnlst = Array.from(props?.data?.results, row => {
         let dtpnt = {}
@@ -155,14 +175,20 @@ const DynamicReports = (props) => {
         })
         return dtpnt
     })
+
+    const onBtExport = useCallback(() => {
+        if(gridRef.current) gridRef.current.api.exportDataAsCsv({fileName: 'Facility_filter_report'});
+      }, []);
+
     const onGridReady = (params) => {
-        // console.log({api: params.api});
+   
         setGridApi(params.api);
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
+    
 
-        setlinelist(lnlst)
+        setlineList(lnlst)
         updateData(lnlst)
     };
 
@@ -202,10 +228,10 @@ const DynamicReports = (props) => {
 
     useEffect(()=>{
         if( fromDate !=='' && toDate !==''){
-            const results = linelist2?.filter(data=>new Date(moment(data.created).format('YYYY/MM/DD')).getTime() >= new Date(moment(fromDate).format('YYYY/MM/DD')).getTime() && new Date(moment(data.created).format('YYYY/MM/DD')).getTime() <= new Date(moment(toDate).format('YYYY/MM/DD')).getTime()).map((r)=>{return r})
-            setlinelist(results)
+            const results = lineList2?.filter(data=>new Date(moment(data.created).format('YYYY/MM/DD')).getTime() >= new Date(moment(fromDate).format('YYYY/MM/DD')).getTime() && new Date(moment(data.created).format('YYYY/MM/DD')).getTime() <= new Date(moment(toDate).format('YYYY/MM/DD')).getTime()).map((r)=>{return r})
+            setlineList(results)
         }else{
-            setlinelist(linelist2)
+            setlineList(lineList2)
         }
         
       }, [fromDate, toDate, filteredKeph])
@@ -238,7 +264,7 @@ const DynamicReports = (props) => {
      },[filteredKeph])
      
 
-//  console.log(drillDown)
+
     let dr ='' 
     if (typeof window !== 'undefined') {
         dr =JSON.parse(localStorage.getItem('dd_owners'))
@@ -287,14 +313,15 @@ const DynamicReports = (props) => {
 
     useEffect(() => {
         // setIsAccordionExpanded(true)
+   
        
-    }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate, isConstituencyOptionsUpdate, isWardOptionsUpdate, linelist, isLoading, filteredKeph])
+    }, [isServiceOptionsUpdate, isSubCountyOptionsUpdate, isConstituencyOptionsUpdate, isWardOptionsUpdate, lineList, isLoading, filteredKeph])
 
 
     return (
         <div className="">
             <Head>
-                <title>KHMFL - Reports</title>
+                <title>KMHFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={true}>
@@ -343,45 +370,67 @@ const DynamicReports = (props) => {
                                                 <form action="/reports/dynamic_reports" className="grid grid-cols-7 gap-2 w-full m-1" ref={formRef} onSubmit={async (ev) => {
                                                     ev.preventDefault()
                                                     setIsLoading(true)
-                                    
-                                                    const fields = 'code,official_name,operation_status,approved,keph_level,facility_type_name,facility_type_parent,owner,owner_type,regulation_body,number_of_beds,number_of_cots,county,constituency,sub_county,ward,admission_status,facility_services,facility_infrastructure,facility_humanresources,created,closed'
-                                                    if (Object.keys(drillDown).length > 0) {
-                                                        let qry = Object.keys(drillDown).map(function (key) {
-                                                            let er = (key) + '=' + (drillDown[key]);
-                                                            return er
-                                                        }).join('&')
-                                                        let op = '?'
-
-                                                        // if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                        // setDrillDown({})
+                                
+                                                    
+                                                    if (drillDown) {
+                                                      
                                                         if (router || typeof window == 'undefined') {
                                                     
-                                                            const filterQuery = `${qry}&fields=${fields}`
+                                                            // remove unwanted properties from drillDown
+
+                                                            delete drillDown['service_category']
+                                                            delete drillDown['infrastructure_category']
+                                                            delete drillDown['speciality_category']
+                                                            delete drillDown['undefined']
 
                                                             try{
 
                                                             
-                                                                const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${fields}`)
+                                                                const data = await fetch(`/api/filters/filter/?query=${JSON.stringify(drillDown)}&fields=${headers}`)
                                                                 data.json().then(r => {
-                                                                    if(r.status === "OK"){
-                                                                    const _lnlst = Array.from(r?.results, row => {
+                                                                 
+                                                                    if(r){
+                                                                    const _lnlst = Array.from(r?.results ?? [], row => {
                                                                         let dtpnt = {}
                                                                         headers.forEach(col => {
-                                                                            if(col == 'facility_services'){
-                                                                                if(row[col].length > 0){
-                                                                                    row[col].forEach(service => {dtpnt[col] = service.service_name})
-                                                                                }
+                                                                            switch(col){
+                                                                                case 'facility_services':
+                                                                                    if(row[col].length > 0){
+                                                                                        let tempServices = [];
+                                                                                        row[col].forEach(service => {tempServices.push(service.service_name)});
+                                                                                        dtpnt[col] = tempServices.join(', ');
+                                                                                        tempServices = [];
+                                                                                    }
+                                                                                break;
+                                                                                case 'facility_infrastructure':
+                                                                                    if(row[col].length > 0){
+                                                                                        let tempInfra = [];
+                                                                                        row[col].forEach(infra => {tempInfra.push(infra.name)});
+                                                                                        dtpnt[col] = tempInfra.join(', ');
+                                                                                        tempInfra = [];
+                                                                                    }
+                                                                                break;
+                                                                                case 'facility_humanresources':
+                                                                                    if(row[col].length > 0){
+                                                                                        let tempHr = [];
+                                                                                        row[col].forEach(hr => {tempHr.push(hr.name)})
+                                                                                        dtpnt[col] = tempHr.join(', ')
+                                                                                        tempHr = [];
+                                                                                    }
+                                                                                break;
+                                                                                default:
+                                                                                    dtpnt[col] = row[col]
+                                                                                    break
                                                                             
                                                                             }
-                                                                            else{
-                                                                                dtpnt[col] = row[col]
-                                                                            }
-                                                                            
+                                                                        
+                                                                               
+                                                                    
                                                                         })
                                                                         return dtpnt
                                                                     })
 
-                                                                    setlinelist(_lnlst)
+                                                                    setlineList(_lnlst)
                                                                 }
                                                             })
 
@@ -408,14 +457,14 @@ const DynamicReports = (props) => {
                                                     
                                                             {filters && Object.keys(filters).length > 0 &&
                                                                 (() => {
-                                                                // console.log({filters})
+                                                          
                                                                 const sorted = Object.keys(fltrs).sort()  
 
                                                                 const sortOrder = [1,13, 14, 2, 5, 6, 8, 7, 10, 9, 4, 3, 12, 11]
 
                                                                 const sortedOrder = sortOrder.map((v, i) => sorted.indexOf(sorted[i]) === v ? sorted[i] : sorted[v] )
 
-                                                                console.log({sortedOrder})
+                                                            
 
                                                                 return sortedOrder
 
@@ -712,24 +761,32 @@ const DynamicReports = (props) => {
                                                                                 // County
                                                                                 case 'county':
                                                                                     const handleCountyCategoryChange = async (ev) => {
-
+                                                                                        let all_sub_counties
                                                     
                                                                                         try{ 
                                                                                             const dataSubCounties = await fetch(`/api/filters/subcounty/?county=${ev.value}`)
-                                                                                            dataSubCounties.json().then(r => {
+                                                                                            dataSubCounties.json().then(async (r) => {
                                                                                                 const optionsSubCounty = []
-
-
+     
                                                                                                 r.results.forEach(({id, name}) => {
                                                                                                     optionsSubCounty.push({
                                                                                                         value: id,
                                                                                                         label: name
                                                                                                     })  
                                                                                                 } )
+
+                                                                                                if(optionsSubCounty.length > 0 ){
+                                                                                                    all_sub_counties = (await (await fetch(`/api/common/fetch_form_data/?path=sub_counties&id=${ev.value}`)).json()).results
+                                                                                                }
+          
+                                                                                                if(ev.label != 'All' && all_sub_counties) optionsSubCounty.unshift({
+                                                                                                    value: all_sub_counties.map(({id}) => id).join(','),
+                                                                                                    label:'All'
+                                                                                                })
                                                                                             
 
                                                                                             // sub county    
-
+                                                                                         
                                                                                         setSubCountyOptions(optionsSubCounty)
                                                                                         setIsSubCountyOptionsUpdate(!isSubCountyOptionsUpdate)
 
@@ -787,8 +844,39 @@ const DynamicReports = (props) => {
                                                                                             }
                                                                                         })
                                                                                     
-                                                                                        if(ft === 'county' || ft == 'sub_county' || ft == 'constituency') options.unshift({
-                                                                                            value:'#',
+                                                                                        if(ft === 'county') options.unshift({
+                                                                                            value:[
+                                                                                                "95b08378-362e-4bf9-ad63-d685e1287db2",
+                                                                                                "bbc8803a-7d6f-411a-96f3-5f8472b40405",
+                                                                                                "b6b5db70-609a-4194-888d-7841e02e9045",
+                                                                                                "6c34a4b5-af53-44f9-9c1e-17fdf438dc1f",
+                                                                                                "3452caf6-ee29-4ac7-813e-49702fec8c41",
+                                                                                                "6f256e8c-5d8f-4f07-89a0-81e245081030",
+                                                                                                "fdde0ed3-33a8-4525-950e-41af384defb9",
+                                                                                                "72366abd-2797-4144-8c74-c831810ec0a2",
+                                                                                                "6746a019-8f92-4883-ae6d-2e4fd83c7a4e",
+                                                                                                "44cce67d-c163-4229-ac4a-c0b418601246",
+                                                                                                "ac84672f-db61-41b8-83f8-dc484060c86a",
+                                                                                                "cea1878f-be8a-46f9-9b3b-b6089977892f",
+                                                                                                "7a116274-e48c-4015-b763-c6443b0cdad1",
+                                                                                                "359719c8-25f3-49b3-8549-bd5fbb99f2c1",
+                                                                                                "93b9ddc8-a4c2-4c15-8b0b-599aa10af865",
+                                                                                                "b6f366e9-3050-40ca-9643-ddc7c18ccd96",
+                                                                                                "6c336c99-969b-4e9f-ad6b-c66f761ac9d5",
+                                                                                                "7c942357-44a8-49c9-9ca6-8247ad903b57",
+                                                                                                "ea02a4fd-f70f-4b8b-aff2-ae7c26b136fa",
+                                                                                                "c9001ff3-e484-45e9-930b-7657196e0556",
+                                                                                                "1283e6ea-077d-4d32-8099-6d6acb428fd1",
+                                                                                                "916c0672-76d9-454e-9688-1ad83b576735",
+                                                                                                "0a629644-41eb-44b8-a004-e56f06b3c006",
+                                                                                                "06850fa7-fbef-47b8-abb2-4954a444e1f0",
+                                                                                                "bb728208-372a-4ed3-aa5f-c1fda14cd720",
+                                                                                                "a6b6a2f0-0a63-4f52-a764-d2cc89f338ae",
+                                                                                                "b9781c38-b053-466e-b95c-af288e27a0e6",
+                                                                                                "ecbf61a6-cd6d-4806-99d8-9340572c0015",
+                                                                                                "bc7b4277-527e-441f-ae09-7faa1e63aee0",
+                                                                                                "1e8bc59a-6ea7-44dc-adfb-1d6cd82148bd"
+                                                                                            ].join(','),
                                                                                             label:'All'
                                                                                         })
 
@@ -808,7 +896,7 @@ const DynamicReports = (props) => {
                                                                                         
                                                                                             {
                                                                                                 value: drillDown[ft] || dr?.county || '',
-                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.county)?.name || ''
+                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.county)?.name || 'All' 
                                                                                             }
                                                                                         }
                                                                                         onChange={handleCountyCategoryChange}
@@ -819,42 +907,56 @@ const DynamicReports = (props) => {
                                                                                 // Sub County
                                                                                 case 'sub_county':
                                                                                     const handleSubCountyChange = async (ev) => {
+                                                                                        let all_wards
 
-                                                                                        try{ 
-                                                                                            const dataConstituencies = await fetch(`/api/filters/ward/?sub_county=${ev.value}`)
-                                                                                            dataConstituencies.json().then(r => {
-                                                                                                const optionsWard = []
-                                                                                            
-                                                                                                r.results.forEach(({id, name}) => { 
-                                                                                                    optionsWard.push({
-                                                                                                        value: id,
-                                                                                                        label: name
-                                                                                                    })  
-                                                                                                } )
-                                                                                            
-
-                                                                                            // sub county    
-
-                                                                                        setWardOptions(optionsWard)
-                                                                                        setIsWardOptionsUpdate(!isWardOptionsUpdate)
-
-                                                                                        let nf = {}
-                                                                                        if (Array.isArray(ev)) {
-                                                                                            nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
-                                                                                        } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
-                                                                                            nf[ft] = ev.value
-                                                                                        } else {
-                                                                                            delete nf[ft]
-                                                                                            
-                                                                                        }
-                                                                                        setDrillDown({ ...drillDown, ...nf })
-
-                                                                                        })
-
-        
-                                                                                        }
-                                                                                        catch(e) {
+                                                                                        try{
+                                                                                            all_wards = (await (await fetch(`/api/common/fetch_form_data/?path=wards&id=${ev.value}`)).json()).results
+                                                                                        }catch(e){
                                                                                             console.error(e.message)
+                                                                                        }
+
+                                                                                        if(ev.label !== 'All'){
+                                                                                            try{ 
+                                                                                                const dataConstituencies = await fetch(`/api/filters/ward/?sub_county=${ev.value}`)
+                                                                                                dataConstituencies.json().then(r => {
+                                                                                                    const optionsWard = []
+                                                                                                
+                                                                                                    r.results.forEach(({id, name}) => { 
+                                                                                                        optionsWard.push({
+                                                                                                            value: id,
+                                                                                                            label: name
+                                                                                                        })  
+                                                                                                    } )
+                                                                                                
+
+                                                                                                // sub county
+                                                                                                
+                                                                                                if((ev.label != 'All' || !ev.value.split(',').length > 1) && all_wards) optionsWard.unshift({
+                                                                                                    value: all_wards.map(({id}) => id).join(','),
+                                                                                                    label:'All'
+                                                                                                })
+
+                                                                                            setWardOptions(optionsWard)
+                                                                                            setIsWardOptionsUpdate(!isWardOptionsUpdate)
+
+                                                                                            let nf = {}
+                                                                                            if (Array.isArray(ev)) {
+                                                                                                nf[ft] = (drillDown[ft] ? drillDown[ft] + ',' : '') + Array.from(ev, l_ => l_.value).join(',')
+                                                                                            } else if (ev && ev !== null && typeof ev === 'object' && !Array.isArray(ev)) {
+                                                                                                nf[ft] = ev.value
+                                                                                            } else {
+                                                                                                delete nf[ft]
+                                                                                                
+                                                                                            }
+                                                                                            setDrillDown({ ...drillDown, ...nf })
+
+                                                                                            })
+
+            
+                                                                                            }
+                                                                                            catch(e) {
+                                                                                                console.error(e.message)
+                                                                                            }
                                                                                         }
 
                                                                                     }
@@ -871,7 +973,7 @@ const DynamicReports = (props) => {
                                                                                         
                                                                                             {
                                                                                                 value: drillDown[ft] || dr?.sub_county || '', 
-                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
+                                                                                                label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || 'All' || ''
                                                                                             }
                                                                                         }
                                                                                         placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -884,6 +986,7 @@ const DynamicReports = (props) => {
                                                                                 case 'constituency':
                                                                                     const handleConstituencyChange = async (ev) => {
 
+                                                                                        if(ev.label !== 'All'){
                                                                                         try{ 
                                                                                             const dataConstituencies = await fetch(`/api/filters/ward/?sub_county=${ev.value}`)
                                                                                             dataConstituencies.json().then(r => {
@@ -920,6 +1023,7 @@ const DynamicReports = (props) => {
                                                                                         catch(e) {
                                                                                             console.error(e.message)
                                                                                         }
+                                                                                    }
 
                                                                                     }
                                                                                 
@@ -934,7 +1038,7 @@ const DynamicReports = (props) => {
                                                                                         
                                                                                                 {
                                                                                                     value: drillDown[ft] || dr?.sub_county || '', 
-                                                                                                    label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || ''
+                                                                                                    label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.sub_county)?.name || 'All' || ''
                                                                                                 }
                                                                                             }
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -957,7 +1061,7 @@ const DynamicReports = (props) => {
                                                                                         
                                                                                                     {
                                                                                                         value: drillDown[ft] || dr?.ward || '',
-                                                                                                        label: filters[ft].find(ct=> ct.id == drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.ward)?.name || ''
+                                                                                                        label: filters[ft].find(ct=> ct.id == drillDown[ft])?.name || filters[ft].find(ct=> ct.id== dr?.ward)?.name || 'All' || ''
                                                                                                     }
                                                                                                 }
                                                                                                 placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -1018,7 +1122,7 @@ const DynamicReports = (props) => {
                                                                                     
                                                                                             if(ft === 'facility_type'){
                                                                                                 
-                                                                                                if(sl.label === 'MEDICAL CENTRE') console.log({sl})
+                                                                                                if(sl.label === 'MEDICAL CENTRE') 
 
                                                                                                 switch (sl.label){
 
@@ -1047,7 +1151,7 @@ const DynamicReports = (props) => {
                                                                                                         break;
 
                                                                                                     case 'MEDICAL CENTRE':
-                                                                                                        console.log({ft})
+                                                                                              
                                                                                                         setFilteredKeph([
                                                                                                             { value: "174f7d48-3b57-4997-a743-888d97c5ec31", label: "Level 3" }
                                                                                                         ])
@@ -1111,7 +1215,7 @@ const DynamicReports = (props) => {
                                                         {/* Has ICU Beds */}
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="has_icu_beds" className="text-gray-700 capitalize text-sm flex-grow">Has ICU beds</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_icu_beds" id="has_icu_beds" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="has_icu_beds" id="has_icu_beds" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'has_icu_beds': true })
                                                                 }} />
@@ -1121,7 +1225,7 @@ const DynamicReports = (props) => {
                                                         {/* Has HDU Beds */}
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                             <label htmlFor="has_hdu_beds" className="text-gray-700 capitalize text-sm flex-grow">Has HDU beds</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_hdu_beds" id="has_hdu_beds" onChange={ev => {
+                                                            <input type="checkbox" value={true} name="has_hdu_beds" id="has_hdu_beds" onChange={ev => {
                                                                 ev.preventDefault()
                                                                 setDrillDown({ ...drillDown, 'has_hdu_beds': true })
                                                             }} />
@@ -1131,7 +1235,7 @@ const DynamicReports = (props) => {
                                                         {/* Has Martenity Beds */}
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                             <label htmlFor="has_martenity_beds" className="text-gray-700 capitalize text-sm flex-grow">Has Martenity beds</label>
-                                                            <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_martenity_beds" id="has_martenity_beds" onChange={ev => {
+                                                            <input type="checkbox" value={true} name="has_martenity_beds" id="has_martenity_beds" onChange={ev => {
                                                                 ev.preventDefault()
                                                                 setDrillDown({ ...drillDown, 'has_martenity_beds': true })
                                                             }} />
@@ -1143,7 +1247,7 @@ const DynamicReports = (props) => {
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="approved" className="text-gray-700 capitalize text-sm flex-grow">Approved</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="approved" id="approved" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="approved" id="approved" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'approved': true })
                                                                 }} />
@@ -1152,7 +1256,7 @@ const DynamicReports = (props) => {
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm flex-grow">Complete</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="complete" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="has_edits" id="complete" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'has_edits': true })
                                                                 }} />
@@ -1163,7 +1267,7 @@ const DynamicReports = (props) => {
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="has_cots" className="text-gray-700 capitalize text-sm flex-grow">Has cots</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="has_cots" id="has_cots" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="has_cots" id="has_cots" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'has_cots': true })
                                                                 }} />
@@ -1174,7 +1278,7 @@ const DynamicReports = (props) => {
                                                     <div className='col-md-2 flex-col  items-start'>
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="open_24_hrs" className="text-gray-700 capitalize text-sm flex-grow">Open 24 hours</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="open_24_hrs" id="open_24_hrs" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'open_24_hrs': true })
                                                                 }} />
@@ -1183,7 +1287,7 @@ const DynamicReports = (props) => {
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">Open weekends</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="open_weekends" id="open_weekends" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'open_weekends': true })
                                                                 }} />
@@ -1192,7 +1296,7 @@ const DynamicReports = (props) => {
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">Open holidays</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="open_holidays" id="open_holidays" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'open_holidays': true })
                                                                 }} />
@@ -1203,25 +1307,25 @@ const DynamicReports = (props) => {
                                                     <div className='col-md-2 flex-col  items-start'>
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="is_classified" className="text-gray-700 capitalize text-sm flex-grow">Is classified</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="is_classified" id="is_classified" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="is_classified" id="is_classified" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'is_classified': true })
                                                                 }} />
                                                         
                                                         </div>
 
-                                                        {/* <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
-                                                                <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm flex-grow">has general theatre</label>
-                                                                <input type="ch`eckbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                        <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
+                                                                <label htmlFor="is_complete" className="text-gray-700 capitalize text-sm flex-grow">Is complete</label>
+                                                                <input type="checkbox" value={true} name="open_weekends" id="open_weekends" onChange={ev => {
                                                                     ev.preventDefault()
-                                                                    setDrillDown({ ...drillDown, 'has_edits': true })
+                                                                    setDrillDown({ ...drillDown, 'is_complete': true })
                                                                 }} />
                                                         
-                                                        </div> */}
+                                                        </div>
 
                                                         <div className="w-auto flex flex-row items-center px-2 justify-start mb-3">
                                                                 <label htmlFor="open_holidays" className="text-gray-700 capitalize text-sm flex-grow">has maternity theatre</label>
-                                                                <input type="checkbox" value={true} defaultChecked={props?.query?.has_edits === "true"} name="open_holidays" id="open_holidays" onChange={ev => {
+                                                                <input type="checkbox" value={true} name="open_holidays" id="open_holidays" onChange={ev => {
                                                                     ev.preventDefault()
                                                                     setDrillDown({ ...drillDown, 'has_edits': true })
                                                                 }} />
@@ -1233,29 +1337,29 @@ const DynamicReports = (props) => {
                                         
                                                         <button 
                                                         type='submit'                   
-                                                        className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-center">
+                                                        className="bg-white border-2 md:px-4 border-black text-black mx-auto flex items-center justify-center font-semibold px-1 py-1 h-[38px] text-base rounded w-auto mt-7 whitespace-nowrap text-center">
 
                                                     {
                                                         isLoading ?  
                                                         (
-                                                            <svg role="status" className="inline w-4 h-4 mr-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
-                                                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
-                                                            </svg>
-                                                        )  :
+                                                            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="12" r="3"><animate id="spinner_qFRN" begin="0;spinner_OcgL.end+0.25s" attributeName="cy" calcMode="spline" dur="0.6s" values="12;6;12" keySplines=".33,.66,.66,1;.33,0,.66,.33"/></circle><circle cx="12" cy="12" r="3"><animate begin="spinner_qFRN.begin+0.1s" attributeName="cy" calcMode="spline" dur="0.6s" values="12;6;12" keySplines=".33,.66,.66,1;.33,0,.66,.33"/></circle><circle cx="20" cy="12" r="3"><animate id="spinner_OcgL" begin="spinner_qFRN.begin+0.2s" attributeName="cy" calcMode="spline" dur="0.6s" values="12;6;12" keySplines=".33,.66,.66,1;.33,0,.66,.33"/></circle></svg>
+                                                        )
+                                                    
+                                                        :
                                                         'Filter'
                                                     }
-                                                        </button>
-                                                    <button  className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-1/2 mt-7 whitespace-nowrap text-cente" onClick={ev => {
+                                                     </button>
+                                                     <button  
+                                                        className="bg-white border-2 md:px-4 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-auto mt-7 whitespace-nowrap text-cente" 
+                                                        onClick={ev => {
                                                         ev.preventDefault()
                                                             setDrillDown({})
                                                             setSubCountyOptions([])
                                                             setWardOptions([])
                                                             localStorage.setItem('dd_owners', JSON.stringify({county: '', sub_county:'', ward: ''}));
-                                                            // router.push('/reports/dynamic_reports')
                                                             router.reload()
                                                                                                         
-                                                        }}>Clear filters</button>
+                                                        }}>Clear filters</button> 
                                                     </div>
                                                     
                                                 </form>
@@ -1277,28 +1381,17 @@ const DynamicReports = (props) => {
                                 </h5>
                                 
                             </div>
-                            {/* ((((((( dropdown options to download data */}
+                            {/* Dropdown options to download data */}
                             <div>
-                                {/* <button className={"flex items-center justify-start rounded bg-green-600 text-center hover:bg-green-900 focus:bg-black text-white font-semibold active:bg-black py-2 px-4 uppercase text-base w-full"} onClick={() => {
-                                    gridApi.exportDataAsCsv();
-                                }}>
-                                    <DownloadIcon className="w-4 h-4 mr-1" />
-                                    <span>Download Report</span>
-                                </button> */}
+                               
 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
-                                                e.preventDefault()
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
-                                                console.log('Downloading CSV. ' + dl_url || '')
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
-                                            }}
+                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={onBtExport}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
                                                 <span>Export</span>
                                 </button> 
                             </div>
-                            {/* ))))))) dropdown options to download data */}
+                         
 
                         </div>
                     </div>
@@ -1359,7 +1452,7 @@ const DynamicReports = (props) => {
                                                     }).join('&')
                                                     let op = '?'
                                                     if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
-                                                    // console.log(props.path)
+                                                
                                                     // setDrillDown({})
                                                     if (router || typeof window == 'undefined') {
                                                         router.push(props.path + op + qry)
@@ -1377,7 +1470,7 @@ const DynamicReports = (props) => {
                                                 <button className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline" onClick={ev => {
                                                     // router.push('/reports/dynamic_reports')
                                                     const fields = formRef.current.children
-                                                    // console.log({fields})
+                                               
                                                 }}>Clear filters</button>
                                             </div>
                                         </form>
@@ -1393,20 +1486,21 @@ const DynamicReports = (props) => {
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full ">
                             {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
-                                {console.log({linelist})}
+                              
                                 <AgGridReact
                                     // floatingFilter={true}
-                                    sideBar={true} //{'filters'}
+                                    sideBar={true}
+                                    ref={gridRef}
                                     defaultColDef={{
                                         sortable: true,
                                         filter: true,
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
-                                    rowData={linelist}>
+                                    rowData={lineList}>
                                         
                                     {headers.map((v_, i) => {
-                                        // console.log({v_})
+                                      
                                         if(v_){
                                             return (
                                                 <AgGridColumn
@@ -1433,7 +1527,7 @@ const DynamicReports = (props) => {
 
 
 
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -1442,7 +1536,7 @@ const DynamicReports = (props) => {
                             For testing reasons, downloads are limited to the first 1000 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
             </MainLayout >
         </div>
@@ -1451,7 +1545,7 @@ const DynamicReports = (props) => {
 
 DynamicReports.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
-    // console.log(ctx.query)
+
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county%2Cinfrastructure%2Cinfrastructure_category%2Cspeciality%2Cspeciality_category'
 
@@ -1520,7 +1614,7 @@ DynamicReports.getInitialProps = async (ctx) => {
         }).then(r => r.json())
             .then(json => {
                 return fetchFilters(token).then(ft => {
-                    // console.log({ft})
+           
                     return {
                         data: json, query, token, filters: { ...ft }, path: ctx.asPath || '/reports/dynamic_reports', current_url: current_url 
                     }

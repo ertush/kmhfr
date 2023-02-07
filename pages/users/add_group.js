@@ -9,7 +9,7 @@ import DualListBox from 'react-dual-listbox';
 import 'react-dual-listbox/lib/react-dual-listbox.css';
 import { useAlert } from "react-alert";
 import { UserContext } from '../../providers/user';
-import { hasUsersPermission } from '../../utils/checkPermissions';
+import { hasPermission } from '../../utils/checkPermissions';
 
 const AddGroup = (props)=> {
 	const [selPermissions, setselPermissions] = useState([])
@@ -74,7 +74,7 @@ const AddGroup = (props)=> {
 	}
 
 	useEffect(() => {
-		if(hasUsersPermission(/^auth.add_group$/, userCtx.all_permissions)){
+		if(hasPermission(/^auth.add_group$/, userCtx.all_permissions)){
 			setAddPermission(true)
 		  }
 	}, [userCtx])
@@ -344,7 +344,7 @@ const AddGroup = (props)=> {
 
                 
                
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -353,7 +353,7 @@ const AddGroup = (props)=> {
                             For testing reasons, downloads are limited to the first 100 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
     </MainLayout>
   )
@@ -376,10 +376,9 @@ AddGroup.getInitialProps = async (ctx) => {
 		  
 		  let current_url = url + '&page_size=100000'
 		  if (ctx?.query?.page) {
-			  console.log({page:ctx.query.page})
-			//   url = `${url}&page=${ctx.query.page}`
+			  url = `${url}&page=${ctx.query.page}`
 		  }
-		  // console.log('running fetchData(' + url + ')')
+		  
 		  return fetch(url, {
 			  headers: {
 				  'Authorization': 'Bearer ' + token,

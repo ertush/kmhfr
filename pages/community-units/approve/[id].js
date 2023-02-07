@@ -21,6 +21,7 @@ const CommUnit = (props) => {
 
   const router = useRouter()
   let cu = props.data;
+  
  	// Reference hooks for the services section
   const [user, setUser] = useState(null);
   const [isCHULDetails, setIsCHULDetails] = useState(true);
@@ -63,7 +64,7 @@ const CommUnit = (props) => {
   return (
     <>
       <Head>
-        <title>KHMFL - {cu?.name || cu?.official_name}</title>
+        <title>KMHFL - {cu?.name || cu?.official_name}</title>
         <link rel='icon' href='/favicon.ico' />
         <link rel='stylesheet' href='/assets/css/leaflet.css' />
       </Head>
@@ -518,7 +519,7 @@ CommUnit.getInitialProps = async (ctx) => {
 					})
 
 				let service_categories = await service_response.json();
-				console.log('Service Categories', service_categories)
+
 
 				if (service_categories.error){
 					throw new Error('Error fetching the service categories');

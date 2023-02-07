@@ -1,11 +1,11 @@
 import { PermissionContext } from '../../providers/permissions'
-import { hasAdminOfficesPermissions } from '../../utils/checkPermissions'
+import { hasPermission } from '../../utils/checkPermissions'
 import Link from 'next/link'
 import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect, useContext } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { SearchIcon, DotsHorizontalIcon, PlusIcon } from "@heroicons/react/solid";
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -27,42 +27,42 @@ const AdminOffices = (props) => {
 
     const userPermissions = useContext(PermissionContext)
 
-    const lnlst = props?.data?.results?.map(({id, county_name, sub_county_name, name, is_national, phone_number, email}) => ({id, county_name, sub_county_name, name, is_national: is_national ==true ? 'Yes' : 'No', phone_number, email}))
+    const lnlst = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email }))
 
     useEffect(() => {
-        console.log({userPermissions})
-        if(hasAdminOfficesPermissions(/^admin_office.view_.*$/, userPermissions)){ // hasAdminOfficesPermissions should be negated with !
+
+        if (hasPermission(/^admin_office.view_.*$/, userPermissions)) { // hasPermission should be negated with !
             router.push('/unauthorized')
         }
     }, [])
 
     const LinkCellRenderer = (params) => {
 
-        return(
-            <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold'
-        onClick={() => {
-            router.push({
-                pathname: `/admin_offices/edit/${params.data.id}`
-            })
-        }}
-    > View </button>
+        return (
+            <button className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold'
+                onClick={() => {
+                    router.push({
+                        pathname: `/admin_offices/edit/${params.data.id}`
+                    })
+                }}
+            > View </button>
         )
 
     }
 
-    const [columns, setColumns]=useState([
-        {headerName: "County", field: "county_name"},
-        {headerName: "Sub County", field: "sub_county_name"},
-        {headerName: "Ofice Name", field: "name"},
-        {headerName: "National", field: "is_national"},
-        {headerName: "Phone Number", field: "phone_number"},
-        {headerName: "Email", field: "email"},
-        {headerName: "Actions",field: "actions", cellRenderer: "LinkCellRenderer",}
+    const [columns, setColumns] = useState([
+        { headerName: "County", field: "county_name" },
+        { headerName: "Sub County", field: "sub_county_name" },
+        { headerName: "Ofice Name", field: "name" },
+        { headerName: "National", field: "is_national" },
+        { headerName: "Phone Number", field: "phone_number" },
+        { headerName: "Email", field: "email" },
+        { headerName: "Actions", field: "actions", cellRenderer: "LinkCellRenderer", }
     ])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [adminoffices, setAdminoffices]=useState([]);
-    const [officeTheme, setOfficeTheme]=useState([]);
+    const [adminoffices, setAdminoffices] = useState([]);
+    const [officeTheme, setOfficeTheme] = useState([]);
 
 
 
@@ -71,7 +71,7 @@ const AdminOffices = (props) => {
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        console.log({results:props.data.results})
+
 
 
         setAdminoffices(lnlst)
@@ -80,7 +80,7 @@ const AdminOffices = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KHMFL - Reports</title>
+                <title>KMHFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -93,14 +93,14 @@ const AdminOffices = (props) => {
                             </div>
                             <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    {/*<UsersIcon className='ml-2 h-5 w-5'/>*/}
+
                                     {'Admin Offices'}
                                 </h2>
                                 <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                        onClick={() => {router.push('admin_offices/add')}}
+                                    onClick={() => { router.push('admin_offices/add') }}
                                 >
                                     {`Add Admin Office `}
-                                    <PlusIcon className='text-white ml-2 h-5 w-5'/>
+                                    <PlusIcon className='text-white ml-2 h-5 w-5' />
                                 </button>
                             </div>
                         </div>
@@ -108,17 +108,17 @@ const AdminOffices = (props) => {
                     <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
 
                         <List
-                            sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                            sx={{ width: '100%', bgcolor: 'background.paper', flexGrow: 1 }}
                             component="nav"
                             aria-labelledby="nested-list-subheader"
 
                         >
-                            <ListItemButton sx={{backgroundColor: officeTheme ? '#e7ebf0' : 'none' }} name="rt"
-                                            onClick={()=>{
-                                                setOfficeTheme(true)
-                                                router.push('/admin_office')
+                            <ListItemButton sx={{ backgroundColor: officeTheme ? '#e7ebf0' : 'none' }} name="rt"
+                                onClick={() => {
+                                    setOfficeTheme(true)
+                                    router.push('/admin_office')
 
-                                            }}
+                                }}
                             >
                                 <ListItemText primary="All Admin Offices" />
                             </ListItemButton>
@@ -126,89 +126,89 @@ const AdminOffices = (props) => {
                     </div>
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 
-<div className='mx-4'>
-    <form
-        className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-    >
-        <input
-            name="q"
-            id="search-input"
-            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-            type="search"
-            placeholder="Search anything ...."
-        />
-        <button
-            type="submit"
-            className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
-        >
-            <SearchIcon className="w-5 h-5" />
-        </button>
-        <div className='text-white text-md'>
+                        <div className='mx-4'>
+                            <form
+                                className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
+                            >
+                                <input
+                                    name="q"
+                                    id="search-input"
+                                    className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                    type="search"
+                                    placeholder="Search anything ...."
+                                />
+                                <button
+                                    type="submit"
+                                    className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+                                >
+                                    <SearchIcon className="w-5 h-5" />
+                                </button>
+                                <div className='text-white text-md'>
 
-            <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
-                let dl_url = props?.current_url
-                if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
-                console.log('Downloading CSV. ' + dl_url || '')
-                window.open(dl_url, '_blank', 'noopener noreferrer')
+                                    <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
+                                        let dl_url = props?.current_url
+                                        if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
 
-            }}
-            >
-                <DownloadIcon className="w-4 h-4 mr-1" />
-                <span>Export</span>
-            </button>
-        </div>
+                                        window.open(dl_url, '_blank', 'noopener noreferrer')
 
-
-    </form>
-    <h5 className="text-lg font-medium text-gray-800 float-right">
-        {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">Showing {props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} records</small>}
-    </h5>
-</div>
-<div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
-
-    <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
-        <AgGridReact
-            rowStyle={{width: '100vw'}}
-            sideBar={true}
-            defaultColDef={{
-                sortable: true,
-                filter: true,
-            }}
-            enableCellTextSelection={true}
-            onGridReady={onGridReady}
-            rowData={adminoffices}
-            columnDefs={columns}
-            frameworkComponents={{LinkCellRenderer}}
-        />
-    </div>
-</div>
-{adminoffices && adminoffices.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
-    <li className="text-base text-gray-600">
-        <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-            <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
-        </Link>
-    </li>
-    {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
-        <li key={page} className="text-base text-gray-600">
-            <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
-                <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
-            </Link>
-        </li>
-    ))}
-    <li className="text-sm text-gray-400 flex">
-        <DotsHorizontalIcon className="h-3" />
-    </li>
+                                    }}
+                                    >
+                                        <DownloadIcon className="w-4 h-4 mr-1" />
+                                        <span>Export</span>
+                                    </button>
+                                </div>
 
 
-</ul>}
+                            </form>
+                            <h5 className="text-lg font-medium text-gray-800 float-right">
+                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">Showing {props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} records</small>}
+                            </h5>
+                        </div>
+                        <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
 
-</main>
+                            <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
+                                <AgGridReact
+                                    rowStyle={{ width: '100vw' }}
+                                    sideBar={true}
+                                    defaultColDef={{
+                                        sortable: true,
+                                        filter: true,
+                                    }}
+                                    enableCellTextSelection={true}
+                                    onGridReady={onGridReady}
+                                    rowData={adminoffices}
+                                    columnDefs={columns}
+                                    frameworkComponents={{ LinkCellRenderer }}
+                                />
+                            </div>
+                        </div>
+                        {adminoffices && adminoffices.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                            <li className="text-base text-gray-600">
+                                <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
+                                    <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
+                                </Link>
+                            </li>
+                            {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
+                                <li key={page} className="text-base text-gray-600">
+                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
+                                        <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
+                                    </Link>
+                                </li>
+                            ))}
+                            <li className="text-sm text-gray-400 flex">
+                                <DotsHorizontalIcon className="h-3" />
+                            </li>
+
+
+                        </ul>}
+
+                    </main>
 
 
 
 
-</div>
-</MainLayout >
+                </div>
+            </MainLayout >
         </div>
     )
 }
@@ -239,7 +239,7 @@ AdminOffices.getInitialProps = async (ctx) => {
     }
     const fetchData = async (token) => {
         let url = API_URL + `/admin_offices/`
-        let query = { 'searchTerm': ''}
+        let query = { 'searchTerm': '' }
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf
         }
@@ -250,7 +250,7 @@ AdminOffices.getInitialProps = async (ctx) => {
 
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
-            console.log({page:ctx.query.page})
+
             url = `${url}&page=${ctx.query.page}`
         }
 

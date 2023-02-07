@@ -1,15 +1,15 @@
-import { checkToken, getToken } from "./auth/auth";
+import { checkToken } from "./auth/auth";
 
 const approveRejectCHU = async (isApproved, setState, id) => {
-  //   let url = `http://api.kmhfltest.health.go.ke/api/chul/units/?is_rejected=true&fields=${cu.id},${cu.code},${cu.name},${cu.status_name},${cu.facility_name},${cu.facility_county},${cu.facility_subcounty},${cu.facility_ward},${cu.date_established}/`;
-  let url = `http://api.kmhfltest.health.go.ke/api/chul/updates/${id}/`;
+
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/updates/${id}/`;
 
   if (isApproved) {
     setState(true);
 
     return checkToken()
       .then((token) => {
-        console.log({ token });
+
         fetch(url, {
           method: "PATCH",
           headers: {
@@ -17,8 +17,8 @@ const approveRejectCHU = async (isApproved, setState, id) => {
 
             Authorization: "Bearer " + token,
           },
-    
-        }).then((res) => console.log(res.json()));
+
+        })
       })
       .catch((err) => {
         console.log(err);
@@ -37,7 +37,7 @@ const rejectCHU = (e, ctx, state, comment) => {
     ctx.is_approved = true;
   }
 
-  console.log({ comment });
+
 };
 
 export { approveRejectCHU, rejectCHU };

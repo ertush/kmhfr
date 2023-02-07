@@ -25,6 +25,8 @@ const ByWard = (props) => {
         : props.current_url.includes('chu') ? query ={id: params.data.ward_id, type: 'chu_count', level: 'ward'} 
         : props.current_url.includes('beds_and_cots_by_ward') ?  query={ id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots', name: params.data.ward_name } 
         : query= {id: params.data.ward}
+
+       
         return(
             <Link
             href={{ pathname: `/reports/by_facility/`,
@@ -42,9 +44,9 @@ const ByWard = (props) => {
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.ward, level: 'ward', type: 'ndividual_facility_beds_and_cots', name: params.data.ward_name }
+                    query: { id: params.data.ward, level: 'ward', type: 'individual_facility_beds_and_cots', name: params?.data?.ward_name }
                 })
-            }}
+            }}  
             > View Facilities </button>
           },}
     ])
@@ -148,6 +150,16 @@ const ByWard = (props) => {
                     pathname: `/reports/by_ward/`
                 })
                 break;
+            case 'keph-level':
+                router.push({
+                    pathname: `/reports/by_keph_level/`
+                })
+                break;
+            case 'owner':
+                router.push({
+                    pathname: `/reports/by_owner/`
+                })
+                break;
             default:
                 break;
         }
@@ -156,7 +168,7 @@ const ByWard = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KHMFL - Reports</title>
+                <title>KMHFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -202,9 +214,11 @@ const ByWard = (props) => {
                                 <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
                                                 e.preventDefault()  
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
-                                                console.log('Downloading CSV. ' + dl_url || '')
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
+                                                // console.log('Downloading CSV. ' + dl_url || '')
+                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                window.location.href = dl_url
+
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -216,7 +230,13 @@ const ByWard = (props) => {
                             </form>
                             {props.current_url.includes('beds_and_cots') &&
                             <Select
-                                options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
+                                options={[ 
+                                {value: 'county' , label:'Beds and Cots (County)' }, 
+                                {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},
+                                {value: 'ward', label: 'Beds and Cots (Ward)'},
+                                {value: 'keph-level', label: 'Beds and Cots (Keph Level)'},
+                                {value: 'owner', label: 'Beds and Cots (Owner)'}
+                                 ] || []}
                                 required
                                 placeholder='Filter By:'
                                 onChange={(e) => setFilterOption(e.value)}
@@ -230,6 +250,8 @@ const ByWard = (props) => {
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
                       
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
+                            
+
                                 <AgGridReact
                                     rowStyle={{width: '100vw'}}
                                     sideBar={true}
@@ -271,7 +293,7 @@ const ByWard = (props) => {
 
 
 
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -280,7 +302,7 @@ const ByWard = (props) => {
                             For testing reasons, downloads are limited to the first 1000 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
             </MainLayout >
         </div>
@@ -290,9 +312,9 @@ const ByWard = (props) => {
 ByWard.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
    
-// api/reporting/?report_type=beds_and_cots_by_county - number of beds and cots
+
     const fetchData = async (token) => {
-        // let url = API_URL + `/reporting/?report_type=beds_and_cots_by_ward`
+
         let sub_county_id= ctx.query.id
         let level = ctx.query.level
         let url = ''
@@ -310,30 +332,11 @@ ByWard.getInitialProps = async (ctx) => {
         }
 
         let query = { 'searchTerm': ''}
-        // if (ctx?.query?.qf) {
-        //     query.qf = ctx.query.qf
-        // }
-        // if (ctx?.query?.q) {
-        //     query.searchTerm = ctx.query.q
-        //     url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
-        // }
-        // let other_posssible_filters = ["is_active"]
-
-        // other_posssible_filters.map(flt => {
-        //     console.log(flt);
-        //     if (ctx?.query[flt]) {
-        //         query[flt] = ctx?.query[flt]
-        //         if (url.includes('?')) {
-        //             url += `&${flt}=${ctx?.query[flt]}`
-        //         } else {
-        //             url += `?${flt}=${ctx?.query[flt]}`
-        //         }
-        //     }
-        // })
+     
         
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
-            console.log({page:ctx.query.page})
+          
             url = `${url}&page=${ctx.query.page}`
         }
         

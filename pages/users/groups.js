@@ -49,7 +49,7 @@ const Groups = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KHMFL - Reports</title>
+                <title>KMHFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -102,10 +102,9 @@ const Groups = (props) => {
 
                                 <button className="flex items-center rounded  bg-green-600 text-white justify-center space-x-2 text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -172,7 +171,7 @@ const Groups = (props) => {
 
 
 
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -181,7 +180,7 @@ const Groups = (props) => {
                             For testing reasons, downloads are limited to the first 1000 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
             </MainLayout >
         </div>
@@ -206,7 +205,7 @@ Groups.getInitialProps = async (ctx) => {
         let other_posssible_filters = ["is_active"]
 
         other_posssible_filters.map(flt => {
-            console.log(flt);
+         
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
                 if (url.includes('?')) {
@@ -219,10 +218,10 @@ Groups.getInitialProps = async (ctx) => {
         
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
-            console.log({page:ctx.query.page})
+           
             url = `${url}&page=${ctx.query.page}`
         }
-        // console.log('running fetchData(' + url + ')')
+        
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,

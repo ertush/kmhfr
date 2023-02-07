@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic'
 import router from 'next/router'
 import { useAlert } from "react-alert";
 import Link from 'next/link';
+import FacilityDeptRegulationFactory from '../../../components/generateFacilityDeptRegulation'
 
 
 import { 
@@ -36,7 +37,8 @@ import FacilitySideMenu from '../../../components/FacilitySideMenu';
 import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
 import EditListWithCount from '../../../components/EditListWithCount';
-
+import FacilityUpgradeModal from '../../../components/FacilityUpgradeModal'
+import {FacilityDeptContext} from '../../../pages/facilities/add'
 
 
 const _ = require('underscore') 
@@ -65,18 +67,55 @@ const EditFacility = (props) => {
     // Alert 
     const alert = useAlert();
 
-   
-    // Form drop down options
-    const facilityOptions = [
-		props['0']?.facility_types[0],  // STAND ALONE
-		props['0']?.facility_types[1],  // DISPENSARY 
-		props['0']?.facility_types[2],  // MEDICAL CLINIC
-		props['0']?.facility_types[8],  // NURSING HOME
-		props['0']?.facility_types[10], // HOSPITALS
-		props['0']?.facility_types[16], // HEALTH CENTRE
-		props['0']?.facility_types[25]  // MEDICAL CENTRE
-	]
 
+    const facilityOptions = (() => {
+		const f_types = [
+			'STAND ALONE',
+			'DISPENSARY',
+			'MEDICAL CLINIC',
+			'NURSING HOME',
+			'HOSPITALS',
+			'HEALTH CENTRE',
+			'MEDICAL CENTRE'
+		]
+
+		const all_ftypes = []
+
+       
+
+		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division == f_types[type]))
+
+
+        console.log({all_ftypes})
+
+		return [{
+			label: all_ftypes[0].sub_division,
+			value: all_ftypes[0].parent
+		},
+		{
+			label: all_ftypes[1].sub_division,
+			value: all_ftypes[1].parent
+		},
+		{
+			label: all_ftypes[2].sub_division,
+			value: all_ftypes[2].parent
+		},
+		{
+			label: all_ftypes[3].sub_division,
+			value: all_ftypes[3].parent
+		},
+		{
+			label: all_ftypes[4].sub_division,
+			value: all_ftypes[4].parent
+		},
+		{
+			label: all_ftypes[5].sub_division,
+			value: all_ftypes[5].parent
+		}
+
+		]
+
+	})()
 
 
     const [khisSynched, setKhisSynched] = useState(false);
@@ -84,6 +123,8 @@ const EditFacility = (props) => {
     const [pathId, setPathId] = useState('') 
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('') 
+    const [isSaveAndFinishInfra, setIsSaveAndFinishInfra] = useState(false);
+    const [isSaveAndFinishService, setIsSaveAndFinishService] = useState(false)
     const filters = []
 
 
@@ -272,6 +313,8 @@ const EditFacility = (props) => {
         regulatory_body_name
  
     } = props['18']?.data ?? {}
+
+    console.log({regulatory_body})
 
     const basicDetailsData =   {
         official_name,
@@ -534,23 +577,15 @@ const EditFacility = (props) => {
 
 
     // Different form states
-    // const [services, setServices] = useState([])
-   
-	// const [hr, setHr] = useState([])
-	// const [hrCount, setHrCount] = useState([])
+  
     const [wardName, setWardName] = useState(ward_name)
-    const [refreshForm4, setRefreshForm4] = useState()
-    // const [selectedHrRight, setSelectedHrRight] = useState()
     const [operationStatus, setOperationStatus] = useState('')
-    // const [refreshForm6, setRefreshForm6] = useState(false)
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
     const [serviceUpdates, setServiceUpdates] = useState(null)
   
   
     
-
-
     const handleAddRegulatoryBody = (event) => {
         event.preventDefault();
 
@@ -709,19 +744,12 @@ const EditFacility = (props) => {
     const facilityRegulatoryBodyRef = useRef(null)
     const regBodyRef = useRef(null)
     const facilityDeptNameRef = useRef(null)
-    const optionRefBody = useRef(null)
-    const serviceOptionRef = useRef(null)
-    const nameOptionRef = useRef(null)
-    const infrastructureBodyRef = useRef(null)
-
+   
     
 
     // Facility update data
     const {
-        updated,
-        updated_by,
         facility_updated_json,
-        created_by_name,
     } = facilityUpdateData ?? {updated: new Date(), updated_by: '', facility_updated_json: [], created_by_name: ''}
 
 
@@ -806,6 +834,7 @@ const EditFacility = (props) => {
         }
 
         if(regulatoryBodyRef.current ){
+            
             regulatoryBodyRef.current.state.value = regBodyOptions.filter(({value}) => value === regulatory_body)[0] || ''
         }
 
@@ -813,9 +842,9 @@ const EditFacility = (props) => {
             regulatoryStateRef.current.state.value = regulationStateOptions.filter(({label}) => label === regulatory_status_name)[0] || ''
         }
         
-        if(facilityDeptNameRef.current ){
-            facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
-        }
+        // if(facilityDeptNameRef.current ){
+        //     facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
+        // }
 
         if(otherContactRef.current ){
             otherContactRef.current.state.value = _officerName.contacts && _officerName.contacts.length > 0 ? _officerName?.contacts[0].type : ''
@@ -830,11 +859,12 @@ const EditFacility = (props) => {
 
    
     return () => {
-
+        setIsSaveAndFinishService(false)
+        setIsSaveAndFinishInfra(false)
     }
        
         
-    }, [isSavedChanges, refreshForm4])
+    }, [isSavedChanges])
 
 
     const handleAddContact = (event) => {
@@ -973,7 +1003,7 @@ const EditFacility = (props) => {
         <>
         
             <Head>
-                <title>KHMFL - {official_name}</title>
+                <title>KMHFL - {official_name}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
@@ -992,7 +1022,7 @@ const EditFacility = (props) => {
                         {/* Header */}
                         <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (is_approved ? "border-green-600" : "border-green-600")}>
                             <div className="col-span-6 md:col-span-3">
-                                <h1 className="text-4xl tracking-tight font-bold leading-tight">{official_name}</h1>
+                                <a href={`/facilities/${id}`} className="text-4xl tracking-tight hover:text-green-600 font-bold leading-tight">{official_name}</a>
                                 <div className="flex gap-2 items-center w-full justify-between">
                                     <span className={"font-bold text-2xl " + (code ? "text-green-900" : "text-gray-400")}>#{code || "NO_CODE"}</span>
                                     <p className="text-gray-600 leading-tight">{keph_level_name && "KEPH " + keph_level_name}</p>
@@ -1586,6 +1616,26 @@ const EditFacility = (props) => {
                                                                 ref={countyRef}
                                                                 required
                                                                 placeholder="Select County"
+                                                                onChange={async (ev) => {
+                                                                    if( ev.value.length > 0){
+
+                                                                        // setCounty(String(ev.label).toLocaleUpperCase())
+
+                                                                        try{
+                                                                            const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
+
+                                                                            setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
+
+                                                                            
+                                                                        }
+                                                                        catch(e){
+                                                                            console.error('Unable to fetch sub_county options')
+                                                                            setSubCountyOpt(null)
+                                                                        }
+                                                                    }else{
+                                                                        return setSubCountyOpt(null)
+                                                                    }
+                                                                }}
                                                                 name="county_id" 
                                                                 className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                             </div>
@@ -1614,6 +1664,22 @@ const EditFacility = (props) => {
                                                                 options={subCountyOpt ?? constituencyOptions} 
                                                                 required
                                                                 placeholder="Select Constituency"
+                                                                onChange={async (ev) => {
+                                                                    if( ev.value.length > 0){
+                                                                        try{
+                                                                            const resp = await fetch(`/api/filters/ward/?sub_county=${ev.value}${"&fields=id,name,sub_county,constituency&page_size=30"}`)
+
+                                                                            setWardNameOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
+
+                                                                        }
+                                                                        catch(e){
+                                                                            console.error('Unable to fetch sub_county options')
+                                                                            setWardNameOpt(null)
+                                                                        }
+                                                                    }else{
+                                                                        return setWardNameOpt(null)
+                                                                    }
+                                                                }}
                                                                 name="constituency_id" 
                                                                 className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                                             </div>
@@ -2060,11 +2126,10 @@ const EditFacility = (props) => {
 
                                         onSubmit={formData => {
                                             
-
                                             const regulatoryBody = regulatoryBodyRef.current  ? regulatoryBodyRef.current.state.value.value : ''
                                             const regulationStatus = regulatoryStateRef.current ? regulatoryStateRef.current.state.value.value : ''
-                                            const facilityRegulatingBody = regBodyRef.current ? regBodyRef.current.value : ''
-                                            const facilityUnit =  facilityDeptNameRef.current  ? facilityDeptNameRef.current.state.value.value : ''
+                                            // const facilityRegulatingBody = regBodyRef.current ? regBodyRef.current.value : ''
+                                            // const facilityUnit =  facilityDeptNameRef.current  ? facilityDeptNameRef.current.state.value.value : ''
 
                                             const payload = {...formData, regulatory_body:regulatoryBody, regulation_status:regulationStatus}
 
@@ -2155,30 +2220,30 @@ const EditFacility = (props) => {
                                                   //    Filtered Regulatory State Options
 
                                                   <Select 
-                                                  ref={regulatoryStateRef}
-                                                      options={filteredRegulationStateOptions || []} 
-                                                      required
-                                                      onChange={ev => {
-                                                          setIsPendingLicense(false)
-                                                          if(ev.label === 'Pending License') setIsPendingLicense(true)
-                                                      }}
-                                                      placeholder="Select Regulation Status"
-                                                      name='regulation_status'
-                                                      className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                               :
+                                                    ref={regulatoryStateRef}
+                                                    options={filteredRegulationStateOptions || []} 
+                                                    required
+                                                    onChange={ev => {
+                                                        setIsPendingLicense(false)
+                                                        if(ev.label === 'Pending License') setIsPendingLicense(true)
+                                                    }}
+                                                    placeholder="Select Regulation Status"
+                                                    name='regulation_status'
+                                                    className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                :
 
-                                               <Select 
-                                                        ref={regulatoryStateRef}
-                                                        options={regulationStateOptions || []} 
-                                                        required
-                                                        onChange={ev => {
-                                                            setIsPendingLicense(false)
-                                                            if(ev.label === 'Pending License') setIsPendingLicense(true)
-                                                        }}
-                                                        placeholder="Select Regulation Status"
-                                                        name='regulation_status'
-                                                        className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                                              
+                                                <Select 
+                                                    ref={regulatoryStateRef}
+                                                    options={regulationStateOptions || []} 
+                                                    required
+                                                    onChange={ev => {
+                                                        setIsPendingLicense(false)
+                                                        if(ev.label === 'Pending License') setIsPendingLicense(true)
+                                                    }}
+                                                    placeholder="Select Regulation Status"
+                                                    name='regulation_status'
+                                                    className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                                
                                                     }
 
                                                 </div>
@@ -2248,36 +2313,30 @@ const EditFacility = (props) => {
 
                                                 <hr className='col-span-4'/>
 
-                                                
+                                              
                                                 {/* Name */}
-                                                <Select options={facilityDeptOptions || []} 
-                                                    required
-                                                    placeholder="Select Name"
-                                                    ref={facilityDeptNameRef}
-                                                    onChange={
-                                                        e => {
-                                                            if(regBodyRef.current){
-                                                            
-                                                                regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
-                                                            }
-                                                        }
-                                                    }
-                                                    name="facility_dept_name" 
-                                                    className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                          
+                                                <div className='flex-col items-start justify-start gap-y-4'>
                                                 
-                                                {/* Regulatory Body */}
-                                                <input type="text" ref={regBodyRef} disabled name="facility_regulatory_body" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-
-                                                {/* License No. */}
-                                                <Field type="text" name="facility_license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-
-                                                <div className='col-start-4 flex items-center space-x-2 w-full'>
-                                                    {/* Reg No. */}
-                                                    <Field type="text" name="facility_registration_number" className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                {
+                                                    facility_units.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
                                                 
-                                                    {/* Delete Btn */}
-
-                                                    <button onClick={event => {event.preventDefault()}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+                                                        <FacilityDeptRegulationFactory
+                                                            key={i}
+                                                            index={i}
+                                                            isRegBodyChange={null}
+                                                            setIsRegBodyChange={() => null}
+                                                            setFacilityDepts={() => null}
+                                                            regNo={registration_number}
+                                                            licenseNo={license_number}
+                                                            facilityDeptRegBody={regulating_body_name}
+                                                            facilityDeptValue={[{value:id, label:unit_name}]}
+                                                            facilityDeptOptions={facilityDeptOptions}
+                                                    />
+                                                
+                                                    ))
+                                                    
+                                                }
                                                 </div>
 
                                                 {/* add other fields */}
@@ -2306,62 +2365,37 @@ const EditFacility = (props) => {
                                 {/* Services */}
                                 <Tabs.Panel value="services" className="grow-1 py-1 px-4 tab-panel">
                                     
-                                    {/* <form name="facility_services_form" className='flex  flex-col w-full items-start justify-start gap-3 mt-6'  onSubmit={
-                                       async ev => {
-
-                                            ev.preventDefault()     
-
-                                        
-
-                                             handleServiceUpdates(ev, [serviceUpdates, id], alert, "Facility Services updated successfully")
-                                                .then(({statusText}) => {
-                                                    defer(() => setIsSavedChanges(true))
-                                                    let update_id
-                                                    if(statusText == 'OK'){
-
-                                                            fetch(`/api/facility/get_facility/?path=facilities&id=${id}`).then(async resp => {
-    
-                                                                const results = await resp.json()
-                                                                
-                                                                update_id = results?.latest_update
-                                                                
-                                                                if(update_id){
-                                                                 
-                                                                    
-                                                                    try{
-                                                                        const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
-                                                                        setFacilityUpdateData(_facilityUpdateData)                                                     
-                                                                    }
-                                                                    catch(e){
-                                                                        console.error('Encountered error while fetching facility update data', e.message)
-                                                                    }
-                                                                }
-                                                            })
-                                                            .catch(e => console.error('unable to fetch facility update data. Error:', e.message))                                
-                                                        }
-                                                    
-                                                    })
-                                                    .catch(e => console.error('unable to fetch facility data. Error:', e.message)) 
-                                                }
-                                         }> */}
-
                                         <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
-                                            {/* Transfer list Container */}
-                                            <div className='flex items-center w-full h-auto min-h-[300px]'>
 
+                                             {/* Display Facility Upgrade Modal */}
+
+                                             {
+                                                    isSaveAndFinishService && 
+                                                    <FacilityUpgradeModal 
+                                                        subject='Service'
+                                                        facilityId={id}
+                                                    />
+                                             }
+
+                                            {/* Edit list item Container */}
+                                            <div className='flex items-center w-full h-auto min-h-[300px]'>
+                              
                                                 <EditListItem
                                                     initialSelectedItems={serviceSelected}
                                                     itemsCategory={serviceOptions}
                                                     itemsCategoryName={'Services'}
                                                     setUpdatedItem={setServiceUpdates}
                                                     item={{ name, official_name }}
-                                                    itemId={null}
+                                                    itemId={id}
                                                     setItems={() => null}
                                                     removeItemHandler={handleServiceDelete}
                                                     handleItemsUpdate={handleServiceUpdates}
+                                                    setIsSavedChanges={setIsSavedChanges}
+                                                    setItemsUpdateData={setFacilityUpdateData}
                                                     setNextItemCategory={() => null}
                                                     nextItemCategory={null}
                                                     previousItemCategory={null}
+                                                    setIsSaveAndFinish={setIsSaveAndFinishService}
                                                     handleItemPrevious={null}
                                                 />
 
@@ -2374,6 +2408,18 @@ const EditFacility = (props) => {
                                 {/* Infrastructure */}
                                 <Tabs.Panel value="infrastructure" className="grow-1 py-1 px-4 tab-panel">
                                     <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+
+
+                                        {/* Display Facility Upgrade Modal */}
+
+                                        {
+                                                isSaveAndFinishInfra && 
+                                                <FacilityUpgradeModal 
+                                                    subject='infrastructure'
+                                                    facilityId={id}
+                                                />
+                                        }
+
                                                             
                                         {/* Edit List With Count Container*/}
                                         <div className='flex items-center w-full h-auto min-h-[300px]'>
@@ -2395,17 +2441,19 @@ const EditFacility = (props) => {
                                               setNextItemCategory={() => null}
                                               nextItemCategory={null}
 											  previousItemCategory={null}
+                                              setIsSaveAndFinish={setIsSaveAndFinishInfra}
                                             />
 
                                         </div>
 
                                     </div>
                                 </Tabs.Panel>
+
                                 {/* Human Resources */}
                                 <Tabs.Panel value="human_resource" className="grow-1 py-1 px-4 tab-panel">
          
                                         <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
-                                            
+
                                             {/* Edit List With Count Container*/}
                                             <div className='flex items-center w-full h-auto min-h-[300px]'>
                                             
@@ -2426,6 +2474,7 @@ const EditFacility = (props) => {
                                                     setNextItemCategory={() => null}
                                                     nextItemCategory={null}
 													previousItemCategory={null}
+                                                    setIsSaveAndFinish={() => null}
                                                 />
     
                                             </div>
@@ -2512,10 +2561,7 @@ EditFacility.getInitialProps = async (ctx) => {
 										},
 									})
 
-									const results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division  ? {value:id, label:sub_division} : {value:id, label:name}) ?? [{value: '', label: ''}]
-
-							
-									allOptions.push({facility_types: results })
+                                    allOptions.push({facility_types: (await _data.json()).results})
 									
 								}
 								catch(err) {

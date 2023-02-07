@@ -1,12 +1,15 @@
 import Head from "next/head";
 import { checkToken } from "../../controllers/auth/auth";
-import React, { useState, useEffect, useContext, memo } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import MainLayout from "../../components/MainLayout";
 import Link from 'next/link'
 
 
+
 import {
   CheckCircleIcon,
+  ChevronRightIcon,
+  ChevronDownIcon,
   InformationCircleIcon,
   LockClosedIcon,
   XCircleIcon,
@@ -26,10 +29,22 @@ import Fade from '@mui/material/Fade';
 import {Formik, Form, Field} from 'formik'
 import Typography from '@mui/material/Typography';
 import FacilitySideMenu from "../../components/FacilitySideMenu";
+import { Table, TableBody, TableCell, TableRow } from "@mui/material";
+import { PermissionContext } from "../../providers/permissions";
+import { hasPermission } from "../../utils/checkPermissions";
+import { UserGroupContext } from "../../providers/userGroup";
+import { belongsToUserGroup } from "../../utils/checkUserGroup";
+import { useAlert } from "react-alert";
 
 
 const Facility = (props) => {
-  const Map = memo(dynamic(
+
+  const userPermissions = useContext(PermissionContext)
+  const userGroup = useContext(UserGroupContext)
+  const userCtx = useContext(UserContext)
+
+
+  const Map = dynamic(
     () => import("../../components/Map"), // replace '@components/map' with your component's location
     {
       loading: () => (
@@ -39,22 +54,24 @@ const Facility = (props) => {
       ),
       ssr: false, // This line is important. It's what prevents server-side render
     } 
-  ));
+  );
 
-  
+
   const facility = props["0"]?.data;
   const wardName = props["0"]?.data.ward_name;
   const center = props["1"]?.geoLocation.center;
   const geoLocationData = props["1"]?.geoLocation;
-  const {facility_updated_json } = props["2"]?.updates;
+  // const {facility_updated_json } = props["2"]?.updates;
   const filters = props["3"]?.filters ?? []
 
 
   const [user, setUser] = useState(null);
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const [openCloseModal, setOpenCloseModal] = useState(true)
   const [isReasonRejected, setIsReasonRejected] = useState(false)
   const handleClose = () => setOpen(false);
+  const handleCloseModal = () => {setOpenCloseModal(false); setIsClosingFacility(false)};
 
 
   const [khisSynched, setKhisSynched] = useState(false);
@@ -63,25 +80,32 @@ const Facility = (props) => {
   const [allFctsSelected, setAllFctsSelected] = useState(false);
   const [title, setTitle] = useState('') 
 
+  const [isViewChangeLog, setIsViewChangeLog] = useState(false)
+  const [changeLogData, setChangeLogData] = useState(null)
+  const [isClosingFacility, setIsClosingFacility] = useState(false)
 
-  const userCtx = useContext(UserContext)
+
+  const _ = require('underscore')
+  const alert = useAlert()
+
+
+  
   let reject = ''
 
   useEffect(() => {
-    console.log({ props });
+   
     if (userCtx) setUser(userCtx);
-    
+  
     return () => {
-    
     };
-  }, []);
+  }, [isClosingFacility]);
 
 
 
   return (
     <>
       <Head>
-        <title>KHMFL - {facility?.official_name ?? ""}</title>
+        <title>KMHFL - {facility?.official_name ?? ""}</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="/assets/css/leaflet.css" />
       </Head>
@@ -98,10 +122,8 @@ const Facility = (props) => {
                   open={open}
                   onClose={handleClose}
                   closeAfterTransition
-                  BackdropComponent={Backdrop}
-                  BackdropProps={{
-                  timeout: 500,
-                  }}
+                  slots={{backdrop:Backdrop}}
+                 
               >
                   <Fade in={open}>
                   <Box sx={
@@ -137,20 +159,42 @@ const Facility = (props) => {
                         <Formik 
                         initialValues={
                           {
-                            reason_reopen: ''
+                            closing_reason: ''
                           }
                         }
-                        onSubmit={({reason_reopen}) => {
-                        
-                          if(reason_reopen.includes('complete')){ // Reopeninig criteria will be updated soon
-                            setIsReasonRejected(false)
-                            router.push(`edit/${facility?.id}`)
-                          } else{
-                            setIsReasonRejected(true)
-                          }
+                        onSubmit={async ({closing_reason}) => {
+                    
+                          try {
+                            const resp = await fetch(`/api/common/submit_form_data?path=close_facility&id=${facility?.id}`, {
+                              headers: {
+                                  'Accept': 'application/json, text/plain, */*',
+                                  'Content-Type': 'application/json;charset=utf-8'
+                  
+                              },
+                              method: 'POST',
+                              body: JSON.stringify({
+                                closed: false,
+                                closing_reason
+                              })
+                          })
 
+                         
+                         
+
+                          if(resp.ok){
+                              alert.success("Facility Reopened successfully")
+                              _.defer(() => {
+                                handleClose()
+
+                                router.push('/facilities')
+                              })
                           
-
+                          }
+    
+                          }catch(e){
+                             console.error(e.message)
+                          }
+    
                         }} >
 
                           <Form className='my-3 flex-col gap-y-2'>
@@ -158,13 +202,13 @@ const Facility = (props) => {
                             as='textarea'
                             cols={'30'}
                             rows={'6'}
-                            name='reason_reopen'
+                            name='closing_reason'
                             className='border-2 border-gray-400 rounded'
                             >
                             </Field>
                             <div className='flex justify-start gap-4 mt-4'>
                                 <button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="submit">Reopen</button>
-                                <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" onClick={() => router.push('/facilities')}>Cancel</button>
+                                <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" onClick={handleClose}>Cancel</button>
                             </div>
                           </Form>
                         </Formik>
@@ -173,6 +217,116 @@ const Facility = (props) => {
                   </Box>
                   </Fade>
               </Modal>
+          }
+
+          {/* Modal for closing facility */}
+
+          {
+             isClosingFacility &&
+              <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              open={true}
+              onClose={handleCloseModal}
+              closeAfterTransition
+              slots={{backdrop:Backdrop}}
+             
+          >
+              <Fade in={true}>
+              <Box sx={
+                  {
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: 400,
+                      bgcolor: 'background.paper',
+                      borderRadius: '6px',
+                      borderLeft: 'solid 10px red',
+                      boxShadow: 24,
+                      p: 4,
+                  }
+              }>
+                  <span className="grid grid-cols-4 gap-2">
+                    <InformationCircleIcon className="w-12 h-12 text-red-500 col-start-1"/>
+                    <Typography id="transition-modal-title" variant="h6" component="h2" className="col-start-2 col-span-3">      
+                       Are you sure you want to close <strong>{facility?.official_name}</strong>
+                    </Typography>    
+                  </span>
+                  
+                  <div className="flex-col items-start">
+                  <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                      Please state the reason for closing this facility
+                    </Typography>
+                    <Formik 
+                    initialValues={
+                      {
+                        closing_reason: ''
+                      }
+                    }
+                    onSubmit={async ({closing_reason}) => {
+                    
+                      try {
+                        const resp = await fetch(`/api/common/submit_form_data?path=close_facility&id=${facility?.id}`, {
+                          headers: {
+                              'Accept': 'application/json, text/plain, */*',
+                              'Content-Type': 'application/json;charset=utf-8'
+              
+                          },
+                          method: 'POST',
+                          body: JSON.stringify({
+                            closed: true,
+                            closing_reason
+                          })
+                      })
+                    
+                     
+                        
+                      if(resp.ok){
+                          alert.success("Facility Closed successfully")
+                          _.defer(() => {
+                            handleCloseModal()
+
+                            router.push('/facilities?qf=closed&closed=true')
+                          })
+                      
+                      }
+
+                      }catch(e){
+                         console.error(e.message)
+                      }
+
+                    }} >
+
+                      <Form className='my-3 flex-col gap-y-2'>
+                        <Field
+                        as='textarea'
+                        cols={'30'}
+                        rows={'6'}
+                        name='closing_reason'
+                        className='border-2 border-gray-400 rounded'
+                        >
+                        </Field>
+
+                        <div className="grid grid-rows-1 gap-2 mt-2">
+                          <Typography>
+                            Closing Date: {new Date().toLocaleDateString()} 
+                          </Typography>
+
+                        </div>
+
+                        <div className='flex justify-start gap-4 mt-4'>
+                            <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" type="submit">Close Facility</button>
+                            <button className="bg-indigo-500 text-white font-semibold rounded p-2 text-center" onClick={handleCloseModal}>Cancel</button>
+                        </div>
+                      </Form>
+                    </Formik>
+                  </div>
+                  
+                  
+              </Box>
+              </Fade>
+          </Modal>
           }
 
 
@@ -281,11 +435,22 @@ const Facility = (props) => {
                     stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
           </div>
           
-          <div className="col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4">
+
+          <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full flex flex-col gap-3 mt-4`}>
 
             {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <div className="flex flex-row justify-start items-center space-x-3 p-3">
+
+                {/* Render button conditionally for both facility approval and validation*/}
+                {
+                  hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
+                  hasPermission(/^facilities.view_facility$/, userPermissions) &&
+                  (!belongsToUserGroup(userGroup, 'County Health Records Information Officer') || 
+                  (belongsToUserGroup(userGroup, 'County Health Records Information Officer') && facility.has_edits)) &&
+                  facility?.is_approved &&
+
+                  
                 <button
                   onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
                   className={
@@ -293,11 +458,35 @@ const Facility = (props) => {
                       
                   }
                 >
-
-                {/*  Dynamic Approve/reject Button  */}
-    
-                  Approve/Reject Facility
+                  {
+                   facility.has_edits ? 'Validate Facility Updates' : 'Approve/Reject Facility'
+                  }
+  
                 </button>
+                } 
+
+{
+                  hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
+                  hasPermission(/^facilities.view_facility$/, userPermissions) &&
+                  (
+                  belongsToUserGroup(userGroup, 'County Health Records Information Officer') ||
+                  belongsToUserGroup(userGroup, 'National Administrators') ||
+                  belongsToUserGroup(userGroup, 'Superusers') 
+                  ) &&
+                  !facility?.is_approved &&
+
+                  
+                <button
+                  onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
+                  className={
+                    "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
+                      
+                  }
+                >
+                   Validate/Reject Facility
+  
+                </button>
+                } 
 
                 <button
                   onClick={() => console.log(props.data)}
@@ -306,7 +495,8 @@ const Facility = (props) => {
                   Print
                 </button>
                 {
-                    !facility?.closed && 
+                    !facility?.closed &&
+                    hasPermission(/^facilities.change_facility$/, userPermissions) &&
                         <button
                         onClick={() => router.push(`edit/${facility?.id}`)}
                         className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
@@ -314,21 +504,28 @@ const Facility = (props) => {
                         Edit
                       </button>
                 }
-            
+                {
+                  hasPermission(/^facilities.add_facilityregulationstatus$/, userPermissions) &&
+                  hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <button
                   onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                 >
                   Regulate
                 </button>
+                }
+                {
+                  hasPermission(/^facilities.change_facility$/, userPermissions) &&
+                  hasPermission(/^facilities.add_facilityservice$/, userPermissions) &&
                 <button
                   onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                 >
                   Upgrade
                 </button>
+                }
                 <button
-                  onClick={() => window.alert("Edit")}
+                  onClick={() => setIsClosingFacility(true)}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                 >
                   Close
@@ -342,7 +539,7 @@ const Facility = (props) => {
 
           {/* end facility approval */}
               
-          <aside className="flex flex-col col-span-1 md:col-span-2 gap-4 md:mt-7">
+          <aside className={`flex flex-col col-span-1 ${isViewChangeLog ? 'md:col-span-3': 'md:col-span-2'} gap-4 md:mt-7`}>
             {/* <h3 className="text-2xl tracking-tight font-semibold leading-5">
               Map
             </h3> */}
@@ -369,21 +566,87 @@ const Facility = (props) => {
                 </div>
               </div>
             )}
-            <div className="flex flex-col gap-2 mt-3">
-              <h4 className="text-2xl text-gray-800">Recent activity</h4>
-              <ol className="list-decimal list-outside ml-4 flex flex-row gap-3">
-                <li className="bg-gray-50 w-full rounded-sm p-2">
-                  {facility?.latest_approval_or_rejection?.comment && (
-                    <p>{facility?.latest_approval_or_rejection?.comment}</p>
-                  )}
-                </li>
-              </ol>
+            <div className="flex flex-col items-start justify-center gap-2">
+              {/* View/Hide Change Log Btn*/}
+              <button 
+              onClick={async () => {
+                setIsViewChangeLog(!isViewChangeLog);
+
+                if(!isViewChangeLog){
+                  try{
+                      const resp = await fetch(`/api/facility/get_facility/?path=change_log&id=${facility?.id}`)
+                    
+                      setChangeLogData((await resp.json()).revisions)
+   
+                  }
+                  catch(e){
+                    console.error(e.message)
+                  }
+                }
+
+              }}
+              className="bg-green-500 w-auto rounded w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
+              <span>{isViewChangeLog ? 'Hide Change Log' : 'View Change Log'}</span>
+              {
+                isViewChangeLog ?
+                <ChevronDownIcon className="w-6 h-6 text-base text-white"/>
+                :
+                <ChevronRightIcon className="w-6 h-6 text-base text-white"/>
+              }
+              </button>
+
+              {/* Change Log Table */}
+              {
+              isViewChangeLog &&
+              
+              <Table>
+              <TableBody className="w-full">
+                <TableRow>
+                  <TableCell className="font-semibold">Date</TableCell>
+                  <TableCell className="font-semibold">User</TableCell>
+                  <TableCell className="font-semibold">Updates</TableCell>
+                </TableRow>
+                
+               
+               
+                {
+                  changeLogData &&
+                  changeLogData.map(({updated_on, updated_by, updates}, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        {new Date(updated_on).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        {updated_by}
+                      </TableCell>
+                      <TableCell>
+                        {
+                          updates && updates.length > 0 &&
+                          updates.map(({old, new:_new, name}) => (
+                            <span className="grid grid-cols-2">
+                              <span className="font-semibold text-base md:col-start-1">{name}{" :"}</span>
+                              <span className="text-red-400 md:col-start-2">{old}
+                              <span className="text-black">{" >> "}</span>
+                              <span className="text-green-400">{_new}</span>
+                              </span>
+                              
+                            </span>
+                          ))
+                        }
+                      </TableCell>
+                    </TableRow>
+                  ))
+                  
+                }
+      
+              </TableBody>
+              </Table>
+            
+              }   
+              
             </div>
           </aside>
 
-
-          
-                    
         </div>
 
 

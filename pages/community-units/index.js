@@ -23,10 +23,9 @@ const Home = (props) => {
 
 	const [title, setTitle] = useState('Community Health Units') 
 
-
 	
 	useEffect(() => {
-		// console.log({filters})
+		
 		let qry = props?.query;
 		delete qry.searchTerm;
 		delete qry.qf
@@ -41,7 +40,7 @@ const Home = (props) => {
 	return (
 		<div className=''>
 			<Head>
-				<title>KHMFL - Community Units</title>
+				<title>KMHFL - Community Units</title>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 
@@ -103,7 +102,7 @@ const Home = (props) => {
 											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<button
 												onClick={() => {
-													router.push('/community-units/add_community_unit');
+													router.push('/community-units/add');
 												}}
 												className='flex items-center justify-center'>
 												<span className='text-base uppercase font-semibold'>Add Community Health Unit</span>
@@ -133,11 +132,7 @@ const Home = (props) => {
 													}
 													onClick={() => {
 														let dl_url = props?.current_url;
-														if (dl_url.includes('?')) {
-															dl_url += '&format=csv';
-														} else {
-															dl_url += '?format=csv';
-														}
+														if (dl_url.includes('?')) { dl_url += `&format=csv&access_token=${props.token}` } else { dl_url += `?format=csv&access_token=${props.token}` }
 														console.log('Downloading CSV. ' + dl_url || '');
 														// window.open(dl_url, '_blank', 'noopener noreferrer')
 														window.location.href = dl_url;
@@ -158,11 +153,7 @@ const Home = (props) => {
 													}
 													onClick={() => {
 														let dl_url = props?.current_url;
-														if (dl_url.includes('?')) {
-															dl_url += '&format=excel';
-														} else {
-															dl_url += '?format=excel';
-														}
+														if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
 														console.log('Downloading Excel. ' + dl_url || '');
 														// window.open(dl_url, '_blank', 'noopener noreferrer')
 														window.location.href = dl_url;
@@ -317,12 +308,24 @@ const Home = (props) => {
 									</Link>
 								</div>
 							)}
-							{cus && cus.length > 0 && (
+							{cus && cus.length >= 30 && (
 								<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
 									<li className='text-base text-gray-600'>
+		
 										<a
 											href={
-												'/community-units?page=' + props?.data?.current_page
+												(() => 
+												props.path.includes('?page') ?
+												props.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
+												:
+												props.path.includes('?q') && props.path.includes('&page') ?
+												props.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
+												:
+												props.path.includes('?q') ?
+												`${props.path}&page=${props?.data?.current_page}`                                    
+												:
+												`${props.path}?page=${props?.data?.current_page}`
+											)()
 											}
 											className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
 											{props?.data?.current_page}
@@ -331,8 +334,23 @@ const Home = (props) => {
 									{props?.data?.near_pages &&
 										props?.data?.near_pages.map((page) => (
 											<li key={page} className='text-base text-gray-600'>
+
 												<a
-													href={'/community-units?page=' + page}
+													href={
+														(() => 
+                                                            props.path.includes('?page') ?
+                                                            props.path.replace(/\?page=\d+/,`?page=${page}`)
+                                                            :
+                                                            props.path.includes('?q') && props.path.includes('&page') ?
+                                                            props.path.replace(/&page=\d+/, `&page=${page}`)
+                                                            :
+                                                            props.path.includes('?q') ?
+                                                            `${props.path}&page=${page}`
+                                                            :
+                                                            `${props.path}?page=${page}`
+                   
+                                                        )()
+													}
 													className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
 													{page}
 												</a>
@@ -341,19 +359,13 @@ const Home = (props) => {
 									<li className='text-sm text-gray-400 flex'>
 										<DotsHorizontalIcon className='h-3' />
 									</li>
-									{/* {props?.data?.far_pages.map(page => (
-                                    <li key={page} className="text-base text-gray-600">
-                                        <a href={'/?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
-                                            {page}
-                                        </a>
-                                    </li>
-                                ))} */}
+									
 								</ul>
 							)}
 						</div>
 					</div>
 					
-					{/* (((((( Floating div at bottom right of page */}
+					{/*  Floating div at bottom right of page */}
 
 					<div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
 						<h5 className='text-sm font-bold'>
@@ -451,6 +463,7 @@ Home.getInitialProps = async (ctx) => {
 			return {
 				data: json,
 				query,
+				token,
 				filters: { ...ft },
 				path: ctx.asPath || '/community-units',
 				current_url: current_url,

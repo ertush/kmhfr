@@ -45,11 +45,12 @@ const ByCounty = (props) => {
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions", cellRendererFramework: function(params) {
+          
             return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
-                    query: { id: params.data.sub_county, level: 'sub_county', type: 'ndividual_facility_beds_and_cots' }
+                    query: { id: params.data.sub_county, level: 'sub_county', type: 'individual_facility_beds_and_cots', name: params?.data?.sub_county_name  }
                 })
             }}
             > View Facilities </button>
@@ -147,6 +148,16 @@ const ByCounty = (props) => {
                     pathname: `/reports/by_ward/`
                 })
                 break;
+            case 'keph-level':
+                router.push({
+                    pathname: `/reports/by_keph_level/`
+                })
+                break;
+            case 'owner':
+                router.push({
+                    pathname: `/reports/by_owner/`
+                })
+                break;
             default:
                 break;
         }
@@ -155,7 +166,7 @@ const ByCounty = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KHMFL - Reports</title>
+                <title>KMHFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -201,11 +212,11 @@ const ByCounty = (props) => {
                                 <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
                                                e.preventDefault()
                                                 let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += '&format=excel' } else { dl_url += '?format=excel' }
+                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
                                                 // router.push(dl_url, undefined, { shallow: true })
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
+                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                window.location.href = dl_url
                                             }}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
@@ -217,7 +228,13 @@ const ByCounty = (props) => {
                             </form>
                             {props.current_url.includes('beds_and_cots') &&
                             <Select
-                                options={[{value:'county' , label:'Beds and Cots (County)' }, {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},{value: 'ward', label: 'Beds and Cots (Ward)'}] || []}
+                                options={[
+                                    {value: 'county' , label:'Beds and Cots (County)' }, 
+                                    {value: 'sub-county', label: 'Beds and Cots (Sub-County)'},
+                                    {value: 'ward', label: 'Beds and Cots (Ward)'},
+                                    {value: 'keph-level', label: 'Beds and Cots (Keph Level)'},
+                                    {value: 'owner', label: 'Beds and Cots (Owner)'}
+                                    ] || []}
                                 required
                                 placeholder='Filter By:'
                                 onChange={(e) => setFilterOption(e.value)}
@@ -272,7 +289,7 @@ const ByCounty = (props) => {
 
 
 
-                    {/* (((((( Floating div at bottom right of page */}
+                    {/* Floating div at bottom right of page */}
                     <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
@@ -281,7 +298,7 @@ const ByCounty = (props) => {
                             For testing reasons, downloads are limited to the first 1000 results.
                         </p>
                     </div>
-                    {/* ))))))) */}
+                  
                 </div>
             </MainLayout >
         </div>
@@ -332,7 +349,7 @@ ByCounty.getInitialProps = async (ctx) => {
         
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
-            console.log({page:ctx.query.page})
+          
             url = `${url}&page=${ctx.query.page}`
         }
         

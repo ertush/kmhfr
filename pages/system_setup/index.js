@@ -33,7 +33,7 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Alert from '@mui/material/Alert';
 import { PermissionContext } from '../../providers/permissions';
-import { hasSystemSetupPermissions } from '../../utils/checkPermissions';
+import { hasPermission } from '../../utils/checkPermissions';
 import moment from 'moment'
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
@@ -115,7 +115,7 @@ const system_setup = (props) => {
       };
     
     useEffect(() => {
-        if(!hasSystemSetupPermissions(/^common.add_county$/, userPermissions)){
+        if(!hasPermission(/^common.add_county$/, userPermissions)){
             router.push('/unauthorized')
         }
 
@@ -194,7 +194,7 @@ const system_setup = (props) => {
                         { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                     ])
                     
-                    // console.log({data: _data.results});
+                   
                     setRows(Array.from(_data.results, ({id, name, category_name, numbers}) => ({id, name, category_name, numbers})))
                   }
                   else{
@@ -235,7 +235,7 @@ const system_setup = (props) => {
                                 { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                             ])
                             
-                            console.log({data:_data.results})
+                          
 
                             setRows(Array.from(_data.results, ({id, name, description}) => ({id, name, description})))
                             break;
@@ -250,7 +250,7 @@ const system_setup = (props) => {
                                         { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                                     ])
                                     
-                                    // console.log({data:_data.results})
+                                    
                                     setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
                                     break;
 
@@ -261,7 +261,7 @@ const system_setup = (props) => {
                                         { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                                     ])
 
-                                    // console.log({data:_data.results})
+                                   
                                     setRows(Array.from(_data.results, ({id, name, sub_division}) => ({id, name, sub_division})))
                                     break;  
 
@@ -276,7 +276,7 @@ const system_setup = (props) => {
                                 { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                             ])
                             
-                            console.log({data:_data.results})
+                          
 
                             setRows(Array.from(_data.results, ({id, name, is_public_visible}) => ({id, name, is_public_visible:is_public_visible ? 'Yes' : 'No'})))
 
@@ -288,7 +288,7 @@ const system_setup = (props) => {
                                 { id: 'action',label: 'Action',minWidth: 100, align:'right'}
                             ])
                             
-                            console.log({data:_data.results})
+                         
 
                             setRows(Array.from(_data.results, ({id, name, is_public_visible}) => ({id, name, is_public_visible:is_public_visible ? 'Yes' : 'No'})))
                             break;
@@ -302,7 +302,7 @@ const system_setup = (props) => {
                                 { id: 'created', label: 'Date', minWidth: 100 },
                                 
                             ])
-                            // console.log({data:_data.results})
+                           
 
                             setRows(Array.from(_data.results, ({id, facility_name, service_name, comment, rating, date}) => ({id, facility_name, service_name, comment, rating, date})))
                             break;
@@ -724,7 +724,7 @@ console.log(editData, editMode, editID);
   return (
   <>
             <Head>
-                <title>KHMFL - System Setup</title>
+                <title>KMHFL - System Setup</title>
                 <metadata zoomAndPan='100'></metadata>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
