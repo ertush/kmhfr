@@ -1,4 +1,6 @@
 
+import router from "next/router";
+
 // handleBasicDetailsSubmit
 const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
 
@@ -281,7 +283,7 @@ const handleFacilityContactsSubmit = (event, stateSetters) => {
                     oContacts[i][0].replace('officer_', '')
                 ] = oContacts[i][1];  
             } else{
-                officerIncharge[oContacts[i][0].replace('officer_', '')] = oContacts[i][1]; 
+                officerIncharge[oContacts[i][0].replace('officer_details_', '')] = oContacts[i][1]; 
             }
 
         if(oContacts[i][0] == 'officer_details_contact') { 
@@ -535,6 +537,7 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
         alert.success("Facility Created successfully")
     } else {
         alert.error("Unable to create facility")
+        
     }
 
 
@@ -548,6 +551,9 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
             method: 'POST',
             body: JSON.stringify({ specialities: _payload })
         })
+        // .then(res => {
+        //     if(res.status == 200)  window.href.location = `/facilities/${facilityId}`
+        // })
 
     }
     catch (e) {
@@ -560,7 +566,8 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
     // window.sessionStorage.setItem('formId', 0)
 
     // setFormId(window.sessionStorage.getItem('formId'))
-    router.push(`/facilities/${facilityId}`)
+   
+    if(facilityId) router.push(`/facilities/${facilityId}`)
 
 }
 
