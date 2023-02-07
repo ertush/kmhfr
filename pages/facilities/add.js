@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 // Component imports
 import MainLayout from '../../components/MainLayout';
-import FacilityContact from '../../components/FacilityContact';
+// import FacilityContact from '../../components/FacilityContact';
 import EditListWithCount from '../../components/EditListWithCount';
 import EditListItem from '../../components/EditListItem';
 
@@ -33,7 +33,10 @@ import {
 } from '@heroicons/react/solid';
 // import { XCircleIcon } from '@heroicons/react/outline';
 import FacilityDeptRegulationFactory from '../../components/generateFacilityDeptRegulation'
-import FacilityOfficerFactory from '../../components/generateOfficerContacts';
+import {
+	FacilityContact,
+	OfficerContactDetails
+} from '../../components/FacilityContacts';
 // Package imports
 
 import Select from 'react-select';
@@ -53,6 +56,7 @@ import {
 
 
 export const FacilityDeptContext = createContext(null)
+export const FacilityContactsContext = createContext(null)
 
 const turf = require('@turf/turf');
 const WardMap = dynamic(
@@ -248,8 +252,7 @@ function AddFacility(props) {
     ];
 
     const [formId, setFormId] = useState(0) 
-    const facilityContactRef = useRef(null)
-    const facilityContact2Ref = useRef(null)
+
     const facilityRegulatoryBodyRef = useRef(null)
 	const checklistFileRef = useRef(null)
 
@@ -284,11 +287,7 @@ function AddFacility(props) {
     const [center, setCenter] = useState(null)
     const [wardName, setWardName] = useState('')
 	const [facilityTypeDetail, setFacilityTypeDetail] = useState('')
-	const [refreshForm4, setRefreshForm4] = useState(false)
-	const [refreshForm5, setRefreshForm5] = useState(false)
-	const [refreshForm6, setRefreshForm6] = useState(false)
-	const [_contactDetail, setContactDetail] = useState('')
-	const [_otherContactDetails, setOtherContactDetail] = useState('')
+	
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
@@ -326,12 +325,27 @@ function AddFacility(props) {
 
 	const [facilityContacts, setFacilityContacts] = useState([
 		(() => (
-			<FacilityOfficerFactory
+			<FacilityContact
 				contactTypeOptions={contactTypeOptions}
+				fieldNames={['contact_type', 'contact']}
+				setFacilityContacts={() => null}
 				index={0}
 			/>
 		))()
 	])
+
+	const [officerContactDetails, setOfficerContactDetails] = useState([
+		(() => (
+			<OfficerContactDetails
+				contactTypeOptions={contactTypeOptions}
+				fieldNames={['officer_details_contact_type', 'officer_details_contact']}
+				setFacilityContacts={() => null}
+				index={0}
+			/>
+		))()
+	])
+
+
 	const filters = []
 	
 	
@@ -370,7 +384,7 @@ function AddFacility(props) {
 			
             
         }
-    }, [facilityOfficialName, facilityOption, formId, refreshForm4, refreshForm5, refreshForm6, latitude, geoJSON, longitude])
+    }, [facilityOfficialName, facilityOption, formId, latitude, geoJSON, longitude])
       
 
 	if(facilityTypeDetail !== '' && kephLvlRef.current){
@@ -1663,138 +1677,7 @@ function AddFacility(props) {
 													setFormId(window.sessionStorage.getItem('formId'));
 												};
 
-												// const handleAddContact = (event) => {
-												// 	event.preventDefault();
-
-												// 	const divContainer = facilityContactRef.current;
-
-												// 	const dropDown = document.createElement('select');
-
-												// 	dropDown.setAttribute(
-												// 		'style',
-												// 		`
-												// 	width:100%; 
-												// 	border: 1px solid hsl(0, 0%, 80%); 
-												// 	border-radius: 4px; 
-												// 	padding: 2px; 
-												// 	background-color: hsl(0, 0%, 100%); 
-												// 	display: grid; 
-												// 	min-height: 38px;
-												// 	`
-												// 	);
-
-												// 	dropDown.setAttribute(
-												// 		'placeholder',
-												// 		'Select Contact Type'
-												// 	);
-
-												// 	dropDown.setAttribute('name', 'dropdown_contact_types');
-
-												// 	const option1 = document.createElement('option');
-												// 	option1.innerText = 'Select Contact Type';
-												// 	option1.value = 'Select Contact Type';
-
-												// 	const option2 = document.createElement('option');
-												// 	option2.innerText = 'POSTAL';
-												// 	option2.value = 'POSTAL';
-
-												// 	const option3 = document.createElement('option');
-												// 	option3.innerText = 'FAX';
-												// 	option3.value = 'FAX';
-
-												// 	const option4 = document.createElement('option');
-												// 	option4.innerText = 'LANDLINE';
-												// 	option4.value = 'LANDLINE';
-
-												// 	const option5 = document.createElement('option');
-												// 	option5.innerText = 'MOBILE';
-												// 	option5.value = 'MOBILE';
-
-												// 	const option6 = document.createElement('option');
-												// 	option6.innerText = 'EMAIL';
-												// 	option6.value = 'EMAIL';
-
-												// 	dropDown.appendChild(option1.getRootNode());
-												// 	dropDown.appendChild(option2.getRootNode());
-												// 	dropDown.appendChild(option3.getRootNode());
-												// 	dropDown.appendChild(option4.getRootNode());
-												// 	dropDown.appendChild(option5.getRootNode());
-												// 	dropDown.appendChild(option6.getRootNode());
-
-												// 	divContainer.appendChild(dropDown.getRootNode());
-												// 	const input =
-												// 		divContainer.childNodes[4].cloneNode(true);
-												// 	input.setAttribute('name', 'contact_details_others');
-
-												// 	divContainer.appendChild(input);
-												// };
-
-												// const handleAddContact2 = (event) => {
-												// 	event.preventDefault();
-
-												// 	const divContainer = facilityContact2Ref.current;
-
-												// 	const dropDown = document.createElement('select');
-
-												// 	dropDown.setAttribute(
-												// 		'style',
-												// 		`
-												// 	width:100%; 
-												// 	border: 1px solid hsl(0, 0%, 80%); 
-												// 	border-radius: 4px; 
-												// 	padding: 2px; 
-												// 	background-color: hsl(0, 0%, 100%); 
-												// 	display: grid; 
-												// 	min-height: 38px;
-												// 	`
-												// 	);
-
-												// 	dropDown.setAttribute(
-												// 		'placeholder',
-												// 		'Select Contact Type'
-												// 	);
-
-												// 	dropDown.setAttribute('name', 'dropdown_contact_types');
-
-												// 	const option1 = document.createElement('option');
-												// 	option1.innerText = 'Select Contact Type';
-												// 	option1.value = 'Select Contact Type';
-
-												// 	const option2 = document.createElement('option');
-												// 	option2.innerText = 'POSTAL';
-												// 	option2.value = 'POSTAL';
-
-												// 	const option3 = document.createElement('option');
-												// 	option3.innerText = 'FAX';
-												// 	option3.value = 'FAX';
-
-												// 	const option4 = document.createElement('option');
-												// 	option4.innerText = 'LANDLINE';
-												// 	option4.value = 'LANDLINE';
-
-												// 	const option5 = document.createElement('option');
-												// 	option5.innerText = 'MOBILE';
-												// 	option5.value = 'MOBILE';
-
-												// 	const option6 = document.createElement('option');
-												// 	option6.innerText = 'EMAIL';
-												// 	option6.value = 'EMAIL';
-
-												// 	dropDown.appendChild(option1.getRootNode());
-												// 	dropDown.appendChild(option2.getRootNode());
-												// 	dropDown.appendChild(option3.getRootNode());
-												// 	dropDown.appendChild(option4.getRootNode());
-												// 	dropDown.appendChild(option5.getRootNode());
-												// 	dropDown.appendChild(option6.getRootNode());
-
-												// 	divContainer.appendChild(dropDown.getRootNode());
-												// 	const input =
-												// 		divContainer.childNodes[4].cloneNode(true);
-												// 	input.setAttribute('name', 'contact_details_others');
-
-												// 	divContainer.appendChild(input);
-												// };
-
+												
 												return (
 													<>
 														<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
@@ -1809,7 +1692,7 @@ function AddFacility(props) {
 
 															<div
 																className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
-																ref={facilityContactRef}>
+																>
 																{/* Contact Headers */}
 																<h3 className='text-medium font-semibold text-blue-900'>
 																	Contact Type
@@ -1821,17 +1704,9 @@ function AddFacility(props) {
 
 																{/* Contact Type / Contact Details */}
 
-																{/* <FacilityContact 
-																contactDetail={_contactDetail}
-																inputContactRef={null} 
-																setContactDetail={setContactDetail} 
-																contactTypeOptions={contactTypeOptions} 
-																contact={''} 
-																names={['contact_type', 'contact']} 
-																id={'facility'} /> */}
-
+															
 																{/* add other fields */}
-															    <div className='flex-col items-start justify-start gap-y-4'>
+															    <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
 																	{
 																		facilityContacts.map((facilityContact, i) => (
 														
@@ -1840,27 +1715,29 @@ function AddFacility(props) {
 																		))
 																	}
 																</div>	
-																
-
-																
 
 															</div>
 
 															<div className='w-full flex justify-end items-center'>
 																<button
-																	onClick={(e) => {e.preventDefault();  setFacilityContacts([
+																	onClick={(e) => {
+																		e.preventDefault();  
+																		
+																		setFacilityContacts([
 																		...facilityContacts, 
 																		(() => (
-																			// <FacilityDeptContext.Provider value={facilityDepts} key={(facilityDepts.length + 1) - 1}>
-																				<FacilityOfficerFactory
+																			<FacilityContactsContext.Provider value={facilityContacts} key={(facilityContacts.length + 1) - 1}>
+																				<FacilityContact
 																				contactTypeOptions={contactTypeOptions}
+																				setFacilityContacts={setFacilityContacts}
+																				fieldNames={['contact_type', 'contact']}
 																				index={(facilityContacts.length + 1) - 1}
 																				
 																				/>
-																			// </FacilityDeptContext.Provider>
+																			</FacilityContactsContext.Provider>
 																		))()
 	
-																		/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
+																		
 																		])}}
 																	className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																	<PlusIcon className='w-4 h-4 text-white' />
@@ -1890,7 +1767,7 @@ function AddFacility(props) {
 																	<input
 																		required
 																		type='text'
-																		name='name'
+																		name='officer_name'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -1904,7 +1781,7 @@ function AddFacility(props) {
 																	</label>
 																	<input
 																		type='text'
-																		name='reg_no'
+																		name='officer_reg_no'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
@@ -1923,7 +1800,7 @@ function AddFacility(props) {
 																	<Select options={jobTitleOptions || []} 
 																		required
 																		placeholder="Select Job Title"																	
-																		name="title" 
+																		name="officer_title" 
             															className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 																</div>
 
@@ -1931,7 +1808,7 @@ function AddFacility(props) {
 
 																<div
 																	className='grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3'
-																	ref={facilityContact2Ref}>
+																	>
 																	{/* Contact Headers */}
 																	<h3 className='text-medium font-semibold text-blue-900'>
 																		Contact Type
@@ -1943,19 +1820,41 @@ function AddFacility(props) {
 
 																	{/* Contact Type / Contact Details */}
 
-																	<FacilityContact 
-																	contactTypeOptions={contactTypeOptions} 
-																	contactDetail={_otherContactDetails} 
-																	setContactDetail={setOtherContactDetail} 
-																	inputContactRef={null}
-																	names={['facility_details_contact_type', 'faciliity_details_contact']} 
-																	id={'facility_officer'} />
+														
+
+																	<div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
+																		{
+																			officerContactDetails.map((officerDetailContact, i) => (
+															
+																				officerDetailContact
+																			
+																			))
+																		}
+																	</div>	
 
 																</div>
 
 																<div className='w-full flex justify-end items-center mt-2'>
 																	<button
-																		onClick={() => null}
+																		onClick={
+																			(e) => {
+																				e.preventDefault();  
+																				setOfficerContactDetails([
+																				...officerContactDetails, 
+																				(() => (
+																					<FacilityContactsContext.Provider value={officerContactDetails} key={(officerContactDetails.length + 1) - 1}>
+																						<OfficerContactDetails
+																						contactTypeOptions={contactTypeOptions}
+																						setFacilityContacts={setOfficerContactDetails}
+																						fieldNames={['officer_details_contact_type', 'officer_details_contact']}
+																						index={(officerContactDetails.length + 1) - 1}
+																						
+																						/>
+																					</FacilityContactsContext.Provider>
+																				))()
+			
+																				/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
+																				])}}
 																		className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																		<PlusIcon className='w-4 h-4 text-white' />
 																		<p className='text-medium font-semibold text-white'>
@@ -2155,7 +2054,7 @@ function AddFacility(props) {
 												return (
 													<>  
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
-																<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
+																<div className='flex flex-col w-full items-start justify-staFacilityDeptRegulationFactoryrt gap-3 mt-6'>
                                                             
 																	{/* Edit list Container */}
 																	<div className='flex items-center w-full h-auto min-h-[300px]'>                                  

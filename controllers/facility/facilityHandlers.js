@@ -229,6 +229,7 @@ const handleGeolocationSubmit = (event, stateSetters) => {
 const handleFacilityContactsSubmit = (event, stateSetters) => {
 
     event.preventDefault();
+    
     const [setFormId, facilityId, facilityContactsFormRef] = stateSetters
     
     const contactFormData = {};
@@ -239,23 +240,66 @@ const handleFacilityContactsSubmit = (event, stateSetters) => {
 
     for (let i in contactEntries) contactFormData[contactEntries[i][0]] = contactEntries[i][1];
 
-    const payload  = {
-            contacts: [
-                {
-                    contact: contactFormData['contact'],
-                    contact_type: contactFormData['contact_type']
-                }
-            ],
-            officer_in_charge: {
-                name: contactFormData['name'],
-                reg_no: contactFormData['reg_no'],
-                title: contactFormData['title']
+    const facilityContacts = contactEntries.filter(field =>  !(field[0].match(/^officer_.+$/) !== null))
+
+    const facilityOfficerContacts = contactEntries.filter(field =>  field[0].match(/^officer_.+$/) !== null)
+
+    const payload = ((fContacts, oContacts) => {
+        
+
+        // Facility Regulation form data
+        const _payload = {}
     
+        const fContactArrObjs = fContacts.filter(ar => ar[0] === 'contact').map(() => Object())
+
+        const oContactArrObjs = oContacts.filter(ar => ar[0] === 'officer_details_contact').map(() => Object())
+        
+        let p = 0; 
+
+        for( let i in fContacts){ 
+            fContactArrObjs[p][
+                fContacts[i][0]
+            ] = fContacts[i][1]; 
+
+            if(fContacts[i][0] == 'contact') { 
+                p+=1 
+            } 
+        }
+
+        
+        _payload['contacts'] = fContactArrObjs
+        
+
+        const officerIncharge = {}
+
+        let x = 0;
+
+        for(let i in oContacts){
+            
+            if(oContacts[i][0].match(/.*_details_.*/) !== null){
+                oContactArrObjs[x][
+                    oContacts[i][0].replace('officer_', '')
+                ] = oContacts[i][1];  
+            } else{
+                officerIncharge[oContacts[i][0].replace('officer_', '')] = oContacts[i][1]; 
             }
+
+        if(oContacts[i][0] == 'officer_details_contact') { 
+            x+=1 
+        } 
     }
 
 
- 
+
+    officerIncharge['contacts'] = oContactArrObjs;
+
+    _payload['officer_in_charge'] = officerIncharge
+    
+
+        return _payload
+
+
+    })(facilityContacts, facilityOfficerContacts)
 
     try{
 
@@ -275,8 +319,6 @@ const handleFacilityContactsSubmit = (event, stateSetters) => {
     }
 
     window.sessionStorage.setItem('formId', 3);
-
-
 
     setFormId(window.sessionStorage.getItem('formId'));
 };
