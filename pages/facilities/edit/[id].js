@@ -28,7 +28,7 @@ import {
 
 
 
-import FacilityContact from '../../../components/FacilityContact';
+import EditFacilityContact from '../../../components/EditFacilityContact';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
@@ -1985,7 +1985,7 @@ const EditFacility = (props) => {
                                                 <hr className='col-span-2' />
 
                                                 {/* Contact Type / Contact Details */}
-                                                <FacilityContact 
+                                                <EditFacilityContact 
                                                 contactRef={contactRef} 
                                                 inputContactRef={facilityContactDetailRef}
                                                 setContactDetail={null} 
@@ -2083,7 +2083,7 @@ const EditFacility = (props) => {
 
                                                     {/* Contact Type / Contact Details */}
 
-                                                    <FacilityContact 
+                                                    <EditFacilityContact 
                                                     contactRef={otherContactRef} 
                                                     setContactDetail={null} 
                                                     inputContactRef={officerInchargeContactDetailRef}
