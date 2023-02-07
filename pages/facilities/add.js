@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 // Component imports
 import MainLayout from '../../components/MainLayout';
-// import FacilityContact from '../../components/FacilityContact';
+
 import EditListWithCount from '../../components/EditListWithCount';
 import EditListItem from '../../components/EditListItem';
 
@@ -31,7 +31,6 @@ import {
 	ChevronDoubleLeftIcon,
 	PlusIcon,
 } from '@heroicons/react/solid';
-// import { XCircleIcon } from '@heroicons/react/outline';
 import FacilityDeptRegulationFactory from '../../components/generateFacilityDeptRegulation'
 import {
 	FacilityContact,
@@ -40,7 +39,7 @@ import {
 // Package imports
 
 import Select from 'react-select';
-// const Select = dynamic(import('react-select'), { ssr: false })  // This import prevents refs from loading but fixes the server, client side mismatch warning
+
 
 
 import { 
@@ -235,11 +234,9 @@ function AddFacility(props) {
 
 
 	//  Refs
-
 	const basicDetailsRef = useRef(null)
 	const kephLvlRef = useRef(null)
-	// const regBodyRef = useRef(null)
-
+	
 
     const steps = [
         'Basic Details',
@@ -2137,8 +2134,7 @@ function AddFacility(props) {
 													setFormId(window.sessionStorage.getItem('formId'))
 												}
 
-											
-												
+																							
 												return (
 													<>  
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human resources</h4>
