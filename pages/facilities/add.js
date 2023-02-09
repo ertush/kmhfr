@@ -517,7 +517,21 @@ function AddFacility(props) {
 									<Stepper activeStep={parseInt(formId)} alternativeLabel>
 										{steps.map((label) => (
 											<Step key={label}>
-												<StepLabel>{label}</StepLabel>
+												<StepLabel>
+													
+													{
+														label === "Basic Details" ?
+														<span className='cursor-pointer hover:text-indigo-600' onClick={
+															() => {
+																setFormId(0)
+																window.sessionStorage.setItem('formId', 0)
+															}
+														} >{label}</span>
+														:
+														label
+													}
+													
+													</StepLabel>
 											</Step>
 										))}
 									</Stepper>
