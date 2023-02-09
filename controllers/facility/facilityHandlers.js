@@ -280,7 +280,7 @@ const handleFacilityContactsSubmit = (event, stateSetters) => {
             
             if(oContacts[i][0].match(/.*_details_.*/) !== null){
                 oContactArrObjs[x][
-                    oContacts[i][0].replace('officer_details', '')
+                    oContacts[i][0].replace('officer_details_', '')
                 ] = oContacts[i][1];  
             } else{
                 officerIncharge[oContacts[i][0].replace('officer_', '')] = oContacts[i][1]; 
@@ -551,9 +551,9 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
             method: 'POST',
             body: JSON.stringify({ specialities: _payload })
         })
-        // .then(res => {
-        //     if(res.status == 200)  window.href.location = `/facilities/${facilityId}`
-        // })
+        .then(res => {
+            if(res && facilityId) router.push(`/facilities/${facilityId}`)
+        })
 
     }
     catch (e) {
@@ -567,7 +567,6 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
 
     // setFormId(window.sessionStorage.getItem('formId'))
    
-    if(facilityId) router.push(`/facilities/${facilityId}`)
 
 }
 
