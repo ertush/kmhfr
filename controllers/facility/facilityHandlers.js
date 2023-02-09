@@ -280,10 +280,10 @@ const handleFacilityContactsSubmit = (event, stateSetters) => {
             
             if(oContacts[i][0].match(/.*_details_.*/) !== null){
                 oContactArrObjs[x][
-                    oContacts[i][0].replace('officer_', '')
+                    oContacts[i][0].replace('officer_details', '')
                 ] = oContacts[i][1];  
             } else{
-                officerIncharge[oContacts[i][0].replace('officer_details_', '')] = oContacts[i][1]; 
+                officerIncharge[oContacts[i][0].replace('officer_', '')] = oContacts[i][1]; 
             }
 
         if(oContacts[i][0] == 'officer_details_contact') { 
