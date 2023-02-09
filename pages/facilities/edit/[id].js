@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import * as Tabs from '@radix-ui/react-tabs';
 import { checkToken } from '../../../controllers/auth/auth'
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, createContext } from 'react';
 import Select from 'react-select'
 import MainLayout from '../../../components/MainLayout'
 import EditListItem from '../../../components/EditListItem';
@@ -11,7 +11,7 @@ import router from 'next/router'
 import { useAlert } from "react-alert";
 import Link from 'next/link';
 import FacilityDeptRegulationFactory from '../../../components/generateFacilityDeptRegulation'
-
+import { FacilityContact } from '../../../components/FacilityContacts'
 
 import { 
     handleBasicDetailsUpdates,
@@ -29,7 +29,7 @@ import {
 
 
 import EditFacilityContact from '../../../components/EditFacilityContact';
-import { PlusIcon, XCircleIcon } from '@heroicons/react/solid'
+import { PlusIcon } from '@heroicons/react/solid'
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
 
@@ -38,7 +38,7 @@ import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
 import EditListWithCount from '../../../components/EditListWithCount';
 import FacilityUpgradeModal from '../../../components/FacilityUpgradeModal'
-import {FacilityDeptContext} from '../../../pages/facilities/add'
+// import {FacilityDeptContext} from '../../../pages/facilities/add'
 
 
 const _ = require('underscore') 
@@ -60,12 +60,15 @@ const WardMap = dynamic(
 	} 
 )
 
+export const EditFacilityContactsContext = createContext(null)
+
 const Map = React.memo(WardMap)
 
 const EditFacility = (props) => {
 
     // Alert 
     const alert = useAlert();
+   
 
 
     const facilityOptions = (() => {
@@ -86,7 +89,7 @@ const EditFacility = (props) => {
 		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division == f_types[type]))
 
 
-        console.log({all_ftypes})
+        // console.log({all_ftypes})
 
 		return [{
 			label: all_ftypes[0].sub_division,
@@ -865,6 +868,8 @@ const EditFacility = (props) => {
        
         
     }, [isSavedChanges])
+
+    useEffect(() => {}, [facility_contacts])
 
 
     const handleAddContact = (event) => {
@@ -1985,7 +1990,7 @@ const EditFacility = (props) => {
                                                 <hr className='col-span-2' />
 
                                                 {/* Contact Type / Contact Details */}
-                                                <EditFacilityContact 
+                                                {/* <EditFacilityContact 
                                                 contactRef={contactRef} 
                                                 inputContactRef={facilityContactDetailRef}
                                                 setContactDetail={null} 
@@ -1993,7 +1998,28 @@ const EditFacility = (props) => {
                                                 names={['contact_type', 'contact']} 
                                                 id={'facility'} 
                                                 contact={facility_contacts ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  ''}
-                                                />
+                                                /> */}
+                                                 <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
+                                                    {
+                                                        facility_contacts && facility_contacts.length > 0 &&
+                                                        facility_contacts.map(({contact, contact_type_name, id}, i) => (
+                                                            <EditFacilityContactsContext.Provider value={facility_contacts} key={i}>
+                                                                <FacilityContact 
+                            
+                                                                    contactTypeOptions={contactTypeOptions}
+                                                                    setFacilityContacts={() => null}
+                                                                    contacts={[contact, contact_type_name, id]}
+                                                                    index={i}
+                                                                    fieldNames={['contact_type', 'contact']}
+                                                                    
+                                                                />
+                                                            </EditFacilityContactsContext.Provider>
+                                                        ))
+                                                        
+                                                    }
+                                                </div>
+
+
 
                                             </div>
 

@@ -3,25 +3,35 @@ import { useRef, useContext, useEffect } from "react" // useContext
 import { XCircleIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
 import { FacilityContactsContext } from "../pages/facilities/add"
+import { EditFacilityContactsContext } from "../pages/facilities/edit/[id]"
+import { useAlert } from "react-alert"
 
 
-const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldNames}) => {
+const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldNames, contacts}) => {
 
 
     const contactTypes = useContext(FacilityContactsContext)
 
+    const editContacts = useContext(EditFacilityContactsContext)
+
+    const alert = useAlert()
+
     const contactTypeRef = useRef(null)
     const contactDetailsRef = useRef(null)
     
+    const [contact, contact_type_name, id] = contacts
 
     useEffect(() => {
 
-        if(contactTypeRef.current ){
-            contactTypeRef.current.state.value = null
+        if(contactTypeRef.current && contact_type_name && id){
+            
+            contactTypeRef.current?.state?.value = contactTypeOptions.filter(({label}) => label === contact_type_name).map(obj => {obj['id'] = id; return obj})
+
+            console.log({val: contactTypeRef.current?.state?.value})
         }
 
         if(contactDetailsRef.current ){
-            contactDetailsRef.current.value = null
+            contactDetailsRef.current.value = contact
         }
 
      
@@ -39,7 +49,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                 placeholder="Select Name"
                 onChange={
                     e => {
-                        if(contactTypeRef.current){
+                        if(contactTypeRef.current && contactTypeOptions){
                         
                             contactTypeRef.current.value = contactTypeOptions.find(({label}) => label === e.label).contact //id
                         }
@@ -52,7 +62,6 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                     {/* Regulatory Body */}
                     <input ref={contactDetailsRef} id={`facility-contact-detail-${index}`} 
                     type="text" 
-              
                     name={fieldNames[1]} 
                     className="w-full flex-grow  flex-1 bg-gray-50 rounded p-2 border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
@@ -61,14 +70,29 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                     {/* Delete Btn */}
                     <button 
                     id={`delete-btn-${index}`}
-                    onClick={ev => {
+                    onClick={async ev => {
                         ev.preventDefault();
-                        const depts = contactTypes;
-                        // console.log("Delete", {index, facilityDepts})
-                        contactTypes.splice(index, 1);
-                        delete contactTypes[index]
-                        setFacilityContacts(contactTypes);
-                        // setIsRegBodyChange(!isRegBodyChange);
+                      
+                        if(contacts){
+                            try{
+                                if(contactTypeRef?.current) {
+                                const resp = await fetch(`/api/common/submit_form_data/?path=delete_contact&id=${contactTypeRef?.current?.state?.value[0].id ?? null}`)
+                                if(resp.status == 204) alert.success('Deleted Facility Contact Successfully')
+
+                                editContacts.splice(index, 1);
+                                delete editContacts[index]
+                                
+                                }
+                            }catch(e){
+                                console.error(e.message)
+                            }
+                        }else{
+                            contactTypes.splice(index, 1);
+                            delete contactTypes[index]
+                            setFacilityContacts(contactTypes);
+                        }
+                     
+                      
 
 
                     }}><XCircleIcon className='w-7 h-7 text-red-400'/></button>

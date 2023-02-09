@@ -158,6 +158,10 @@ export default async function submitFormData(req, res) {
                 contentType = 'application/json;charset=utf-8';
                 method = 'PATCH';
                 break
+            case `delete_contact`:
+                url = `${API_URL}/facilities/contacts/${req.query.id}`
+                method = 'DELETE';
+                break;
             default:
 
 
