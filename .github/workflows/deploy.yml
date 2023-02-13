@@ -34,7 +34,8 @@ jobs:
         script: |
           set -e
           cd /var/www/kmhflv3
-          if ! [[ -d './.git' ]]; then git init; fi
+          git config --global init.defaultBranch master
+          git init
           git remote add origin $GIT_REPO
           git pull origin master
           yarn 
