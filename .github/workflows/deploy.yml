@@ -19,8 +19,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Install Build dependencies
+      run: yarn add --global next
+
     - name: Build kmhflv3 application
-      run: npm run build
+      run: yarn run build
 
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master
@@ -33,6 +36,7 @@ jobs:
           set -e
           cd /var/www/kmhflv3
           git pull
-          npm install
-          npm run build
+          yarn
+          yarn run build
           pm2 restart all
+
