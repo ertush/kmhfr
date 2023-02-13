@@ -6,7 +6,6 @@ on:
       - master
 
 env:
-  GIT_REPO:  ${{ secrets.GIT_REPO }}
   NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL
   TOKEN_URL: $TOKEN_URL
   CLIENT_ID: ${{ secrets.CLIENT_ID }}
@@ -23,6 +22,9 @@ jobs:
 
     - name: Install Build dependencies
       run: yarn global add next
+      
+    - name: Display Repository Url
+      run: echo ${{github.server_url}}/${{ github.username }}/${{ github.repository }}.git
 
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master
@@ -36,7 +38,7 @@ jobs:
           set -e
           cd /var/www/kmhflv3
           git init
-          git remote add -m origin $GIT_REPO
+          git remote add -m origin ${{github.server_url}}/${{ github.username }}/${{ github.repository }}.git
           git pull origin master
           yarn 
           yarn run build
