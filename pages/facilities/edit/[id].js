@@ -1991,16 +1991,7 @@ const EditFacility = (props) => {
                                                 </h3>
                                                 <hr className='col-span-2' />
 
-                                                {/* Contact Type / Contact Details */}
-                                                {/* <EditFacilityContact 
-                                                contactRef={contactRef} 
-                                                inputContactRef={facilityContactDetailRef}
-                                                setContactDetail={null} 
-                                                contactTypeOptions={contactTypeOptions} 
-                                                names={['contact_type', 'contact']} 
-                                                id={'facility'} 
-                                                contact={facility_contacts ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  ''}
-                                                /> */}
+                                             
                                                  <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
                                                     {
                                                         facilityContacts && facilityContacts.length > 0 &&
@@ -2052,6 +2043,7 @@ const EditFacility = (props) => {
                                                     <p className='text-medium font-semibold text-white'>
                                                         Add
                                                     </p>
+
                                                 </button>
                                             </div>
 
