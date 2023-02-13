@@ -3,7 +3,7 @@ name: Deploy to kmhfl server
 on:
   push:
     branches:
-      - main
+      - dev-hotfix-personal
 
 env:
   SERVER_HOST: ${{ secrets.SERVER_HOST }}
