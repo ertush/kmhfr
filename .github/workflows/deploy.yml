@@ -34,9 +34,11 @@ jobs:
         script: |
           set -e
           cd /var/www/kmhflv3
-          git config --global init.defaultBranch master
+          echo ${{ env.GIT_REPO }}
+          echo $GIT_REPO
+          echo ${{ GIT_REPO }}
           git init
-          git remote add -m origin $GIT_REPO
+          git remote add -m origin ${{ env.GIT_REPO }}
           git pull origin master
           yarn 
           yarn run build
