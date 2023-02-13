@@ -36,6 +36,7 @@ jobs:
           set -e
           cd /var/www/kmhflv3
           git pull
-          yarn install
+          yarn
           yarn run build
           pm2 restart all
+
