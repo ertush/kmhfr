@@ -337,6 +337,7 @@ function AddFacility(props) {
 			<OfficerContactDetails
 				contactTypeOptions={contactTypeOptions}
 				fieldNames={['officer_details_contact_type', 'officer_details_contact']}
+				contacts={[]}
 				setFacilityContacts={() => null}
 				index={0}
 			/>

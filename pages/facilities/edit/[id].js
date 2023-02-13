@@ -11,7 +11,7 @@ import router from 'next/router'
 import { useAlert } from "react-alert";
 import Link from 'next/link';
 import FacilityDeptRegulationFactory from '../../../components/generateFacilityDeptRegulation'
-import { FacilityContact } from '../../../components/FacilityContacts'
+import { FacilityContact, OfficerContactDetails } from '../../../components/FacilityContacts'
 
 import { 
     handleBasicDetailsUpdates,
@@ -27,8 +27,8 @@ import {
 } from '../../../controllers/facility/facilityHandlers';
 
 
+// import EditFacilityContact from '../../../components/EditFacilityContact'; 
 
-import EditFacilityContact from '../../../components/EditFacilityContact';
 import { PlusIcon } from '@heroicons/react/solid'
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
@@ -61,6 +61,7 @@ const WardMap = dynamic(
 )
 
 export const EditFacilityContactsContext = createContext(null)
+export const EditOfficerContactsContext = createContext(null)
 
 const Map = React.memo(WardMap)
 
@@ -69,8 +70,6 @@ const EditFacility = (props) => {
     // Alert 
     const alert = useAlert();
    
-
-
     const facilityOptions = (() => {
 		const f_types = [
 			'STAND ALONE',
@@ -87,7 +86,6 @@ const EditFacility = (props) => {
        
 
 		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division == f_types[type]))
-
 
         // console.log({all_ftypes})
 
@@ -128,6 +126,7 @@ const EditFacility = (props) => {
     const [title, setTitle] = useState('') 
     const [isSaveAndFinishInfra, setIsSaveAndFinishInfra] = useState(false);
     const [isSaveAndFinishService, setIsSaveAndFinishService] = useState(false)
+   
     const filters = []
 
 
@@ -145,6 +144,7 @@ const EditFacility = (props) => {
     const facilityDeptOptions = props['12']?.facility_depts ?? []
     const regBodyOptions = props['13']?.regulating_bodies ?? []
     let regulationStateOptions = props['14']?.regulation_status ?? []
+
     const serviceOptions = ((_services) => {
 		
     const _serviceOptions = []
@@ -317,7 +317,6 @@ const EditFacility = (props) => {
  
     } = props['18']?.data ?? {}
 
-    console.log({regulatory_body})
 
     const basicDetailsData =   {
         official_name,
@@ -362,6 +361,9 @@ const EditFacility = (props) => {
         town_name,
         ward
     }
+
+    const [facilityContacts, setFacilityContacts] = useState(facility_contacts)
+    const [officerContacts, setOfficerContact] = useState(officer_in_charge)
 
     const collection_date = props['20']?.collection_date ?  (props['20']?.collection_date.replace(/T.*$/, '') ?? '') : ''
 
@@ -589,121 +591,121 @@ const EditFacility = (props) => {
   
   
     
-    const handleAddRegulatoryBody = (event) => {
-        event.preventDefault();
+    // const handleAddRegulatoryBody = (event) => {
+    //     event.preventDefault();
 
-        const divContainer = facilityRegulatoryBodyRef.current;
+    //     const divContainer = facilityRegulatoryBodyRef.current;
 
-        const dropDownRgBody = document.createElement('select');
+    //     const dropDownRgBody = document.createElement('select');
 
-        dropDownRgBody.setAttribute(
-            'style',
-            `
-        width:100%; 
-        border: 1px solid hsl(0, 0%, 80%); 
-        border-radius: 4px; 
-        padding: 2px; 
-        background-color: hsl(0, 0%, 100%); 
-        display: grid; 
-        min-height: 38px;
-        `
-        );
+    //     dropDownRgBody.setAttribute(
+    //         'style',
+    //         `
+    //     width:100%; 
+    //     border: 1px solid hsl(0, 0%, 80%); 
+    //     border-radius: 4px; 
+    //     padding: 2px; 
+    //     background-color: hsl(0, 0%, 100%); 
+    //     display: grid; 
+    //     min-height: 38px;
+    //     `
+    //     );
 
-        dropDownRgBody.setAttribute(
-            'placeholder',
-            'Select Service'
-        );
+    //     dropDownRgBody.setAttribute(
+    //         'placeholder',
+    //         'Select Service'
+    //     );
 
-        dropDownRgBody.setAttribute(
-            'name',
-            'dropdown_rgbody_name'
-        );
+    //     dropDownRgBody.setAttribute(
+    //         'name',
+    //         'dropdown_rgbody_name'
+    //     );
 
-        const option0 = document.createElement('option');
-        option0.innerText = 'Select Fcaility Department';
-        option0.value = 'Select Fcaility Department';
+    //     const option0 = document.createElement('option');
+    //     option0.innerText = 'Select Fcaility Department';
+    //     option0.value = 'Select Fcaility Department';
 
-        const option1 = document.createElement('option');
-        option1.innerText = 'Clinical Officers';
-        option1.value = 'Clinical Officers';
+    //     const option1 = document.createElement('option');
+    //     option1.innerText = 'Clinical Officers';
+    //     option1.value = 'Clinical Officers';
 
-        const option2 = document.createElement('option');
-        option2.innerText = 'Nurses and specialist';
-        option2.value = 'Nurses and specialist';
+    //     const option2 = document.createElement('option');
+    //     option2.innerText = 'Nurses and specialist';
+    //     option2.value = 'Nurses and specialist';
 
-        const option3 = document.createElement('option');
-        option3.innerText = 'Medical Officers';
-        option3.value = 'Medical Officers';
+    //     const option3 = document.createElement('option');
+    //     option3.innerText = 'Medical Officers';
+    //     option3.value = 'Medical Officers';
 
-        const option4 = document.createElement('option');
-        option4.innerText = 'Dental';
-        option4.value = 'Dental';
+    //     const option4 = document.createElement('option');
+    //     option4.innerText = 'Dental';
+    //     option4.value = 'Dental';
 
-        const option5 = document.createElement('option');
-        option5.innerText = 'Nutrition';
-        option5.value = 'Nutrition';
+    //     const option5 = document.createElement('option');
+    //     option5.innerText = 'Nutrition';
+    //     option5.value = 'Nutrition';
 
-        const option6 = document.createElement('option');
-        option6.innerText = 'Occupational Health';
-        option6.value = 'Occupational Health';
+    //     const option6 = document.createElement('option');
+    //     option6.innerText = 'Occupational Health';
+    //     option6.value = 'Occupational Health';
 
-        const option7 = document.createElement('option');
-        option7.innerText = 'Physiotherapy';
-        option7.value = 'Physiotherapy';
+    //     const option7 = document.createElement('option');
+    //     option7.innerText = 'Physiotherapy';
+    //     option7.value = 'Physiotherapy';
 
-        const option8 = document.createElement('option');
-        option8.innerText = 'X-Ray';
-        option8.value = 'X-Ray';
+    //     const option8 = document.createElement('option');
+    //     option8.innerText = 'X-Ray';
+    //     option8.value = 'X-Ray';
 
-        const option9 = document.createElement('option');
-        option9.innerText = 'Pharmacy';
-        option9.value = 'Pharmacy';
+    //     const option9 = document.createElement('option');
+    //     option9.innerText = 'Pharmacy';
+    //     option9.value = 'Pharmacy';
 
-        const option10 = document.createElement('option');
-        option10.innerText = 'Laboratory';
-        option10.value = 'Laboratory';
+    //     const option10 = document.createElement('option');
+    //     option10.innerText = 'Laboratory';
+    //     option10.value = 'Laboratory';
 
-        const option11 = document.createElement('option');
-        option11.innerText = 'Optical';
-        option11.value = 'Optical';
+    //     const option11 = document.createElement('option');
+    //     option11.innerText = 'Optical';
+    //     option11.value = 'Optical';
 
-        const inputRgBody =
-            divContainer.childNodes[6].cloneNode(true);
-        inputRgBody.setAttribute('name', 'regulatory_body');
+    //     const inputRgBody =
+    //         divContainer.childNodes[6].cloneNode(true);
+    //     inputRgBody.setAttribute('name', 'regulatory_body');
 
-        const inputLicenseNo =
-            divContainer.childNodes[6].cloneNode(true);
-        inputLicenseNo.setAttribute('name', 'license_no');
+    //     const inputLicenseNo =
+    //         divContainer.childNodes[6].cloneNode(true);
+    //     inputLicenseNo.setAttribute('name', 'license_no');
 
-        const inputRegNo =
-            divContainer.childNodes[6].cloneNode(true);
-        inputRegNo.setAttribute('name', 'regulatory_no');
+    //     const inputRegNo =
+    //         divContainer.childNodes[6].cloneNode(true);
+    //     inputRegNo.setAttribute('name', 'regulatory_no');
 
-        const delBtn = document.createElement('button');
-        delBtn.addEventListener('click', (ev) => {
-            ev.preventDefault();
-        });
-        delBtn.innerText = '';
-        delBtn.setAttribute(
-            'style',
-            `
-        padding: 1px;
-        border-radius: 2px;
-        background-color: rosered;
-        font-weight:400;
-        width:auto;
-        height:auto;
+    //     const delBtn = document.createElement('button');
+    //     delBtn.addEventListener('click', (ev) => {
+    //         ev.preventDefault();
+    //     });
+    //     delBtn.innerText = '';
+    //     delBtn.setAttribute(
+    //         'style',
+    //         `
+    //     padding: 1px;
+    //     border-radius: 2px;
+    //     background-color: rosered;
+    //     font-weight:400;
+    //     width:auto;
+    //     height:auto;
 
-        `)
+    //     `)
 
         
-        divContainer.appendChild(dropDownRgBody.getRootNode())
-        divContainer.appendChild(inputRgBody)
-        divContainer.appendChild(inputLicenseNo)
-        divContainer.appendChild(inputRegNo)
-        divContainer.appendChild(delBtn.getRootNode())
+    //     divContainer.appendChild(dropDownRgBody.getRootNode())
+    //     divContainer.appendChild(inputRgBody)
+    //     divContainer.appendChild(inputLicenseNo)
+    //     divContainer.appendChild(inputRegNo)
+    //     divContainer.appendChild(delBtn.getRootNode())
 
-    }
+    // }
 
     
     const [facilityOption, setFacilityOption] = useState('')
@@ -742,11 +744,10 @@ const EditFacility = (props) => {
     // Regulation Refs
     const regulatoryBodyRef = useRef(null)
     const regulatoryStateRef = useRef(null)
-    const facilityContactRef = useRef(null)
     const facilityContact2Ref = useRef(null)
     const facilityRegulatoryBodyRef = useRef(null)
     const regBodyRef = useRef(null)
-    const facilityDeptNameRef = useRef(null)
+
    
     
 
@@ -757,7 +758,7 @@ const EditFacility = (props) => {
 
 
 
-    const ownerTypeName = ownerTypeOptions.find(({value}) => value === owner_type).label
+    const ownerTypeName = ownerTypeOptions.find(({value}) => value === owner_type)?.label
 
     // Filter regulationStatusOptions based on owner type
     const filteredRegulationStateOptions = (() => {
@@ -845,9 +846,7 @@ const EditFacility = (props) => {
             regulatoryStateRef.current.state.value = regulationStateOptions.filter(({label}) => label === regulatory_status_name)[0] || ''
         }
         
-        // if(facilityDeptNameRef.current ){
-        //     facilityDeptNameRef.current.state.value = facilityDeptOptions.filter(({reg_body_name}) => reg_body_name === regulatory_body_name)[0] || ''
-        // }
+    
 
         if(otherContactRef.current ){
             otherContactRef.current.state.value = _officerName.contacts && _officerName.contacts.length > 0 ? _officerName?.contacts[0].type : ''
@@ -869,140 +868,140 @@ const EditFacility = (props) => {
         
     }, [isSavedChanges])
 
-    useEffect(() => {}, [facility_contacts])
+    useEffect(() => {}, [facilityContacts])
 
 
-    const handleAddContact = (event) => {
-        event.preventDefault();
+    // const handleAddContact = (event) => {
+    //     event.preventDefault();
 
-        const divContainer = facilityContactRef.current;
+    //     const divContainer = facilityContactRef.current;
 
-        const dropDown = document.createElement('select');
+    //     const dropDown = document.createElement('select');
 
-        dropDown.setAttribute(
-            'style',
-            `
-            width:100%; 
-            border: 1px solid hsl(0, 0%, 80%); 
-            border-radius: 4px; 
-            padding: 2px; 
-            background-color: hsl(0, 0%, 100%); 
-            display: grid; 
-            min-height: 38px;
-        `
-        );
+    //     dropDown.setAttribute(
+    //         'style',
+    //         `
+    //         width:100%; 
+    //         border: 1px solid hsl(0, 0%, 80%); 
+    //         border-radius: 4px; 
+    //         padding: 2px; 
+    //         background-color: hsl(0, 0%, 100%); 
+    //         display: grid; 
+    //         min-height: 38px;
+    //     `
+    //     );
 
-        dropDown.setAttribute(
-            'placeholder',
-            'Select Contact Type'
-        );
+    //     dropDown.setAttribute(
+    //         'placeholder',
+    //         'Select Contact Type'
+    //     );
 
-        dropDown.setAttribute('name', 'dropdown_contact_types');
+    //     dropDown.setAttribute('name', 'dropdown_contact_types');
 
-        const option1 = document.createElement('option');
-        option1.innerText = 'Select Contact Type';
-        option1.value = 'Select Contact Type';
+    //     const option1 = document.createElement('option');
+    //     option1.innerText = 'Select Contact Type';
+    //     option1.value = 'Select Contact Type';
 
-        const option2 = document.createElement('option');
-        option2.innerText = 'POSTAL';
-        option2.value = 'POSTAL';
+    //     const option2 = document.createElement('option');
+    //     option2.innerText = 'POSTAL';
+    //     option2.value = 'POSTAL';
 
-        const option3 = document.createElement('option');
-        option3.innerText = 'FAX';
-        option3.value = 'FAX';
+    //     const option3 = document.createElement('option');
+    //     option3.innerText = 'FAX';
+    //     option3.value = 'FAX';
 
-        const option4 = document.createElement('option');
-        option4.innerText = 'LANDLINE';
-        option4.value = 'LANDLINE';
+    //     const option4 = document.createElement('option');
+    //     option4.innerText = 'LANDLINE';
+    //     option4.value = 'LANDLINE';
 
-        const option5 = document.createElement('option');
-        option5.innerText = 'MOBILE';
-        option5.value = 'MOBILE';
+    //     const option5 = document.createElement('option');
+    //     option5.innerText = 'MOBILE';
+    //     option5.value = 'MOBILE';
 
-        const option6 = document.createElement('option');
-        option6.innerText = 'EMAIL';
-        option6.value = 'EMAIL';
+    //     const option6 = document.createElement('option');
+    //     option6.innerText = 'EMAIL';
+    //     option6.value = 'EMAIL';
 
-        dropDown.appendChild(option1.getRootNode());
-        dropDown.appendChild(option2.getRootNode());
-        dropDown.appendChild(option3.getRootNode());
-        dropDown.appendChild(option4.getRootNode());
-        dropDown.appendChild(option5.getRootNode());
-        dropDown.appendChild(option6.getRootNode());
+    //     dropDown.appendChild(option1.getRootNode());
+    //     dropDown.appendChild(option2.getRootNode());
+    //     dropDown.appendChild(option3.getRootNode());
+    //     dropDown.appendChild(option4.getRootNode());
+    //     dropDown.appendChild(option5.getRootNode());
+    //     dropDown.appendChild(option6.getRootNode());
 
-        divContainer.appendChild(dropDown.getRootNode());
-        const input =
-            divContainer.childNodes[4].cloneNode(true);
-        input.setAttribute('name', 'contact_details_others');
+    //     divContainer.appendChild(dropDown.getRootNode());
+    //     const input =
+    //         divContainer.childNodes[4].cloneNode(true);
+    //     input.setAttribute('name', 'contact_details_others');
 
-        divContainer.appendChild(input);
-    };
+    //     divContainer.appendChild(input);
+    // };
 
-    const handleAddContact2 = (event) => {
-        event.preventDefault();
+    // const handleAddContact2 = (event) => {
+    //     event.preventDefault();
 
-        const divContainer = facilityContact2Ref.current;
+    //     const divContainer = facilityContact2Ref.current;
 
-        const dropDown = document.createElement('select');
+    //     const dropDown = document.createElement('select');
 
-        dropDown.setAttribute(
-            'style',
-            `
-        width:100%; 
-        border: 1px solid hsl(0, 0%, 80%); 
-        border-radius: 4px; 
-        padding: 2px; 
-        background-color: hsl(0, 0%, 100%); 
-        display: grid; 
-        min-height: 38px;
-        `
-        );
+    //     dropDown.setAttribute(
+    //         'style',
+    //         `
+    //     width:100%; 
+    //     border: 1px solid hsl(0, 0%, 80%); 
+    //     border-radius: 4px; 
+    //     padding: 2px; 
+    //     background-color: hsl(0, 0%, 100%); 
+    //     display: grid; 
+    //     min-height: 38px;
+    //     `
+    //     );
 
-        dropDown.setAttribute(
-            'placeholder',
-            'Select Contact Type'
-        );
+    //     dropDown.setAttribute(
+    //         'placeholder',
+    //         'Select Contact Type'
+    //     );
 
-        dropDown.setAttribute('name', 'dropdown_contact_types');
+    //     dropDown.setAttribute('name', 'dropdown_contact_types');
 
-        const option1 = document.createElement('option');
-        option1.innerText = 'Select Contact Type';
-        option1.value = 'Select Contact Type';
+    //     const option1 = document.createElement('option');
+    //     option1.innerText = 'Select Contact Type';
+    //     option1.value = 'Select Contact Type';
 
-        const option2 = document.createElement('option');
-        option2.innerText = 'POSTAL';
-        option2.value = 'POSTAL';
+    //     const option2 = document.createElement('option');
+    //     option2.innerText = 'POSTAL';
+    //     option2.value = 'POSTAL';
 
-        const option3 = document.createElement('option');
-        option3.innerText = 'FAX';
-        option3.value = 'FAX';
+    //     const option3 = document.createElement('option');
+    //     option3.innerText = 'FAX';
+    //     option3.value = 'FAX';
 
-        const option4 = document.createElement('option');
-        option4.innerText = 'LANDLINE';
-        option4.value = 'LANDLINE';
+    //     const option4 = document.createElement('option');
+    //     option4.innerText = 'LANDLINE';
+    //     option4.value = 'LANDLINE';
 
-        const option5 = document.createElement('option');
-        option5.innerText = 'MOBILE';
-        option5.value = 'MOBILE';
+    //     const option5 = document.createElement('option');
+    //     option5.innerText = 'MOBILE';
+    //     option5.value = 'MOBILE';
 
-        const option6 = document.createElement('option');
-        option6.innerText = 'EMAIL';
-        option6.value = 'EMAIL';
+    //     const option6 = document.createElement('option');
+    //     option6.innerText = 'EMAIL';
+    //     option6.value = 'EMAIL';
 
-        dropDown.appendChild(option1.getRootNode());
-        dropDown.appendChild(option2.getRootNode());    
-        dropDown.appendChild(option3.getRootNode());
-        dropDown.appendChild(option4.getRootNode());
-        dropDown.appendChild(option5.getRootNode());
-        dropDown.appendChild(option6.getRootNode());
+    //     dropDown.appendChild(option1.getRootNode());
+    //     dropDown.appendChild(option2.getRootNode());    
+    //     dropDown.appendChild(option3.getRootNode());
+    //     dropDown.appendChild(option4.getRootNode());
+    //     dropDown.appendChild(option5.getRootNode());
+    //     dropDown.appendChild(option6.getRootNode());
 
-        divContainer.appendChild(dropDown.getRootNode());
-        const input =
-            divContainer.childNodes[4].cloneNode(true);
-        input.setAttribute('name', 'contact_details_others');
+    //     divContainer.appendChild(dropDown.getRootNode());
+    //     const input =
+    //         divContainer.childNodes[4].cloneNode(true);
+    //     input.setAttribute('name', 'contact_details_others');
 
-        divContainer.appendChild(input);
-    };
+    //     divContainer.appendChild(input);
+    // };
 
     return (
         <>
@@ -1904,6 +1903,7 @@ const EditFacility = (props) => {
                                         }}
 
                                         onSubmit={formData => {
+                                           /*
                                             let payload = {}
                                         
                                             const contact = facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
@@ -1935,7 +1935,9 @@ const EditFacility = (props) => {
                                            
 
                                             payload = {officer_in_charge:_payload, contacts:[]}
-
+                                            */
+                                            console.log({formData})
+                                            return
 
                                             handleFacilityContactsUpdates(payload, id, alert)
                                             .then(({statusText}) => {
@@ -2001,13 +2003,13 @@ const EditFacility = (props) => {
                                                 /> */}
                                                  <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
                                                     {
-                                                        facility_contacts && facility_contacts.length > 0 &&
-                                                        facility_contacts.map(({contact, contact_type_name, id}, i) => (
-                                                            <EditFacilityContactsContext.Provider value={facility_contacts} key={i}>
+                                                        facilityContacts && facilityContacts.length > 0 &&
+                                                        facilityContacts.map(({contact, contact_type_name, id}, i) => (
+                                                            <EditFacilityContactsContext.Provider value={facilityContacts} key={i}>
                                                                 <FacilityContact 
                             
                                                                     contactTypeOptions={contactTypeOptions}
-                                                                    setFacilityContacts={() => null}
+                                                                    setFacilityContacts={setFacilityContacts}
                                                                     contacts={[contact, contact_type_name, id]}
                                                                     index={i}
                                                                     fieldNames={['contact_type', 'contact']}
@@ -2025,7 +2027,26 @@ const EditFacility = (props) => {
 
                                             <div className='w-full flex justify-end items-center'>
                                                 <button
-                                                    onClick={handleAddContact}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();  
+                                                        
+                                                        setFacilityContacts([
+                                                        ...facilityContacts, 
+                                                        (() => (
+                                                            <EditFacilityContactsContext.Provider value={facilityContacts} key={(facilityContacts.length + 1) - 1}>
+                                                                <FacilityContact
+                                                                contactTypeOptions={contactTypeOptions}
+                                                                setFacilityContacts={setFacilityContacts}
+                                                                contacts={null}
+                                                                fieldNames={['contact_type', 'contact']}
+                                                                index={(facilityContacts.length + 1) - 1}
+                                                                
+                                                                />
+                                                            </EditFacilityContactsContext.Provider>
+                                                        ))()
+
+                                                        
+                                                        ])}}
                                                     className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
                                                     <PlusIcon className='w-4 h-4 text-white' />
                                                     <p className='text-medium font-semibold text-white'>
@@ -2109,20 +2130,69 @@ const EditFacility = (props) => {
 
                                                     {/* Contact Type / Contact Details */}
 
-                                                    <EditFacilityContact 
+                                                    {/* <EditFacilityContact 
                                                     contactRef={otherContactRef} 
                                                     setContactDetail={null} 
                                                     inputContactRef={officerInchargeContactDetailRef}
                                                     contactTypeOptions={contactTypeOptions} 
                                                     names={['facility_details_contact_type', 'faciliity_details_contact']} 
                                                     id={'facility_officer'}  
-                                                    contact={officer_in_charge ? officer_in_charge.length > 0 ?  officer_in_charge[0].contact : '' :  ''}/>
+                                                    contact={officer_in_charge ? officer_in_charge.length > 0 ?  officer_in_charge[0].contact : '' :  ''}
+                                                    
+                                                    /> */}
+
+                                                    <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
+                                                    {
+                                                        officerContacts &&
+                                                        typeof(officerContacts[0]) === 'function' ?
+                                                        officerContacts.map(officerContact => (
+                                                            officerContact
+                                                        )) 
+                                                        :
+                                                        [officerContacts]?.map(({contacts}, i) => (
+                                                         
+                                                            // {contact, contact_type_name, officer_contact_id}
+                                                            <EditOfficerContactsContext.Provider value={officerContacts} key={i}>
+                                                                   {console.log({contacts})}
+                                                                <OfficerContactDetails 
+    
+                                                                    contactTypeOptions={contactTypeOptions}
+                                                                    setFacilityContacts={setOfficerContact}
+                                                                    contacts={contacts ? [contacts[i].contact_type_name, contacts[i].contact, contacts[i].officer_contact_id] : [null, null, null]}
+                                                                    index={i}
+                                                                    fieldNames={['type', 'contact']}
+                                                                    
+                                                                />
+                                                            </EditOfficerContactsContext.Provider>
+                                                        ))
+                                                        
+                                                    }
+                                                </div>                                                    
 
                                                 </div>
 
                                                 <div className='w-full flex justify-end items-center mt-2'>
                                                     <button
-                                                        onClick={handleAddContact2}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();  
+                                                            
+                                                            setOfficerContact([
+                                                            ...[officerContacts],
+                                                            (() => (
+                                                                <EditOfficerContactsContext.Provider value={officerContacts} key={([officerContacts].length + 1) - 1 ?? 0}>
+                                                                  
+                                                                    <OfficerContactDetails
+                                                                        contactTypeOptions={contactTypeOptions}
+                                                                        setFacilityContacts={setOfficerContact}
+                                                                        contacts={null}
+                                                                        index={([officerContacts].length + 1) - 1 ?? 0}
+                                                                        fieldNames={['type', 'contact']}
+                                                                    />
+                                                                </EditOfficerContactsContext.Provider>
+                                                            ))()
+    
+                                                            
+                                                            ])}}
                                                         className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
                                                         <PlusIcon className='w-4 h-4 text-white' />
                                                         <p className='text-medium font-semibold text-white'>
@@ -2345,7 +2415,7 @@ const EditFacility = (props) => {
                                                 <div className='flex-col items-start justify-start gap-y-4'>
                                                 
                                                 {
-                                                    facility_units.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
+                                                    facility_units?.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
                                                 
                                                         <FacilityDeptRegulationFactory
                                                             key={i}
@@ -2373,7 +2443,7 @@ const EditFacility = (props) => {
 
                                             {/* Add btn */}
                                             <div className='w-full flex justify-end items-center mt-2'>
-                                                <button onClick={handleAddRegulatoryBody} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+                                                <button onClick={() => null} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
                                                     <PlusIcon className='w-4 h-4 text-white'/>
                                                     <p className='text-medium font-semibold text-white'>Add</p>
                                                 </button>

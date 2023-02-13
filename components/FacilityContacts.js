@@ -27,11 +27,11 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
             
             contactTypeRef.current?.state?.value = contactTypeOptions.filter(({label}) => label === contact_type_name).map(obj => {obj['id'] = id; return obj})
 
-            console.log({val: contactTypeRef.current?.state?.value})
+            // console.log({val: contactTypeRef.current?.state?.value})
         }
 
         if(contactDetailsRef.current ){
-            contactDetailsRef.current.value = contact
+            contactDetailsRef.current.value = contact ?? null;
         }
 
      
@@ -74,13 +74,19 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                         ev.preventDefault();
                       
                         if(contacts){
+                            const _contacts = editContacts
+                            _contacts.splice(index, 1);
+                            delete _contacts[index]
+                            setFacilityContacts(_contacts);
+
+                            console.log(editContacts, _contacts)
+
                             try{
                                 if(contactTypeRef?.current) {
                                 const resp = await fetch(`/api/common/submit_form_data/?path=delete_contact&id=${contactTypeRef?.current?.state?.value[0].id ?? null}`)
                                 if(resp.status == 204) alert.success('Deleted Facility Contact Successfully')
 
-                                editContacts.splice(index, 1);
-                                delete editContacts[index]
+                               
                                 
                                 }
                             }catch(e){
@@ -102,7 +108,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
     )
 }
 
-const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, index, fieldNames}) => {
+const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contacts, index, fieldNames}) => {
 
 
     const contactTypes = useContext(FacilityContactsContext)
@@ -110,15 +116,17 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, index, 
     const contactTypeRef = useRef(null)
     const contactDetailsRef = useRef(null)
     
+    const [contact_type_name, contact, id] = contacts
 
     useEffect(() => {
 
-        if(contactTypeRef.current ){
-            contactTypeRef.current.state.value = null
+        console.log({contact_type_name});
+        if(contactTypeRef.current && contact_type_name && id){
+            contactTypeRef.current?.state?.value = contactTypeOptions.filter(({label}) => label === contact_type_name).map(obj => {obj['id'] = id; return obj})
         }
 
         if(contactDetailsRef.current ){
-            contactDetailsRef.current.value = null
+            contactDetailsRef.current.value = contact
         }
 
      
