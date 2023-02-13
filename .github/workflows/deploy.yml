@@ -38,7 +38,7 @@ jobs:
           set -e
           cd /var/www/kmhflv3
           git init
-          git remote add -m origin ${{github.server_url}}/${{ github.username }}/${{ github.repository }}.git
+          git remote add -m origin ${{github.server_url}}${{ github.username }}/${{ github.repository }}.git
           git pull origin master
           yarn 
           yarn run build
