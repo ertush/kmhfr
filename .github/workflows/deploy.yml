@@ -6,11 +6,11 @@ on:
       - master
 
 env:
-  GIT_REPO: ${{ env.GIT_REPO }}
-  NEXT_PUBLIC_API_URL: ${{ NEXT_PUBLIC_API_URL }}
-  TOKEN_URL: ${{ TOKEN_URL }}
+  GIT_REPO: $GIT_REPO
+  NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL
+  TOKEN_URL: $TOKEN_URL
   CLIENT_ID: ${{ secrets.CLIENT_ID }}
-  CLIENT_SECRET: ${{ CLIENT_SECRET }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
 
 
 jobs:
