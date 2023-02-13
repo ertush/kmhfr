@@ -34,9 +34,6 @@ jobs:
         script: |
           set -e
           cd /var/www/kmhflv3
-          echo ${{ env.GIT_REPO }}
-          echo $GIT_REPO
-          echo ${{ GIT_REPO }}
           git init
           git remote add -m origin ${{ env.GIT_REPO }}
           git pull origin master
