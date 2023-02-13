@@ -20,7 +20,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Install Build dependencies
-      run: yarn add --global next
+      run: yarn global add next
 
     - name: Build kmhflv3 application
       run: yarn run build
