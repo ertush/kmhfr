@@ -35,7 +35,7 @@ jobs:
           set -e
           cd /var/www/kmhflv3
           git init
-          git remote add -m origin ${{ env.GIT_REPO }}
+          git remote add -m origin ${{ secrets.GIT_REPO }}
           git pull origin master
           yarn 
           yarn run build
