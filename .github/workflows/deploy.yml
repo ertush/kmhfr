@@ -36,7 +36,7 @@ jobs:
           cd /var/www/kmhflv3
           git config --global init.defaultBranch master
           git init
-          git remote add origin $GIT_REPO
+          git remote add -m origin $GIT_REPO
           git pull origin master
           yarn 
           yarn run build
