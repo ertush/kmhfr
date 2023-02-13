@@ -17,7 +17,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Install Build dependencies
       run: yarn global add next
@@ -28,7 +28,7 @@ jobs:
         host: ${{ env.SERVER_HOST }}
         port: ${{ env.SERVER_PORT }}
         username: ${{ env.SERVER_USER }}
-        private-key: ${{ env.SERVER_KEY }}
+        password: ${{ env.SERVER_KEY }}
         script: |
           set -e
           cd /var/www/kmhflv3
