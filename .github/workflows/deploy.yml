@@ -22,9 +22,6 @@ jobs:
     - name: Install Build dependencies
       run: yarn global add next
 
-    - name: Build kmhflv3 application
-      run: yarn run build
-
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master
       with:
