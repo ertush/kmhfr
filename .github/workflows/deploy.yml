@@ -12,8 +12,6 @@ env:
   CLIENT_ID: ${{ secrets.CLIENT_ID }}
   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
   GRANT_TYPE: 'password'
-  TOKEN_URL: $TOKEN_URL
-
 
 jobs:
   deploy:
