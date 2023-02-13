@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  GIT_REPO: ${{ env.GIT_REPO }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -26,8 +29,20 @@ jobs:
         script: |
           set -e
           cd /var/www/kmhflv3
-          git pull
+          touch .env
+          cat > .env << EOF 
+              CLIENT_ID=$CLIENT_ID
+              CLIENT_SECRET=$CLIENT_SECRET
+              CLIENT_TYPE='confidential'
+              GRANT_TYPE='password'
+              TOKEN_URL=$TOKEN_URL
+              NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+          EOF
+          if ! [[ -d './.git' ]]; then git init; f
+          git remote add origin $GIT_REPO
+          git pull origin master
           yarn 
           yarn run build
-          pm2 restart all
+          yarn run start
+  
 
