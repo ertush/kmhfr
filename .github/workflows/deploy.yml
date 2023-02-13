@@ -24,7 +24,7 @@ jobs:
       run: yarn global add next
       
     - name: Display Repository Url
-      run: echo ${{github.server_url}}/${{ github.username }}/${{ github.repository }}.git
+      run: echo ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git
 
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master
@@ -38,7 +38,7 @@ jobs:
           set -e
           cd /var/www/kmhflv3
           git init
-          git remote add -m origin ${{github.server_url}}${{ github.username }}/${{ github.repository }}.git
+          git remote add -m origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git
           git pull origin master
           yarn 
           yarn run build
