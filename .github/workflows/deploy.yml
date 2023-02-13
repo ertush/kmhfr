@@ -34,7 +34,7 @@ jobs:
         script: |
           set -e
           cd /var/www/kmhflv3
-          touch .env
+          echo '' > .env
           cat > .env << EOF 
               CLIENT_ID=$CLIENT_ID
               CLIENT_SECRET=$CLIENT_SECRET
