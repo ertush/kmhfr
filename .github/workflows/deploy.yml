@@ -1,0 +1,38 @@
+name: Deploy to kmhfl server
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  SERVER_HOST: ${{ secrets.SERVER_HOST }}
+  SERVER_PORT: 22000
+  SERVER_USER: ${{ secrets.SERVER_USER }}
+  SERVER_KEY: ${{ secrets.SERVER_KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build kmhflv3 application
+      run: npm run build
+
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.SERVER_HOST }}
+        port: ${{ env.SERVER_PORT }}
+        username: ${{ env.SERVER_USER }}
+        private-key: ${{ env.SERVER_KEY }}
+        script: |
+          set -e
+          cd /var/www/kmhflv3
+          git pull
+          npm install
+          npm run build
+          pm2 restart all
