@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  GIT_REPO: $GIT_REPO
+  GIT_REPO:  ${{ secrets.GIT_REPO }}
   NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL
   TOKEN_URL: $TOKEN_URL
   CLIENT_ID: ${{ secrets.CLIENT_ID }}
@@ -35,7 +35,7 @@ jobs:
           set -e
           cd /var/www/kmhflv3
           git init
-          git remote add -m origin ${{ secrets.GIT_REPO }}
+          git remote add -m origin $GIT_REPO
           git pull origin master
           yarn 
           yarn run build
