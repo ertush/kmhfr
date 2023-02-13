@@ -7,6 +7,11 @@ on:
 
 env:
   GIT_REPO: ${{ env.GIT_REPO }}
+  NEXT_PUBLIC_API_URL: ${{ NEXT_PUBLIC_API_URL }}
+  TOKEN_URL: ${{ TOKEN_URL }}
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ CLIENT_SECRET }}
+
 
 jobs:
   deploy:
@@ -38,7 +43,7 @@ jobs:
               TOKEN_URL=$TOKEN_URL
               NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
           EOF
-          if ! [[ -d './.git' ]]; then git init; f
+          if ! [[ -d './.git' ]]; then git init; fi
           git remote add origin $GIT_REPO
           git pull origin master
           yarn 
