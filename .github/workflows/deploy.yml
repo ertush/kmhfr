@@ -11,6 +11,8 @@ env:
   TOKEN_URL: $TOKEN_URL
   CLIENT_ID: ${{ secrets.CLIENT_ID }}
   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  GRANT_TYPE: 'password'
+  TOKEN_URL: $TOKEN_URL
 
 
 jobs:
@@ -34,15 +36,6 @@ jobs:
         script: |
           set -e
           cd /var/www/kmhflv3
-          sudo touch .env
-          cat > .env << EOF 
-              CLIENT_ID=$CLIENT_ID
-              CLIENT_SECRET=$CLIENT_SECRET
-              CLIENT_TYPE='confidential'
-              GRANT_TYPE='password'
-              TOKEN_URL=$TOKEN_URL
-              NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-          EOF
           if ! [[ -d './.git' ]]; then git init; fi
           git remote add origin $GIT_REPO
           git pull origin master
