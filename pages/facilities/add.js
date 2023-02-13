@@ -326,6 +326,7 @@ function AddFacility(props) {
 				contactTypeOptions={contactTypeOptions}
 				fieldNames={['contact_type', 'contact']}
 				setFacilityContacts={() => null}
+				contacts={null}
 				index={0}
 			/>
 		))()
@@ -336,6 +337,7 @@ function AddFacility(props) {
 			<OfficerContactDetails
 				contactTypeOptions={contactTypeOptions}
 				fieldNames={['officer_details_contact_type', 'officer_details_contact']}
+				contacts={[]}
 				setFacilityContacts={() => null}
 				index={0}
 			/>
@@ -1741,6 +1743,7 @@ function AddFacility(props) {
 																				<FacilityContact
 																				contactTypeOptions={contactTypeOptions}
 																				setFacilityContacts={setFacilityContacts}
+																				contacts={null}
 																				fieldNames={['contact_type', 'contact']}
 																				index={(facilityContacts.length + 1) - 1}
 																				
