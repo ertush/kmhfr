@@ -35,9 +35,11 @@ jobs:
           if ! [[ -d './.git' ]]; then git init; fi
           if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
           git pull origin master
+          yarn global add pm2
           yarn
           yarn build
-          yarn start
+          pm2 start yarn --name "kmhflv3" -- start
+          
           
   
 
