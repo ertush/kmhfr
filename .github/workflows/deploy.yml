@@ -37,7 +37,7 @@ jobs:
           set -e
           cd /var/www/kmhflv3
           if ! [[ -d './.git' ]]; then git init; fi
-          git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git
+          if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
           git pull origin master
           yarn 
           yarn run build
