@@ -19,10 +19,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      with:
-        node-version: '16.x'
-      
-      
+ 
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master  
       with:
@@ -38,7 +35,7 @@ jobs:
           if ! [[ -d './.git' ]]; then git init; fi
           if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
           git pull origin master
-          npm
+          npm install
           npm run build
           npm run start
           
