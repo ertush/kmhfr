@@ -19,7 +19,10 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
+      
+    - name: Install Build dependencies
+      run: yarn global add next
+      
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master
       with:
@@ -28,13 +31,13 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.SERVER_KEY }}
         script: |
-          set -e
+          set
           cd /var/www/kmhflv3
           if ! [[ -d './.git' ]]; then git init; fi
           if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
           git pull origin master
-          npm install
-          npm run build
+          yarn
+          yarn run build
           pm2 start npm --name "kmhflv3" -- start
           
   
