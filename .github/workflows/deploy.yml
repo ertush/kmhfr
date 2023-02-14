@@ -40,7 +40,7 @@ jobs:
           git pull origin master
           yarn
           yarn build
-          npx pm2 start npm --name "kmhflv3" -- start
+          npx pm2 restart npm --name "kmhflv3" -- start
           
           
   
