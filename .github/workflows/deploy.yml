@@ -30,7 +30,6 @@ jobs:
         port: ${{ secrets.SERVER_PORT }}
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.SERVER_KEY }}
-        node-version: '16.x'
         script: |
           set -e
           cd /var/www/kmhflv3
@@ -40,8 +39,8 @@ jobs:
           if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
           git pull origin master
           npm
-          npm build
-          npm start
+          npm run build
+          npm run start
           
   
 
