@@ -22,11 +22,6 @@ jobs:
       with:
         node-version: '16.x'
       
-    - name: Install Build dependencies
-      run: |
-        yarn global add next
-        yarn global add pm2
-        nvm v16.15.0
       
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master  
