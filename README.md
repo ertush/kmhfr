@@ -1,3 +1,5 @@
+[![deploy workflow](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/deploy.yml/badge.svg)](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/deploy.yml)
+
 # KMHFL3 Frontend
 
 This is the frontend application for KMHFL with new features (GIS, Dynamic Reports). Phase 1 is to have it as a read-only data consumption app. Phase 2 and beyond is to add CRUD features.
@@ -22,3 +24,5 @@ An on-premise test server is needed. Currently, you can preview the example live
 - Make a copy of the ```.env``` file and add your environment variables as detailed ```cp .env.local.example .env.local && nano .env.local```
 - Install dependencies ```npm install``` or ```yarn```
 - For local development, run ```npm run dev``` or ```yarn dev```
+
+
