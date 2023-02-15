@@ -127,7 +127,10 @@ const Dash = (props) => {
         ],
         [],
     );
-
+        //close the select option
+        function closed(id) {
+            document.getElementById(id).style.display='none'
+        }
     return (
         <div className="">
             <Head>
@@ -164,7 +167,7 @@ const Dash = (props) => {
                                 {user && user?.is_national && <div className="w-full flex flex items-center justify-end space-x-3 mb-3">
                                     {filters && Object.keys(filters).length > 0 &&
                                         Object.keys(filters).map(ft => (
-                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
+                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
                                                 <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
                                                 <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                     options={
@@ -194,6 +197,8 @@ const Dash = (props) => {
                                                     }
                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                     onChange={sl => {
+                                                        //closed the county select
+                                                        closed('first')
                                                         let nf = {}
                                                         if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
                                                             nf[ft] = sl.value
@@ -215,7 +220,7 @@ const Dash = (props) => {
                                         ))}
                                         {/* ~~~F L T R S~~~ */}
 
-                                    {/* {subcounty && Object.keys(subcounty).length > 0 &&
+                                    {subcounty && Object.keys(subcounty).length > 0 &&
 
                                         Object.keys(subcounty).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
@@ -267,12 +272,12 @@ const Dash = (props) => {
                                                     }} />
 
                                             </div>
-                                        ))} */}
+                                        ))}
                                         {/* subcounties */}
 
-                                        {/* {wards && Object.keys(wards).length > 0 &&
+                                        {wards && Object.keys(wards).length > 0 &&
                                         Object.keys(wards).map(ft => (
-                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
+                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3 second">
                                                 <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
                                                 <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                     options={
@@ -302,6 +307,8 @@ const Dash = (props) => {
                                                     }
                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                     onChange={sl => {
+                                                         //closed the county select
+                                                         closed('second')
                                                         let nf = {}
                                                         if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
                                                             nf[ft] = sl.value
@@ -320,7 +327,7 @@ const Dash = (props) => {
                                                     }} />
 
                                             </div>
-                                        ))} */}
+                                        ))}
                                         {/* wards */}    
                                 </div>}
                                 {/* --- */}
