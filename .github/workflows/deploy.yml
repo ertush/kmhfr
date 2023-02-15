@@ -3,15 +3,13 @@ name: Deploy to kmhfl server
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
-  GIT_REPO: $GIT_REPO
-  NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL
-  TOKEN_URL: $TOKEN_URL
-  CLIENT_ID: ${{ secrets.CLIENT_ID }}
-  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-  GRANT_TYPE: 'password'
+  SERVER_HOST: ${{ secrets.SERVER_HOST }}
+  SERVER_PORT: 22000
+  SERVER_USER: ${{ secrets.SERVER_USER }}
+  SERVER_KEY: ${{ secrets.SERVER_KEY }}
 
 jobs:
   deploy:
@@ -19,27 +17,22 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
-    - name: Install Build dependencies
-      run: yarn global add next
+    - name: Build kmhflv3 application
+      run: npm run build
 
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.SERVER_HOST }}
-        port: ${{ secrets.SERVER_PORT }}
-        username: ${{ secrets.SERVER_USER }}
-        password: ${{ secrets.SERVER_KEY }}
+        host: ${{ env.SERVER_HOST }}
+        port: ${{ env.SERVER_PORT }}
+        username: ${{ env.SERVER_USER }}
+        private-key: ${{ env.SERVER_KEY }}
         script: |
           set -e
           cd /var/www/kmhflv3
-          git config --global init.defaultBranch
-          git init
-          git remote add origin ${{github.server_url}}/${{ github.username }}/${{ github.repository }}.git
-          git pull origin master
-          yarn 
-          yarn run build
-          yarn run start
-  
-
+          git pull
+          npm install
+          npm run build
+          pm2 restart all
