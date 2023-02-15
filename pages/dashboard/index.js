@@ -223,7 +223,7 @@ const Dash = (props) => {
                                     {subcounty && Object.keys(subcounty).length > 0 &&
 
                                         Object.keys(subcounty).map(ft => (
-                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
+                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="second">
                                                 <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
                                                 <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                     options={
@@ -253,6 +253,8 @@ const Dash = (props) => {
                                                     }
                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                     onChange={sl => {
+                                                        //closes the sub-county selection tag
+                                                        closed('second')
                                                         let nf = {}
                                                         if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
                                                             nf[ft] = sl.value
@@ -277,7 +279,7 @@ const Dash = (props) => {
 
                                         {wards && Object.keys(wards).length > 0 &&
                                         Object.keys(wards).map(ft => (
-                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3 second">
+                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="third">
                                                 <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
                                                 <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                     options={
@@ -307,8 +309,8 @@ const Dash = (props) => {
                                                     }
                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                     onChange={sl => {
-                                                         //closed the county select
-                                                         closed('second')
+                                                         //closed the ward select
+                                                         closed('third')
                                                         let nf = {}
                                                         if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
                                                             nf[ft] = sl.value
