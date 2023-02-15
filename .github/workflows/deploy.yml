@@ -3,36 +3,45 @@ name: Deploy to kmhfl server
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
-  SERVER_HOST: ${{ secrets.SERVER_HOST }}
-  SERVER_PORT: 22000
-  SERVER_USER: ${{ secrets.SERVER_USER }}
-  SERVER_KEY: ${{ secrets.SERVER_KEY }}
+  NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL
+  TOKEN_URL: $TOKEN_URL
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  GRANT_TYPE: 'password'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Build kmhflv3 application
-      run: npm run build
-
+      uses: actions/checkout@v3
+      
+    - name: Install Build Dependencies
+      run : yarn global add pm2
+ 
     - name: Deploy to VPS
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@master  
       with:
-        host: ${{ env.SERVER_HOST }}
-        port: ${{ env.SERVER_PORT }}
-        username: ${{ env.SERVER_USER }}
-        private-key: ${{ env.SERVER_KEY }}
+        host: ${{ secrets.SERVER_HOST }}
+        port: ${{ secrets.SERVER_PORT }}
+        username: ${{ secrets.SERVER_USER }}
+        password: ${{ secrets.SERVER_KEY }}
         script: |
           set -e
           cd /var/www/kmhflv3
-          git pull
-          npm install
-          npm run build
-          pm2 restart all
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
+          if ! [[ -d './.git' ]]; then git init; fi
+          if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
+          git pull origin master
+          yarn
+          yarn build
+          npx pm2 restart all
+          
+          
+  
+
