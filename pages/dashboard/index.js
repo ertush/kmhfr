@@ -57,7 +57,7 @@ const Dash = (props) => {
         
         }
         return () => { mtd = false }
-    }, [filters, subcounty,wards])
+    }, [filters,subcounty,wards])
 
 
 
@@ -338,7 +338,7 @@ const Dash = (props) => {
                                                         if (value === 'national') {
                                                             router.push('/dashboard')
                                                         } else {
-                                                            router.push('/dashboard?wards=' + value)
+                                                            router.push('/dashboard?ward=' + value)
                                                         }
                                                     }} />
 
@@ -568,7 +568,7 @@ Dash.getInitialProps = async (ctx) => {
                 }
             })
     }
-
+    
     const fetchData = (token) => {
         let url = API_URL + '/facilities/dashboard/'
         let query = { 'searchTerm': '' }
@@ -576,7 +576,7 @@ Dash.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
-        let other_posssible_filters = ["county"]
+        let other_posssible_filters = ["county","subcounty","wards"]
 
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
@@ -588,18 +588,14 @@ Dash.getInitialProps = async (ctx) => {
                 }
             }
         })
-          
-
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json'
             }
         }).then(r => r.json())
-         
             .then(json => {
-             
-                return fetchFilters(token).then(ft => {
+                    return fetchFilters(token).then(ft => {
                     return {
                         data: json, query, filters: { ...ft }, path: ctx.asPath, tok: token || '/dashboard', current_url: url, api_url: API_URL
                     }
