@@ -15,6 +15,9 @@ import { PermissionContext } from "../providers/permissions";
 import {
   hasPermission
 } from "../utils/checkPermissions"
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+
 
 const DelayedLoginButton = () => {
 
@@ -410,14 +413,13 @@ export default function HeaderLayout({
                   <a
                     className={`w-full hover:text-green-400 font-medium flex items-center ${active && "text-green-400"
                       }`}
-                    href="https://kmhfltest.health.go.ke/"
-                    target="_blank"
+                    href="/account"
                   >
-                    KMHFL test <ExternalLinkIcon className="h-4 w-4 ml-2" />
+                   <SettingsIcon fontSize="small"/> &nbsp; Profile
                   </a>
                 )}
               </Menu.Item>
-              <Menu.Item as="li" className="flex items-center w-full gap-1">
+              {/* <Menu.Item as="li" className="flex items-center w-full gap-1">
                 {({ active }) => (
                   <a
                     className={`w-full hover:text-green-400 font-medium flex items-center ${active && "text-green-400"
@@ -428,7 +430,7 @@ export default function HeaderLayout({
                     KMHFL live <ExternalLinkIcon className="h-4 w-4 ml-2" />
                   </a>
                 )}
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item
                 as="li"
                 className="flex items-center w-full gap-1 mt-2 border-t border-gray-600 py-2"
@@ -439,7 +441,7 @@ export default function HeaderLayout({
                       }`}
                     href="/logout"
                   >
-                    Log out
+                   <LogoutIcon /> &nbsp; Log out
                   </a>
                 )}
               </Menu.Item>
