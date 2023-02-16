@@ -20,6 +20,7 @@ const DelayedLoginButton = () => {
 
 
   const [delayed, setDelayed] = useState(false);
+
   useEffect(() => {
    
     let mtd = true;
@@ -32,6 +33,7 @@ const DelayedLoginButton = () => {
       mtd = false;
     };
   }, []);
+
   if (delayed === true) {
     return (
       <a
@@ -65,10 +67,6 @@ export default function HeaderLayout({
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [hideUserMenu, setHideUserMenu] = useState(false)
-  const [hideSystemSetupMenu, setHideSystemSetupMenu] = useState(false)
-  const [hideAdminOfficesMenu, setHideAdminOfficesMenu] = useState(false)
-  const [hideGISMenu, setHideGISMenu] = useState(false)
 
   const [user, setUser] = useState(null);
 
@@ -363,6 +361,8 @@ export default function HeaderLayout({
         </div>
       </nav>
       <div className="flex flex-wrap items-center justify-end gap-2 md:gap-5 px-2 md:flex-grow order-last sm:order-none flex-grow sm:flex-grow-0z">
+        {
+          !router.asPath.includes('/dashboard') &&
         <form
           className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
           action={path || "/facilities"}
@@ -382,6 +382,7 @@ export default function HeaderLayout({
             <SearchIcon className="w-5 h-5" />
           </button>
         </form>
+      }
       </div>
       {isLoggedIn && user ? (
         <div className="flex flex-wrap items-center gap-3 md:gap-5 px-2 md:flex-grow justify-end">

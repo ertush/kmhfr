@@ -126,7 +126,7 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
         }
 
         if(contactDetailsRef.current ){
-            contactDetailsRef.current.value = contact
+            contactDetailsRef.current.value = contact ?? ''
         }
 
      
