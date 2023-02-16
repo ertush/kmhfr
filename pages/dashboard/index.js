@@ -28,7 +28,6 @@ const Dash = (props) => {
     console.log(props)
     useEffect(() => {
 
-
         let mtd = true
         if (mtd) {
             if (filters && Object.keys(filters).length > 0) {
@@ -60,7 +59,6 @@ const Dash = (props) => {
     }, [filters,subcounty,wards])
 
 
-
     const fetchSubCounties = async (county)=>{
 
         let subcounties_url = API_URL + `/common/sub_counties/?county=${county}&fields=id,name`
@@ -84,6 +82,10 @@ const Dash = (props) => {
             }
         }
     }
+    console.log(user)
+    useEffect(()=>{
+        fetchSubCounties(userCtx.county)
+    },[])
 
     const fetchWards = async (sub_county)=>{
 
@@ -138,7 +140,8 @@ const Dash = (props) => {
     );
         //close the select option
         function closed(id) {
-            document.getElementById(id).style.display='none'
+            // document.getElementById(id).style.display='none'
+            console.log('hy')
         }
     return (
         <div className="">
@@ -235,7 +238,11 @@ const Dash = (props) => {
                                             </div>
                                         ))}
                                         {/* ~~~F L T R S~~~ */}
-                                        {subcounty && Object.keys(subcounty).length > 0 &&
+                                </div>}
+                                {/* --- */}
+                                {/* county user */}
+                                {user &&<div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                    {subcounty && Object.keys(subcounty).length > 0 &&
                                         Object.keys(subcounty).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="second">
                                                 <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
@@ -290,8 +297,10 @@ const Dash = (props) => {
                                             </div>
                                         ))}
                                         {/* subcounties */}
-
-                                        {wards && Object.keys(wards).length > 0 &&
+                                </div>}
+                                {/* sub_county user */}
+                                {user&&user?.is_sub_county_level&&<div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                    {wards && Object.keys(wards).length > 0 &&
                                         Object.keys(wards).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="third">
                                                 <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
@@ -346,7 +355,6 @@ const Dash = (props) => {
                                         ))}
                                         {/* wards */}    
                                 </div>}
-                                {/* --- */}
                             </div>
                         </div>
                     </div>
