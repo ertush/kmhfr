@@ -3,8 +3,7 @@ import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect, useContext } from "react";
 import MainLayout from "../../components/MainLayout";
 import Link from 'next/link'
-
-
+import { useRouter } from 'next/router';
 
 import {
   CheckCircleIcon,
@@ -61,8 +60,9 @@ const Facility = (props) => {
   const wardName = props["0"]?.data.ward_name;
   const center = props["1"]?.geoLocation.center;
   const geoLocationData = props["1"]?.geoLocation;
+  const qf = props["3"]?.qf ?? '';
   // const {facility_updated_json } = props["2"]?.updates;
-  const filters = props["3"]?.filters ?? []
+  const filters = []
 
 
   const [user, setUser] = useState(null);
@@ -87,10 +87,10 @@ const Facility = (props) => {
 
   const _ = require('underscore')
   const alert = useAlert()
-
+  const router = useRouter()
 
   
-  let reject = ''
+  // let reject = ''
 
   useEffect(() => {
    
@@ -98,7 +98,7 @@ const Facility = (props) => {
   
     return () => {
     };
-  }, [isClosingFacility]);
+  }, [isClosingFacility, isReasonRejected]);
 
 
 
@@ -149,9 +149,10 @@ const Facility = (props) => {
                         {
                           isReasonRejected && 
                           <span className="text-sm text-red-500">      
-                              Reason rejected
+                              Rejected because reason for reopening is not provided
                           </span>
                         }
+                      
                       <div className="flex-col items-start">
                         <Typography id="transition-modal-description" sx={{ mt: 2 }}>
                           Please state the reason for reopening the facility
@@ -164,6 +165,7 @@ const Facility = (props) => {
                         }
                         onSubmit={async ({closing_reason}) => {
                     
+                          if(closing_reason.length > 0){
                           try {
                             const resp = await fetch(`/api/common/submit_form_data?path=close_facility&id=${facility?.id}`, {
                               headers: {
@@ -194,6 +196,9 @@ const Facility = (props) => {
                           }catch(e){
                              console.error(e.message)
                           }
+                        }else{
+                          setIsReasonRejected(true)
+                        }
     
                         }} >
 
@@ -208,7 +213,7 @@ const Facility = (props) => {
                             </Field>
                             <div className='flex justify-start gap-4 mt-4'>
                                 <button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="submit">Reopen</button>
-                                <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" onClick={handleClose}>Cancel</button>
+                                <button className="bg-red-500 text-white font-semibold rounded p-2 text-center"  type="button" onClick={handleClose}>Cancel</button>
                             </div>
                           </Form>
                         </Formik>
@@ -266,6 +271,7 @@ const Facility = (props) => {
                     }
                     onSubmit={async ({closing_reason}) => {
                     
+                      if(closing_reason.length > 0){
                       try {
                         const resp = await fetch(`/api/common/submit_form_data?path=close_facility&id=${facility?.id}`, {
                           headers: {
@@ -295,6 +301,7 @@ const Facility = (props) => {
                       }catch(e){
                          console.error(e.message)
                       }
+                    }
 
                     }} >
 
@@ -317,7 +324,7 @@ const Facility = (props) => {
 
                         <div className='flex justify-start gap-4 mt-4'>
                             <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" type="submit">Close Facility</button>
-                            <button className="bg-indigo-500 text-white font-semibold rounded p-2 text-center" onClick={handleCloseModal}>Cancel</button>
+                            <button className="bg-indigo-500 text-white font-semibold rounded p-2 text-center" type="button" onClick={handleCloseModal}>Cancel</button>
                         </div>
                       </Form>
                     </Formik>
@@ -448,9 +455,9 @@ const Facility = (props) => {
                   hasPermission(/^facilities.view_facility$/, userPermissions) &&
                   (!belongsToUserGroup(userGroup, 'County Health Records Information Officer') || 
                   (belongsToUserGroup(userGroup, 'County Health Records Information Officer') && facility.has_edits)) &&
+                  (qf.includes('updated_pending_validation') || qf.includes('approve')) &&
                   facility?.is_approved &&
-
-                  
+                
                 <button
                   onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
                   className={
@@ -459,13 +466,13 @@ const Facility = (props) => {
                   }
                 >
                   {
-                   facility.has_edits ? 'Validate Facility Updates' : 'Approve/Reject Facility'
+                   facility.has_edits ? qf.includes('updated_pending_validation') && 'Validate Facility Updates' : qf.includes('approve') && 'Approve/Reject Facility' 
                   }
   
                 </button>
                 } 
 
-{
+                  {
                   hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
                   hasPermission(/^facilities.view_facility$/, userPermissions) &&
                   (
@@ -473,9 +480,10 @@ const Facility = (props) => {
                   belongsToUserGroup(userGroup, 'National Administrators') ||
                   belongsToUserGroup(userGroup, 'Superusers') 
                   ) &&
+                  qf.includes('new_pending_validation') &&
                   !facility?.is_approved &&
-
                   
+                
                 <button
                   onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
                   className={
@@ -487,13 +495,16 @@ const Facility = (props) => {
   
                 </button>
                 } 
-
+                {
+                  hasPermission(/^common.view_documentupload$/, userPermissions) &&
+                  !qf.includes('new_pending_validation') &&
                 <button
                   onClick={() => console.log(props.data)}
                   className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
                 >
                   Print
                 </button>
+                }
                 {
                     !facility?.closed &&
                     hasPermission(/^facilities.change_facility$/, userPermissions) &&
@@ -506,6 +517,7 @@ const Facility = (props) => {
                 }
                 {
                   hasPermission(/^facilities.add_facilityregulationstatus$/, userPermissions) &&
+                  hasPermission(/^facilities.change_facilityregulationstatus$/, userPermissions) &&
                   hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <button
                   onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
@@ -515,8 +527,11 @@ const Facility = (props) => {
                 </button>
                 }
                 {
-                  hasPermission(/^facilities.change_facility$/, userPermissions) &&
+                  hasPermission(/^facilities.add_facilityupgrade$/, userPermissions) &&
+                  hasPermission(/^facilities.change_facilityupgrade$/, userPermissions) &&
                   hasPermission(/^facilities.add_facilityservice$/, userPermissions) &&
+                  hasPermission(/^facilities.change_facilityservice$/, userPermissions) &&
+                  !qf.includes('new_pending_validation') &&
                 <button
                   onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
@@ -524,12 +539,15 @@ const Facility = (props) => {
                   Upgrade
                 </button>
                 }
+                {
+                  !qf.includes('new_pending_validation') &&
                 <button
                   onClick={() => setIsClosingFacility(true)}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
                 >
                   Close
                 </button>
+                }
               </div>
             </div>
 
@@ -745,6 +763,10 @@ Facility?.getInitialProps = async (ctx) => {
                   console.error('Encountered error while fetching facility update data', e.message)
               }
             }
+
+            allOptions.push({
+              qf: ctx.query.qf
+            })
 
             return allOptions;
           })

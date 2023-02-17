@@ -72,7 +72,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
             name: 'Incomplete',
             id: 'incomplete',
             filters: [
-                { id: "incomplete", value: true },
+                { id: "is_complete", value: false },
             ]
         },
         {
