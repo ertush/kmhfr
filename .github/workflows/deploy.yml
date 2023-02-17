@@ -3,7 +3,7 @@ name: Deploy to kmhfl server
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
   NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL
