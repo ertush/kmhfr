@@ -1,10 +1,10 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
-import { DotsHorizontalIcon, DownloadIcon, PencilIcon, PlusIcon } from '@heroicons/react/solid'
+import { DotsHorizontalIcon, DownloadIcon, PlusIcon } from '@heroicons/react/solid'
 
 import { checkToken } from '../../controllers/auth/auth'
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon } from '@heroicons/react/outline'
@@ -17,7 +17,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Alert from '@mui/material/Alert';
 import NativePickers from '../../components/date-picker'
-import { PermissionContext } from '../../providers/permissions'
+// import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
 
 // import { set } from 'nprogress'
@@ -26,13 +26,17 @@ import FacilitySideMenu from '../../components/FacilitySideMenu'
 const Home = (props) => {
     const router = useRouter()
 
-    const permissions = useContext(PermissionContext)
+    
+
+    // const permissions = useContext(PermissionContext)
    
     const facilities = props?.data?.results
     const filters = props?.filters
     let fltrs = filters
     const [drillDown, setDrillDown] = useState({})
-    const qf = props?.query?.qf || 'all'
+    // const qf = props?.query?.qf ?? null
+
+    // console.log({path:router.query.qf})
    
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -393,38 +397,38 @@ const Home = (props) => {
                                                 className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
                                                         <h3 className="text-2xl w-full">
-                                                            <a href={'/facilities/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 " >
-                                                                <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility.official_name || facility.official_name || facility.name}
-                                                            </a>
+                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className="cursor-pointer hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 " >
+                                                                <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility?.official_name || facility?.official_name || facility?.name}
+                                                            </span>
                                                         </h3>
                                                         
                                                         <p className="text-sm text-gray-600 w-full flex gap-y-2 gap-x-5 items-center">
-                                                            <span className="text-lg text-black font-semibold"># {facility.code ? facility.code : 'NO_CODE' || ' '}</span>
-                                                            <span>{facility.owner_name || ' '}</span>
+                                                            <span className="text-lg text-black font-semibold"># {facility?.code ? facility?.code : 'NO_CODE' || ' '}</span>
+                                                            <span>{facility?.owner_name || ' '}</span>
                                                         </p>
                                                         <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">County:</label>
-                                                                <span className="whitespace-pre-line">{facility.county_name || facility.county || 'N/A'}</span>
+                                                                <span className="whitespace-pre-line">{facility?.county_name || facility?.county || 'N/A'}</span>
                                                             </div>
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">Sub-county:</label>
-                                                                <span className="whitespace-pre-line">{facility.sub_county_name || facility.sub_county || 'N/A'}</span>
+                                                                <span className="whitespace-pre-line">{facility?.sub_county_name || facility?.sub_county || 'N/A'}</span>
                                                             </div>
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">Ward:</label>
-                                                                <span className="whitespace-pre-line">{facility.ward_name || 'N/A'}</span>
+                                                                <span className="whitespace-pre-line">{facility?.ward_name || 'N/A'}</span>
                                                             </div>
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">Constituency:</label>
-                                                                <span className="whitespace-pre-line">{facility.constituency_name || facility.constituency || 'N/A'}</span>
+                                                                <span className="whitespace-pre-line">{facility?.constituency_name || facility?.constituency || 'N/A'}</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 flex flex-wrap items-center justify-evenly gap-x-2 gap-y-1 text-lg">
-                                                        {(facility.operational || facility.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
-                                                        {!facility.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility.approved_national_level ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility.rejected ? "Rejected" : ""}</span>}
-                                                        {facility.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
+                                                        {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
+                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility?.rejected ? "Rejected" : ""}</span>}
+                                                        {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
                                                     </div>
                                                 </div>
                                             ))
@@ -436,27 +440,27 @@ const Home = (props) => {
                                                     <div key={index} className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
                                                         <h3 className="text-2xl w-full">
-                                                            <a href={'/facilities/' + facility.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
-                                                                <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility.facility_name}
+                                                            <a href={'/facilities/' + facility?.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
+                                                                <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility?.facility_name}
                                                             </a>
                                                         </h3>
                                                      
                                                         <div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">Service:</label>
-                                                                <span className="whitespace-pre-line">{facility.service_name || facility.county || '-'}</span>
+                                                                <span className="whitespace-pre-line">{facility?.service_name || facility?.county || '-'}</span>
                                                             </div>
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">Comment:</label>
-                                                                <span className="whitespace-pre-line">{facility.comment || facility.county || '-'}</span>
+                                                                <span className="whitespace-pre-line">{facility?.comment || facility?.county || '-'}</span>
                                                             </div>
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">Rating:</label>
-                                                                <span className="whitespace-pre-line">{facility.rating || facility.sub_county || '0'}</span>
+                                                                <span className="whitespace-pre-line">{facility?.rating || facility?.sub_county || '0'}</span>
                                                             </div>
                                                             <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
                                                                 <label className="text-xs text-gray-500">Date:</label>
-                                                                <span className="whitespace-pre-line">{new Date(facility.created).toLocaleDateString() || '-'}</span>
+                                                                <span className="whitespace-pre-line">{new Date(facility?.created).toLocaleDateString() || '-'}</span>
                                                             </div>
                                                           
                                                         </div>
