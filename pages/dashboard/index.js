@@ -16,18 +16,15 @@ const Dash = (props) => {
 
 
     let filters = props?.filters
-    let subcounty = props?.filters
-    let wards = props?.filters
     let [drillDown, setDrillDown] = useState({})
     const [user, setUser] = useState(null)
-    // const [subcounty, setSubcounty] = useState([])
-    // const [wards, setWard] = useState([])
-
+    const [subcounty, setSubcounty] = useState([])
+    const [wards, setWard] = useState([])
     let sessToken =props?.tok
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
     const {owner_link, types_link, summary_link, chu_link, keph_link} = useRef(null)
-    // console.log(props)
+    console.log(props)
     useEffect(() => {
 
         let mtd = true
@@ -58,11 +55,11 @@ const Dash = (props) => {
         
         }
         return () => { mtd = false }
+        
     }, [filters,subcounty,wards])
 
 
-    // const fetchSubCounties = async (county)=>{
-
+    //  async function fetchSubCounties (county){
     //     let subcounties_url = API_URL + `/common/sub_counties/?county=${county}&fields=id,name`
     //     try {
     //         const r = await fetch(subcounties_url, {
@@ -85,35 +82,34 @@ const Dash = (props) => {
     //     }
     // }
    
-    // const fetchWards = async (sub_county)=>{
-
-    //     let ward_url = API_URL + `/common/wards/?subcounty=${sub_county}&fields=id,name`
-    //     try {
-    //         const r = await fetch(ward_url, {
-    //             headers: {
-    //                 'Authorization': 'Bearer ' + sessToken,
-    //                 'Accept': 'application/json'
-    //             }
-    //         })
-    //         const jzon = await r.json()
-    //         setWard({ ward: jzon.results })
-    //         return jzon
-    //     } catch (err) {
-    //         console.log('Error fetching subcounties: ', err)
-    //         return {
-    //             error: true,
-    //             err: err,
-    //             filters: [],
-    //             api_url: API_URL
-    //         }
-    //     }
-    // }
+    const fetchWards = async (sub_county)=>{
+        let ward_url = API_URL + `/common/wards/?subcounty=${sub_county}&fields=id,name`
+        try {
+            const r = await fetch(ward_url, {
+                headers: {
+                    'Authorization': 'Bearer ' + sessToken,
+                    'Accept': 'application/json'
+                }
+            })
+            const jzon = await r.json()
+            setWard({ ward: jzon.results })
+            return jzon
+        } catch (err) {
+            console.log('Error fetching subcounties: ', err)
+            return {
+                error: true,
+                err: err,
+                filters: [],
+                api_url: API_URL
+            }
+        }
+    }
 
     // console.log(user)
-    // useEffect(()=>{
-    //     fetchSubCounties(userCtx.county)
-    //     fetchWards(userCtx.county)
-    // },[])
+    useEffect(()=>{
+        fetchWards(userCtx.county)
+        // fetchSubCounties(userCtx.county)
+    },[])
 
 
     const totalSummary =[
@@ -143,10 +139,6 @@ const Dash = (props) => {
         ],
         [],
     );
-        //close the select option
-        // function closed(id) {
-            // document.getElementById(id).style.display='none'
-        // }
     return (
         <div className="">
             <Head>
@@ -220,8 +212,6 @@ const Dash = (props) => {
                                                     }
                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                     onChange={sl => {
-                                                        //closed the county select
-                                                        // closed('first')
                                                         let nf = {}
                                                         if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
                                                             nf[ft] = sl.value
@@ -230,7 +220,6 @@ const Dash = (props) => {
                                                             // let rr = drillDown.filter(d => d.key !== ft)
                                                             // setDrilldown(rr)
                                                         }
-                                                        // fetchSubCounties(sl.value)
                                                         setDrillDown({ ...drillDown, ...nf })
                                                         let value = sl.value
                                                         if (value === 'national') {
@@ -245,7 +234,7 @@ const Dash = (props) => {
                                 </div>}
                                 {/* --- */}
                                 {/* county user */}
-                                {/* {user &&user.county &&<div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                {user &&user?.county &&<div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     {subcounty && Object.keys(subcounty).length > 0 &&
                                         Object.keys(subcounty).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="second">
@@ -253,8 +242,8 @@ const Dash = (props) => {
                                                 <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                     options={
                                                         (() => {
-                                                            if (user && user?.is_national) {
-                                                                let opts = [{ value: "national", label: "National summary" }, ...Array.from(subcounty[ft] || [],
+                                                            if (user && user?.county) {
+                                                                let opts = [{ value: "county", label: "county summary" }, ...Array.from(subcounty[ft] || [],
                                                                     fltopt => {
                                                                         if (fltopt.id != null && fltopt.id.length > 0) {
                                                                             return {
@@ -278,8 +267,6 @@ const Dash = (props) => {
                                                     }
                                                     placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
                                                     onChange={sl => {
-                                                        //closes the sub-county selection tag
-                                                        closed('second')
                                                         let nf = {}
                                                         if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
                                                             nf[ft] = sl.value
@@ -288,7 +275,6 @@ const Dash = (props) => {
                                                             // let rr = drillDown.filter(d => d.key !== ft)
                                                             // setDrilldown(rr)
                                                         }
-                                                        fetchWards(sl.value)
                                                         setDrillDown({ ...drillDown, ...nf })
                                                         let value = sl.value
                                                         if (value === 'national') {
@@ -300,7 +286,7 @@ const Dash = (props) => {
 
                                             </div>
                                         ))}
-                                </div>} */}
+                                </div>}
                                 {/* sub_county user */}
                                 {/* {user&&user.constituency&&<div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     {wards && Object.keys(wards).length > 0 &&
@@ -587,7 +573,7 @@ Dash.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
-        let other_posssible_filters = ["county","subcounty","wards"]
+        let other_posssible_filters = ["county","subcounty","ward"]
 
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
