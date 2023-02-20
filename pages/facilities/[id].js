@@ -498,6 +498,7 @@ const Facility = (props) => {
                 {
                   hasPermission(/^common.view_documentupload$/, userPermissions) &&
                   !qf.includes('new_pending_validation') &&
+                  !qf.includes('failed_validation') &&
                 <button
                   onClick={() => console.log(props.data)}
                   className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
@@ -519,6 +520,7 @@ const Facility = (props) => {
                   hasPermission(/^facilities.add_facilityregulationstatus$/, userPermissions) &&
                   hasPermission(/^facilities.change_facilityregulationstatus$/, userPermissions) &&
                   hasPermission(/^facilities.view_facility$/, userPermissions) &&
+                  !qf.includes('failed_validation') &&
                 <button
                   onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
                   className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
