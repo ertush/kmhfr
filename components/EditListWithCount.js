@@ -73,6 +73,16 @@ function EditListWithCount(
         return _initValues
     })()
 
+    function validateCount(value) {
+
+        let error;
+        if (value == null || value == undefined || value == '') {
+          error = 'This field is required'
+        }
+     
+        return error;
+     
+      }
 
 
     const formatGroupLabel = (data) => (
@@ -186,6 +196,7 @@ function EditListWithCount(
 
             }}
         >
+            {({ errors, touched, validateField, validateForm }) => (
 
             <Form
                 name="list_item_with_count_form"
@@ -262,10 +273,12 @@ function EditListWithCount(
                                             <Field
                                                 as='input'
                                                 type='number'
+                                                min={1}
                                                 name={id}
+                                                validate={validateCount}
                                                 className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
-
+                                       {errors[id] && <div><span className='text-red-600'>{errors[id]}</span></div>}
                                         </TableCell>
                                         <TableCell>
 
@@ -338,6 +351,7 @@ function EditListWithCount(
 
 
             </Form>
+            )}
         </Formik>
 
 
