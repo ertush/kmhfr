@@ -78,6 +78,13 @@ function EditListWithCount(
         let error;
         if (value == null || value == undefined || value == '') {
           error = 'This field is required'
+        }else{
+        
+            if(value){
+                if (value.toString().match(/^-\d+$/) !== null){
+                    error = 'This field must be at least 1'
+                }
+            }
         }
      
         return error;
@@ -196,7 +203,7 @@ function EditListWithCount(
 
             }}
         >
-            {({ errors, touched, validateField, validateForm }) => (
+            {({ errors }) => (
 
             <Form
                 name="list_item_with_count_form"
@@ -278,7 +285,7 @@ function EditListWithCount(
                                                 validate={validateCount}
                                                 className="flex-none w-24 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
-                                       {errors[id] && <div><span className='text-red-600'>{errors[id]}</span></div>}
+                                       {errors[id] && <div><span className='text-red-600 mt-1'>{errors[id]}</span></div>}
                                         </TableCell>
                                         <TableCell>
 
