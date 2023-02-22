@@ -1,0 +1,1 @@
+set -e; npx yarn build;
