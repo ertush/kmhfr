@@ -620,7 +620,7 @@ const handleGeolocationUpdates = async (formData, coordinates_id, alert) => {
             body: JSON.stringify(formData)
         })
 
-
+       
 
         return resp
 
