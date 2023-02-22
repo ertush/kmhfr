@@ -267,11 +267,6 @@ function AddFacility(props) {
 	const facilityRegulationFormRef = useRef(null)
 	const facilityContactsFormRef = useRef(null)
 
-	const emergencyBedsRef = useState(null)
-	const ICUBedsRef = useState(null)
-	const martenityBedsRef = useState(null)
-	const HDUBedsRef = useState(null)
-	const isolationBedsRef = useState(null)
 
 	const noCotsRef = useRef('')
 	const totalBedsRef = useRef('')
@@ -604,7 +599,16 @@ function AddFacility(props) {
 																//  check if form validation works
 
 																if(
-																	noBedsErrorRef.current?.textContent == ''
+																	noCotsRef.current?.textContent == '' &&
+																	noEmergencyBedsRef.current?.textContent == '' &&
+																	noICUBedsRef.current?.textContent == '' &&
+																	noHDUBedsRef.current?.textContent == '' &&
+																	noMartenityBedsRef.current?.textContent == '' &&
+																	noIsolationBedsRef.current?.textContent == '' &&
+																	noGeneralTheatersRef.current?.textContent == '' &&
+																	noMartenityBedsRef.current?.textContent == '' &&
+																	facilityPopulationRef.current?.textContent == '' 
+
 																){
 																	handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef], 'POST', checklistFile)
 																}
@@ -985,6 +989,7 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_beds'
 																	ref={totalBedsRef}
 																	readOnly
@@ -1009,6 +1014,7 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='no_cots'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
@@ -1037,6 +1043,7 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_emergency_casualty_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
@@ -1068,6 +1075,7 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_icu_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
@@ -1084,13 +1092,6 @@ function AddFacility(props) {
 
 															</div>
 
-															{/* 
-															
-																																
-	
-	
-	
-															*/}
 
 															{/* No. High Dependency Unit HDU */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1106,6 +1107,7 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_hdu_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
@@ -1136,6 +1138,7 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_maternity_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
@@ -1166,6 +1169,7 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_isolation_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
@@ -1196,6 +1200,7 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_general_theatres'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
@@ -1225,6 +1230,7 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_maternity_theatres'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
@@ -1254,6 +1260,7 @@ function AddFacility(props) {
 																<input
 																	
 																	type='number'
+																	min={0}
 																	name='facility_catchment_population'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
@@ -2175,7 +2182,10 @@ function AddFacility(props) {
 														
 															{/* Add btn */}
 															<div className='w-full flex justify-end items-center mt-2'>
-																<button onClick={(e) => {e.preventDefault();  setFacilityDepts([
+																<button onClick={
+																	(e) => {
+																	e.preventDefault();  
+																setFacilityDepts([
 																	...facilityDepts, 
 																	(() => (
 																		<FacilityDeptContext.Provider value={facilityDepts} key={(facilityDepts.length + 1) - 1}>
@@ -2195,7 +2205,11 @@ function AddFacility(props) {
 																	))()
 
 																	/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
-																	])}} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+																	])}
+																	} 
+																	className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'
+																	type="button"
+																	>
 																	<PlusIcon className='w-4 h-4 text-white'/>
 																	<p className='text-medium font-semibold text-white'>Add</p>
 																</button>

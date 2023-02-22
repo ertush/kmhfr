@@ -15,7 +15,7 @@ import { PermissionContext } from "../providers/permissions";
 import {
   hasPermission
 } from "../utils/checkPermissions"
-import SettingsIcon from '@mui/icons-material/Settings';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 
@@ -416,7 +416,7 @@ export default function HeaderLayout({
                       }`}
                     href="/account"
                   >
-                   <SettingsIcon fontSize="small"/> &nbsp; Profile
+                   <AccountCircleOutlinedIcon fontSize="small"/> &nbsp; Profile
                   </a>
                 )}
               </Menu.Item>

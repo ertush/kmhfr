@@ -455,7 +455,7 @@ const Facility = (props) => {
                   hasPermission(/^facilities.view_facility$/, userPermissions) &&
                   (!belongsToUserGroup(userGroup, 'County Health Records Information Officer') || 
                   (belongsToUserGroup(userGroup, 'County Health Records Information Officer') && facility.has_edits)) &&
-                  (qf.includes('updated_pending_validation') || qf.includes('approve')) &&
+                  (qf.includes('updated_pending_validation') || qf.includes('to_publish')) &&
                   facility?.is_approved &&
                 
                 <button
@@ -466,7 +466,7 @@ const Facility = (props) => {
                   }
                 >
                   {
-                   facility.has_edits ? qf.includes('updated_pending_validation') && 'Validate Facility Updates' : qf.includes('approve') && 'Approve/Reject Facility' 
+                   facility.has_edits ? qf.includes('updated_pending_validation') && 'Validate Facility Updates' : qf.includes('to_publish') && 'Approve/Reject Facility' 
                   }
   
                 </button>
