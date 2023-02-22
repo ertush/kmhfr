@@ -1233,7 +1233,7 @@ const EditFacility = (props) => {
 
                                             {/* No. Functional general Beds */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                <label htmlFor="number_of_beds" className="text-gray-600 capitalize text-sm">Number of functional general beds<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                <label htmlFor="number_of_beds" className="text-gray-600 capitalize text-sm">Total Functional In-patient Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
                                                 <Field required  type="number" name="number_of_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
 
