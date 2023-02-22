@@ -36,7 +36,7 @@
     "highcharts": "^9.2.2",
     "highcharts-react-official": "^3.0.0",
     "leaflet-geosearch": "^3.3.2",
-    "moment": "^2.29.3",
+    "moment": "^2.29.4",
     "next": "12.1.0",
     "next-cookies": "^2.0.3",
     "nprogress": "^0.2.0",
