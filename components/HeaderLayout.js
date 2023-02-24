@@ -117,7 +117,7 @@ export default function HeaderLayout({
       ) {
       
 
-        getUserDetails(session_token.token, API_URL + "/rest-auth/user/").then(
+        getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
           (usr) => {
         
             if (usr.error || usr.detail) {
