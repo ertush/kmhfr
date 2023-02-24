@@ -8,12 +8,15 @@ import Select from 'react-select'
 import Download from '../../components/Download'
 import { UserContext } from '../../providers/user'
 import Link from 'next/link'
+import { PermissionContext } from '../../providers/permissions'
+import { hasPermission } from '../../utils/checkPermissions'
 
 const Dash = (props) => {
     const router = useRouter()
 
     const userCtx = useContext(UserContext)
 
+  const userPermissions = useContext(PermissionContext)
 
     let filters = props?.filters
     let period=[
@@ -145,7 +148,7 @@ const Dash = (props) => {
         {name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}`},
         {name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}`}
     ]     
-
+    console.log(user)
     const csvHeaders = useMemo(
         () => [
           { key: 'metric', label: 'Metric' },
@@ -252,7 +255,7 @@ const Dash = (props) => {
                                         {/* ~~~F L T R S~~~ */}
                                 </div>}
                                 {/* --- */}
-                                {user && user?.email==='test@mflcountyuser.com'? <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                {user && <div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     <div id={period} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
                                         <label htmlFor={period} className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by period:</label>
                                         <Select name={period} defaultValue='Full Year summary' className="w-full max-w-xs p-1 rounded bg-gray-50"
@@ -265,7 +268,7 @@ const Dash = (props) => {
                                         />
                                     </div>
                                     {/* ~~~F L T R S~~~ */}
-                                </div>:''}
+                                </div>} 
                                 {/* --- */}
                                 {/* county user */}
                                 {user &&user?.email==="test@mflcountyuser.com"?<div className="w-full flex  items-center justify-end space-x-3 mb-3">
@@ -323,7 +326,8 @@ const Dash = (props) => {
                                         ))}
                                 </div>:''}
                                 {/* sub_county user */}
-                                {user&&user.email==="test@mflsubcountyuser.com"&&<div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                {!hasPermission(/^facilities.add_facilityapproval$/, userPermissions) && 
+                                <div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     {wards && Object.keys(wards).length > 0 &&
                                         Object.keys(wards).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="third">
