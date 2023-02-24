@@ -96,32 +96,32 @@ const Dash = (props) => {
         }
     }
    
-    // const fetchWards = async (sub_county)=>{
-    //     let ward_url = API_URL + `/common/wards/?subcounty=${sub_county}&fields=id,name`
-    //     try {
-    //         const r = await fetch(ward_url, {
-    //             headers: {
-    //                 'Authorization': 'Bearer ' + sessToken,
-    //                 'Accept': 'application/json'
-    //             }
-    //         })
-    //         const jzon = await r.json()
-    //         setWard({ ward: jzon.results })
-    //         return jzon
-    //     } catch (err) {
-    //         console.log('Error fetching subcounties: ', err)
-    //         return {
-    //             error: true,
-    //             err: err,
-    //             filters: [],
-    //             api_url: API_URL
-    //         }
-    //     }
-    // }
+    const fetchWards = async (sub_county)=>{
+        let ward_url = API_URL + `/common/wards/?subcounty=${sub_county}&fields=id,name`
+        try {
+            const r = await fetch(ward_url, {
+                headers: {
+                    'Authorization': 'Bearer ' + sessToken,
+                    'Accept': 'application/json'
+                }
+            })
+            const jzon = await r.json()
+            setWard({ ward: jzon.results })
+            return jzon
+        } catch (err) {
+            console.log('Error fetching subcounties: ', err)
+            return {
+                error: true,
+                err: err,
+                filters: [],
+                api_url: API_URL
+            }
+        }
+    }
 
     console.log(user)
     useEffect(()=>{
-        // fetchWards(userCtx.county)
+        fetchWards(userCtx.county)
         fetchSubCounties(userCtx.county)
     },[])
 
@@ -268,7 +268,7 @@ const Dash = (props) => {
                                 </div>:''}
                                 {/* --- */}
                                 {/* county user */}
-                                {user &&user?.email==="test@mflsubcountyuser.com"?<div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                {user &&user?.email==="test@mflcountyuser.com"?<div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     {subcounty && Object.keys(subcounty).length > 0 &&
                                         Object.keys(subcounty).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="second">
@@ -323,7 +323,7 @@ const Dash = (props) => {
                                         ))}
                                 </div>:''}
                                 {/* sub_county user */}
-                                {/* {user&&user.constituency&&<div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                {user&&user.email==="test@mflsubcountyuser.com"&&<div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     {wards && Object.keys(wards).length > 0 &&
                                         Object.keys(wards).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="third">
@@ -376,7 +376,7 @@ const Dash = (props) => {
 
                                             </div>
                                         ))}
-                                </div>} */}
+                                </div>}
                                 {/* wards */}    
                             </div>
                         </div>
@@ -509,27 +509,77 @@ const Dash = (props) => {
                         </table>
                     </div>
                     {/* Facilities & CHUs by county (bar) 1/1 */}
-                    <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
-                        <BarChart
-                            title="Facilities & CHUs by county"
-                            categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
-                            tooltipsuffix="#"
-                            xaxistitle="County"
-                            yaxistitle="Number"
-                            data={(() => {
-                                let data = [];
-                                data.push({
-                                    name: 'Facilities',
-                                    data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.count)) || []
-                                });
-                                data.push({
-                                    name: 'CHUs',
-                                    data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.chu_count)) || []
-                                });
-                                return data;
-                            })() || []} />
-                    </div>
+                    {user&&user.is_national&&
+                        <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
+                            <BarChart
+                                title="Facilities & CHUs by county"
+                                categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
+                                tooltipsuffix="#"
+                                xaxistitle="County"
+                                yaxistitle="Number"
+                                data={(() => {
+                                    let data = [];
+                                    data.push({
+                                        name: 'Facilities',
+                                        data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.count)) || []
+                                    });
+                                    data.push({
+                                        name: 'CHUs',
+                                        data: Array.from(props?.data?.county_summary ?? [], cs => parseFloat(cs.chu_count)) || []
+                                    });
+                                    return data;
+                                })() || []} />
+                        </div>
+                    }
+                    {/* Facilities & CHUs by subcounty (bar) 1/1 */}
+                    {user&&user.email==="test@mflcountyuser.com"&&
+                        <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
+                            <BarChart
+                                title="Facilities & CHUs by county"
+                                categories={Array?.from(props?.data?.constituencies_summary ?? [], cs => cs.name) || []}
+                                tooltipsuffix="#"
+                                xaxistitle="Subcounty"
+                                yaxistitle="Number"
+                                data={(() => {
+                                    let data = [];
+                                    data.push({
+                                        name: 'Facilities',
+                                        data: Array.from(props?.data?.constituencies_summary ?? [], cs => parseFloat(cs.count)) || []
+                                    });
+                                    data.push({
+                                        name: 'CHUs',
+                                        data: Array.from(props?.data?.constituencies_summary ?? [], cs => parseFloat(cs.chu_count)) || []
+                                    });
+                                    return data;
+                                })() || []} />
+                        </div>
+                    }
+                    {/* Facilities & CHUs by ward (bar) 1/1 */}
+                    {user&&user.email==="test@mflsubcountyuser.com"&&
+                        <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
+                            <BarChart
+                                title="Facilities & CHUs by county"
+                                categories={Array?.from(props?.data?.wards_summary ?? [], cs => cs.name) || []}
+                                tooltipsuffix="#"
+                                xaxistitle="Ward"
+                                yaxistitle="Number"
+                                data={(() => {
+                                    let data = [];
+                                    data.push({
+                                        name: 'Facilities',
+                                        data: Array.from(props?.data?.wards_summary ?? [], cs => parseFloat(cs.count)) || []
+                                    });
+                                    data.push({
+                                        name: 'CHUs',
+                                        data: Array.from(props?.data?.wards_summary ?? [], cs => parseFloat(cs.chu_count)) || []
+                                    });
+                                    return data;
+                                })() || []} />
+                        </div>
+                    }
                     {/* Facility owners & categories - national summary - FILTERABLE (bar) 1/2 */}
                     <div className="col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility owners</h4>
