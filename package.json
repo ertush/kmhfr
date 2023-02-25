@@ -36,8 +36,8 @@
     "highcharts": "^9.2.2",
     "highcharts-react-official": "^3.0.0",
     "leaflet-geosearch": "^3.3.2",
-    "moment": "^2.29.3",
-    "next": "latest",
+    "moment": "^2.29.4",
+    "next": "12.1.0",
     "next-cookies": "^2.0.3",
     "nprogress": "^0.2.0",
     "react": "^17.0.2",
@@ -58,6 +58,7 @@
   "devDependencies": {
     "autoprefixer": "^10.2.6",
     "eslint": "^8.18.0",
+    "pm2": "^5.2.2",
     "postcss": "^8.3.5",
     "tailwindcss": "^2.2.4"
   }

@@ -259,7 +259,21 @@ const AddUser = (props)=> {
 						<span className="text-gray-500">{editMode? 'Edit user' : 'Add user'}</span>
 					</div>
 				</div>
-				<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password}</Alert>}</div>
+				<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>
+				           {()=>{
+                                if(status?.message){
+                                    if(typeof status?.message === 'object'){
+                                        return Object.keys(status?.message).map((key, index) => {
+                                            return <div key={index}>{key}: {status?.message[key]}</div>
+                                        })
+                                    }else{
+                                        return status?.message['__all__']
+                                    }
+                                }
+                            }}()
+
+					{/* {status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password} */}
+					</Alert>}</div>
 				<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 mb-3 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
 						<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 							
@@ -488,7 +502,7 @@ const AddUser = (props)=> {
 																value={userData.conf_password || ''}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
-															 {showErrorMessage && isCPasswordDirty ? <div> <p className='text-blue-900'>Passwords did not match</p> </div> : ''}
+															 {showErrorMessage && isCPasswordDirty ? <div> <p className='text-red-600'>Passwords did not match</p> </div> : ''}
 
 														</div>
 														

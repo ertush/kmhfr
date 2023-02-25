@@ -1,0 +1,47 @@
+name: Deploy to kmhfl server
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL
+  TOKEN_URL: $TOKEN_URL
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+  GRANT_TYPE: 'password'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Install Build Dependencies
+      run : yarn global add pm2
+ 
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@master  
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        port: ${{ secrets.SERVER_PORT }}
+        username: ${{ secrets.SERVER_USER }}
+        password: ${{ secrets.SERVER_KEY }}
+        script: |
+          set -e
+          cd /var/www/kmhflv3
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
+          if ! [[ -d './.git' ]]; then git init; fi
+          if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
+          git pull origin master
+          yarn
+          yarn build
+          npx pm2 restart all
+          
+          
+  
+
