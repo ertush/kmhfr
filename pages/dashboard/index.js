@@ -22,15 +22,15 @@ const Dash = (props) => {
     let period=[
         {
             value:1,
-            label:'Full Year'
+            label:'Annually'
         },
         {
             value:2,
-            label:'Half year'
+            label:'Quarterly'
         },
         {
             value:3,
-            label:'Quarter year'
+            label:'Monthly'
         }
     ]
     let [drillDown, setDrillDown] = useState({})
@@ -255,7 +255,7 @@ const Dash = (props) => {
                                         {/* ~~~F L T R S~~~ */}
                                 </div>}
                                 {/* --- */}
-                                {user && <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                {user &&user?.email==="test@mflcountyuser.com"? <div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     <div id={period} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
                                         <label htmlFor={period} className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by period:</label>
                                         <Select name={period} defaultValue='Full Year summary' className="w-full max-w-xs p-1 rounded bg-gray-50"
@@ -268,7 +268,22 @@ const Dash = (props) => {
                                         />
                                     </div>
                                     {/* ~~~F L T R S~~~ */}
-                                </div>} 
+                                </div>:''} 
+                                {/* --- */}
+                                {user &&user?.email==="test@mflsubcountyuser.com"? <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                    <div id={period} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
+                                        <label htmlFor={period} className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by period:</label>
+                                        <Select name={period} defaultValue='Full Year summary' className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                           options={period}
+                                           placeholder='Filter by period'
+                                           let value=''
+                                        //    onChange={
+                                        //     router.push('/dashboard?period=id')
+                                        //    }
+                                        />
+                                    </div>
+                                    {/* ~~~F L T R S~~~ */}
+                                </div>:''} 
                                 {/* --- */}
                                 {/* county user */}
                                 {user &&user?.email==="test@mflcountyuser.com"?<div className="w-full flex  items-center justify-end space-x-3 mb-3">
@@ -318,7 +333,7 @@ const Dash = (props) => {
                                                         if (value === 'national') {
                                                             router.push('/dashboard')
                                                         } else {
-                                                            router.push('/dashboard?constituency=' + value)
+                                                            router.push('/dashboard?sub_county=' + value)
                                                         }
                                                     }} />
 
@@ -661,7 +676,7 @@ Dash.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
-        let other_posssible_filters = ["county","constituency","ward"]
+        let other_posssible_filters = ["county","sub_county","ward"]
 
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
