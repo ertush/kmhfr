@@ -2256,7 +2256,7 @@ Gis.getInitialProps = async (ctx) => {
   const fetchData = (token) => {
     let url =
       API_URL +
-      "/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,operation_status_name,name,is_complete,approved_national_level,has_edits,approved,rejected,keph_level,lat_long&page_size=600";
+      "/facilities/facilities/?fields=id,code,official_name,county,sub_county_name,facility_type_name,owner_name,operation_status_name,name,is_complete,approved_national_level,has_edits,approved,rejected,keph_level,lat_long&page_size=600";
     let query = { searchTerm: "" };
     let other_posssible_filters = [
       "owner_type",
@@ -2277,6 +2277,8 @@ Gis.getInitialProps = async (ctx) => {
       "number_of_cots",
       "open_whole_day",
       "open_weekends",
+      "county",
+      "sub_county_name",
       "open_public_holidays",
     ];
     if (
