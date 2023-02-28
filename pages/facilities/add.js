@@ -31,6 +31,7 @@ import {
 	ChevronDoubleLeftIcon,
 	PlusIcon,
 } from '@heroicons/react/solid';
+import { XCircleIcon } from '@heroicons/react/outline'
 import FacilityDeptRegulationFactory from '../../components/generateFacilityDeptRegulation'
 import {
 	FacilityContact,
@@ -316,31 +317,19 @@ function AddFacility(props) {
     const [title, setTitle] = useState('');
 	const [is24hrsOpen, setIs24hrsOpen] = useState(false)
 	const [isRegBodyChange, setIsRegBodyChange] = useState(false)
-	const [facilityDepts, setFacilityDepts] = useState([
-		(() => (
-			<FacilityDeptRegulationFactory
-				key={0}
-				index={0}
-				facilityDepts={[]}
-				isRegBodyChange={isRegBodyChange}
-				setIsRegBodyChange={setIsRegBodyChange}
-				regNo={null}
-				licenseNo={null}
-				facilityDeptRegBody={null}
-				facilityDeptValue={null}
-				setFacilityDepts={() => null}
-				facilityDeptOptions={facilityDeptOptions}
-			/>
-		))()
+	const [facilityDepts, setFacilityDepts] = useState([])
 
-	]) // [0]
+	const handleDeleteField = (index) => {
+		const values = facilityDepts;
+		values.splice(index, 1);
+		setFacilityDepts((prevState) => ([ ...values]))
+	};
 
 	const [emergencyBeds, setEmergencyBeds] = useState(0)
 	const [icuBeds, setICUBeds] = useState(0)
 	const [hduBeds, setHDUBeds] = useState(0)
 	const [isolationBeds, setIsolationBeds] = useState(0)
 	const [martenityBeds, setMartenityBeds] = useState(0)
-	
 
 	const [facilityContacts, setFacilityContacts] = useState([
 		(() => (
@@ -2165,13 +2154,27 @@ function AddFacility(props) {
 																<hr className='col-span-4'/>
 
 																{/* add other fields */}
-															    <div className='flex-col items-start justify-start gap-y-4'>
+															    <div className='flex flex-col items-start justify-start gap-y-4'>
 																	{
-																		facilityDepts.map((facilityDept, i) => (
-														
-																			facilityDept
+																		facilityDepts.map((facilityDept, i) => {console.log({facilityDept, i}); return (
+																			<div key={facilityDept.index}>
+																				<FacilityDeptRegulationFactory
+																					key={facilityDept.index}
+																					index={i}
+																					{...facilityDept}
+																				/>
+																				
+																				<button 
+																					id={`delete-btn-${i}`}
+																					key={facilityDept.index}
+																					onClick={(ev)=> {
+																						ev.preventDefault();
+																						handleDeleteField(i);
+																					}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+																				
+																			</div>
 																		
-																		))
+																		)})
 																	}
 																</div>	
 																
@@ -2182,34 +2185,21 @@ function AddFacility(props) {
 														
 															{/* Add btn */}
 															<div className='w-full flex justify-end items-center mt-2'>
-																<button onClick={
-																	(e) => {
-																	e.preventDefault();  
-																setFacilityDepts([
-																	...facilityDepts, 
-																	(() => (
-																		<FacilityDeptContext.Provider value={facilityDepts} key={(facilityDepts.length + 1) - 1}>
-																			<FacilityDeptRegulationFactory
-																			key={(facilityDepts.length + 1) - 1}
-																			index={(facilityDepts.length + 1) - 1}
-																			isRegBodyChange={isRegBodyChange}
-																			setIsRegBodyChange={setIsRegBodyChange}
-																			setFacilityDepts={setFacilityDepts}
-																			facilityDeptRegBody={null} 
-																			facilityDeptValue={null}
-																			regNo={null} 
-																			licenseNo={null}
-																			facilityDeptOptions={facilityDeptOptions}
-																			/>
-																		</FacilityDeptContext.Provider>
-																	))()
 
-																	/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
-																	])}
-																	} 
-																	className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'
-																	type="button"
-																	>
+																<button onClick={(e) => {e.preventDefault();  setFacilityDepts(s=>{return [
+																	...s,  {
+																		index:facilityDepts.some((o) => o.index === s.length)? s.length + 1 : s.length,
+																		isRegBodyChange:isRegBodyChange, 
+																		setIsRegBodyChange:setIsRegBodyChange, 
+																		setFacilityDepts:setFacilityDepts,
+																		facilityDeptRegBody:null,
+																		facilityDeptValue:null,
+																		regNo: null,
+																		licenseNo: null,
+																		facilityDeptOptions: facilityDeptOptions
+																	 },
+																	]})}} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+
 																	<PlusIcon className='w-4 h-4 text-white'/>
 																	<p className='text-medium font-semibold text-white'>Add</p>
 																</button>
