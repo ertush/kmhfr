@@ -1,6 +1,6 @@
 // React imports
 import React, { useState, useEffect, useRef, createContext } from 'react';
-import { useAlert } from "react-alert";
+// import { useAlert } from "react-alert";
 
 
 // Next imports
@@ -37,11 +37,9 @@ import {
 	FacilityContact,
 	OfficerContactDetails
 } from '../../components/FacilityContacts';
+
 // Package imports
-
 import Select from 'react-select';
-
-
 
 import { 
 	handleBasicDetailsSubmit,
@@ -53,6 +51,7 @@ import {
 	handleServiceUpdates,
     handleHrSubmit
 } from '../../controllers/facility/facilityHandlers';
+import { inputValidation } from '../../utils/formValidation';
 
 
 export const FacilityDeptContext = createContext(null)
@@ -71,9 +70,12 @@ const Map = React.memo(WardMap)
 
 function AddFacility(props) {
 
-	const alert = useAlert();
+	// const alert = useAlert();
+
 
 	// Form drop down options
+
+
 
 	const facilityOptions = (() => {
 		const f_types = [
@@ -266,9 +268,22 @@ function AddFacility(props) {
 	const facilityRegulationFormRef = useRef(null)
 	const facilityContactsFormRef = useRef(null)
 
-  
 
-    // Services State data
+	const noCotsRef = useRef('')
+	const totalBedsRef = useRef('')
+	const noEmergencyBedsRef = useRef('')
+	const noIsolationBedsRef = useRef('')
+	const noGeneralTheatersRef = useRef('')
+	const noMartenityBedsRef = useRef('')
+	const noHDUBedsRef = useRef('')
+	const noICUBedsRef = useRef('')
+	const noMartenityTheatersRef = useRef('')
+	const facilityPopulationRef = useRef('')
+
+
+
+    // Services State 
+	
     const [services, setServices] = useState([])
 	const [facilityOption, setFacilityOption] = useState('')
 	const [facilityOfficialName, setFacilityOfficialName] = useState('')
@@ -310,6 +325,12 @@ function AddFacility(props) {
 		setFacilityDepts((prevState) => ([ ...values]))
 	};
 
+	const [emergencyBeds, setEmergencyBeds] = useState(0)
+	const [icuBeds, setICUBeds] = useState(0)
+	const [hduBeds, setHDUBeds] = useState(0)
+	const [isolationBeds, setIsolationBeds] = useState(0)
+	const [martenityBeds, setMartenityBeds] = useState(0)
+
 	const [facilityContacts, setFacilityContacts] = useState([
 		(() => (
 			<FacilityContact
@@ -333,6 +354,8 @@ function AddFacility(props) {
 			/>
 		))()
 	])
+
+
 
 
 	const filters = []
@@ -463,8 +486,19 @@ function AddFacility(props) {
 		}
 	}, [is24hrsOpen])
 
-	useEffect(() => {/*console.log({facilityDepts})*/}, [isRegBodyChange, facilityDepts])
 
+	// let totalBeds = 0
+
+	
+	useEffect(() => {
+		
+		totalBedsRef.current?.value = emergencyBeds + icuBeds + hduBeds + isolationBeds + martenityBeds;
+	}, [emergencyBeds, icuBeds, hduBeds, isolationBeds, martenityBeds])
+
+	// useEffect(() => {}, [isRegBodyChange, facilityDepts])
+
+
+	
 	
   return (
 	<>
@@ -550,7 +584,29 @@ function AddFacility(props) {
 															encType="multipart/form-data"
 															ref={basicDetailsRef}
 															className='flex flex-col w-full items-start justify-start gap-3'
-															onSubmit={ev => handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef], 'POST', checklistFile)}>
+															onSubmit={ev => {
+																//  check if form validation works
+
+																if(
+																	noCotsRef.current?.textContent == '' &&
+																	noEmergencyBedsRef.current?.textContent == '' &&
+																	noICUBedsRef.current?.textContent == '' &&
+																	noHDUBedsRef.current?.textContent == '' &&
+																	noMartenityBedsRef.current?.textContent == '' &&
+																	noIsolationBedsRef.current?.textContent == '' &&
+																	noGeneralTheatersRef.current?.textContent == '' &&
+																	noMartenityBedsRef.current?.textContent == '' &&
+																	facilityPopulationRef.current?.textContent == '' 
+
+																){
+																	handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef], 'POST', checklistFile)
+																}
+																else
+																{
+																	ev.preventDefault()
+																	return
+																}
+															}}>
 
 															{/* Facility Official Name */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -913,7 +969,7 @@ function AddFacility(props) {
 																<label
 																	htmlFor='number_of_beds'
 																	className='text-gray-600 capitalize text-sm'>
-																	Total Functional In-patient beds
+																	Total Functional In-patient Beds
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
 																		*
@@ -922,9 +978,15 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_beds'
+																	ref={totalBedsRef}
+																	readOnly
+																	
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																
+																
 															</div>
 
 															{/* No. Functional cots */}
@@ -932,7 +994,7 @@ function AddFacility(props) {
 																<label
 																	htmlFor='number_of_cots'
 																	className='text-gray-600 capitalize text-sm'>
-																	Number of functional cots
+																	Number of Functional Cots
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
 																		*
@@ -941,9 +1003,19 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='no_cots'
+																	onChange={e => {
+																		if(inputValidation(e.target.value, /^-\d+$/)){
+																			noCotsRef?.current?.textContent = 'Number of Functional cots must be at least 0'
+																		}
+																		else{
+																			noCotsRef?.current?.textContent = ''
+																		}
+																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																<label ref={noCotsRef} className='text-red-500 mt-1'></label>
 															</div>
 
 															{/* No. Emergency Casulty Beds */}
@@ -960,10 +1032,23 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_emergency_casualty_beds'
+																	onChange={e => {
+																		if(inputValidation(e.target.value, /^-\d+$/)){
+																			noEmergencyBedsRef?.current?.textContent = 'Number of Emergency Casulty Beds must be at least 0'
+																		}
+																		else{
+																			setEmergencyBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0);
+																			noEmergencyBedsRef?.current?.textContent = ''
+																		}
+																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																<label ref={noEmergencyBedsRef} className='text-red-500 mt-1'></label>
+
 															</div>
+
 
 															{/* No. Intensive Care Unit Beds */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -979,10 +1064,23 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_icu_beds'
+																	onChange={e => {
+																		if(inputValidation(e.target.value, /^-\d+$/)){
+																			noICUBedsRef?.current?.textContent = 'Number of Intensive Care Unit Beds must be at least 0'
+																		}
+																		else{
+																			setICUBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0)  
+																			noICUBedsRef?.current?.textContent = ''
+																		}
+																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																<label ref={noICUBedsRef} className='text-red-500 mt-1'></label>
+
 															</div>
+
 
 															{/* No. High Dependency Unit HDU */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -998,9 +1096,21 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_hdu_beds'
+																	onChange={e => {
+																		if(inputValidation(e.target.value, /^-\d+$/)){
+																			noHDUBedsRef?.current?.textContent = 'Number of High Dependency Unit Beds must be at least 0'
+																		}
+																		else{
+																			setHDUBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0);
+																			noHDUBedsRef?.current?.textContent = ''
+																		}
+																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																<label ref={noHDUBedsRef} className='text-red-500 mt-1'></label>
+
 															</div>
 
 															{/* No. of maternity beds */}
@@ -1008,7 +1118,7 @@ function AddFacility(props) {
 																<label
 																	htmlFor='number_of_maternity_beds'
 																	className='text-gray-600 capitalize text-sm'>
-																	Number of maternity beds
+																	Number of Maternity Beds
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
 																		*
@@ -1017,17 +1127,29 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_maternity_beds'
+																	onChange={e => {
+																		if(inputValidation(e.target.value, /^-\d+$/)){
+																			noMartenityBedsRef?.current?.textContent = 'Number of Maternity Beds must be at least 0'
+																		}
+																		else{
+																			setMartenityBeds(e.target.value.match(/^[0-9]+$/) !== null ?  Number(e.target.value) : 0)
+																			noMartenityBedsRef?.current?.textContent = ''
+																		}
+																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																<label ref={noMartenityBedsRef} className='text-red-500 mt-1'></label>
+
 															</div>
 
-															{/* No. of isolation beds */}
+															{/* No. of Isolation Beds */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
 																	htmlFor='number_of_isolation_beds'
 																	className='text-gray-600 capitalize text-sm'>
-																	Number of isolation beds
+																	Number of Isolation Beds
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
 																		*
@@ -1036,9 +1158,21 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_isolation_beds'
+																	onChange={e => {
+																		if(inputValidation(e.target.value, /^-\d+$/)){
+																			noIsolationBedsRef?.current?.textContent = 'Number of Isolation Beds must be at least 0'
+																		}
+																		else{
+																			setIsolationBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0)
+																			noIsolationBedsRef?.current?.textContent = ''
+																		}
+																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																<label ref={noIsolationBedsRef} className='text-red-500 mt-1'></label>
+
 															</div>
 
 															{/* No. of General Theatres */}
@@ -1055,9 +1189,20 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_general_theatres'
+																	onChange={e => {
+																		if(inputValidation(e.target.value, /^-\d+$/)){
+																			noGeneralTheatersRef?.current?.textContent = 'Number of General Theatres must be at least 0'
+																		}
+																		else{
+																			noGeneralTheatersRef?.current?.textContent = ''
+																		}
+																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																<label ref={noGeneralTheatersRef} className='text-red-500 mt-1'></label>
+
 															</div>
 
 															{/* No. of Maternity Theatres */}
@@ -1074,9 +1219,20 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='number'
+																	min={0}
 																	name='number_of_maternity_theatres'
+																	onChange={e => {
+																		if(inputValidation(e.target.value, /^-\d+$/)){
+																			noMartenityTheatersRef?.current?.textContent = 'Number of Maternity Theatres must be at least 0'
+																		}
+																		else{
+																			noMartenityTheatersRef?.current?.textContent = ''
+																		}
+																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																<label ref={noMartenityTheatersRef} className='text-red-500 mt-1'></label>
+
 															</div>
 
 															{/* Facility Catchment Population */}
@@ -1093,9 +1249,20 @@ function AddFacility(props) {
 																<input
 																	
 																	type='number'
+																	min={0}
 																	name='facility_catchment_population'
+																	onChange={e => {
+																		if(inputValidation(e.target.value, /^-\d+$/)){
+																			facilityPopulationRef?.current?.textContent = 'Facility Catchment Population must be at least 0'
+																		}
+																		else{
+																			facilityPopulationRef?.current?.textContent = ''
+																		}
+																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																<label ref={facilityPopulationRef} className='text-red-500 mt-1'></label>
+
 															</div>
 
 															{/* Is Reporting DHIS2 */}
@@ -2032,6 +2199,7 @@ function AddFacility(props) {
 																		facilityDeptOptions: facilityDeptOptions
 																	 },
 																	]})}} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
+
 																	<PlusIcon className='w-4 h-4 text-white'/>
 																	<p className='text-medium font-semibold text-white'>Add</p>
 																</button>
