@@ -15,6 +15,31 @@ export default async function submitFormData(req, res) {
 
 
         switch (path) {
+            case 'basic':
+                url = `${API_URL}/rest-auth/user`;
+                method = 'PATCH';
+                contentType = 'application/json;charset=utf-8';
+                break;
+            case 'delete_profile_contact':
+                url = `${API_URL}/common/user_contacts/${req.query.id}/`;
+                method = 'DELETE';
+                contentType = 'application/json;charset=utf-8';
+                break;
+            case 'contacts':
+                url = `${API_URL}/common/contacts/`;
+                method = 'POST';
+                contentType = 'application/json;charset=utf-8';
+                break; 
+            case 'user_contacts':
+                url = `${API_URL}/common/user_contacts/`;
+                method = 'POST';
+                contentType = 'application/json;charset=utf-8';
+                break;
+            case 'password':
+                url = `${API_URL}/rest-auth/password/change/`;
+                method = 'POST';
+                contentType = 'application/json;charset=utf-8';
+                break;
             case 'facilities':
                 url = `${API_URL}/facilities/facilities/`;
                 method = 'POST';
@@ -158,6 +183,10 @@ export default async function submitFormData(req, res) {
                 contentType = 'application/json;charset=utf-8';
                 method = 'PATCH';
                 break
+            case `delete_contact`:
+                url = `${API_URL}/facilities/contacts/${req.query.id}`
+                method = 'DELETE';
+                break;
             default:
 
 

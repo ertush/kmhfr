@@ -7,22 +7,32 @@ import { CheckCircleIcon, XCircleIcon, XIcon } from '@heroicons/react/solid'
 import { Dialog} from '@headlessui/react'
 import { UserContext } from '../providers/user';
 import Link from 'next/link'
+import router from 'next/router';
+import Alert from '@mui/material/Alert';
+import Backdrop from '@mui/material/Backdrop';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
 
 const Account = () => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL
     const [user, setUser] = useState(null)
     const [showEditBasic, setShowEditBasic] = useState(false)
     const [showEditContacts, setShowEditContacts] = useState(false)
     const [userContact, setUserContact] = useState(null)
     const [userContactType, setUserContactType] = useState(null)
-    const API_URL = process.env.NEXT_PUBLIC_API_URL
-    const [basicUserForm, setBasicUserForm] = useState({})
-    const [contactDetailsForm, setContactDetailsForm] = useState({})
-    const [fname, setFname] = useState("")
-    const [lname, setLname] = useState("")
-    const [onames, setOnames] = useState("")
-    const [email, setEmail] = useState("")
-    const [username, setUsername] = useState("")
+    const [formDetails, setFormDetails] = useState(null)
+    const [path, setPath] = useState('')
+    const [formErrors, setFormErrors] = useState({ status: false, message: ''})
+    const [status, setStatus]= useState(null)
+    const [open, setOpen] = useState(false);
+    const [contact_id, setContactId] = useState(null)
 
+    // const [fname, setFname] = useState("")
+    // const [lname, setLname] = useState("")
+    // const [onames, setOnames] = useState("")
+    // const [email, setEmail] = useState("")
+    // const [username, setUsername] = useState("")
 
     const userCtx = useContext(UserContext)
     //check if a session cookie is set
@@ -34,20 +44,20 @@ const Account = () => {
             let s_r = userCtx
             user_id = s_r?.id
             setUser(s_r)
-            if (s_r) {
-                setFname(s_r.first_name)
-                setLname(s_r.last_name)
-                setOnames(s_r.other_names)
-                setEmail(s_r.email)
-                setUsername(s_r.username)
-            }
+            // if (s_r) {
+            //     setFname(s_r.first_name)
+            //     setLname(s_r.last_name)
+            //     setOnames(s_r.other_names)
+            //     setEmail(s_r.email)
+            //     setUsername(s_r.username)
+            // }
         }
         
        
         let is_user_logged_in = (typeof window !== 'undefined' && window.document.cookie.indexOf('access_token=') > -1) || false
         let session_token = null
         if (is_user_logged_in) {
-            session_token = JSON.parse(window.document.cookie.split('access_token=')[1])
+            session_token = JSON.parse(window.document.cookie.split('access_token=')[1].split(';')[0])
         }
         if (is_user_logged_in && typeof window !== 'undefined' && session_token !== null && user_id && ("" + user_id).length > 0) {
             getUserContacts(session_token.token, API_URL + '/common/user_contacts/?user=' + user_id).then(cnt => {
@@ -67,6 +77,85 @@ const Account = () => {
         }
       
     }, [])
+
+    // console.log({formDetails, path});
+
+    useEffect (()=>{
+        let mounted = true
+        if(mounted){
+            if(formDetails !== null && formDetails?.old_password === formDetails?.new_password1){
+                setFormErrors({status:true, message:'Old password and new password cannot be the same'})
+            }else
+            if(formDetails !== null && formDetails?.new_password1 !== formDetails?.new_password2){
+                setFormErrors({status:true, message:'New password and confirm password do not match'})
+            }else{
+                setFormErrors({status:false, message:''})
+            }
+            
+        }
+        return () => mounted = false; 
+
+    },[formDetails, path])
+    const handleBasicDetailsSubmit = async ()=>{
+		let url ='/api/common/submit_form_data/?path='+path
+		try{
+			 fetch(url, {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json;charset=utf-8'
+					
+				},
+				method: path.includes('delete_profile_contact')? 'DELETE': 'POST',
+				body: path.includes('delete_profile_contact')? null: JSON.stringify(formDetails).replace(',"":""','')
+			})
+			.then(resp =>resp.json())
+			.then(async (res) =>{ 
+                if(path === 'basic'){
+                    setShowEditBasic(false);
+                }
+                if(path === 'contacts'){
+                    let payload={
+                        user_id: userCtx.id,
+                        contact:res.id
+                    }
+                    url = '/api/common/submit_form_data/?path=user_contacts'
+                    await fetch(url, {
+                        headers:{
+                            'Accept': 'application/json, text/plain, */*',
+                            'Content-Type': 'application/json;charset=utf-8'
+                        },
+                        method: 'POST',
+                        body: JSON.stringify(payload).replace(',"":""','')
+                    }).then(resp =>resp.json()).then(res =>{
+                        console.log(res.length)
+                        if(res.id !==undefined ){
+
+                            router.push({pathname:'/users'})
+                            alert.success(editMode? 'User updated successfully':'User added successfully')
+        
+                        }else{
+                            setStatus({status:'error', message: res})
+                        }
+                    })
+                   setShowEditContacts(false);
+                }
+                if(path === 'password'){
+                    router.push('/auth/login')
+                }
+			})
+			.catch(e=>{
+			  setStatus({status:'error', message: e})
+			})
+		}catch (e){
+			setStatus({status:'error', message: e})
+		}
+	}
+    useEffect(() => {
+        if(path !== '' || path !== null){
+
+            handleBasicDetailsSubmit()
+        }
+    }, [path])
     return (
         <div className="">
             <Head>
@@ -76,12 +165,71 @@ const Account = () => {
             </Head>
 
             <MainLayout>
+            {open && 
+			<Modal
+				aria-labelledby="transition-modal-title"
+				aria-describedby="transition-modal-description"
+				open={open}
+				onClose={()=>setOpen(false)}
+				closeAfterTransition
+				BackdropComponent={Backdrop}
+				BackdropProps={{
+				timeout: 500,
+				}}
+			>
+				<Fade in={open}>
+				<Box sx={
+					{
+						position: 'absolute',
+						top: '50%',
+						left: '50%',
+						transform: 'translate(-50%, -50%)',
+						width: 700,
+						bgcolor: 'background.paper',
+						borderRadius: '6px',
+						boxShadow: 24,
+						p: 4,
+					}
+				}>
+					<span className="flex gap-2">    
+							Are you sure you want to delete<b></b> ?
+					</span>
+					<div className='flex justify-start gap-4 mt-4'> 
+						<button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="button" 
+                         onClick={(e)=>{
+                            setPath(`delete_profile_contact&id=${contact_id}`);setOpen(false)
+                        }}
+                          >Delete</button>
+						<button className="bg-red-500 text-white font-semibold rounded p-2 text-center" 
+						onClick={()=> {setOpen(false)}} 
+						>Cancel</button>
+					</div>     
+				</Box>
+				</Fade>
+			</Modal>
+		}
                 {user && user?.id ? <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
                     <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
                             <Link className="text-green-700" href="/">Home</Link> {'/'}
                             <span className="text-gray-500">Account settings</span>
                         </div>
+                        <div>{status !==null && <Alert severity={status?.status} sx={{width:'100%'}}>
+
+                            {()=>{
+                                if(status?.message){
+                                    if(typeof status?.message === 'object'){
+                                        return Object.keys(status?.message).map((key, index) => {
+                                            return <div key={index}>{key}: {status?.message[key]}</div>
+                                        })
+                                    }else{
+                                        return status?.message
+                                    }
+                                }
+                            }}()
+                            
+                            </Alert> }</div>
+
                         <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (user.is_active ? "border-green-600" : "border-red-600")}>
                             <div className="col-span-6 md:col-span-3">
                                 <h1 className="text-4xl tracking-tight font-bold leading-tight">{user?.full_name}</h1>
@@ -138,9 +286,10 @@ const Account = () => {
                                                         <Dialog.Description as="div" className="flex flex-col items-center justify-start gap-3 w-full">
                                                             <form className="grid grid-cols-2 gap-3 p-2 w-full" onSubmit={fm => {
                                                                 fm.preventDefault();
-                                                                console.log(basicUserForm);
+                                                                setPath('basic')
+                                                                // handleBasicDetailsSubmit(fm);
                                                                 // if submission successful then
-                                                                setShowEditBasic(false);
+                                                                // setShowEditBasic(false);
                                                                 //else show error within modal
                                                             }}>
                                                                 <div className="flex flex-col gap-2">
@@ -148,7 +297,9 @@ const Account = () => {
                                                                     <input type="text" name="first_name" defaultValue={user.first_name || ""}
                                                                         onChange={ev => {
                                                                             if (ev.target.value && ev.target.value.length > 0) {
-                                                                                setBasicUserForm({ ...basicUserForm, [ev.target.name]: ev.target.value });
+                                                                                setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
+                                                                            }else{
+                                                                                setFormDetails({ ...formDetails, [ev.target.name]: "" });
                                                                             }
                                                                         }}
                                                                         className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
@@ -158,7 +309,9 @@ const Account = () => {
                                                                     <input type="text" name="last_name" defaultValue={user.last_name || ""}
                                                                         onChange={ev => {
                                                                             if (ev.target.value && ev.target.value.length > 0) {
-                                                                                setBasicUserForm({ ...basicUserForm, [ev.target.name]: ev.target.value });
+                                                                                setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
+                                                                            }else{
+                                                                                setFormDetails({ ...formDetails, [ev.target.name]: "" });
                                                                             }
                                                                         }}
                                                                         className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
@@ -168,7 +321,9 @@ const Account = () => {
                                                                     <input type="text" name="other_names" defaultValue={user.other_names || ""}
                                                                         onChange={ev => {
                                                                             if (ev.target.value && ev.target.value.length > 0) {
-                                                                                setBasicUserForm({ ...basicUserForm, [ev.target.name]: ev.target.value });
+                                                                                setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
+                                                                            }else{
+                                                                                setFormDetails({ ...formDetails, [ev.target.name]: "" });
                                                                             }
                                                                         }}
                                                                         className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
@@ -178,7 +333,7 @@ const Account = () => {
                                                                     <input type="email" name="email" defaultValue={user.email || ""}
                                                                         onChange={ev => {
                                                                             if (ev.target.value && ev.target.value.length > 0) {
-                                                                                setBasicUserForm({ ...basicUserForm, [ev.target.name]: ev.target.value });
+                                                                                setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }}
                                                                         className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
@@ -188,16 +343,17 @@ const Account = () => {
                                                                     <input type="text" name="username" defaultValue={user.username || ""}
                                                                         onChange={ev => {
                                                                             if (ev.target.value && ev.target.value.length > 0) {
-                                                                                setBasicUserForm({ ...basicUserForm, [ev.target.name]: ev.target.value });
+                                                                                setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }}
                                                                         className="rounded border border-gray-300 focus:ring-1 ring-green-500 outline-none bg-white p-2" />
                                                                 </div>
-                                                            </form>
                                                             <div className="flex flex-wrap gap-3 items-center justify-around w-full">
-                                                                <button className="border-none rounded bg-transparent outline-none py-2 px-3 hover:text-red-700 focus:text-red-700 active:text-red-700" onClick={() => {setShowEditBasic(false); setBasicUserForm({}); }}>Cancel</button>
-                                                                <button className="text-white rounded bg-black py-2 px-4 hover:bg-green-700 focus:bg-green-700 active:bg-green-700" onClick={() => alert(JSON.stringify(basicUserForm))}>Save changes</button>
+                                                                <button className="border-none rounded bg-transparent outline-none py-2 px-3 hover:text-red-700 focus:text-red-700 active:text-red-700" onClick={() => {setShowEditBasic(false); setFormDetails({}); }}>Cancel</button>
+                                                                {/* <button type= "submit" className="text-white rounded bg-black py-2 px-4 hover:bg-green-700 focus:bg-green-700 active:bg-green-700">Save changes</button> */}
+                                                                <input type="submit" value="Save changes" className="bg-black text-white rounded py-2 px-4 text-base font-medium hover:text-green-300" />
                                                             </div>
+                                                            </form>
                                                         </Dialog.Description>
                                                     </div>
                                                 </div>
@@ -333,9 +489,9 @@ const Account = () => {
 
                                                                 <form className="flex flex-col gap-2 w-full p-1" onSubmit={fm => {
                                                                     fm.preventDefault();
-                                                                    console.log(contactDetailsForm);
+                                                                    setPath('contacts')
+                                                                    // handleBasicDetailsSubmit(fm)
                                                                     // if submission successful then
-                                                                    setShowEditContacts(false);
                                                                     //else show error within modal
                                                                 }}>
                                                                     <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
@@ -343,7 +499,7 @@ const Account = () => {
                                                                         <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" name="contact_type"
                                                                         onChange={ev => {
                                                                             if (ev.target.value && ev.target.value.length > 0) {
-                                                                                setContactDetailsForm({ ...contactDetailsForm, [ev.target.name]: ev.target.value });
+                                                                                setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }}>
                                                                             {userContactType && userContactType.map(ctype => (
@@ -353,19 +509,19 @@ const Account = () => {
                                                                     </div>
                                                                     <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
                                                                         <label>Contact details</label>
-                                                                        <input type="text" className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" name="contact_details" onChange={ev => {
+                                                                        <input type="text" className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" name="contact" onChange={ev => {
                                                                             if (ev.target.value && ev.target.value.length > 0) {
-                                                                                setContactDetailsForm({ ...contactDetailsForm, [ev.target.name]: ev.target.value });
+                                                                                setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
                                                                             }
                                                                         }} />
                                                                     </div>
                                                                  
+                                                                <div className="flex flex-wrap gap-3 items-center justify-around w-full">
+                                                                    <button className="border-none rounded bg-transparent outline-none py-2 px-3 hover:text-red-700 focus:text-red-700 active:text-red-700" onClick={() => {setShowEditContacts(false); setFormDetails({}); }}>Cancel</button>
+                                                                    <button className="text-white rounded bg-black py-2 px-4 hover:bg-green-700 focus:bg-green-700 active:bg-green-700" type="submit">Add Contact</button>
+                                                                </div>
                                                                 </form>
 
-                                                                <div className="flex flex-wrap gap-3 items-center justify-around w-full">
-                                                                    <button className="border-none rounded bg-transparent outline-none py-2 px-3 hover:text-red-700 focus:text-red-700 active:text-red-700" onClick={() => {setShowEditContacts(false); setContactDetailsForm({}); }}>Cancel</button>
-                                                                    <button className="text-white rounded bg-black py-2 px-4 hover:bg-green-700 focus:bg-green-700 active:bg-green-700" onClick={() => alert(JSON.stringify(contactDetailsForm))}>Add Contact</button>
-                                                                </div>
                                                             </Dialog.Description>
                                                         </div>
                                                     </div>
@@ -379,7 +535,9 @@ const Account = () => {
                                                 <label className="col-span-1 text-gray-600 capitalize">{contact.contact_type_text[0].toLocaleUpperCase() + contact.contact_type_text.slice(1).toLocaleLowerCase() || "Contact"}</label>
                                                 <p className="col-span-2 text-black font-medium text-base flex items-center justify-between gap-x-1">
                                                     <span>{contact.contact_text || " - "}</span>
-                                                    <button className="text-gray-600 focus:text-red-600 hover:text-red-600 bg-transparent flex flex-row items-center justify-between gap-x-1 group outline-none focus:ring-1 focus:ring-red-500 leading-none rounded">
+                                                    <button className="text-gray-600 focus:text-red-600 hover:text-red-600 bg-transparent flex flex-row items-center justify-between gap-x-1 group outline-none focus:ring-1 focus:ring-red-500 leading-none rounded"
+                                                    onClick={()=>{setContactId(contact.id);setOpen(true)}}
+                                                    >
                                                         <XIcon className="h-4 w-4"/>
                                                         <span className="group-focus:underline group-hover:underline">Remove</span>
                                                     </button>
@@ -397,19 +555,50 @@ const Account = () => {
                                         </h3>
                                         <br className="my-1"/>
                                         <h6>The password must be at least 8 characters and contain both letters and numbers</h6>
-                                        <form className="flex flex-col gap-2 w-full border p-3 rounded">
+                                        <form className="flex flex-col gap-2 w-full border p-3 rounded"
+                                        onSubmit={fm => {
+                                            fm.preventDefault();
+                                            setPath('password')
+                                            // handleBasicDetailsSubmit(fm)
+                                            // if submission successful then
+                                            //else show error within modal
+                                        }}
+                                        >
                                             <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
                                                 <label>Old password</label>
-                                                <input type="password" className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" placeholder="********" name="old_password" />
+                                                <input type="password" className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" placeholder="********" name="old_password" 
+                                                onChange={ev => {
+                                                    if (ev.target.value && ev.target.value.length > 0) {
+                                                        setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
+                                                    }
+                                                }}
+                                                />
                                             </div>
                                             <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
                                                 <label>New password</label>
-                                                <input type="password" className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" placeholder="********" name="new_password" />
+                                                <input type="password" className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" placeholder="********" name="new_password1"
+                                                passwordrules="minlength: 8; required: lower; required: upper; required: digit;"
+                                                onChange={ev => {
+                                                    if (ev.target.value && ev.target.value.length > 0) {
+                                                        setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
+                                                    }
+                                                }}
+                                                
+                                                />
                                             </div>
                                             <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
-                                                <label>Repeat new password</label>
-                                                <input type="password" className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" placeholder="********" name="repeat_new_password" />
+                                                <label>Confirm password</label>
+                                                <input type="password" className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-green-500" placeholder="********" name="new_password2" 
+                                                onChange={ev => {
+                                                    if (ev.target.value && ev.target.value.length > 0) {
+                                                        setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
+                                                    }
+                                                }}
+                                                
+                                                />
                                             </div>
+                                            {formErrors.status && <div> <p className='text-red-600'>{formErrors.message}</p> </div> }
+
                                             <div className="flex flex-col items-start justify-start gap-1 text-left p-2">
                                                 <input type="submit" value="Save new password" className="bg-black text-white rounded py-2 px-4 text-base font-medium hover:text-green-300" />
                                             </div>

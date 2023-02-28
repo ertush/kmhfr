@@ -290,7 +290,7 @@ Upgrade.getInitialProps = async (ctx) => {
             throw new Error('Error checking token')
         } else {
             const token = t.token
-            const url = ''
+            let url = ''
 
 
 
