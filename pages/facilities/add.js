@@ -2155,9 +2155,10 @@ function AddFacility(props) {
 
 																{/* add other fields */}
 															    <div className='flex flex-col items-start justify-start gap-y-4'>
+																 
 																	{
-																		facilityDepts.map((facilityDept, i) => {console.log({facilityDept, i}); return (
-																			<div key={facilityDept.index}>
+																		facilityDepts.map((facilityDept, i) => (
+																			<div className="w-full flex items-center justify-between gap-3 mt-3" key={facilityDept.index}>
 																				<FacilityDeptRegulationFactory
 																					key={facilityDept.index}
 																					index={i}
@@ -2174,7 +2175,7 @@ function AddFacility(props) {
 																				
 																			</div>
 																		
-																		)})
+																		))
 																	}
 																</div>	
 																
