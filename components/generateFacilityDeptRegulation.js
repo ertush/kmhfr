@@ -29,7 +29,7 @@ const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptValue, 
     }, [])
 
     return (
-        <div className="w-full flex items-center justify-between gap-3 mt-3" id={`facility-dept-wrapper-${index}`}> 
+        <> 
              {/* { console.log("Add", {index, facilityDepts}) } */}
             {/* Name */}
             <Select options={facilityDeptOptions || []} 
@@ -54,13 +54,13 @@ const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptValue, 
             {/* License No. */}
             <input ref={facilityDeptLicenseRef}  id={`facility-dept-license_no-${index}`} type="text" name={`facility_license_number`} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
-            <div className='flex items-center space-x-2 w-full'>
-                {/* Reg No. */}
+
+            {/* Reg No. */}
             <input ref={facilityDeptRegNoRef}  id={`facility-dept-reg_no-${index}`} type="text" name={`facility_registration_number`} className="flex-none  bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
         
-            </div>        
+                
             
-        </div>
+        </>
     )
 }
 
