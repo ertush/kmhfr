@@ -22,6 +22,8 @@ import { hasPermission } from "../../utils/checkPermissions";
 import { PermissionContext } from "../../providers/permissions";
 
 const Gis = (props) => { 
+
+ 
   const router = useRouter();
 
   const userPermissions = useContext(PermissionContext)
@@ -35,6 +37,8 @@ const Gis = (props) => {
   })();
 
   let fltrs = filters;
+
+  // console.log({filters: fltrs})
 
   const formRef = useRef(null);
   // const servicesRef = useRef(null)
@@ -461,7 +465,7 @@ const Gis = (props) => {
                                           Object.keys(fltrs).sort();
 
                                         const sortOrder = [
-                                          1, 9, 0, 10, 2, 3, 4, 5, 6, 8, 7,
+                                          1, 9, 10, 2, 3, 4, 5, 6, 8, 7,
                                         ];
 
                                         return sortOrder.map((v, i) =>
@@ -474,12 +478,15 @@ const Gis = (props) => {
                                           key={ft}
                                           className="w-full flex flex-col items-start justify-start gap-1 mb-3"
                                         >
+                                          {
+                                            !ft.includes("constituency") &&
                                           <label
                                             htmlFor={ft}
                                             className="text-gray-600 capitalize text-sm"
                                           >
                                             {ft.split("_").join(" ")}
                                           </label>
+                                          }
 
                                           {(() => {
                                             // let serviceOptions = [];
@@ -660,7 +667,7 @@ const Gis = (props) => {
                                                     try {
                                                       const dataConstituencies =
                                                         await fetch(
-                                                          `/api/filters/constituency/?county=${ev.value}`
+                                                          `/api/filters/subcounty/?county=${ev.value}`
                                                         );
                                                       dataConstituencies
                                                         .json()
@@ -751,64 +758,12 @@ const Gis = (props) => {
                                                 );
 
                                               case "sub_county":
-                                                return (
-                                                  <Select
-                                                    id={ft}
-                                                    name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
-                                                    options={subCountyOptions}
-                                                    placeholder={
-                                                      ft
-                                                        .split("_")
-                                                        .join(" ")[0]
-                                                        .toUpperCase() +
-                                                      ft
-                                                        .split("_")
-                                                        .join(" ")
-                                                        .slice(1)
-                                                    }
-                                                    onChange={(ev) => {
-                                                      if (
-                                                        subCountyOptions !== []
-                                                      ) {
-                                                        let nf = {};
-                                                        if (Array.isArray(ev)) {
-                                                          nf[ft] =
-                                                            (drillDown[ft]
-                                                              ? drillDown[ft] +
-                                                                ","
-                                                              : "") +
-                                                            Array.from(
-                                                              ev,
-                                                              (l_) => l_.value
-                                                            ).join(",");
-                                                        } else if (
-                                                          ev &&
-                                                          ev !== null &&
-                                                          typeof ev ===
-                                                            "object" &&
-                                                          !Array.isArray(ev)
-                                                        ) {
-                                                          nf[ft] = ev.value;
-                                                        } else {
-                                                          delete nf[ft];
-                                                        }
-                                                        setDrillDown({
-                                                          ...drillDown,
-                                                          ...nf,
-                                                        });
-                                                      }
-                                                    }}
-                                                  />
-                                                );
-
-                                              case "constituency":
                                                 const handleConstituencyChange =
                                                   async (ev) => {
                                                     try {
                                                       const dataConstituencies =
                                                         await fetch(
-                                                          `/api/filters/ward/?constituency=${ev.value}`
+                                                          `/api/filters/ward/?sub_county=${ev.value}`
                                                         );
                                                       dataConstituencies
                                                         .json()
@@ -868,15 +823,12 @@ const Gis = (props) => {
                                                       console.error(e.message);
                                                     }
                                                   };
-
                                                 return (
                                                   <Select
                                                     id={ft}
                                                     name={ft}
                                                     className="w-full p-1 rounded bg-gray-50 col-start-1"
-                                                    options={
-                                                      constituencyOptions
-                                                    }
+                                                    options={subCountyOptions}
                                                     placeholder={
                                                       ft
                                                         .split("_")
@@ -887,11 +839,11 @@ const Gis = (props) => {
                                                         .join(" ")
                                                         .slice(1)
                                                     }
-                                                    onChange={
-                                                      handleConstituencyChange
-                                                    }
+                                                    onChange={handleConstituencyChange}
                                                   />
                                                 );
+
+                                  
 
                                               case "ward":
                                                 return (
@@ -943,6 +895,9 @@ const Gis = (props) => {
 
                                               default:
                                                 return (
+                                                  <>
+                                                  {
+                                                    !ft.includes("constituency") &&
                                                   <Select
                                                     isMulti={multiFilters.includes(
                                                       ft
@@ -1001,6 +956,8 @@ const Gis = (props) => {
                                                       });
                                                     }}
                                                   />
+                                                 }
+                                                  </>
                                                 );
                                             }
                                           })(ft)}
@@ -1385,12 +1342,16 @@ const Gis = (props) => {
                                           key={ft}
                                           className="w-full flex flex-col items-start justify-start gap-1 mb-3"
                                         >
+                                          
+                                          {
+                                            !ft.includes("constituency") &&
                                           <label
                                             htmlFor={ft}
                                             className="text-gray-600 capitalize text-sm"
                                           >
                                             {ft.split("_").join(" ")}
                                           </label>
+                                            }
 
                                           {(() => {
                                             // let serviceOptions = [];
@@ -1712,8 +1673,7 @@ const Gis = (props) => {
                                                     }}
                                                   />
                                                 );
-
-                                              case "constituency":
+                                              /* case "constituency":
                                                 const handleConstituencyChange =
                                                   async (ev) => {
                                                     try {
@@ -1802,7 +1762,7 @@ const Gis = (props) => {
                                                       handleConstituencyChange
                                                     }
                                                   />
-                                                );
+                                                );*/
 
                                               case "ward":
                                                 return (
@@ -1853,7 +1813,11 @@ const Gis = (props) => {
                                                 );
 
                                               default:
+                                                
                                                 return (
+                                                  <>
+                                                  {
+                                                    ft !== "constituency" &&
                                                   <Select
                                                     isMulti={multiFilters.includes(
                                                       ft
@@ -1912,6 +1876,8 @@ const Gis = (props) => {
                                                       });
                                                     }}
                                                   />
+                                            }
+                                            </>
                                                 );
                                             }
                                           })(ft)}
@@ -2189,7 +2155,7 @@ Gis.getInitialProps = async (ctx) => {
   const fetchFilters = (token) => {
     let filters_url =
       API_URL +
-      "/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county";
+      "/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county%2Cward";
     if (
       ctx?.query &&
       ctx?.query?.units &&
@@ -2197,7 +2163,7 @@ Gis.getInitialProps = async (ctx) => {
     ) {
       filters_url =
         API_URL +
-        "/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county";
+        "/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county,ward";
     }
 
     return fetch(filters_url, {
@@ -2256,7 +2222,7 @@ Gis.getInitialProps = async (ctx) => {
   const fetchData = (token) => {
     let url =
       API_URL +
-      "/facilities/facilities/?fields=id,code,official_name,facility_type_name,owner_name,operation_status_name,name,is_complete,approved_national_level,has_edits,approved,rejected,keph_level,lat_long&page_size=600";
+      "/facilities/facilities/?fields=id,code,official_name,county,sub_county_name,facility_type_name,owner_name,operation_status_name,name,is_complete,approved_national_level,has_edits,approved,rejected,keph_level,lat_long&page_size=600";
     let query = { searchTerm: "" };
     let other_posssible_filters = [
       "owner_type",
@@ -2268,7 +2234,6 @@ Gis.getInitialProps = async (ctx) => {
       "keph_level",
       "owner",
       "operation_status",
-      "constituency",
       "ward",
       "has_edits",
       "is_approved",
@@ -2277,6 +2242,8 @@ Gis.getInitialProps = async (ctx) => {
       "number_of_cots",
       "open_whole_day",
       "open_weekends",
+      "county",
+      "sub_county_name",
       "open_public_holidays",
     ];
     if (
@@ -2297,7 +2264,6 @@ Gis.getInitialProps = async (ctx) => {
         "keph_level",
         "owner",
         "operation_status",
-        "constituency",
         "ward",
         "has_edits",
         "is_approved",
@@ -2375,6 +2341,7 @@ Gis.getInitialProps = async (ctx) => {
         };
       });
   };
+
   return checkToken(ctx.req, ctx.res)
     .then((t) => {
       if (t.error) {
