@@ -57,7 +57,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
             if (is_user_logged_in && typeof window !== 'undefined' && session_token !== null) {
                 console.log('active session found')
               
-                getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr => {
+                getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(usr => {
                     if (usr.error || usr.detail) {
                         setIsLoggedIn(false)
                         setUser(null)

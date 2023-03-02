@@ -252,9 +252,9 @@ const Account = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
+                    <div className="col-span-5 flex flex-col gap-3 mt-4">
                         <Tabs.Root orientation="horizontal" className="w-full flex flex-col tab-root" defaultValue="basic">
-                            <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+                            <Tabs.List className="list-none flex flex-wrap gap-2  md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
                                 <Tabs.Tab value="basic" className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item">
                                     Basic details
                                 </Tabs.Tab>

@@ -68,6 +68,7 @@ const GISMap = ({ data }) => {
             stylez={geoJsonStyles}
             onEachFeature={onEachFeature}
           />
+          {console.log({data})}
           {data.map((facility, i) => {
             if (
               facility &&
@@ -145,6 +146,14 @@ const GISMap = ({ data }) => {
                         <h4 className="text-base font-bold text-black flex gap-1">
                           <small className="text-gray-400 text-sm">#</small>
                           {facility?.constituency || "No Constituency"}
+                        </h4>
+                        <h4 className="text-base font-bold text-black flex gap-1">
+                          <small className="text-gray-400 text-sm">#</small>
+                          {facility?.county || "No County"}
+                        </h4>
+                        <h4 className="text-base font-bold text-black flex gap-1">
+                          <small className="text-gray-400 text-sm">#</small>
+                          {facility?.sub_county_name || "No Sub_county"}
                         </h4>
                         {/* <h4 className="text-base font-bold text-black flex gap-1">
                           <small className="text-gray-400 text-sm">#</small>

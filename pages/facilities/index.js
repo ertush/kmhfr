@@ -38,22 +38,29 @@ const Home = (props) => {
 
     // console.log({path:router.query.qf})
    
-    filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
-    filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
-    filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
-    filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
-    filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
-    filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
-    filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
-    filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
-    delete fltrs.has_edits
-    delete fltrs.is_approved
-    delete fltrs.is_complete
-    delete fltrs.number_of_beds
-    delete fltrs.number_of_cots
-    delete fltrs.open_whole_day
-    delete fltrs.open_weekends
-    delete fltrs.open_public_holidays
+    if(filters && fltrs){
+        filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
+        filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
+        filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
+        filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
+        filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
+        filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
+        filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
+        filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
+
+
+        delete fltrs.has_edits
+        delete fltrs.is_approved
+        delete fltrs.is_complete
+        delete fltrs.number_of_beds
+        delete fltrs.number_of_cots
+        delete fltrs.open_whole_day
+        delete fltrs.open_weekends
+        delete fltrs.open_public_holidays
+    }
+
+
+  
 
     const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
 
@@ -265,19 +272,20 @@ const Home = (props) => {
                                                                         if (Object.keys(drillDown).length > 0) {
                                                                             let qry = Object.keys(drillDown).map(key => {
                                                                                 let er = ''
-                                                                                if (props.path && !props.path.includes(key + '=')) {
-                                                                                    er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
+                                                                                if (props.path && !props.path.includes(`${key}=`)) {
+                                                                                    er = `${encodeURIComponent(key)}=${encodeURIComponent(drillDown[key])}`;
                                                                                 }
                                                                                 return er
                                                                             }).join('&')
-                                                                            let op = '?'
+                                                                            let op = '/?'
                                                                             if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
                                                                             
                                                                             if (router || typeof window == 'undefined') {
-                                                                                router.push(props.path + op + qry)
+                                                                                console.log({filterQuery: `${props.path}${op}${qry}`})
+                                                                                router.push(`${props.path}${op}${qry}`)
                                                                             } else {
                                                                                 if (typeof window !== 'undefined' && window) {
-                                                                                    window.location.href = props.path + op + qry
+                                                                                    window.location.href = `${props.path}${op}${qry}`
                                                                                 }
                                                                             }
 
@@ -286,7 +294,7 @@ const Home = (props) => {
                                                                     }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
                                                                     
                                                                     <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center" onClick={ev => {
-                                                                        router.push('/facilities')
+                                                                        router.reload()
                                                                     }}>Clear filters</button>
                                                                     
                                                                 </div>
@@ -373,7 +381,7 @@ const Home = (props) => {
 
                     {/* Side Menu Filters*/}
                     <FacilitySideMenu 
-                    filters={filters}
+                    filters={filters ?? {}}
                     states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
                     stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
                    
@@ -625,14 +633,14 @@ Home.getInitialProps = async (ctx) => {
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
-                url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
+                url = `${url}&${flt}=${ctx?.query[flt]}`
+               
             }
 
 
             // Remove approved field if fetching for Facilities pending approval
             // if (flt === 'to_publish') url = url.replace('approved,', '')
 
-          
         })
 
 
