@@ -2,6 +2,7 @@
 import React, {useState, useRef} from 'react'
 import MainLayout from '../../../components/MainLayout'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 import FacilitySideMenu from '../../../components/FacilitySideMenu'
 import { checkToken } from "../../../controllers/auth/auth"
@@ -16,6 +17,7 @@ import { handleFacilityUpgrades } from '../../../controllers/facility/facilityHa
 const Upgrade = props => {
 
     const alert = useAlert()
+    const router = useRouter()
 
     const [khisSynched, setKhisSynched] = useState(false);
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
@@ -30,9 +32,11 @@ const Upgrade = props => {
     const kephOptions =  props['0']?.kephOptions.sort((a, b) => a < b) 
     const facilityServices =  props['1']?.services 
     const {
-        id,
+        id:facility_id,
         keph_level,
-        facility_type_name
+        facility_type_name,
+        official_name,
+        code
     } = props['2']?.facilityData
     const facilityOptions = props['3']?.facilityTypes
     const levelChangeReasons = props['4']?.levelChangeReasons
@@ -66,11 +70,27 @@ const Upgrade = props => {
                                     <span className="text-gray-500">Upgrade</span>
                                 </div>
                             </div>
-                            <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
-                                    <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+                            <div className={"col-span-5 gap-2 flex-col items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                            {/* <div className="col-span-6 md:col-span-3"> */}
+                                <h2 className='flex items-center ml-1 text-xl font-bold text-black capitalize '>
                                     Upgrade Facility
-                                    </h2>
+                                </h2>
+                                <span onClick={() => router.push(`/facilities/${facility_id}`)} className="text-4xl tracking-tight hover:text-green-600 font-bold cursor-pointer leading-tight">{official_name}</span>
+                                <div className="flex items-center w-full justify-between">
+                                    <span
+                                        className={
+                                            "font-bold text-2xl " +
+                                            (code ? "text-green-900" : "text-gray-400")
+                                        }
+                                    >
+                                        #{code ?? "NO_CODE"}
+
+                                     </span>
+
+                                </div>
+                            {/* </div> */}
                             </div>
+                            
                     
                 </div>
 
