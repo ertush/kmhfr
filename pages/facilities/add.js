@@ -278,20 +278,21 @@ function AddFacility(props) {
 	const noHDUBedsRef = useRef('')
 	const noICUBedsRef = useRef('')
 	const noMartenityTheatersRef = useRef('')
+	const noInpatientBedsRef = useRef('')
 	const facilityPopulationRef = useRef('')
 
 
 
     // Services State 
 	
-    const [services, setServices] = useState([])
+    const setServices = useState([])[1]
 	const [facilityOption, setFacilityOption] = useState('')
 	const [facilityOfficialName, setFacilityOfficialName] = useState('')
 
 	const [ownerTypeOption, setOwnerTypeOption] = useState('')
 	const [latitude, setLatitude] = useState('')
 	const [longitude, setLongitude] = useState('')
-	const [county, setCounty] = useState('')
+	const setCounty = useState('')[1]
 	const [facilityId, setFacilityId] = useState('')
 	const [facilityCoordinates, setFacilityCoordinates] = useState([])
 	
@@ -322,14 +323,15 @@ function AddFacility(props) {
 	const handleDeleteField = (index) => {
 		const values = facilityDepts;
 		values.splice(index, 1);
-		setFacilityDepts((prevState) => ([ ...values]))
+		setFacilityDepts((draft) => ([ ...values]))
 	};
 
-	const [emergencyBeds, setEmergencyBeds] = useState(0)
+	const [_, setEmergencyBeds] = useState(0)
 	const [icuBeds, setICUBeds] = useState(0)
 	const [hduBeds, setHDUBeds] = useState(0)
 	const [isolationBeds, setIsolationBeds] = useState(0)
 	const [martenityBeds, setMartenityBeds] = useState(0)
+	const [inpatientBeds, setInpatientBeds] = useState(0)
 
 	const [facilityContacts, setFacilityContacts] = useState([
 		(() => (
@@ -492,8 +494,8 @@ function AddFacility(props) {
 	
 	useEffect(() => {
 		
-		totalBedsRef.current?.value = emergencyBeds + icuBeds + hduBeds + isolationBeds + martenityBeds;
-	}, [emergencyBeds, icuBeds, hduBeds, isolationBeds, martenityBeds])
+		totalBedsRef.current?.value = inpatientBeds + icuBeds + hduBeds + isolationBeds + martenityBeds;
+	}, [inpatientBeds, icuBeds, hduBeds, isolationBeds, martenityBeds])
 
 	// useEffect(() => {}, [isRegBodyChange, facilityDepts])
 
@@ -964,7 +966,7 @@ function AddFacility(props) {
 																/>
 															</div>
 
-															{/* No. Functional general Beds */}
+															{/* Total Functional In-patient Beds */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
 																	htmlFor='number_of_beds'
@@ -985,6 +987,40 @@ function AddFacility(props) {
 																	
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
+																
+																
+															</div>
+
+
+															{/* No of General In-patient Beds */}
+															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+																<label
+																	htmlFor='number_of_inpatient_beds'
+																	className='text-gray-600 capitalize text-sm'>
+																	Number of General In-patient Beds
+																	<span className='text-medium leading-12 font-semibold'>
+																		{' '}
+																		*
+																	</span>
+																</label>
+																<input
+																	required
+																	type='number'
+																	min={0}
+																	name='number_of_inpatient_beds'
+																	onChange={e => {
+																		if(inputValidation(e.target.value, /^-\d+$/)){
+																			noInpatientBedsRef?.current?.textContent = 'Number of General In-patient Beds must be at least 0'
+																		}
+																		else{
+																			setInpatientBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0);
+																			noInpatientBedsRef?.current?.textContent = ''
+																		}
+																	}}
+																	
+																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																/>
+																<label ref={noInpatientBedsRef} className='text-red-500 mt-1'></label>
 																
 																
 															</div>

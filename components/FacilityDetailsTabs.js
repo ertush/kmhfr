@@ -384,10 +384,18 @@ function FacilityDetailsTabs({ facility }) {
               </h3>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
-                  Total inpatient beds: 
+                  Total In-patient beds 
                 </label>
                 <p className="col-span-2 text-black font-medium text-base">
                   {facility?.number_of_beds}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                   General In-patient beds
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.number_of_inpatient_beds}
                 </p>
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
