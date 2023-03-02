@@ -118,7 +118,7 @@ const Regulate = props => {
                             }
                         >
                             <div className="col-span-6 md:col-span-3">
-                                <a href={`/facilities/${facility?.id}`} className="text-4xl tracking-tight hover:text-green-600 font-bold leading-tight">{facility?.official_name}</a>
+                                <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl tracking-tight hover:text-green-600 font-bold cursor-pointer leading-tight">{facility?.official_name}</span>
                                 <div className="flex gap-2 items-center w-full justify-between">
                                     <span
                                         className={
@@ -126,9 +126,9 @@ const Regulate = props => {
                                             (facility?.code ? "text-green-900" : "text-gray-400")
                                         }
                                     >
-                                        #{facility?.code || "NO_CODE"}
+                                        #{facility?.code ?? "NO_CODE"}
 
-                             </span>
+                                     </span>
 
                                 </div>
                             </div>
