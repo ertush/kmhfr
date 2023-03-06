@@ -369,7 +369,7 @@ const EditFacility = (props) => {
     const [facilityContacts, setFacilityContacts] = useState(facility_contacts)
     const [officerContacts, setOfficerContact] = useState(officer_in_charge)
 
-    const collection_date = props['20']?.collection_date ?  (props['20']?.collection_date.replace(/T.*$/, '') ?? '') : ''
+    const collection_date = props['21']?.collection_date ?  (props['21']?.collection_date.replace(/T.*$/, '') ?? '') : ''
 
     const facilityContactsData = {
 

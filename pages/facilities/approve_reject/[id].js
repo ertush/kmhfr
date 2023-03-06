@@ -1,6 +1,7 @@
 import React, { useState } from'react'
 import MainLayout from '../../../components/MainLayout';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
+import { useRouter } from 'next/router';
 import {
    validateRejectFacility,
     approveRejectFacilityUpdates,
@@ -26,6 +27,7 @@ function ApproveReject(props) {
 
 
   const alert = useAlert()
+  const router = useRouter()
   const [isFacDetails, setIsFacDetails] = useState(true);
     
 
@@ -80,9 +82,9 @@ function ApproveReject(props) {
                 }
                 >
                 <div className="col-span-6 md:col-span-3">
-                    <h1 className="text-4xl tracking-tight font-bold leading-tight">
+                    <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl hover:text-green-600 cursor-pointer tracking-tight font-bold leading-tight">
                     {facility?.official_name}
-                    </h1>
+                    </span>
                     <div className="flex gap-2 items-center w-full justify-between">
                     <span
                         className={
