@@ -158,25 +158,24 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
 };
 
 // handleGeolocationSubmit
-const handleGeolocationSubmit = (event, stateSetters) => {
+const handleGeolocationSubmit = (formData, stateSetters) => {
 
-    const [setFormId, facilityId] = stateSetters
-    
-    event.preventDefault();
+    const [setFormId, setLongitude, setLatitude, facilityId] = stateSetters
+
 
     const geolocationData = {};
 
-    const elements = [...event.target];
-
-    elements.forEach(({ name, value }) => {
+    formData.forEach(({ name, value }) => {
         
         geolocationData[name] = (() => {
             switch (name) {
                 case 'collection_date':
                     return  new Date(value)
                 case 'latitude':
+                    setLatitude(value)
                     return  value.match(/^\-$/) !== null ? 0.000000 : value
                 case 'longitude':
+                    setLongitude(value)
                     return  value.match(/^\-$/) !== null ? 0.000000 : value
                 default:
 
@@ -185,7 +184,7 @@ const handleGeolocationSubmit = (event, stateSetters) => {
         })() 
     });
 
-    
+
 
     geolocationData['facility'] = facilityId ?? ''
 
