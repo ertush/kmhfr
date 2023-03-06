@@ -1,7 +1,6 @@
 // React imports
 import React, { useState, useEffect, useRef, createContext } from 'react';
-// import { useAlert } from "react-alert";
-
+import { useFormik } from 'formik'
 
 // Next imports
 import Head from 'next/head';
@@ -49,15 +48,15 @@ import {
     handleServiceSubmit,
     handleInfrastructureSubmit,
 	handleServiceUpdates,
-    handleHrSubmit
+    handleHrSubmit54287
 } from '../../controllers/facility/facilityHandlers';
-import { inputValidation } from '../../utils/formValidation';
 
+import { inputValidation } from '../../utils/formValidation';
 
 export const FacilityDeptContext = createContext(null)
 export const FacilityContactsContext = createContext(null)
 
-const turf = require('@turf/turf');
+// const turf = require('@turf/turf');
 const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
@@ -72,11 +71,37 @@ function AddFacility(props) {
 
 	// const alert = useAlert();
 
+	const formik = useFormik({
+
+		initialValues: {
+		  collection_date: '',
+		  latitude: '',
+		  longitude: '',
+		},
+   
+		onSubmit: ({collection_date, latitude, longitude}) => {
+   
+			handleGeolocationSubmit([{
+				name:'collection_date',
+				value: collection_date
+			},
+			{
+				name:'longitude',
+				value: longitude
+			},
+			{
+				name :'latitude',
+				value: latitude
+			}
+			
+		], [setFormId, setLongitude, setLatitude, facilityId]) 
+		
+		},
+   
+	  });
+
 
 	// Form drop down options
-
-
-
 	const facilityOptions = (() => {
 		const f_types = [
 			'STAND ALONE',
@@ -308,7 +333,7 @@ function AddFacility(props) {
 	const [wardOpt, setWardNameOpt] = useState('')
 	const [checklistFile, setChecklistFile] = useState(null)
 	const [licenseFile, setLicenseFile] = useState(null)
-	const [coordinatesError, setCoordinatesError] = useState(false)
+	const [coordinatesError] = useState(false)
 
 
 	const [khisSynched, setKhisSynched] = useState(false);
@@ -396,9 +421,13 @@ function AddFacility(props) {
             }
 
 			
-            
         }
-    }, [facilityOfficialName, facilityOption, formId, latitude, geoJSON, longitude])
+    }, [facilityOfficialName, facilityOption, formId, geoJSON])
+
+
+	// useEffect(() => {
+	// 	console.log({longitude, latitude})
+	// }, [longitude, latitude])
       
 
 	if(facilityTypeDetail !== '' && kephLvlRef.current){
@@ -425,28 +454,28 @@ function AddFacility(props) {
 		}
 	}
 
-	useEffect(() => {
-		const isLatLngInRegion = () => {
+	// useEffect(() => {
+	// 	const isLatLngInRegion = () => {
 			
-			if(longitude.length >= 9 && latitude.length >= 9){ 
-				let point = turf.point([longitude, latitude]);
+	// 		if(longitude.length >= 9 && latitude.length >= 9){ 
+	// 			let point = turf.point([longitude, latitude]);
 				
-				let polygon = turf.polygon(facilityCoordinates);
+	// 			let polygon = turf.polygon(facilityCoordinates);
 				
-				let found = turf.booleanPointInPolygon(point, polygon);
-				if(!found){
-					setCoordinatesError(true)
-				}else{
-					setCoordinatesError(false)
-				}
-			}
-		}
+	// 			let found = turf.booleanPointInPolygon(point, polygon);
+	// 			if(!found){
+	// 				setCoordinatesError(true)
+	// 			}else{
+	// 				setCoordinatesError(false)
+	// 			}
+	// 		}
+	// 	}
 
-		isLatLngInRegion()
+	// 	isLatLngInRegion()
 
 		
 		
-	} , [longitude, latitude])
+	// } , [longitude, latitude])
 
 	// Validate Hours/Days of Operation
 
@@ -497,11 +526,8 @@ function AddFacility(props) {
 		totalBedsRef.current?.value = inpatientBeds + icuBeds + hduBeds + isolationBeds + martenityBeds;
 	}, [inpatientBeds, icuBeds, hduBeds, isolationBeds, martenityBeds])
 
-	// useEffect(() => {}, [isRegBodyChange, facilityDepts])
 
 
-	
-	
   return (
 	<>
 		 <Head>
@@ -592,6 +618,7 @@ function AddFacility(props) {
 																if(
 																	noCotsRef.current?.textContent == '' &&
 																	noEmergencyBedsRef.current?.textContent == '' &&
+																	noInpatientBedsRef.current?.textContent == '' &&
 																	noICUBedsRef.current?.textContent == '' &&
 																	noHDUBedsRef.current?.textContent == '' &&
 																	noMartenityBedsRef.current?.textContent == '' &&
@@ -1774,10 +1801,36 @@ function AddFacility(props) {
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 														Geolocation Details
 													</h4>
+
+													{/*ev => handleGeolocationSubmit(ev, [setFormId, facilityId])*/}
+													
+													{/* handleGeolocationSubmit([{
+														name:'collection_date',
+														value: collection_date
+													},
+													{
+														name:'longitude',
+														value: longitude
+													},
+													{
+														name:'latitude',
+														value: latitude
+													}
+													
+												], [setFormId, facilityId]) */}
+
+													{/* {
+														 collection_date:'',
+														 longitude:'',
+														 latitude:''
+														} */}
+
+													
 													<form
 														name='geolocation_form'
 														className='flex flex-col w-full items-start justify-start gap-3'
-														onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId])}>
+														onSubmit={formik.handleSubmit}
+														>
 														{/* Collection Date */}
 														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 															<label
@@ -1793,6 +1846,7 @@ function AddFacility(props) {
 																required
 																type='date'
 																name='collection_date'
+																onChange={formik.handleChange}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -1813,7 +1867,7 @@ function AddFacility(props) {
 																	required
 																	type='decimal'
 																	name='longitude'
-																	onChange={ev => setLongitude(ev.target.value)}
+																	onChange={formik.handleChange}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
@@ -1832,7 +1886,7 @@ function AddFacility(props) {
 																	required
 																	type='decimal'
 																	name='latitude'
-																	onChange={ev => setLatitude(ev.target.value)}
+																	onChange={formik.handleChange}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
@@ -1871,6 +1925,7 @@ function AddFacility(props) {
 															</button>
 														</div>
 													</form>
+												
 												</>
 											);
 											case 2:
