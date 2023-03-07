@@ -2157,7 +2157,7 @@ const EditFacility = (props) => {
                                               
                                                 {/* Name */}
                                           
-                                                <div className='flex-col items-start justify-start gap-y-4'>
+                                                <div className='flex flex-col gap-2 items-start justify-start gap-y-4'>
                                                 
                                                 {
                                                     facility_units?.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
