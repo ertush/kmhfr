@@ -22,17 +22,13 @@ import Alert from '@mui/material/Alert';
 import NativePickers from '../../components/date-picker'
 // import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
-import { useSearch } from '../../hooks/useSearch'
 
-// import { set } from 'nprogress'
 
 
 const Home = (props) => {
     const router = useRouter()
 
-   
 
-    // const permissions = useContext(PermissionContext)
    
     const facilities = props?.data?.results
     const filters = props?.filters
