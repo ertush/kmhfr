@@ -9,6 +9,7 @@ import { Formik, Field, Form } from "formik";
 import dynamic from 'next/dynamic'
 import router from 'next/router'
 import { useAlert } from "react-alert";
+import { UserContext } from '../../../providers/user';
 import Link from 'next/link';
 import FacilityDeptRegulationFactory from '../../../components/generateFacilityDeptRegulation'
 import { FacilityContact, OfficerContactDetails } from '../../../components/FacilityContacts'
@@ -33,8 +34,6 @@ import { PlusIcon } from '@heroicons/react/solid'
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
 
-
-import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
 import EditListWithCount from '../../../components/EditListWithCount';
 import FacilityUpgradeModal from '../../../components/FacilityUpgradeModal'
@@ -67,10 +66,13 @@ const Map = React.memo(WardMap)
 
 const EditFacility = (props) => {
 
-    console.log({props})
+    // console.log({props})
+
+
 
     // Alert 
     const alert = useAlert();
+
    
     const facilityOptions = (() => {
 		const f_types = [
@@ -92,28 +94,28 @@ const EditFacility = (props) => {
         // console.log({all_ftypes})
 
 		return [{
-			label: all_ftypes[0].sub_division,
-			value: all_ftypes[0].parent
+			label: all_ftypes[0]?.sub_division,
+			value: all_ftypes[0]?.parent
 		},
 		{
-			label: all_ftypes[1].sub_division,
-			value: all_ftypes[1].parent
+			label: all_ftypes[1]?.sub_division,
+			value: all_ftypes[1]?.parent
 		},
 		{
-			label: all_ftypes[2].sub_division,
-			value: all_ftypes[2].parent
+			label: all_ftypes[2]?.sub_division,
+			value: all_ftypes[2]?.parent
 		},
 		{
-			label: all_ftypes[3].sub_division,
-			value: all_ftypes[3].parent
+			label: all_ftypes[3]?.sub_division,
+			value: all_ftypes[3]?.parent
 		},
 		{
-			label: all_ftypes[4].sub_division,
-			value: all_ftypes[4].parent
+			label: all_ftypes[4]?.sub_division,
+			value: all_ftypes[4]?.parent
 		},
 		{
-			label: all_ftypes[5].sub_division,
-			value: all_ftypes[5].parent
+			label: all_ftypes[5]?.sub_division,
+			value: all_ftypes[5]?.parent
 		}
 
 		]
@@ -578,11 +580,11 @@ const EditFacility = (props) => {
     })(lat_long))
 
 
-    const [_officerName, setOfficerName] = useState(officer_in_charge || '')
-    const [_regNo, setRegNo] = useState(registration_number ?? '')
-    const [_regBody, setRegBody] = useState(regulatory_body_name ?? '')
-    const [_file, setFile] = useState(facility_license_document ?? '')
-    const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
+    const [_officerName] = useState(officer_in_charge || '')
+    const [_regNo] = useState(registration_number ?? '')
+    const [_regBody] = useState(regulatory_body_name ?? '')
+    const [_file] = useState(facility_license_document ?? '')
+    const [_licenseNo] = useState(license_number ?? '')
 
 
     // Different form states
@@ -760,6 +762,12 @@ const EditFacility = (props) => {
     }, [isSavedChanges])
 
     useEffect(() => {}, [facilityContacts])
+
+    useEffect(() => {
+        if(!userCtx){
+            router.push('/auth/login')
+        }
+    }, [])
 
     return (
         <>

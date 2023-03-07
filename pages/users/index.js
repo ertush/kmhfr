@@ -19,6 +19,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { PermissionContext } from '../../providers/permissions'
 import {  hasPermission } from '../../utils/checkPermissions'
+import { UserContext } from '../../providers/user'
 
 
 const Users = (props) => {
@@ -27,6 +28,9 @@ const Users = (props) => {
 
 
     const userPermissions = useContext(PermissionContext)
+
+
+    const userCtx = useContext(UserContext)
 
     const router = useRouter()
     console.log(router.query.status);
@@ -88,7 +92,7 @@ const Users = (props) => {
             router.push('/unauthorized')
         }
         
-        const lnlst=  props.data?.results.map((user)=>{
+        const lnlst=  props.data?.results?.map((user)=>{
             return {
                 ...user,
                 name: user.first_name + ' '+user.last_name,
@@ -108,8 +112,12 @@ const Users = (props) => {
     },[props.data.results, router.query])
 
     useEffect(()=>{
-      
-    if(userPermissions.find((r)=> r === 'auth.add_group') == undefined) setShowGroup(true)
+    if(userCtx){
+        if(userPermissions.find((r)=> r === 'auth.add_group') == undefined) setShowGroup(true)
+    }
+    else {
+        router.push('/auth/login')
+    }
     
         
     },[])

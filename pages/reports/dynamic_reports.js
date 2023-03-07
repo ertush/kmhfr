@@ -2,9 +2,10 @@ import Head from 'next/head'
 // import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useContext, useCallback } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
+import { UserContext } from '../../providers/user'
 import Link from 'next/link'
 // import { CheckBox } from '@mui/icons-material'
 
@@ -27,7 +28,8 @@ const DynamicReports = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
  
-  
+    const userCtx = useContext(UserContext)
+    
     // const { data, query, path, current_url } = props
     const router = useRouter()
     // Temporary fix folty Kirinyaga id
@@ -70,6 +72,7 @@ const DynamicReports = (props) => {
         { ivalued: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
     ])
 
+    if(filters && fltrs) {
 
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -88,6 +91,8 @@ const DynamicReports = (props) => {
     delete fltrs.open_whole_day
     delete fltrs.open_weekends
     delete fltrs.open_public_holidays
+
+    }
 
   
 
@@ -168,7 +173,7 @@ const DynamicReports = (props) => {
 
     
 
-    const lnlst = Array.from(props?.data?.results, row => {
+    const lnlst = Array.from(props?.data?.results ?? [], row => {
         let dtpnt = {}
         headers.forEach(col => {
             dtpnt[col] = row[col]
@@ -270,6 +275,7 @@ const DynamicReports = (props) => {
         dr =JSON.parse(localStorage.getItem('dd_owners'))
     }
     useEffect(async()=>{
+        if(userCtx){
         if(dr !== null && dr !== undefined){
             
             // setting sub-county options based on county drill_down
@@ -307,6 +313,10 @@ const DynamicReports = (props) => {
                setWardOptions(optionsWard)
             })
             }
+        }
+        }
+        else {
+            router.push('/auth/login')
         }
 
     }, [])

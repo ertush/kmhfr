@@ -3,7 +3,7 @@ import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DotsHorizontalIcon, DownloadIcon, PlusIcon } from '@heroicons/react/solid'
 import { checkToken } from '../../controllers/auth/auth'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon } from '@heroicons/react/outline'
@@ -22,13 +22,14 @@ import Alert from '@mui/material/Alert';
 import NativePickers from '../../components/date-picker'
 // import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
+import { UserContext } from '../../providers/user'
 
 
 
 const Home = (props) => {
     const router = useRouter()
 
-
+    const userCtx = useContext(UserContext)
    
     const facilities = props?.data?.results
     const filters = props?.filters
@@ -94,6 +95,12 @@ const Home = (props) => {
             
         }
     }, [facilityFeedBack, title])
+
+    useEffect(() => {
+        if(!userCtx){
+            router.push('/auth/login')
+        }
+    }, [])
 
 
     const handleDates=(from, to) => {
