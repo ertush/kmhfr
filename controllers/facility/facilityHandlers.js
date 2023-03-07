@@ -160,7 +160,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
 // handleGeolocationSubmit
 const handleGeolocationSubmit = (formData, stateSetters) => {
 
-    const [setFormId, setLongitude, setLatitude, facilityId] = stateSetters
+    const [setFormId,  facilityId] = stateSetters
 
 
     const geolocationData = {};
@@ -172,10 +172,10 @@ const handleGeolocationSubmit = (formData, stateSetters) => {
                 case 'collection_date':
                     return  new Date(value)
                 case 'latitude':
-                    setLatitude(value)
+                 
                     return  value.match(/^\-$/) !== null ? 0.000000 : value
                 case 'longitude':
-                    setLongitude(value)
+                  
                     return  value.match(/^\-$/) !== null ? 0.000000 : value
                 default:
 

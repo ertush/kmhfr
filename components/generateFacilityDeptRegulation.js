@@ -29,7 +29,7 @@ const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptValue, 
     }, [])
 
     return (
-        <> 
+        <div className="flex flex-row gap-2 justify-start items-center"> 
              {/* { console.log("Add", {index, facilityDepts}) } */}
             {/* Name */}
             <Select options={facilityDeptOptions || []} 
@@ -60,7 +60,7 @@ const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptValue, 
         
                 
             
-        </>
+        </div>
     )
 }
 
