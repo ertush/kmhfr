@@ -16,7 +16,7 @@ import {
 
 
 import dynamic from "next/dynamic";
-import router from "next/router";
+// import router from "next/router";
 import { UserContext } from "../../providers/user";
 import FacilityDetailsTabs from "../../components/FacilityDetailsTabs";
 
@@ -95,7 +95,6 @@ const Facility = (props) => {
   useEffect(() => {
    
     if (userCtx) setUser(userCtx);
-  
     return () => {
     };
   }, [isClosingFacility, isReasonRejected]);
