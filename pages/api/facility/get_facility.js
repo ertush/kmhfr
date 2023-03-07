@@ -90,8 +90,46 @@ export default async function fetchFacilityData(req, res) {
                 url = `${API_URL}/facilities/facilities/${id}/?fields=__rev__&include_audit=true`
                 break;
 
-            default:
-                break;
+            case `searchTerm`:
+                
+                const { search, menu } = req.query;
+                const fields = 'fields=id,code,official_name,name,facility_type_name,owner_name,county,sub_county,constituency,ward_name,updated,approved,rejected,operation_status_name,date_requested,date_approved,sub_county_name,is_complete,approved_national_level' 
+                
+                switch(menu){
+                    case 'all':
+                        url = `${API_URL}/facilities/facilities/?${fields}&search=${search}`
+                    case 'approved_facilities':
+                        url = `${API_URL}/facilities/facilities/?approved=true&approved_national_level=true&rejected=false&${fields}&search=${search}`
+                    break;
+                    case 'facilities_pending_validation':
+                        url = `${API_URL}/facilities/facilities/?pending_approval=true&has_edits=true&${fields}&search=${search}`
+                    break;
+                    case 'updated_facilities_pending_validation':
+                        url = `${API_URL}/facilities/facilities/?rejected=true&${fields}&search=${search}`
+                    break;
+                    case 'facilities_pending_approval':
+                        url = `${API_URL}/facilities/facilities/?rejected=true&${fields}&search=${search}`
+                    break;
+                    case 'failed_validation_facililties':
+                        url = `${API_URL}/facilities/facilities/?rejected_national=true&${fields}&search=${search}`
+                    break;
+                    case 'close_facilities':
+                        url = `${API_URL}/facilities/facilities/?closed=true&${fields}&search=id,code,official_name,closing_reason,closed_date,name&search=${search}`
+                    break;
+                    case 'incomplete_facilities':
+                        url = `${API_URL}/facilities/facilities/?incomplete=true&${fields}&search=${search}`
+                    break;
+                    case 'rejetcted_facilities':
+                        url = `${API_URL}/facilities/facilities/?rejected_national=true&${fields}&search=${search}`
+                    break;
+                    default:
+                        url = `${API_URL}/facilities/facilities/?${fields}`
+                        break;
+
+                }
+             
+
+           
         }
 
         try {
