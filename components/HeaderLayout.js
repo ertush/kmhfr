@@ -366,6 +366,7 @@ export default function HeaderLayout({
       <div className="flex flex-wrap items-center justify-end gap-2 md:gap-5 px-2 md:flex-grow order-last sm:order-none flex-grow sm:flex-grow-0z">
         {
           !router.asPath.includes('/dashboard') &&
+          // !router.asPath.includes('/facilities') &&
         <form
           className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
           action={path || "/facilities"}

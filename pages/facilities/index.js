@@ -2,12 +2,15 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DotsHorizontalIcon, DownloadIcon, PlusIcon } from '@heroicons/react/solid'
-
 import { checkToken } from '../../controllers/auth/auth'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon } from '@heroicons/react/outline'
+import { useFormik } from 'formik'
+import { SearchIcon } from '@heroicons/react/solid'
+
+
 import Select from 'react-select'
 
 // @mui imports
@@ -19,6 +22,7 @@ import Alert from '@mui/material/Alert';
 import NativePickers from '../../components/date-picker'
 // import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
+import { useSearch } from '../../hooks/useSearch'
 
 // import { set } from 'nprogress'
 
@@ -26,7 +30,7 @@ import FacilitySideMenu from '../../components/FacilitySideMenu'
 const Home = (props) => {
     const router = useRouter()
 
-    
+   
 
     // const permissions = useContext(PermissionContext)
    
@@ -114,7 +118,38 @@ const Home = (props) => {
     }
 
   
+    const search = useFormik({
+        initialValues:{
+            search_input:''
+        },
+        onSubmit:({search_input}) => {
 
+            const filters = router.asPath.split('?')[1] 
+            switch(filters){
+                case 'qf=all':
+                    router.push(`/facilities/?qff=all&searchTerm=${search_input}`)
+                case 'qf=approved&approved=true&approved_national_level=true&rejected=false':
+                    router.push(`/facilities/?qff=approved&searchTerm=${search_input}`)
+                break;
+                case 'qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true':
+                    router.push(`/facilities/?qff=pending_validation&searchTerm=${search_input}`)
+                break;
+                case 'qf=updated_pending_validation&has_edits=true&pending_approval=true':
+                    router.push(`/facilities/?qff=updated_pending_validation&searchTerm=${search_input}`)
+                break;
+                case 'qf=to_publish&to_publish=true':
+                    router.push(`/facilities/?qff=pending_approval&searchTerm=${search_input}`)
+                break;
+                case 'qf=dhis_synced_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true':
+                    router.push(`/facilities/?qff=dhis_synched&searchTerm=${search_input}`)
+                break;
+                case 'qf=incomplete&is_complete=false':
+                    router.push(`/facilities/?qff=incomplete&searchTerm=${search_input}`)
+                break;
+            }
+
+        },
+    })
 
     return (
         <>
@@ -322,6 +357,35 @@ const Home = (props) => {
                                 {
                                 (allFctsSelected || pathId === 'all') &&
                                 <div className='flex items-center space-x-6 w-auto'>
+                                    {/* Search Input form */}
+                                    <form
+                                        onSubmit={search.handleSubmit}
+                                        className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
+                                        
+                                        >
+                                        {/* Search Input */}
+                                        <input
+                                            name="q"
+                                            id="search-input"
+                                            className="flex-none bg-gray-50 rounded p-2 md:w-9/12 md:flex-grow-0 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            type="search"
+                                            onChange={search.handleChange}
+                                            defaultValue={''}
+                                            placeholder="Search a facility/CHU"
+                                        />
+
+
+                                        {/* Search Button */}
+                                        <button
+                                            type="submit"
+                                            className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+                                        >
+                                            <SearchIcon className="w-5 h-5" />
+                                        </button>
+                                    </form>
+
+                                    
+
                                     {/* Facility Button */}
                                    <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facilities/add')}} className='flex items-center justify-center'>
@@ -560,8 +624,6 @@ const Home = (props) => {
 
 Home.getInitialProps = async (ctx) => {
 
-    
-
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
@@ -597,6 +659,22 @@ Home.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
+
+        if(ctx?.query?.qff){
+            switch(ctx?.query?.qff){
+                case 'all':
+                    url += `search=${ctx?.query?.search}`
+                    break;
+                case 'approved':
+                    url += `search=${ctx?.query?.search}`
+                case 'pending_validation':
+                case 'updated_pending_validation':
+                case 'dhis_synched':
+                
+            }
+        }
+
+
         let other_posssible_filters = [
             "owner_type", 
             "service", 
