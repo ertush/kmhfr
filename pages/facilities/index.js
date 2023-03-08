@@ -669,10 +669,18 @@ Home.getInitialProps = async (ctx) => {
                     url += `search=${ctx?.query?.search}`
                     break;
                 case 'approved':
-                    url += `search=${ctx?.query?.search}`
+                    url += `&approved=true&approved_national_level=true&rejected=false&search=${ctx?.query?.search}`
                 case 'pending_validation':
+                    url += `&pending_approval=true&has_edits=true&search=${ctx?.query?.search}`
                 case 'updated_pending_validation':
+                    url += `&rejected=true&search=${ctx?.query?.search}`
                 case 'dhis_synched':
+                    url += `search=${ctx?.query?.search}`
+
+                case 'incomplete':
+                    url += `search=${ctx?.query?.search}`
+
+
                 
             }
         }
