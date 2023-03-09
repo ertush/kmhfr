@@ -9,7 +9,6 @@ import { Formik, Field, Form } from "formik";
 import dynamic from 'next/dynamic'
 import router from 'next/router'
 import { useAlert } from "react-alert";
-import { UserContext } from '../../../providers/user';
 import Link from 'next/link';
 import FacilityDeptRegulationFactory from '../../../components/generateFacilityDeptRegulation'
 import { FacilityContact, OfficerContactDetails } from '../../../components/FacilityContacts'
@@ -74,7 +73,6 @@ const EditFacility = (props) => {
     const {data: constituencies, error: errorFetchingConstituencies, isLoading:isFetchingConstituencies } = useSubCounties()
     console.log({isFetchingConstituencies, constituencies, errorFetchingConstituencies})
 
-    
     // Alert 
     const alert = useAlert();
    
@@ -584,16 +582,16 @@ const EditFacility = (props) => {
     })(lat_long))
 
 
-    const [_officerName] = useState(officer_in_charge || '')
-    const [_regNo] = useState(registration_number ?? '')
-    const [_regBody] = useState(regulatory_body_name ?? '')
-    const [_file] = useState(facility_license_document ?? '')
-    const [_licenseNo] = useState(license_number ?? '')
+    const [_officerName, setOfficerName] = useState(officer_in_charge || '')
+    const [_regNo, setRegNo] = useState(registration_number ?? '')
+    const [_regBody, setRegBody] = useState(regulatory_body_name ?? '')
+    const [_file, setFile] = useState(facility_license_document ?? '')
+    const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
 
 
     // Different form states
   
-    const [wardName] = useState(ward_name)
+    const [wardName, setWardName] = useState(ward_name)
     const [operationStatus, setOperationStatus] = useState('')
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
@@ -673,7 +671,8 @@ const EditFacility = (props) => {
 
     const filteredRegBodyOptions = regBodyOptions.filter(({label}) => label === ownerTypeName)
 
-  
+    // User Context 
+    const userCtx = useContext(UserContext)
     
     useEffect(() => {
         if (userCtx) setUser(userCtx)
@@ -765,12 +764,6 @@ const EditFacility = (props) => {
     }, [isSavedChanges])
 
     useEffect(() => {}, [facilityContacts])
-
-    useEffect(() => {
-        if(!userCtx){
-            router.push('/auth/login')
-        }
-    }, [])
 
     return (
         <>
@@ -1406,8 +1399,7 @@ const EditFacility = (props) => {
                                                                         try{
                                                                             const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
 
-                                                                            setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})).filter(
-                                                                                ({label}) => label == userCtx.sub_county_name) ?? [])
+                                                                            setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
 
                                                                             
                                                                         }
