@@ -12,6 +12,8 @@ import { useAlert } from "react-alert";
 import Link from 'next/link';
 import FacilityDeptRegulationFactory from '../../../components/generateFacilityDeptRegulation'
 import { FacilityContact, OfficerContactDetails } from '../../../components/FacilityContacts'
+import { useCounties } from '../../../hooks/useCounties';
+import { useSubCounties } from '../../../hooks/useSubCounties';
 
 import { 
     handleBasicDetailsUpdates,
@@ -32,7 +34,6 @@ import {
 import { PlusIcon } from '@heroicons/react/solid'
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
-
 
 import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
@@ -67,10 +68,13 @@ const Map = React.memo(WardMap)
 
 const EditFacility = (props) => {
 
-    console.log({props})
+    const {data: counties, error: errorFetchingCounties, isLoading: isFetchingCounties} = useCounties()
+    const {data: sub_counties, error: errorFetchingSubCounties, isLoading: isFetchingSubCounties} = useSubCounties('95b08378-362e-4bf9-ad63-d685e1287db2')
+    const {data: constituencies, error: errorFetchingConstituencies, isLoading:isFetchingConstituencies } = useSubCounties()
+    console.log({isFetchingConstituencies, constituencies, errorFetchingConstituencies})
 
     // Alert 
-    const alert = useAlert();
+    const alert = useAlert();isFetchingSubCounties
    
     const facilityOptions = (() => {
 		const f_types = [
@@ -92,28 +96,28 @@ const EditFacility = (props) => {
         // console.log({all_ftypes})
 
 		return [{
-			label: all_ftypes[0].sub_division,
-			value: all_ftypes[0].parent
+			label: all_ftypes[0]?.sub_division,
+			value: all_ftypes[0]?.parent
 		},
 		{
-			label: all_ftypes[1].sub_division,
-			value: all_ftypes[1].parent
+			label: all_ftypes[1]?.sub_division,
+			value: all_ftypes[1]?.parent
 		},
 		{
-			label: all_ftypes[2].sub_division,
-			value: all_ftypes[2].parent
+			label: all_ftypes[2]?.sub_division,
+			value: all_ftypes[2]?.parent
 		},
 		{
-			label: all_ftypes[3].sub_division,
-			value: all_ftypes[3].parent
+			label: all_ftypes[3]?.sub_division,
+			value: all_ftypes[3]?.parent
 		},
 		{
-			label: all_ftypes[4].sub_division,
-			value: all_ftypes[4].parent
+			label: all_ftypes[4]?.sub_division,
+			value: all_ftypes[4]?.parent
 		},
 		{
-			label: all_ftypes[5].sub_division,
-			value: all_ftypes[5].parent
+			label: all_ftypes[5]?.sub_division,
+			value: all_ftypes[5]?.parent
 		}
 
 		]
@@ -137,9 +141,9 @@ const EditFacility = (props) => {
     const ownerTypeOptions =  props['3']?.owner_types ?? []
     const kephOptions =  props['4']?.keph ?? []
     const facilityAdmissionOptions =  props['5']?.facility_admission_status
-    const countyOptions =  props['6']?.counties ?? []
-    const subCountyOptions =  props['7']?.sub_counties ?? []
-    const constituencyOptions =  props['8']?.constituencies ?? []
+    const countyOptions =  counties ?? props['6']?.counties ?? []
+    const subCountyOptions =  sub_counties ?? props['7']?.sub_counties ?? []
+    const constituencyOptions =  constituencies ?? props['8']?.constituencies ?? []
     const wardOptions =  props['9']?.wards ?? []
     const jobTitleOptions = props['10']?.job_titles ?? []
     const contactTypeOptions = props['11']?.contact_types ?? []
