@@ -9,9 +9,12 @@ import { Formik, Field, Form } from "formik";
 import dynamic from 'next/dynamic'
 import router from 'next/router'
 import { useAlert } from "react-alert";
+import { UserContext } from '../../../providers/user';
 import Link from 'next/link';
 import FacilityDeptRegulationFactory from '../../../components/generateFacilityDeptRegulation'
 import { FacilityContact, OfficerContactDetails } from '../../../components/FacilityContacts'
+import { useCounties } from '../../../hooks/useCounties';
+import { useSubCounties } from '../../../hooks/useSubCounties';
 
 import { 
     handleBasicDetailsUpdates,
@@ -32,7 +35,6 @@ import {
 import { PlusIcon } from '@heroicons/react/solid'
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
-
 
 import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
@@ -67,8 +69,12 @@ const Map = React.memo(WardMap)
 
 const EditFacility = (props) => {
 
-    console.log({props})
+    const {data: counties, error: errorFetchingCounties, isLoading: isFetchingCounties} = useCounties()
+    const {data: sub_counties, error: errorFetchingSubCounties, isLoading: isFetchingSubCounties} = useSubCounties('95b08378-362e-4bf9-ad63-d685e1287db2')
+    const {data: constituencies, error: errorFetchingConstituencies, isLoading:isFetchingConstituencies } = useSubCounties()
+    console.log({isFetchingConstituencies, constituencies, errorFetchingConstituencies})
 
+    
     // Alert 
     const alert = useAlert();
    
@@ -92,28 +98,28 @@ const EditFacility = (props) => {
         // console.log({all_ftypes})
 
 		return [{
-			label: all_ftypes[0].sub_division,
-			value: all_ftypes[0].parent
+			label: all_ftypes[0]?.sub_division,
+			value: all_ftypes[0]?.parent
 		},
 		{
-			label: all_ftypes[1].sub_division,
-			value: all_ftypes[1].parent
+			label: all_ftypes[1]?.sub_division,
+			value: all_ftypes[1]?.parent
 		},
 		{
-			label: all_ftypes[2].sub_division,
-			value: all_ftypes[2].parent
+			label: all_ftypes[2]?.sub_division,
+			value: all_ftypes[2]?.parent
 		},
 		{
-			label: all_ftypes[3].sub_division,
-			value: all_ftypes[3].parent
+			label: all_ftypes[3]?.sub_division,
+			value: all_ftypes[3]?.parent
 		},
 		{
-			label: all_ftypes[4].sub_division,
-			value: all_ftypes[4].parent
+			label: all_ftypes[4]?.sub_division,
+			value: all_ftypes[4]?.parent
 		},
 		{
-			label: all_ftypes[5].sub_division,
-			value: all_ftypes[5].parent
+			label: all_ftypes[5]?.sub_division,
+			value: all_ftypes[5]?.parent
 		}
 
 		]
@@ -137,9 +143,9 @@ const EditFacility = (props) => {
     const ownerTypeOptions =  props['3']?.owner_types ?? []
     const kephOptions =  props['4']?.keph ?? []
     const facilityAdmissionOptions =  props['5']?.facility_admission_status
-    const countyOptions =  props['6']?.counties ?? []
-    const subCountyOptions =  props['7']?.sub_counties ?? []
-    const constituencyOptions =  props['8']?.constituencies ?? []
+    const countyOptions =  counties ?? props['6']?.counties ?? []
+    const subCountyOptions =  sub_counties ?? props['7']?.sub_counties ?? []
+    const constituencyOptions =  constituencies ?? props['8']?.constituencies ?? []
     const wardOptions =  props['9']?.wards ?? []
     const jobTitleOptions = props['10']?.job_titles ?? []
     const contactTypeOptions = props['11']?.contact_types ?? []
@@ -578,16 +584,16 @@ const EditFacility = (props) => {
     })(lat_long))
 
 
-    const [_officerName, setOfficerName] = useState(officer_in_charge || '')
-    const [_regNo, setRegNo] = useState(registration_number ?? '')
-    const [_regBody, setRegBody] = useState(regulatory_body_name ?? '')
-    const [_file, setFile] = useState(facility_license_document ?? '')
-    const [_licenseNo, setLicenseNo] = useState(license_number ?? '')
+    const [_officerName] = useState(officer_in_charge || '')
+    const [_regNo] = useState(registration_number ?? '')
+    const [_regBody] = useState(regulatory_body_name ?? '')
+    const [_file] = useState(facility_license_document ?? '')
+    const [_licenseNo] = useState(license_number ?? '')
 
 
     // Different form states
   
-    const [wardName, setWardName] = useState(ward_name)
+    const [wardName] = useState(ward_name)
     const [operationStatus, setOperationStatus] = useState('')
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
@@ -667,8 +673,7 @@ const EditFacility = (props) => {
 
     const filteredRegBodyOptions = regBodyOptions.filter(({label}) => label === ownerTypeName)
 
-    // User Context 
-    const userCtx = useContext(UserContext)
+  
     
     useEffect(() => {
         if (userCtx) setUser(userCtx)
@@ -760,6 +765,12 @@ const EditFacility = (props) => {
     }, [isSavedChanges])
 
     useEffect(() => {}, [facilityContacts])
+
+    useEffect(() => {
+        if(!userCtx){
+            router.push('/auth/login')
+        }
+    }, [])
 
     return (
         <>
@@ -919,22 +930,23 @@ const EditFacility = (props) => {
                                                 let payload = {}
 
                                                 const _payload = _.omit(formData, function (v, k) { return basicDetailsData[k] === v})
-                                                if(officer_in_charge) {
-                                                    payload = {..._payload, officer_in_charge}
-                                                }
-                                                else{
-                                                    payload = {..._payload, 
-                                                        officer_in_charge: {
-                                                            contacts: [],
-                                                            id_number: null,
-                                                            name: "",
-                                                            reg_no: "",
-                                                            title: "",
-                                                            title_name: ""
-                                                        }
-                                                    }
+                                                payload = {..._payload}
+                                                // if(officer_in_charge) {
+                                                //     payload = {..._payload, officer_in_charge}
+                                                // }
+                                                // else{
+                                                //     payload = {..._payload, 
+                                                //         officer_in_charge: {
+                                                //             contacts: [],
+                                                //             id_number: null,
+                                                //             name: "",
+                                                //             reg_no: "",
+                                                //             title: "",
+                                                //             title_name: ""
+                                                //         }
+                                                //     }
                                                 
-                                                }
+                                                // }
 
                                             
                                               handleBasicDetailsUpdates(payload, id, alert)
@@ -1394,7 +1406,8 @@ const EditFacility = (props) => {
                                                                         try{
                                                                             const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
 
-                                                                            setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
+                                                                            setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})).filter(
+                                                                                ({label}) => label == userCtx.sub_county_name) ?? [])
 
                                                                             
                                                                         }
@@ -1527,9 +1540,9 @@ const EditFacility = (props) => {
                                             let payload = {}
                                             const _payload = _.omit(formData, function (v, k) { return geolocationData[k] === v})
                                             
-                                            payload = {..._payload, facility: id, coordinates:{coordinates:[lat_long[1], lat_long[0]], type:'point'}}
+                                            payload = {..._payload, facility: id, coordinates:{coordinates:[lat_long[1], lat_long[0]], type:'point'}} // {..._payload}
 
-                                            payload['collection_date'] = new Date(payload.collection_date)
+                                            // payload['collection_date'] = new Date(payload.collection_date)
                                         
                                             handleGeolocationUpdates(payload, coordinates, alert)
                                             .then(({statusText}) => {
@@ -1666,45 +1679,40 @@ const EditFacility = (props) => {
                                             name: officer_in_charge?.name ?? '',
                                             reg_no:  officer_in_charge?.reg_no ?? '',
                                             contact: facility_contacts  ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  '',
-                                           
+                                            contact_type: facility_contacts  ? facility_contacts.length > 0 ?  facility_contacts[0].contact_type : '' :  '',
+                                            officer_contact_type: officerContacts ? officerContacts.length > 0 ? officerContacts[0].contact_type : '': '',
+                                            officer_contact: officerContacts ? officerContacts.length > 0 ? officerContacts[0].contact : '': '',
+                                            
                                         }}
 
                                         onSubmit={formData => {
-                                           
+
+                                            console.log({formData})
+
+                                        /*
+                                        
                                             let payload = {}
                                         
-                                            // const contact = facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
-
-                                            // const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
-
-                                            // const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
-
+                                            const contact = facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
+                                            const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
+                                            const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
                                             const jobTitle = jobTitleRef.current  ? jobTitleRef.current.state.value.value : ''
-
                                             const jobTitleName = jobTitleRef.current  ? jobTitleRef.current.state.value.label : ''
-
                                             const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
-
                                             if(officer_in_charge ) Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
-
                                             _payload['title'] = jobTitle
-
                                             _payload['titleName'] = jobTitleName
-
-                                            // _payload['contacts'] = [{
-                                            //     contact,
-                                            //     contact_id: facility_contacts[0]?.contact_id,
-                                            //     contact_type_name: contactTypeName,
-                                            //     official_contact_id:facility_contacts[0]?.id,
-                                            //     type: contactType
-                                            // }]
-
+                                            _payload['contacts'] = [{
+                                                contact,
+                                                contact_id: facility_contacts[0]?.contact_id,
+                                                contact_type_name: contactTypeName,
+                                                official_contact_id:facility_contacts[0]?.id,
+                                                type: contactType
+                                            }]
                                            
-
                                             payload = {officer_in_charge:_payload, contacts:[]}
+                                        */
                                             
-                                            console.log({formData, payload, officer_in_charge})
-                                            return
 
                                             handleFacilityContactsUpdates(payload, id, alert)
                                             .then(({statusText}) => {
@@ -1769,7 +1777,7 @@ const EditFacility = (props) => {
                                                                     contactTypeOptions={contactTypeOptions}
                                                                     setFacilityContacts={setFacilityContacts}
                                                                     contacts={[contact, contact_type_name, id]}
-                                                                    index={i}
+                                                                    index={id}
                                                                     fieldNames={['contact_type', 'contact']}
                                                                     
                                                                 />
@@ -1904,7 +1912,7 @@ const EditFacility = (props) => {
                                                                     setFacilityContacts={setOfficerContact}
                                                                     contacts={[contact_type_name, contact, officer_contact_id]}
                                                                     index={i}
-                                                                    fieldNames={['contact_type', 'contact']}
+                                                                    fieldNames={['officer_contact_type', 'officer_contact']}
                                                                     
                                                                 />
                                                         ))

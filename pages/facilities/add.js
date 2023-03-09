@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect, useRef, createContext } from 'react';
+import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { useFormik } from 'formik'
 
 // Next imports
@@ -52,6 +52,7 @@ import {
 } from '../../controllers/facility/facilityHandlers';
 
 import { inputValidation } from '../../utils/formValidation';
+import { UserContext } from '../../providers/user';
 
 export const FacilityDeptContext = createContext(null)
 export const FacilityContactsContext = createContext(null)
@@ -68,6 +69,8 @@ const WardMap = dynamic(
 const Map = React.memo(WardMap)
 
 function AddFacility(props) {
+
+	const userCtx = useContext(UserContext)
 
 	// const alert = useAlert();
 
@@ -155,7 +158,13 @@ function AddFacility(props) {
 	 const kephOptions =  props['4']?.keph
 	 const facilityAdmissionOptions =  props['5']?.facility_admission_status
 	 const countyOptions =  props['6']?.counties
-	 const subCountyOptions =  props['7']?.sub_counties
+	 const subCountyOptions =  props['7']?.sub_counties.filter(({label}) => {
+		// console.log({user_sub_county: userCtx?.sub_county_name, label})
+		return userCtx?.sub_county_name == label
+	 }) ?? props['7']?.sub_counties
+
+
+	 console.log({subCountyOptions})
 	 const constituencyOptions =  props['8']?.constituencies
 	 const wardOptions =  props['9']?.wards
 	 const jobTitleOptions = props['10']?.job_titles
@@ -1558,7 +1567,9 @@ function AddFacility(props) {
 																						try{
 																							const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
 
-																							setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
+																							setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})).filter(
+																								({label}) => label == userCtx.sub_county_name
+																							) ?? [])
 
 																							
 																						}
@@ -2896,7 +2907,7 @@ AddFacility.getInitialProps = async (ctx) => {
 								let fields = ''
 								let _obj = {}
 
-								if(option === 'counties') fields = 'id,name&page_size=47'
+								if(option === 'counties') `${API_URL}/common/${path}/?county=${id}&fields=id,name`
 								if(option === 'sub_counties') fields = 'id,name,county'
 								if(option === 'wards') fields = 'id,name,sub_county,constituency'
 								if(option === 'constituencies') fields = 'id,name,county'

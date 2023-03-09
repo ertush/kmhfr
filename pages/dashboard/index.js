@@ -124,8 +124,14 @@ const Dash = (props) => {
 
     console.log(user)
     useEffect(()=>{
-        fetchWards(userCtx.county)
-        fetchSubCounties(userCtx.county)
+        if(userCtx){
+            fetchWards(userCtx.county)
+            fetchSubCounties(userCtx.county)
+        }
+        else{
+            router.push('/auth/login')
+        }
+    
     },[])
 
 
