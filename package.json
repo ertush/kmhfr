@@ -53,7 +53,7 @@
     "react-toastify": "^9.0.5",
     "react-use-uuid": "^2.0.1",
     "react-window": "^1.8.7",
-    "swr": "^2.0.3",
+    "swr": "^2.1.0",
     "underscore": "^1.13.6"
   },
   "devDependencies": {
