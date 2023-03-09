@@ -74,7 +74,7 @@ const EditFacility = (props) => {
     console.log({isFetchingConstituencies, constituencies, errorFetchingConstituencies})
 
     // Alert 
-    const alert = useAlert();isFetchingSubCounties
+    const alert = useAlert();
    
     const facilityOptions = (() => {
 		const f_types = [
