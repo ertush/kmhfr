@@ -923,22 +923,23 @@ const EditFacility = (props) => {
                                                 let payload = {}
 
                                                 const _payload = _.omit(formData, function (v, k) { return basicDetailsData[k] === v})
-                                                if(officer_in_charge) {
-                                                    payload = {..._payload, officer_in_charge}
-                                                }
-                                                else{
-                                                    payload = {..._payload, 
-                                                        officer_in_charge: {
-                                                            contacts: [],
-                                                            id_number: null,
-                                                            name: "",
-                                                            reg_no: "",
-                                                            title: "",
-                                                            title_name: ""
-                                                        }
-                                                    }
+                                                payload = {..._payload}
+                                                // if(officer_in_charge) {
+                                                //     payload = {..._payload, officer_in_charge}
+                                                // }
+                                                // else{
+                                                //     payload = {..._payload, 
+                                                //         officer_in_charge: {
+                                                //             contacts: [],
+                                                //             id_number: null,
+                                                //             name: "",
+                                                //             reg_no: "",
+                                                //             title: "",
+                                                //             title_name: ""
+                                                //         }
+                                                //     }
                                                 
-                                                }
+                                                // }
 
                                             
                                               handleBasicDetailsUpdates(payload, id, alert)
@@ -1531,9 +1532,9 @@ const EditFacility = (props) => {
                                             let payload = {}
                                             const _payload = _.omit(formData, function (v, k) { return geolocationData[k] === v})
                                             
-                                            payload = {..._payload, facility: id, coordinates:{coordinates:[lat_long[1], lat_long[0]], type:'point'}}
+                                            payload = {..._payload, facility: id, coordinates:{coordinates:[lat_long[1], lat_long[0]], type:'point'}} // {..._payload}
 
-                                            payload['collection_date'] = new Date(payload.collection_date)
+                                            // payload['collection_date'] = new Date(payload.collection_date)
                                         
                                             handleGeolocationUpdates(payload, coordinates, alert)
                                             .then(({statusText}) => {
@@ -1670,45 +1671,40 @@ const EditFacility = (props) => {
                                             name: officer_in_charge?.name ?? '',
                                             reg_no:  officer_in_charge?.reg_no ?? '',
                                             contact: facility_contacts  ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  '',
-                                           
+                                            contact_type: facility_contacts  ? facility_contacts.length > 0 ?  facility_contacts[0].contact_type : '' :  '',
+                                            officer_contact_type: officerContacts ? officerContacts.length > 0 ? officerContacts[0].contact_type : '': '',
+                                            officer_contact: officerContacts ? officerContacts.length > 0 ? officerContacts[0].contact : '': '',
+                                            
                                         }}
 
                                         onSubmit={formData => {
-                                           
+
+                                            console.log({formData})
+
+                                        /*
+                                        
                                             let payload = {}
                                         
-                                            // const contact = facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
-
-                                            // const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
-
-                                            // const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
-
+                                            const contact = facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
+                                            const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
+                                            const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
                                             const jobTitle = jobTitleRef.current  ? jobTitleRef.current.state.value.value : ''
-
                                             const jobTitleName = jobTitleRef.current  ? jobTitleRef.current.state.value.label : ''
-
                                             const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
-
                                             if(officer_in_charge ) Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
-
                                             _payload['title'] = jobTitle
-
                                             _payload['titleName'] = jobTitleName
-
-                                            // _payload['contacts'] = [{
-                                            //     contact,
-                                            //     contact_id: facility_contacts[0]?.contact_id,
-                                            //     contact_type_name: contactTypeName,
-                                            //     official_contact_id:facility_contacts[0]?.id,
-                                            //     type: contactType
-                                            // }]
-
+                                            _payload['contacts'] = [{
+                                                contact,
+                                                contact_id: facility_contacts[0]?.contact_id,
+                                                contact_type_name: contactTypeName,
+                                                official_contact_id:facility_contacts[0]?.id,
+                                                type: contactType
+                                            }]
                                            
-
                                             payload = {officer_in_charge:_payload, contacts:[]}
+                                        */
                                             
-                                            console.log({formData, payload, officer_in_charge})
-                                            return
 
                                             handleFacilityContactsUpdates(payload, id, alert)
                                             .then(({statusText}) => {
@@ -1773,7 +1769,7 @@ const EditFacility = (props) => {
                                                                     contactTypeOptions={contactTypeOptions}
                                                                     setFacilityContacts={setFacilityContacts}
                                                                     contacts={[contact, contact_type_name, id]}
-                                                                    index={i}
+                                                                    index={id}
                                                                     fieldNames={['contact_type', 'contact']}
                                                                     
                                                                 />
@@ -1908,7 +1904,7 @@ const EditFacility = (props) => {
                                                                     setFacilityContacts={setOfficerContact}
                                                                     contacts={[contact_type_name, contact, officer_contact_id]}
                                                                     index={i}
-                                                                    fieldNames={['contact_type', 'contact']}
+                                                                    fieldNames={['officer_contact_type', 'officer_contact']}
                                                                     
                                                                 />
                                                         ))
