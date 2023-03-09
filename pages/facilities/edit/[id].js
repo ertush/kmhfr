@@ -76,7 +76,7 @@ const EditFacility = (props) => {
 
     
     // Alert 
-    const alert = useAlert();isFetchingSubCounties
+    const alert = useAlert();
    
     const facilityOptions = (() => {
 		const f_types = [
