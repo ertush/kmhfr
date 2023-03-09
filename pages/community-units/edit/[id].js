@@ -978,7 +978,7 @@ const CommUnit = (props) => {
                           </td>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className="gap-2">
                         {selectedServices && selectedServices?.length > 0 ? (
                           selectedServices?.map(({ id, name }) => (
                             <tr

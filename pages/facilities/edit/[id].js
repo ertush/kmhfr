@@ -66,12 +66,12 @@ const Map = React.memo(WardMap)
 
 const EditFacility = (props) => {
 
-    // console.log({props})
-
-
-
+    
     // Alert 
     const alert = useAlert();
+
+    // User Context 
+    const userCtx = useContext(UserContext)
 
    
     const facilityOptions = (() => {
@@ -140,7 +140,8 @@ const EditFacility = (props) => {
     const kephOptions =  props['4']?.keph ?? []
     const facilityAdmissionOptions =  props['5']?.facility_admission_status
     const countyOptions =  props['6']?.counties ?? []
-    const subCountyOptions =  props['7']?.sub_counties ?? []
+    const subCountyOptions =  props['7']?.sub_counties.filter(
+        ({label}) => label == userCtx?.sub_county_name) ?? props['7']?.sub_counties ?? []
     const constituencyOptions =  props['8']?.constituencies ?? []
     const wardOptions =  props['9']?.wards ?? []
     const jobTitleOptions = props['10']?.job_titles ?? []
@@ -589,7 +590,7 @@ const EditFacility = (props) => {
 
     // Different form states
   
-    const [wardName, setWardName] = useState(ward_name)
+    const [wardName] = useState(ward_name)
     const [operationStatus, setOperationStatus] = useState('')
     const [facilityUpdateData, setFacilityUpdateData] = useState(null)
     const [isSavedChanges, setIsSavedChanges] = useState(false)
@@ -669,8 +670,7 @@ const EditFacility = (props) => {
 
     const filteredRegBodyOptions = regBodyOptions.filter(({label}) => label === ownerTypeName)
 
-    // User Context 
-    const userCtx = useContext(UserContext)
+  
     
     useEffect(() => {
         if (userCtx) setUser(userCtx)
@@ -1402,7 +1402,8 @@ const EditFacility = (props) => {
                                                                         try{
                                                                             const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
 
-                                                                            setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
+                                                                            setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})).filter(
+                                                                                ({label}) => label == userCtx.sub_county_name) ?? [])
 
                                                                             
                                                                         }
