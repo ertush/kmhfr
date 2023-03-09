@@ -115,12 +115,17 @@ const Upgrade = props => {
                         async _ => {
 
                             handleFacilityUpgrades({
-                                facility:id,
+                                facility:facility_id,
                                 facility_type: facilityTypeRef.current.state.value.value ?? null,
                                 keph_level: newkephLvlRef.current.state.value.value ?? null,
                                 reason: reasonTypeRef.current.state.value.value ?? null
 
-                            }, alert)
+                            }, alert)   
+                            .then(resp => {
+                                if(resp.statusText.includes('OK')){
+                                    router.push(`/facilities/${facility_id}`)
+                                }
+                            })
                         }
                     }
                     >

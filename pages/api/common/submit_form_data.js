@@ -16,7 +16,7 @@ export default async function submitFormData(req, res) {
 
         switch (path) {
             case 'basic':
-                url = `${API_URL}/rest-auth/user`;
+                url = `${API_URL}/rest-auth/user/`;
                 method = 'PATCH';
                 contentType = 'application/json;charset=utf-8';
                 break;
@@ -103,22 +103,22 @@ export default async function submitFormData(req, res) {
                 method = 'POST';
                 break
             case `edit`:
-                url = `${API_URL}/users/groups/${req.query.id}`
+                url = `${API_URL}/users/groups/${req.query.id}/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'PATCH';
                 break
             case `edit_user`:
-                url = `${API_URL}/users/${req.query.id}`
+                url = `${API_URL}/users/${req.query.id}/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'PUT';
                 break
             case `delete`:
-                url = `${API_URL}/users/groups/${req.query.id}`
+                url = `${API_URL}/users/groups/${req.query.id}/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'DELETE';
                 break
             case `delete_user`:
-                url = `${API_URL}/users/${req.query.id}`
+                url = `${API_URL}/users/${req.query.id}/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'DELETE';
                 break
@@ -179,12 +179,12 @@ export default async function submitFormData(req, res) {
                 method = 'POST';
                 break
             case `close_facility`:
-                url = `${API_URL}/facilities/facilities/${req.query.id}`
+                url = `${API_URL}/facilities/facilities/${req.query.id}/`
                 contentType = 'application/json;charset=utf-8';
                 method = 'PATCH';
                 break
             case `delete_contact`:
-                url = `${API_URL}/facilities/contacts/${req.query.id}`
+                url = `${API_URL}/facilities/contacts/${req.query.id}/`
                 method = 'DELETE';
                 break;
             default:

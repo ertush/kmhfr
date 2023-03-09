@@ -2896,7 +2896,7 @@ AddFacility.getInitialProps = async (ctx) => {
 								let fields = ''
 								let _obj = {}
 
-								if(option === 'counties') fields = 'id,name&page_size=47'
+								if(option === 'counties') `${API_URL}/common/${path}/?county=${id}&fields=id,name`
 								if(option === 'sub_counties') fields = 'id,name,county'
 								if(option === 'wards') fields = 'id,name,sub_county,constituency'
 								if(option === 'constituencies') fields = 'id,name,county'

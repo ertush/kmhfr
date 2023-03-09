@@ -18,8 +18,11 @@ export default async function fetchFormData(req, res) {
                 case 'admin_offices':
                     url = `${API_URL}/${path}/${id}/` 
                 break;
+                case 'counties':
+                    url = id ? `${API_URL}/common/${path}/${id}/?fields=id,name'` : `${API_URL}/common/${path}/?fields=id,name&page_size=47` 
+                break;
                 case 'sub_counties':
-                    url = `${API_URL}/common/${path}/?county=${id}&fields=id`
+                    url = id ? `${API_URL}/common/${path}/?county=${id}&fields=id,name,county` : `${API_URL}/common/${path}/?fields=id,name,county&page_size=307` 
                 break;
                 case 'wards':
                     url = `${API_URL}/common/${path}/?sub_county=${id}&fields=id`
