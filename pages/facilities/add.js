@@ -2247,21 +2247,23 @@ function AddFacility(props) {
 																 
 																	{
 																		facilityDepts.map((facilityDept, i) => (
-																			<div className="w-full flex items-center justify-between gap-3 mt-3" key={facilityDept.index}>
-																				<FacilityDeptRegulationFactory
-																					key={facilityDept.index}
-																					index={i}
-																					{...facilityDept}
-																				/>
-																				
-																				<button 
-																					id={`delete-btn-${i}`}
-																					key={facilityDept.index}
-																					onClick={(ev)=> {
-																						ev.preventDefault();
-																						handleDeleteField(i);
-																					}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
-																				
+																			<div className="w-full flex flex-grow gap-3 mt-3" key={facilityDept.index}>
+																				<div className='flex flex-grow gap-3 justify-between items-center w-full'>
+																					<FacilityDeptRegulationFactory
+																						key={facilityDept.index}
+																						index={i}
+																						{...facilityDept}
+																					/>
+																					
+																					<button 
+																						id={`delete-btn-${i}`}
+																						key={facilityDept.index}
+																						onClick={(ev)=> {
+																							ev.preventDefault();
+																							handleDeleteField(i);
+																						}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+																					
+																				</div>
 																			</div>
 																		
 																		))
@@ -2388,8 +2390,8 @@ function AddFacility(props) {
 																setItemsUpdateData={null}
 																handleItemPrevious={handleInfrastructurePrevious}
 																setNextItemCategory={setFormId}
-																nextItemCategory={'services'}
-																previousItemCategory={'human resources'}
+																nextItemCategory={'human resources'}
+																previousItemCategory={'services'}
                                               					setIsSaveAndFinish={() => null}
 																/>
 
