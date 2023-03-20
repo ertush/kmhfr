@@ -14,6 +14,7 @@ import FacilityDeptRegulationFactory from '../../../components/generateFacilityD
 import { FacilityContact, OfficerContactDetails } from '../../../components/FacilityContacts'
 import { useCounties } from '../../../hooks/useCounties';
 import { useSubCounties } from '../../../hooks/useSubCounties';
+import { XCircleIcon } from '@heroicons/react/outline';
 
 import { 
     handleBasicDetailsUpdates,
@@ -89,7 +90,7 @@ const EditFacility = (props) => {
 
 		const all_ftypes = []
 
-       
+      
 
 		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division == f_types[type]))
 
@@ -131,7 +132,7 @@ const EditFacility = (props) => {
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('') 
     const [isSaveAndFinishInfra, setIsSaveAndFinishInfra] = useState(false);
-    const [isSaveAndFinishService, setIsSaveAndFinishService] = useState(false)
+    const [isSaveAndFinishService, setIsSaveAndFinishService] = useState(false);
    
     const filters = []
 
@@ -372,6 +373,8 @@ const EditFacility = (props) => {
 
     const [facilityContacts, setFacilityContacts] = useState(facility_contacts)
     const [officerContacts, setOfficerContact] = useState(officer_in_charge)
+    const [facilityDepts, setFacilityDepts] = useState(facility_units)
+
 
     const collection_date = props['21']?.collection_date ?  (props['21']?.collection_date.replace(/T.*$/, '') ?? '') : ''
 
@@ -762,6 +765,13 @@ const EditFacility = (props) => {
        
         
     }, [isSavedChanges])
+
+    const handleDeleteField = (index) => {
+        const values = facility_units;
+        values.splice(index, 1);
+        setFacilityDepts((draft) => ([ ...values]))
+    };
+   
 
     useEffect(() => {}, [facilityContacts])
 
@@ -2158,26 +2168,40 @@ const EditFacility = (props) => {
                                                 {/* Name */}
                                           
                                                 <div className='flex flex-col gap-2 items-start justify-start gap-y-4'>
-                                                
+												    
+                                               
                                                 {
-                                                    facility_units?.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
-                                                
-                                                        <FacilityDeptRegulationFactory
+                                                    facilityDepts?.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
+                                                        <div className='flex flex-grow gap-3 justify-between items-center w-full'>
+                                                            <FacilityDeptRegulationFactory
+                                                                key={i}
+                                                                index={i}
+                                                                isRegBodyChange={null}
+                                                                setIsRegBodyChange={() => null}
+                                                                setFacilityDepts={() => null}
+                                                                regNo={registration_number}
+                                                                licenseNo={license_number}
+                                                                facilityDeptRegBody={regulating_body_name}
+                                                                facilityDeptValue={[{value:id, label:unit_name}]}
+                                                                facilityDeptOptions={facilityDeptOptions}
+                                                            />
+
+                                                            <button 
+                                                            id={`delete-btn-${i}`}
                                                             key={i}
-                                                            index={i}
-                                                            isRegBodyChange={null}
-                                                            setIsRegBodyChange={() => null}
-                                                            setFacilityDepts={() => null}
-                                                            regNo={registration_number}
-                                                            licenseNo={license_number}
-                                                            facilityDeptRegBody={regulating_body_name}
-                                                            facilityDeptValue={[{value:id, label:unit_name}]}
-                                                            facilityDeptOptions={facilityDeptOptions}
-                                                    />
+                                                            onClick={(ev)=> {
+                                                                ev.preventDefault();
+                                                                handleDeleteField(i);
+                                                            }}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+                                                          </div>
+                                               
                                                 
                                                     ))
                                                     
                                                 }
+
+                                                         
+                                                   
                                                 </div>
 
                                                 {/* add other fields */}

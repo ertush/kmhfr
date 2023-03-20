@@ -2258,21 +2258,23 @@ function AddFacility(props) {
 																 
 																	{
 																		facilityDepts.map((facilityDept, i) => (
-																			<div className="w-full flex items-center justify-between gap-3 mt-3" key={facilityDept.index}>
-																				<FacilityDeptRegulationFactory
-																					key={facilityDept.index}
-																					index={i}
-																					{...facilityDept}
-																				/>
-																				
-																				<button 
-																					id={`delete-btn-${i}`}
-																					key={facilityDept.index}
-																					onClick={(ev)=> {
-																						ev.preventDefault();
-																						handleDeleteField(i);
-																					}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
-																				
+																			<div className="w-full flex flex-grow gap-3 mt-3" key={facilityDept.index}>
+																				<div className='flex flex-grow gap-3 justify-between items-center w-full'>
+																					<FacilityDeptRegulationFactory
+																						key={facilityDept.index}
+																						index={i}
+																						{...facilityDept}
+																					/>
+																					
+																					<button 
+																						id={`delete-btn-${i}`}
+																						key={facilityDept.index}
+																						onClick={(ev)=> {
+																							ev.preventDefault();
+																							handleDeleteField(i);
+																						}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
+																					
+																				</div>
 																			</div>
 																		
 																		))
@@ -2399,8 +2401,8 @@ function AddFacility(props) {
 																setItemsUpdateData={null}
 																handleItemPrevious={handleInfrastructurePrevious}
 																setNextItemCategory={setFormId}
-																nextItemCategory={'services'}
-																previousItemCategory={'human resources'}
+																nextItemCategory={'human resources'}
+																previousItemCategory={'services'}
                                               					setIsSaveAndFinish={() => null}
 																/>
 
@@ -2907,7 +2909,7 @@ AddFacility.getInitialProps = async (ctx) => {
 								let fields = ''
 								let _obj = {}
 
-								if(option === 'counties') `${API_URL}/common/${path}/?county=${id}&fields=id,name`
+								if(option === 'counties') fields = 'id,name&page_size=47'
 								if(option === 'sub_counties') fields = 'id,name,county'
 								if(option === 'wards') fields = 'id,name,sub_county,constituency'
 								if(option === 'constituencies') fields = 'id,name,county'
