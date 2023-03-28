@@ -25,14 +25,16 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env.local
+.env.local.dev
+.env.remote.dev
 .env.development.local
 .env.test.local
 .env.production.local
+.env.dev
 
 # vercel
 .vercel
 .env
-yarn.lock
-yarn.lock
 .env.dev
+.env.local.dev
+.env.remote.dev

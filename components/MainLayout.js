@@ -1,12 +1,10 @@
-import Link from 'next/link'
+// import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { ChevronDownIcon, ExternalLinkIcon, MenuAlt1Icon, SearchIcon } from '@heroicons/react/solid';
-import { UserCircleIcon } from '@heroicons/react/outline';
-import React, { useState, useEffect, useCallback } from 'react';
-import { Menu } from '@headlessui/react'
+import React, { useState, useEffect } from 'react';
 import { getUserDetails } from '../controllers/auth/auth'
 import LoadingAnimation from './LoadingAnimation';
 import HeaderLayout from './HeaderLayout';
+
 
 const DelayedLoginButton = () => {
     const [delayed, setDelayed] = useState(false)
@@ -22,19 +20,16 @@ const DelayedLoginButton = () => {
     if (delayed === true) {
         return <a href="/auth/login" className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
     } else {
-        return <div className="p-3 w-16"> <LoadingAnimation size={6} /> </div>
+        return <div className="p-3 w-16"> <LoadingAnimation size={6} isLight={true} /> </div>
     }
 }
 
 export default function MainLayout({ children, isLoading, searchTerm, isFullWidth, classes }) {
     const router = useRouter()
-    const activeClasses = "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-2 border-green-600"
-    const inactiveClasses = "text-gray-700 hover:text-black focus:text-black active:text-black"
-    const currentPath = router.asPath.split('?', 1)[0]
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [user, setUser] = useState(null)
     let API_URL = process.env.NEXT_PUBLIC_API_URL
-    if(typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
+    if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
         API_URL = 'http://localhost:8000/api'
     }
 
@@ -47,7 +42,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
     } else {
         path = '/facilities'
     }
-    // console.log('path::: ', path)
+  
 
     useEffect(() => {
         let mtd = true
@@ -61,8 +56,8 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
 
             if (is_user_logged_in && typeof window !== 'undefined' && session_token !== null) {
                 console.log('active session found')
-                // getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr=>{
-                getUserDetails(session_token.token, API_URL + '/rest-auth/user/').then(usr => {
+              
+                getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(usr => {
                     if (usr.error || usr.detail) {
                         setIsLoggedIn(false)
                         setUser(null)
@@ -73,7 +68,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                 })
             } else {
                 console.log('no session. Refreshing...')
-                // router.push('/auth/login')
+            
             }
         }
         return () => { mtd = false }
@@ -86,7 +81,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                 <HeaderLayout>
 
                 </HeaderLayout>
-                
+
             </div>
             <div className={"min-h-screen w-full flex flex-col items-center " + (isFullWidth ? "" : "max-w-screen-2xl") + (classes && classes.length > 0 ? classes.join(" ") : "")}>
                 <>

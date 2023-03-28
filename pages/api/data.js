@@ -1,19 +1,17 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
-import { getUserDetails, logUserIn, checkToken } from "../../controllers/auth/auth";
+import { checkToken } from "../../controllers/auth/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 const fetchData = (token, url_fragment) => {
     let url = API_URL + url_fragment
-    console.log(' == fetching(' + url + ')')
+
     return fetch(url, {
         headers: {
             'Authorization': 'Bearer ' + token,
             'Accept': 'application/json'
         }
     }).catch(err => {
-        console.log('fetchData err ===== ', err)
+
         return {
             error: true,
             err: err
@@ -35,16 +33,15 @@ export default async function getData(req, res) {
                     })
                 } else {
                     let token = t.token
-                    let url_fragment = Buffer.from(decodeURI(req.query.url), 'base64').toString('ascii').replace('endpoint','')
-                    return fetchData(token, url_fragment).then(dt =>dt.json()).then(data => {
-                        // console.log('data ===== ', data)
+                    let url_fragment = Buffer.from(decodeURI(req.query.url), 'base64').toString('ascii').replace('endpoint', '')
+                    return fetchData(token, url_fragment).then(dt => dt.json()).then(data => {
+
                         res.status(200).json(data)
                         return
                     })
                 }
                 return
             })
-            return
         } catch (err) {
             console.log("getData API error: ", err)
             res.status(500).json({

@@ -1,14 +1,17 @@
+[![deploy workflow](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/deploy.yml/badge.svg)](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/deploy.yml)
+[![CodeQL](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/github-code-scanning/codeql)
 # KMHFL3 Frontend
 
 This is the frontend application for KMHFL with new features (GIS, Dynamic Reports). Phase 1 is to have it as a read-only data consumption app. Phase 2 and beyond is to add CRUD features.
 
 ## Tech stack
+
 - Next.js
 - Tailwind CSS
 
 ## API
 
-Currently, this uses the test API available through [api.kmhfltest.health.go.ke](https://api.kmhfltest.health.go.ke). 
+Currently, this uses the test API available through [api.kmhfltest.health.go.ke](https://api.kmhfltest.health.go.ke).
 
 ## Preview
 
@@ -16,8 +19,10 @@ An on-premise test server is needed. Currently, you can preview the example live
 
 ## How to use
 
-- Clone this repository ```git clone https://github.com/benzerbett/kmhfl-mbele-ui mfl3``` 
+- Clone this repository ```git clone https://github.com/benzerbett/kmhfl-mbele-ui mfl3```
 - cd into the folder ```cd mfl3```
 - Make a copy of the ```.env``` file and add your environment variables as detailed ```cp .env.local.example .env.local && nano .env.local```
 - Install dependencies ```npm install``` or ```yarn```
 - For local development, run ```npm run dev``` or ```yarn dev```
+
+

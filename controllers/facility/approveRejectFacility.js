@@ -1,29 +1,144 @@
-const approveRejectFacility = (isApproved, setState) => {
-    console.log("pppppppppppppppppp ------------>>>> "+isApproved);
 
-    if (isApproved == null) {
-        setState(true)
+import router from "next/router"
 
+const validateRejectFacility = (facility_id, reject, comment, alert) => {
+
+    if (comment && !reject) {
+        alert.success("Facility validated successfully")
     } else {
-        setState(false)
+        alert.success("Facility rejected successfully")
+    }
+
+
+    let url = `/api/common/submit_form_data/?path=validate_facility`
+
+
+    try {
+        fetch(url, {
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                comment: comment,
+                facility: facility_id,
+                is_cancelled: reject,
+            })
+        })
+            .then(resp => resp)
+            .then(res => {
+
+                if (res) {
+                    router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
+                }
+
+            })
+            .catch(e => {
+                console.error(e.message)
+            })
+    } catch (e) {
+
+        console.error(e.message)
 
     }
 
 }
 
-const rejectFacility = (e, ctx, state, comment) => {
-    e.preventDefault();
+const approveRejectFacility = (facility_id, comment, alert, reject) => {
 
-    if(state){
-        ctx.is_approved = false;
-    }else {
-        ctx.is_approved = true;
+
+    if (reject) {
+        alert.success(`Facility Approved successfully`)
+    } else {
+        alert.success(`Facility Rejected successfully`)
     }
 
-    console.log({comment})
+
+    let url = `/api/common/submit_form_data/?path=validate_facility`
+    try {
+        fetch(url, {
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                approved_national_level: reject,
+                comment,
+                facility: facility_id,
+                is_national_approval: reject,
+            })
+        })
+            .then(resp => resp)
+            .then(res => {
+
+                if (res) {
+                    router.push('/facilities?qf=approved&approved=true&approved_national_level=true&rejected=false') // redirect Facilties Pending Approval
+                }
+
+
+            })
+            .catch(e => {
+                console.error(e.message)
+            })
+    } catch (e) {
+
+        console.error(e)
+    }
+
+
+
+}
+
+const approveRejectFacilityUpdates = (reject, alert, update_id) => {
+
+  
+
+    if (reject) {
+        alert.success("Facility updates approved successfully")
+    } else {
+        alert.success("Facility updates rejected successfully")
+    }
+
+    let url = `/api/common/submit_form_data/?path=approve_reject_facility_updates&id=${update_id}`
+
+
+    try {
+        fetch(url, {
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
+
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                approved: reject
+            })
+        })
+            .then(resp => resp)
+            .then(res => {
+
+                if (res) {
+                    router.push('/facilities?qf=updated_pending_validation&has_edits=true&pending_approval=true') // redirect to New Facilties Pending Validation
+                }
+
+            })
+            .catch(e => {
+                console.error(e.message)
+            })
+    } catch (e) {
+
+        console.error(e.message)
+
+    }
+
 }
 
 export {
+    approveRejectFacilityUpdates,
+    validateRejectFacility,
     approveRejectFacility,
-    rejectFacility
 }

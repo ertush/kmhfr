@@ -1,7 +1,7 @@
-const FormData = require('form-data');
+
 const Cookies = require('cookies')
 const cookieCutter = require('cookie-cutter')
-// require('dotenv').config({ path: `${__dirname}/../../.env.local` })
+
 
 const getToken = (req, res, refresh_token, creds) => {
     const cookies = new Cookies(req, res)
@@ -22,7 +22,7 @@ const getToken = (req, res, refresh_token, creds) => {
             return ct
         } else {
             console.log('Refreshing the page...')
-            // window.location.reload()
+          
         }
     } else if (isServer) {
         console.log('running getToken in the SERVER')
@@ -48,13 +48,13 @@ const getToken = (req, res, refresh_token, creds) => {
     bod.client_id = process.env.CLIENT_ID
     bod.client_secret = process.env.CLIENT_SECRET
 
-    console.log({token_url: process.env.TOKEN_URL})
+    console.log({ token_url: process.env.TOKEN_URL })
     return fetch(process.env.TOKEN_URL, {
         'method': 'POST',
         'headers': {
             "Accept": "application/json",
             'cache-control': "no-cache",
-            "Content-Type": "application/x-www-form-urlencoded", //"multipart/form-data; boundary=---011000010111000001101001",
+            "Content-Type": "application/x-www-form-urlencoded", 
             "Authorization": "Basic " + Buffer.from(process.env.CLIENT_ID + ":" + process.env.CLIENT_SECRET).toString('base64')
         },
         'body': new URLSearchParams(bod).toString() //bod
@@ -109,13 +109,13 @@ const checkToken = async (req, res, isProtected, creds) => {
     if (isBrowser && typeof window != "undefined") {
         console.log('running checkToken in the BROWSER')
         ct = cookieCutter.get('access_token')
-        // console.log("B checkToken ct == ", ct)
+      
         if (ct && ct != null && ct != undefined && new Date(ct.expires) > Date.now()) {
-            console.log('B Token is valid')//: ', ct)
+            console.log('B Token is valid')
             return ct
         } else {
             console.log('Refreshing entire page...')
-            // window.location.reload()
+          
         }
     } else if (isServer) {
         console.log('running checkToken in the SERVER')
@@ -134,10 +134,11 @@ const checkToken = async (req, res, isProtected, creds) => {
         console.log('Token expired. Refreshing...')
         if (req && req.asPath != '/api/login' && req.asPath != '/auth/login') {//check if protected page too
             // res.writeHead(301, { Location: '/auth/login?was=' + req.asPath + '&h=1' })
+            console.log('page not protected')
             res.writeHead(301, { Location: '/auth/login?was=' + encodeURIComponent(req.url) + '&h=1' })
             res.end()
             return { error: true, message: 'Token expired. Refreshing...' }
-        }else if(!req || typeof window != "undefined"){
+        } else if (!req || typeof window != "undefined") {
             window.location.href = '/auth/login?h=1'
         }
         let refresh_token
@@ -162,7 +163,7 @@ const checkToken = async (req, res, isProtected, creds) => {
 }
 
 const logUserIn = (req, res, creds, was) => {
-    console.log({creds})
+    // console.log({creds})
     // console.log('------------logUserIn: ', creds)
     return getToken(req, res, null, creds).then(tk => {
         if (tk.error) {
@@ -251,35 +252,6 @@ const getUserContacts = async (token, url) => {
 
 }
 
-const saveUser = async (token, url, payload) => {
-    if (token && token.length > 0) {
-        fetch(url, {
-            'method': 'PATCH',
-            'headers': {
-                "Accept": "application/json",
-                'cache-control': "no-cache",
-                "Content-Type": "application/x-www-form-urlencoded", //"multipart/form-data; boundary=---011000010111000001101001",
-                "Authorization": "Bearer " + token
-            },
-            'body': payload
-        }).then(j => j.json())
-            .then(response => {
-                // console.log('=================== saveUser returned: ', response)
-                if (response.detail || response.error) {
-                    console.log('Error in saveUser: ', response)
-                    return {
-                        error: true, message: response.detail || response.error
-                    }
-                }
-                return response
-            }).catch(err => {
-                console.log('Error in saveUser: ', err)
-                return {
-                    error: true, message: err.message || err
-                }
-            })
-    }
 
-}
 
 module.exports = { checkToken, getToken, logUserIn, getUserDetails, getUserContacts }

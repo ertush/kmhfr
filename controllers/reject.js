@@ -1,28 +1,46 @@
-const approveRejectCHU = (isApproved, setState) => {
+import { checkToken } from "./auth/auth";
 
-    if (isApproved) {
-        setState(true)
+const approveRejectCHU = async (isApproved, setState, id) => {
 
-    } else {
-        setState(false)
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/chul/updates/${id}/`;
 
-    }
+  if (isApproved) {
+    setState(true);
 
-}
+    return checkToken()
+      .then((token) => {
+
+        fetch(url, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+
+            Authorization: "Bearer " + token,
+          },
+
+        })
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    setState(false);
+  }
+};
 
 const rejectCHU = (e, ctx, state, comment) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if(state){
-        ctx.is_approved = false;
-    }else {
-        ctx.is_approved = true;
-    }
+  if (state) {
+    ctx.is_approved = false;
+  } else {
+    ctx.is_approved = true;
+  }
 
-    console.log({comment})
-}
 
-export {
-    approveRejectCHU,
-    rejectCHU
-}
+};
+
+export { approveRejectCHU, rejectCHU };
+
+
+

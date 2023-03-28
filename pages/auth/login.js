@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import {useRouter} from 'next/router'
+import { useRouter } from 'next/router'
 import React from 'react'
 
 const Login = (props) => {
@@ -20,7 +20,7 @@ const Login = (props) => {
             <div className="w-full h-screen overflow-hidden bg-blue-50 flex flex-col gap-2 items-center justify-center p-3 md:p-0">
                 <div className="w-full flex flex-col max-w-screen-sm items-center justify-between px-2">
                     <div className="text-center text-5xl w-full font-black text-gray-700 flex justify-center gap-x-2 items-center">
-                        <img src="/MOH.png" className="h-16" alt="KMHFL 3"/>
+                        <img src="/MOH.png" className="h-16" alt="KMHFL 3" />
                         <span>KMHFL-v3</span>
                     </div>
                     <div className="flex items-center justify-start w-full py-3">
@@ -48,7 +48,7 @@ const Login = (props) => {
                         })
                             .then(r => r.json())
                             .then(rsp => {
-                                // console.log('rsp: ', rsp)
+
                                 if (rsp.error) {
                                     setLoading(false)
                                     setError(rsp.error)
@@ -56,7 +56,7 @@ const Login = (props) => {
                                     setLoading(false)
                                     setMsg('Log-in successful. Redirecting...')
                                     setTimeout(() => {
-                                        goSomewhere(props.was) // , true)
+                                        goSomewhere(props.was)
                                     }, 2000);
                                 } else {
                                     setError(error)
@@ -74,11 +74,10 @@ const Login = (props) => {
                         setError('Please fill in all fields')
                         return false
                     }
-                }} 
-                // method="POST" 
-                // action="javascript:void(0);"
-                className="bg-white w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 ">
-                {/* className="bg-gradient-to-tl from-blue-500 via-green-500 to-green-800 w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-9 "> */}
+                }}
+
+                    className="bg-white w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 ">
+
                     <h3 className="text-center leading-tight text-xl font-bold tracking-wide text-gray-800 uppercase">Log in</h3>
                     <div className="flex flex-col gap-0 w-full">
                         {error && error.length > 0 && <p className="text-red-900 bg-red-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{error}</p>}
@@ -109,17 +108,12 @@ const Login = (props) => {
                         >{loading ? "Loading..." : "Log in"}</button>
                         <div className="flex justify-end items-center w-full px-2">
                             <a href="http://admin.kmhfltest.health.go.ke/#/reset_pwd" target="_blank" rel="noreferrer noopener" className="text-base text-gray-700 hover:text-green-700 focus:text-green-700 active:text-green-700 hover:underline focus:underline active:underline">Forgot password?</a>
-                            {/* <a href="/" className="text-base  text-green-300 hover:underline focus:underline active:underline">Request account</a> */}
+
                         </div>
                     </div>
                 </form>
             </div>
-            {/* <div className="absolute inset-0 flex flex-co items-center justify-center bg-white/90">
-                <div className="flex items-center flex-col justify-center">
-                    <div className="text-4xl font-bold bg-gray-50/60 py-1 px-3 rounded-lg">Loading...</div>
-                    <a href="/" className="text-blue-700">Cancel</a>
-                </div>
-            </div> */}
+
         </div>
     )
 }
