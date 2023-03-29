@@ -30,7 +30,7 @@ const Dash = (props) => {
         },
         {
             value:3,
-            label:'Monthly'
+            label:'Monthlyy'
         }
     ]
     let [drillDown, setDrillDown] = useState({})
