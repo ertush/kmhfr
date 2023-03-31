@@ -57,7 +57,8 @@ import { UserContext } from '../../providers/user';
 export const FacilityDeptContext = createContext(null)
 export const FacilityContactsContext = createContext(null)
 
-const turf = require('@turf/turf');
+// const turf = require('@turf/turf');
+
 const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
@@ -65,6 +66,7 @@ const WardMap = dynamic(
 		ssr: false // This line is important. It's what prevents server-side render
 	} 
 )
+
 
 const Map = React.memo(WardMap)
 
@@ -164,7 +166,7 @@ function AddFacility(props) {
 	 }) ?? props['7']?.sub_counties
 
 
-	 console.log({subCountyOptions})
+	//  console.log({subCountyOptions})
 	 const constituencyOptions =  props['8']?.constituencies
 	 const wardOptions =  props['9']?.wards
 	 const jobTitleOptions = props['10']?.job_titles
@@ -434,23 +436,24 @@ function AddFacility(props) {
 
 
 	useEffect(() => {
-		const isLatLngInRegion = (longitude, latitude) => {
+		// const isLatLngInRegion = (longitude, latitude) => {
 			
-					if(longitude.length >= 9 && latitude.length >= 9){ 
-						let point = turf.point([longitude, latitude]);
+		// 			if(longitude.length >= 9 && latitude.length >= 9){ 
+		// 				let point = turf.point([longitude, latitude]);
 						
-						let polygon = turf.polygon(facilityCoordinates);
+		// 				let polygon = turf.polygon(facilityCoordinates);
 						
-						let found = turf.booleanPointInPolygon(point, polygon);
-						if(!found){
-							setCoordinatesError(true)
-						}else{
-							setCoordinatesError(false)
-						}
-					}
-				}
+		// 				let found = turf.booleanPointInPolygon(point, polygon);
+		// 				if(!found){
+		// 					setCoordinatesError(true)
+		// 				}else{
+		// 					setCoordinatesError(false)
+		// 				}
+		// 			}
+		// 		}
 		
-				isLatLngInRegion(geolocationForm.values.longitude, geolocationForm.values.latitude)
+		// isLatLngInRegion(geolocationForm.values.longitude, geolocationForm.values.latitude)
+		console.log({longitude: geolocationForm.values.longitude, latitude: geolocationForm.values.longitude})
 	}, [geolocationForm.values.longitude, geolocationForm.values.latitude])
       
 
@@ -874,8 +877,8 @@ function AddFacility(props) {
 																<span className='flex items-center gap-x-1'>
 																	<input
 																		type='radio'
-																		value={true}
-																		defaultChecked={true}
+																		
+																		defaultChecked={false}
 																		name='accredited_lab_iso_15189'
 																		id='open_whole_day_yes'
 																		onChange={(ev) => {}}
@@ -885,7 +888,7 @@ function AddFacility(props) {
 																<span className='flex items-center gap-x-1'>
 																	<input
 																		type='radio'
-																		value={false}
+																		
 																		defaultChecked={false}
 																		name='accredited_lab_iso_15189'
 																		id='open_whole_day_no'
@@ -1345,8 +1348,8 @@ function AddFacility(props) {
 																<span className='flex items-center gap-x-1'>
 																	<input
 																		type='radio'
-																		value={true}
-																		defaultChecked={true}
+																		value={false}
+																		defaultChecked={false}
 																		name='reporting_in_dhis'
 																		id='reporting_in_dhis_yes'
 																		
@@ -1397,8 +1400,8 @@ function AddFacility(props) {
 																<span className='flex items-center gap-x-1'>
 																	<input
 																		type='radio'
-																		value={true}
-																		defaultChecked={true}
+																		value={false}
+																		defaultChecked={false}
 																		name='nhif_accreditation'
 																		id='nhif_accreditation_yes'
 																	
