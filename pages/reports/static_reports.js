@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
@@ -10,6 +10,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 import Select from 'react-select'; 
 import Resources from './resources'
+import { UserContext } from '../../providers/user'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -19,6 +20,8 @@ const Users = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
     const router = useRouter()
+
+    const userCtx = useContext(UserContext)
 
     const LinkCellRenderer = (params) =>{
         let reportType =''
@@ -48,7 +51,7 @@ const Users = (props) => {
     const [searchTerm, setSearchTerm] = useState('')
     const [filterOption, setFilterOption] = useState('')
     let label = 'beds_cots'
-    const [columns, setColumns]=useState([
+    const [columns]=useState([
         {headerName: "County", field: "county_name",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
@@ -71,7 +74,7 @@ const Users = (props) => {
         setGridColumnApi(params.columnApi);
 
         const updateData = (data) => params.api.setRowData(data);
-        const lnlst=  props.data.results.map((county_beds)=>{
+        const lnlst=  props?.data?.results?.map((county_beds)=>{
             return {
                 ...county_beds,
                 county_name: county_beds.county_name,
@@ -135,7 +138,12 @@ const Users = (props) => {
                 break;
         }
     },[filterOption])
-console.log(filterOption)
+// console.log(filterOption)
+    useEffect(() => {
+        if(!userCtx){
+            router.push('/auth/login')
+        }
+    },[])
 
     return (
         <div className="">

@@ -100,6 +100,12 @@ const Facility = (props) => {
   }, [isClosingFacility, isReasonRejected]);
 
 
+    useEffect(() => {
+        if(!userCtx){
+            router.push('/auth/login')
+        }
+    }, [])
+
 
   return (
     <>

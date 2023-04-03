@@ -98,17 +98,17 @@ const AddCommunityUnit = (props) => {
 	};
 	useEffect(() => {
 
-		const formIdState = window.sessionStorage.getItem('formId');
+		const formIdState = window.sessionStorage.getItem('chuformId');
 
 		if (formIdState == undefined || formIdState == null || formIdState == '') {
-			window.sessionStorage.setItem('formId', 1);
+			window.sessionStorage.setItem('chuformId', 1);
 		}
 
-		setFormId(window.sessionStorage.getItem('formId'));
+		setFormId(window.sessionStorage.getItem('chuformId'));
 
 		return () => {
-			if (window.sessionStorage.getItem('formId') == '3') {
-				window.sessionStorage.setItem('formId', 0);
+			if (window.sessionStorage.getItem('chuformId') == '3') {
+				window.sessionStorage.setItem('chuformId', 0);
 			}
 		};
 	}, [formId, facilities, serviceCtg]);
@@ -235,10 +235,10 @@ const AddCommunityUnit = (props) => {
 												}
 
 												// Set the formId to the next step
-												window.sessionStorage.setItem('formId', 1);
+												window.sessionStorage.setItem('chuformId', 1);
 
 												// Redirect to the next page
-												setFormId(window.sessionStorage.getItem('formId'));
+												setFormId(window.sessionStorage.getItem('chuformId'));
 											};
 											// Basic Details Form
 											return (
@@ -691,9 +691,9 @@ const AddCommunityUnit = (props) => {
 														console.error('Unable to patch facility contacts details'.e.message)
 													}
 
-													window.sessionStorage.setItem('formId', 2);
+													window.sessionStorage.setItem('chuformId', 2);
 
-													setFormId(window.sessionStorage.getItem('formId'));
+													setFormId(window.sessionStorage.getItem('chuformId'));
 
 												}
 											};
@@ -701,11 +701,11 @@ const AddCommunityUnit = (props) => {
 											const handleCHEWPrevious = (event) => {
 												event.preventDefault();
 
-												window.sessionStorage.setItem('formId', 0);
+												window.sessionStorage.setItem('chuformId', 0);
 
 
 
-												setFormId(window.sessionStorage.getItem('formId'));
+												setFormId(window.sessionStorage.getItem('chuformId'));
 											};
 											return (
 												<>
@@ -845,17 +845,17 @@ const AddCommunityUnit = (props) => {
 												}
 
 
-												window.sessionStorage.setItem('formId', 3);
+												window.sessionStorage.setItem('chuformId', 3);
 
-												setFormId(window.sessionStorage.getItem('formId'))
+												setFormId(window.sessionStorage.getItem('chuformId'))
 												setServices([])
 											};
 
 											const handleServicesPrevious = (event) => {
 												event.preventDefault();
 
-												window.sessionStorage.setItem('formId', 1);
-												setFormId(window.sessionStorage.getItem('formId'));
+												window.sessionStorage.setItem('chuformId', 1);
+												setFormId(window.sessionStorage.getItem('chuformId'));
 											};
 
 											return (

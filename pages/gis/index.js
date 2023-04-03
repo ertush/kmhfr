@@ -20,6 +20,7 @@ import MainLayout from "../../components/MainLayout";
 
 import { hasPermission } from "../../utils/checkPermissions";
 import { PermissionContext } from "../../providers/permissions";
+import { XCircleIcon } from "@heroicons/react/solid";
 
 const Gis = (props) => { 
 
@@ -60,7 +61,7 @@ const Gis = (props) => {
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-
+if(filters){
 
   filters["has_edits"] = [{ id: "has_edits", name: "Has edits" }];
   filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }];
@@ -87,6 +88,8 @@ const Gis = (props) => {
   delete fltrs.open_whole_day;
   delete fltrs.open_weekends;
   delete fltrs.open_public_holidays;
+
+}
 
   let qf = props?.query?.qf || "all";
   // let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
