@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import MainLayout from '../../components/MainLayout'
-import { checkToken } from '../../controllers/auth/auth'
+import { checkToken, getUserDetails } from '../../controllers/auth/auth'
 import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
 import BarChart from '../../components/BarChart'
@@ -22,11 +22,7 @@ const Dash = (props) => {
     const userCtx = useContext(UserContext)
     const userPermissions = useContext(PermissionContext)
     let filters = props?.filters
-    //create period items
-    let year1 = new Date().getFullYear()
-    let year2 = new Date().getFullYear()
-    let year3 = new Date().getFullYear()
-    let year4 = new Date().getFullYear()
+    //create period items 
     let Years = [
         {
             value: (new Date().getFullYear()).toString() + '-01-01',
@@ -76,52 +72,16 @@ const Dash = (props) => {
         }
     ]
     const [isquarterOpen, setIsquarterOpen] = useState(false);
-    const [startDate, setStartDate] = useState(new Date());
     const [isOpen, setIsOpen] = useState(false);
     let [drillDown, setDrillDown] = useState({})
     const [user, setUser] = useState(null)
     const [subcounty, setSubcounty] = useState([])
     const [wards, setWard] = useState([])
     let sessToken = props?.tok
-    let currperiod = props?.query?.period
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
     const { owner_link, types_link, summary_link, chu_link, keph_link } = useRef(null)
-    //console.log(props)
-    useEffect(() => {
-
-        let mtd = true
-        if (mtd) {
-
-            if (filters && Object.keys(filters).length > 0) {
-                Object.keys(filters).map(ft => {
-                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-                    }
-                })
-            }
-            if (subcounty && Object.keys(subcounty).length > 0) {
-                Object.keys(subcounty).map(ft => {
-                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-                    }
-                })
-            }
-            if (wards && Object.keys(wards).length > 0) {
-                Object.keys(wards).map(ft => {
-                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-                    }
-                })
-            }
-
-            if (userCtx) setUser(userCtx)
-
-        }
-        return () => { mtd = false }
-
-    }, [filters, subcounty, wards])
-
+    console.log(user)
 
     async function fetchSubCounties(county) {
         let subcounties_url = API_URL + `/common/sub_counties/?county=${county}&fields=id,name`
@@ -169,15 +129,15 @@ const Dash = (props) => {
         }
     }
 
-    function getperiod(item,curryear) {
+    function getperiod(item, curryear) {
         let startdate = ''
         let enddate = ''
-        try { 
+        try {
             if (item === 'All') {
                 startdate = curryear + "-01-01"
                 enddate = curryear + "-12-" + (new Date(curryear, 12, 0).getDate().toString())
             }
-            else  if (item === 'quarter 1') {
+            else if (item === 'quarter 1') {
                 startdate = curryear + "-01-01"
                 enddate = curryear + "-03-" + (new Date(curryear, 3, 0).getDate().toString())
             }
@@ -200,16 +160,44 @@ const Dash = (props) => {
         } catch (error) {
             return null
         }
-
     }
     useEffect(() => {
         fetchWards(userCtx.county ?? null)
         fetchSubCounties(userCtx.county)
     }, [])
 
+    useEffect(() => {
 
-    let lastcounty = "a"
-    let lastperiod = "b"
+        let mtd = true
+        if (mtd) {
+
+            if (filters && Object.keys(filters).length > 0) {
+                Object.keys(filters).map(ft => {
+                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+                    }
+                })
+            }
+            if (subcounty && Object.keys(subcounty).length > 0) {
+                Object.keys(subcounty).map(ft => {
+                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+                    }
+                })
+            }
+            if (wards && Object.keys(wards).length > 0) {
+                Object.keys(wards).map(ft => {
+                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+                    }
+                })
+            }
+            if (userCtx) setUser(userCtx)
+        }
+        return () => { mtd = false }
+
+    }, [filters, subcounty, wards])
+
     const totalSummary = [
         { name: 'Total Facilities', count: `${props?.data.total_facilities || 0}` },
         { name: 'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
@@ -229,7 +217,7 @@ const Dash = (props) => {
         { name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}` },
         { name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}` }
     ]
-    console.log(user)
+
     const csvHeaders = useMemo(
         () => [
             { key: 'metric', label: 'Metric' },
@@ -270,13 +258,13 @@ const Dash = (props) => {
                                     {drillDown && drillDown?.subcounty &&
                                         <small className="text-blue-900 text-base font-semibold ml-1">
                                             <span className='text-gray-500 text-base'>/ </span>
-                                            {subcounty && subcounty?.subcounty && subcounty?.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name != undefined ? subcounty.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name + " SubCounty" : "National Summary" || ""}
+                                            {subcounty && subcounty?.subcounty && subcounty?.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name != undefined ? subcounty.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name + " SubCounty" : "County Summary" || ""}
                                         </small>
                                     }
                                     {drillDown && drillDown?.ward &&
                                         <small className="text-blue-900 text-base font-semibold ml-1">
                                             <span className='text-gray-500 text-base'>/ </span>
-                                            {wards && wards?.ward && wards?.ward.find(ft => ft.id == drillDown?.ward)?.name != undefined ? wards.ward.find(ft => ft.id == drillDown?.ward)?.name + " Ward" : "National Summary" || ""}
+                                            {wards && wards?.ward && wards?.ward.find(ft => ft.id == drillDown?.ward)?.name != undefined ? wards.ward.find(ft => ft.id == drillDown?.ward)?.name + " Ward" : "Subcounty Summary" || ""}
                                         </small>
                                     }
                                 </div>
@@ -301,7 +289,7 @@ const Dash = (props) => {
                                                         setIsOpen(true)
                                                         return;
                                                     }
-                                                    else if (sl.label.toString().trim().length==4) {
+                                                    else if (sl.label.length == 4) {
                                                         startdate = sl.value
                                                         enddate = sl.value.toString().split('-')[0] + "-12-31"
                                                         setIsquarterOpen(true)
@@ -453,8 +441,6 @@ const Dash = (props) => {
                                         {/* ~~~F L T R S~~~ */}
                                     </div>
 
-
-
                                 }
                                 {user && isquarterOpen &&
                                     <div id="quarterdiv" visibility="collapsed" className="w-full flex  items-center justify-end space-x-3 mb-3">
@@ -478,23 +464,23 @@ const Dash = (props) => {
                                                     let startdate = ''
                                                     let enddate = ''
                                                     let year = ''
-                                                    if (drillDown["year"].split('-').length>0) {
-                                                       year= drillDown["year"].split('-')[0]
+                                                    if (drillDown["year"].split('-').length > 0) {
+                                                        year = drillDown["year"].split('-')[0]
                                                     }
                                                     if (year == '') {
                                                         alert("Select the year")
                                                         return;
-                                                    }  
-                                                    if (sl.value && sl.label.includes('Quarter') && year.length==4) {
-                                                      
-                                                        if (getperiod(sl.value,year) == null) {
+                                                    }
+                                                    if (sl.value && sl.label.includes('Quarter') && year.length == 4) {
+
+                                                        if (getperiod(sl.value, year) == null) {
                                                             alert("The period can not be parsed!")
                                                         }
                                                         else {
-                                                            startdate = getperiod(sl.value,year)[0]
-                                                            enddate = getperiod(sl.value,year)[1]
+                                                            startdate = getperiod(sl.value, year)[0]
+                                                            enddate = getperiod(sl.value, year)[1]
                                                         }
-                                                    } 
+                                                    }
                                                     else {
                                                         alert("The selected period is not recognized")
                                                         return;
@@ -556,12 +542,9 @@ const Dash = (props) => {
                                         </div>
                                         {/* ~~~F L T R S~~~ */}
                                     </div>
-
-
-
                                 }
 
-                                {/* load data  */}
+                                {/* filter by organizational units  */}
                                 {/* national */}
                                 {user && user?.is_national && <div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     {filters && Object.keys(filters).length > 0 &&
@@ -636,7 +619,7 @@ const Dash = (props) => {
                                     {/* ~~~F L T R S~~~ */}
                                 </div>}
                                 {/* county user */}
-                                {user && user?.county ? <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                {user && user?.user_groups?.is_county_level ? <div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     {subcounty && Object.keys(subcounty).length > 0 &&
                                         Object.keys(subcounty).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="second">
@@ -645,7 +628,7 @@ const Dash = (props) => {
                                                     options={
                                                         (() => {
                                                             if (user && user?.county) {
-                                                                let opts = [{ value: "county", label: "county summary" }, ...Array.from(subcounty[ft] || [],
+                                                                let opts = [{ value: "county", label: "County summary" }, ...Array.from(subcounty[ft] || [],
                                                                     fltopt => {
                                                                         if (fltopt.id != null && fltopt.id.length > 0) {
                                                                             return {
@@ -682,11 +665,14 @@ const Dash = (props) => {
 
                                                         let parameters = ""
                                                         let ar = []
-                                                        if (value) {
-                                                            if (value !== 'national') {
-                                                                ar.push('sub_county=' + value)
+                                                        if (sl.value) {
+                                                            if (sl.value !== 'county') {
+                                                                ar.push('sub_county=' + sl.value)
+                                                            } else {
+                                                                ar.push('county=' + user.county)
                                                             }
                                                         }
+
                                                         if (props?.query.datefrom) {
                                                             ar.push("datefrom=" + props.query['datefrom'])
                                                         }
@@ -700,24 +686,27 @@ const Dash = (props) => {
                                                                 parameters += "?" + k
                                                             }
                                                         })
+
                                                         router.push('/dashboard' + parameters)
                                                     }} />
 
                                             </div>
                                         ))}
-                                </div> : ''}
+                                </div> : ''
+                                }
                                 {/* sub_county user */}
-                                {!hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
+                                {/* !hasPermission(/^facilities.add_facilityapproval$/, userPermissions) && */}
+                                {user && user?.user_groups?.is_sub_county_level ?
                                     <div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                         {wards && Object.keys(wards).length > 0 &&
                                             Object.keys(wards).map(ft => (
                                                 <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="third">
                                                     <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
-                                                    <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                                    <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                         options={
                                                             (() => {
-                                                                if (user && user?.is_national) {
-                                                                    let opts = [{ value: "national", label: "National summary" }, ...Array.from(wards[ft] || [],
+                                                                if (user && user?.user_groups?.is_sub_county_level) {
+                                                                    let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
                                                                         fltopt => {
                                                                             if (fltopt.id != null && fltopt.id.length > 0) {
                                                                                 return {
@@ -740,22 +729,59 @@ const Dash = (props) => {
                                                             })()
                                                         }
                                                         placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                        onChange={async (option) => {
+                                                        // onChange={async (option) => {
 
-                                                            try {
-                                                                const resp = await fetch(`/api/facility/get_facility/?path=dashboard&id=${option.value}`)
+                                                        //     try {
+                                                        //         const resp = await fetch(`/api/facility/get_facility/?path=dashboard&id=${option.value}`)
 
-                                                                // console.log({resp: (await resp.json())})
-                                                                console.log({ resp: (await JSON.stringify(resp)) })
-                                                            } catch (e) {
-                                                                console.error(e.message)
+                                                        //         // console.log({resp: (await resp.json())})
+                                                        //         console.log({ resp: (await JSON.stringify(resp)) })
+                                                        //     } catch (e) {
+                                                        //         console.error(e.message)
+                                                        //     }
+                                                        // }} 
+                                                        onChange={sl => {
+                                                            let nf = {}
+                                                            if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                nf[ft] = sl.value
+                                                            } else {
+                                                                delete nf[ft]
+                                                                // let rr = drillDown.filter(d => d.key !== ft)
+                                                                // setDrilldown(rr)
                                                             }
+                                                            // fetchWards(sl.value)
+                                                            setDrillDown({ ...drillDown, ...nf })
+
+                                                            let parameters = ""
+                                                            let ar = []
+                                                            if (sl.value) {
+                                                                if (sl.value !== 'Subcounty') {
+                                                                    ar.push('ward=' + sl.value)
+                                                                } else {
+                                                                    ar.push('sub_county=' + user.user_sub_counties[0].sub_county)
+                                                                }
+                                                            }
+                                                            if (props?.query.datefrom) {
+                                                                ar.push("datefrom=" + props.query['datefrom'])
+                                                            }
+                                                            if (props?.query.dateto) {
+                                                                ar.push("dateto=" + props.query['dateto'])
+                                                            }
+                                                            ar.map(k => {
+                                                                if (parameters.includes('?')) {
+                                                                    parameters += "&" + k
+                                                                } else {
+                                                                    parameters += "?" + k
+                                                                }
+                                                            })
+ 
+                                                            router.push('/dashboard' + parameters)
                                                         }} />
 
                                                 </div>
                                             ))}
-                                    </div>}
-                                {/* wards */}
+                                    </div> : ''
+                                }
 
                             </div>
                         </div>
@@ -866,7 +892,7 @@ const Dash = (props) => {
                             </tbody>
                         </table>
                     </div>
-
+                    {/* facilities by keph level */}
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility KEPH Level </h4>
                         <Download csvHeaders={csvHeaders} filename={'facility_keph_level'} data={props?.data?.keph_level?.map((ts) => { return { metric: ts.name, value: ts.count } })} csvLink={keph_link} />
@@ -880,8 +906,8 @@ const Dash = (props) => {
                             <tbody className="text-lg">
                                 {props?.data?.keph_level?.map((kl, i) => (
                                     <tr key={i}>
-                                        <><td className="table-cell text-left text-gray-900 p-2">{kl.name}</td>
-                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{kl.count || 0}</td></>
+                                        <td className="table-cell text-left text-gray-900 p-2">{kl.name}</td>
+                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{kl.count || 0}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -890,9 +916,9 @@ const Dash = (props) => {
                     {/* Facilities & CHUs by county (bar) 1/1 */}
                     {user && user.is_national &&
                         <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
+                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by County</h4>
                             <BarChart
-                                title="Facilities & CHUs by county"
+                                title="Facilities & CHUs by County"
                                 categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="County"
@@ -912,11 +938,11 @@ const Dash = (props) => {
                         </div>
                     }
                     {/* Facilities & CHUs by subcounty (bar) 1/1 */}
-                    {user && user.email === "test@mflcountyuser.com" &&
+                    {user && user?.user_groups?.is_county_level &&
                         <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
+                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Subcounty</h4>
                             <BarChart
-                                title="Facilities & CHUs by county"
+                                title="Facilities & CHUs by Subcounty"
                                 categories={Array?.from(props?.data?.constituencies_summary ?? [], cs => cs.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="Subcounty"
@@ -936,11 +962,11 @@ const Dash = (props) => {
                         </div>
                     }
                     {/* Facilities & CHUs by ward (bar) 1/1 */}
-                    {user && user.email === "test@mflsubcountyuser.com" &&
+                    {user && user?.user_groups?.is_sub_county_level &&
                         <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
+                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Ward</h4>
                             <BarChart
-                                title="Facilities & CHUs by county"
+                                title="Facilities & CHUs by ward"
                                 categories={Array?.from(props?.data?.wards_summary ?? [], cs => cs.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="Ward"
@@ -1003,11 +1029,8 @@ const Dash = (props) => {
     )
 }
 
-
 Dash.getInitialProps = async (ctx) => {
-
     const API_URL = process.env.NEXT_PUBLIC_API_URL
-
     const fetchFilters = token => {
         // let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Csub_county'
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county'
@@ -1029,7 +1052,6 @@ Dash.getInitialProps = async (ctx) => {
                 }
             })
     }
-
     const fetchData = (token) => {
         let url = API_URL + '/facilities/dashboard/'
         let query = { 'searchTerm': '' }
@@ -1038,6 +1060,7 @@ Dash.getInitialProps = async (ctx) => {
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
         let other_posssible_filters = ["datefrom", "dateto", "county", "sub_county", "ward"]
+        //ensure county and subcounty parameters are passed if the user is countyuser or subcountyuser respectively
 
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
@@ -1049,7 +1072,6 @@ Dash.getInitialProps = async (ctx) => {
                 }
             }
         })
-
         return fetch(url, {
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -1076,6 +1098,8 @@ Dash.getInitialProps = async (ctx) => {
                     api_url: API_URL
                 }
             })
+
+
 
     }
     return checkToken(ctx.req, ctx.res).then(t => {
@@ -1110,4 +1134,5 @@ Dash.getInitialProps = async (ctx) => {
 }
 
 export default Dash
+
 
