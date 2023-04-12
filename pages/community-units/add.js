@@ -12,6 +12,7 @@ import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon, TrashIcon } from '@heroi
 import Select from 'react-select';
 import { useAlert } from "react-alert";
 import Link from 'next/link';
+import {useRouter} from 'next/router';
 
 
 
@@ -21,6 +22,9 @@ const AddCommunityUnit = (props) => {
 	const facilities = props['0']?.facility_data ?? []
 	const serviceCtg = props['1']?.service_category ?? []
 	const contact_type = props['2']?.contact_type ?? []
+
+	const router = useRouter()
+
 	const alert = useAlert()
 
 	const qf = props?.query?.qf || 'all';
@@ -83,7 +87,7 @@ const AddCommunityUnit = (props) => {
 
 
 	const [formId, setFormId] = useState(0);
-	const handleAddClick = (e) => {
+	const handleAddCHEW = (e) => {
 		e.preventDefault();
 		setContactCHEW(s => {
 			return [...s, { first_name: '', last_name: '', is_incharge: '' }]
@@ -112,6 +116,8 @@ const AddCommunityUnit = (props) => {
 			}
 		};
 	}, [formId, facilities, serviceCtg]);
+
+	useEffect(() => {}, [contactCHEW])
 
 	return (
 		<>
@@ -656,7 +662,25 @@ const AddCommunityUnit = (props) => {
 
 												const formData = chewFormRef.current ? new FormData(chewFormRef.current) : null
 
-												if (formData) {
+												const entries = [...formData.entries()]
+
+												const payload = [...formData.keys()].filter(val => val === 'first_name').map(() => ({}))
+											
+												let i = 0;
+												
+
+												entries.forEach(([key, value], _i) => {
+													if(!payload[i].hasOwnProperty(key)){
+															payload[i][key] = value.includes('on') ? true : value
+														} else {
+															i++;
+															payload[i][key] = value.includes('on') ? true : value
+														}
+														
+												})
+										
+
+												if (payload) {
 
 													try {
 
@@ -668,16 +692,12 @@ const AddCommunityUnit = (props) => {
 
 															},
 															method: 'PATCH',
-															body: JSON.stringify({
-																first_name: formData.get('first_name'),
-																last_name: formData.get('last_name'),
-																is_incharge: formData.get('is_incharge') == 'on' ? true : false
-
-															})
+															body: JSON.stringify({health_unit_workers:payload})
 														}).then(res => res.json()).then((res) => {
 															if (res.details) {
 																alert.error('Failed to add CHEW details')
 															} else {
+
 																alert.success('CHEW details added successfully ')
 															}
 														}).catch(err => {
@@ -717,60 +737,88 @@ const AddCommunityUnit = (props) => {
 														name='chews_form'
 														className='flex flex-col w-full items-start justify-start gap-3'
 														onSubmit={handleCHEWSubmit}>
-														<div className='w-full flex flex-col items-start justify-start gap-4 mb-3 p-2'>
+														<div className='w-full flex flex-col items-between justify-start border-2 rounded gap-4 mb-3 p-3'>
+															<div className='w-full grid grid-cols-4  mx-auto place-content-start gap-x-3 flex-1 mb-2'>
+
+																<label
+																	htmlFor='last_name'
+																	className='block text-sm font-medium text-gray-700'>
+																	First Name
+																</label>
+
+																<label
+																	htmlFor='last_name'
+																	className='block text-sm font-medium text-gray-700'>
+																	Second Name
+																</label>
+
+																<label
+																	htmlFor='last_name'
+																	className='block text-sm font-medium text-gray-700'>
+																	In Charge
+																</label>
+
+																<div className='flex flex-row justify-between gap-2'>
+																<label
+																	htmlFor='last_name'
+																	className='block text-sm font-medium text-gray-700'>
+																	Delete
+																</label>
+																	<button className=' w-auto rounded bg-green-600 p-2 text-white flex text-md font-semibold '
+																			onClick={handleAddCHEW}
+																			>
+																				{`Add +`}
+
+																	</button>
+																</div>
+
+																
+																
+															</div>
+															{/* <div className='grid grid-cols-5 gap-x-3 w-full place-content-start'>
+																
+																
+															</div> */}
 															{contactCHEW.map((contact, index) => (
-																<div className='flex flex-row items-center justify-between md:mx-1 gap-4 w-full' key={index}>
+																<div className='w-full grid grid-cols-4 mx-auto place-content-start gap-y-1 gap-x-3' key={index}>
 																	{/* First Name */}
-																	<div className='flex-col gap-2'>
-																		<label
-																			htmlFor='first_name'
-																			className='block text-sm font-medium text-gray-700'>
-																			First Name
-																		</label>
+																		
 																		<input
 																			required
+																			
 																			type='text'
 																			name='first_name'
-																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			className='flex-none  md:w-52 w-auto bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-300 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
-																	</div>
+																		
+																	
 																	{/* Second Name */}
-																	<div className='flex-col gap-2'>
-																		<label
-																			htmlFor='last_name'
-																			className='block text-sm font-medium text-gray-700'>
-																			Second Name
-																		</label>
+																	
+																
 																		<input
 																			required
 																			id={index}
 																			type='text'
 																			name='last_name'
-																			className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			className='flex-none  md:w-52 w-auto bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-300 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
-																	</div>
+																	
+																
 																	{/* In charge */}
-																	<div className='flex-col gap-2'>
-																		<label
-																			htmlFor='is_incharge'
-																			className='block text-sm font-medium text-gray-700'>
-																			In Charge
-																		</label>
+																
+																		
 																		<input
+																			
 																			name='is_incharge'
 																			id={index}
 																			type='checkbox'
-																			className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
+																			className='focus:ring-indigo-50  h-4 w-4 text-indigo-600 border-gray-400'
 																		/>
-																	</div>
+																		
+																
 
 																	{/* Delete CHEW */}
-																	<div className='flex-col gap-2'>
-																		<label
-																			htmlFor='delete'
-																			className='block text-sm font-medium text-gray-700'>
-																			Delete
-																		</label>
+																	<div className='flex'>
 																		<div className='flex items-center'>
 																			{/* insert red button for deleting */}
 																			<button
@@ -778,22 +826,20 @@ const AddCommunityUnit = (props) => {
 																				id={index}
 																				type='button'
 																				className='bg-transparent group hover:bg-red-500 text-red-700 font-semibold hover:text-white p-3 rounded border border-red-500 hover:border-transparent '
-																				onClick={() => { }}>
+																				onClick={() => setContactCHEW(prev => prev.splice(1, index)) }>
 																				<TrashIcon className="w-4 h-4 text-red-500 group-hover:text-white" />
 																			</button>
 																		</div>
 																	</div>
+
+																	
+
+																	
 																</div>
 															))}
-															<div className="sticky top-0 right-10 w-full flex justify-end mt-3">
-																<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
-																	onClick={handleAddClick}
-																>
-																	{`Add`}
 
-																</button>
-
-															</div>
+															
+															
 														</div>
 
 														{/* Basic Details and Services */}
@@ -838,12 +884,19 @@ const AddCommunityUnit = (props) => {
 														method: 'POST',
 														body: JSON.stringify({ services: _payload })
 													})
+													.then(resp => {
+														if(resp?.url){
+															alert.success('Community Health Unit Added successfully')
+															router.push(`/community-units/${new URL(resp?.url).searchParams.get('id')}`)
+
+														}
+													})
+													
 
 												}
 												catch (e) {
 													console.error('Unable to patch CHU service details'.e.message)
 												}
-
 
 												window.sessionStorage.setItem('chuformId', 3);
 
