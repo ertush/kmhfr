@@ -747,29 +747,8 @@ const CommUnit = (props) => {
 
                       {/* Cancel and Save Changes */}
 
-                      <div className="flex items-center w-full">
-                        <button className="flex items-center justify-start space-x-2 p-1 bg-red-500 rounded px-2">
-                          <ChevronDoubleLeftIcon className="w-4 h-4 text-white" />
-                          <span className="text-medium font-semibold text-white ">
-                            Cancel
-                          </span>
-                        </button>
-                      </div>
-
-                      <div className="flex items-center w-full justify-end">
-
-                        <button
-                          type="submit"
-                          className="flex items-right justify-end space-x-2 bg-blue-500 rounded p-1 px-2"
-                          onClick={() => {
-                            router.push('/community-units')
-                          }}
-                        >
-                          <span className="text-medium font-semibold text-white">
-                            Finish
-                          </span>
-                        </button>
-                        &nbsp;
+                      <div className="flex justify-end items-center w-full mt-3">
+                   
 
                         <button
                           type="submit"
@@ -903,16 +882,8 @@ const CommUnit = (props) => {
                     </div>
 
                     {/* Save Changes */}
-                    <div className="flex justify-between items-center w-full">
-                      <button
-                        type="submit"
-                        className="flex items-center justify-start space-x-2 bg-red-500 rounded p-1 px-2"
-                      >
-                        <ChevronDoubleLeftIcon className="w-4 h-4 text-white" />
-                        <span className="text-medium font-semibold text-white">
-                          Basic Details
-                        </span>
-                      </button>
+                    <div className="flex justify-end items-center w-full">
+                     
                       <button
                         type="submit"
                         className="flex items-center justify-end space-x-2 bg-green-500 rounded p-1 px-2"
@@ -920,7 +891,7 @@ const CommUnit = (props) => {
                         <span className="text-medium font-semibold text-white">
                           Save Changes
                         </span>
-                        <ChevronDoubleRightIcon className="w-4 h-4 text-white" />
+                      
                       </button>
                     </div>
                   </form>
@@ -986,7 +957,7 @@ const CommUnit = (props) => {
                               className="grid grid-cols-2 place-content-end border-b-2 border-gray-300"
                             >
                               <td>{name}</td>
-                              <td className="ml-12 text-base">
+                              <td className="ml-12 text-base my-2">
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -1019,16 +990,7 @@ const CommUnit = (props) => {
                         )}
                       </tbody>
                     </table>
-                    <div className="flex justify-between items-center w-full">
-                      <button
-                        type="submit"
-                        className="flex items-center justify-start space-x-2 bg-red-500 rounded p-1 px-2"
-                      >
-                        <ChevronDoubleLeftIcon className="w-4 h-4 text-white" />
-                        <span className="text-medium font-semibold text-white">
-                          CHEWS
-                        </span>
-                      </button>
+                    <div className="flex justify-end items-center w-full">
                       <button
                         type="submit"
                         className="flex items-center justify-end space-x-2 bg-green-500 rounded p-1 px-2"
@@ -1036,7 +998,6 @@ const CommUnit = (props) => {
                         <span className="text-medium font-semibold text-white">
                           Save & Finish
                         </span>
-                        <ChevronDoubleRightIcon className="w-4 h-4 text-white" />
                       </button>
                     </div>
                   </form>

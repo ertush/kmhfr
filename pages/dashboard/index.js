@@ -203,7 +203,7 @@ const Dash = (props) => {
 
     }
     useEffect(() => {
-        fetchWards(userCtx.county)
+        fetchWards(userCtx.county ?? null)
         fetchSubCounties(userCtx.county)
     }, [])
 
