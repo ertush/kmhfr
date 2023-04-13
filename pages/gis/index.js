@@ -2129,7 +2129,7 @@ if(filters){
         </>
 
         {/* Floating div at bottom right of page */}
-        <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
           <h5 className="text-sm font-bold">
             <span className="text-gray-600 uppercase">Limited results</span>
           </h5>
@@ -2137,7 +2137,7 @@ if(filters){
             For testing reasons, downloads are limited to the first 1000
             results.
           </p>
-        </div>
+        </div> */}
       
       </MainLayout>
     </div>

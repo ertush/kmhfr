@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import MainLayout from '../../components/MainLayout'
-import { checkToken } from '../../controllers/auth/auth'
+import { checkToken, getUserDetails } from '../../controllers/auth/auth'
 import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
 import BarChart from '../../components/BarChart'
@@ -10,73 +10,80 @@ import { UserContext } from '../../providers/user'
 import Link from 'next/link'
 import { PermissionContext } from '../../providers/permissions'
 import { hasPermission } from '../../utils/checkPermissions'
-
+import { Button, Hidden } from '@mui/material'
+import { route } from 'next/dist/server/router'
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Dropdown } from 'antd'
+import { fromJSON } from 'postcss'
 const Dash = (props) => {
     const router = useRouter()
 
     const userCtx = useContext(UserContext)
-
-  const userPermissions = useContext(PermissionContext)
-
+    const userPermissions = useContext(PermissionContext)
     let filters = props?.filters
-    let period=[
+    //create period items 
+    let Years = [
         {
-            value:1,
-            label:'Annually'
+            value: (new Date().getFullYear()).toString() + '-01-01',
+            label: (new Date().getFullYear()).toString()
         },
         {
-            value:2,
-            label:'Quarterly'
+            value: (new Date().getFullYear() - 1).toString() + '-01-01',
+            label: (new Date().getFullYear() - 1).toString()
         },
         {
-            value:3,
-            label:'Monthly'
+            value: (new Date().getFullYear() - 2).toString() + '-01-01',
+            label: (new Date().getFullYear() - 2).toString()
+        },
+        {
+            value: (new Date().getFullYear() - 3).toString() + '-01-01',
+            label: (new Date().getFullYear() - 3).toString()
+        },
+        {
+            value: (new Date().getFullYear() - 4).toString() + '-01-01',
+            label: (new Date().getFullYear() - 4).toString()
+        },
+        {
+            value: 'custom',
+            label: 'Custom Range'
         }
     ]
+    let quarters = [
+        {
+            value: 'All',
+            label: 'All Quarters'
+        },
+        {
+            value: 'quarter 1',
+            label: 'Quarter 1'
+        },
+        {
+            value: 'quarter 2',
+            label: 'Quarter 2'
+        },
+        {
+            value: 'quarter 3',
+            label: 'Quarter 3'
+        },
+        {
+            value: 'quarter 4',
+            label: 'Quarter 4'
+        }
+    ]
+    const [isquarterOpen, setIsquarterOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     let [drillDown, setDrillDown] = useState({})
     const [user, setUser] = useState(null)
     const [subcounty, setSubcounty] = useState([])
     const [wards, setWard] = useState([])
-    let sessToken =props?.tok
+    let sessToken = props?.tok
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-    const {owner_link, types_link, summary_link, chu_link, keph_link} = useRef(null)
-    console.log(props)
-    useEffect(() => {
+    const { owner_link, types_link, summary_link, chu_link, keph_link } = useRef(null)
+    console.log(user)
 
-        let mtd = true
-        if (mtd) {
-            if (filters && Object.keys(filters).length > 0) {
-                Object.keys(filters).map(ft => {
-                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-                    }
-                })
-            }
-            if (subcounty && Object.keys(subcounty).length > 0) {
-                Object.keys(subcounty).map(ft => {
-                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-                    }
-                })
-            }
-            if (wards && Object.keys(wards).length > 0) {
-                Object.keys(wards).map(ft => {
-                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
-                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
-                    }
-                })
-            }
-           
-            if (userCtx) setUser(userCtx)
-        
-        }
-        return () => { mtd = false }
-        
-    }, [filters,subcounty,wards])
-
-
-     async function fetchSubCounties (county){
+    async function fetchSubCounties(county) {
         let subcounties_url = API_URL + `/common/sub_counties/?county=${county}&fields=id,name`
         try {
             const r = await fetch(subcounties_url, {
@@ -98,8 +105,8 @@ const Dash = (props) => {
             }
         }
     }
-   
-    const fetchWards = async (sub_county)=>{
+
+    const fetchWards = async (sub_county) => {
         let ward_url = API_URL + `/common/wards/?subcounty=${sub_county}&fields=id,name`
         try {
             const r = await fetch(ward_url, {
@@ -122,60 +129,117 @@ const Dash = (props) => {
         }
     }
 
-    console.log(user)
-    useEffect(()=>{
-        if(userCtx){
-            fetchWards(userCtx.county)
-            fetchSubCounties(userCtx.county)
+    function getperiod(item, curryear) {
+        let startdate = ''
+        let enddate = ''
+        try {
+            if (item === 'All') {
+                startdate = curryear + "-01-01"
+                enddate = curryear + "-12-" + (new Date(curryear, 12, 0).getDate().toString())
+            }
+            else if (item === 'quarter 1') {
+                startdate = curryear + "-01-01"
+                enddate = curryear + "-03-" + (new Date(curryear, 3, 0).getDate().toString())
+            }
+            else if (item === 'quarter 2') {
+                startdate = curryear + "-04-01"
+                enddate = curryear + "-06-" + (new Date(curryear, 6, 0).getDate().toString())
+            }
+            else if (item === 'quarter 3') {
+                startdate = curryear + "-07-01"
+                enddate = curryear + "-09-" + (new Date(curryear, 9, 0).getDate().toString())
+            }
+            else if (item === 'quarter 4') {
+                startdate = curryear + "-10-01"
+                enddate = curryear + "-12-" + (new Date(curryear, 12, 0).getDate().toString())
+            }
+            else {
+                return null
+            }
+            return [startdate, enddate]
+        } catch (error) {
+            return null
         }
-        else{
-            router.push('/auth/login')
+    }
+    useEffect(() => {
+        fetchWards(userCtx.county ?? null)
+        fetchSubCounties(userCtx.county)
+    }, [])
+
+    useEffect(() => {
+
+        let mtd = true
+        if (mtd) {
+
+            if (filters && Object.keys(filters).length > 0) {
+                Object.keys(filters).map(ft => {
+                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+                    }
+                })
+            }
+            if (subcounty && Object.keys(subcounty).length > 0) {
+                Object.keys(subcounty).map(ft => {
+                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+                    }
+                })
+            }
+            if (wards && Object.keys(wards).length > 0) {
+                Object.keys(wards).map(ft => {
+                    if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
+                        setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
+                    }
+                })
+            }
+            if (userCtx) setUser(userCtx)
         }
-    
-    },[])
+        return () => { mtd = false }
 
+    }, [filters, subcounty, wards])
 
-    const totalSummary =[
-        {name:'Total Facilities', count: `${props?.data.total_facilities || 0}` }, 
-        {name:'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
-        {name:'Total rejected facilities', count: `${props?.data.rejected_facilities_count || 0}` },
-        {name:'Total closed facilities', count: `${props?.data.closed_facilities_count || 0}` },
-        {name:'Total pending updates', count: `${props?.data.pending_updates || 0}` } ]
+    const totalSummary = [
+        { name: 'Total Facilities', count: `${props?.data.total_facilities || 0}` },
+        { name: 'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
+        { name: 'Total rejected facilities', count: `${props?.data.rejected_facilities_count || 0}` },
+        { name: 'Total closed facilities', count: `${props?.data.closed_facilities_count || 0}` },
+        { name: 'Total pending updates', count: `${props?.data.pending_updates || 0}` }]
 
-    const chuSummary =[
-        {name:'Total community health units', count: `${props?.data?.total_chus || 0}`},
-        {name:'Total CHUs rejected', count: `${props?.data?.rejected_chus || 0}`},
-        {name:'New CHUs pending approval', count: `${props?.data?.recently_created_chus || 0}`},
-        {name:'Updated CHUs pending approval', count: `${props?.data?.chus_pending_approval || 0}`},]   
-         
-    const recentChanges =[
-        {name: 'New facilities added', count: `${props?.data?.recently_created || 0}`},
-        {name: 'Facilities updated', count: `${props?.data?.recently_updated || 0}`},
-        {name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}`},
-        {name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}`}
-    ]     
-    console.log(user)
+    const chuSummary = [
+        { name: 'Total community health units', count: `${props?.data?.total_chus || 0}` },
+        { name: 'Total CHUs rejected', count: `${props?.data?.rejected_chus || 0}` },
+        { name: 'New CHUs pending approval', count: `${props?.data?.recently_created_chus || 0}` },
+        { name: 'Updated CHUs pending approval', count: `${props?.data?.chus_pending_approval || 0}` },]
+
+    const recentChanges = [
+        { name: 'New facilities added', count: `${props?.data?.recently_created || 0}` },
+        { name: 'Facilities updated', count: `${props?.data?.recently_updated || 0}` },
+        { name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}` },
+        { name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}` }
+    ]
+
     const csvHeaders = useMemo(
         () => [
-          { key: 'metric', label: 'Metric' },
-          { key: 'value', label: 'Value' },
+            { key: 'metric', label: 'Metric' },
+            { key: 'value', label: 'Value' },
         ],
         [],
     );
     return (
         <div className="">
-            <Head>
+            <Head>'coun
                 <title>KMHFL - Overview</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-               
+
                 <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4">
                     <div className="col-span-6 flex flex-col gap-3 md:gap-5 px-2">
                         <div className="flex flex-row gap-2 text-sm md:text-base py-3">
                             <Link className="text-green-700" href="/">Home</Link> {'/'}
                             <span className="text-gray-500">Dashboard</span>
+
                         </div>
                         <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">
                             <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
@@ -186,27 +250,302 @@ const Dash = (props) => {
                                             {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name != undefined ? filters.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""}
                                         </small>
                                     }
-                                    {user&&user.county?
-                                    <small className="text-blue-900 text-base font-semibold ml-1">
-                                        {user.county_name + " County" || "National Summary"}
-                                    </small>
-                                    :''}
+                                    {user && user.county ?
+                                        <small className="text-blue-900 text-base font-semibold ml-1">
+                                            {user.county_name + " County" || "National Summary"}
+                                        </small>
+                                        : ''}
                                     {drillDown && drillDown?.subcounty &&
                                         <small className="text-blue-900 text-base font-semibold ml-1">
-                                            <span className='text-gray-500 text-base'>/ </span> 
-                                            {subcounty && subcounty?.subcounty && subcounty?.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name != undefined ? subcounty.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name + " SubCounty" : "National Summary" || ""}
+                                            <span className='text-gray-500 text-base'>/ </span>
+                                            {subcounty && subcounty?.subcounty && subcounty?.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name != undefined ? subcounty.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name + " SubCounty" : "County Summary" || ""}
                                         </small>
                                     }
                                     {drillDown && drillDown?.ward &&
                                         <small className="text-blue-900 text-base font-semibold ml-1">
-                                            <span className='text-gray-500 text-base'>/ </span> 
-                                            {wards && wards?.ward && wards?.ward.find(ft => ft.id == drillDown?.ward)?.name != undefined ? wards.ward.find(ft => ft.id == drillDown?.ward)?.name + " Ward" : "National Summary" || ""}
+                                            <span className='text-gray-500 text-base'>/ </span>
+                                            {wards && wards?.ward && wards?.ward.find(ft => ft.id == drillDown?.ward)?.name != undefined ? wards.ward.find(ft => ft.id == drillDown?.ward)?.name + " Ward" : "Subcounty Summary" || ""}
                                         </small>
                                     }
                                 </div>
                             </h1>
                             <div className="flex-grow flex items-center justify-end w-full md:w-auto">
+
+                                {/* show datetime filters */}
                                 {/* --- */}
+                                {user &&
+                                    <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                        <div className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
+                                            <label htmlFor='Yearselector' className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Year:</label>
+                                            <Select id="Yearselector" className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                                options={Years}
+                                                placeholder='Filter by Year'
+                                                data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                onChange={async (sl) => {
+                                                    let startdate = ''
+                                                    let enddate = ''
+                                                    if (sl.value && sl.value == "custom") {
+                                                        setIsquarterOpen(false)
+                                                        setIsOpen(true)
+                                                        return;
+                                                    }
+                                                    else if (sl.label.length == 4) {
+                                                        startdate = sl.value
+                                                        enddate = sl.value.toString().split('-')[0] + "-12-31"
+                                                        setIsquarterOpen(true)
+                                                        if (document.getElementById("quarterselector") != null) {
+                                                            document.getElementById("quarterselector").value = 'All'
+                                                        }
+                                                        let myear = {}
+                                                        if (sl && sl !== null) {
+                                                            drillDown["year"] = sl.value
+                                                        } else {
+                                                            delete drillDown["year"]
+
+                                                        }
+                                                        setDrillDown({ ...drillDown, ...myear })
+                                                        return;
+                                                    }
+                                                    else {
+                                                        setIsquarterOpen(false)
+                                                        alert("The selected period is not recognized")
+                                                        return;
+                                                    }
+                                                    if (startdate == '' || enddate == '') {
+                                                        return;
+                                                    }
+
+                                                    let parameters = "?"
+                                                    if (sl.value) {
+                                                        parameters += "datefrom=" + startdate
+                                                    }
+                                                    if (sl.value) {
+                                                        parameters += "&dateto=" + enddate
+                                                    }
+                                                    if (props?.query?.county) {
+                                                        parameters += "&county=" + props?.query?.county
+                                                    }
+                                                    if (props?.query?.sub_county) {
+                                                        parameters += "&subc_county=" + props?.query?.sub_county
+                                                    }
+                                                    if (props?.query?.ward) {
+                                                        parameters += "&ward=" + props?.query?.ward
+                                                    }
+
+                                                    router.push('/dashboard' + parameters)
+                                                    // alert(JSON.stringify(drillDown)) 
+                                                    // if (sl && sl !== null ) { 
+                                                    //     let fcounty
+                                                    //     if(props?.query?.county){
+                                                    //         fcounty=props?.query.county
+                                                    //     }
+                                                    //     else
+                                                    //     {
+                                                    //         fcounty='national'
+                                                    //     }
+                                                    //     if (sl.value === '' ) { 
+                                                    //         if(fcounty==='national'){
+                                                    //             router.push('/dashboard')
+                                                    //         }
+                                                    //         else{
+                                                    //             router.push('/dashboard?county=' + fcounty)
+                                                    //         }
+                                                    //     } 
+                                                    //     else { 
+                                                    //         if(fcounty==='national'){
+                                                    //             router.push('/dashboard?datefrom=' +sl.value)
+                                                    //         }
+                                                    //         else{
+                                                    //             router.push('/dashboard?county=' + fcounty+"&datefrom="+sl.value)
+                                                    //         }
+
+                                                    //     }
+                                                    // }   
+
+                                                }}
+                                            />
+                                            <div className="relative">
+                                                {/* Modal overlay */}
+                                                {isOpen && (
+                                                    <div className="fixed z-50 inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+                                                        {/* Modal content */}
+                                                        <div className="bg-white p-4 rounded-md">
+                                                            <h1 className="text-lg font-bold mb-2 ">Select Date Range</h1>
+
+                                                            <div className='grid grid-cols-2 gap-4'>
+                                                                <div>
+                                                                    <label>Start Date</label>
+                                                                    <br />
+                                                                    <input id='startdate'
+                                                                        type="date"
+                                                                        className="border border-gray-400 p-2 rounded-md"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label>End Date</label>
+                                                                    <br />
+                                                                    <input id='enddate'
+                                                                        type="date"
+                                                                        className="border border-gray-400 p-2 rounded-md"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="mt-4 flex justify-center">
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setIsOpen(false)
+                                                                    }
+                                                                    }
+                                                                    className="w-full px-4 py-2 bg-gray-400 text-white rounded-md mr-2"
+                                                                >
+                                                                    Cancel
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setIsOpen(false)
+                                                                        let parameters = "?"
+                                                                        if (document.getElementById('startdate').value && document.getElementById('startdate').value) {
+                                                                            parameters += "datefrom=" + document.getElementById('startdate').value
+                                                                            parameters += "&dateto=" + document.getElementById('enddate').value
+
+                                                                        }
+                                                                        else {
+                                                                            alert("You must select Start Date and End Date")
+                                                                            return;
+                                                                        }
+
+                                                                        if (props?.query?.county) {
+                                                                            parameters += "&county=" + props?.query?.county
+                                                                        }
+                                                                        if (props?.query?.sub_county) {
+                                                                            parameters += "&sub_county=" + props?.query?.sub_county
+                                                                        }
+                                                                        if (props?.query?.ward) {
+                                                                            parameters += "&ward=" + props?.query?.ward
+                                                                        }
+                                                                        router.push('/dashboard' + parameters)
+                                                                    }
+                                                                    }
+                                                                    className="w-full px-4 py-2 bg-blue-500 text-white rounded-md"
+                                                                >
+                                                                    Set
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+
+
+                                        </div>
+                                        {/* ~~~F L T R S~~~ */}
+                                    </div>
+
+                                }
+                                {user && isquarterOpen &&
+                                    <div id="quarterdiv" visibility="collapsed" className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                        <div id={quarters} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
+                                            <label htmlFor={quarters} className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Quarter:</label>
+
+                                            <Select id="quarterselector" name={quarters} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                                options={quarters}
+                                                placeholder='Select Quarter'
+                                                onChange={async (sl) => {
+
+                                                    let period = {}
+                                                    if (sl && sl !== null) {
+                                                        period["quarter"] = sl.value
+                                                    } else {
+                                                        delete period["quarter"]
+
+                                                    }
+
+
+                                                    let startdate = ''
+                                                    let enddate = ''
+                                                    let year = ''
+                                                    if (drillDown["year"].split('-').length > 0) {
+                                                        year = drillDown["year"].split('-')[0]
+                                                    }
+                                                    if (year == '') {
+                                                        alert("Select the year")
+                                                        return;
+                                                    }
+                                                    if (sl.value && sl.label.includes('Quarter') && year.length == 4) {
+
+                                                        if (getperiod(sl.value, year) == null) {
+                                                            alert("The period can not be parsed!")
+                                                        }
+                                                        else {
+                                                            startdate = getperiod(sl.value, year)[0]
+                                                            enddate = getperiod(sl.value, year)[1]
+                                                        }
+                                                    }
+                                                    else {
+                                                        alert("The selected period is not recognized")
+                                                        return;
+                                                    }
+                                                    if (startdate == '' || enddate == '') {
+                                                        return;
+                                                    }
+
+                                                    let parameters = "?"
+                                                    if (sl.value) {
+                                                        parameters += "datefrom=" + startdate
+                                                    }
+                                                    if (sl.value) {
+                                                        parameters += "&dateto=" + enddate
+                                                    }
+                                                    if (props?.query?.county) {
+                                                        parameters += "&county=" + props?.query?.county
+                                                    }
+                                                    if (props?.query?.sub_county) {
+                                                        parameters += "&subc_county=" + props?.query?.sub_county
+                                                    }
+                                                    if (props?.query?.ward) {
+                                                        parameters += "&ward=" + props?.query?.ward
+                                                    }
+                                                    setDrillDown({ ...drillDown, ...period })
+                                                    router.push('/dashboard' + parameters)
+                                                    // alert(JSON.stringify(drillDown)) 
+                                                    // if (sl && sl !== null ) { 
+                                                    //     let fcounty
+                                                    //     if(props?.query?.county){
+                                                    //         fcounty=props?.query.county
+                                                    //     }
+                                                    //     else
+                                                    //     {
+                                                    //         fcounty='national'
+                                                    //     }
+                                                    //     if (sl.value === '' ) { 
+                                                    //         if(fcounty==='national'){
+                                                    //             router.push('/dashboard')
+                                                    //         }
+                                                    //         else{
+                                                    //             router.push('/dashboard?county=' + fcounty)
+                                                    //         }
+                                                    //     } 
+                                                    //     else { 
+                                                    //         if(fcounty==='national'){
+                                                    //             router.push('/dashboard?datefrom=' +sl.value)
+                                                    //         }
+                                                    //         else{
+                                                    //             router.push('/dashboard?county=' + fcounty+"&datefrom="+sl.value)
+                                                    //         }
+
+                                                    //     }
+                                                    // }   
+
+                                                }}
+                                            />
+
+                                        </div>
+                                        {/* ~~~F L T R S~~~ */}
+                                    </div>
+                                }
+
+                                {/* filter by organizational units  */}
+                                {/* national */}
                                 {user && user?.is_national && <div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     {filters && Object.keys(filters).length > 0 &&
                                         Object.keys(filters).map(ft => (
@@ -248,51 +587,39 @@ const Dash = (props) => {
                                                             // let rr = drillDown.filter(d => d.key !== ft)
                                                             // setDrilldown(rr)
                                                         }
+
                                                         setDrillDown({ ...drillDown, ...nf })
+                                                        //alert(JSON.stringify(drillDown))
                                                         let value = sl.value
-                                                        if (value === 'national') {
-                                                            router.push('/dashboard')
-                                                        } else {
-                                                            router.push('/dashboard?county=' + value)
+                                                        let parameters = ""
+                                                        let ar = []
+                                                        if (value) {
+                                                            if (value !== 'national') {
+                                                                ar.push('county=' + value)
+                                                            }
                                                         }
+                                                        if (props?.query.datefrom) {
+                                                            ar.push("datefrom=" + props.query['datefrom'])
+                                                        }
+                                                        if (props?.query.dateto) {
+                                                            ar.push("dateto=" + props.query['dateto'])
+                                                        }
+                                                        ar.map(k => {
+                                                            if (parameters.includes('?')) {
+                                                                parameters += "&" + k
+                                                            } else {
+                                                                parameters += "?" + k
+                                                            }
+                                                        })
+                                                        router.push('/dashboard' + parameters)
                                                     }} />
+
                                             </div>
                                         ))}
-                                        {/* ~~~F L T R S~~~ */}
+                                    {/* ~~~F L T R S~~~ */}
                                 </div>}
-                                {/* --- */}
-                                {user &&user?.email==="test@mflcountyuser.com"? <div className="w-full flex  items-center justify-end space-x-3 mb-3">
-                                    <div id={period} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
-                                        <label htmlFor={period} className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by period:</label>
-                                        <Select name={period} defaultValue='Full Year summary' className="w-full max-w-xs p-1 rounded bg-gray-50"
-                                           options={period}
-                                           placeholder='Filter by period'
-                                           let value=''
-                                        //    onChange={
-                                        //     router.push('/dashboard?period=id')
-                                        //    }
-                                        />
-                                    </div>
-                                    {/* ~~~F L T R S~~~ */}
-                                </div>:''} 
-                                {/* --- */}
-                                {user &&user?.email==="test@mflsubcountyuser.com"? <div className="w-full flex  items-center justify-end space-x-3 mb-3">
-                                    <div id={period} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
-                                        <label htmlFor={period} className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by period:</label>
-                                        <Select name={period} defaultValue='Full Year summary' className="w-full max-w-xs p-1 rounded bg-gray-50"
-                                           options={period}
-                                           placeholder='Filter by period'
-                                           let value=''
-                                        //    onChange={
-                                        //     router.push('/dashboard?period=id')
-                                        //    }
-                                        />
-                                    </div>
-                                    {/* ~~~F L T R S~~~ */}
-                                </div>:''} 
-                                {/* --- */}
                                 {/* county user */}
-                                {user &&user?.email==="test@mflcountyuser.com"?<div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                {user && user?.user_groups?.is_county_level ? <div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                     {subcounty && Object.keys(subcounty).length > 0 &&
                                         Object.keys(subcounty).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="second">
@@ -301,7 +628,7 @@ const Dash = (props) => {
                                                     options={
                                                         (() => {
                                                             if (user && user?.county) {
-                                                                let opts = [{ value: "county", label: "county summary" }, ...Array.from(subcounty[ft] || [],
+                                                                let opts = [{ value: "county", label: "County summary" }, ...Array.from(subcounty[ft] || [],
                                                                     fltopt => {
                                                                         if (fltopt.id != null && fltopt.id.length > 0) {
                                                                             return {
@@ -335,81 +662,134 @@ const Dash = (props) => {
                                                         }
                                                         // fetchWards(sl.value)
                                                         setDrillDown({ ...drillDown, ...nf })
-                                                        let value = sl.value
-                                                        if (value === 'national') {
-                                                            router.push('/dashboard')
-                                                        } else {
-                                                            router.push('/dashboard?sub_county=' + value)
-                                                        }
-                                                    }} />
 
-                                            </div>
-                                        ))}
-                                </div>:''}
-                                {/* sub_county user */}
-                                {!hasPermission(/^facilities.add_facilityapproval$/, userPermissions) && 
-                                <div className="w-full flex  items-center justify-end space-x-3 mb-3">
-                                    {wards && Object.keys(wards).length > 0 &&
-                                        Object.keys(wards).map(ft => (
-                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="third">
-                                                <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
-                                                <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
-                                                    options={
-                                                        (() => {
-                                                            if (user && user?.is_national) {
-                                                                let opts = [{ value: "national", label: "National summary" }, ...Array.from(wards[ft] || [],
-                                                                    fltopt => {
-                                                                        if (fltopt.id != null && fltopt.id.length > 0) {
-                                                                            return {
-                                                                                value: fltopt.id, label: fltopt.name + ' wards'
-                                                                            }
-                                                                        }
-                                                                    })]
-                                                                return opts
+                                                        let parameters = ""
+                                                        let ar = []
+                                                        if (sl.value) {
+                                                            if (sl.value !== 'county') {
+                                                                ar.push('sub_county=' + sl.value)
                                                             } else {
-                                                                let opts = [...Array.from(wards[ft] || [],
-                                                                    fltopt => {
-                                                                        if (fltopt.id != null && fltopt.id.length > 0) {
-                                                                            return {
-                                                                                value: fltopt.id, label: fltopt.name + ' wards'
-                                                                            }
-                                                                        }
-                                                                    })]
-                                                                return opts
+                                                                ar.push('county=' + user.county)
                                                             }
-                                                        })()
-                                                    }
-                                                    placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
-                                                    onChange={sl => {
-                                                        let nf = {}
-                                                        if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
-                                                            nf[ft] = sl.value
-                                                        } else {
-                                                            delete nf[ft]
-                                                            // let rr = drillDown.filter(d => d.key !== ft)
-                                                            // setDrilldown(rr)
                                                         }
-                                                        setDrillDown({ ...drillDown, ...nf })
-                                                        fetchSubCounties(sl.value)
-                                                        let value = sl.value
-                                                        if (value === 'national') {
-                                                            router.push('/dashboard')
-                                                        } else {
-                                                            router.push('/dashboard?ward=' + value)
+
+                                                        if (props?.query.datefrom) {
+                                                            ar.push("datefrom=" + props.query['datefrom'])
                                                         }
+                                                        if (props?.query.dateto) {
+                                                            ar.push("dateto=" + props.query['dateto'])
+                                                        }
+                                                        ar.map(k => {
+                                                            if (parameters.includes('?')) {
+                                                                parameters += "&" + k
+                                                            } else {
+                                                                parameters += "?" + k
+                                                            }
+                                                        })
+
+                                                        router.push('/dashboard' + parameters)
                                                     }} />
 
                                             </div>
                                         ))}
-                                </div>}
-                                {/* wards */}    
+                                </div> : ''
+                                }
+                                {/* sub_county user */}
+                                {/* !hasPermission(/^facilities.add_facilityapproval$/, userPermissions) && */}
+                                {user && user?.user_groups?.is_sub_county_level ?
+                                    <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                        {wards && Object.keys(wards).length > 0 &&
+                                            Object.keys(wards).map(ft => (
+                                                <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="third">
+                                                    <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
+                                                    <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                                        options={
+                                                            (() => {
+                                                                if (user && user?.user_groups?.is_sub_county_level) {
+                                                                    let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
+                                                                        fltopt => {
+                                                                            if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                                return {
+                                                                                    value: fltopt.id, label: fltopt.name + ' wards'
+                                                                                }
+                                                                            }
+                                                                        })]
+                                                                    return opts
+                                                                } else {
+                                                                    let opts = [...Array.from(wards[ft] || [],
+                                                                        fltopt => {
+                                                                            if (fltopt.id != null && fltopt.id.length > 0) {
+                                                                                return {
+                                                                                    value: fltopt.id, label: fltopt.name + ' wards'
+                                                                                }
+                                                                            }
+                                                                        })]
+                                                                    return opts
+                                                                }
+                                                            })()
+                                                        }
+                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                        // onChange={async (option) => {
+
+                                                        //     try {
+                                                        //         const resp = await fetch(`/api/facility/get_facility/?path=dashboard&id=${option.value}`)
+
+                                                        //         // console.log({resp: (await resp.json())})
+                                                        //         console.log({ resp: (await JSON.stringify(resp)) })
+                                                        //     } catch (e) {
+                                                        //         console.error(e.message)
+                                                        //     }
+                                                        // }} 
+                                                        onChange={sl => {
+                                                            let nf = {}
+                                                            if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+                                                                nf[ft] = sl.value
+                                                            } else {
+                                                                delete nf[ft]
+                                                                // let rr = drillDown.filter(d => d.key !== ft)
+                                                                // setDrilldown(rr)
+                                                            }
+                                                            // fetchWards(sl.value)
+                                                            setDrillDown({ ...drillDown, ...nf })
+
+                                                            let parameters = ""
+                                                            let ar = []
+                                                            if (sl.value) {
+                                                                if (sl.value !== 'Subcounty') {
+                                                                    ar.push('ward=' + sl.value)
+                                                                } else {
+                                                                    ar.push('sub_county=' + user.user_sub_counties[0].sub_county)
+                                                                }
+                                                            }
+                                                            if (props?.query.datefrom) {
+                                                                ar.push("datefrom=" + props.query['datefrom'])
+                                                            }
+                                                            if (props?.query.dateto) {
+                                                                ar.push("dateto=" + props.query['dateto'])
+                                                            }
+                                                            ar.map(k => {
+                                                                if (parameters.includes('?')) {
+                                                                    parameters += "&" + k
+                                                                } else {
+                                                                    parameters += "?" + k
+                                                                }
+                                                            })
+ 
+                                                            router.push('/dashboard' + parameters)
+                                                        }} />
+
+                                                </div>
+                                            ))}
+                                    </div> : ''
+                                }
+
                             </div>
                         </div>
                     </div>
 
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility owners </h4> 
-                        <Download {...csvHeaders} filename={'Facility_owners'} data={props?.data?.owner_types?.map((ot)=>{return {metric: ot.name, value:ot.count}})} csvLink={owner_link}/>
+                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility owners </h4>
+                        <Download {...csvHeaders} filename={'Facility_owners'} data={props?.data?.owner_types?.map((ot) => { return { metric: ot.name, value: ot.count } })} csvLink={owner_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -418,10 +798,10 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                                {props?.data?.owner_types?.map((ot,i)=>(
+                                {props?.data?.owner_types?.map((ot, i) => (
                                     <tr key={i}>
-                                     <><td className="table-cell text-left text-gray-900 p-2">{ot.name}</td>
-                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ot.count || 0}</td></>
+                                        <><td className="table-cell text-left text-gray-900 p-2">{ot.name}</td>
+                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ot.count || 0}</td></>
                                     </tr>
                                 ))}
                             </tbody>
@@ -430,7 +810,7 @@ const Dash = (props) => {
 
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Types </h4>
-                        <Download csvHeaders={csvHeaders} filename={'Facility_types'} data={props?.data?.types_summary?.map((ot)=>{return {metric: ot.name, value:ot.count}})} csvLink={types_link}/>
+                        <Download csvHeaders={csvHeaders} filename={'Facility_types'} data={props?.data?.types_summary?.map((ot) => { return { metric: ot.name, value: ot.count } })} csvLink={types_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -439,10 +819,10 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                                {props?.data?.types_summary?.map((ts,i)=>(
+                                {props?.data?.types_summary?.map((ts, i) => (
                                     <tr key={i}>
-                                     <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
-                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
+                                        <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
+                                            <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count || 0}</td></>
                                     </tr>
                                 ))}
                             </tbody>
@@ -452,7 +832,7 @@ const Dash = (props) => {
                     {/* Facilities summary 1/3 - FILTERABLE */}
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facilities summary</h4>
-                        <Download csvHeaders={csvHeaders} filename={'Facility_summary'} data={totalSummary.map((ts)=>{return {metric: ts.name, value:ts.count}})} csvLink={summary_link}/>
+                        <Download csvHeaders={csvHeaders} filename={'Facility_summary'} data={totalSummary.map((ts) => { return { metric: ts.name, value: ts.count } })} csvLink={summary_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -461,11 +841,11 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                                {totalSummary.map((ts,i)=>(
-                                        <tr key={i}>
+                                {totalSummary.map((ts, i) => (
+                                    <tr key={i}>
                                         <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
                                             <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count}</td></>
-                                        </tr>
+                                    </tr>
                                 ))}
                             </tbody>
                         </table>
@@ -473,7 +853,7 @@ const Dash = (props) => {
                     {/* CUs summary - FILTERABLE 1/3 */}
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Community Units summary</h4>
-                        <Download csvHeaders={csvHeaders} filename={'community_units_summary'} data={chuSummary.map((ts)=>{return {metric: ts.name, value:ts.count}})} csvLink={chu_link}/>
+                        <Download csvHeaders={csvHeaders} filename={'community_units_summary'} data={chuSummary.map((ts) => { return { metric: ts.name, value: ts.count } })} csvLink={chu_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -482,11 +862,11 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                                {chuSummary.map((ts,i)=>(
-                                        <tr key={i}>
+                                {chuSummary.map((ts, i) => (
+                                    <tr key={i}>
                                         <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
                                             <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count}</td></>
-                                        </tr>
+                                    </tr>
                                 ))}
                             </tbody>
                         </table>
@@ -494,7 +874,7 @@ const Dash = (props) => {
                     {/* Recent changes 1/3 - FILTERABLE */}
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Recent changes</h4>
-                        <Download csvHeaders={csvHeaders} filename={'recent_changes'} data={recentChanges.map((ts)=>{return {metric: ts.name, value:ts.count}})} csvLink={chu_link}/>
+                        <Download csvHeaders={csvHeaders} filename={'recent_changes'} data={recentChanges.map((ts) => { return { metric: ts.name, value: ts.count } })} csvLink={chu_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -503,19 +883,19 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                               {recentChanges.map((ts,i)=>(
-                                        <tr key={i}>
+                                {recentChanges.map((ts, i) => (
+                                    <tr key={i}>
                                         <><td className="table-cell text-left text-gray-900 p-2">{ts.name}</td>
                                             <td className="table-cell text-right font-semibold text-gray-900 p-2">{ts.count}</td></>
-                                        </tr>
+                                    </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
-                    
+                    {/* facilities by keph level */}
                     <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility KEPH Level </h4>
-                        <Download csvHeaders={csvHeaders} filename={'facility_keph_level'} data={props?.data?.keph_level?.map((ts)=>{return {metric: ts.name, value:ts.count}})} csvLink={keph_link}/>
+                        <Download csvHeaders={csvHeaders} filename={'facility_keph_level'} data={props?.data?.keph_level?.map((ts) => { return { metric: ts.name, value: ts.count } })} csvLink={keph_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -524,21 +904,21 @@ const Dash = (props) => {
                                 </tr>
                             </thead>
                             <tbody className="text-lg">
-                                {props?.data?.keph_level?.map((kl,i)=>(
+                                {props?.data?.keph_level?.map((kl, i) => (
                                     <tr key={i}>
-                                     <><td className="table-cell text-left text-gray-900 p-2">{kl.name}</td>
-                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{kl.count || 0}</td></>
+                                        <td className="table-cell text-left text-gray-900 p-2">{kl.name}</td>
+                                        <td className="table-cell text-right font-semibold text-gray-900 p-2">{kl.count || 0}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
                     {/* Facilities & CHUs by county (bar) 1/1 */}
-                    {user&&user.is_national&&
+                    {user && user.is_national &&
                         <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
+                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by County</h4>
                             <BarChart
-                                title="Facilities & CHUs by county"
+                                title="Facilities & CHUs by County"
                                 categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="County"
@@ -558,11 +938,11 @@ const Dash = (props) => {
                         </div>
                     }
                     {/* Facilities & CHUs by subcounty (bar) 1/1 */}
-                    {user&&user.email==="test@mflcountyuser.com"&&
+                    {user && user?.user_groups?.is_county_level &&
                         <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
+                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Subcounty</h4>
                             <BarChart
-                                title="Facilities & CHUs by county"
+                                title="Facilities & CHUs by Subcounty"
                                 categories={Array?.from(props?.data?.constituencies_summary ?? [], cs => cs.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="Subcounty"
@@ -582,11 +962,11 @@ const Dash = (props) => {
                         </div>
                     }
                     {/* Facilities & CHUs by ward (bar) 1/1 */}
-                    {user&&user.email==="test@mflsubcountyuser.com"&&
+                    {user && user?.user_groups?.is_sub_county_level &&
                         <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by county</h4>
+                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Ward</h4>
                             <BarChart
-                                title="Facilities & CHUs by county"
+                                title="Facilities & CHUs by ward"
                                 categories={Array?.from(props?.data?.wards_summary ?? [], cs => cs.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="Ward"
@@ -615,7 +995,7 @@ const Dash = (props) => {
                             xaxistitle="Owner"
                             yaxistitle="Number"
                             data={(() => {
-                                return [{ name: "Owner", data: Array.from(props?.data?.owner_types  ?? [], ot => parseFloat(ot.count)) || [] }];
+                                return [{ name: "Owner", data: Array.from(props?.data?.owner_types ?? [], ot => parseFloat(ot.count)) || [] }];
                             })() || []} />
                     </div>
                     {/* Facility types - national summary - FILTERABLE (bar) 1/2 */}
@@ -634,25 +1014,23 @@ const Dash = (props) => {
 
 
                     {/* Floating div at bottom right of page */}
-                    <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>
                         <p className="text-sm text-gray-800">
                             For testing reasons, results are limited at the moment.
                         </p>
-                    </div>
-                  
+                    </div> */}
+
                 </div>
             </MainLayout>
         </div>
     )
 }
 
-
 Dash.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL
-
     const fetchFilters = token => {
         // let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Csub_county'
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county'
@@ -674,7 +1052,6 @@ Dash.getInitialProps = async (ctx) => {
                 }
             })
     }
-    
     const fetchData = (token) => {
         let url = API_URL + '/facilities/dashboard/'
         let query = { 'searchTerm': '' }
@@ -682,7 +1059,8 @@ Dash.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
-        let other_posssible_filters = ["county","sub_county","ward"]
+        let other_posssible_filters = ["datefrom", "dateto", "county", "sub_county", "ward"]
+        //ensure county and subcounty parameters are passed if the user is countyuser or subcountyuser respectively
 
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
@@ -701,7 +1079,7 @@ Dash.getInitialProps = async (ctx) => {
             }
         }).then(r => r.json())
             .then(json => {
-                    return fetchFilters(token).then(ft => {
+                return fetchFilters(token).then(ft => {
                     return {
                         data: json, query, filters: { ...ft }, path: ctx.asPath, tok: token || '/dashboard', current_url: url, api_url: API_URL
                     }
@@ -720,6 +1098,9 @@ Dash.getInitialProps = async (ctx) => {
                     api_url: API_URL
                 }
             })
+
+
+
     }
     return checkToken(ctx.req, ctx.res).then(t => {
         if (t.error) {
@@ -753,7 +1134,5 @@ Dash.getInitialProps = async (ctx) => {
 }
 
 export default Dash
-
-
 
 
