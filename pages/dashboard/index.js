@@ -8,20 +8,22 @@ import Select from 'react-select'
 import Download from '../../components/Download'
 import { UserContext } from '../../providers/user'
 import Link from 'next/link'
-import { PermissionContext } from '../../providers/permissions'
-import { hasPermission } from '../../utils/checkPermissions'
-import { Button, Hidden } from '@mui/material'
-import { route } from 'next/dist/server/router'
-import DatePicker from 'react-datepicker';
+// import { PermissionContext } from '../../providers/permissions'
+// import { hasPermission } from '../../utils/checkPermissions'
+// import { Button, Hidden } from '@mui/material'
+// import { route } from 'next/dist/server/router'
+// import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Dropdown } from 'antd'
-import { fromJSON } from 'postcss'
+// import { Dropdown } from 'antd'
+// import { fromJSON } from 'postcss'
 const Dash = (props) => {
     const router = useRouter()
 
     const userCtx = useContext(UserContext)
-    const userPermissions = useContext(PermissionContext)
-    let filters = props?.filters
+    // const userPermissions = useContext(PermissionContext)
+    const filters = props?.filters
+
+    console.log({filters})
     //create period items 
     let Years = [
         {
@@ -73,59 +75,41 @@ const Dash = (props) => {
     ]
     const [isquarterOpen, setIsquarterOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    let [drillDown, setDrillDown] = useState({})
+    const [drillDown, setDrillDown] = useState({})
     const [user, setUser] = useState(null)
-    const [subcounty, setSubcounty] = useState([])
-    const [wards, setWard] = useState([])
-    let sessToken = props?.tok
-    const API_URL = process.env.NEXT_PUBLIC_API_URL
-
+    const [subcounties, setSubcounties] = useState([])
+    const [counties, setCounties] = useState([])
+    const [wards, setWards] = useState([])
+    
     const { owner_link, types_link, summary_link, chu_link, keph_link } = useRef(null)
-    console.log(user)
+
+    async function fetchCounties() {
+        
+        try {
+            const r = await fetch(`/api/common/fetch_form_data/?path=counties`)
+            setCounties({county: (await r.json())?.results})
+        } catch (err) {
+            console.log(`Unable to fetch counties: ${err.message}`)
+        }
+    }
 
     async function fetchSubCounties(county) {
-        let subcounties_url = API_URL + `/common/sub_counties/?county=${county}&fields=id,name`
+      
         try {
-            const r = await fetch(subcounties_url, {
-                headers: {
-                    'Authorization': 'Bearer ' + sessToken,
-                    'Accept': 'application/json'
-                }
-            })
-            const jzon = await r.json()
-            setSubcounty({ subcounty: jzon.results })
-            return jzon
+            const r = await fetch(`/api/common/fetch_form_data/?path=sub_counties&id=${county}`)
+            setSubcounties({subcounties: (await r.json())?.results})
         } catch (err) {
-            console.log('Error fetching subcounties: ', err)
-            return {
-                error: true,
-                err: err,
-                filters: [],
-                api_url: API_URL
-            }
+            console.log(`Unable to fetch sub_counties: ${err.message}`)
         }
     }
 
     const fetchWards = async (sub_county) => {
-        let ward_url = API_URL + `/common/wards/?subcounty=${sub_county}&fields=id,name`
+
         try {
-            const r = await fetch(ward_url, {
-                headers: {
-                    'Authorization': 'Bearer ' + sessToken,
-                    'Accept': 'application/json'
-                }
-            })
-            const jzon = await r.json()
-            setWard({ ward: jzon.results })
-            return jzon
+            const r = await fetch(`/api/common/fetch_form_data/?path=wards&id=${sub_county}`)
+            setWards({wards: (await r.json())?.results})
         } catch (err) {
-            console.log('Error fetching subcounties: ', err)
-            return {
-                error: true,
-                err: err,
-                filters: [],
-                api_url: API_URL
-            }
+            console.log(`Unable to fetch wards: ${err.message}`)
         }
     }
 
@@ -162,12 +146,14 @@ const Dash = (props) => {
         }
     }
     useEffect(() => {
-        fetchWards(userCtx.county ?? null)
+        fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
         fetchSubCounties(userCtx.county)
+        fetchCounties()
     }, [])
 
     useEffect(() => {
 
+        
         let mtd = true
         if (mtd) {
 
@@ -178,8 +164,8 @@ const Dash = (props) => {
                     }
                 })
             }
-            if (subcounty && Object.keys(subcounty).length > 0) {
-                Object.keys(subcounty).map(ft => {
+            if (subcounties && Object.keys(subcounties).length > 0) {
+                Object.keys(subcounties).map(ft => {
                     if (props?.query[ft] && props?.query[ft] != null && props?.query[ft].length > 0) {
                         setDrillDown({ ...drillDown, [ft]: props?.query[ft] })
                     }
@@ -196,7 +182,7 @@ const Dash = (props) => {
         }
         return () => { mtd = false }
 
-    }, [filters, subcounty, wards])
+    }, [filters, subcounties, wards])
 
     const totalSummary = [
         { name: 'Total Facilities', count: `${props?.data.total_facilities || 0}` },
@@ -225,6 +211,20 @@ const Dash = (props) => {
         ],
         [],
     );
+
+    const groupID = user?.groups[0]?.id
+
+    const userCounty = user?.user_counties[0]?.county_name
+
+    const userSubCounty = user?.user_sub_counties[0]?.sub_county_name
+
+
+
+
+    // console.log({wards: drillDown?.wards})
+    // console.log({county: filters?.county.find(ft => ft.id == drillDown?.county), filters, drillDown, counties})
+
+    
     return (
         <div className="">
             <Head>'coun
@@ -244,28 +244,46 @@ const Dash = (props) => {
                         <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">
                             <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
                                 <span>Overview</span>
-                                <div className='flex items-center space-x-3 mt-3'>
-                                    {drillDown && drillDown?.county &&
+                                <div className='flex items-center gap-x-2 mt-3'>
+                                    {drillDown && drillDown?.county && groupID !== 1 &&
                                         <small className="text-blue-900 text-base font-semibold ml-1">
-                                            {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name != undefined ? filters.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""}
+                                            {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name ? filters?.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""}
                                         </small>
                                     }
-                                    {user && user.county ?
-                                        <small className="text-blue-900 text-base font-semibold ml-1">
-                                            {user.county_name + " County" || "National Summary"}
-                                        </small>
-                                        : ''}
-                                    {drillDown && drillDown?.subcounty &&
-                                        <small className="text-blue-900 text-base font-semibold ml-1">
-                                            <span className='text-gray-500 text-base'>/ </span>
-                                            {subcounty && subcounty?.subcounty && subcounty?.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name != undefined ? subcounty.subcounty.find(ft => ft.id == drillDown?.subcounty)?.name + " SubCounty" : "County Summary" || ""}
+                                    {user && userCounty &&
+                                        <small className="text-blue-900 text-base font-semibold">
+                                          
+                                            {`${userCounty ?? user?.county_name} County`}
+                                           
                                         </small>
                                     }
-                                    {drillDown && drillDown?.ward &&
+                                    { user && userSubCounty ?
+                                         <>
+                                            <span className='text-gray-500 text-base'> / </span>
+
+                                            <small className="text-blue-900 text-base font-semibold ">
+                                               
+                                            {`${userSubCounty ?? user?.sub_county_name} Sub county`}
+                                                
+                                            </small>
+                                        </>
+                                        :
+                                        <>
+                                            {groupID !== 7 && <span className='text-gray-500 text-base text-center'> / </span>}
+                                            <small className="text-blue-900 text-base font-semibold">
+                                                {subcounties && subcounties?.subcounties && subcounties?.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name != undefined ? subcounties.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name + " Sub county" : !drillDown?.county && "" || ""}
+                                
+                                            </small>
+                                        </>
+                                    }
+                                    {drillDown && drillDown?.wards &&
+                                    <>
+                                        <span className='text-gray-500 text-base text-center'> / </span>
                                         <small className="text-blue-900 text-base font-semibold ml-1">
-                                            <span className='text-gray-500 text-base'>/ </span>
-                                            {wards && wards?.ward && wards?.ward.find(ft => ft.id == drillDown?.ward)?.name != undefined ? wards.ward.find(ft => ft.id == drillDown?.ward)?.name + " Ward" : "Subcounty Summary" || ""}
+                                            
+                                            {wards && wards?.wards && wards?.wards.find(ft => ft.id == drillDown?.wards)?.name != undefined ? wards?.wards.find(ft => ft.id == drillDown?.wards)?.name + " Ward" : "Subcounty Summary" || ""}
                                         </small>
+                                    </>
                                     }
                                 </div>
                             </h1>
@@ -546,7 +564,7 @@ const Dash = (props) => {
 
                                 {/* filter by organizational units  */}
                                 {/* national */}
-                                {user && user?.is_national && <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                {(groupID === 5 || groupID === 7) && <div className="w-full flex  items-center justify-end space-x-1 mb-3">
                                     {filters && Object.keys(filters).length > 0 &&
                                         Object.keys(filters).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
@@ -559,7 +577,7 @@ const Dash = (props) => {
                                                                     fltopt => {
                                                                         if (fltopt.id != null && fltopt.id.length > 0) {
                                                                             return {
-                                                                                value: fltopt.id, label: fltopt.name + ' county'
+                                                                                value: fltopt.id, label: fltopt.name 
                                                                             }
                                                                         }
                                                                     })]
@@ -569,7 +587,7 @@ const Dash = (props) => {
                                                                     fltopt => {
                                                                         if (fltopt.id != null && fltopt.id.length > 0) {
                                                                             return {
-                                                                                value: fltopt.id, label: fltopt.name + ' county'
+                                                                                value: fltopt.id, label: fltopt.name 
                                                                             }
                                                                         }
                                                                     })]
@@ -619,30 +637,30 @@ const Dash = (props) => {
                                     {/* ~~~F L T R S~~~ */}
                                 </div>}
                                 {/* county user */}
-                                {user && user?.user_groups?.is_county_level ? <div className="w-full flex  items-center justify-end space-x-3 mb-3">
-                                    {subcounty && Object.keys(subcounty).length > 0 &&
-                                        Object.keys(subcounty).map(ft => (
+                                {groupID === 1  && <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                    {subcounties && Object.keys(subcounties).length > 0 &&
+                                        Object.keys(subcounties).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="second">
-                                                <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
+                                                <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('ies', 'y')}:</label>
                                                 <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                     options={
                                                         (() => {
                                                             if (user && user?.county) {
-                                                                let opts = [{ value: "county", label: "County summary" }, ...Array.from(subcounty[ft] || [],
+                                                                let opts = [{ value: "county", label: "County summary" }, ...Array.from(subcounties[ft] || [],
                                                                     fltopt => {
                                                                         if (fltopt.id != null && fltopt.id.length > 0) {
                                                                             return {
-                                                                                value: fltopt.id, label: fltopt.name + ' subcounty'
+                                                                                value: fltopt.id, label: fltopt.name 
                                                                             }
                                                                         }
                                                                     })]
                                                                 return opts
                                                             } else {
-                                                                let opts = [...Array.from(subcounty[ft] || [],
+                                                                let opts = [...Array.from(subcounties[ft] || [],
                                                                     fltopt => {
                                                                         if (fltopt.id != null && fltopt.id.length > 0) {
                                                                             return {
-                                                                                value: fltopt.id, label: fltopt.name + ' subcounty'
+                                                                                value: fltopt.id, label: fltopt.name 
                                                                             }
                                                                         }
                                                                     })]
@@ -692,25 +710,25 @@ const Dash = (props) => {
 
                                             </div>
                                         ))}
-                                </div> : ''
+                                </div> 
                                 }
                                 {/* sub_county user */}
-                                {/* !hasPermission(/^facilities.add_facilityapproval$/, userPermissions) && */}
-                                {user && user?.user_groups?.is_sub_county_level ?
+                                
+                                { groupID === 2 &&
                                     <div className="w-full flex  items-center justify-end space-x-3 mb-3">
                                         {wards && Object.keys(wards).length > 0 &&
                                             Object.keys(wards).map(ft => (
                                                 <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="third">
-                                                    <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
+                                                    <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('s', '')}:</label>
                                                     <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                         options={
                                                             (() => {
-                                                                if (user && user?.user_groups?.is_sub_county_level) {
+                                                                if (user && groupID === 2) {
                                                                     let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
                                                                         fltopt => {
                                                                             if (fltopt.id != null && fltopt.id.length > 0) {
                                                                                 return {
-                                                                                    value: fltopt.id, label: fltopt.name + ' wards'
+                                                                                    value: fltopt.id, label: fltopt.name 
                                                                                 }
                                                                             }
                                                                         })]
@@ -720,7 +738,7 @@ const Dash = (props) => {
                                                                         fltopt => {
                                                                             if (fltopt.id != null && fltopt.id.length > 0) {
                                                                                 return {
-                                                                                    value: fltopt.id, label: fltopt.name + ' wards'
+                                                                                    value: fltopt.id, label: fltopt.name 
                                                                                 }
                                                                             }
                                                                         })]
@@ -780,7 +798,7 @@ const Dash = (props) => {
 
                                                 </div>
                                             ))}
-                                    </div> : ''
+                                    </div> 
                                 }
 
                             </div>
@@ -937,7 +955,7 @@ const Dash = (props) => {
                                 })() || []} />
                         </div>
                     }
-                    {/* Facilities & CHUs by subcounty (bar) 1/1 */}
+                    {/* Facilities & CHUs by subcounties (bar) 1/1 */}
                     {user && user?.user_groups?.is_county_level &&
                         <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Subcounty</h4>
@@ -1060,7 +1078,7 @@ Dash.getInitialProps = async (ctx) => {
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${ctx.query.q}"}}}`
         }
         let other_posssible_filters = ["datefrom", "dateto", "county", "sub_county", "ward"]
-        //ensure county and subcounty parameters are passed if the user is countyuser or subcountyuser respectively
+        //ensure county and subcounties parameters are passed if the user is countyuser or subcountyuser respectively
 
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
@@ -1081,7 +1099,7 @@ Dash.getInitialProps = async (ctx) => {
             .then(json => {
                 return fetchFilters(token).then(ft => {
                     return {
-                        data: json, query, filters: { ...ft }, path: ctx.asPath, tok: token || '/dashboard', current_url: url, api_url: API_URL
+                        data: json, query, filters: { ...ft }, path: ctx.asPath || '/dashboard', current_url: url, api_url: API_URL
                     }
                 })
             })
