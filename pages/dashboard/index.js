@@ -269,7 +269,7 @@ const Dash = (props) => {
                                         </>
                                         :
                                         <>
-                                            {groupID !== 7 && <span className='text-gray-500 text-base text-center'> / </span>}
+                                            {groupID !== 7 && groupID !== 5 && <span className='text-gray-500 text-base text-center'> / </span>}
                                             <small className="text-blue-900 text-base font-semibold">
                                                 {subcounties && subcounties?.subcounties && subcounties?.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name != undefined ? subcounties.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name + " Sub county" : !drillDown?.county && "" || ""}
                                 
@@ -572,7 +572,7 @@ const Dash = (props) => {
                                                 <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                     options={
                                                         (() => {
-                                                            if (user && user?.is_national) {
+                                                            if (groupID === 5 || groupID === 7) {
                                                                 let opts = [{ value: "national", label: "National summary" }, ...Array.from(filters[ft] || [],
                                                                     fltopt => {
                                                                         if (fltopt.id != null && fltopt.id.length > 0) {
@@ -645,7 +645,7 @@ const Dash = (props) => {
                                                 <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                     options={
                                                         (() => {
-                                                            if (user && user?.county) {
+                                                            if (groupID === 1) {
                                                                 let opts = [{ value: "county", label: "County summary" }, ...Array.from(subcounties[ft] || [],
                                                                     fltopt => {
                                                                         if (fltopt.id != null && fltopt.id.length > 0) {
@@ -716,6 +716,7 @@ const Dash = (props) => {
                                 
                                 { groupID === 2 &&
                                     <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                       
                                         {wards && Object.keys(wards).length > 0 &&
                                             Object.keys(wards).map(ft => (
                                                 <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="third">
@@ -723,7 +724,7 @@ const Dash = (props) => {
                                                     <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
                                                         options={
                                                             (() => {
-                                                                if (user && groupID === 2) {
+                                                                if (groupID === 2) {
                                                                     let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
                                                                         fltopt => {
                                                                             if (fltopt.id != null && fltopt.id.length > 0) {
@@ -932,7 +933,7 @@ const Dash = (props) => {
                         </table>
                     </div>
                     {/* Facilities & CHUs by county (bar) 1/1 */}
-                    {user && user.is_national &&
+                    {(groupID === 7 || groupID === 5) &&
                         <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by County</h4>
                             <BarChart
@@ -956,7 +957,7 @@ const Dash = (props) => {
                         </div>
                     }
                     {/* Facilities & CHUs by subcounties (bar) 1/1 */}
-                    {user && user?.user_groups?.is_county_level &&
+                    {groupID === 1 &&
                         <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Subcounty</h4>
                             <BarChart
@@ -980,7 +981,7 @@ const Dash = (props) => {
                         </div>
                     }
                     {/* Facilities & CHUs by ward (bar) 1/1 */}
-                    {user && user?.user_groups?.is_sub_county_level &&
+                    {groupID === 2 &&
                         <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Ward</h4>
                             <BarChart
