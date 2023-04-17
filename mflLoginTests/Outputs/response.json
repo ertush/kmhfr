@@ -1,0 +1,674 @@
+{
+  "config": {
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/TripleM/Desktop/hackathon/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/TripleM/Desktop/hackathon/tests",
+        "testIgnore": [],
+        "testMatch": ["**/?(*.)@(spec|test).*"],
+        "timeout": 30000
+      },
+      {
+        "id": 4162,
+        "email": "test@mflcountyuser.com",
+        "first_name": "test",
+        "last_name": "countyuser",
+        "job_title_name": "County Health Records and Information Officer-MOH",
+        "other_names": "",
+        "job_title": "5192ff6e-e3b0-429c-8945-d6e3c85c0635",
+        "is_staff": true,
+        "is_active": true,
+        "sub_county_name": null,
+        "date_joined": "2022-11-30T07:29:07.396234Z",
+        "is_national": false,
+        "search": null,
+        "deleted": false,
+        "created_by": 4160,
+        "updated_by": 4160,
+        "updated": "2023-03-10T08:14:04.514884Z",
+        "created": "2022-11-30T07:29:07.394859Z",
+        "employee_number": "00024",
+        "user_counties": [
+          {
+            "id": "13efe3bd-b727-48e1-b378-39807ec649b5",
+            "user_full_name": "test countyuser",
+            "county_name": "Nairobi",
+            "county_code": 47,
+            "user_email": "test@mflcountyuser.com",
+            "user": 4162,
+            "county": "95b08378-362e-4bf9-ad63-d685e1287db2",
+            "created": "2023-03-10T08:14:04.857978Z",
+            "updated": "2023-03-10T08:14:04.857994Z",
+            "deleted": false,
+            "active": true,
+            "search": null,
+            "created_by": 4160,
+            "updated_by": 4160
+          }
+        ],
+        "short_name": "test",
+        "full_name": "test countyuser",
+        "all_permissions": [
+          "facilities.view_facilityunit",
+          "common.view_town",
+          "common.change_town",
+          "admin_offices.change_adminoffice",
+          "facilities.view_facilitytype",
+          "facilities.view_facilityservicerating",
+          "facilities.view_facilityunitregulation",
+          "mfl_gis.view_countyboundary",
+          "chul.view_status",
+          "users.delete_mfluser",
+          "facilities.view_regulationstatus",
+          "common.add_usercontact",
+          "admin_offices.change_adminofficecontact",
+          "chul.view_churating",
+          "mfl_gis.view_constituencyboundary",
+          "common.change_userconstituency",
+          "facilities.view_closed_facilities",
+          "facilities.view_facilityupgrade",
+          "common.view_constituency",
+          "facilities.view_classified_facilities",
+          "chul.change_communityhealthunit",
+          "facilities.view_regulatingbodycontact",
+          "mfl_gis.view_wardboundary",
+          "common.delete_userconstituency",
+          "common.view_county",
+          "facilities.publish_facilities",
+          "facilities.view_regulatorybodyuser",
+          "facilities.view_ownertype",
+          "chul.view_communityhealthunitcontact",
+          "facilities.view_facilityoperationstate",
+          "chul.view_rejected_chus",
+          "facilities.change_facility",
+          "facilities.view_facilityofficer",
+          "common.change_usersubcounty",
+          "facilities.view_rejected_facilities",
+          "common.delete_usercontact",
+          "facilities.view_facilityservice",
+          "facilities.change_facilityupdates",
+          "facilities.add_facilityapproval",
+          "common.delete_town",
+          "users.change_mfluser",
+          "facilities.view_owner",
+          "facilities.view_facilitycontact",
+          "common.view_usercontact",
+          "common.change_usercontact",
+          "common.view_documentupload",
+          "chul.view_chuservice",
+          "facilities.view_facilitystatus",
+          "common.add_town",
+          "users.view_mfluser",
+          "facilities.view_facilityupdates",
+          "common.view_ward",
+          "facilities.view_regulatingbody",
+          "facilities.view_facilityregulationstatus",
+          "facilities.view_facilityapproval",
+          "common.change_ward",
+          "chul.can_approve_chu",
+          "common.view_contact",
+          "chul.view_communityhealthworkercontact",
+          "common.view_usercounty",
+          "chul.view_communityhealthunit",
+          "facilities.view_unpublished_facilities",
+          "facilities.view_unapproved_facilities",
+          "common.view_contacttype",
+          "common.add_userconstituency",
+          "facilities.view_facility",
+          "mfl_gis.view_geocodemethod",
+          "chul.view_communityhealthworker",
+          "users.add_mfluser",
+          "mfl_gis.view_geocodesource"
+        ],
+        "requires_password_change": false,
+        "groups": [
+          {
+            "id": 1,
+            "name": "County Health Records Information Officer",
+            "permissions": [
+              {
+                "id": 339,
+                "name": "Can change admin office",
+                "codename": "change_adminoffice"
+              },
+              {
+                "id": 335,
+                "name": "Can change admin office contact",
+                "codename": "change_adminofficecontact"
+              },
+              {
+                "id": 273,
+                "name": "Can view chu rating",
+                "codename": "view_churating"
+              },
+              {
+                "id": 269,
+                "name": "Can view chu service",
+                "codename": "view_chuservice"
+              },
+              {
+                "id": 257,
+                "name": "Can approve or reject a Community Health Unit",
+                "codename": "can_approve_chu"
+              },
+              {
+                "id": 253,
+                "name": "Can change community health unit",
+                "codename": "change_communityhealthunit"
+              },
+              {
+                "id": 255,
+                "name": "Can view community health unit",
+                "codename": "view_communityhealthunit"
+              },
+              {
+                "id": 256,
+                "name": "Can see the rejected community health units",
+                "codename": "view_rejected_chus"
+              },
+              {
+                "id": 251,
+                "name": "Can view community health_unit contact",
+                "codename": "view_communityhealthunitcontact"
+              },
+              {
+                "id": 265,
+                "name": "Can view community health worker",
+                "codename": "view_communityhealthworker"
+              },
+              {
+                "id": 261,
+                "name": "Can view community health worker contact",
+                "codename": "view_communityhealthworkercontact"
+              },
+              {
+                "id": 247,
+                "name": "Can view status",
+                "codename": "view_status"
+              },
+              {
+                "id": 40,
+                "name": "Can view constituency",
+                "codename": "view_constituency"
+              },
+              {
+                "id": 32,
+                "name": "Can view contact",
+                "codename": "view_contact"
+              },
+              {
+                "id": 28,
+                "name": "Can view contact type",
+                "codename": "view_contacttype"
+              },
+              {
+                "id": 36,
+                "name": "Can view county",
+                "codename": "view_county"
+              },
+              {
+                "id": 71,
+                "name": "Can view document upload",
+                "codename": "view_documentupload"
+              },
+              { "id": 60, "name": "Can add town", "codename": "add_town" },
+              {
+                "id": 61,
+                "name": "Can change town",
+                "codename": "change_town"
+              },
+              {
+                "id": 62,
+                "name": "Can delete town",
+                "codename": "delete_town"
+              },
+              { "id": 63, "name": "Can view town", "codename": "view_town" },
+              {
+                "id": 57,
+                "name": "Can add user constituency",
+                "codename": "add_userconstituency"
+              },
+              {
+                "id": 58,
+                "name": "Can change user constituency",
+                "codename": "change_userconstituency"
+              },
+              {
+                "id": 59,
+                "name": "Can delete user constituency",
+                "codename": "delete_userconstituency"
+              },
+              {
+                "id": 53,
+                "name": "Can add user contact",
+                "codename": "add_usercontact"
+              },
+              {
+                "id": 54,
+                "name": "Can change user contact",
+                "codename": "change_usercontact"
+              },
+              {
+                "id": 55,
+                "name": "Can delete user contact",
+                "codename": "delete_usercontact"
+              },
+              {
+                "id": 56,
+                "name": "Can view user contact",
+                "codename": "view_usercontact"
+              },
+              {
+                "id": 52,
+                "name": "Can view user county",
+                "codename": "view_usercounty"
+              },
+              {
+                "id": 327,
+                "name": "Can change user sub county",
+                "codename": "change_usersubcounty"
+              },
+              {
+                "id": 42,
+                "name": "Can change ward",
+                "codename": "change_ward"
+              },
+              { "id": 44, "name": "Can view ward", "codename": "view_ward" },
+              {
+                "id": 170,
+                "name": "Can change facility",
+                "codename": "change_facility"
+              },
+              {
+                "id": 176,
+                "name": "Can publish facilities",
+                "codename": "publish_facilities"
+              },
+              {
+                "id": 173,
+                "name": "Can see classified facilities",
+                "codename": "view_classified_facilities"
+              },
+              {
+                "id": 174,
+                "name": "Can see closed facilities",
+                "codename": "view_closed_facilities"
+              },
+              {
+                "id": 172,
+                "name": "Can view facility",
+                "codename": "view_facility"
+              },
+              {
+                "id": 175,
+                "name": "Can see rejected facilities",
+                "codename": "view_rejected_facilities"
+              },
+              {
+                "id": 178,
+                "name": "Can see the unapproved facilities",
+                "codename": "view_unapproved_facilities"
+              },
+              {
+                "id": 177,
+                "name": "Can see the un published facilities",
+                "codename": "view_unpublished_facilities"
+              },
+              {
+                "id": 196,
+                "name": "Can add facility approval",
+                "codename": "add_facilityapproval"
+              },
+              {
+                "id": 199,
+                "name": "Can view facility approval",
+                "codename": "view_facilityapproval"
+              },
+              {
+                "id": 165,
+                "name": "Can view facility contact",
+                "codename": "view_facilitycontact"
+              },
+              {
+                "id": 235,
+                "name": "Can view facility officer",
+                "codename": "view_facilityofficer"
+              },
+              {
+                "id": 187,
+                "name": "Can view facility operation state",
+                "codename": "view_facilityoperationstate"
+              },
+              {
+                "id": 161,
+                "name": "Can view facility regulation status",
+                "codename": "view_facilityregulationstatus"
+              },
+              {
+                "id": 227,
+                "name": "Can view facility service",
+                "codename": "view_facilityservice"
+              },
+              {
+                "id": 231,
+                "name": "Can view facility service rating",
+                "codename": "view_facilityservicerating"
+              },
+              {
+                "id": 137,
+                "name": "Can view facility status",
+                "codename": "view_facilitystatus"
+              },
+              {
+                "id": 141,
+                "name": "Can view facility type",
+                "codename": "view_facilitytype"
+              },
+              {
+                "id": 207,
+                "name": "Can view facility unit",
+                "codename": "view_facilityunit"
+              },
+              {
+                "id": 203,
+                "name": "Can view facility unit regulation",
+                "codename": "view_facilityunitregulation"
+              },
+              {
+                "id": 181,
+                "name": "Can change facility updates",
+                "codename": "change_facilityupdates"
+              },
+              {
+                "id": 183,
+                "name": "Can view facility updates",
+                "codename": "view_facilityupdates"
+              },
+              {
+                "id": 195,
+                "name": "Can view facility upgrade",
+                "codename": "view_facilityupgrade"
+              },
+              { "id": 125, "name": "Can view owner", "codename": "view_owner" },
+              {
+                "id": 121,
+                "name": "Can view owner type",
+                "codename": "view_ownertype"
+              },
+              {
+                "id": 149,
+                "name": "Can view regulating body",
+                "codename": "view_regulatingbody"
+              },
+              {
+                "id": 145,
+                "name": "Can view regulating body contact",
+                "codename": "view_regulatingbodycontact"
+              },
+              {
+                "id": 157,
+                "name": "Can view regulation status",
+                "codename": "view_regulationstatus"
+              },
+              {
+                "id": 153,
+                "name": "Can view regulatory body user",
+                "codename": "view_regulatorybodyuser"
+              },
+              {
+                "id": 301,
+                "name": "Can view constituency boundary",
+                "codename": "view_constituencyboundary"
+              },
+              {
+                "id": 297,
+                "name": "Can view county boundary",
+                "codename": "view_countyboundary"
+              },
+              {
+                "id": 285,
+                "name": "Can view geo code method",
+                "codename": "view_geocodemethod"
+              },
+              {
+                "id": 281,
+                "name": "Can view geo code source",
+                "codename": "view_geocodesource"
+              },
+              {
+                "id": 305,
+                "name": "Can view ward boundary",
+                "codename": "view_wardboundary"
+              },
+              {
+                "id": 8,
+                "name": "Can add mfl user",
+                "codename": "add_mfluser"
+              },
+              {
+                "id": 9,
+                "name": "Can change mfl user",
+                "codename": "change_mfluser"
+              },
+              {
+                "id": 10,
+                "name": "Can delete mfl user",
+                "codename": "delete_mfluser"
+              },
+              {
+                "id": 11,
+                "name": "Can view mfl user",
+                "codename": "view_mfluser"
+              }
+            ]
+          }
+        ],
+        "regulator": null,
+        "regulator_name": null,
+        "county": "95b08378-362e-4bf9-ad63-d685e1287db2",
+        "county_name": "Nairobi",
+        "constituency": null,
+        "constituency_name": null,
+        "contacts": [
+          {
+            "contact_text": "0740040040",
+            "contact": "55fe1b86-e837-44ff-8d74-ca1a323f7b9f",
+            "id": "1d19afaa-7155-4d68-907c-cea8531bb057",
+            "contact_type_name": "MOBILE",
+            "contact_type": "38c7ee4c-b7f8-4094-b9be-803821a17a63"
+          }
+        ],
+        "regulatory_users": [],
+        "user_constituencies": [],
+        "user_sub_counties": [],
+        "last_login": "2023-03-24T08:02:51.185477Z",
+        "user_groups": {
+          "is_sub_county_level": false,
+          "is_national": false,
+          "is_regulator": false,
+          "is_county_level": false,
+          "is_administrator": true
+        },
+        "is_superuser": false
+      }
+    ],
+    "reporter": [
+      ["dot", null],
+      [
+        "json",
+        {
+          "outputFile": "jsonReport/jsonReport.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "configFile": "C:\\Users\\TripleM\\Desktop\\hackathon\\playwright.config.js",
+    "rootDir": "C:/Users/TripleM/Desktop/hackathon/tests",
+    "quiet": false,
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.32.0",
+    "workers": 4,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "codegen.spec.js",
+      "file": "codegen.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "codegen",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "status": "failed",
+                  "duration": 773,
+                  "error": {
+                    "message": "Request failed with status code 400",
+                    "stack": "AxiosError: Request failed with status code 400\n    at settle (C:\\Users\\TripleM\\Desktop\\hackathon\\node_modules\\axios\\lib\\core\\settle.js:19:12)\n    at IncomingMessage.handleStreamEnd (C:\\Users\\TripleM\\Desktop\\hackathon\\node_modules\\axios\\lib\\adapters\\http.js:556:11)"
+                  },
+                  "errors": [
+                    {
+                      "message": "AxiosError: Request failed with status code 400\n\n\u001b[2m    at settle (C:\\Users\\TripleM\\Desktop\\hackathon\\node_modules\\axios\\lib\\core\\settle.js:19:12)\u001b[22m\n\u001b[2m    at IncomingMessage.handleStreamEnd (C:\\Users\\TripleM\\Desktop\\hackathon\\node_modules\\axios\\lib\\adapters\\http.js:556:11)\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2023-03-24T08:47:35.553Z",
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\TripleM\\Desktop\\hackathon\\test-results\\codegen-codegen-chromium\\test-failed-1.png"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "feed1a4cd4c1e5cb6101-76a27484ba4040f9451e",
+          "file": "codegen.spec.js",
+          "line": 4,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "json.spec.js",
+      "file": "json.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "json",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "status": "passed",
+                  "duration": 3081,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2023-03-24T08:47:35.535Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "300d5860c96958510f86-76d949978cb3bccfb560",
+          "file": "json.spec.js",
+          "line": 4,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "login.spec.js",
+      "file": "login.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "KMHFL",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "status": "passed",
+                  "duration": 10,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2023-03-24T08:47:35.537Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "badc1754af1944f68b2b-a0ff97bc002281b9e315",
+          "file": "login.spec.js",
+          "line": 4,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": []
+}
