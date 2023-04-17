@@ -25,7 +25,7 @@ export default async function fetchFormData(req, res) {
                     url = id ? `${API_URL}/common/${path}/?county=${id}&fields=id,name,county` : `${API_URL}/common/${path}/?fields=id,name,county&page_size=307` 
                 break;
                 case 'wards':
-                    url = `${API_URL}/common/${path}/?sub_county=${id}&fields=id`
+                    url = `${API_URL}/common/${path}/?sub_county=${id}&fields=id,name`
                 break;
                 default:
                 break;
