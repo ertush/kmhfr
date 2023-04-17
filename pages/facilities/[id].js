@@ -2,8 +2,12 @@ import Head from "next/head";
 import { checkToken } from "../../controllers/auth/auth";
 import React, { useState, useEffect, useContext } from "react";
 import MainLayout from "../../components/MainLayout";
+import PrintBtn from "../../components/PrintBtn";
 import Link from 'next/link'
 import { useRouter } from 'next/router';
+import cookies from 'next-cookies';
+
+
 
 import {
   CheckCircleIcon,
@@ -16,7 +20,7 @@ import {
 
 
 import dynamic from "next/dynamic";
-// import router from "next/router";
+import router from "next/router";
 import { UserContext } from "../../providers/user";
 import FacilityDetailsTabs from "../../components/FacilityDetailsTabs";
 
@@ -55,13 +59,13 @@ const Facility = (props) => {
     } 
   );
 
-
+  
   const facility = props["0"]?.data;
   const wardName = props["0"]?.data.ward_name;
   const center = props["1"]?.geoLocation.center;
   const geoLocationData = props["1"]?.geoLocation;
   const qf = props["3"]?.qf ?? '';
-  // const {facility_updated_json } = props["2"]?.updates;
+  // const {facility_updated_json } = props["2"]?.updates;  
   const filters = []
 
 
@@ -95,18 +99,13 @@ const Facility = (props) => {
   useEffect(() => {
    
     if (userCtx) setUser(userCtx);
+  
     return () => {
     };
   }, [isClosingFacility, isReasonRejected]);
 
 
-    useEffect(() => {
-        if(!userCtx){
-            router.push('/auth/login')
-        }
-    }, [])
-
-
+  
   return (
     <>
       <Head>
@@ -114,7 +113,7 @@ const Facility = (props) => {
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="/assets/css/leaflet.css" />
       </Head>
-
+      
       <MainLayout>
         <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
           {/* Closed Facility Modal */}
@@ -399,15 +398,15 @@ const Facility = (props) => {
                   ) : (
                     ""
                   )}
-                  {facility?.is_approved ?  (
+                  {facility?.is_approved ? (
                     <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
-                      {facility?.approved_national_level ? 'Approved': 'pending approval'}
+                      Validated
                     </span>
                   ) : (
                     <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
-                      pending validation
+                      Not validated
                     </span>
                   )}
                   {facility?.has_edits && (
@@ -460,7 +459,7 @@ const Facility = (props) => {
                   hasPermission(/^facilities.view_facility$/, userPermissions) &&
                   (!belongsToUserGroup(userGroup, 'County Health Records Information Officer') || 
                   (belongsToUserGroup(userGroup, 'County Health Records Information Officer') && facility.has_edits)) &&
-                  (qf.includes('updated_pending_validation') || qf.includes('to_publish')) &&
+                  (qf.includes('updated_pending_validation') || qf.includes('approve')) &&
                   facility?.is_approved &&
                 
                 <button
@@ -471,7 +470,7 @@ const Facility = (props) => {
                   }
                 >
                   {
-                   facility.has_edits ? qf.includes('updated_pending_validation') && 'Validate Facility Updates' : qf.includes('to_publish') && 'Approve/Reject Facility' 
+                   facility.has_edits ? qf.includes('updated_pending_validation') && 'Validate Facility Updates' : qf.includes('approve') && 'Approve/Reject Facility' 
                   }
   
                 </button>
@@ -503,14 +502,8 @@ const Facility = (props) => {
                 {
                   hasPermission(/^common.view_documentupload$/, userPermissions) &&
                   !qf.includes('new_pending_validation') &&
-                  !qf.includes('failed_validation') &&
-                <button
-                  onClick={() => console.log(props.data)}
-                  className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
-                >
-                  Print
-                </button>
-                }
+                  !qf.includes('failed_validation') && <PrintBtn>Print</PrintBtn>        }
+                
                 {
                     !facility?.closed &&
                     hasPermission(/^facilities.change_facility$/, userPermissions) &&
@@ -579,7 +572,7 @@ const Facility = (props) => {
                   code={facility?.code || "NO_CODE"}
                   lat={facility?.lat_long[0]}
                   center={center}
-                  geoJSON={geoLocationData}
+                  // geoJSON={geoLocationData}
                   long={facility?.lat_long[1]}
                   name={facility?.official_name || facility?.name || ""}
                 />
@@ -698,7 +691,7 @@ Facility?.getInitialProps = async (ctx) => {
     }
   }
   return checkToken(ctx.req, ctx.res)
-    .then((t) => {
+    .then(async (t) => {
       if (t.error) {
         throw new Error("Error checking token");
       } else {
@@ -709,47 +702,47 @@ Facility?.getInitialProps = async (ctx) => {
           "/facilities/facilities/" +
           ctx.query.id +
           "/";
-        return fetch(url, {
-          headers: {
-            Authorization: "Bearer " + token,
-            Accept: "application/json",
-          },
+        return await fetch(url, {
+            headers: {
+              Authorization: "Bearer " + token,
+              Accept: "application/json",
+            },
         })
           .then((r) => r.json())
           .then(async (json) => {
-            allOptions.push({
-              data: json,
+          allOptions.push({
+            data: json,
             })
-    
 
-            // fetch ward boundaries
-            if (json) {
-              try {
-                const response = await fetch(
-                  `${process.env.NEXT_PUBLIC_API_URL}/common/wards/${json.ward}/`,
-                  {
-                    headers: {
-                      Authorization: "Bearer " + token,
-                      Accept: "application/json",
-                    },
-                  }
-                );
 
-                _data = await response.json();
+          // fetch ward boundaries
+          if (json) {
+            try {
+              const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/common/wards/${json.ward}/`,
+                {
+                  headers: {
+                    Authorization: "Bearer " + token,
+                    Accept: "application/json",
+                  },
+                }
+              );
+
+              _data = await response.json();
 
                 const [lng, lat] =
                   _data?.ward_boundary.properties.center.coordinates;
 
-                allOptions.push({
-                  geoLocation: JSON.parse(JSON.stringify(_data?.ward_boundary)),
-                  center: [lat, lng],
-                });
-              } catch (e) {
-                console.error("Error in fetching ward boundaries", e.message);
-              }
+              allOptions.push({
+                geoLocation: JSON.parse(JSON.stringify(_data?.ward_boundary)),
+                center: [lat, lng],
+              });
+            } catch (e) {
+              console.error("Error in fetching ward boundaries", e.message);
             }
+          }
 
-            // fetch facility updates
+          // fetch facility updates
             if(json){
               try{
                 const facilityUpdateData = await (await fetch( `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_updates/${json.latest_update}/`,
@@ -760,31 +753,31 @@ Facility?.getInitialProps = async (ctx) => {
                   },
                 }
               )).json()
-                
-                allOptions.push({
-                  updates: facilityUpdateData,
+
+              allOptions.push({
+                updates: facilityUpdateData,
                 })
-                                                         
-              }
+
+            }
               catch(e){
                   console.error('Encountered error while fetching facility update data', e.message)
-              }
             }
+          }
 
-            allOptions.push({
-              qf: ctx.query.qf
-            })
+          allOptions.push({
+            qf: ctx.query.qf
+          })
 
             return allOptions;
           })
           .catch((err) => {
-            console.log("Error fetching facilities: ", err);
-            return {
-              error: true,
-              err: err,
-              data: [],
-            };
-          });
+          console.log("Error fetching facilities: ", err);
+          return {
+            error: true,
+            err: err,
+            data: [],
+          };
+        });
       }
     })
     .catch((err) => {

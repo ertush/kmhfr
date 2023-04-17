@@ -1,4 +1,5 @@
 
+// Describing url paths that fetch data based on the specificied url path
 
 import { checkToken } from "../../../controllers/auth/auth";
 
@@ -14,7 +15,9 @@ export default async function fetchFacilityData(req, res) {
 
         let url = ''
         let params = ''
+        const access_token = token
 
+        
 
         // Set url based on request
         switch (path) {
@@ -89,47 +92,27 @@ export default async function fetchFacilityData(req, res) {
             case `change_log`:
                 url = `${API_URL}/facilities/facilities/${id}/?fields=__rev__&include_audit=true`
                 break;
-
-            case `searchTerm`:
                 
-                const { search, menu } = req.query;
-                const fields = 'fields=id,code,official_name,name,facility_type_name,owner_name,county,sub_county,constituency,ward_name,updated,approved,rejected,operation_status_name,date_requested,date_approved,sub_county_name,is_complete,approved_national_level' 
-                
-                switch(menu){
-                    case 'all':
-                        url = `${API_URL}/facilities/facilities/?${fields}&search=${search}`
-                    case 'approved_facilities':
-                        url = `${API_URL}/facilities/facilities/?approved=true&approved_national_level=true&rejected=false&${fields}&search=${search}`
-                    break;
-                    case 'facilities_pending_validation':
-                        url = `${API_URL}/facilities/facilities/?pending_approval=true&has_edits=true&${fields}&search=${search}`
-                    break;
-                    case 'updated_facilities_pending_validation':
-                        url = `${API_URL}/facilities/facilities/?rejected=true&${fields}&search=${search}`
-                    break;
-                    case 'facilities_pending_approval':
-                        url = `${API_URL}/facilities/facilities/?rejected=true&${fields}&search=${search}`
-                    break;
-                    case 'failed_validation_facililties':
-                        url = `${API_URL}/facilities/facilities/?rejected_national=true&${fields}&search=${search}`
-                    break;
-                    case 'close_facilities':
-                        url = `${API_URL}/facilities/facilities/?closed=true&${fields}&search=id,code,official_name,closing_reason,closed_date,name&search=${search}`
-                    break;
-                    case 'incomplete_facilities':
-                        url = `${API_URL}/facilities/facilities/?incomplete=true&${fields}&search=${search}`
-                    break;
-                    case 'rejetcted_facilities':
-                        url = `${API_URL}/facilities/facilities/?rejected_national=true&${fields}&search=${search}`
-                    break;
-                    default:
-                        url = `${API_URL}/facilities/facilities/?${fields}`
-                        break;
 
-                }
-             
+            case `facility_correction_template`:
+               url = `${API_URL}/facilities/${path}/${id}/?access_token=${token}`
+               break;
+    
+            case `facility_detail_report`:
+                url = `${API_URL}/facilities/${path}/${id}/?access_token=${token}`
+                break;
+
+            case `facility_cover_report`:
+                
+
+                url = `${API_URL}/facilities/${path}/${id}/?access_token=${token}/`
 
            
+                break;
+            
+
+            default:
+                break;
         }
 
         try {
@@ -158,7 +141,7 @@ export default async function fetchFacilityData(req, res) {
 
 
     if (req.method === "GET") {
-
+    
         try {
             return checkToken(req, res).then(t => {
                 if (t?.error || t?.data?.error) {
@@ -173,10 +156,23 @@ export default async function fetchFacilityData(req, res) {
                     let token = t.token
 
                     return fetchData(token).then(dt => dt).then(data => {
-
-                        res.status(200).json(data)
+                     
+                        if(
+                            req.query.path.includes('facility_cover_report') || 
+                            req.query.path.includes('facility_correction_template') ||
+                            req.query.path.includes('facility_detail_report') 
+                         ){
+                            console.log({data}, typeof(data))
+                            console.log("errrrror")
+                            const file = new FileReader()
+                            file.readAsBinaryString(data)
+                            file;
+                        }
+                        else{
+                             res.status(200).json(data)
+                        }
                         return
-                    })
+                    }) .catch(console.error)
                 }
                 return
             })
