@@ -1,0 +1,163 @@
+{
+  "config": {
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/TripleM/Desktop/mflLogin/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/TripleM/Desktop/mflLogin/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/?(*.)@(spec|test).*"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/TripleM/Desktop/mflLogin/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "C:/Users/TripleM/Desktop/mflLogin/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/?(*.)@(spec|test).*"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "reporter": [
+      [
+        "dot",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "jsonReport/jsonReport.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "configFile": "C:\\Users\\TripleM\\Desktop\\mflLogin\\playwright.config.js",
+    "rootDir": "C:/Users/TripleM/Desktop/mflLogin/tests",
+    "quiet": false,
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.32.0",
+    "workers": 4,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "login.test.js",
+      "file": "login.test.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "test",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "status": "failed",
+                  "duration": 13,
+                  "error": {
+                    "message": "Error reading storage state from storage-state/storageState.json:\nENOENT: no such file or directory, open 'C:\\Users\\TripleM\\Desktop\\mflLogin\\storage-state\\storageState.json'",
+                    "stack": "Error: Error reading storage state from storage-state/storageState.json:\nENOENT: no such file or directory, open 'C:\\Users\\TripleM\\Desktop\\mflLogin\\storage-state\\storageState.json'\n"
+                  },
+                  "errors": [
+                    {
+                      "message": "Error: Error reading storage state from storage-state/storageState.json:\nENOENT: no such file or directory, open 'C:\\Users\\TripleM\\Desktop\\mflLogin\\storage-state\\storageState.json'\n\n\n"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2023-03-23T13:59:17.938Z",
+                  "attachments": []
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "087306b8335cdced5c6c-91811b928c3eff4edb4b",
+          "file": "login.test.js",
+          "line": 16,
+          "column": 5
+        },
+        {
+          "title": "test",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "webkit",
+              "projectName": "webkit",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "status": "failed",
+                  "duration": 11,
+                  "error": {
+                    "message": "Error reading storage state from storage-state/storageState.json:\nENOENT: no such file or directory, open 'C:\\Users\\TripleM\\Desktop\\mflLogin\\storage-state\\storageState.json'",
+                    "stack": "Error: Error reading storage state from storage-state/storageState.json:\nENOENT: no such file or directory, open 'C:\\Users\\TripleM\\Desktop\\mflLogin\\storage-state\\storageState.json'\n"
+                  },
+                  "errors": [
+                    {
+                      "message": "Error: Error reading storage state from storage-state/storageState.json:\nENOENT: no such file or directory, open 'C:\\Users\\TripleM\\Desktop\\mflLogin\\storage-state\\storageState.json'\n\n\n"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2023-03-23T13:59:17.928Z",
+                  "attachments": []
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "087306b8335cdced5c6c-79192b17a3edec793bb3",
+          "file": "login.test.js",
+          "line": 16,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": []
+}
