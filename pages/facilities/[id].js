@@ -673,7 +673,7 @@ const Facility = (props) => {
   );
 };
 
-Facility?.getInitialProps = async (ctx) => {
+Facility.getInitialProps = async (ctx) => {
   const allOptions = [];
 
   if (ctx.query.q) {

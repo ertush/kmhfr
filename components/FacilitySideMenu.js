@@ -16,7 +16,11 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
         {
             name: 'All',
             id: 'all',
-            filters: Object.keys(filters),
+            // filters: Object.keys(filters),
+            filters : filters ? Object.keys(filters) : [],
+
+
+            
         },
         {
             name: 'Approved',

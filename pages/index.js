@@ -3,6 +3,7 @@ import Link from 'next/link'
 import MainLayout from '../components/MainLayout'
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
+import Cookies from 'js-cookie';
 
 
 
