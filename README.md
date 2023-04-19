@@ -19,7 +19,7 @@ An on-premise test server is needed. Currently, you can preview the example live
 
 ## How to use
 
-- Clone this repository ```git clone https://github.com/benzerbett/kmhfl-mbele-ui mfl3```
+- Clone this repository ```git clone https://github.com/uonafya/kmhfl-upgrade-alpha-ui mfl3```
 - cd into the folder ```cd mfl3```
 - Make a copy of the ```.env``` file and add your environment variables as detailed ```cp .env.local.example .env.local && nano .env.local```
 - Install dependencies ```npm install``` or ```yarn```
