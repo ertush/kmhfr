@@ -184,26 +184,50 @@ const Dash = (props) => {
 
     }, [filters, subcounties, wards])
 
-    const totalSummary = [
-        { name: 'Total Facilities', count: `${props?.data.total_facilities || 0}` },
-        { name: 'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
-        { name: 'Total rejected facilities', count: `${props?.data.rejected_facilities_count || 0}` },
-        { name: 'Total closed facilities', count: `${props?.data.closed_facilities_count || 0}` },
-        { name: 'Total pending updates', count: `${props?.data.pending_updates || 0}` }]
+    useEffect(()=>{
+        if(userCtx){
+            fetchWards(userCtx.county)
+            fetchSubCounties(userCtx.county)
+        }
+        else{
+            router.push('/auth/login')
+        }
+    
+    },[])
+// console.log(props.data)
 
-    const chuSummary = [
-        { name: 'Total community health units', count: `${props?.data?.total_chus || 0}` },
-        { name: 'Total CHUs rejected', count: `${props?.data?.rejected_chus || 0}` },
-        { name: 'New CHUs pending approval', count: `${props?.data?.recently_created_chus || 0}` },
-        { name: 'Updated CHUs pending approval', count: `${props?.data?.chus_pending_approval || 0}` },]
+    let totalSummary =[
+        {name:'Total Facilities', count: `${props?.data.total_facilities || 0}` }, 
+        {name:'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
+        {name:'Total rejected facilities', count: `${props?.data.rejected_facilities_count || 0}` },
+        {name:'Total closed facilities', count: `${props?.data.closed_facilities_count || 0}` },
+        {name:'Total facilities pending approval', count: `${props?.data.pending_updates || 0}` },
+        {name:'Total facilities rejected at validation', count: `${props?.data.facilities_rejected_at_validation || 0}`},
+        {name:'Total facilities rejected at approval', count: `${props?.data.facilities_rejected_at_approval || 0}`},
 
-    const recentChanges = [
-        { name: 'New facilities added', count: `${props?.data?.recently_created || 0}` },
-        { name: 'Facilities updated', count: `${props?.data?.recently_updated || 0}` },
-        { name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}` },
-        { name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}` }
     ]
 
+    let chuSummary =[
+        {name:'Total community health units', count: `${props?.data?.total_chus || 0}`},
+        {name:'Total CHUs rejected', count: `${props?.data?.rejected_chus || 0}`},
+        {name:'New CHUs pending approval', count: `${props?.data?.recently_created_chus || 0}`},
+        {name:'Updated CHUs pending approval', count: `${props?.data?.chus_pending_approval || 0}`},
+        
+    ]   
+    for(let i=0; i<props?.data?.cu_summary?.length; i++) {
+        chuSummary.push(props?.data?.cu_summary[i]);
+    }
+    for(let i=0; i<props?.data?.validations?.length; i++) {
+        totalSummary.push(props?.data?.validations[i]);
+    }
+         
+    const recentChanges =[
+        {name: 'New facilities added', count: `${props?.data?.recently_created || 0}`},
+        {name: 'Facilities updated', count: `${props?.data?.recently_updated || 0}`},
+        {name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}`},
+        {name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}`}
+    ]     
+    // console.log(user)
     const csvHeaders = useMemo(
         () => [
             { key: 'metric', label: 'Metric' },
@@ -1050,26 +1074,28 @@ const Dash = (props) => {
 
 Dash.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL
-    const fetchFilters = token => {
+
+    const fetchFilters = async token => {
         // let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Csub_county'
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county'
-        return fetch(filters_url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(jzon => {
-                return jzon
-            }).catch(err => {
-                console.log('Error fetching filters: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    filters: [],
-                    api_url: API_URL
+        try {
+            const r = await fetch(filters_url, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
                 }
             })
+            const jzon = await r.json()
+            return jzon
+        } catch (err) {
+            console.log('Error fetching filters: ', err)
+            return {
+                error: true,
+                err: err,
+                filters: [],
+                api_url: API_URL
+            }
+        }
     }
     const fetchData = (token) => {
         let url = API_URL + '/facilities/dashboard/'
