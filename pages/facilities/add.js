@@ -1,6 +1,7 @@
 // React imports
-import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
-import { useFormik } from 'formik'
+import React, { useState, useEffect, useRef, createContext } from 'react';
+// import { useAlert } from "react-alert";
+
 
 // Next imports
 import Head from 'next/head';
@@ -24,13 +25,16 @@ import StepLabel from '@mui/material/StepLabel';
 import FacilitySideMenu from '../../components/FacilitySideMenu';
 import Alert from '@mui/material/Alert';
 
+// import formik
+
+import { useFormik } from 'formik';
+
 // Heroicons imports
 import {
 	ChevronDoubleRightIcon,
 	ChevronDoubleLeftIcon,
 	PlusIcon,
 } from '@heroicons/react/solid';
-import { XCircleIcon } from '@heroicons/react/outline'
 import FacilityDeptRegulationFactory from '../../components/generateFacilityDeptRegulation'
 import {
 	FacilityContact,
@@ -40,7 +44,7 @@ import {
 // Package imports
 import Select from 'react-select';
 
-import { 
+import {
 	handleBasicDetailsSubmit,
     handleGeolocationSubmit,
     handleFacilityContactsSubmit,
@@ -50,64 +54,32 @@ import {
 	handleServiceUpdates,
     handleHrSubmit
 } from '../../controllers/facility/facilityHandlers';
-
 import { inputValidation } from '../../utils/formValidation';
-import { UserContext } from '../../providers/user';
+
 
 export const FacilityDeptContext = createContext(null)
 export const FacilityContactsContext = createContext(null)
 
-// const turf = require('@turf/turf');
-
+const turf = require('@turf/turf');
 const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
 		loading: () => <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
 		ssr: false // This line is important. It's what prevents server-side render
-	} 
+	}
 )
-
 
 const Map = React.memo(WardMap)
 
 function AddFacility(props) {
 
-	const userCtx = useContext(UserContext)
-
 	// const alert = useAlert();
 
-	const geolocationForm = useFormik({
-
-		initialValues: {
-		  collection_date: '',
-		  latitude: '',
-		  longitude: '',
-		},
-   
-		onSubmit: ({collection_date, latitude, longitude}) => {
-   
-			handleGeolocationSubmit([{
-				name:'collection_date',
-				value: collection_date
-			},
-			{
-				name:'longitude',
-				value: longitude
-			},
-			{
-				name :'latitude',
-				value: latitude
-			}
-			
-		], [setFormId, facilityId]) 
-		
-		},
-   
-	  });
-
-	// console.log({formik})
 
 	// Form drop down options
+
+
+
 	const facilityOptions = (() => {
 		const f_types = [
 			'STAND ALONE',
@@ -160,13 +132,7 @@ function AddFacility(props) {
 	 const kephOptions =  props['4']?.keph
 	 const facilityAdmissionOptions =  props['5']?.facility_admission_status
 	 const countyOptions =  props['6']?.counties
-	 const subCountyOptions =  props['7']?.sub_counties.filter(({label}) => {
-		// console.log({user_sub_county: userCtx?.sub_county_name, label})
-		return userCtx?.sub_county_name == label
-	 }) ?? props['7']?.sub_counties
-
-
-	//  console.log({subCountyOptions})
+	 const subCountyOptions =  props['7']?.sub_counties
 	 const constituencyOptions =  props['8']?.constituencies
 	 const wardOptions =  props['9']?.wards
 	 const jobTitleOptions = props['10']?.job_titles
@@ -177,7 +143,7 @@ function AddFacility(props) {
 	 const regulationStateOptions = props['14']?.regulation_status
 
 	 const serviceOptions = ((_services) => {
-		
+
 		const _serviceOptions = []
 		let _values = []
 		let _subCtgs = []
@@ -185,12 +151,12 @@ function AddFacility(props) {
 		if(_services.length > 0){
 			_services.forEach(({category_name:ctg}) => {
 				let allOccurences = _services.filter(({category_name}) => category_name === ctg)
-				
+
 				allOccurences.forEach(({id, name}) => {
 					_subCtgs.push(name)
 					_values.push(id)
 				})
-				
+
 				if(_serviceOptions.map(({name}) => name).indexOf(ctg) === -1){
 					_serviceOptions.push({
 						name: ctg,
@@ -198,18 +164,18 @@ function AddFacility(props) {
 						value:_values
 					})
 				}
-				
+
 				_values = []
 				_subCtgs = []
-	
+
 			})
 		}
-		
+
 		return _serviceOptions
 	 })(props['15'].service ?? [])
 
 	 const infrastructureOption = ((_infrastructure) => {
-		
+
 		const _infrastructureOptions = []
 		let _values = []
 		let _subCtgs = []
@@ -217,12 +183,12 @@ function AddFacility(props) {
 		if(_infrastructure.length > 0){
 			_infrastructure.forEach(({category_name:ctg}) => {
 				let allOccurences = _infrastructure.filter(({category_name}) => category_name === ctg)
-				
-				allOccurences.forEach(({id, name}) => { 
+
+				allOccurences.forEach(({id, name}) => {
 					_subCtgs.push(name)
-					_values.push(id) 
+					_values.push(id)
 				})
-				
+
 				if(_infrastructureOptions.map(({name}) => name).indexOf(ctg) === -1){
 					_infrastructureOptions.push({
 						name: ctg,
@@ -230,18 +196,18 @@ function AddFacility(props) {
 						value:_values
 					})
 				}
-				
+
 				_values = []
 				_subCtgs = []
-	
+
 			})
 		}
-		
+
 		return _infrastructureOptions
 	 })(props['16'].infrastructure ?? [])
 
 	 const hrOptions = ((_hr) => {
-		
+
 		const _hrOptions = []
 		let _values = []
 		let _subCtgs = []
@@ -249,12 +215,12 @@ function AddFacility(props) {
 		if(_hr.length > 0){
 			_hr.forEach(({category_name:ctg}) => {
 				let allOccurences = _hr.filter(({category_name}) => category_name === ctg)
-				
+
 				allOccurences.forEach(({id, name}) => {
 					_subCtgs.push(name)
 					_values.push(id)
 				})
-				
+
 				if(_hrOptions.map(({name}) => name).indexOf(ctg) === -1){
 					_hrOptions.push({
 						name: ctg,
@@ -262,13 +228,13 @@ function AddFacility(props) {
 						value:_values
 					})
 				}
-				
+
 				_values = []
 				_subCtgs = []
-	
+
 			})
 		}
-		
+
 		return _hrOptions
 	 })(props['17'].hr ?? [])
 
@@ -276,7 +242,7 @@ function AddFacility(props) {
 	//  Refs
 	const basicDetailsRef = useRef(null)
 	const kephLvlRef = useRef(null)
-	
+
 
     const steps = [
         'Basic Details',
@@ -288,7 +254,7 @@ function AddFacility(props) {
         'Human resources'
     ];
 
-    const [formId, setFormId] = useState(0) 
+    const [formId, setFormId] = useState(0)
 
     const facilityRegulatoryBodyRef = useRef(null)
 	const checklistFileRef = useRef(null)
@@ -305,6 +271,11 @@ function AddFacility(props) {
 	const facilityRegulationFormRef = useRef(null)
 	const facilityContactsFormRef = useRef(null)
 
+	const emergencyBedsRef = useState(null)
+	const ICUBedsRef = useState(null)
+	const martenityBedsRef = useState(null)
+	const HDUBedsRef = useState(null)
+	const isolationBedsRef = useState(null)
 
 	const noCotsRef = useRef('')
 	const totalBedsRef = useRef('')
@@ -312,31 +283,33 @@ function AddFacility(props) {
 	const noIsolationBedsRef = useRef('')
 	const noGeneralTheatersRef = useRef('')
 	const noMartenityBedsRef = useRef('')
+	const noBedsErrorRef = useRef('')
 	const noHDUBedsRef = useRef('')
 	const noICUBedsRef = useRef('')
 	const noMartenityTheatersRef = useRef('')
-	const noInpatientBedsRef = useRef('')
 	const facilityPopulationRef = useRef('')
 
 
 
-    // Services State 
-	
-    const setServices = useState([])[1]
+    // Services State
+
+    const [services, setServices] = useState([])
 	const [facilityOption, setFacilityOption] = useState('')
 	const [facilityOfficialName, setFacilityOfficialName] = useState('')
 
 	const [ownerTypeOption, setOwnerTypeOption] = useState('')
-	const setCounty = useState('')[1]
+	const [latitude, setLatitude] = useState('')
+	const [longitude, setLongitude] = useState('')
+	const [county, setCounty] = useState('')
 	const [facilityId, setFacilityId] = useState('')
 	const [facilityCoordinates, setFacilityCoordinates] = useState([])
-	
+
 
 	const [geoJSON, setGeoJSON] = useState(null)
     const [center, setCenter] = useState(null)
     const [wardName, setWardName] = useState('')
 	const [facilityTypeDetail, setFacilityTypeDetail] = useState('')
-	
+
 
 	// Drop down select options data
 	const [subCountyOpt, setSubCountyOpt] = useState('')
@@ -348,25 +321,36 @@ function AddFacility(props) {
 
 	const [khisSynched, setKhisSynched] = useState(false);
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
-    const [pathId, setPathId] = useState('') 
+    const [pathId, setPathId] = useState('')
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('');
 	const [is24hrsOpen, setIs24hrsOpen] = useState(false)
 	const [isRegBodyChange, setIsRegBodyChange] = useState(false)
-	const [facilityDepts, setFacilityDepts] = useState([])
+	const [facilityDepts, setFacilityDepts] = useState([
+		(() => (
+			<FacilityDeptRegulationFactory
+				key={0}
+				index={0}
+				facilityDepts={[]}
+				isRegBodyChange={isRegBodyChange}
+				setIsRegBodyChange={setIsRegBodyChange}
+				regNo={null}
+				licenseNo={null}
+				facilityDeptRegBody={null}
+				facilityDeptValue={null}
+				setFacilityDepts={() => null}
+				facilityDeptOptions={facilityDeptOptions}
+			/>
+		))()
 
-	const handleDeleteField = (index) => {
-		const values = facilityDepts;
-		values.splice(index, 1);
-		setFacilityDepts((draft) => ([ ...values]))
-	};
+	]) // [0]
 
-	const [_, setEmergencyBeds] = useState(0)
+	const [emergencyBeds, setEmergencyBeds] = useState(0)
 	const [icuBeds, setICUBeds] = useState(0)
 	const [hduBeds, setHDUBeds] = useState(0)
 	const [isolationBeds, setIsolationBeds] = useState(0)
 	const [martenityBeds, setMartenityBeds] = useState(0)
-	const [inpatientBeds, setInpatientBeds] = useState(0)
+
 
 	const [facilityContacts, setFacilityContacts] = useState([
 		(() => (
@@ -394,19 +378,108 @@ function AddFacility(props) {
 
 
 
+	//initialize Formik state values
+	const formik = useFormik({
+		initialValues: {
+		  services: [],
+		  facilityOption: '',
+		  facilityOfficialName: '',
+		  facilityUniquename:'',
+		  ownerTypeOption: '',
+		  latitude: '',
+		  collection_date:null,
+		  longitude: '',
+		  county: '',
+		  facilityId: '',
+		  facilityCoordinates: [],
+		  geoJSON: null,
+		  center: null,
+		  wardName: '',
+		  facilityTypeDetail: '',
+		  subCountyOpt: '',
+		  wardOpt: '',
+		  checklistFile: null,
+		  licenseFile: null,
+		  coordinatesError: false,
+		  khisSynched: false,
+		  facilityFeedBack: [],
+		  pathId: '',
+		  allFctsSelected: false,
+		  title: '',
+		  is24hrsOpen: false,
+		  isRegBodyChange: false,
+		  facilityDepts: [
+			(() => (
+			  <FacilityDeptRegulationFactory
+				key={0}
+				index={0}
+				facilityDepts={[]}
+				isRegBodyChange={isRegBodyChange}
+				setIsRegBodyChange={setIsRegBodyChange}
+				regNo={null}
+				licenseNo={null}
+				facilityDeptRegBody={null}
+				facilityDeptValue={null}
+				setFacilityDepts={() => null}
+				facilityDeptOptions={facilityDeptOptions}
+			  />
+			))()
+		  ],
+		  totalBedsRef:'',
+		  emergencyBeds: 0,
+		  noEmergencyBedsRef:'',
+		  icuBeds: 0,
+		  noICUBedsRef: '',
+		  hduBeds: 0,
+		  noHDUBedsRef: '',
+		  isolationBeds: 0,
+		  noIsolationBedsRef:'',
+		  martenityBeds: 0,
+		  noMartenityBedsRef:'',
+		  facilityContacts: [
+			(() => (
+			  <FacilityContact
+				contactTypeOptions={contactTypeOptions}
+				fieldNames={['contact_type', 'contact']}
+				setFacilityContacts={() => null}
+				contacts={[null, null, null]}
+				index={0}
+			  />
+			))()
+		  ],
+		  officerContactDetails: [
+			(() => (
+			  <OfficerContactDetails
+				contactTypeOptions={contactTypeOptions}
+				fieldNames={['officer_details_contact_type', 'officer_details_contact']}
+				contacts={[null, null, null]}
+				setFacilityContacts={() => null}
+				index={0}
+			  />
+			))()
+		  ]
+		},
+		onSubmit: values => {
+		  // Handle form submission here
+		}
+	  });
+
+
+
+
 
 	const filters = []
-	
-	
+
+
     useEffect(() => {
 
-		
+
         const formIdState = window.sessionStorage.getItem('formId');
 
         if(formIdState == undefined || formIdState == null || formIdState == '') {
             window.sessionStorage.setItem('formId', 0); //0 set form to basic details
         }
-        
+
         setFormId(window.sessionStorage.getItem('formId'));
 
         // Check if dropdown and input exist. If remove from DOM
@@ -419,76 +492,76 @@ function AddFacility(props) {
 
         if(contactDropDowns.length > 0) contactDropDowns.forEach(dropDown => dropDown.remove())
         if(contactInputs.length > 0) contactInputs.forEach(input => input.remove())
-     
+
         if(infrastructureDropDowns.length > 0) infrastructureDropDowns.forEach(dropDown => dropDown.remove())
         if(infrastructureDropDownsYesNo.length > 0) infrastructureDropDownsYesNo.forEach(input => input.remove())
-        
+
 
         return () => {
-			
+
             if(window.sessionStorage.getItem('formId') == '7'){
                 window.sessionStorage.setItem('formId', 0)
             }
 
-			
+
+
         }
-    }, [facilityOfficialName, facilityOption, formId, geoJSON])
+    }, [facilityOfficialName, facilityOption, formId, latitude, geoJSON, longitude])
 
-
-	useEffect(() => {
-		// const isLatLngInRegion = (longitude, latitude) => {
-			
-		// 			if(longitude.length >= 9 && latitude.length >= 9){ 
-		// 				let point = turf.point([longitude, latitude]);
-						
-		// 				let polygon = turf.polygon(facilityCoordinates);
-						
-		// 				let found = turf.booleanPointInPolygon(point, polygon);
-		// 				if(!found){
-		// 					setCoordinatesError(true)
-		// 				}else{
-		// 					setCoordinatesError(false)
-		// 				}
-		// 			}
-		// 		}
-		
-		// isLatLngInRegion(geolocationForm.values.longitude, geolocationForm.values.latitude)
-		console.log({longitude: geolocationForm.values.longitude, latitude: geolocationForm.values.longitude})
-	}, [geolocationForm.values.longitude, geolocationForm.values.latitude])
-      
 
 	if(facilityTypeDetail !== '' && kephLvlRef.current){
 		switch(facilityTypeDetail){
 			case 'Comprehensive Teaching & Tertiary Referral Hospital':
-				
+
 				if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 6')[0]
-				
+
 				break;
 			case 'Specialized & Tertiary Referral hospitals':
-				
+
 				if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 6')[0]
-				
+
 				break;
 			case 'Secondary care hospitals':
-			
+
 				if(kephLvlRef.current) kephLvlRef.current.state.value =   kephOptions.filter(({label}) => label === 'Level 5')[0]
-					
+
 				break;
 			case 'Primary care hospitals':
-				
+
 				if(kephLvlRef.current) kephLvlRef.current.state.value =  kephOptions.filter(({label}) => label === 'Level 4')[0]
 				break;
 		}
 	}
 
+	useEffect(() => {
+		const isLatLngInRegion = () => {
 
+			if(longitude.length >= 9 && latitude.length >= 9){
+				let point = turf.point([longitude, latitude]);
+
+				let polygon = turf.polygon(facilityCoordinates);
+
+				let found = turf.booleanPointInPolygon(point, polygon);
+				if(!found){
+					setCoordinatesError(true)
+				}else{
+					setCoordinatesError(false)
+				}
+			}
+		}
+
+		isLatLngInRegion()
+
+
+
+	} , [longitude, latitude])
 
 	// Validate Hours/Days of Operation
 
 	useEffect(() => {
 		if(open24HrsRef.current && is24hrsOpen){
 			open24HrsRef.current.checked = true
-		}  
+		}
 		if(open24HrsRef.current && !is24hrsOpen) {
 			open24HrsRef.current.checked = false
 		}
@@ -526,15 +599,17 @@ function AddFacility(props) {
 
 	// let totalBeds = 0
 
-	
-	useEffect(() => {
-		
-		totalBedsRef.current?.value = inpatientBeds + icuBeds + hduBeds + isolationBeds + martenityBeds;
 
-		return () => {
-			totalBedsRef.current?.value = 0;
-		}
-	}, [inpatientBeds, icuBeds, hduBeds, isolationBeds, martenityBeds])
+	useEffect(() => {
+
+		if (totalBedsRef?.current) {
+			totalBedsRef.current.value = emergencyBeds + icuBeds + hduBeds + isolationBeds + martenityBeds;
+		  }
+		  ;
+	}, [emergencyBeds, icuBeds, hduBeds, isolationBeds, martenityBeds])
+
+	// useEffect(() => {}, [isRegBodyChange, facilityDepts])
+
 
 
 
@@ -561,13 +636,13 @@ function AddFacility(props) {
 										{'New Facility'}
 								</h2>
 							</div>
-					
+
 						</div>
 
 
 						 {/* Facility Side Menu Filters */}
 						 <div className="md:col-span-1 md:mt-3">
-                            <FacilitySideMenu 
+                            <FacilitySideMenu
                                 filters={filters}
                                 states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
                                 stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
@@ -582,7 +657,7 @@ function AddFacility(props) {
 										{steps.map((label) => (
 											<Step key={label}>
 												<StepLabel>
-													
+
 													{
 														label === "Basic Details" ?
 														<span className='cursor-pointer hover:text-indigo-600' onClick={
@@ -594,7 +669,7 @@ function AddFacility(props) {
 														:
 														label
 													}
-													
+
 													</StepLabel>
 											</Step>
 										))}
@@ -611,7 +686,7 @@ function AddFacility(props) {
 										switch (parseInt(formId)) {
 											case 0:
 
-												
+
 												// Basic Details form
 												return (
 													<>
@@ -621,23 +696,15 @@ function AddFacility(props) {
 														<form
 															encType="multipart/form-data"
 															ref={basicDetailsRef}
+															value = {formik.values.facilityCoordinates}
+															onChange={formik.handleChange}
 															className='flex flex-col w-full items-start justify-start gap-3'
 															onSubmit={ev => {
 																//  check if form validation works
 
-																if(
-																	noCotsRef.current?.textContent == '' &&
-																	noEmergencyBedsRef.current?.textContent == '' &&
-																	noInpatientBedsRef.current?.textContent == '' &&
-																	noICUBedsRef.current?.textContent == '' &&
-																	noHDUBedsRef.current?.textContent == '' &&
-																	noMartenityBedsRef.current?.textContent == '' &&
-																	noIsolationBedsRef.current?.textContent == '' &&
-																	noGeneralTheatersRef.current?.textContent == '' &&
-																	noMartenityBedsRef.current?.textContent == '' &&
-																	facilityPopulationRef.current?.textContent == '' 
+																if(noBedsErrorRef.current?.textContent == '')
 
-																){
+																{
 																	handleBasicDetailsSubmit(ev, [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef], 'POST', checklistFile)
 																}
 																else
@@ -661,7 +728,8 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='text'
-																	onChange={e => setFacilityOfficialName(e.target.value) }
+																	// value = {formik.values.facilityOfficialName}
+																	// onChange={formik.handleChange }
 																	name='official_name'
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
@@ -679,15 +747,16 @@ function AddFacility(props) {
 																</label>
 																<input
 																	required
+																	value = {formik.values.facilityUniqueName}
+																	onChange={formik.handleChange }
 																	type='text'
-																	value={facilityOfficialName ?? ''}
-																	onChange={() => {}}
+
 																	name='name'
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
 															{/* Facility Type */}
-															
+
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
 																	htmlFor='facility_type'
@@ -698,7 +767,7 @@ function AddFacility(props) {
 																		*
 																	</span>
 																</label>
-																
+
 																<Select
 																	options={facilityOptions || []}
 																	required
@@ -708,7 +777,7 @@ function AddFacility(props) {
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
 															</div>
-															
+
 															{/* Facility Type Details */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
@@ -723,10 +792,10 @@ function AddFacility(props) {
 																<Select
 																	options={
 																		(() => {
-																			
+
 																			switch(facilityOption){
 																				case 'STAND ALONE':
-			
+
 																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 
 																					return [
@@ -745,34 +814,34 @@ function AddFacility(props) {
 																						facilityTypeOptions.filter(({label}) => label == 'Dental Clinic')[0] || {},
 																						facilityTypeOptions.filter(({label}) => label == 'Blood Bank')[0] || {},
 
-																						 ] 
-																					
+																						 ]
+
 																				case 'DISPENSARY':
 																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
 																					return  facilityTypeOptions.filter(({label}) => label == 'DISPENSARY') || []
-																					
+
 
 																				case 'MEDICAL CLINIC':
 																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
-																					return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []																				
-																					
+																					return facilityTypeOptions.filter(({label}) => label == 'Medical Clinic') || []
+
 																				case 'NURSING HOME':
 																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 2')[0]
-																					
+
 																					return [
 																							facilityTypeOptions.filter(({label}) => label == 'Nursing and Maternity Home')[0] || {},
 																							facilityTypeOptions.filter(({label}) => label == 'Nursing Homes')[0] || {}
 																							]
 
 																				case 'HOSPITALS':
-															
+
 																					return [
 																					   facilityTypeOptions.filter(({label}) => label == 'Specialized & Tertiary Referral hospitals')[0] || {},
 																					   facilityTypeOptions.filter(({label}) => label == 'Secondary care hospitals')[0] || {},
 																					   facilityTypeOptions.filter(({label}) => label == 'Comprehensive Teaching & Tertiary Referral Hospital')[0] || {},
 																					   facilityTypeOptions.filter(({label}) => label == 'Primary care hospitals')[0] || {}
-																						] 
-																			
+																						]
+
 																				case 'HEALTH CENTRE':
 																					if(kephLvlRef.current) kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 																					return [
@@ -784,7 +853,7 @@ function AddFacility(props) {
 																					if(kephLvlRef.current) console.log(kephLvlRef.current); kephLvlRef.current.state.value = kephOptions.filter(({label}) => label === 'Level 3')[0]
 
 																					return facilityTypeOptions.filter(({label}) => label == 'Medical Center') || []
-																				
+
 																			}
 																		})()
 																	}
@@ -794,29 +863,29 @@ function AddFacility(props) {
 																		switch(ev.label){
 																			case 'Comprehensive Teaching & Tertiary Referral Hospital':
 																				setFacilityTypeDetail('Comprehensive Teaching & Tertiary Referral Hospital')
-																				
-																				
+
+
 																				break;
 																			case 'Specialized & Tertiary Referral hospitals':
 																				setFacilityTypeDetail('Specialized & Tertiary Referral hospitals')
-																				
+
 																				break;
 																			case 'Secondary care hospitals':
 																				setFacilityTypeDetail('Secondary care hospitals')
-																			
-																					
+
+
 																				break;
 																			case 'Primary care hospitals':
 																				setFacilityTypeDetail('Primary care hospitals')
-																				
+
 																				break;
-																			
+
 																		}
 																	}}
 																	name='facility_type_details'
 																	className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																/>
-															
+
 															</div>
 
 															{/* Operation Status */}
@@ -877,18 +946,21 @@ function AddFacility(props) {
 																<span className='flex items-center gap-x-1'>
 																	<input
 																		type='radio'
-																		
-																		defaultChecked={false}
+																		// value = {formik.values}
+																		onChange={formik.handleChange }
+																		defaultChecked={true}
 																		name='accredited_lab_iso_15189'
 																		id='open_whole_day_yes'
-																		onChange={(ev) => {}}
+
 																	/>
 																	<small className='text-gray-700'>Yes</small>
 																</span>
 																<span className='flex items-center gap-x-1'>
 																	<input
+																		// value = {formik.values.}
+																		// onChange={formik.handleChange }
 																		type='radio'
-																		
+																		value={false}
 																		defaultChecked={false}
 																		name='accredited_lab_iso_15189'
 																		id='open_whole_day_no'
@@ -932,29 +1004,29 @@ function AddFacility(props) {
 																</label>
 																<Select
 																	options={ (() => {
-																	
+
 																		switch(ownerTypeOption){
 																			case "Private Practice":
 
-						
+
 																				return [
-																					ownerOptions.filter(({label}) => label == "Private Practice- Pharmacist")[0] || {},
+																					// ownerOptions.filter(({label}) => label == "Private Practice- Pharmacist")[0] || {},
 																					ownerOptions.filter(({label}) => label == "Private Practice - Private Company")[0] || {},
-																					ownerOptions.filter(({label}) => label == "Private Practice Lab Technician/Technologist")[0] || {},
+																					// ownerOptions.filter(({label}) => label == "Private Practice Lab Technician/Technologist")[0] || {},
 																					ownerOptions.filter(({label}) => label == "Private Practice - Nurse / Midwifery")[0] || {},
 																					ownerOptions.filter(({label}) => label == "Private Practice - Medical Specialist")[0] || {},
 																					ownerOptions.filter(({label}) => label == "Private Practice - General Practitioner")[0] || {},
 																					ownerOptions.filter(({label}) => label == "Private Practice - Clinical Officer")[0] || {},
 																					ownerOptions.filter(({label}) => label == "Private Practice - Private Institution Academic")[0] || {}
-																				
-																					 ] 
-																				
+
+																					 ]
+
 																			case 'Non-Governmental Organizations':
 																				return  ownerOptions.filter(({label}) => label == 'Non-Governmental Organizations') || []
-																				
+
 
 																			case 'Ministry of Health':
-																
+
 																				return [
 																					ownerOptions.filter(({label}) => label == "Public Institution - Parastatal")[0] || {},
 																					ownerOptions.filter(({label}) => label == 'Ministry of Health')[0] || {},
@@ -963,9 +1035,9 @@ function AddFacility(props) {
 																					ownerOptions.filter(({label}) => label == 'National Youth Service')[0] || {},
 																					ownerOptions.filter(({label}) => label == 'Prisons')[0] || {}
 
-																				]																				
-																				
-																			case 'Faith Based Organization':																		
+																				]
+
+																			case 'Faith Based Organization':
 
 																				return [
 																							ownerOptions.filter(({label}) => label == 'Seventh Day Adventist')[0] || {},
@@ -976,7 +1048,7 @@ function AddFacility(props) {
 																							ownerOptions.filter(({label}) => label == 'Christian Health Association of Kenya')[0] || {},
 																						]
 
-																			
+
 																		}
 																	})() ?? ownerTypeOptions }
 																	required
@@ -1003,7 +1075,7 @@ function AddFacility(props) {
 																/>
 															</div>
 
-															{/* Total Functional In-patient Beds */}
+															{/* No. Functional general Beds */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
 																	htmlFor='number_of_beds'
@@ -1015,51 +1087,29 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+																	// value = {formik.values.totalBedsRef}
 																	required
 																	type='number'
-																	min={0}
 																	name='number_of_beds'
 																	ref={totalBedsRef}
-																	readOnly
 																	
-																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																/>
-																
-																
-															</div>
 
-
-															{/* No of General In-patient Beds */}
-															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-																<label
-																	htmlFor='number_of_inpatient_beds'
-																	className='text-gray-600 capitalize text-sm'>
-																	Number of General In-patient Beds
-																	<span className='text-medium leading-12 font-semibold'>
-																		{' '}
-																		*
-																	</span>
-																</label>
-																<input
-																	required
-																	type='number'
-																	min={0}
-																	name='number_of_inpatient_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
-																			noInpatientBedsRef?.current?.textContent = 'Number of General In-patient Beds must be at least 0'
+
+																			if (totalBedsRef?.current)
+																			{totalBedsRef.current.textContent = 'Number of Functional Inpatient beds must be at least 0';}
 																		}
 																		else{
-																			setInpatientBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0);
-																			noInpatientBedsRef?.current?.textContent = ''
+																			// formik.handleChange
+																			if (totalBedsRef?.current)
+																			{totalBedsRef.current.textContent = '';}
 																		}
 																	}}
-																	
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
-																<label ref={noInpatientBedsRef} className='text-red-500 mt-1'></label>
-																
-																
+																<label ref={totalBedsRef} className='text-red-500 mt-1'></label>
+
 															</div>
 
 															{/* No. Functional cots */}
@@ -1074,16 +1124,21 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+																	value = {formik.values.noCotsRef}
+																	// onChange={formik.handleChange }
 																	required
 																	type='number'
-																	min={0}
 																	name='no_cots'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
-																			noCotsRef?.current?.textContent = 'Number of Functional cots must be at least 0'
+
+																			if (noCotsRef?.current)
+																			{noCotsRef.current.textContent = 'Number of Functional cots must be at least 0';}
 																		}
 																		else{
-																			noCotsRef?.current?.textContent = ''
+																			formik.handleChange
+																			if (noCotsRef?.current)
+																			{noCotsRef.current.textContent = '';}
 																		}
 																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1103,17 +1158,22 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+
+																	// value = {formik.values.noEmergencyBedsRef}
+																	// onChange={formik.handleChange }
 																	required
 																	type='number'
-																	min={0}
 																	name='number_of_emergency_casualty_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
-																			noEmergencyBedsRef?.current?.textContent = 'Number of Emergency Casulty Beds must be at least 0'
+
+																			if (noEmergencyBedsRef?.current)
+																			{noEmergencyBedsRef.current.textContent = 'Number of Emergency Casulty Beds must be at least 0';}
 																		}
 																		else{
 																			setEmergencyBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0);
-																			noEmergencyBedsRef?.current?.textContent = ''
+																			if (noEmergencyBedsRef?.current)
+																			{noEmergencyBedsRef.current.textContent = ''}
 																		}
 																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1135,17 +1195,23 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+
+																	// value = {formik.values.noICUBedsRef}
+																	// onChange={formik.handleChange }
 																	required
 																	type='number'
-																	min={0}
 																	name='number_of_icu_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
-																			noICUBedsRef?.current?.textContent = 'Number of Intensive Care Unit Beds must be at least 0'
+
+																			if (noICUBedsRef?.current)
+																			{noICUBedsRef.current.textContent = 'Number of Intensive Care Unit Beds must be at least 0';}
 																		}
 																		else{
-																			setICUBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0)  
-																			noICUBedsRef?.current?.textContent = ''
+																			// formik.handleChange
+																			setICUBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0)
+																			if (noICUBedsRef?.current)
+																			{noICUBedsRef.current.textContent = '';}
 																		}
 																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1154,6 +1220,13 @@ function AddFacility(props) {
 
 															</div>
 
+															{/*
+
+
+
+
+
+															*/}
 
 															{/* No. High Dependency Unit HDU */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -1167,17 +1240,22 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+																	// value = {formik.values.noHDUBedsRef}
+																	// onChange={formik.handleChange }
 																	required
 																	type='number'
-																	min={0}
 																	name='number_of_hdu_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
-																			noHDUBedsRef?.current?.textContent = 'Number of High Dependency Unit Beds must be at least 0'
+
+																			if (noHDUBedsRef?.current)
+																			{noHDUBedsRef.current.textContent = 'Number of High Dependency Unit must be at least 0';}
 																		}
 																		else{
+																			// formik.handleChange
 																			setHDUBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0);
-																			noHDUBedsRef?.current?.textContent = ''
+																			if (noHDUBedsRef?.current)
+																			{noHDUBedsRef.current.textContent = '';}
 																		}
 																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1198,17 +1276,22 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+																	// value = {formik.values.martenityBeds}
+																	// onChange={formik.handleChange }
 																	required
 																	type='number'
-																	min={0}
 																	name='number_of_maternity_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
-																			noMartenityBedsRef?.current?.textContent = 'Number of Maternity Beds must be at least 0'
+
+																			if (noMartenityBedsRef?.current)
+																			{noMartenityBedsRef.current.textContent = 'Number of Maternity Beds must be at least 0';}
 																		}
 																		else{
+																			// formik.handleChange
 																			setMartenityBeds(e.target.value.match(/^[0-9]+$/) !== null ?  Number(e.target.value) : 0)
-																			noMartenityBedsRef?.current?.textContent = ''
+																			if (noMartenityBedsRef?.current)
+																			{noMartenityBedsRef.current.textContent = '';}
 																		}
 																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1229,17 +1312,22 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+																	// value = {formik.values.noIsolationBedsRef}
+																	// onChange={formik.handleChange }
 																	required
 																	type='number'
-																	min={0}
 																	name='number_of_isolation_beds'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
-																			noIsolationBedsRef?.current?.textContent = 'Number of Isolation Beds must be at least 0'
+
+																			if (noIsolationBedsRef?.current)
+																			{noIsolationBedsRef.current.textContent = 'Number of Isolation Beds must be at least 0';}
 																		}
 																		else{
+																			// formik.handleChange
 																			setIsolationBeds(e.target.value.match(/^[0-9]+$/) !== null ? Number(e.target.value) : 0)
-																			noIsolationBedsRef?.current?.textContent = ''
+																			if (noIsolationBedsRef?.current)
+																			{noIsolationBedsRef.current.textContent = '';}
 																		}
 																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1260,16 +1348,21 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+																	value = {formik.values.noGeneralTheatersRef}
+																	// onChange={formik.handleChange }
 																	required
 																	type='number'
-																	min={0}
 																	name='number_of_general_theatres'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
-																			noGeneralTheatersRef?.current?.textContent = 'Number of General Theatres must be at least 0'
+
+																			if (noGeneralTheatersRef?.current)
+																			{noGeneralTheatersRef.current.textContent = 'Number of General Theatres must be at least 0';}
 																		}
 																		else{
-																			noGeneralTheatersRef?.current?.textContent = ''
+																			formik.handleChange
+																			if (noGeneralTheatersRef?.current)
+																			{noGeneralTheatersRef.current.textContent = '';}
 																		}
 																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1290,20 +1383,24 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+																	// value = {formik.values.facilityOfficialName}
+																	// onChange={formik.handleChange }
 																	required
 																	type='number'
-																	min={0}
 																	name='number_of_maternity_theatres'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
-																			noMartenityTheatersRef?.current?.textContent = 'Number of Maternity Theatres must be at least 0'
+
+
+																			if (noMartenityTheatersRef?.current)
+																			{noMartenityTheatersRef.current.textContent = 'Number of Maternity Theatres must be at least 0';}
 																		}
 																		else{
-																			noMartenityTheatersRef?.current?.textContent = ''
+																			if (noMartenityTheatersRef?.current)
+																			{noMartenityTheatersRef.current.textContent = '';
 																		}
-																	}}
-																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
-																/>
+																	}}}
+																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'/>
 																<label ref={noMartenityTheatersRef} className='text-red-500 mt-1'></label>
 
 															</div>
@@ -1316,20 +1413,24 @@ function AddFacility(props) {
 																	Facility Catchment Population
 																	<span className='text-medium leading-12 font-semibold'>
 																		{' '}
-																		
+
 																	</span>
 																</label>
 																<input
-																	
+																	// value = {formik.values.facilityOfficialName}
+																	// onChange={formik.handleChange }
+
 																	type='number'
-																	min={0}
 																	name='facility_catchment_population'
 																	onChange={e => {
 																		if(inputValidation(e.target.value, /^-\d+$/)){
-																			facilityPopulationRef?.current?.textContent = 'Facility Catchment Population must be at least 0'
+
+																			if (facilityPopulationRef?.current)
+																			{facilityPopulationRef.current.textContent = 'Facility Catchment Population must be at least 0';}
 																		}
 																		else{
-																			facilityPopulationRef?.current?.textContent = ''
+																			if (facilityPopulationRef?.current)
+																			{facilityPopulationRef.current.textContent = '';}
 																		}
 																	}}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1347,23 +1448,27 @@ function AddFacility(props) {
 																</label>
 																<span className='flex items-center gap-x-1'>
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='radio'
-																		value={false}
-																		defaultChecked={false}
+																		value={true}
+																		defaultChecked={true}
 																		name='reporting_in_dhis'
 																		id='reporting_in_dhis_yes'
-																		
+
 																	/>
 																	<small className='text-gray-700'>Yes</small>
 																</span>
 																<span className='flex items-center gap-x-1'>
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='radio'
 																		value={false}
 																		defaultChecked={false}
 																		name='reporting_in_dhis'
 																		id='reporting_in_dhis_no'
-																		
+
 																	/>
 																	<small className='text-gray-700'>No</small>
 																</span>
@@ -1399,23 +1504,27 @@ function AddFacility(props) {
 																</label>
 																<span className='flex items-center gap-x-1'>
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='radio'
-																		value={false}
-																		defaultChecked={false}
+																		value={true}
+																		defaultChecked={true}
 																		name='nhif_accreditation'
 																		id='nhif_accreditation_yes'
-																	
+
 																	/>
 																	<small className='text-gray-700'>Yes</small>
 																</span>
 																<span className='flex items-center gap-x-1'>
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='radio'
 																		value={false}
 																		defaultChecked={false}
 																		name='nhif_accreditation'
 																		id='nhif_accreditation_no'
-																	
+
 																	/>
 																	<small className='text-gray-700'>No</small>
 																</span>
@@ -1429,6 +1538,8 @@ function AddFacility(props) {
 																</h4>
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='checkbox'
 																		defaultValue={true}
 																		name='is_classified'
@@ -1452,14 +1563,16 @@ function AddFacility(props) {
 																</h4>
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
-																		type='checkbox'	
+																		value = {formik.values.is24hrsOpen}
+																		onChange={formik.handleChange }
+																		type='checkbox'
 																		ref={open24HrsRef}
 																		name='open_whole_day'
 																		id='open_24hrs'
 																		defaultValue={true}
-																		onChange={() => {setIs24hrsOpen(!is24hrsOpen)}}
-																		
-																		
+																		// onChange={() => {setIs24hrsOpen(!is24hrsOpen)}}
+
+
 																	/>
 																	<label
 																		htmlFor='open_24hrs'
@@ -1471,13 +1584,15 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='checkbox'
-																		ref={openLateNightRef}		
+																		ref={openLateNightRef}
 																		name='open_late_night'
 																		id='open_late_night'
 																		defaultValue={true}
-																		
-																		
+
+
 																	/>
 																	<label
 																		htmlFor='open_late_night'
@@ -1489,13 +1604,15 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='checkbox'
 																		ref={openPublicHolidaysRef}
 																		name='open_public_holidays'
 																		id='open_public_holidays'
 																		defaultValue={true}
-																		
-																		
+
+
 																	/>
 																	<label
 																		htmlFor='open_public_holidays'
@@ -1507,12 +1624,14 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='checkbox'
-																		ref={openWeekendsRef}	
+																		ref={openWeekendsRef}
 																		name='open_weekends'
 																		id='open_weekends'
 																		defaultValue={true}
-																	
+
 																	/>
 																	<label
 																		htmlFor='open_weekends'
@@ -1524,12 +1643,14 @@ function AddFacility(props) {
 
 																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																	<input
-																		type='checkbox'	
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
+																		type='checkbox'
 																		ref={openNormalDayRef}
 																		name='open_normal_day'
 																		id='open_8_5'
 																		defaultValue={true}
-																		
+
 																	/>
 																	<label
 																		htmlFor='open_normal_day'
@@ -1570,11 +1691,9 @@ function AddFacility(props) {
 																						try{
 																							const resp = await fetch(`/api/filters/subcounty/?county=${ev.value}${"&fields=id,name,county&page_size=30"}`)
 
-																							setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})).filter(
-																								({label}) => label == userCtx.sub_county_name
-																							) ?? [])
+																							setSubCountyOpt((await resp.json()).results.map(({id, name}) => ({value:id, label:name})) ?? [])
 
-																							
+
 																						}
 																						catch(e){
 																							console.error('Unable to fetch sub_county options')
@@ -1607,7 +1726,7 @@ function AddFacility(props) {
 																				required
 																				placeholder='Select Sub County'
 																				name='sub_county_id'
-																				
+
 																				className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																			/>
 																		</div>
@@ -1667,7 +1786,7 @@ function AddFacility(props) {
 																				options={wardOpt ?? wardOptions}
 																				required
 																				placeholder='Select Ward'
-		
+
 																				name='ward'
 																				className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
 																			/>
@@ -1683,11 +1802,13 @@ function AddFacility(props) {
 																		Nearest Town/Shopping Centre
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			
+
 																		</span>
 																	</label>
 																	<input
-																		
+																	// value = {formik.values.facilityOfficialName}
+																	// onChange={formik.handleChange }
+
 																		type='text'
 																		name='town_name'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1702,11 +1823,12 @@ function AddFacility(props) {
 																		Plot number
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			
+
 																		</span>
 																	</label>
 																	<input
-																		
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='text'
 																		name='plot_number'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1721,11 +1843,13 @@ function AddFacility(props) {
 																		Nearest landmark
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			
+
 																		</span>
 																	</label>
 																	<input
-																		
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
+
 																		type='text'
 																		name='nearest_landmark'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1740,11 +1864,12 @@ function AddFacility(props) {
 																		location description
 																		<span className='text-medium leading-12 font-semibold'>
 																			{' '}
-																			
+
 																		</span>
 																	</label>
 																	<input
-																		
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='text'
 																		name='location_desc'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -1764,8 +1889,10 @@ function AddFacility(props) {
 																			*
 																		</span>
 																	</label>
-																	
+
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		required
 																		ref={checklistFileRef}
 																		type='file'
@@ -1813,36 +1940,10 @@ function AddFacility(props) {
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
 														Geolocation Details
 													</h4>
-
-													{/*ev => handleGeolocationSubmit(ev, [setFormId, facilityId])*/}
-													
-													{/* handleGeolocationSubmit([{
-														name:'collection_date',
-														value: collection_date
-													},
-													{
-														name:'longitude',
-														value: longitude
-													},
-													{
-														name:'latitude',
-														value: latitude
-													}
-													
-												], [setFormId, facilityId]) */}
-
-													{/* {
-														 collection_date:'',
-														 longitude:'',
-														 latitude:''
-														} */}
-
-													
 													<form
 														name='geolocation_form'
 														className='flex flex-col w-full items-start justify-start gap-3'
-														onSubmit={geolocationForm.handleSubmit}
-														>
+														onSubmit={ev => handleGeolocationSubmit(ev, [setFormId, facilityId])}>
 														{/* Collection Date */}
 														<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 															<label
@@ -1855,10 +1956,11 @@ function AddFacility(props) {
 																</span>
 															</label>
 															<input
+																value = {formik.values.collection_date}
+																onChange={formik.handleChange }
 																required
 																type='date'
 																name='collection_date'
-																onChange={geolocationForm.handleChange}
 																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
@@ -1876,10 +1978,12 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+																	value = {formik.values.longitude}
+																	onChange={formik.handleChange }
 																	required
 																	type='decimal'
 																	name='longitude'
-																	onChange={geolocationForm.handleChange}
+																	// onChange={ev => setLongitude(ev.target.value)}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
@@ -1895,10 +1999,12 @@ function AddFacility(props) {
 																	</span>
 																</label>
 																<input
+																	value = {formik.values.latitude}
+																	onChange={formik.handleChange }
 																	required
 																	type='decimal'
 																	name='latitude'
-																	onChange={geolocationForm.handleChange}
+																	// onChange={ev => setLatitude(ev.target.value)}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
 															</div>
@@ -1906,14 +2012,14 @@ function AddFacility(props) {
 														</div>
 
 														{/* Ward Geo Map */}
-														<div className='w-full h-auto'>																		
+														<div className='w-full h-auto'>
 															<div className='w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative'>
 																{
 																	 geoJSON &&
 
-																	<Map markerCoordinates={[geolocationForm.values.latitude.length < 4 ? '0.000000' : geolocationForm.values.latitude, geolocationForm.values.longitude.length < 4 ? '0.000000' : geolocationForm.values.longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
-															
-																}	
+																	<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} value={formik.values.geoJSON} onChange={formik.handleChange} geoJSON={geoJSON} ward={wardName} center={center} />
+
+																}
 																</div>
 														</div>
 
@@ -1937,7 +2043,6 @@ function AddFacility(props) {
 															</button>
 														</div>
 													</form>
-												
 												</>
 											);
 											case 2:
@@ -1950,7 +2055,7 @@ function AddFacility(props) {
 													setFormId(window.sessionStorage.getItem('formId'));
 												};
 
-												
+
 												return (
 													<>
 														<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
@@ -1977,27 +2082,27 @@ function AddFacility(props) {
 
 																{/* Contact Type / Contact Details */}
 
-															
+
 																{/* add other fields */}
 															    <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
 																	{
 																		facilityContacts.map((facilityContact, i) => (
-														
+
 																			facilityContact
-																		
+
 																		))
 																	}
-																</div>	
+																</div>
 
 															</div>
 
 															<div className='w-full flex justify-end items-center'>
 																<button
 																	onClick={(e) => {
-																		e.preventDefault();  
-																		
+																		e.preventDefault();
+
 																		setFacilityContacts([
-																		...facilityContacts, 
+																		...facilityContacts,
 																		(() => (
 																			<FacilityContactsContext.Provider value={facilityContacts} key={(facilityContacts.length + 1) - 1}>
 																				<FacilityContact
@@ -2006,12 +2111,12 @@ function AddFacility(props) {
 																				contacts={[null, null, null]}
 																				fieldNames={['contact_type', 'contact']}
 																				index={(facilityContacts.length + 1) - 1}
-																				
+
 																				/>
 																			</FacilityContactsContext.Provider>
 																		))()
-	
-																		
+
+
 																		])}}
 																	className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																	<PlusIcon className='w-4 h-4 text-white' />
@@ -2039,6 +2144,8 @@ function AddFacility(props) {
 																		</span>
 																	</label>
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		required
 																		type='text'
 																		name='officer_name'
@@ -2054,6 +2161,8 @@ function AddFacility(props) {
 																		Registration Number/License Number{' '}
 																	</label>
 																	<input
+																		// value = {formik.values.facilityOfficialName}
+																		// onChange={formik.handleChange }
 																		type='text'
 																		name='officer_reg_no'
 																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
@@ -2071,10 +2180,10 @@ function AddFacility(props) {
 																			*
 																		</span>{' '}
 																	</label>
-																	<Select options={jobTitleOptions || []} 
+																	<Select options={jobTitleOptions || []}
 																		required
-																		placeholder="Select Job Title"																	
-																		name="officer_title" 
+																		placeholder="Select Job Title"
+																		name="officer_title"
             															className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 																</div>
 
@@ -2094,17 +2203,17 @@ function AddFacility(props) {
 
 																	{/* Contact Type / Contact Details */}
 
-														
+
 
 																	<div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
 																		{
 																			officerContactDetails.map((officerDetailContact, i) => (
-															
+
 																				officerDetailContact
-																			
+
 																			))
 																		}
-																	</div>	
+																	</div>
 
 																</div>
 
@@ -2112,9 +2221,9 @@ function AddFacility(props) {
 																	<button
 																		onClick={
 																			(e) => {
-																				e.preventDefault();  
+																				e.preventDefault();
 																				setOfficerContactDetails([
-																				...officerContactDetails, 
+																				...officerContactDetails,
 																				(() => (
 																					<FacilityContactsContext.Provider value={officerContactDetails} key={(officerContactDetails.length + 1) - 1}>
 																						<OfficerContactDetails
@@ -2123,11 +2232,11 @@ function AddFacility(props) {
 																						contacts={[null, null, null]}
 																						fieldNames={['officer_details_contact_type', 'officer_details_contact']}
 																						index={(officerContactDetails.length + 1) - 1}
-																						
+
 																						/>
 																					</FacilityContactsContext.Provider>
 																				))()
-			
+
 																				/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
 																				])}}
 																		className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
@@ -2172,145 +2281,147 @@ function AddFacility(props) {
 
 
 												return (
-													<>  
+													<>
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
 														<form  ref={facilityRegulationFormRef} name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId, facilityOfficialName, facilityRegulationFormRef], licenseFile)}>
 
 															{/* Regulatory Body */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																	<label htmlFor="regulatory_body" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
-																	<Select 
+																	<Select
 																		ref={_regBodyRef}
 																		options={((regOptions) => {
 
 																			return regOptions.filter(({label}) => !(label === 'Other'))
 
-																		})(regBodyOptions || [])} 
+																		})(regBodyOptions || [])}
 																		required
-																		onChange={() => setIsRegBodyChange(!isRegBodyChange)}
+
+																		value={formik.values.isRegBodyChange}
+																		onChange={formik.handleChange}
+																		// onChange={() => setIsRegBodyChange(!isRegBodyChange)}
 																		placeholder="Select Regulatory Body"
 																		name='regulatory_body'
 																		className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-        
+
 															</div>
 
-															{/* Regulation Status */} 
+															{/* Regulation Status */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																<label htmlFor="regulation_status" className="text-gray-600 capitalize text-sm">Regulation Status</label>
-																<Select 
+																<Select
 																		options={((regStateOpts) => {
-																			
+
 																				let filteredRegState
 																				if(_regBodyRef.current){
-																				
+
 																					if(_regBodyRef.current?.state?.value?.label == 'Ministry of Health'){
-																						filteredRegState = regStateOpts.filter(({label}) => !(label.match(/.*Gazett.*/) !== null))		
+																						filteredRegState = regStateOpts.filter(({label}) => !(label.match(/.*Gazett.*/) !== null))
 																					}
 																					else {
 																						filteredRegState = regStateOpts
 																					}
-																				} 
+																				}
 																				else{
 																					filteredRegState = regStateOpts
 																				}
-	
+
 																				return filteredRegState
-																				
-																		})(regulationStateOptions || [])} 
+
+																		})(regulationStateOptions || [])}
 																		required
 																		placeholder="Select Regulation Status"
 																		name='regulation_status'
 																		className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
 															</div>
 
-															{/* License Number */} 
+															{/* License Number */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																<label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
-																<input type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																<input // value = {formik.values.facilityOfficialName}
+																	// onChange={formik.handleChange }
+																	type="text" name="license_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 															</div>
 
 
-															{/* Registration Number */} 
+															{/* Registration Number */}
 															<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																<label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number</label>
-																<input type="text" name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																<input
+																// value = {formik.values.facilityOfficialName}
+																// onChange={formik.handleChange }
+																type="text" name="registration_number" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 															</div>
 
 															{/* check file upload */}
 															<div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
 																<div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																	<label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
-																	<input onChange={e => setLicenseFile(e.target.files[0])} type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+																	<input
+
+																	// value = {formik.values.facilityOfficialName}
+																	// onChange={formik.handleChange }
+
+																	onChange={e => setLicenseFile(e.target.files[0])} type="file" name="license_document" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 																</div>
 															</div>
 
 															{/* Facility Departments Regulation  */}
 															<h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
 															<div className='grid grid-cols-4 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3' ref={facilityRegulatoryBodyRef}>
-															
+
 															{/* Contact Headers */}
 																<h3 className='text-medium font-semibold text-blue-900'>Name</h3>
 																<h3 className='text-medium font-semibold text-blue-900'>Regulatory Body</h3>
 																<h3 className='text-medium font-semibold text-blue-900'>License Number</h3>
 																<h3 className='text-medium font-semibold text-blue-900'>Reg. Number</h3>
-									
+
 																<hr className='col-span-4'/>
 
 																{/* add other fields */}
-															    <div className='flex flex-col items-start justify-start gap-y-4'>
-																 
+															    <div className='flex-col items-start justify-start gap-y-4'>
 																	{
 																		facilityDepts.map((facilityDept, i) => (
-																			<div className="w-full flex flex-grow gap-3 mt-3" key={facilityDept.index}>
-																				<div className='flex flex-grow gap-3 justify-between items-center w-full'>
-																					<FacilityDeptRegulationFactory
-																						key={facilityDept.index}
-																						index={i}
-																						{...facilityDept}
-																					/>
-																					
-																					<button 
-																						id={`delete-btn-${i}`}
-																						key={facilityDept.index}
-																						onClick={(ev)=> {
-																							ev.preventDefault();
-																							handleDeleteField(i);
-																						}}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
-																					
-																				</div>
-																			</div>
-																		
+
+																			facilityDept
+
 																		))
 																	}
-																</div>	
-																
-															
-																
+																</div>
+
+
+
 															</div>
 
-														
+
 															{/* Add btn */}
 															<div className='w-full flex justify-end items-center mt-2'>
+																<button onClick={(e) => {e.preventDefault();  setFacilityDepts([
+																	...facilityDepts,
+																	(() => (
+																		<FacilityDeptContext.Provider value={facilityDepts} key={(facilityDepts.length + 1) - 1}>
+																			<FacilityDeptRegulationFactory
+																			key={(facilityDepts.length + 1) - 1}
+																			index={(facilityDepts.length + 1) - 1}
+																			isRegBodyChange={isRegBodyChange}
+																			setIsRegBodyChange={setIsRegBodyChange}
+																			setFacilityDepts={setFacilityDepts}
+																			facilityDeptRegBody={null}
+																			facilityDeptValue={null}
+																			regNo={null}
+																			licenseNo={null}
+																			facilityDeptOptions={facilityDeptOptions}
+																			/>
+																		</FacilityDeptContext.Provider>
+																	))()
 
-																<button onClick={(e) => {e.preventDefault();  setFacilityDepts(s=>{return [
-																	...s,  {
-																		index:facilityDepts.some((o) => o.index === s.length)? s.length + 1 : s.length,
-																		isRegBodyChange:isRegBodyChange, 
-																		setIsRegBodyChange:setIsRegBodyChange, 
-																		setFacilityDepts:setFacilityDepts,
-																		facilityDeptRegBody:null,
-																		facilityDeptValue:null,
-																		regNo: null,
-																		licenseNo: null,
-																		facilityDeptOptions: facilityDeptOptions
-																	 },
-																	]})}} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
-
+																	/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
+																	])}} className='flex items-center space-x-1 bg-indigo-500 p-1 rounded'>
 																	<PlusIcon className='w-4 h-4 text-white'/>
 																	<p className='text-medium font-semibold text-white'>Add</p>
 																</button>
 															</div>
-														
+
 
 															{/* Prev / Next */}
 															<div className='flex justify-between items-center w-full'>
@@ -2328,24 +2439,24 @@ function AddFacility(props) {
 												);
 											case 4:
 												// Services Form
-	
+
 												const handleServicePrevious = () => {
-												
+
 													window.sessionStorage.setItem('formId', 3)
-													
+
 													setFormId(window.sessionStorage.getItem('formId'))
 												}
-												
-												
+
+
 												return (
-													<>  
+													<>
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
 																<div className='flex flex-col w-full items-start justify-staFacilityDeptRegulationFactoryrt gap-3 mt-6'>
-                                                            
-																	{/* Edit list Container */}
-																	<div className='flex items-center w-full h-auto min-h-[300px]'>                                  
 
-																			<EditListItem 
+																	{/* Edit list Container */}
+																	<div className='flex items-center w-full h-auto min-h-[300px]'>
+
+																			<EditListItem
 																			initialSelectedItems={[]}
 																			itemsCategory={serviceOptions}
 																			itemsCategoryName={'Services'}
@@ -2362,7 +2473,7 @@ function AddFacility(props) {
 																			handleItemPrevious={handleServicePrevious}
 																			setIsSaveAndFinish={() => null}
 
-																			
+
 																			/>
 
 																	</div>
@@ -2371,26 +2482,26 @@ function AddFacility(props) {
 												)
 											case 5:
 												// Infrastructure form
-											
+
 												const handleInfrastructurePrevious = (event) => {
 													event.preventDefault()
 													window.sessionStorage.setItem('formId', 4)
-													
+
 													setFormId(window.sessionStorage.getItem('formId'))
 												}
 
-											
-												
+
+
 												return (
-													<>  
+													<>
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
 													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
 														{/* Edit List With Count Container*/}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
-                                        
+
 															{/* Edit List With Count*/}
-																<EditListWithCount 
+																<EditListWithCount
 																initialSelectedItems={[]}
 																itemsCategory={infrastructureOption}
 																otherItemsCategory={null}
@@ -2404,8 +2515,8 @@ function AddFacility(props) {
 																setItemsUpdateData={null}
 																handleItemPrevious={handleInfrastructurePrevious}
 																setNextItemCategory={setFormId}
-																nextItemCategory={'human resources'}
-																previousItemCategory={'services'}
+																nextItemCategory={'services'}
+																previousItemCategory={'human resources'}
                                               					setIsSaveAndFinish={() => null}
 																/>
 
@@ -2415,25 +2526,25 @@ function AddFacility(props) {
 												)
 											case 6:
 												// Human resources form
-		
+
 												const handleHrPrevious = (event) => {
 													event.preventDefault()
 													window.sessionStorage.setItem('formId', 5)
-													
+
 													setFormId(window.sessionStorage.getItem('formId'))
 												}
 
-																							
+
 												return (
-													<>  
+													<>
 													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human resources</h4>
 													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
 														{/* Edit List With Count Container*/}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
-                                        
+
 															{/* Edit List With Count*/}
-																<EditListWithCount 
+																<EditListWithCount
 																initialSelectedItems={[]}
 																itemsCategory={null}
 																otherItemsCategory={hrOptions}
@@ -2453,33 +2564,33 @@ function AddFacility(props) {
 																/>
 
 															</div>
-									
+
 													</div>
 													</>
 												)
 											default:
-												// 
+												//
 												return (
-													<>  
+													<>
 														<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Basic Details</h4>
 														<form>
-														
+
 														</form>
 													</>
 												)
-	
+
 										}
 									})()
 									}
 
-								
+
 								</div>
 							</div>
-							
+
 
 						</div>
 
-						
+
 						{/* Floating Notification Bottom Right*/}
 						<div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
 							<h5 className="text-sm font-bold">
@@ -2489,11 +2600,11 @@ function AddFacility(props) {
 								For testing reasons, downloads are limited to the first 100 results.
 							</p>
 						</div>
-					
+
 					</div>
 		</MainLayout>
 	</>
- 
+
   )
 }
 
@@ -2522,7 +2633,7 @@ AddFacility.getInitialProps = async (ctx) => {
 		'specialities'
 	]
 
-	
+
 
 	return checkToken(ctx.req, ctx.res)
 		.then(async (t) => {
@@ -2532,8 +2643,8 @@ AddFacility.getInitialProps = async (ctx) => {
 
 				let token = t.token;
 				let url = '';
-				
-				
+
+
 				for(let i = 0; i < options.length; i++) {
 					const option = options[i]
 					switch(option) {
@@ -2541,7 +2652,7 @@ AddFacility.getInitialProps = async (ctx) => {
 						url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
 
 								try{
-								
+
 									const _data = await fetch(url, {
 										headers: {
 											Authorization: 'Bearer ' + token,
@@ -2551,9 +2662,9 @@ AddFacility.getInitialProps = async (ctx) => {
 
 									// let results = (await _data.json()).results.map(({id, sub_division, name }) => sub_division ? {value:id, label:sub_division} : {value:id, label:name})
 
-									
+
 									allOptions.push({facility_types: (await _data.json()).results})
-									
+
 								}
 								catch(err) {
 									console.log(`Error fetching ${option}: `, err);
@@ -2567,21 +2678,21 @@ AddFacility.getInitialProps = async (ctx) => {
 								break;
 							case 'facility_type_details':
 								url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_types/?is_active=true&page_size=10000`;
-										
+
 								try{
-								
+
 									const _data = await fetch(url, {
 										headers: {
 											Authorization: 'Bearer ' + token,
 											Accept: 'application/json',
 										},
 									})
-		
+
 									let _results  = (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))
 
 									allOptions.push({facility_type_details: _results })
-									
-									
+
+
 								}
 								catch(err) {
 									console.log(`Error fetching ${option}: `, err);
@@ -2591,22 +2702,22 @@ AddFacility.getInitialProps = async (ctx) => {
 										facility_types: [],
 									});
 								}
-								break;				
+								break;
 						case 'owners':
 								url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
-		
-							
+
+
 								try{
-		
+
 									const _data = await fetch(url, {
 										headers: {
 											Authorization: 'Bearer ' + token,
 											Accept: 'application/json',
 										},
 									})
-		
+
 								allOptions.push({owners: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
-									
+
 								}
 								catch(err) {
 									console.log(`Error fetching ${option}: `, err);
@@ -2616,23 +2727,23 @@ AddFacility.getInitialProps = async (ctx) => {
 										owners: [],
 									});
 								}
-						
+
 								break;
 						case 'owner_types':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
-	
-						
+
+
 							try{
-	
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
-	
+
 								allOptions.push({owner_types: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
@@ -2646,19 +2757,19 @@ AddFacility.getInitialProps = async (ctx) => {
 							break;
 						case 'keph':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
-	
-						
+
+
 							try{
-	
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
-	
+
 								allOptions.push({keph: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
@@ -2672,19 +2783,19 @@ AddFacility.getInitialProps = async (ctx) => {
 							break;
 						case 'facility_admission_status':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?is_active=true&page_size=10000`;
-	
-						
+
+
 							try{
-	
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
-	
+
 								allOptions.push({facility_admission_status: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
@@ -2698,19 +2809,19 @@ AddFacility.getInitialProps = async (ctx) => {
 
 						case 'job_titles':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
-	
-						
+
+
 							try{
-	
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
-	
+
 								allOptions.push({job_titles: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
@@ -2724,19 +2835,19 @@ AddFacility.getInitialProps = async (ctx) => {
 
 						case 'contact_types':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=id,name`;
-	
-						
+
+
 							try{
-	
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
-	
+
 								allOptions.push({contact_types: (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
@@ -2751,19 +2862,19 @@ AddFacility.getInitialProps = async (ctx) => {
 
 						case 'facility_depts':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,regulatory_body,regulatory_body_name`;
-	
-						
+
+
 							try{
-	
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
-	
+
 								allOptions.push({facility_depts: (await _data.json()).results.map(({id, name, regulatory_body_name}) => ({value:id, label:name, reg_body_name: regulatory_body_name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
@@ -2777,19 +2888,19 @@ AddFacility.getInitialProps = async (ctx) => {
 
 						case 'regulating_bodies':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
-	
-						
+
+
 							try{
-	
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
-	
+
 								allOptions.push({regulating_bodies: (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
@@ -2803,19 +2914,19 @@ AddFacility.getInitialProps = async (ctx) => {
 
 						case 'regulation_status':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
-	
-						
+
+
 							try{
-	
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									},
 								})
-	
+
 								allOptions.push({regulation_status: (await _data.json()).results.map(({id, name}) => ({value:id, label:name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
@@ -2832,16 +2943,16 @@ AddFacility.getInitialProps = async (ctx) => {
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
 
 							try{
-		
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
 										Accept: 'application/json',
 									}
 								})
-	
+
 								allOptions.push({service: (await _data.json()).results.map(({id, name, category, category_name}) => ({id, name, category, category_name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
@@ -2851,7 +2962,7 @@ AddFacility.getInitialProps = async (ctx) => {
 									service: [],
 								})
 							}
-	
+
 							break;
 
 						case 'infrastructure':
@@ -2859,7 +2970,7 @@ AddFacility.getInitialProps = async (ctx) => {
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
 
 							try{
-		
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
@@ -2868,24 +2979,24 @@ AddFacility.getInitialProps = async (ctx) => {
 								})
 
 								allOptions.push({infrastructure: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
-									error: true,	
+									error: true,
 									err: err,
 									service: [],
 								})
 							}
 
 							break;
-						
+
 						case 'specialities':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=2000&ordering=name`;
 
 							try{
-		
+
 								const _data = await fetch(url, {
 									headers: {
 										Authorization: 'Bearer ' + token,
@@ -2894,12 +3005,12 @@ AddFacility.getInitialProps = async (ctx) => {
 								})
 
 								allOptions.push({hr: (await _data.json()).results.map(({id, name, category_name}) => ({id, name, category_name}))})
-								
+
 							}
 							catch(err) {
 								console.log(`Error fetching ${option}: `, err);
 								allOptions.push({
-									error: true,	
+									error: true,
 									err: err,
 									service: [],
 								})
@@ -2917,12 +3028,12 @@ AddFacility.getInitialProps = async (ctx) => {
 								if(option === 'wards') fields = 'id,name,sub_county,constituency'
 								if(option === 'constituencies') fields = 'id,name,county'
 
-								
+
 								url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=${fields}`;
-							
-								
+
+
 								try{
-			
+
 									const _data = await fetch(url, {
 										headers: {
 											Authorization: 'Bearer ' + token,
@@ -2931,11 +3042,11 @@ AddFacility.getInitialProps = async (ctx) => {
 									})
 
 									_obj[option] = (await _data.json()).results.map(({id, name }) => ({value:id, label:name}))
-			
+
 
 								allOptions.push(_obj)
-								
-									
+
+
 								}
 								catch(err) {
 									console.log(`Error fetching ${option}: `, err);
@@ -2953,8 +3064,8 @@ AddFacility.getInitialProps = async (ctx) => {
 
 
 					return allOptions
-					
-					
+
+
 			}
 		})
 		.catch((err) => {

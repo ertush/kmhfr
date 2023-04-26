@@ -25,8 +25,11 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
 
         if(contactTypeRef.current && contact_type_name && id){
             
-            contactTypeRef.current?.state?.value = contactTypeOptions.filter(({label}) => label === contact_type_name).map(obj => {obj['id'] = id; return obj})
-
+            if (contactTypeRef?.current){ 
+                
+                contactTypeRef.current.state.value = contactTypeOptions.filter(({label}) => label === contact_type_name).map(obj => {obj['id'] = id; return obj})
+        }
+           
             // console.log({val: contactTypeRef.current?.state?.value})
         }
 
@@ -122,7 +125,10 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
 
         console.log({contact_type_name});
         if(contactTypeRef.current && contact_type_name && id){
-            contactTypeRef.current?.state?.value = contactTypeOptions.filter(({label}) => label === contact_type_name).map(obj => {obj['id'] = id; return obj})
+
+            if (contactTypeRef?.current){
+            contactTypeRef.current.state.value = contactTypeOptions.filter(({label}) => label === contact_type_name).map(obj => {obj['id'] = id; return obj})
+            }
         }
 
         if(contactDetailsRef.current ){
