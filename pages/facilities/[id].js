@@ -502,7 +502,7 @@ const Facility = (props) => {
                 {
                   hasPermission(/^common.view_documentupload$/, userPermissions) &&
                   !qf.includes('new_pending_validation') &&
-                  !qf.includes('failed_validation') && <PrintBtn>Print</PrintBtn>        }
+                  !qf.includes('failed_validation') && <PrintBtn facility={facility.id} access_token={props['4'].token}>Print</PrintBtn>        }
                 
                 {
                     !facility?.closed &&
@@ -767,7 +767,9 @@ Facility.getInitialProps = async (ctx) => {
           allOptions.push({
             qf: ctx.query.qf
           })
-
+          allOptions.push({
+            token: token
+          })
             return allOptions;
           })
           .catch((err) => {

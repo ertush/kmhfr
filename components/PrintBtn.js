@@ -1,11 +1,6 @@
-// This is a component that opens a popover containing 3 clickable document icons
-// It contains a child component (UrlPrinter)that handles the printing functionality
-// The component fetches the urls to be printed in the UrlPrinter throught the getInitial props
-
 import React, { useState } from 'react';
 import { Button, IconButton, Popover } from '@material-ui/core';
-import UrlPrinter from './UrlPrinter';
-import { checkToken } from '../controllers/auth/auth';
+import {FcDocument} from 'react-icons/fc';
 
 
 const PrintBtn =(props) => { 
@@ -18,11 +13,19 @@ const PrintBtn =(props) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
+    API_URL = 'http://localhost:8000/api'
+  }
 
   const open = Boolean(anchorEl);
   const id = open ? 'print-popover' : undefined;
+  const facility_details =`/facilities/facility_detail_report/${props.facility}/?access_token=${props.access_token}`
+  const cover_letter = `/facilities/facility_cover_report/${props.facility}/?access_token=${props.access_token}`
+  const correction_template = `/facilities/facility_correction_template/${props.facility}/?access_token=${props.access_token}`
 
-
+  const handlePrint = (url) => () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}`+ url
+  };
 
   return (
     <>
@@ -41,94 +44,17 @@ const PrintBtn =(props) => {
           horizontal: 'left',
         }}
       >
-        {/* The child component that hanles the printing functionality */}
+        {/* The child component that handles the printing functionality */}
 
-       <UrlPrinter url_to_print={props.facilityCorrectionTemplate} name="Facility Correction Template"/>
-       <UrlPrinter url_to_print={props.facilityDetailReport} name="Facility Detail Report"/>
-       <UrlPrinter url_to_print={props.facilityCoverReport} name="Facility Cover Report"/>
+       <IconButton onClick={handlePrint(correction_template)}><FcDocument/>{`Facility Correction Template`}</IconButton>
+       <IconButton onClick={handlePrint(facility_details)}><FcDocument/>{`Facility Detail Report`}</IconButton>
+       <IconButton onClick={handlePrint(cover_letter)}><FcDocument/>{`Facility Cover Report`}</IconButton>
         
       </Popover>
     </>
   );
 };
 
-//fetch the urls here and return them as props
-PrintBtn.getInitialProps = async (ctx) => {
-
-
-  try {
-    // Check token
-    const tokenResult = await checkToken(ctx.req, ctx.res);
-    if (tokenResult.error) {
-      throw new Error("Error checking token");
-    }
-    else{
-            const token = tokenResult.token;
-          
-            // Get facility ID
-            const facilityId = ctx.query.facilityId;
-        
-            
-            // Fetch facility_correction_template
-            try {
-                    const facilityCorrectionTemplate = await (await fetch(`api/facility/get_facility/?path=facility_correction_template/${facilityId}/?access_token=${token}`, {
-                      headers: {
-                        Authorization: "Bearer " + token,
-                        Accept: "application/json",
-                      },
-                    })).json();
-              
-            } catch (e) {
-              console.error('Encountered error while fetching facility_correction_template', e.message);
-            }
-        
-        
-            // Fetch facility_detail_report
-            try {
-                    const facilityDetailReport = await (await fetch(`api/facility/get_facility/?path=facility_detail_report/${facilityId}/?access_token=${token}`, {
-                      headers: {
-                        Authorization: "Bearer " + token,
-                        Accept: "application/json",
-                      },
-                    })).json();     
-            }
-            catch (e) {
-                  console.error('Encountered error while fetching facility_detail_report', e.message);
-            }
-        
-        
-            // Fetch facility_cover_report
-            try {
-                  const facilityCoverReport = await (await fetch(`api/facility/get_facility/?path=facility_cover_report/${facilityId}/?access_token=${token}`, {
-                    headers: {
-                      Authorization: "Bearer " + token,
-                      Accept: "application/json",
-                    },
-                  })).json();
-      } 
-      catch (e) {
-  
-            console.error('Encountered error while fetching facility_cover_report', e.message);
-      }
-  
-      return {
-        facilityCorrectionTemplate: facilityCorrectionTemplate,
-        facilityDetailReport:facilityDetailReport,
-        facilityCoverReport: facilityCoverReport,
-        facilityId:facilityId,
-        token: token,
-      };
-
-
-
-    }
-    
-  } catch (err) 
-  {
-    console.log("Error fetching facilities report: ", err);
-    
-  }
-};
 
 export default PrintBtn;
 
