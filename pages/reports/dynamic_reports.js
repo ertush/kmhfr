@@ -2,10 +2,9 @@ import Head from 'next/head'
 // import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DownloadIcon, FilterIcon } from '@heroicons/react/outline'
-import React, { useState, useRef, useEffect, useContext, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { UserContext } from '../../providers/user'
 import Link from 'next/link'
 // import { CheckBox } from '@mui/icons-material'
 
@@ -28,8 +27,7 @@ const DynamicReports = (props) => {
     // require('ag-grid-enterprise')
     LicenseManager.setLicenseKey("test");
  
-    const userCtx = useContext(UserContext)
-    
+  
     // const { data, query, path, current_url } = props
     const router = useRouter()
     // Temporary fix folty Kirinyaga id
@@ -72,7 +70,6 @@ const DynamicReports = (props) => {
         { ivalued: "ceab4366-4538-4bcf-b7a7-a7e2ce3b50d5", label: "Level 2" }
     ])
 
-    if(filters && fltrs) {
 
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
     filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
@@ -91,8 +88,6 @@ const DynamicReports = (props) => {
     delete fltrs.open_whole_day
     delete fltrs.open_weekends
     delete fltrs.open_public_holidays
-
-    }
 
   
 
@@ -173,7 +168,7 @@ const DynamicReports = (props) => {
 
     
 
-    const lnlst = Array.from(props?.data?.results ?? [], row => {
+    const lnlst = Array.from(props?.data?.results, row => {
         let dtpnt = {}
         headers.forEach(col => {
             dtpnt[col] = row[col]
@@ -275,7 +270,6 @@ const DynamicReports = (props) => {
         dr =JSON.parse(localStorage.getItem('dd_owners'))
     }
     useEffect(async()=>{
-        if(userCtx){
         if(dr !== null && dr !== undefined){
             
             // setting sub-county options based on county drill_down
@@ -313,10 +307,6 @@ const DynamicReports = (props) => {
                setWardOptions(optionsWard)
             })
             }
-        }
-        }
-        else {
-            router.push('/auth/login')
         }
 
     }, [])
@@ -481,7 +471,9 @@ const DynamicReports = (props) => {
                                                                 })(fltrs).map(ft => (
                                                                     <div key={ft} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                                         
-                                                                        <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
+                                                                       {/* <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label> */}
+                                                                        <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft && ft.split('_').join(' ')}</label>
+
 
                                                                         {
 
@@ -1121,11 +1113,13 @@ const DynamicReports = (props) => {
                                                                                     
                                                                                         {
                                                                                             value: drillDown[ft] || router?.query?.id || '', 
-                                                                                            label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== router?.query?.id)?.name || ''
+                                                                                            // label: filters[ft].find(ct=> ct.id== drillDown[ft])?.name || filters[ft].find(ct=> ct.id== router?.query?.id)?.name || ''
+                                                                                            label: (filters[ft] && filters[ft].find(ct=> ct.id== drillDown[ft])?.name) || (filters[ft] && filters[ft].find(ct=> ct.id== router?.query?.id)?.name) || ''
+
                                                                                             }
     
                                                                                         }
-                                                                                        placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
+                                                                                        placeholder={ft?.split('_').join(' ')[0].toUpperCase() + ft?.split('_').join(' ').slice(1)}
                                                                                         onChange={sl => {
 
                                                                                             // Hospital Keph Level Validation
@@ -1538,14 +1532,14 @@ const DynamicReports = (props) => {
 
 
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>
                         <p className="text-sm text-gray-800">
                             For testing reasons, downloads are limited to the first 1000 results.
                         </p>
-                    </div> */}
+                    </div>
                   
                 </div>
             </MainLayout >
@@ -1606,7 +1600,7 @@ DynamicReports.getInitialProps = async (ctx) => {
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
-                url = `${url}facilities/facilities&${flt}=${ctx?.query[flt]}`
+                url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
             }
         })
        
