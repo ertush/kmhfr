@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import {
   ChevronDownIcon,
-  ExternalLinkIcon,
   MenuAlt1Icon,
   SearchIcon,
 } from "@heroicons/react/solid";
@@ -315,26 +314,24 @@ export default function HeaderLayout({
               >
                 <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
-                    <Link
-                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
-                        }`}
-                      href="/reports/dynamic_reports"
-                      target="_blank"
-                    >
-                      Dynamic Reports
+                    <Link href="/reports/dynamic_reports">
+                      <span className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
+                        }`}>
+                        Dynamic Reports
+                      </span>
+
                     </Link>
                   )}
                 </Menu.Item>
                 <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
-                    <Link
-                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
-                        }`}
-                      href="/reports/static_reports"
-                      target="_blank"
-                    >
-                      Static Reports
-                    </Link>
+                   <Link href="/reports/dynamic_reports">
+                   <span className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
+                     }`}>
+                         Static Reports
+                   </span>
+                 
+                 </Link>
                   )}
                 </Menu.Item>
 
