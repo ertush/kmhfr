@@ -5,9 +5,9 @@ import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
 import BarChart from '../../components/BarChart'
 import Select from 'react-select'
-import Download from '../../components/Download'
 import { UserContext } from '../../providers/user'
 import Link from 'next/link'
+import { useReactToPrint } from 'react-to-print'
 // import { PermissionContext } from '../../providers/permissions'
 // import { hasPermission } from '../../utils/checkPermissions'
 // import { Button, Hidden } from '@mui/material'
@@ -81,7 +81,7 @@ const Dash = (props) => {
     const [counties, setCounties] = useState([])
     const [wards, setWards] = useState([])
     
-    const { owner_link, types_link, summary_link, chu_link, keph_link } = useRef(null)
+    const dwn = useRef()
 
     async function fetchCounties() {
         
@@ -147,7 +147,7 @@ const Dash = (props) => {
     }
     useEffect(() => {
         fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
-        fetchSubCounties(userCtx.county)
+        fetchSubCounties(userCtx?.county)
         fetchCounties()
     }, [])
 
@@ -184,26 +184,55 @@ const Dash = (props) => {
 
     }, [filters, subcounties, wards])
 
-    const totalSummary = [
-        { name: 'Total Facilities', count: `${props?.data.total_facilities || 0}` },
-        { name: 'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
-        { name: 'Total rejected facilities', count: `${props?.data.rejected_facilities_count || 0}` },
-        { name: 'Total closed facilities', count: `${props?.data.closed_facilities_count || 0}` },
-        { name: 'Total pending updates', count: `${props?.data.pending_updates || 0}` }]
+    useEffect(()=>{
+        if(userCtx){
+            fetchWards(userCtx.county)
+            fetchSubCounties(userCtx.county)
+        }
+        else{
+            router.push('/auth/login')
+        }
+    
+    },[])
+// console.log(props.data)
 
-    const chuSummary = [
-        { name: 'Total community health units', count: `${props?.data?.total_chus || 0}` },
-        { name: 'Total CHUs rejected', count: `${props?.data?.rejected_chus || 0}` },
-        { name: 'New CHUs pending approval', count: `${props?.data?.recently_created_chus || 0}` },
-        { name: 'Updated CHUs pending approval', count: `${props?.data?.chus_pending_approval || 0}` },]
+    const exportToPdf = useReactToPrint({
+        documentTitle: 'Summary',
+        content: () => dwn.current,   
+    });
 
-    const recentChanges = [
-        { name: 'New facilities added', count: `${props?.data?.recently_created || 0}` },
-        { name: 'Facilities updated', count: `${props?.data?.recently_updated || 0}` },
-        { name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}` },
-        { name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}` }
+    let totalSummary =[
+        {name:'Total Facilities', count: `${props?.data.total_facilities || 0}` }, 
+        {name:'Total approved facilities', count: `${props?.data.approved_facilities || 0}` },
+        {name:'Total rejected facilities', count: `${props?.data.rejected_facilities_count || 0}` },
+        {name:'Total closed facilities', count: `${props?.data.closed_facilities_count || 0}` },
+        {name:'Total facilities pending approval', count: `${props?.data.pending_updates || 0}` },
+        {name:'Total facilities rejected at validation', count: `${props?.data.facilities_rejected_at_validation || 0}`},
+        {name:'Total facilities rejected at approval', count: `${props?.data.facilities_rejected_at_approval || 0}`},
+
     ]
 
+    let chuSummary =[
+        {name:'Total community health units', count: `${props?.data?.total_chus || 0}`},
+        {name:'Total CHUs rejected', count: `${props?.data?.rejected_chus || 0}`},
+        {name:'New CHUs pending approval', count: `${props?.data?.recently_created_chus || 0}`},
+        {name:'Updated CHUs pending approval', count: `${props?.data?.chus_pending_approval || 0}`},
+        
+    ]   
+    for(let i=0; i<props?.data?.cu_summary?.length; i++) {
+        chuSummary.push(props?.data?.cu_summary[i]);
+    }
+    for(let i=0; i<props?.data?.validations?.length; i++) {
+        totalSummary.push(props?.data?.validations[i]);
+    }
+         
+    const recentChanges =[
+        {name: 'New facilities added', count: `${props?.data?.recently_created || 0}`},
+        {name: 'Facilities updated', count: `${props?.data?.recently_updated || 0}`},
+        {name: 'New CHUs added', count: `${props?.data?.recently_created_chus || 0}`},
+        {name: 'CHUs updated', count: `${props?.data?.recently_updated_chus || 0}`}
+    ]     
+    // console.log(user)
     const csvHeaders = useMemo(
         () => [
             { key: 'metric', label: 'Metric' },
@@ -227,23 +256,23 @@ const Dash = (props) => {
     
     return (
         <div className="">
-            <Head>'coun
+            <Head>
                 <title>KMHFL - Overview</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 
-                <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4">
+                <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4 main"  ref={dwn}> 
                     <div className="col-span-6 flex flex-col gap-3 md:gap-5 px-2">
-                        <div className="flex flex-row gap-2 text-sm md:text-base py-3">
-                            <Link className="text-green-700" href="/">Home</Link> {'/'}
+                        <div className="no-print flex flex-row gap-2 text-sm md:text-base py-3">
+                            <Link className="text-green-700" href="/" >Home</Link> {'/'}
                             <span className="text-gray-500">Dashboard</span>
 
                         </div>
                         <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">
                             <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
-                                <span>Overview</span>
+                                <span className='no-print'>Overview</span>
                                 <div className='flex items-center gap-x-2 mt-3'>
                                     {drillDown && drillDown?.county && groupID !== 1 &&
                                         <small className="text-blue-900 text-base font-semibold ml-1">
@@ -287,7 +316,8 @@ const Dash = (props) => {
                                     }
                                 </div>
                             </h1>
-                            <div className="flex-grow flex items-center justify-end w-full md:w-auto">
+                            <button className="no-print text-blue-600" onClick={exportToPdf}>Export to PDF</button>
+                            <div className=" no-print flex-grow flex items-center justify-end w-full md:w-auto">
 
                                 {/* show datetime filters */}
                                 {/* --- */}
@@ -805,10 +835,10 @@ const Dash = (props) => {
                             </div>
                         </div>
                     </div>
-
-                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                 
+                    {/* <div id="dashboard" className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4"> */}
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility owners </h4>
-                        <Download {...csvHeaders} filename={'Facility_owners'} data={props?.data?.owner_types?.map((ot) => { return { metric: ot.name, value: ot.count } })} csvLink={owner_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -827,9 +857,8 @@ const Dash = (props) => {
                         </table>
                     </div>
 
-                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Types </h4>
-                        <Download csvHeaders={csvHeaders} filename={'Facility_types'} data={props?.data?.types_summary?.map((ot) => { return { metric: ot.name, value: ot.count } })} csvLink={types_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -849,9 +878,8 @@ const Dash = (props) => {
                     </div>
 
                     {/* Facilities summary 1/3 - FILTERABLE */}
-                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facilities summary</h4>
-                        <Download csvHeaders={csvHeaders} filename={'Facility_summary'} data={totalSummary.map((ts) => { return { metric: ts.name, value: ts.count } })} csvLink={summary_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -870,9 +898,8 @@ const Dash = (props) => {
                         </table>
                     </div>
                     {/* CUs summary - FILTERABLE 1/3 */}
-                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Community Units summary</h4>
-                        <Download csvHeaders={csvHeaders} filename={'community_units_summary'} data={chuSummary.map((ts) => { return { metric: ts.name, value: ts.count } })} csvLink={chu_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -891,9 +918,8 @@ const Dash = (props) => {
                         </table>
                     </div>
                     {/* Recent changes 1/3 - FILTERABLE */}
-                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Recent changes</h4>
-                        <Download csvHeaders={csvHeaders} filename={'recent_changes'} data={recentChanges.map((ts) => { return { metric: ts.name, value: ts.count } })} csvLink={chu_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -912,9 +938,8 @@ const Dash = (props) => {
                         </table>
                     </div>
                     {/* facilities by keph level */}
-                    <div className="col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility KEPH Level </h4>
-                        <Download csvHeaders={csvHeaders} filename={'facility_keph_level'} data={props?.data?.keph_level?.map((ts) => { return { metric: ts.name, value: ts.count } })} csvLink={keph_link} />
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -934,7 +959,7 @@ const Dash = (props) => {
                     </div>
                     {/* Facilities & CHUs by county (bar) 1/1 */}
                     {(groupID === 7 || groupID === 5) &&
-                        <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                        <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by County</h4>
                             <BarChart
                                 title="Facilities & CHUs by County"
@@ -958,7 +983,7 @@ const Dash = (props) => {
                     }
                     {/* Facilities & CHUs by subcounties (bar) 1/1 */}
                     {groupID === 1 &&
-                        <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                        <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Subcounty</h4>
                             <BarChart
                                 title="Facilities & CHUs by Subcounty"
@@ -982,7 +1007,7 @@ const Dash = (props) => {
                     }
                     {/* Facilities & CHUs by ward (bar) 1/1 */}
                     {groupID === 2 &&
-                        <div className="col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                        <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                             <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Ward</h4>
                             <BarChart
                                 title="Facilities & CHUs by ward"
@@ -1005,7 +1030,7 @@ const Dash = (props) => {
                         </div>
                     }
                     {/* Facility owners & categories - national summary - FILTERABLE (bar) 1/2 */}
-                    <div className="col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                    <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility owners</h4>
                         <BarChart
                             title="Facility owners"
@@ -1018,7 +1043,7 @@ const Dash = (props) => {
                             })() || []} />
                     </div>
                     {/* Facility types - national summary - FILTERABLE (bar) 1/2 */}
-                    <div className="col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
+                    <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
                         <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility types</h4>
                         <BarChart
                             title="Facility types"
@@ -1041,7 +1066,29 @@ const Dash = (props) => {
                             For testing reasons, results are limited at the moment.
                         </p>
                     </div> */}
+                {/* </div> */}
 
+                <style jsx global>{`
+                    @media print {
+                    /* Exclude the content with the "no-print" class */
+                    .no-print {
+                        display: none;
+                    }
+                    .main{
+                        display:inline-block;
+                        width:100%;
+                    }
+                    .card{
+                        width:100%;
+                        background-color: #fff;
+                        border: 1px solid #e4e7ea;
+                        margin: 20px;
+                        padding: 20px;
+                        box-shadow:0 0 0 0;
+                        
+                    }
+                    }
+                `}</style>
                 </div>
             </MainLayout>
         </div>
@@ -1050,26 +1097,28 @@ const Dash = (props) => {
 
 Dash.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL
-    const fetchFilters = token => {
+
+    const fetchFilters = async token => {
         // let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Csub_county'
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county'
-        return fetch(filters_url, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        }).then(r => r.json())
-            .then(jzon => {
-                return jzon
-            }).catch(err => {
-                console.log('Error fetching filters: ', err)
-                return {
-                    error: true,
-                    err: err,
-                    filters: [],
-                    api_url: API_URL
+        try {
+            const r = await fetch(filters_url, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
                 }
             })
+            const jzon = await r.json()
+            return jzon
+        } catch (err) {
+            console.log('Error fetching filters: ', err)
+            return {
+                error: true,
+                err: err,
+                filters: [],
+                api_url: API_URL
+            }
+        }
     }
     const fetchData = (token) => {
         let url = API_URL + '/facilities/dashboard/'

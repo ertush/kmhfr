@@ -12,9 +12,6 @@ import { useAlert } from "react-alert";
 import Link from 'next/link';
 import FacilityDeptRegulationFactory from '../../../components/generateFacilityDeptRegulation'
 import { FacilityContact, OfficerContactDetails } from '../../../components/FacilityContacts'
-import { useCounties } from '../../../hooks/useCounties';
-import { useSubCounties } from '../../../hooks/useSubCounties';
-import { XCircleIcon } from '@heroicons/react/outline';
 
 import { 
     handleBasicDetailsUpdates,
@@ -35,6 +32,7 @@ import {
 import { PlusIcon } from '@heroicons/react/solid'
 import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable';
 import FacilitySideMenu from '../../../components/FacilitySideMenu';
+
 
 import { UserContext } from '../../../providers/user';
 import { defer } from 'underscore';
@@ -69,10 +67,7 @@ const Map = React.memo(WardMap)
 
 const EditFacility = (props) => {
 
-    const {data: counties, error: errorFetchingCounties, isLoading: isFetchingCounties} = useCounties()
-    const {data: sub_counties, error: errorFetchingSubCounties, isLoading: isFetchingSubCounties} = useSubCounties('95b08378-362e-4bf9-ad63-d685e1287db2')
-    const {data: constituencies, error: errorFetchingConstituencies, isLoading:isFetchingConstituencies } = useSubCounties()
-    console.log({isFetchingConstituencies, constituencies, errorFetchingConstituencies})
+    console.log({props})
 
     // Alert 
     const alert = useAlert();
@@ -90,35 +85,35 @@ const EditFacility = (props) => {
 
 		const all_ftypes = []
 
-      
+       
 
 		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division == f_types[type]))
 
         // console.log({all_ftypes})
 
 		return [{
-			label: all_ftypes[0]?.sub_division,
-			value: all_ftypes[0]?.parent
+			label: all_ftypes[0].sub_division,
+			value: all_ftypes[0].parent
 		},
 		{
-			label: all_ftypes[1]?.sub_division,
-			value: all_ftypes[1]?.parent
+			label: all_ftypes[1].sub_division,
+			value: all_ftypes[1].parent
 		},
 		{
-			label: all_ftypes[2]?.sub_division,
-			value: all_ftypes[2]?.parent
+			label: all_ftypes[2].sub_division,
+			value: all_ftypes[2].parent
 		},
 		{
-			label: all_ftypes[3]?.sub_division,
-			value: all_ftypes[3]?.parent
+			label: all_ftypes[3].sub_division,
+			value: all_ftypes[3].parent
 		},
 		{
-			label: all_ftypes[4]?.sub_division,
-			value: all_ftypes[4]?.parent
+			label: all_ftypes[4].sub_division,
+			value: all_ftypes[4].parent
 		},
 		{
-			label: all_ftypes[5]?.sub_division,
-			value: all_ftypes[5]?.parent
+			label: all_ftypes[5].sub_division,
+			value: all_ftypes[5].parent
 		}
 
 		]
@@ -132,7 +127,7 @@ const EditFacility = (props) => {
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('') 
     const [isSaveAndFinishInfra, setIsSaveAndFinishInfra] = useState(false);
-    const [isSaveAndFinishService, setIsSaveAndFinishService] = useState(false);
+    const [isSaveAndFinishService, setIsSaveAndFinishService] = useState(false)
    
     const filters = []
 
@@ -142,9 +137,9 @@ const EditFacility = (props) => {
     const ownerTypeOptions =  props['3']?.owner_types ?? []
     const kephOptions =  props['4']?.keph ?? []
     const facilityAdmissionOptions =  props['5']?.facility_admission_status
-    const countyOptions =  counties ?? props['6']?.counties ?? []
-    const subCountyOptions =  sub_counties ?? props['7']?.sub_counties ?? []
-    const constituencyOptions =  constituencies ?? props['8']?.constituencies ?? []
+    const countyOptions =  props['6']?.counties ?? []
+    const subCountyOptions =  props['7']?.sub_counties ?? []
+    const constituencyOptions =  props['8']?.constituencies ?? []
     const wardOptions =  props['9']?.wards ?? []
     const jobTitleOptions = props['10']?.job_titles ?? []
     const contactTypeOptions = props['11']?.contact_types ?? []
@@ -263,7 +258,7 @@ const EditFacility = (props) => {
      
 
     // Facility data
-    const {
+    let {
         id,
         name,
         official_name,
@@ -283,7 +278,6 @@ const EditFacility = (props) => {
         facility_services,
         accredited_lab_iso_15189,
         number_of_beds,
-        number_of_inpatient_beds,
         number_of_cots,
         number_of_emergency_casualty_beds,
         number_of_icu_beds,
@@ -333,7 +327,6 @@ const EditFacility = (props) => {
         date_established,
         accredited_lab_iso_15189,
         number_of_beds,
-        number_of_inpatient_beds,
         number_of_cots,
         number_of_emergency_casualty_beds,
         number_of_general_theatres,
@@ -373,10 +366,8 @@ const EditFacility = (props) => {
 
     const [facilityContacts, setFacilityContacts] = useState(facility_contacts)
     const [officerContacts, setOfficerContact] = useState(officer_in_charge)
-    const [facilityDepts, setFacilityDepts] = useState(facility_units)
 
-
-    const collection_date = props['21']?.collection_date ?  (props['21']?.collection_date.replace(/T.*$/, '') ?? '') : ''
+    const collection_date = props['20']?.collection_date ?  (props['20']?.collection_date.replace(/T.*$/, '') ?? '') : ''
 
     const facilityContactsData = {
 
@@ -766,13 +757,6 @@ const EditFacility = (props) => {
         
     }, [isSavedChanges])
 
-    const handleDeleteField = (index) => {
-        const values = facility_units;
-        values.splice(index, 1);
-        setFacilityDepts((draft) => ([ ...values]))
-    };
-   
-
     useEffect(() => {}, [facilityContacts])
 
     return (
@@ -798,7 +782,7 @@ const EditFacility = (props) => {
                         {/* Header */}
                         <div className={"col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (is_approved ? "border-green-600" : "border-green-600")}>
                             <div className="col-span-6 md:col-span-3">
-                                <span onClick={() => router.push(`/facilities/${id}`)} className="text-4xl cursor-pointer tracking-tight hover:text-green-600 font-bold leading-tight">{official_name}</span>
+                                <a href={`/facilities/${id}`} className="text-4xl tracking-tight hover:text-green-600 font-bold leading-tight">{official_name}</a>
                                 <div className="flex gap-2 items-center w-full justify-between">
                                     <span className={"font-bold text-2xl " + (code ? "text-green-900" : "text-gray-400")}>#{code || "NO_CODE"}</span>
                                     <p className="text-gray-600 leading-tight">{keph_level_name && "KEPH " + keph_level_name}</p>
@@ -891,7 +875,6 @@ const EditFacility = (props) => {
                                                 date_established: date_established ?? '',
                                                 accredited_lab_iso_15189: accredited_lab_iso_15189 ?? false,
                                                 number_of_beds: number_of_beds ?? '',
-                                                number_of_inpatient_beds: number_of_inpatient_beds ?? '',
                                                 number_of_cots: number_of_cots ?? '',
                                                 number_of_emergency_casualty_beds: number_of_emergency_casualty_beds ?? '',
                                                 number_of_general_theatres: number_of_general_theatres ?? '',
@@ -933,23 +916,22 @@ const EditFacility = (props) => {
                                                 let payload = {}
 
                                                 const _payload = _.omit(formData, function (v, k) { return basicDetailsData[k] === v})
-                                                payload = {..._payload}
-                                                // if(officer_in_charge) {
-                                                //     payload = {..._payload, officer_in_charge}
-                                                // }
-                                                // else{
-                                                //     payload = {..._payload, 
-                                                //         officer_in_charge: {
-                                                //             contacts: [],
-                                                //             id_number: null,
-                                                //             name: "",
-                                                //             reg_no: "",
-                                                //             title: "",
-                                                //             title_name: ""
-                                                //         }
-                                                //     }
+                                                if(officer_in_charge) {
+                                                    payload = {..._payload, officer_in_charge}
+                                                }
+                                                else{
+                                                    payload = {..._payload, 
+                                                        officer_in_charge: {
+                                                            contacts: [],
+                                                            id_number: null,
+                                                            name: "",
+                                                            reg_no: "",
+                                                            title: "",
+                                                            title_name: ""
+                                                        }
+                                                    }
                                                 
-                                                // }
+                                                }
 
                                             
                                               handleBasicDetailsUpdates(payload, id, alert)
@@ -1249,71 +1231,64 @@ const EditFacility = (props) => {
                                                 className="flex-none  w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                             </div>
 
-                                            {/* No. Total Functional In-patient Beds */}
+                                            {/* No. Functional general Beds */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                <label htmlFor="number_of_beds" className="text-gray-600 capitalize text-sm">Total Functional In-patient Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required  type="number" name="number_of_beds" readOnly className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <label htmlFor="number_of_beds" className="text-gray-600 capitalize text-sm">Number of functional general beds<span className='text-medium leading-12 font-semibold'> *</span></label>
+                                                <Field required  type="number" name="number_of_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
-
-                                             {/* No. General In-patient Beds */}
-                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                                <label htmlFor="number_of_inpatient_beds" className="text-gray-600 capitalize text-sm">Number of General In-patient Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required min={0} type="number" name="number_of_inpatient_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
-                                            </div>
-
 
                                             {/* No. Functional cots */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="number_of_cots" className="text-gray-600 capitalize text-sm">Number of functional cots<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required min={0} type="number" name="number_of_cots" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field required  type="number" name="number_of_cots" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
 
                                             {/* No. Emergency Casulty Beds */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="number_of_emergency_casualty_beds" className="text-gray-600 capitalize text-sm">Number of Emergency Casulty Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required min={0}  type="number" name="number_of_emergency_casualty_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field required  type="number" name="number_of_emergency_casualty_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
 
                                             {/* No. Intensive Care Unit Beds */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="number_of_icu_beds" className="text-gray-600 capitalize text-sm">Number of Intensive Care Unit (ICU) Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required min={0} type="number" name="number_of_icu_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field required  type="number" name="number_of_icu_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
 
                                             {/* No. High Dependency Unit HDU */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="number_of_hdu_beds" className="text-gray-600 capitalize text-sm">Number of High Dependency Unit (HDU) Beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required min={0}  type="number" name="number_of_hdu_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field required  type="number" name="number_of_hdu_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
 
                                             {/* No. of maternity beds */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="number_of_maternity_beds" className="text-gray-600 capitalize text-sm">Number of maternity beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required  min={0} type="number" name="number_of_maternity_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field required  type="number" name="number_of_maternity_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
 
                                             {/* No. of isolation beds */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="number_of_isolation_beds" className="text-gray-600 capitalize text-sm">Number of isolation beds<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required min={0} type="number" name="number_of_isolation_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field required  type="number" name="number_of_isolation_beds" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
 
                                             {/* No. of General Theatres */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="number_of_general_theatres" className="text-gray-600 capitalize text-sm">Number of General Theatres<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required  min={0} type="number" name="number_of_general_theatres" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field required  type="number" name="number_of_general_theatres" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
 
                                             {/* No. of Maternity Theatres */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="number_of_maternity_theatres" className="text-gray-600 capitalize text-sm">Number of Maternity Theatres<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required  min={0} type="number" name="number_of_maternity_theatres" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field required  type="number" name="number_of_maternity_theatres" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
 
                                             {/* Facility Catchment Population */}
                                             <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                 <label htmlFor="facility_catchment_population" className="text-gray-600 capitalize text-sm">Facility Catchment Population<span className='text-medium leading-12 font-semibold'> *</span></label>
-                                                <Field required  min={0} type="number" name="facility_catchment_population" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                <Field required  type="number" name="facility_catchment_population" className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                             </div>
 
                                             {/* Is Reporting DHIS2 */}
@@ -1542,9 +1517,9 @@ const EditFacility = (props) => {
                                             let payload = {}
                                             const _payload = _.omit(formData, function (v, k) { return geolocationData[k] === v})
                                             
-                                            payload = {..._payload, facility: id, coordinates:{coordinates:[lat_long[1], lat_long[0]], type:'point'}} // {..._payload}
+                                            payload = {..._payload, facility: id, coordinates:{coordinates:[lat_long[1], lat_long[0]], type:'point'}}
 
-                                            // payload['collection_date'] = new Date(payload.collection_date)
+                                            payload['collection_date'] = new Date(payload.collection_date)
                                         
                                             handleGeolocationUpdates(payload, coordinates, alert)
                                             .then(({statusText}) => {
@@ -1681,40 +1656,45 @@ const EditFacility = (props) => {
                                             name: officer_in_charge?.name ?? '',
                                             reg_no:  officer_in_charge?.reg_no ?? '',
                                             contact: facility_contacts  ? facility_contacts.length > 0 ?  facility_contacts[0].contact : '' :  '',
-                                            contact_type: facility_contacts  ? facility_contacts.length > 0 ?  facility_contacts[0].contact_type : '' :  '',
-                                            officer_contact_type: officerContacts ? officerContacts.length > 0 ? officerContacts[0].contact_type : '': '',
-                                            officer_contact: officerContacts ? officerContacts.length > 0 ? officerContacts[0].contact : '': '',
-                                            
+                                           
                                         }}
 
                                         onSubmit={formData => {
-
-                                            console.log({formData})
-
-                                        /*
-                                        
+                                           
                                             let payload = {}
                                         
-                                            const contact = facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
-                                            const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
-                                            const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
+                                            // const contact = facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
+
+                                            // const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
+
+                                            // const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
+
                                             const jobTitle = jobTitleRef.current  ? jobTitleRef.current.state.value.value : ''
+
                                             const jobTitleName = jobTitleRef.current  ? jobTitleRef.current.state.value.label : ''
+
                                             const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
+
                                             if(officer_in_charge ) Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
+
                                             _payload['title'] = jobTitle
+
                                             _payload['titleName'] = jobTitleName
-                                            _payload['contacts'] = [{
-                                                contact,
-                                                contact_id: facility_contacts[0]?.contact_id,
-                                                contact_type_name: contactTypeName,
-                                                official_contact_id:facility_contacts[0]?.id,
-                                                type: contactType
-                                            }]
+
+                                            // _payload['contacts'] = [{
+                                            //     contact,
+                                            //     contact_id: facility_contacts[0]?.contact_id,
+                                            //     contact_type_name: contactTypeName,
+                                            //     official_contact_id:facility_contacts[0]?.id,
+                                            //     type: contactType
+                                            // }]
+
                                            
+
                                             payload = {officer_in_charge:_payload, contacts:[]}
-                                        */
                                             
+                                            console.log({formData, payload, officer_in_charge})
+                                            return
 
                                             handleFacilityContactsUpdates(payload, id, alert)
                                             .then(({statusText}) => {
@@ -1779,7 +1759,7 @@ const EditFacility = (props) => {
                                                                     contactTypeOptions={contactTypeOptions}
                                                                     setFacilityContacts={setFacilityContacts}
                                                                     contacts={[contact, contact_type_name, id]}
-                                                                    index={id}
+                                                                    index={i}
                                                                     fieldNames={['contact_type', 'contact']}
                                                                     
                                                                 />
@@ -1914,7 +1894,7 @@ const EditFacility = (props) => {
                                                                     setFacilityContacts={setOfficerContact}
                                                                     contacts={[contact_type_name, contact, officer_contact_id]}
                                                                     index={i}
-                                                                    fieldNames={['officer_contact_type', 'officer_contact']}
+                                                                    fieldNames={['contact_type', 'contact']}
                                                                     
                                                                 />
                                                         ))
@@ -2167,41 +2147,27 @@ const EditFacility = (props) => {
                                               
                                                 {/* Name */}
                                           
-                                                <div className='flex flex-col gap-2 items-start justify-start gap-y-4'>
-												    
-                                               
+                                                <div className='flex-col items-start justify-start gap-y-4'>
+                                                
                                                 {
-                                                    facilityDepts?.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
-                                                        <div className='flex flex-grow gap-3 justify-between items-center w-full'>
-                                                            <FacilityDeptRegulationFactory
-                                                                key={i}
-                                                                index={i}
-                                                                isRegBodyChange={null}
-                                                                setIsRegBodyChange={() => null}
-                                                                setFacilityDepts={() => null}
-                                                                regNo={registration_number}
-                                                                licenseNo={license_number}
-                                                                facilityDeptRegBody={regulating_body_name}
-                                                                facilityDeptValue={[{value:id, label:unit_name}]}
-                                                                facilityDeptOptions={facilityDeptOptions}
-                                                            />
-
-                                                            <button 
-                                                            id={`delete-btn-${i}`}
+                                                    facility_units?.map(({id, unit_name, registration_number, license_number, regulating_body_name}, i) => (
+                                                
+                                                        <FacilityDeptRegulationFactory
                                                             key={i}
-                                                            onClick={(ev)=> {
-                                                                ev.preventDefault();
-                                                                handleDeleteField(i);
-                                                            }}><XCircleIcon className='w-7 h-7 text-red-400'/></button>
-                                                          </div>
-                                               
+                                                            index={i}
+                                                            isRegBodyChange={null}
+                                                            setIsRegBodyChange={() => null}
+                                                            setFacilityDepts={() => null}
+                                                            regNo={registration_number}
+                                                            licenseNo={license_number}
+                                                            facilityDeptRegBody={regulating_body_name}
+                                                            facilityDeptValue={[{value:id, label:unit_name}]}
+                                                            facilityDeptOptions={facilityDeptOptions}
+                                                    />
                                                 
                                                     ))
                                                     
                                                 }
-
-                                                         
-                                                   
                                                 </div>
 
                                                 {/* add other fields */}

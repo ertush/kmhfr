@@ -2,15 +2,12 @@ import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
 import { DotsHorizontalIcon, DownloadIcon, PlusIcon } from '@heroicons/react/solid'
+
 import { checkToken } from '../../controllers/auth/auth'
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon } from '@heroicons/react/outline'
-import { useFormik } from 'formik'
-import { SearchIcon } from '@heroicons/react/solid'
-
-
 import Select from 'react-select'
 
 // @mui imports
@@ -22,14 +19,16 @@ import Alert from '@mui/material/Alert';
 import NativePickers from '../../components/date-picker'
 // import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
-import { UserContext } from '../../providers/user'
 
+// import { set } from 'nprogress'
 
 
 const Home = (props) => {
     const router = useRouter()
 
-    const userCtx = useContext(UserContext)
+    
+
+    // const permissions = useContext(PermissionContext)
    
     const facilities = props?.data?.results
     const filters = props?.filters
@@ -38,30 +37,25 @@ const Home = (props) => {
     // const qf = props?.query?.qf ?? null
 
     // console.log({path:router.query.qf})
-   
-    if(filters && fltrs){
-        filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
-        filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
-        filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
-        filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
-        filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
-        filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
-        filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
-        filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
-
-
-        delete fltrs.has_edits
-        delete fltrs.is_approved
-        delete fltrs.is_complete
-        delete fltrs.number_of_beds
-        delete fltrs.number_of_cots
-        delete fltrs.open_whole_day
-        delete fltrs.open_weekends
-        delete fltrs.open_public_holidays
-    }
-
-
-  
+    if (filters && typeof filters === "object")
+     {
+    filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
+    filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }]
+    filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }]
+    filters["number_of_beds"] = [{ id: "number_of_beds", name: "Number of beds" }]
+    filters["number_of_cots"] = [{ id: "number_of_cots", name: "Number of cots" }]
+    filters["open_whole_day"] = [{ id: "open_whole_day", name: "Open whole day" }]
+    filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }]
+    filters["open_public_holidays"] = [{ id: "open_public_holidays", name: "Open public holidays" }]
+    delete fltrs.has_edits
+    delete fltrs.is_approved
+    delete fltrs.is_complete
+    delete fltrs.number_of_beds
+    delete fltrs.number_of_cots
+    delete fltrs.open_whole_day
+    delete fltrs.open_weekends
+    delete fltrs.open_public_holidays
+}
 
     const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
 
@@ -96,12 +90,6 @@ const Home = (props) => {
         }
     }, [facilityFeedBack, title])
 
-    useEffect(() => {
-        if(!userCtx){
-            router.push('/auth/login')
-        }
-    }, [])
-
 
     const handleDates=(from, to) => {
         setFromDate(from);
@@ -121,38 +109,7 @@ const Home = (props) => {
     }
 
   
-    const search = useFormik({
-        initialValues:{
-            search_input:''
-        },
-        onSubmit:({search_input}) => {
 
-            const filters = router.asPath.split('?')[1] 
-            switch(filters){
-                case 'qf=all':
-                    router.push(`/facilities/?qff=all&searchTerm=${search_input}`)
-                case 'qf=approved&approved=true&approved_national_level=true&rejected=false':
-                    router.push(`/facilities/?qff=approved&searchTerm=${search_input}`)
-                break;
-                case 'qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true':
-                    router.push(`/facilities/?qff=pending_validation&searchTerm=${search_input}`)
-                break;
-                case 'qf=updated_pending_validation&has_edits=true&pending_approval=true':
-                    router.push(`/facilities/?qff=updated_pending_validation&searchTerm=${search_input}`)
-                break;
-                case 'qf=to_publish&to_publish=true':
-                    router.push(`/facilities/?qff=pending_approval&searchTerm=${search_input}`)
-                break;
-                case 'qf=dhis_synced_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true':
-                    router.push(`/facilities/?qff=dhis_synched&searchTerm=${search_input}`)
-                break;
-                case 'qf=incomplete&is_complete=false':
-                    router.push(`/facilities/?qff=incomplete&searchTerm=${search_input}`)
-                break;
-            }
-
-        },
-    })
 
     return (
         <>
@@ -310,20 +267,19 @@ const Home = (props) => {
                                                                         if (Object.keys(drillDown).length > 0) {
                                                                             let qry = Object.keys(drillDown).map(key => {
                                                                                 let er = ''
-                                                                                if (props.path && !props.path.includes(`${key}=`)) {
-                                                                                    er = `${encodeURIComponent(key)}=${encodeURIComponent(drillDown[key])}`;
+                                                                                if (props.path && !props.path.includes(key + '=')) {
+                                                                                    er = encodeURIComponent(key) + '=' + encodeURIComponent(drillDown[key]);
                                                                                 }
                                                                                 return er
                                                                             }).join('&')
-                                                                            let op = '/?'
+                                                                            let op = '?'
                                                                             if (props.path && props.path.includes('?') && props.path.includes('=')) { op = '&' }
                                                                             
                                                                             if (router || typeof window == 'undefined') {
-                                                                                console.log({filterQuery: `${props.path}${op}${qry}`})
-                                                                                router.push(`${props.path}${op}${qry}`)
+                                                                                router.push(props.path + op + qry)
                                                                             } else {
                                                                                 if (typeof window !== 'undefined' && window) {
-                                                                                    window.location.href = `${props.path}${op}${qry}`
+                                                                                    window.location.href = props.path + op + qry
                                                                                 }
                                                                             }
 
@@ -332,7 +288,7 @@ const Home = (props) => {
                                                                     }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">Filter</button>
                                                                     
                                                                     <button className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center" onClick={ev => {
-                                                                        router.reload()
+                                                                        router.push('/facilities')
                                                                     }}>Clear filters</button>
                                                                     
                                                                 </div>
@@ -360,35 +316,6 @@ const Home = (props) => {
                                 {
                                 (allFctsSelected || pathId === 'all') &&
                                 <div className='flex items-center space-x-6 w-auto'>
-                                    {/* Search Input form */}
-                                    <form
-                                        onSubmit={search.handleSubmit}
-                                        className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
-                                        
-                                        >
-                                        {/* Search Input */}
-                                        <input
-                                            name="q"
-                                            id="search-input"
-                                            className="flex-none bg-gray-50 rounded p-2 md:w-9/12 md:flex-grow-0 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                                            type="search"
-                                            onChange={search.handleChange}
-                                            defaultValue={''}
-                                            placeholder="Search a facility/CHU"
-                                        />
-
-
-                                        {/* Search Button */}
-                                        <button
-                                            type="submit"
-                                            className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
-                                        >
-                                            <SearchIcon className="w-5 h-5" />
-                                        </button>
-                                    </form>
-
-                                    
-
                                     {/* Facility Button */}
                                    <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facilities/add')}} className='flex items-center justify-center'>
@@ -448,7 +375,7 @@ const Home = (props) => {
 
                     {/* Side Menu Filters*/}
                     <FacilitySideMenu 
-                    filters={filters ?? {}}
+                    filters={filters}
                     states={[khisSynched, facilityFeedBack, pathId, allFctsSelected, title]}
                     stateSetters={[setKhisSynched, setFacilityFeedBack, setPathId, setAllFctsSelected, setTitle]}/>
                    
@@ -502,7 +429,7 @@ const Home = (props) => {
                                                     </div>
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 flex flex-wrap items-center justify-evenly gap-x-2 gap-y-1 text-lg">
                                                         {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
-                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility?.approved ? facility?.is_approved ? "pending approval" : router.asPath.includes("qf=to_publish") ? "pending Approval" : "Approved" : facility?.approved_national_level ? 'Approved' : 'pending validation' }</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility?.rejected ? "Rejected" : ""}</span>}
+                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{facility?.rejected ? "Rejected" : ""}</span>}
                                                         {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Has edits</span> : ""}
                                                     </div>
                                                 </div>
@@ -610,14 +537,14 @@ const Home = (props) => {
 
                   
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>
                         <p className="text-sm text-gray-800">
                             For testing reasons, downloads are limited to the first 100 results.
                         </p>
-                    </div> */}
+                    </div>
                    
                 </div>
             </MainLayout >
@@ -626,6 +553,8 @@ const Home = (props) => {
 }
 
 Home.getInitialProps = async (ctx) => {
+
+    
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL 
     const fetchFilters = token => {
@@ -662,30 +591,6 @@ Home.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
-
-        if(ctx?.query?.qff){
-            switch(ctx?.query?.qff){
-                case 'all':
-                    url += `search=${ctx?.query?.search}`
-                    break;
-                case 'approved':
-                    url += `&approved=true&approved_national_level=true&rejected=false&search=${ctx?.query?.search}`
-                case 'pending_validation':
-                    url += `&pending_approval=true&has_edits=true&search=${ctx?.query?.search}`
-                case 'updated_pending_validation':
-                    url += `&rejected=true&search=${ctx?.query?.search}`
-                case 'dhis_synched':
-                    url += `search=${ctx?.query?.search}`
-
-                case 'incomplete':
-                    url += `search=${ctx?.query?.search}`
-
-
-                
-            }
-        }
-
-
         let other_posssible_filters = [
             "owner_type", 
             "service", 
@@ -722,14 +627,14 @@ Home.getInitialProps = async (ctx) => {
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
-                url = `${url}&${flt}=${ctx?.query[flt]}`
-               
+                url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
             }
 
 
             // Remove approved field if fetching for Facilities pending approval
             // if (flt === 'to_publish') url = url.replace('approved,', '')
 
+          
         })
 
 
