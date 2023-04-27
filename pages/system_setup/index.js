@@ -1735,8 +1735,8 @@ console.log(editData, editMode, editID);
                                                         case 'option group':
                                                             const handleAddOptionGroup = (e,path )=> {
                                                                 e.preventDefault()
-                                                                const obj = {};
-                                                                const jk ={}
+                                                                let obj = {};
+                                                                const jk = {}
                                                                 editMode ? obj = {...editData}: null
                                                                 console.log(jk);
                                                                 const elements = [...e.target];
