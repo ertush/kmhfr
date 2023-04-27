@@ -2,10 +2,9 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React from 'react'
 
-const Login = (props) => {
+const ResetPassword = (props) => {
     const router = useRouter()
-    const [username, setUsername] = React.useState('')
-    const [password, setPassword] = React.useState('')
+    const [email, setEmail] = React.useState('')
     const [error, setError] = React.useState(props.error)
     const [msg, setMsg] = React.useState(props.msg)
     const [loading, setLoading] = React.useState(false)
@@ -13,7 +12,7 @@ const Login = (props) => {
     return (
         <div>
             <Head>
-                <title>Log in | KMHFL</title>
+                <title>Reset Password | KMHFL</title>
                 <link rel="icon" href="/favicon.ico" />
                 <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
@@ -32,29 +31,27 @@ const Login = (props) => {
                     setLoading(true)
                     setError('')
                     if (
-                        (username && username.length > 0) &&
-                        (password && password.length > 0)
+                        (email && email.length > 0) 
                     ) {
-                        return fetch('/api/login', {
+                        return fetch(`${process.env.NEXT_PUBLIC_API_URL}/rest-auth/password/reset/`, {
                             headers: {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json'
                             },
                             method: 'POST',
                             body: JSON.stringify({
-                                username: username,
-                                password: password
+                                email: email,
                             })
                         })
                             .then(r => r.json())
                             .then(rsp => {
-
-                                if (rsp.error) {
+                                console.log(rsp)
+                                if (rsp.detail) {
                                     setLoading(false)
-                                    setError(rsp.error)
+                                    setError(rsp.detail ||rsp.detail[0])
                                 } else if (rsp?.access_token || rsp?.token) {
                                     setLoading(false)
-                                    setMsg('Log-in successful. Redirecting...')
+                                    setMsg('Reset successful. Redirecting...')
                                     setTimeout(() => {
                                         goSomewhere(props.was)
                                     }, 2000);
@@ -78,38 +75,28 @@ const Login = (props) => {
 
                     className="bg-white w-full max-w-screen-sm rounded-md p-4 md:p-6 drop-shadow backdrop-filter flex flex-col items-center gap-4 md:gap-6 ">
 
-                    <h3 className="text-center leading-tight text-xl font-bold tracking-wide text-gray-800 uppercase">Log in</h3>
+                    <h3 className="text-center leading-tight text-xl font-bold tracking-wide text-gray-800 uppercase">Request Password Reset</h3>
                     <div className="flex flex-col gap-0 w-full">
                         {error && error.length > 0 && <p className="text-red-900 bg-red-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{error}</p>}
                         {msg && msg.length > 0 && <p className="text-blue-900 bg-blue-200 drop-shadow rounded py-2 font-medium normal-case text-base px-3">{msg}</p>}
                     </div>
                     <div className="flex flex-col gap-0 w-full">
-                        <label className="text-gray-800">Username</label>
+                        <label className="text-gray-800">Email address</label>
                         <input type="email"
-                            value={username}
+                            value={email}
                             onChange={ev => {
                                 setError('')
-                                setUsername(ev.target.value)
+                                setEmail(ev.target.value)
                             }}
                             className="text-gray-900 bg-gray-50 border border-gray-300 py-3 px-3 w-full flex items-center leading-none rounded" placeholder="you@geemail.com" />
                     </div>
-                    <div className="flex flex-col gap-0 w-full">
-                        <label className="text-gray-800">Password</label>
-                        <input type="password"
-                            value={password}
-                            onChange={ev => {
-                                setError('')
-                                setPassword(ev.target.value)
-                            }}
-                            className="text-gray-900 bg-gray-50 border border-gray-300 py-3 px-3 w-full flex items-center leading-none rounded" placeholder="*********" />
-                    </div>
-                    <div className="flex flex-col gap-4 w-full text-center">
+                   
+                    <div className="flex flex-row gap-4 w-full text-center">
                         <button type="submit" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-green-800 focus:bg-green-600 active:bg-green-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-green-700")}
-                        >{loading ? "Loading..." : "Log in"}</button>
-                        <div className="flex justify-end items-center w-full px-2">
-                            <a onClick={()=>router.push('/auth/reset_password')} className="text-base text-gray-700 hover:text-green-700 focus:text-green-700 active:text-green-700 hover:underline focus:underline active:underline">Forgot password?</a>
-
-                        </div>
+                        >{loading ? "Loading..." : "Send Request"}</button> 
+                        <button className='flex justify-end items-center px-2 focus:outline-none focus:ring-1 focus:ring-yellow-500 text-black px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-gray-400 focus:bg-grey-400 active:bg-grey-400 ' 
+                        onClick={()=>router.push('/auth/login')}
+                        >Cancel</button>
                     </div>
                 </form>
             </div>
@@ -118,7 +105,7 @@ const Login = (props) => {
     )
 }
 
-Login.getInitialProps = async (ctx) => {
+ResetPassword.getInitialProps = async (ctx) => {
     const was = ctx.query.was || '/'
     const err = ctx.query.err || ''
     const msg = ctx.query.msg || ''
@@ -130,4 +117,4 @@ Login.getInitialProps = async (ctx) => {
 }
 
 
-export default Login
+export default ResetPassword
