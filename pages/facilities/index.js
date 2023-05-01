@@ -628,7 +628,7 @@ Home.getInitialProps = async (ctx) => {
         other_posssible_filters.map(flt => {
             if (ctx?.query[flt]) {
                 query[flt] = ctx?.query[flt]
-                url = url.replace('facilities/facilities', 'facilities/facilities') + "&" + flt + "=" + ctx?.query[flt]
+                url = url + "&" + flt + "=" + ctx?.query[flt]
             }
 
 
