@@ -7,7 +7,7 @@ import useDidMountEffect from '../../hooks/useDidMountEffect';
 
 // next imports
 import Head from 'next/dist/shared/lib/head'
-import { PlusIcon, TrashIcon } from '@heroicons/react/solid'
+import { PlusIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
 import * as Tabs from "@radix-ui/react-tabs";
 
@@ -727,7 +727,6 @@ console.log(editData, editMode, editID);
                 <title>KMHFL - System Setup</title>
                 <metadata zoomAndPan='100'></metadata>
                 <link rel="icon" href="/favicon.ico" />
-                <link rel="stylesheet" href="/assets/css/leaflet.css" />
             </Head>
 
             <MainLayout>
@@ -797,7 +796,7 @@ console.log(editData, editMode, editID);
                     <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
                                 <List
                                     sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
-                                    component="nav"
+                                    component="div"
                                     aria-labelledby="nested-list-subheader"
                                     subheader={
                                         <ListSubheader component="div" id="nested-list-subheader">
@@ -814,21 +813,21 @@ console.log(editData, editMode, editID);
                                         {openAdminUnits ? <ExpandLess /> : <ExpandMore />}
                                     </ListItemButton>
                                     <Collapse in={openAdminUnits} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding>
+                                        <List component="ul" disablePadding>
                                             {/* Counties */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county'); setEditMode(false); setEditID(null) }}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'county' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county'); setEditMode(false); setEditID(null) }}>
                                                 <ListItemText primary="Counties" />
                                             </ListItemButton>
                                             {/* Constituencies */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code']); setResource('constituencies'); setResourceCategory('AdminUnits'); setTitle('constituencies'); setAddBtnLabel('constituency'); setEditMode(false); setEditID(null) }}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code']); setResource('constituencies'); setResourceCategory('AdminUnits'); setTitle('constituencies'); setAddBtnLabel('constituency'); setEditMode(false); setEditID(null) }}>
                                                 <ListItemText primary="Constituencies"/>
                                             </ListItemButton>
                                             {/* Wards */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'county_name', 'constituency_name', 'sub_county_name', 'county']); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward'); setEditMode(false); setEditID(null) }}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'county_name', 'constituency_name', 'sub_county_name', 'county']); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward'); setEditMode(false); setEditID(null) }}>
                                                 <ListItemText primary="Wards" />
                                             </ListItemButton>
                                             {/* Towns */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'town' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'ward_name']); setResource('towns'); setResourceCategory('AdminUnits'); setTitle('towns'); setAddBtnLabel('town'); setEditMode(false); setEditID(null) }}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'town' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'ward_name']); setResource('towns'); setResourceCategory('AdminUnits'); setTitle('towns'); setAddBtnLabel('town'); setEditMode(false); setEditID(null) }}>
                                                 <ListItemText primary="Towns" />
                                             </ListItemButton>
                                         </List>
@@ -843,17 +842,17 @@ console.log(editData, editMode, editID);
                                         {openServiceCatalogue ? <ExpandLess /> : <ExpandMore />}
                                     </ListItemButton>
                                     <Collapse in={openServiceCatalogue} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding>
+                                        <List component="ul" disablePadding>
                                             {/* Categories */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('categories'); setAddBtnLabel('category'); setEditMode(false); setEditID(null)}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('categories'); setAddBtnLabel('category'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Categories" />
                                             </ListItemButton>
                                             {/* Option groups */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('option_groups'); setResourceCategory('ServiceCatalogue'); setTitle('option groups'); setAddBtnLabel('option group'); setEditMode(false); setEditID(null)}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'option group' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('option_groups'); setResourceCategory('ServiceCatalogue'); setTitle('option groups'); setAddBtnLabel('option group'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Option Groups" />
                                             </ListItemButton>
                                             {/* Services */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'service' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'category_name']); setResource('services'); setResourceCategory('ServiceCatalogue'); setTitle('services'); setAddBtnLabel('service'); setEditMode(false); setEditID(null)}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'service' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'category_name']); setResource('services'); setResourceCategory('ServiceCatalogue'); setTitle('services'); setAddBtnLabel('service'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Services" />
                                             </ListItemButton>
                                         
@@ -869,13 +868,13 @@ console.log(editData, editMode, editID);
                                         {openHealthInfr ? <ExpandLess /> : <ExpandMore />}
                                     </ListItemButton>
                                     <Collapse in={openHealthInfr} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding>
+                                        <List component="ul" disablePadding>
                                             {/* Categories */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('categories'); setAddBtnLabel('category'); setEditMode(false); setEditID(null)}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('categories'); setAddBtnLabel('category'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Categories" />
                                             </ListItemButton>
                                             {/* Infrastructure */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure'); setEditMode(false); setEditID(null)}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name', 'numbers']); setResource('infrastructure'); setResourceCategory('HealthInfrastructure'); setTitle('infrastructures'); setAddBtnLabel('infrastructure'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Infrastructure" />
                                             </ListItemButton>
                                         </List>
@@ -890,13 +889,13 @@ console.log(editData, editMode, editID);
                                         {openHR ? <ExpandLess /> : <ExpandMore />}
                                     </ListItemButton>
                                     <Collapse in={openHR} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding>
+                                        <List component="ul" disablePadding>
                                             {/* HR Categories */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'hr category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('speciality_categories'); setResourceCategory('HR'); setTitle('HR Categories'); setAddBtnLabel('hr category')}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'hr category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('speciality_categories'); setResourceCategory('HR'); setTitle('HR Categories'); setAddBtnLabel('hr category')}}>
                                                 <ListItemText primary="HR Categories" />
                                             </ListItemButton>
                                             {/* Specialities */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name']); setResource('specialities'); setResourceCategory('HR'); setTitle('specialities'); setAddBtnLabel('specialty')}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name']); setResource('specialities'); setResourceCategory('HR'); setTitle('specialities'); setAddBtnLabel('specialty')}}>
                                                 <ListItemText primary="Specialities" />
                                             </ListItemButton>
                                         </List>
@@ -911,9 +910,9 @@ console.log(editData, editMode, editID);
                                         {openContacts ? <ExpandLess /> : <ExpandMore />}
                                     </ListItemButton>
                                     <Collapse in={openContacts} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding>
+                                        <List component="ul" disablePadding>
                                             {/* HR Categories */}
-                                            <ListItemButton sx={{ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type'); setEditMode(false); setEditID(null)}}>
+                                            <ListItemButton componene="li" sx={{ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'contact type' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']); setResource('contact_types'); setResourceCategory('Contacts'); setTitle('contact types'); setAddBtnLabel('contact type'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Contact Type" />
                                             </ListItemButton>
                                         
@@ -930,64 +929,64 @@ console.log(editData, editMode, editID);
                                     </ListItemButton>
                                     <Collapse in={openFacilities} timeout="auto" unmountOnExit>
                                         
-                                        <List component="div" disablePadding>
+                                        <List component="ul" disablePadding>
                                             {/* Facility Departments */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_depts'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility departments'); setAddBtnLabel('facility department'); setEditMode(false);}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility department' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_depts'); setIsParent(null); setResourceCategory('Facilities'); setTitle('facility departments'); setAddBtnLabel('facility department'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Departments" />
                                             </ListItemButton>
 
                                             {/* Facility Type Details */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division']); setIsParent(true); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type details'); setAddBtnLabel('facility type detail'); setEditMode(false);}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division']); setIsParent(true); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type details'); setAddBtnLabel('facility type detail'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Type Details" />
                                             </ListItemButton>
 
                                             {/* Facility Type Categories */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division']); setIsParent(false); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type categories'); setAddBtnLabel('facility type category'); setEditMode(false);}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility type category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'sub_division']); setIsParent(false); setResource('facility_types'); setResourceCategory('Facilities'); setTitle('facility type categories'); setAddBtnLabel('facility type category'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Type Categories" />
                                             </ListItemButton>
 
                                             {/* Facility Operation Status */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields([]); setResource('facility_status');setIsParent(null); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status'); setEditMode(false);}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility operation status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields([]); setResource('facility_status');setIsParent(null); setResourceCategory('Facilities'); setTitle('facility operation statuses'); setAddBtnLabel('facility operation status'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Operation Status" />
                                             </ListItemButton>
 
                                             {/*  Facility Admission Status */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_admission_status');setIsParent(null); setResourceCategory('Facilities'); setTitle('facility admission statuses'); setAddBtnLabel('facility admission status'); setEditMode(false);}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility admission status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('facility_admission_status');setIsParent(null); setResourceCategory('Facilities'); setTitle('facility admission statuses'); setAddBtnLabel('facility admission status'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Admission Status" />
                                             </ListItemButton>
 
                                             {/*  Feedback */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']);setIsParent(null); setResource('facility_service_ratings'); setResourceCategory('Facilities'); setTitle('feedbacks'); setAddBtnLabel('feedback'); setEditMode(false);}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'feedback' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']);setIsParent(null); setResource('facility_service_ratings'); setResourceCategory('Facilities'); setTitle('feedbacks'); setAddBtnLabel('feedback'); setEditMode(false);}}>
                                                 <ListItemText primary="Feedback" />
                                             </ListItemButton>
 
                                             {/*  Facility Owner Details */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id', 'name']);setIsParent(null); setResource('owner_types'); setResourceCategory('Facilities'); setTitle('facility owner details'); setAddBtnLabel('facility owner detail'); setEditMode(false);}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner detail' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id', 'name']);setIsParent(null); setResource('owner_types'); setResourceCategory('Facilities'); setTitle('facility owner details'); setAddBtnLabel('facility owner detail'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Owner Details" />
                                             </ListItemButton>
 
                                             {/* Facility Owners Categories */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'owner_type_name']);setIsParent(null); setResource('owners'); setResourceCategory('Facilities'); setTitle('facility owner categories'); setAddBtnLabel('facility owner category'); setEditMode(false);}}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'facility owner category' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'abbreviation', 'owner_type_name']);setIsParent(null); setResource('owners'); setResourceCategory('Facilities'); setTitle('facility owner categories'); setAddBtnLabel('facility owner category'); setEditMode(false);}}>
                                                 <ListItemText primary="Facility Owners Categories" />
                                             </ListItemButton>
 
                                             {/*  Job Titles */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']);setIsParent(null); setResource('job_titles'); setResourceCategory('Facilities'); setTitle('job titles'); setAddBtnLabel('job title'); setEditMode(false); }}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'job title' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name']);setIsParent(null); setResource('job_titles'); setResourceCategory('Facilities'); setTitle('job titles'); setAddBtnLabel('job title'); setEditMode(false); }}>
                                                 <ListItemText primary="Job Titles" />
                                             </ListItemButton>
 
                                             {/*  Regulatory Bodies */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'regulatory_body_type_name', 'regulation_verb']); setIsParent(null);setResource('regulating_bodies'); setResourceCategory('Facilities'); setTitle('regulatory bodies'); setAddBtnLabel('regulatory body'); setEditMode(false); }}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory body' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'regulatory_body_type_name', 'regulation_verb']); setIsParent(null);setResource('regulating_bodies'); setResourceCategory('Facilities'); setTitle('regulatory bodies'); setAddBtnLabel('regulatory body'); setEditMode(false); }}>
                                                 <ListItemText primary="Regulatory Bodies" />
                                             </ListItemButton>
 
                                             {/*  Regulatory Status */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']);setIsParent(null); setResource('regulation_status'); setResourceCategory('Facilities'); setTitle('regulatory statuses'); setAddBtnLabel('regulatory status'); setEditMode(false); }}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'regulatory status' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']);setIsParent(null); setResource('regulation_status'); setResourceCategory('Facilities'); setTitle('regulatory statuses'); setAddBtnLabel('regulatory status'); setEditMode(false); }}>
                                                 <ListItemText primary="Regulatory Status" />
                                             </ListItemButton>
 
                                             {/*  Upgrade Reason */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','reason', 'description']);setIsParent(null); setResource('level_change_reasons'); setResourceCategory('Facilities'); setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason'); setEditMode(false); }}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'upgrade reason' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','reason', 'description']);setIsParent(null); setResource('level_change_reasons'); setResourceCategory('Facilities'); setTitle('upgrade reasons'); setAddBtnLabel('upgrade reason'); setEditMode(false); }}>
                                                 <ListItemText primary="Upgrade Reason" />
                                             </ListItemButton>
 
@@ -1004,9 +1003,9 @@ console.log(editData, editMode, editID);
                                         {openCHU ? <ExpandLess /> : <ExpandMore />}
                                     </ListItemButton>
                                     <Collapse in={openCHU} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding>
+                                        <List component="ul" disablePadding>
                                             {/* CHU Rating Comments */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('chu_ratings'); setResourceCategory('CHU'); setTitle('CHU Rating Comments'); setAddBtnLabel('CHU Rating Comment') }}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'chu rating comment' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['']); setResource('chu_ratings'); setResourceCategory('CHU'); setTitle('CHU Rating Comments'); setAddBtnLabel('CHU Rating Comment') }}>
                                                 <ListItemText primary="CHU Rating Comments" />
                                             </ListItemButton>
                                         
@@ -1023,9 +1022,9 @@ console.log(editData, editMode, editID);
                                         {openDocuments ? <ExpandLess /> : <ExpandMore />}
                                     </ListItemButton>
                                     <Collapse in={openDocuments} timeout="auto" unmountOnExit>
-                                        <List component="div" disablePadding>
+                                        <List component="ul" disablePadding>
                                             {/* Documents */}
-                                            <ListItemButton sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'document' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description','fyl','document_type']); setResource('documents'); setResourceCategory('Documents'); setTitle('Documents'); setAddBtnLabel('Document') }}>
+                                            <ListItemButton componene="li" sx={{ ml: 8, backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'document' ? '#e7ebf0' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description','fyl','document_type']); setResource('documents'); setResourceCategory('Documents'); setTitle('Documents'); setAddBtnLabel('Document') }}>
                                                 <ListItemText primary="Documents" />
                                             </ListItemButton>
                                         
@@ -1126,7 +1125,7 @@ console.log(editData, editMode, editID);
                                                                             htmlFor={`add_${addBtnLabel}`}
                                                                             className='text-gray-600 capitalize text-sm'>
                                                                             County Name
-                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                            Counties        <span className='text-medium leading-12 font-semibold'>
                                                                                 {' '}
                                                                                 *
                                                                             </span>
@@ -1182,20 +1181,20 @@ console.log(editData, editMode, editID);
                                                                 defaultValue="constituencies"
                                                             >
                                                                 <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
-                                                                    <Tabs.Tab
+                                                                    <Tabs.Trigger
                                                                         id={1}
                                                                         value="constituencies"
                                                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                                                                     >
                                                                         Constituencies
-                                                                    </Tabs.Tab>
-                                                                    <Tabs.Tab
+                                                                    </Tabs.Trigger>
+                                                                    <Tabs.Trigger
                                                                         id={2}
                                                                         value="county_users"
                                                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                                                                     >
                                                                         County Users
-                                                                    </Tabs.Tab>
+                                                                    </Tabs.Trigger>
                                                                 
                                                                 </Tabs.List>
 
@@ -1735,8 +1734,8 @@ console.log(editData, editMode, editID);
                                                         case 'option group':
                                                             const handleAddOptionGroup = (e,path )=> {
                                                                 e.preventDefault()
-                                                                const obj = {};
-                                                                const jk ={}
+                                                                let obj = {};
+                                                                const jk = {}
                                                                 editMode ? obj = {...editData}: null
                                                                 console.log(jk);
                                                                 const elements = [...e.target];
