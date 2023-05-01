@@ -452,9 +452,9 @@ const Dash = (props) => {
                                                                     onClick={() => {
                                                                         setIsOpen(false)
                                                                         let parameters = "?"
-                                                                        if (document.getElementById('startdate').value && document.getElementById('startdate').value) {
-                                                                            parameters += "datefrom=" + document.getElementById('startdate').value
-                                                                            parameters += "&dateto=" + document.getElementById('enddate').value
+                                                                        if (document.getElementById('startdate').value && document.querySelector('#startdate').value) {
+                                                                            parameters += "datefrom=" + document.querySelector('#startdate').value
+                                                                            parameters += "&dateto=" + document.querySelector('#enddate').value
 
                                                                         }
                                                                         else {
@@ -471,7 +471,7 @@ const Dash = (props) => {
                                                                         if (props?.query?.ward) {
                                                                             parameters += "&ward=" + props?.query?.ward
                                                                         }
-                                                                        router.push('/dashboard' + parameters)
+                                                                        router.push(`/dashboard ${encodeURI(querySelector)}`)
                                                                     }
                                                                     }
                                                                     className="w-full px-4 py-2 bg-blue-500 text-white rounded-md"
