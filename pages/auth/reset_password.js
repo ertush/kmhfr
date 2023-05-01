@@ -14,7 +14,7 @@ const ResetPassword = (props) => {
             <Head>
                 <title>Reset Password | KMHFL</title>
                 <link rel="icon" href="/favicon.ico" />
-                <link rel="stylesheet" href="/assets/css/leaflet.css" />
+               
             </Head>
             <div className="w-full h-screen overflow-hidden bg-blue-50 flex flex-col gap-2 items-center justify-center p-3 md:p-0">
                 <div className="w-full flex flex-col max-w-screen-sm items-center justify-between px-2">
@@ -94,7 +94,7 @@ const ResetPassword = (props) => {
                     <div className="flex flex-row gap-4 w-full text-center">
                         <button type="submit" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-green-800 focus:bg-green-600 active:bg-green-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-green-700")}
                         >{loading ? "Loading..." : "Send Request"}</button> 
-                        <button className='flex justify-end items-center px-2 focus:outline-none focus:ring-1 focus:ring-yellow-500 text-black px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-gray-400 focus:bg-grey-400 active:bg-grey-400 ' 
+                        <button className='flex justify-end items-center focus:outline-none focus:ring-1 focus:ring-yellow-500 text-black px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-gray-400 focus:bg-grey-400 active:bg-grey-400 ' 
                         onClick={()=>router.push('/auth/login')}
                         >Cancel</button>
                     </div>
