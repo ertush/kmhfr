@@ -15,7 +15,7 @@ const Login = (props) => {
             <Head>
                 <title>Log in | KMHFL</title>
                 <link rel="icon" href="/favicon.ico" />
-                <link rel="stylesheet" href="/assets/css/leaflet.css" />
+              
             </Head>
             <div className="w-full h-screen overflow-hidden bg-blue-50 flex flex-col gap-2 items-center justify-center p-3 md:p-0">
                 <div className="w-full flex flex-col max-w-screen-sm items-center justify-between px-2">

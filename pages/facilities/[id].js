@@ -111,7 +111,7 @@ const Facility = (props) => {
       <Head>
         <title>KMHFL - {facility?.official_name ?? ""}</title>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="/assets/css/leaflet.css" />
+       
       </Head>
       
       <MainLayout>
@@ -603,7 +603,7 @@ const Facility = (props) => {
                 }
 
               }}
-              className="bg-green-500 w-auto rounded w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
+              className="bg-green-500 rounded w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
               <span>{isViewChangeLog ? 'Hide Change Log' : 'View Change Log'}</span>
               {
                 isViewChangeLog ?

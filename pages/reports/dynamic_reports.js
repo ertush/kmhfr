@@ -1402,7 +1402,7 @@ const DynamicReports = (props) => {
 
 
 
-                    <aside className="flex flex-col col-span-7 md:col-span-1 p-1 md:h-full hidden">
+                    {/* <aside className="flex flex-col col-span-7 md:col-span-1 p-1 md:h-full ">
                         <details className="rounded bg-transparent py-1 text-basez flex flex-col w-full md:stickyz md:top-2z" open>
                             <summary className="flex cursor-pointer w-full bg-white px-2">
                                 <h3 className="text-2xl tracking-tight font-bold leading-3">Filters</h3>
@@ -1482,7 +1482,7 @@ const DynamicReports = (props) => {
                                 }   
                             </div>
                         </details>
-                    </aside>
+                    </aside> */}
 
 
 
