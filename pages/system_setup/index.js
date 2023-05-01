@@ -7,7 +7,7 @@ import useDidMountEffect from '../../hooks/useDidMountEffect';
 
 // next imports
 import Head from 'next/dist/shared/lib/head'
-import { PlusIcon, TrashIcon } from '@heroicons/react/solid'
+import { PlusIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
 import * as Tabs from "@radix-ui/react-tabs";
 

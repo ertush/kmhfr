@@ -161,7 +161,7 @@ const Account = () => {
             <Head>
                 <title>KMHFL - {user?.name || "My account"}</title>
                 <link rel="icon" href="/favicon.ico" />
-                <link rel="stylesheet" href="/assets/css/leaflet.css" />
+               
             </Head>
 
             <MainLayout>

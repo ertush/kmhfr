@@ -160,7 +160,7 @@ export default function HeaderLayout({
           <button className="border-2 border-gray-600 rounded p-1 md:hidden focus:bg-black focus:border-black focus:text-white hover:bg-black hover:border-black hover:text-white active:bg-black active:border-black active:text-white">
             <MenuAlt1Icon className="w-6" />
           </button>
-          <ul className="flex-col md:flex-row items-start md:mx-4 md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
+          <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
             {/* Dashboard / Home */}
             <li className="flex-wrap font-semibold">
               <Link href={isLoggedIn ? "/dashboard" : "/"}>

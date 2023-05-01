@@ -218,11 +218,11 @@ const CommUnit = (props) => {
       <Head>
         <title>KMHFL - {cu?.name || cu?.official_name}</title>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="/assets/css/leaflet.css" />
+    
       </Head>
 
       <MainLayout>
-        <div className="w-full grid grid-cols-1 md:grid-cols-7 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
+        <div className="w-full grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
           <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
             {/* Breadcrumb */}
             <div className="flex flex-row gap-2 text-sm md:text-base">
