@@ -777,7 +777,7 @@ console.log(editData, editMode, editID);
                             <span className="text-gray-500" >System setup</span>   
                     </div>
                     {/* Header Bunner */}
-                    <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                    <div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                         <h2 className='text-xl font-bold text-black capitalize'>{title}</h2>
                         {
                         !isAddForm && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' &&
