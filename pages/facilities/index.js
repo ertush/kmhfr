@@ -486,7 +486,8 @@ const Home = (props) => {
 
                                             }
 
-                                            {facilities && facilities?.length >= 30 && !khisSynched && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                                            {facilities && facilities?.length >= 30 && !khisSynched && 
+                                            <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                                 <li className="text-base text-gray-600">
                                                     <Link href={
                                                         (() => 
@@ -502,7 +503,7 @@ const Home = (props) => {
                                                             `${props.path}?page=${props?.data?.current_page}`
                                                         )()
                                                     }>
-                                                        <a className="text-gray-400 font-semibold p-2 underline">{props?.data?.current_page}</a>
+                                                        <span className="text-gray-400 font-semibold p-2 underline">{props?.data?.current_page}</span>
                                                     </Link>
                                                 </li>
                                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map((page, i) => (
@@ -520,7 +521,7 @@ const Home = (props) => {
                                                             `${props.path}?page=${page}`
                    
                                                         )()}>
-                                                            <a className="text-blue-800 p-2 hover:underline">{page}</a>
+                                                            <span className="text-blue-800 p-2 hover:underline">{page}</span>
                                                         </Link>
                                                     </li>
                                                 ))}

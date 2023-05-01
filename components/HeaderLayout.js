@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import {
   ChevronDownIcon,
-  ExternalLinkIcon,
   MenuAlt1Icon,
   SearchIcon,
 } from "@heroicons/react/solid";
@@ -161,7 +160,7 @@ export default function HeaderLayout({
           <button className="border-2 border-gray-600 rounded p-1 md:hidden focus:bg-black focus:border-black focus:text-white hover:bg-black hover:border-black hover:text-white active:bg-black active:border-black active:text-white">
             <MenuAlt1Icon className="w-6" />
           </button>
-          <ul className="flex-col md:flex-row items-start md:mx-4 md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
+          <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
             {/* Dashboard / Home */}
             <li className="flex-wrap font-semibold">
               <Link href={isLoggedIn ? "/dashboard" : "/"}>
@@ -315,26 +314,24 @@ export default function HeaderLayout({
               >
                 <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
-                    <Link
-                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
-                        }`}
-                      href="/reports/dynamic_reports"
-                      target="_blank"
-                    >
-                      Dynamic Reports
+                    <Link href="/reports/dynamic_reports">
+                      <span className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
+                        }`}>
+                        Dynamic Reports
+                      </span>
+
                     </Link>
                   )}
                 </Menu.Item>
                 <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
-                    <Link
-                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
-                        }`}
-                      href="/reports/static_reports"
-                      target="_blank"
-                    >
-                      Static Reports
-                    </Link>
+                   <Link href="/reports/dynamic_reports">
+                   <span className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
+                     }`}>
+                         Static Reports
+                   </span>
+                 
+                 </Link>
                   )}
                 </Menu.Item>
 

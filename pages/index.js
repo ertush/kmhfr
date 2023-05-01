@@ -53,7 +53,7 @@ const Home = (props) => {
                         </div>
                         <div className="col-span-2 md:col-span-1 border rounded-lg border-gray-300 shadow group hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
                             <Link href="/facilities">
-                                <a className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">Facilities</a>
+                                <span className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">Facilities</span>
                             </Link>
                             <p className="text-base">
                                 This provides a list of all health facilities and there is a provided advanced search where you can refine your search.
@@ -61,7 +61,7 @@ const Home = (props) => {
                         </div>
                         <div className="col-span-2 md:col-span-1 border rounded-lg border-gray-300 shadow group hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
                             <Link href="/community-units">
-                                <a className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">Community Units</a>
+                                <span className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">Community Units</span>
                             </Link>
                             <p className="text-base">
                                 This provides a list of all community health units and the system provided advance search where you can refine your search by using administrative units.
@@ -69,7 +69,7 @@ const Home = (props) => {
                         </div>
                         <div className="col-span-2 md:col-span-1 border rounded-lg border-gray-300 shadow group hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
                             <Link href="/gis">
-                                <a className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">GIS Explorer</a>
+                                <span className="text-left w-full text-blue-800 hover:text-black focus:text-black active:text-black font-semibold text-xl">GIS Explorer</span>
                             </Link>
                             <p className="text-base">
                                 This visualizes administrative units (counties, constituencies, wards) and their facilities and Community Health Units. Users can also rate Facilities and Community Health Units.

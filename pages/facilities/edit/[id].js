@@ -765,11 +765,11 @@ const EditFacility = (props) => {
             <Head>
                 <title>KMHFL - {official_name}</title>
                 <link rel="icon" href="/favicon.ico" />
-                <link rel="stylesheet" href="/assets/css/leaflet.css" />
+               
             </Head>
 
             <MainLayout>
-                <div className="w-full grid md:grid-cols-7 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
+                <div className="w-full grid md:grid-cols-7 place-content-center gap-4 md:p-2 my-6">
                     {/* Heading */}
                     <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
                         {/* Bread crumbs */}
@@ -806,7 +806,7 @@ const EditFacility = (props) => {
                     </div>
                     
 
-                    <div className="md:col-span-6 md:col-span-4 flex flex-col items-center md:gap-3 gap-y-3 mt-4">
+                    <div className="md:col-span-6  flex flex-col items-center md:gap-3 gap-y-3 mt-4">
                         {
                             isSavedChanges && facilityUpdateData ?
                             // Display Changes to be updated
