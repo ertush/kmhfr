@@ -283,6 +283,66 @@ export default function HeaderLayout({
                 </Link>
               </li>
             }
+
+            {/* Public site menus */}
+
+            <Menu as="div" className="relative ">
+              <Menu.Button
+                as="div"
+                className="flex items-center justify-center gap-1 cursor-pointer"
+              >
+                <span className={`
+                    text-base 
+                    md:text-lg 
+                    font-semibold 
+                    leading-none 
+                    p-0 
+                    hidden 
+                    sm:inline
+                    cursor-pointer
+                    ${(currentPath == "/public/facilities" || currentPath == "/public/community_units"
+                    ? activeClasses
+                    : inactiveClasses)
+                  }`}>
+                  Find
+                </span>
+                <span className="leading-none p-0">
+                  <ChevronDownIcon className="h-4 w-5" />
+                </span>
+              </Menu.Button>
+              <Menu.Items
+                as="ul"
+                className="list-none flex flex-col items-center bg-white outline-none shadow-md font-semibold justify-start gap-2 p-3 absolute mt-3 text-gray-800 right-0 w-40 rounded"
+              >
+                <Menu.Item as="li" className="flex items-center w-full gap-1">
+                  {({ active }) => (
+                    <Link
+                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
+                        }`}
+                      href="/public/facilities"
+                      target="_blank"
+                    >
+                      Facilities
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item as="li" className="flex items-center w-full gap-1">
+                  {({ active }) => (
+                    <Link
+                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
+                        }`}
+                      href="/public/community_units"
+                      target="_blank"
+                    >
+                      Community units
+                    </Link>
+                  )}
+                </Menu.Item>
+
+              </Menu.Items>
+            </Menu>
+
+
             {/* Reports */}
 
             <Menu as="div" className="relative ">
@@ -371,6 +431,21 @@ export default function HeaderLayout({
           className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
           action={path || "/facilities"}
         >
+          <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="find"
+          // onChange={ev => {
+          //     if (ev.target.value && ev.target.value.length > 0) {
+          //         setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
+          //     }
+          // }}
+          >
+              {/* {userContactType && userContactType.map(ctype => (
+                  <option value={ctype?.id} key={ctype?.id}>{ctype?.name}</option>
+              ))} */}
+               <option value="Facilities">{`Facilities`}</option>
+               <option value="Community Health Unit">{`Community Health Unit`}</option>
+               <option value="Services">{`Services`}</option>
+
+          </select>          
           <input
             name="q"
             id="search-input"
