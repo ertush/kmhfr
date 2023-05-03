@@ -42,20 +42,21 @@ const getToken = (req, res, refresh_token, creds) => {
     } else {
         console.log('Getting new token...')
         bod.grant_type = "password"
-        bod.username = creds?.username || process.env.CLIENT_USERNAME
-        bod.password = creds?.password || process.env.CLIENT_PASSWORD
+        bod.username = creds?.username || process.env.NEXT_PUBLIC_CLIENT_USERNAME
+        bod.password = creds?.password || process.env.NEXT_PUBLIC_CLIENT_PASSWORD
     }
-    bod.client_id = process.env.CLIENT_PUBLIC_ID
-    bod.client_secret = process.env.CLIENT_PUBLIC_SECRET
+    bod.client_id = process.env.NEXT_PUBLIC_CLIENT_PUBLIC_ID
+    bod.client_secret = process.env.NEXT_PUBLIC_CLIENT_PUBLIC_SECRET
 
-    console.log({ token_url: process.env.PUBLIC_TOKEN_URL })
-    return fetch(process.env.PUBLIC_TOKEN_URL, {
+    console.log({ token_url: process.env.NEXT_PUBLIC_CLIENT_PUBLIC_ID })
+    console.log({jgjdfjkf: new URLSearchParams(bod).toString()})
+    return fetch(process.env.NEXT_PUBLIC_PUBLIC_TOKEN_URL, {
         'method': 'POST',
         'headers': {
             "Accept": "application/json",
             'cache-control': "no-cache",
             "Content-Type": "application/x-www-form-urlencoded", 
-            "Authorization": "Basic " + Buffer.from(process.env.CLIENT_USERNAME + ":" + process.env.CLIENT_PASSWORD).toString('base64')
+            "Authorization": "Basic " + Buffer.from(process.env.NEXT_PUBLIC_CLIENT_PUBLIC_ID + ":" + process.env.NEXT_PUBLIC_CLIENT_PUBLIC_SECRET).toString('base64')
         },
         'body': new URLSearchParams(bod).toString() //bod
     })

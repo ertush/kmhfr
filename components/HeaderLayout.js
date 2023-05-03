@@ -102,7 +102,8 @@ export default function HeaderLayout({
         (typeof window !== "undefined" &&
           window.document.cookie.indexOf("access_token=") > -1) ||
         false;
-      setIsLoggedIn(is_user_logged_in);
+      // console.log("is_user_logged_in", is_user_logged_in)
+      // setIsLoggedIn(is_user_logged_in);
       let session_token = null;
       if (is_user_logged_in) {
         session_token = JSON.parse(
@@ -124,8 +125,9 @@ export default function HeaderLayout({
               setIsLoggedIn(false);
               setUser(null);
             } else {
-              setIsLoggedIn(true);
-              setUser(usr);
+              usr.id == 6 ?  setIsLoggedIn(false) :setIsLoggedIn(true); setUser(usr);
+              // setIsLoggedIn(true);
+              // setUser(usr);
               
             }
           }
@@ -140,6 +142,8 @@ export default function HeaderLayout({
       mtd = false;
     };
   }, []);
+
+  // console.log(isLoggedIn)
 
   return (
     <header className="flex flex-wrap items-center justify-start gap-x-4 w-full p-1 max-w-screen-3xl">
@@ -180,7 +184,7 @@ export default function HeaderLayout({
               </Link>
             </li>
             {/* Facilities */}
-            {hasPermission(/^facilities.view_facility$/, userPermissions) &&
+            {hasPermission(/^facilities.view_facility$/, userPermissions) && isLoggedIn && 
             <li className="flex-wrap font-semibold">
               <Link href="/facilities">
                 <p
@@ -202,7 +206,7 @@ export default function HeaderLayout({
             </li>
             }
             {/* Community Units */}
-            {hasPermission(/^chul.view_communityhealthunit$/, userPermissions) &&
+            {hasPermission(/^chul.view_communityhealthunit$/, userPermissions) && isLoggedIn &&
             <li className="flex-wrap font-semibold">
               <Link href="/community-units">
                 <p
@@ -223,7 +227,7 @@ export default function HeaderLayout({
             }
             {/* Users */}
          
-            {hasPermission(/^users.view_mfluser$/, userPermissions) &&
+            {hasPermission(/^users.view_mfluser$/, userPermissions) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/users">
                   <p
@@ -242,7 +246,7 @@ export default function HeaderLayout({
               </li>
             }
             {/* GIS */}
-            {hasPermission(/^mfl_gis.view_.*$/, userPermissions) &&
+            {hasPermission(/^mfl_gis.view_.*$/, userPermissions) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/gis">
                   <p
@@ -264,7 +268,7 @@ export default function HeaderLayout({
             {/* System setup */}
             {
               hasPermission(/^common.add_county$/, userPermissions) &&
-              hasPermission(/^common.delete_county$/, userPermissions) &&
+              hasPermission(/^common.delete_county$/, userPermissions) && isLoggedIn&&
               <li className="flex-wrap font-semibold">
                 <Link href="/system_setup">
                   <p
@@ -285,7 +289,7 @@ export default function HeaderLayout({
             }
 
             {/* Public site menus */}
-
+            {!isLoggedIn &&
             <Menu as="div" className="relative ">
               <Menu.Button
                 as="div"
@@ -341,10 +345,10 @@ export default function HeaderLayout({
 
               </Menu.Items>
             </Menu>
-
+            }
 
             {/* Reports */}
-
+            {isLoggedIn &&
             <Menu as="div" className="relative ">
               <Menu.Button
                 as="div"
@@ -399,10 +403,10 @@ export default function HeaderLayout({
                 </Menu.Item>
 
               </Menu.Items>
-            </Menu>
+            </Menu>}
 
             {/* Admin Offices */}
-            { hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) &&
+            { hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/admin_offices">
                   <p
@@ -429,7 +433,7 @@ export default function HeaderLayout({
           // !router.asPath.includes('/facilities') &&
         <form
           className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
-          action={path || "/facilities"}
+          // action={path || "/facilities"}
         >
           <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="find"
           // onChange={ev => {

@@ -325,7 +325,6 @@ const Home = (props) => {
 
 Home.getInitialProps = async (ctx) => {
 	console.log(ctx);
-	console.log(ctx.query)
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 	const fetchFilters = async (token) => {
 		let filters_url =
