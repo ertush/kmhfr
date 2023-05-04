@@ -70,7 +70,7 @@ export default function HeaderLayout({
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const [searchOption, setSearchOption]=useState('');
   const [user, setUser] = useState(null);
 
   let API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -92,10 +92,8 @@ export default function HeaderLayout({
     path = "/facilities";
   }
 
-
+  console.log(path)
   useEffect(() => {
-
- 
     let mtd = true;
     if (mtd) {
       let is_user_logged_in =
@@ -431,24 +429,22 @@ export default function HeaderLayout({
         {
           !router.asPath.includes('/dashboard') &&
           // !router.asPath.includes('/facilities') &&
+         !isLoggedIn ?
         <form
           className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
-          // action={path || "/facilities"}
+          action={ searchOption =="Facilities"? "/public/facilities": searchOption =="Community Health Unit" ? "/public/community_units" :searchOption =="Services" ? '/public/services': '/public/facilities' }
         >
           <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="find"
-          // onChange={ev => {
-          //     if (ev.target.value && ev.target.value.length > 0) {
-          //         setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
-          //     }
-          // }}
+          onChange={ev => {
+              if (ev.target.value && ev.target.value.length > 0) {
+                  // setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
+                  setSearchOption(ev.target.value)
+              }
+          }}
           >
-              {/* {userContactType && userContactType.map(ctype => (
-                  <option value={ctype?.id} key={ctype?.id}>{ctype?.name}</option>
-              ))} */}
                <option value="Facilities">{`Facilities`}</option>
                <option value="Community Health Unit">{`Community Health Unit`}</option>
                <option value="Services">{`Services`}</option>
-
           </select>          
           <input
             name="q"
@@ -464,7 +460,27 @@ export default function HeaderLayout({
           >
             <SearchIcon className="w-5 h-5" />
           </button>
-        </form>
+        </form> :
+        <form
+        className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
+        action={ path || '/facilities' }
+      >
+               
+        <input
+          name="q"
+          id="search-input"
+          className="flex-none bg-gray-50 rounded p-2 md:w-9/12 md:flex-grow-0 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+          type="search"
+          defaultValue={searchTerm}
+          placeholder="Search a facility/CHU"
+        />
+        <button
+          type="submit"
+          className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+        >
+          <SearchIcon className="w-5 h-5" />
+        </button>
+      </form>
       }
       </div>
       {isLoggedIn && user ? (

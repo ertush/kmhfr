@@ -354,18 +354,7 @@ Home.getInitialProps = async (ctx) => {
 	const fetchData = async (token) => {
 		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
 		let qry = ''
-		let url
-		if(ctx.query !== null){
-			qry = Object.keys(filterQuery).map(function (key) {
-				let er = (key) + '=' + (filterQuery[key]);
-				return er
-			 }).join('&')
-
-			 console.log(qry);
-			 url =API_URL + `/chul/units/?${qry}&fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
-		}else{
-			 url =API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
-		}
+		let url =API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;	
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {
 			query.searchTerm = ctx.query.q;

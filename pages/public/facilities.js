@@ -8,9 +8,9 @@ import { useRouter } from 'next/router';
 
 
 const Home = (props) => {
-    console.log(props)
+    // console.log(props)
 	const router = useRouter();
-	const cus = props?.data?.results;
+	const facilities = props?.data?.results;
 	const filters = props?.filters;
 	const [drillDown, setDrillDown] = useState({});
 	const qf = props?.query?.qf || 'all';
@@ -130,40 +130,49 @@ const Home = (props) => {
                             </h5>
 						</div>
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
-							{/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
-							{cus && cus.length > 0 ? (
-								cus.map((comm_unit, index) => (
+							{/* <pre>{JSON.stringify(facilities[0], null, 2)}</pre> */}
+							{facilities && facilities.length > 0 ? (
+								facilities.map((hf, index) => (
 									<div
-										key={comm_unit.id}
+										key={hf.id}
 										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full'>
 										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
-													href={'/community-units/' + comm_unit.id}
+													href={'/community-units/' + hf.id}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 													<small className='text-gray-500'>
 														{index + props?.data?.start_index}.
 													</small>{' '}
-													{comm_unit.official_name ||
-														comm_unit.official_name ||
-														comm_unit.name}
+													{hf.official_name ||
+														hf.official_name ||
+														hf.name}
 												</a>
 											</h3>
 											{/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 												<span className='text-lg text-black font-semibold'>
-													# {comm_unit.code ? comm_unit.code : 'NO_CODE' || ' '}
+													# {hf.code ? hf.code : 'NO_CODE' || ' '}
 												</span>
-												<span>{comm_unit.facility_name || ' '}</span>
+												<span>{hf.facility_name || ' '}</span>
 											</p>
+											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
+
+											{(hf?.facility_type_category) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>{hf?.facility_type_category}</span> : ""}
+											</p>
+											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
+
+										    {(hf?.facility_type_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>{hf?.facility_type_name}</span> : ""}
+											</p>
+
 											<div className='text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full'>
 												<div className='flex flex-col items-start justify-start gap-0 leading-none'>
 													<label className='text-xs text-gray-500'>
 														County:
 													</label>
 													<span>
-														{comm_unit.facility_county ||
-															comm_unit.county ||
+														{hf.facility_county ||
+															hf.county_name ||
 															'N/A'}
 													</span>
 												</div>
@@ -172,59 +181,29 @@ const Home = (props) => {
 														Sub-county:
 													</label>
 													<span>
-														{comm_unit.facility_subcounty ||
-															comm_unit.sub_county ||
+														{hf.facility_subcounty ||
+															hf.sub_county_name ||
 															'N/A'}
 													</span>
 												</div>
 												<div className='flex flex-col items-start justify-start gap-0 leading-none'>
 													<label className='text-xs text-gray-500'>Ward:</label>
-													<span>{comm_unit.facility_ward || 'N/A'}</span>
+													<span>{hf.ward_name || 'N/A'}</span>
 												</div>
 												<div className='flex flex-col items-start justify-start gap-0 leading-none'>
 													<label className='text-xs text-gray-500'>
 														Constituency:
 													</label>
 													<span>
-														{comm_unit.constituency_name ||
-															comm_unit.facility_constituency ||
+														{hf.constituency_name ||
+															hf.constituency_name ||
 															'N/A'}
 													</span>
 												</div>
 											</div>
 										</div>
 										<div className='col-span-8 md:col-span-3 flex flex-wrap items-center gap-3 text-lg'>
-											{comm_unit.status_name ? (
-												<span
-													className={
-														'leading-none border whitespace-nowrap shadow-xs text-sm rounded py-1 px-2 text-black ' +
-														(comm_unit.status_name
-															.toLocaleLowerCase()
-															.includes('non-')
-															? ' bg-red-200 border-red-300/60'
-															: comm_unit.status_name
-																	.toLocaleLowerCase()
-																	.includes('fully')
-															? ' bg-green-200 border-green-300/60'
-															: ' bg-yellow-200 border-yellow-300/60')
-													}>
-													{comm_unit.status_name[0].toLocaleUpperCase()}
-													{comm_unit.status_name.slice(1).toLocaleLowerCase()}
-												</span>
-											) : (
-												''
-											)}
-											{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
-											{comm_unit.has_edits ? (
-												<span
-													className={
-														'leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black'
-													}>
-													Has edits
-												</span>
-											) : (
-												''
-											)}
+										{(hf?.operational || hf?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
 										</div>
 										<div className='col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
 											{/* <a href={'/community-unit/edit/' + comm_unit.id} className="text-blue-800 hover:underline active:underline focus:underline bg-blue-200 md:bg-transparent px-2 md:px-0 rounded md:rounded-none">
@@ -248,7 +227,7 @@ const Home = (props) => {
 									</Link>
 								</div>
 							)}
-							{cus && cus.length >= 30 && (
+							{facilities && facilities.length >= 30 && (
 								<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
 									<li className='text-base text-gray-600'>
 		
@@ -354,18 +333,7 @@ Home.getInitialProps = async (ctx) => {
 	const fetchData = async (token) => {
 		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
 		let qry = ''
-		let url
-		if(ctx.query !== null){
-			qry = Object.keys(filterQuery).map(function (key) {
-				let er = (key) + '=' + (filterQuery[key]);
-				return er
-			 }).join('&')
-
-			 console.log(qry);
-			 url =API_URL + `/chul/units/?${qry}&fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
-		}else{
-			 url =API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;
-		}
+		let url = API_URL +`/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status_name`
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {
 			query.searchTerm = ctx.query.q;
@@ -404,7 +372,7 @@ Home.getInitialProps = async (ctx) => {
 				query,
 				token,
 				filters: { ...ft },
-				path: ctx.asPath || '/community-units',
+				path: ctx.asPath || '/facilities',
 				current_url: current_url,
 			};
 		} catch (err) {
@@ -414,7 +382,7 @@ Home.getInitialProps = async (ctx) => {
 				err: err,
 				data: [],
 				query: {},
-				path: ctx.asPath || '/community-units',
+				path: ctx.asPath || '/facilities',
 				current_url: '',
 			};
 		}
@@ -434,7 +402,7 @@ Home.getInitialProps = async (ctx) => {
 				if (ctx?.asPath) {
 					window.location.href = ctx?.asPath;
 				} else {
-					window.location.href = '/community-units';
+					window.location.href = '/facilities';
 				}
 			}
 			setTimeout(() => {
@@ -443,7 +411,7 @@ Home.getInitialProps = async (ctx) => {
 					err: err,
 					data: [],
 					query: {},
-					path: ctx.asPath || '/community-units',
+					path: ctx.asPath || '/facilities',
 					current_url: '',
 				};
 			}, 1000);
