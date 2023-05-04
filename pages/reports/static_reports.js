@@ -41,11 +41,11 @@ const Users = (props) => {
             href={{ pathname: `/reports/by_county/`,
             query: { id: countyID, type:reportType } }}
     
-            ><a>{params.value}</a></Link>
+            ><span>{params.value}</span></Link>
         )}
 
-    const [gridApi, setGridApi] = useState(null);
-    const [gridColumnApi, setGridColumnApi] = useState(null);
+    // const [gridApi, setGridApi] = useState(null);
+    // const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
@@ -251,13 +251,13 @@ const Users = (props) => {
                         {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
                                 <li className="text-base text-gray-600">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
+                                        <span className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</span>
                                     </Link>
                                 </li>
                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
                                     <li key={page} className="text-base text-gray-600">
                                         <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
-                                            <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
+                                            <span className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</span>
                                         </Link>
                                     </li>
                                 ))}

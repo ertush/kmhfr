@@ -119,11 +119,11 @@ const system_setup = (props) => {
             router.push('/unauthorized')
         }
 
-        return () => {
-            setFields(null)
-            setIsAddForm(false)
-            setRows(null)
-        }
+        // return () => {
+        //     setFields(null)
+        //     setIsAddForm(false)
+        //     setRows(null)
+        // }
     },[])
    
     const fetchDataCategory = async () => {
