@@ -347,6 +347,12 @@ function AddFacility(props) {
 
 	]) // [0]
 
+	const handleDeleteField = (index) => {
+		const values = facilityDepts;
+		values.splice(index, 1);
+		setFacilityDepts((draft) => ([ ...values]))
+	};
+
 	const [emergencyBeds, setEmergencyBeds] = useState(0)
 	const [icuBeds, setICUBeds] = useState(0)
 	const [hduBeds, setHDUBeds] = useState(0)
