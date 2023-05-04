@@ -107,7 +107,7 @@ export default function HeaderLayout({
       let session_token = null;
       if (is_user_logged_in) {
         session_token = JSON.parse(
-          window.document.cookie.split("access_token=")[1].split(";")[0]
+          decodeURIComponent(window.document.cookie.split("access_token=")[1].split(";")[0])
         );
       }
 

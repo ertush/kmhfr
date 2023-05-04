@@ -48,8 +48,6 @@ const getToken = (req, res, refresh_token, creds) => {
     bod.client_id = process.env.NEXT_PUBLIC_CLIENT_PUBLIC_ID
     bod.client_secret = process.env.NEXT_PUBLIC_CLIENT_PUBLIC_SECRET
 
-    console.log({ token_url: process.env.NEXT_PUBLIC_CLIENT_PUBLIC_ID })
-    console.log({jgjdfjkf: new URLSearchParams(bod).toString()})
     return fetch(process.env.NEXT_PUBLIC_PUBLIC_TOKEN_URL, {
         'method': 'POST',
         'headers': {
@@ -58,7 +56,7 @@ const getToken = (req, res, refresh_token, creds) => {
             "Content-Type": "application/x-www-form-urlencoded", 
             "Authorization": "Basic " + Buffer.from(process.env.NEXT_PUBLIC_CLIENT_PUBLIC_ID + ":" + process.env.NEXT_PUBLIC_CLIENT_PUBLIC_SECRET).toString('base64')
         },
-        'body': new URLSearchParams(bod).toString() //bod
+        'body': new URLSearchParams(bod).toString()//bod
     })
         .then(rs => rs.json())
         .then(response => {
@@ -120,7 +118,7 @@ const checkToken = async (req, res, isProtected, creds) => {
         }
     } else if (isServer) {
         console.log('running checkToken in the SERVER')
-        ct = cookies.get('access_token')
+        ct = decodeURIComponent(cookies.get('access_token'))
         if (typeof ct == "string") {
             ct = JSON.parse(ct)
         }
@@ -149,7 +147,7 @@ const checkToken = async (req, res, isProtected, creds) => {
         return getToken(req, res, refresh_token, crds).then(tk => {
             if (!tk.error) {
                 console.log('Token refreshed.')
-                return tkn;
+                return tk;
             } else {
                 console.log('Error refreshing token: ', tk)
                 // res.redirect('/auth/login?was='+encodeURIComponent(req.url))
