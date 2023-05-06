@@ -4,9 +4,7 @@ import MainLayout from '../components/MainLayout'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { getUserDetails } from "../controllers/auth/auth";
-
-
-
+import { checkToken } from '../controllers/auth/public_auth';
 
 const Home = (props) => {
 
@@ -143,7 +141,38 @@ const Home = (props) => {
 
 Home.getInitialProps = async (ctx) => {
 
-    return {loggedIn: false, token: null}
+    // return {loggedIn: false, token: null}
+    return checkToken(ctx.req, ctx.res, {username:process.env.NEXT_PUBLIC_CLIENT_USERNAME, password:process.env.NEXT_PUBLIC_CLIENT_PASSWORD})
+		.then((t) => {
+            console.log(t)
+			if (t.error) {
+				throw new Error('Error checking token');
+			} else {
+				let token = t.token;
+        return {loggedIn: false, token: token}
+				// return fetchData(token).then((t) => t);
+			}
+		})
+		.catch((err) => {
+			console.log('Error checking token: ', err);
+			if (typeof window !== 'undefined' && window) {
+				if (ctx?.asPath) {
+					window.location.href = ctx?.asPath;
+				} else {
+					window.location.href = '/';
+				}
+			}
+			setTimeout(() => {
+				return {
+					error: true,
+					err: err,
+					data: [],
+					query: {},
+					path: ctx.asPath || '/',
+					current_url: '',
+				};
+			}, 1000);
+		});
 
 }
 

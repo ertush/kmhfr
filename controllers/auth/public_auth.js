@@ -118,7 +118,8 @@ const checkToken = async (req, res, isProtected, creds) => {
         }
     } else if (isServer) {
         console.log('running checkToken in the SERVER')
-        ct = decodeURIComponent(cookies.get('access_token'))
+        ct = cookies.get('access_token')
+        // console.log('ct: ', ct)
         if (typeof ct == "string") {
             ct = JSON.parse(ct)
         }
@@ -131,15 +132,6 @@ const checkToken = async (req, res, isProtected, creds) => {
     //check of cookie has expired
     if (!ct || ct == null || ct == undefined || (ct && JSON.parse(ct).expires > Date.now())) {
         console.log('Token expired. Refreshing...')
-        // if (req && req.asPath != '/api/login' && req.asPath != '/auth/login') {//check if protected page too
-        //     // res.writeHead(301, { Location: '/auth/login?was=' + req.asPath + '&h=1' })
-        //     console.log('page not protected')
-        //     res.writeHead(301, { Location: '/auth/login?was=' + encodeURIComponent(req.url) + '&h=1' })
-        //     res.end()
-        //     return { error: true, message: 'Token expired. Refreshing...' }
-        // } else if (!req || typeof window != "undefined") {
-        //     window.location.href = '/auth/login?h=1'
-        // }
         let refresh_token
         if (ct && ct != undefined && JSON.parse(ct).refresh_token != undefined) {
             refresh_token = JSON.parse(ct).refresh_token
