@@ -1,23 +1,66 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../components/MainLayout'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-
-
+import { getUserDetails } from "../controllers/auth/auth";
+import { checkToken } from '../controllers/auth/public_auth';
 
 const Home = (props) => {
 
 
     const router = useRouter()
-
-    let is_user_logged_in =
-    (typeof window !== "undefined" &&
-      window.document.cookie.indexOf("access_token=") > -1) ||
-    false;
-
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
+    let API_URL = process.env.NEXT_PUBLIC_API_URL;
     
-    if(is_user_logged_in) router.push('/dashboard')
+    // if(is_user_logged_in) router.push('/dashboard')
+
+      useEffect(() => {
+
+ 
+        let mtd = true;
+        if (mtd) {
+          let is_user_logged_in =
+            (typeof window !== "undefined" &&
+              window.document.cookie.indexOf("access_token=") > -1) ||
+            false;
+          let session_token = null;
+          if (is_user_logged_in) {
+            session_token = JSON.parse(
+              window.document.cookie.split("access_token=")[1].split(";")[0]
+            );
+          }
+    
+          if (
+            is_user_logged_in &&
+            typeof window !== "undefined" &&
+            session_token !== null
+          ) {
+          
+    
+            getUserDetails(session_token.token, `${API_URL}/rest-auth/user/`).then(
+              (usr) => {
+            
+                if (usr.error || usr.detail) {
+                  setIsLoggedIn(false);
+                  setUser(null);
+                } else {
+                  usr.id == 6 ?  setIsLoggedIn(false) :setIsLoggedIn(true); setUser(usr);
+                  
+                }
+              }
+            );
+          } else {
+            console.log("no session. Refreshing...");
+            // router.push('/auth/login')
+          }
+        }
+    
+        return () => {
+          mtd = false;
+        };
+      }, []);
   
 
     useEffect(() => {    
@@ -25,8 +68,7 @@ const Home = (props) => {
        
 
         if (mtd) {
-
-            
+            isLoggedIn? router.push('/dashboard') : router.push('/')
         }
 
         return () => {
@@ -99,7 +141,38 @@ const Home = (props) => {
 
 Home.getInitialProps = async (ctx) => {
 
-    return {loggedIn: false, token: null}
+    // return {loggedIn: false, token: null}
+    return checkToken(ctx.req, ctx.res, {username:process.env.NEXT_PUBLIC_CLIENT_USERNAME, password:process.env.NEXT_PUBLIC_CLIENT_PASSWORD})
+		.then((t) => {
+            console.log(t)
+			if (t.error) {
+				throw new Error('Error checking token');
+			} else {
+				let token = t.token;
+        return {loggedIn: false, token: token}
+				// return fetchData(token).then((t) => t);
+			}
+		})
+		.catch((err) => {
+			console.log('Error checking token: ', err);
+			if (typeof window !== 'undefined' && window) {
+				if (ctx?.asPath) {
+					window.location.href = ctx?.asPath;
+				} else {
+					window.location.href = '/';
+				}
+			}
+			setTimeout(() => {
+				return {
+					error: true,
+					err: err,
+					data: [],
+					query: {},
+					path: ctx.asPath || '/',
+					current_url: '',
+				};
+			}, 1000);
+		});
 
 }
 
