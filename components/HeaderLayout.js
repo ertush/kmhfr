@@ -69,7 +69,7 @@ export default function HeaderLayout({
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const [searchOption, setSearchOption]=useState('');
   const [user, setUser] = useState(null);
 
   let API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -91,17 +91,16 @@ export default function HeaderLayout({
     path = "/facilities";
   }
 
-
+  console.log(path)
   useEffect(() => {
-
- 
     let mtd = true;
     if (mtd) {
       let is_user_logged_in =
         (typeof window !== "undefined" &&
           window.document.cookie.indexOf("access_token=") > -1) ||
         false;
-      setIsLoggedIn(is_user_logged_in);
+      // console.log("is_user_logged_in", is_user_logged_in)
+      // setIsLoggedIn(is_user_logged_in);
       let session_token = null;
       if (is_user_logged_in) {
         session_token = JSON.parse(
@@ -123,8 +122,9 @@ export default function HeaderLayout({
               setIsLoggedIn(false);
               setUser(null);
             } else {
-              setIsLoggedIn(true);
-              setUser(usr);
+              usr.id == 6 ?  setIsLoggedIn(false) :setIsLoggedIn(true); setUser(usr);
+              // setIsLoggedIn(true);
+              // setUser(usr);
               
             }
           }
@@ -139,6 +139,8 @@ export default function HeaderLayout({
       mtd = false;
     };
   }, []);
+
+  // console.log(isLoggedIn)
 
   return (
     <header className="flex flex-wrap items-center justify-start gap-x-4 w-full p-1 max-w-screen-3xl">
@@ -179,7 +181,7 @@ export default function HeaderLayout({
               </Link>
             </li>
             {/* Facilities */}
-            {hasPermission(/^facilities.view_facility$/, userPermissions) &&
+            {hasPermission(/^facilities.view_facility$/, userPermissions) && isLoggedIn && 
             <li className="flex-wrap font-semibold">
               <Link href="/facilities">
                 <p
@@ -201,7 +203,7 @@ export default function HeaderLayout({
             </li>
             }
             {/* Community Units */}
-            {hasPermission(/^chul.view_communityhealthunit$/, userPermissions) &&
+            {hasPermission(/^chul.view_communityhealthunit$/, userPermissions) && isLoggedIn &&
             <li className="flex-wrap font-semibold">
               <Link href="/community-units">
                 <p
@@ -222,7 +224,7 @@ export default function HeaderLayout({
             }
             {/* Users */}
          
-            {hasPermission(/^users.view_mfluser$/, userPermissions) &&
+            {hasPermission(/^users.view_mfluser$/, userPermissions) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/users">
                   <p
@@ -241,7 +243,7 @@ export default function HeaderLayout({
               </li>
             }
             {/* GIS */}
-            {hasPermission(/^mfl_gis.view_.*$/, userPermissions) &&
+            {hasPermission(/^mfl_gis.view_.*$/, userPermissions) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/gis">
                   <p
@@ -263,7 +265,7 @@ export default function HeaderLayout({
             {/* System setup */}
             {
               hasPermission(/^common.add_county$/, userPermissions) &&
-              hasPermission(/^common.delete_county$/, userPermissions) &&
+              hasPermission(/^common.delete_county$/, userPermissions) && isLoggedIn&&
               <li className="flex-wrap font-semibold">
                 <Link href="/system_setup">
                   <p
@@ -282,8 +284,68 @@ export default function HeaderLayout({
                 </Link>
               </li>
             }
-            {/* Reports */}
 
+            {/* Public site menus */}
+            {!isLoggedIn &&
+            <Menu as="div" className="relative ">
+              <Menu.Button
+                as="div"
+                className="flex items-center justify-center gap-1 cursor-pointer"
+              >
+                <span className={`
+                    text-base 
+                    md:text-lg 
+                    font-semibold 
+                    leading-none 
+                    p-0 
+                    hidden 
+                    sm:inline
+                    cursor-pointer
+                    ${(currentPath == "/public/facilities" || currentPath == "/public/community_units"
+                    ? activeClasses
+                    : inactiveClasses)
+                  }`}>
+                  Find
+                </span>
+                <span className="leading-none p-0">
+                  <ChevronDownIcon className="h-4 w-5" />
+                </span>
+              </Menu.Button>
+              <Menu.Items
+                as="ul"
+                className="list-none flex flex-col items-center bg-white outline-none shadow-md font-semibold justify-start gap-2 p-3 absolute mt-3 text-gray-800 right-0 w-40 rounded"
+              >
+                <Menu.Item as="li" className="flex items-center w-full gap-1">
+                  {({ active }) => (
+                    <Link
+                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
+                        }`}
+                      href="/public/facilities"
+                      target="_blank"
+                    >
+                      Facilities
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item as="li" className="flex items-center w-full gap-1">
+                  {({ active }) => (
+                    <Link
+                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
+                        }`}
+                      href="/public/community_units"
+                      target="_blank"
+                    >
+                      Community units
+                    </Link>
+                  )}
+                </Menu.Item>
+
+              </Menu.Items>
+            </Menu>
+            }
+
+            {/* Reports */}
+            {isLoggedIn &&
             <Menu as="div" className="relative ">
               <Menu.Button
                 as="div"
@@ -336,10 +398,10 @@ export default function HeaderLayout({
                 </Menu.Item>
 
               </Menu.Items>
-            </Menu>
+            </Menu>}
 
             {/* Admin Offices */}
-            { hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) &&
+            { hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/admin_offices">
                   <p
@@ -364,10 +426,23 @@ export default function HeaderLayout({
         {
           !router.asPath.includes('/dashboard') &&
           // !router.asPath.includes('/facilities') &&
+         !isLoggedIn ?
         <form
           className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
-          action={path || "/facilities"}
+          action={ searchOption =="Facilities"? "/public/facilities": searchOption =="Community Health Unit" ? "/public/community_units" :searchOption =="Services" ? '/public/services': '/public/facilities' }
         >
+          <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="find"
+          onChange={ev => {
+              if (ev.target.value && ev.target.value.length > 0) {
+                  // setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
+                  setSearchOption(ev.target.value)
+              }
+          }}
+          >
+               <option value="Facilities">{`Facilities`}</option>
+               <option value="Community Health Unit">{`Community Health Unit`}</option>
+               <option value="Services">{`Services`}</option>
+          </select>          
           <input
             name="q"
             id="search-input"
@@ -382,7 +457,27 @@ export default function HeaderLayout({
           >
             <SearchIcon className="w-5 h-5" />
           </button>
-        </form>
+        </form> :
+        <form
+        className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
+        action={ path || '/facilities' }
+      >
+               
+        <input
+          name="q"
+          id="search-input"
+          className="flex-none bg-gray-50 rounded p-2 md:w-9/12 md:flex-grow-0 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+          type="search"
+          defaultValue={searchTerm}
+          placeholder="Search a facility/CHU"
+        />
+        <button
+          type="submit"
+          className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+        >
+          <SearchIcon className="w-5 h-5" />
+        </button>
+      </form>
       }
       </div>
       {isLoggedIn && user ? (
