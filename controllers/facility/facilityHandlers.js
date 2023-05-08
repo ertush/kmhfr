@@ -911,6 +911,120 @@ const handleFacilityUpgrades = async (payload, alert) => {
     }
 }
 
+const handleRegulationSubmitUpdates = (event, stateSetters, file) => {
+
+    event.preventDefault()
+
+    const [setFormId, facilityId, facility_name, facilityRegulationFormRef] = stateSetters
+
+    const formData = new FormData(facilityRegulationFormRef.current)
+   
+    const facilityDeptEntries = [...formData.entries()]
+
+    const filteredDeptUnitEntries = facilityDeptEntries.filter(field =>  field[0].match(/^facility_.+$/) !== null)
+
+    const filteredDeptOtherEntries = facilityDeptEntries.filter(field =>  !(field[0].match(/^facility_.+$/) !== null))
+
+    const payload = ((unitEntries, otherEntries) => {
+     
+
+            // Facility Regulation form data
+            const _payload = []
+            const _otherEntObj = {}
+            
+            for (let e in otherEntries) _otherEntObj[otherEntries[e][0]] = otherEntries[e][1]
+
+            delete _otherEntObj.license_document;
+
+            _payload.push(_otherEntObj)
+
+             // Facility Dept Regulation
+
+             const _unitEntArrObjs = unitEntries.filter(ar => ar[0] === 'facility_unit').map(() => Object())
+
+             let p = 0; 
+
+             for( let i in unitEntries){ 
+                 // clean up the key by removing prefix facility_
+                _unitEntArrObjs[p][
+                    unitEntries[i][0].replace('facility_', '')
+                ] = unitEntries[i][1]; 
+
+                if(unitEntries[i][0] == 'facility_registration_number') { 
+                    p+=1 
+                } 
+            }
+
+            _payload.push({
+                units:_unitEntArrObjs
+            })
+            
+            return _payload
+
+
+    })(filteredDeptUnitEntries, filteredDeptOtherEntries)
+
+
+
+
+
+    payload.forEach(data => {
+        try {
+            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+                
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json;charset=utf-8'
+
+                },
+                method: 'POST',
+                body: JSON.stringify(data)
+                
+            })
+
+
+                // Post the license document
+                .then(async resp => {
+
+                    const formData = new FormData()
+                    formData.append('name', `${facility_name} Facility license File`)
+                    formData.append('description', 'Facilities license file')
+                    formData.append('document_type', 'FACILITY_LICENSE')
+                    formData.append('facility_name', facility_name)
+                    formData.append('fyl', file ?? undefined)
+
+
+                    if (resp) {
+
+                        try {
+                            const resp = await fetch('/api/common/submit_form_data/?path=documents', {
+
+                                headers: {
+                                    'Accept': 'application/json, text/plain, */*',
+                                },
+                                method: 'POST',
+                                body: formData
+                            })
+                            console.log("Here is the response",{resp}) // debug
+
+                            alert('Facility Regulation Details Updated Successfully')
+
+                            return resp
+                        }
+                        catch (e) {
+                            console.error('Unable to Post License Document')
+                        }
+                    }
+                })
+
+        }
+        catch (e) {
+            console.error('Unable to patch facility contacts details', e.message)
+        }
+    })
+
+};
+
 export {
     handleBasicDetailsSubmit,
     handleGeolocationSubmit,
@@ -929,5 +1043,6 @@ export {
     handleFacilityUpgrades,
     handleServiceDelete,
     handleHrDelete,
-    handleInfrastructureDelete
+    handleInfrastructureDelete,
+    handleRegulationSubmitUpdates
 }
