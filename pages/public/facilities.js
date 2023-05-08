@@ -14,6 +14,7 @@ const Home = (props) => {
 	const filters = props?.filters;
 	const [drillDown, setDrillDown] = useState({});
 	const qf = props?.query?.qf || 'all';
+	const [viewAll, setViewAll] = useState(false);
 
 	const [title, setTitle] = useState('Community Health Units') 
 
@@ -30,6 +31,11 @@ const Home = (props) => {
 		}
 
 	}, [filters]);
+	useEffect(() => {
+		if (props?.query?.searchTerm !== '' ||  props?.query?.searchTerm !== undefined) {
+			setViewAll(true)
+		}
+	}, []);
 
 	return (
 		<div className=''>
@@ -51,25 +57,34 @@ const Home = (props) => {
 								{'/'}
 								<span className='text-gray-500'>Facilities</span>
 							</div>
-
-
-						</div>
-					
-
-						<div className='flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between'>
-							
+							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                                <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+                                    {'Facilities'}
+                                </h2>
+								<p>Use the form on the left to filter facilities or &nbsp;
+								<button className='text-lg text-blue-500 font-semibold' 
+								 onClick={()=>{
+									setViewAll(true)
+									router.push({
+										pathname: '/public/facilities',
+										query: {
+											searchTerm: '',
+											qf: 'all'
+										}
+									})
+								}
+								}
+								>view all facilities</button></p>								
+								
+                               
+                        </div>
 
 						</div>
 							
 					</div>
 				    
 					  {/* Side Menu Filters*/}
-
-					{/* <CommunityUnitSideMenu
-					qf={qf}
-					filters={filters}
-					_pathId={props?.path.split('id=')[1]}
-					/> */}
+					
                     <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300 h-full'>
                         <form>
                             {/* <div className='card flex flex-wrap'> */}
@@ -122,16 +137,16 @@ const Home = (props) => {
                      {/* Main body */}
 					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
 					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
-
 					    <div className='mx-4 float-right'>
 							 
-						    <h5 className="text-lg font-medium text-gray-800 float-right">
+						    {viewAll && <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
-                            </h5>
+                            </h5>}
 						</div>
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
 							{/* <pre>{JSON.stringify(facilities[0], null, 2)}</pre> */}
-							{facilities && facilities.length > 0 ? (
+
+							{viewAll && facilities && facilities.length > 0 ? (
 								facilities.map((hf, index) => (
 									<div
 										key={hf.id}
@@ -206,12 +221,6 @@ const Home = (props) => {
 										{(hf?.operational || hf?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
 										</div>
 										<div className='col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
-											{/* <a href={'/community-unit/edit/' + comm_unit.id} className="text-blue-800 hover:underline active:underline focus:underline bg-blue-200 md:bg-transparent px-2 md:px-0 rounded md:rounded-none">
-                                            Edit
-                                        </a>
-                                        <a href="/" className="text-blue-800 hover:underline active:underline focus:underline">
-                                            <DotsHorizontalIcon className="h-5" />
-                                        </a> */}
 										</div>
 									</div>
 								))
@@ -220,14 +229,9 @@ const Home = (props) => {
 									<span className='text-base text-gray-700'>
 										No community units found
 									</span>
-									<Link href={props.path || '/'}>
-										<a className='text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
-											Refresh.
-										</a>
-									</Link>
 								</div>
 							)}
-							{facilities && facilities.length >= 30 && (
+							{viewAll && facilities && facilities.length >= 30 && (
 								<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
 									<li className='text-base text-gray-600'>
 		
@@ -284,18 +288,6 @@ const Home = (props) => {
 						</div>
 					</div>
 					
-					{/*  Floating div at bottom right of page */}
-
-					{/* <div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
-						<h5 className='text-sm font-bold'>
-							<span className='text-gray-600 uppercase'>Limited results</span>
-						</h5>
-						<p className='text-sm text-gray-800'>
-							For testing reasons, downloads are limited to the first 100
-							results.
-						</p>
-					</div> */}
-				
 				</div>
 			</MainLayout>
 		</div>

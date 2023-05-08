@@ -91,7 +91,6 @@ export default function HeaderLayout({
     path = "/facilities";
   }
 
-  console.log(path)
   useEffect(() => {
     let mtd = true;
     if (mtd) {
@@ -429,7 +428,17 @@ export default function HeaderLayout({
          !isLoggedIn ?
         <form
           className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
-          action={ searchOption =="Facilities"? "/public/facilities": searchOption =="Community Health Unit" ? "/public/community_units" :searchOption =="Services" ? '/public/services': '/public/facilities' }
+          action= {(()=>{
+            if(searchOption == "Facilities"){
+              return "/public/facilities"
+            }else if(searchOption == "Community Health Unit"){
+              return "/public/community_units"
+            }else if(searchOption == "Services"){
+              return "/public/services"
+            }else{
+             return  router.asPath.includes('searchTerm')? router.route : "/public/facilities"
+            }
+          })()}
         >
           <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="find"
           onChange={ev => {
