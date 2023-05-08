@@ -31,10 +31,14 @@ const Home = (props) => {
 
 	}, [filters]);
 	useEffect(() => {
-		if (props?.query?.searchTerm !== undefined || props?.query?.searchTerm !== '') {
+		if(props?.current_url.includes('search')|| router.asPath.includes('search')){
 			setViewAll(true)
+
+		}else{
+			setViewAll(false)
 		}
-	}, []);
+		
+	}, [props?.current_url]);
 
 	return (
 		<div className=''>

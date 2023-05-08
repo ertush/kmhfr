@@ -31,11 +31,16 @@ const Home = (props) => {
 		}
 
 	}, [filters]);
+
 	useEffect(() => {
-		if (props?.query?.searchTerm !== '' ||  props?.query?.searchTerm !== undefined) {
-			setViewAll(true)
-		}
-	}, []);
+			if(props?.current_url.includes('search')|| router.asPath.includes('search')){
+				setViewAll(true)
+
+			}else{
+				setViewAll(false)
+			}
+			
+	}, [props?.current_url]);
 
 	return (
 		<div className=''>
