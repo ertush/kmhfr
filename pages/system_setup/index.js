@@ -1181,20 +1181,20 @@ console.log(editData, editMode, editID);
                                                                 defaultValue="constituencies"
                                                             >
                                                                 <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
-                                                                    <Tabs.Trigger
+                                                                    <Tabs.Tab
                                                                         id={1}
                                                                         value="constituencies"
                                                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                                                                     >
                                                                         Constituencies
-                                                                    </Tabs.Trigger>
-                                                                    <Tabs.Trigger
+                                                                    </Tabs.Tab>
+                                                                    <Tabs.Tab
                                                                         id={2}
                                                                         value="county_users"
                                                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                                                                     >
                                                                         County Users
-                                                                    </Tabs.Trigger>
+                                                                    </Tabs.Tab>
                                                                 
                                                                 </Tabs.List>
 
