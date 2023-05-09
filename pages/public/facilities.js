@@ -3,18 +3,26 @@ import Link from 'next/link';
 import MainLayout from '../../components/MainLayout';
 import {DotsHorizontalIcon} from '@heroicons/react/solid';
 import { checkToken } from '../../controllers/auth/public_auth';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import {
+	SearchIcon,
+  } from "@heroicons/react/solid";
 
 
 const Home = (props) => {
     // console.log(props)
 	const router = useRouter();
-	const facilities = props?.data?.results;
+	const [facilities, setFacilities] = useState([])
 	const filters = props?.filters;
 	const [drillDown, setDrillDown] = useState({});
 	const qf = props?.query?.qf || 'all';
 	const [viewAll, setViewAll] = useState(false);
+	const API_URL = process.env.NEXT_PUBLIC_API_URL;
+	const code=useRef(null)
+	const allfacilities = useRef(null)
+	const service = useRef(null)
+	const name = useRef(null)
 
 	const [title, setTitle] = useState('Community Health Units') 
 
@@ -33,14 +41,62 @@ const Home = (props) => {
 	}, [filters]);
 
 	useEffect(() => {
+		let mt = true
 			if(props?.current_url.includes('search')|| router.asPath.includes('search')){
 				setViewAll(true)
+				setFacilities(props?.data?.results)
 
 			}else{
 				setViewAll(false)
 			}
-			
+		return mt=false
 	}, [props?.current_url]);
+
+	const filterFacilities = async (e) => {
+		if(e !== undefined){
+			e.preventDefault()
+		}
+		let url = API_URL +`/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status_name`
+		const filter_options ={
+			name: name.current.value,
+			code: code.current.value
+		}
+		
+		let qry = Object.keys(filter_options).map(function (key) {
+			if(filter_options[key] !== ''){
+				let er = (key) + '=' + (filter_options[key]);
+				return er
+			}
+         }).filter(Boolean).join('&')
+		
+		if(qry !== ''){
+			url += `&${qry}`
+		}
+		if(allfacilities.current.value !== ''){
+			url += `&search={"query":{"query_string":{"default_field":"name","query":"${allfacilities.current.value}"}}}`
+		}
+		if(service.current.value !== ''){
+			url += `&service_name={"query":{"query_string":{"default_field":"service_names","query":"${service.current.value}"}}}`
+		}
+		
+		try {
+			const r = await fetch(url, {
+				headers: {
+					Authorization: 'Bearer ' + props?.token,
+					Accept: 'application/json',
+				},
+			});
+			const json = await r.json();
+			setFacilities(json.results)
+			setViewAll(true)
+			name.current.value='', code.current.value='', allfacilities.current.value= '', service.current.value =''
+
+		} catch (error) {
+			console.log(error);
+			setFacilities([])
+			setViewAll(false)
+		}
+	}
 
 	return (
 		<div className=''>
@@ -70,13 +126,7 @@ const Home = (props) => {
 								<button className='text-lg text-blue-500 font-semibold' 
 								 onClick={()=>{
 									setViewAll(true)
-									router.push({
-										pathname: '/public/facilities',
-										query: {
-											searchTerm: '',
-											qf: 'all'
-										}
-									})
+									filterFacilities()
 								}
 								}
 								>view all facilities</button></p>								
@@ -91,13 +141,14 @@ const Home = (props) => {
 					  {/* Side Menu Filters*/}
 					
                     <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300 h-full'>
-                        <form>
+                        <form onSubmit={(e)=>filterFacilities(e)}>
                             {/* <div className='card flex flex-wrap'> */}
                             <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 
                                         <label className=" text-gray-600">Search all facilities</label>
                                         <input
-                                            name="q"
+                                            name="facility"
+											ref={allfacilities}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
@@ -106,7 +157,8 @@ const Home = (props) => {
                                          &nbsp;
                                         <label className=" text-gray-600">Search services</label>
                                         <input
-                                            name="q"
+                                            name="service"
+											ref={service}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
@@ -119,7 +171,8 @@ const Home = (props) => {
                                         &nbsp; 
                                         <label className=" text-gray-600">Facility Name</label>
                                         <input
-                                            name="q"
+                                            name="name"
+											ref={name}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
@@ -128,7 +181,8 @@ const Home = (props) => {
                                          &nbsp; &nbsp; 
                                         <label className=" text-gray-600">Facility Code</label>
                                         <input
-                                            name="q"
+                                            name="code"
+											ref={code}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
@@ -136,7 +190,14 @@ const Home = (props) => {
                                         />  
                                                           
                             </div>
-                        </form>
+							&nbsp;
+							<button
+								type="submit"
+								className="bg-green-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+							>
+								<SearchIcon className="w-5 h-5" /> Search
+							</button>                        
+							</form>
                     </div>
 
                      {/* Main body */}
@@ -300,7 +361,6 @@ const Home = (props) => {
 };
 
 Home.getInitialProps = async (ctx) => {
-	console.log(ctx);
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 	const fetchFilters = async (token) => {
 		let filters_url =
@@ -328,8 +388,6 @@ Home.getInitialProps = async (ctx) => {
 	};
 
 	const fetchData = async (token) => {
-		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
-		let qry = ''
 		let url = API_URL +`/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status_name`
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {
@@ -354,7 +412,6 @@ Home.getInitialProps = async (ctx) => {
 		if (ctx?.query?.page) {
 			url = `${url}&page=${ctx.query.page}`;
 		}
-		// console.log('running fetchData(' + url + ')');
 		try {
 			const r = await fetch(url, {
 				headers: {
