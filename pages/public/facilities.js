@@ -5,9 +5,7 @@ import {DotsHorizontalIcon} from '@heroicons/react/solid';
 import { checkToken } from '../../controllers/auth/public_auth';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import {
-	SearchIcon,
-  } from "@heroicons/react/solid";
+import {SearchIcon } from "@heroicons/react/solid";
 
 
 const Home = (props) => {
@@ -41,7 +39,6 @@ const Home = (props) => {
 	}, [filters]);
 
 	useEffect(() => {
-		let mt = true
 			if(props?.current_url.includes('search')|| router.asPath.includes('search')){
 				setViewAll(true)
 				setFacilities(props?.data?.results)
@@ -49,7 +46,6 @@ const Home = (props) => {
 			}else{
 				setViewAll(false)
 			}
-		return mt=false
 	}, [props?.current_url]);
 
 	const filterFacilities = async (e) => {
@@ -220,7 +216,8 @@ const Home = (props) => {
 										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
-													href={'/community-units/' + hf.id}
+													// href={'/community-units/' + hf.id}
+													href={'#'}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 													<small className='text-gray-500'>
 														{index + props?.data?.start_index}.

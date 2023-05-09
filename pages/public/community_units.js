@@ -3,21 +3,29 @@ import Link from 'next/link';
 import MainLayout from '../../components/MainLayout';
 import {DotsHorizontalIcon} from '@heroicons/react/solid';
 import { checkToken } from '../../controllers/auth/public_auth';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import {SearchIcon } from "@heroicons/react/solid";
+
 
 
 const Home = (props) => {
 	const router = useRouter();
-	const cus = props?.data?.results;
+	// const cus = props?.data?.results;
+	const [cus, setcus] = useState([])
 	const filters = props?.filters;
 	const [drillDown, setDrillDown] = useState({});
 	const qf = props?.query?.qf || 'all';
 	const [viewAll, setViewAll] = useState(false);
+	const API_URL = process.env.NEXT_PUBLIC_API_URL;
+	const code=useRef(null)
+	const allchus = useRef(null)
+	const name = useRef(null)
+	const status = useRef(null)
+	const status_options = props.filters?.chu_status || props.filters?.status || [];
 
 	const [title, setTitle] = useState('Community Health Units') 
 
-	
 	useEffect(() => {
 		
 		let qry = props?.query;
@@ -33,12 +41,58 @@ const Home = (props) => {
 	useEffect(() => {
 		if(props?.current_url.includes('search')|| router.asPath.includes('search')){
 			setViewAll(true)
+			setcus(props?.data?.results)
 
 		}else{
 			setViewAll(false)
 		}
 		
 	}, [props?.current_url]);
+
+
+	const filterCHUs = async (e) => {
+		if(e !== undefined){
+			e.preventDefault()
+		}
+		let url = API_URL +`/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`
+		const filter_options ={
+			name: name.current.value,
+			code: code.current.value,
+			status: status.current.value,
+		}
+		
+		let qry = Object.keys(filter_options).map(function (key) {
+			if(filter_options[key] !== ''){
+				let er = (key) + '=' + (filter_options[key]);
+				return er
+			}
+         }).filter(Boolean).join('&')
+		
+		if(qry !== ''){
+			url += `&${qry}`
+		}
+		if(allchus.current.value !== ''){
+			url += `&search={"query":{"query_string":{"default_field":"name","query":"${allchus.current.value}"}}}`
+		}
+		
+		try {
+			const r = await fetch(url, {
+				headers: {
+					Authorization: 'Bearer ' + props?.token,
+					Accept: 'application/json',
+				},
+			});
+			const json = await r.json();
+			setcus(json.results)
+			setViewAll(true)
+			name.current.value='', code.current.value='', allchus.current.value= '', status.current.value =''
+
+		} catch (error) {
+			console.log(error);
+			setcus([])
+			setViewAll(false)
+		}
+	}
 
 	return (
 		<div className=''>
@@ -68,13 +122,7 @@ const Home = (props) => {
 								 <button className='text-lg text-blue-500 font-semibold' 
 								 onClick={()=>{
 									setViewAll(true)
-									router.push({
-										pathname: '/public/community_units',
-										query: {
-											searchTerm: '',
-											qf: 'all'
-										}
-									})
+									filterCHUs()
 								}
 								}
 								>view all CHUs</button></p>
@@ -86,14 +134,15 @@ const Home = (props) => {
 					</div>
 				
                     <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300 h-full'>
-                        <form>
+                        <form onSubmit={(e)=>filterCHUs(e)}>
                             {/* <div className='card flex flex-wrap'> */}
                             <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 
                                         <label className=" text-gray-600">Search all CHUs</label>
                                         {/* &nbsp; */}
                                         <input
-                                            name="q"
+                                            name="allchus"
+											ref={allchus}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
@@ -106,7 +155,8 @@ const Home = (props) => {
                                         &nbsp; 
                                         <label className=" text-gray-600">CHU Name</label>
                                         <input
-                                            name="q"
+                                            name="name"
+											ref={name}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
@@ -115,7 +165,8 @@ const Home = (props) => {
                                          &nbsp; &nbsp; 
                                         <label className=" text-gray-600">CHU Code</label>
                                         <input
-                                            name="q"
+                                            name="code"
+											ref={code}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
@@ -123,14 +174,26 @@ const Home = (props) => {
                                         />  
                                          &nbsp; &nbsp; 
                                         <label className=" text-gray-600">Status</label>
-                                        <input
-                                            name="q"
-                                            id="search-input"
-                                            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                                            type="search"
-                                            placeholder="Status"
-                                        />                   
+										<select
+											name="status"
+											ref={status}
+											className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+											>
+											<option defaultValue="" disabled>Select status</option>	
+											{status_options.map((ct, i) => {return (
+												<option value={ct.id} key={i}>
+												{ct.name}
+												</option>
+											)})}
+											</select>
                             </div>
+							&nbsp;
+							<button
+								type="submit"
+								className="bg-green-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+							>
+								<SearchIcon className="w-5 h-5" /> Search
+							</button>  
                         </form>
                     </div>
 
@@ -154,7 +217,8 @@ const Home = (props) => {
 										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
-													href={'/community-units/' + comm_unit.id}
+													// href={'/community-units/' + comm_unit.id}
+													href={'#'}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 													<small className='text-gray-500'>
 														{index + props?.data?.start_index}.
