@@ -300,7 +300,7 @@ export default function HeaderLayout({
                     hidden 
                     sm:inline
                     cursor-pointer
-                    ${(currentPath == "/public/facilities" || currentPath == "/public/community_units"
+                    ${(currentPath == "/public/facility/facilities" || currentPath == "/public/chu/community_units"
                     ? activeClasses
                     : inactiveClasses)
                   }`}>
@@ -319,7 +319,7 @@ export default function HeaderLayout({
                     <Link
                       className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
                         }`}
-                      href="/public/facilities"
+                      href="/public/facility/facilities"
                       target="_blank"
                     >
                       Facilities
@@ -331,7 +331,7 @@ export default function HeaderLayout({
                     <Link
                       className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
                         }`}
-                      href="/public/community_units"
+                      href="/public/chu/community_units"
                       target="_blank"
                     >
                       Community units
@@ -430,13 +430,13 @@ export default function HeaderLayout({
           className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
           action= {(()=>{
             if(searchOption == "Facilities"){
-              return "/public/facilities"
+              return "/public/facility/facilities"
             }else if(searchOption == "Community Health Unit"){
-              return "/public/community_units"
+              return "/public/chu/community_units"
             }else if(searchOption == "Services"){
               return "/public/services"
             }else{
-             return  router.asPath.includes('searchTerm')? router.route : "/public/facilities"
+             return  router.asPath.includes('searchTerm')? router.route : "/public/facility/facilities"
             }
           })()}
         >

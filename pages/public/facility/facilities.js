@@ -1,31 +1,30 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import MainLayout from '../../components/MainLayout';
+import MainLayout from '../../../components/MainLayout';
 import {DotsHorizontalIcon} from '@heroicons/react/solid';
-import { checkToken } from '../../controllers/auth/public_auth';
+import { checkToken } from '../../../controllers/auth/public_auth';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import {SearchIcon } from "@heroicons/react/solid";
 
 
-
 const Home = (props) => {
+    // console.log(props)
 	const router = useRouter();
-	// const cus = props?.data?.results;
-	const [cus, setcus] = useState([])
+	const [facilities, setFacilities] = useState([])
 	const filters = props?.filters;
 	const [drillDown, setDrillDown] = useState({});
 	const qf = props?.query?.qf || 'all';
 	const [viewAll, setViewAll] = useState(false);
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 	const code=useRef(null)
-	const allchus = useRef(null)
+	const allfacilities = useRef(null)
+	const service = useRef(null)
 	const name = useRef(null)
-	const status = useRef(null)
-	const status_options = props.filters?.chu_status || props.filters?.status || [];
 
 	const [title, setTitle] = useState('Community Health Units') 
 
+	
 	useEffect(() => {
 		
 		let qry = props?.query;
@@ -38,27 +37,28 @@ const Home = (props) => {
 		}
 
 	}, [filters]);
-	useEffect(() => {
-		if(props?.current_url.includes('search')|| router.asPath.includes('search')){
-			setViewAll(true)
-			setcus(props?.data?.results)
 
-		}else{
-			setViewAll(false)
-		}
-		
+	console.log(props?.current_url.includes('search')|| router.asPath.includes('search'))
+		useEffect(() => {
+			if(props?.current_url.includes('search')|| router.asPath.includes('search')){
+				setFacilities(props?.data)
+				setViewAll(true)
+
+			}else{
+				setViewAll(false)
+			}
 	}, [props?.current_url]);
 
+	console.log({viewAll, facilities, url:props?.current_url})
 
-	const filterCHUs = async (e) => {
+	const filterFacilities = async (e) => {
 		if(e !== undefined){
 			e.preventDefault()
 		}
-		let url = API_URL +`/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`
+		let url = API_URL +`/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status_name`
 		const filter_options ={
 			name: name.current.value,
-			code: code.current.value,
-			status: status.current.value,
+			code: code.current.value
 		}
 		
 		let qry = Object.keys(filter_options).map(function (key) {
@@ -71,8 +71,11 @@ const Home = (props) => {
 		if(qry !== ''){
 			url += `&${qry}`
 		}
-		if(allchus.current.value !== ''){
-			url += `&search={"query":{"query_string":{"default_field":"name","query":"${allchus.current.value}"}}}`
+		if(allfacilities.current.value !== ''){
+			url += `&search={"query":{"query_string":{"default_field":"name","query":"${allfacilities.current.value}"}}}`
+		}
+		if(service.current.value !== ''){
+			url += `&service_name={"query":{"query_string":{"default_field":"service_names","query":"${service.current.value}"}}}`
 		}
 		
 		try {
@@ -83,16 +86,18 @@ const Home = (props) => {
 				},
 			});
 			const json = await r.json();
-			setcus(json.results)
+			setFacilities(json)
 			setViewAll(true)
-			name.current.value='', code.current.value='', allchus.current.value= '', status.current.value =''
+			name.current.value='', code.current.value='', allfacilities.current.value= '', service.current.value =''
 
 		} catch (error) {
 			console.log(error);
-			setcus([])
+			setFacilities([])
 			setViewAll(false)
 		}
 	}
+
+	// console.log(facilities)
 
 	return (
 		<div className=''>
@@ -112,80 +117,79 @@ const Home = (props) => {
 									Home
 								</Link>
 								{'/'}
-								<span className='text-gray-500'>Community Units</span>
+								<span className='text-gray-500'>Facilities</span>
 							</div>
 							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-                                    {'Community Units'}
+                                    {'Facilities'}
                                 </h2>
-								<p>Use the form on the left to filter CHUs or &nbsp;
-								 <button className='text-lg text-blue-500 font-semibold' 
+								<p>Use the form on the left to filter facilities or &nbsp;
+								<button className='text-lg text-blue-500 font-semibold' 
 								 onClick={()=>{
 									setViewAll(true)
-									filterCHUs()
+									filterFacilities()
 								}
 								}
-								>view all CHUs</button></p>
+								>view all facilities</button></p>								
+								
                                
                         </div>
 
 						</div>
 							
 					</div>
-				
+				    
+					  {/* Side Menu Filters*/}
+					
                     <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300 h-full'>
-                        <form onSubmit={(e)=>filterCHUs(e)}>
+                        <form onSubmit={(e)=>filterFacilities(e)}>
                             {/* <div className='card flex flex-wrap'> */}
                             <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 
-                                        <label className=" text-gray-600">Search all CHUs</label>
-                                        {/* &nbsp; */}
+                                        <label className=" text-gray-600">Search all facilities</label>
                                         <input
-                                            name="allchus"
-											ref={allchus}
+                                            name="facility"
+											ref={allfacilities}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
-                                            placeholder="Search all CHUs"
-                                        />                          
+                                            placeholder="Search all facilities"
+                                        />      
+                                         &nbsp;
+                                        <label className=" text-gray-600">Search services</label>
+                                        <input
+                                            name="service"
+											ref={service}
+                                            id="search-input"
+                                            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            type="search"
+                                            placeholder="Search services"
+                                        />                      
                             </div>
                             &nbsp;
                             <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
-                                        <h2>CHU Info</h2>
+                                        <h2>Facility Info</h2>
                                         &nbsp; 
-                                        <label className=" text-gray-600">CHU Name</label>
+                                        <label className=" text-gray-600">Facility Name</label>
                                         <input
                                             name="name"
 											ref={name}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
-                                            placeholder="CHU Name"
+                                            placeholder="Facility Name"
                                         />    
                                          &nbsp; &nbsp; 
-                                        <label className=" text-gray-600">CHU Code</label>
+                                        <label className=" text-gray-600">Facility Code</label>
                                         <input
                                             name="code"
 											ref={code}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
-                                            placeholder="CHU Code"
+                                            placeholder="Facility Code"
                                         />  
-                                         &nbsp; &nbsp; 
-                                        <label className=" text-gray-600">Status</label>
-										<select
-											name="status"
-											ref={status}
-											className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-											>
-											<option defaultValue="" disabled>Select status</option>	
-											{status_options.map((ct, i) => {return (
-												<option value={ct.id} key={i}>
-												{ct.name}
-												</option>
-											)})}
-											</select>
+                                                          
                             </div>
 							&nbsp;
 							<button
@@ -193,56 +197,65 @@ const Home = (props) => {
 								className="bg-green-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
 							>
 								<SearchIcon className="w-5 h-5" /> Search
-							</button>  
-                        </form>
+							</button>                        
+							</form>
                     </div>
 
                      {/* Main body */}
 					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
 					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
-
 					    <div className='mx-4 float-right'>
 							 
-						   {viewAll && <h5 className="text-lg font-medium text-gray-800 float-right">
-                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
+						    {viewAll && <h5 className="text-lg font-medium text-gray-800 float-right">
+                                {facilities.count && facilities?.count > 0 && <small className="text-gray-500 ml-2 text-base">{facilities?.start_index || 0} - {facilities?.end_index || 0} of {facilities?.count || 0} </small>}
                             </h5>}
 						</div>
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
-							{/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
-							{viewAll && cus && cus.length > 0 ? (
-								cus.map((comm_unit, index) => (
+							{/* <pre>{JSON.stringify(facilities[0], null, 2)}</pre> */}
+
+							{viewAll && facilities?.results && facilities?.results.length > 0 ? (
+								facilities?.results.map((hf, index) => (
 									<div
-										key={comm_unit.id}
+										key={hf.id}
 										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full'>
 										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
-													// href={'/community-units/' + comm_unit.id}
+													// href={'/community-units/' + hf.id}
 													href={'#'}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 													<small className='text-gray-500'>
 														{index + props?.data?.start_index}.
 													</small>{' '}
-													{comm_unit.official_name ||
-														comm_unit.official_name ||
-														comm_unit.name}
+													{hf.official_name ||
+														hf.official_name ||
+														hf.name}
 												</a>
 											</h3>
 											{/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 												<span className='text-lg text-black font-semibold'>
-													# {comm_unit.code ? comm_unit.code : 'NO_CODE' || ' '}
+													# {hf.code ? hf.code : 'NO_CODE' || ' '}
 												</span>
-												<span>{comm_unit.facility_name || ' '}</span>
+												<span>{hf.facility_name || ' '}</span>
 											</p>
+											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
+
+											{(hf?.facility_type_category) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>{hf?.facility_type_category}</span> : ""}
+											</p>
+											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
+
+										    {(hf?.facility_type_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>{hf?.facility_type_name}</span> : ""}
+											</p>
+
 											<div className='text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full'>
 												<div className='flex flex-col items-start justify-start gap-0 leading-none'>
 													<label className='text-xs text-gray-500'>
 														County:
 													</label>
 													<span>
-														{comm_unit.facility_county ||
-															comm_unit.county ||
+														{hf.facility_county ||
+															hf.county_name ||
 															'N/A'}
 													</span>
 												</div>
@@ -251,62 +264,31 @@ const Home = (props) => {
 														Sub-county:
 													</label>
 													<span>
-														{comm_unit.facility_subcounty ||
-															comm_unit.sub_county ||
+														{hf.facility_subcounty ||
+															hf.sub_county_name ||
 															'N/A'}
 													</span>
 												</div>
 												<div className='flex flex-col items-start justify-start gap-0 leading-none'>
 													<label className='text-xs text-gray-500'>Ward:</label>
-													<span>{comm_unit.facility_ward || 'N/A'}</span>
+													<span>{hf.ward_name || 'N/A'}</span>
 												</div>
 												<div className='flex flex-col items-start justify-start gap-0 leading-none'>
 													<label className='text-xs text-gray-500'>
 														Constituency:
 													</label>
 													<span>
-														{comm_unit.constituency_name ||
-															comm_unit.facility_constituency ||
+														{hf.constituency_name ||
+															hf.constituency_name ||
 															'N/A'}
 													</span>
 												</div>
 											</div>
 										</div>
 										<div className='col-span-8 md:col-span-3 flex flex-wrap items-center gap-3 text-lg'>
-											{comm_unit.status_name ? (
-												<span
-													className={
-														'leading-none border whitespace-nowrap shadow-xs text-sm rounded py-1 px-2 text-black ' +
-														(comm_unit.status_name
-															.toLocaleLowerCase()
-															.includes('non-')
-															? ' bg-red-200 border-red-300/60'
-															: comm_unit.status_name
-																	.toLocaleLowerCase()
-																	.includes('fully')
-															? ' bg-green-200 border-green-300/60'
-															: ' bg-yellow-200 border-yellow-300/60')
-													}>
-													{comm_unit.status_name[0].toLocaleUpperCase()}
-													{comm_unit.status_name.slice(1).toLocaleLowerCase()}
-												</span>
-											) : (
-												''
-											)}
-											{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
-											{comm_unit.has_edits ? (
-												<span
-													className={
-														'leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black'
-													}>
-													Has edits
-												</span>
-											) : (
-												''
-											)}
+										{(hf?.operational || hf?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
 										</div>
 										<div className='col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
-										
 										</div>
 									</div>
 								))
@@ -315,14 +297,9 @@ const Home = (props) => {
 									<span className='text-base text-gray-700'>
 										No community units found
 									</span>
-									<Link href={props.path || '/'}>
-										<a className='text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
-											Refresh.
-										</a>
-									</Link>
 								</div>
 							)}
-							{viewAll && cus && cus.length >= 30 && (
+							{viewAll && facilities?.results && facilities?.results.length >= 30 && (
 								<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
 									<li className='text-base text-gray-600'>
 		
@@ -330,23 +307,23 @@ const Home = (props) => {
 											href={
 												(() => 
 												props.path.includes('?page') ?
-												props.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
+												props.path.replace(/\?page=\d+/,`?page=${facilities?.current_page}`)
 												:
 												props.path.includes('?q') && props.path.includes('&page') ?
-												props.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
+												props.path.replace(/&page=\d+/, `&page=${facilities?.current_page}`)
 												:
 												props.path.includes('?q') ?
-												`${props.path}&page=${props?.data?.current_page}`                                    
+												`${props.path}&page=${facilities?.current_page}`                                    
 												:
-												`${props.path}?page=${props?.data?.current_page}`
+												`${props.path}?page=${facilities?.current_page}`
 											)()
 											}
 											className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
-											{props?.data?.current_page}
+											{facilities?.current_page}
 										</a>
 									</li>
-									{props?.data?.near_pages &&
-										props?.data?.near_pages.map((page) => (
+									{facilities?.near_pages &&
+										facilities?.near_pages.map((page) => (
 											<li key={page} className='text-base text-gray-600'>
 
 												<a
@@ -378,6 +355,7 @@ const Home = (props) => {
 							)}
 						</div>
 					</div>
+					
 				</div>
 			</MainLayout>
 		</div>
@@ -385,7 +363,6 @@ const Home = (props) => {
 };
 
 Home.getInitialProps = async (ctx) => {
-	
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 	const fetchFilters = async (token) => {
 		let filters_url =
@@ -413,9 +390,7 @@ Home.getInitialProps = async (ctx) => {
 	};
 
 	const fetchData = async (token) => {
-		let filterQuery = JSON.parse(JSON.stringify(ctx.query));
-		let qry = ''
-		let url =API_URL + `/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`;	
+		let url = API_URL +`/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status_name`
 		let query = { searchTerm: '' };
 		if (ctx?.query?.q) {
 			query.searchTerm = ctx.query.q;
@@ -439,7 +414,6 @@ Home.getInitialProps = async (ctx) => {
 		if (ctx?.query?.page) {
 			url = `${url}&page=${ctx.query.page}`;
 		}
-		// console.log('running fetchData(' + url + ')');
 		try {
 			const r = await fetch(url, {
 				headers: {
@@ -454,7 +428,7 @@ Home.getInitialProps = async (ctx) => {
 				query,
 				token,
 				filters: { ...ft },
-				path: ctx.asPath || '/community-units',
+				path: ctx.asPath || '/facility/facilities',
 				current_url: current_url,
 			};
 		} catch (err) {
@@ -464,7 +438,7 @@ Home.getInitialProps = async (ctx) => {
 				err: err,
 				data: [],
 				query: {},
-				path: ctx.asPath || '/community-units',
+				path: ctx.asPath || '/facility/facilities',
 				current_url: '',
 			};
 		}
@@ -484,7 +458,7 @@ Home.getInitialProps = async (ctx) => {
 				if (ctx?.asPath) {
 					window.location.href = ctx?.asPath;
 				} else {
-					window.location.href = '/community-units';
+					window.location.href = '/facility/facilities';
 				}
 			}
 			setTimeout(() => {
@@ -493,7 +467,7 @@ Home.getInitialProps = async (ctx) => {
 					err: err,
 					data: [],
 					query: {},
-					path: ctx.asPath || '/community-units',
+					path: ctx.asPath || '/facility/facilities',
 					current_url: '',
 				};
 			}, 1000);
