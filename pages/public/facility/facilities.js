@@ -197,7 +197,7 @@ const Home = (props) => {
 							{/* Bread Crumbs */}
 
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<Link className='text-green-700' href='/'>
+								<Link className='text-green-700' href='/public/facility/facilities'>
 									Home
 								</Link>
 								{'/'}
