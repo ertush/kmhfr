@@ -120,11 +120,11 @@ const FacilityDetails = (props) => {
           <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
             {/* Breadcramps */}
             <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
-              <Link className="text-green-700" href="/">
+              <Link className="text-green-700" href="/public/facility/facilities">
                 Home
               </Link>
               {"/"}
-              <Link className="text-green-700" href="/facilities">
+              <Link className="text-green-700" href="/public/facility/facilities">
                 Facilities
               </Link>
               {"/"}
