@@ -24,6 +24,16 @@ const CommunityUnit = (props) => {
     } // This line is important. It's what prevents server-side render
   );
   let cu = props.data;
+  useEffect(() => {
+    if (typeof window !== 'undefined') { //auth.add_group
+      let usr = JSON.parse(window.sessionStorage.getItem('user'))
+      if(window.localStorage?.getItem(cu?.id) !== null){
+
+        setRating(JSON.parse(window.localStorage?.getItem(cu?.id))[0])
+      }
+    }
+  }, [])
+  
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('')
 
@@ -44,17 +54,22 @@ const CommunityUnit = (props) => {
             method:'POST',
             body: JSON.stringify(rate).replace(',"":""','')
 
-        }).then(res => res.json()).then(data => {console.log(data)}).catch(err => {console.log(err)})
+        })
+        .then(res => res.json())
+        .then(data => {
+          let rating_val = []
+          rating_val[0]= data.rating
+          rating_val[1]= data.comment
+          window.localStorage.setItem(cu.id, JSON.stringify(rating_val))
+          console.log(data)
+        })
+        .catch(err => {console.log(err)})
     } catch (error) {
         console.log(error)
     }
   }
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') { //auth.add_group
-      let usr = JSON.parse(window.sessionStorage.getItem('user'))
-    }
-  }, [])
+
   return (
     <>
       <Head>
@@ -274,13 +289,27 @@ const CommunityUnit = (props) => {
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Contacts:
                     </h3>
+                    {cu.contacts && cu.contacts.length > 0 ?
+                      cu.contacts.map((contact, i) => (
                         <div
+                          key={i}
                           className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center"
                         >
+                          <label className="col-span-1 text-gray-600 capitalize">
+                            {contact.contact_type_name[0].toLocaleUpperCase() +
+                              contact.contact_type_name
+                                .slice(1)
+                                .toLocaleLowerCase() || "Contact"}
+                          </label>
                           <p className="col-span-2 text-black font-medium text-base">
-                            Use the linked facility's contacts. 
+                            {contact.contact || " - "}
                           </p>
                         </div>
+                      )) :
+                      <p className="col-span-2 text-black font-medium text-base">
+                            Use the linked facility's contacts. 
+                          </p>
+                      }
                     
                     {cu.officer_in_charge && (
                       <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -398,11 +427,11 @@ const CommunityUnit = (props) => {
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                   <div className="bg-white w-full p-4 rounded">
-                    <h3 className="text-xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-                      <span>
-                       CHUL Average Rating:  {Number((cu?.avg_rating).toFixed(1))}
+                    <h4 className="text-xl w-full  flex-wrap justify-between items-center leading-tight tracking-tight">
+                     
+                       CHUL Average Rating: &nbsp;  <span className="text-2xl font-bold">{cu?.avg_rating && Number((cu?.avg_rating).toFixed(1))}
                       </span>
-                    </h3>
+                    </h4>
                     <StarRatingComponent 
                         className="text-2xl"
                         name="rate1" 
@@ -410,7 +439,9 @@ const CommunityUnit = (props) => {
                         starCount={5}
                         value={cu?.avg_rating || 0}
                         onStarClick={(e)=>setRating(e)}
-                        />
+                      />
+                      <br/>
+                      <span className="text-xl">{cu?.number_of_ratings} Ratings</span>
                   </div>
                   <div className="bg-white w-full p-4 rounded">                  
                   <form onSubmit={handleRating}>
