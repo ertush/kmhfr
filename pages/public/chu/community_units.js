@@ -283,7 +283,7 @@ const Home = (props) => {
 								className="bg-gray-100 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
 								onClick={()=>{
 									setDrillDown({})
-									name.current.value ='',code.current.value='', st.current.select.clearValue(), allchus.current.value,
+									name.current.value ='',code.current.value='', st.current.select.clearValue(), allchus.current.value = '',
 									county.current.select.clearValue(),subcounty.current.select.clearValue(),ward.current.select.clearValue(),constituency.current.select.clearValue()
 								}}
 							>Reset
