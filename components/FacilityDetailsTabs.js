@@ -1,8 +1,63 @@
-import React from 'react'
+import React,{useContext,useEffect,useState} from 'react'
 import * as Tabs from "@radix-ui/react-tabs";
+import { UserContext } from '../providers/user';
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
+import StarRatingComponent from "react-star-rating-component";
+import { StarIcon } from "@heroicons/react/solid";
 
 function FacilityDetailsTabs({ facility }) {
+
+  const [user, setUser] = useState(null);
+
+   //rating
+   const [rating, setRating] = useState(0);
+   const [comment, setComment] = useState("");
+
+   const userCtx = useContext(UserContext);
+
+   useEffect(() => {
+    let user_id
+    if(userCtx){
+      let s_r=userCtx
+      user_id=s_r.id
+      setUser(s_r)
+    }
+  }, [userCtx])
+
+  const handleServiceRating = async (event, serviceId) => {
+    event.preventDefault();
+    const commentString = Array.isArray(comment) ? comment.join(" ") : comment;
+    const ratingInteger = Array.isArray(rating) ? rating[0] : rating;
+
+    const data = {
+      rating: ratingInteger,
+      comment: commentString,
+      facility_service: serviceId,
+    };
+
+    const url = `/api/common/submit_form_data/?path=facility_service_ratings`;
+
+    try {
+      await fetch(url, {
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          let rating_val = [];
+          rating_val[0] = data.rating;
+          rating_val[1] = data.comment;
+          window.localStorage.setItem("rating", JSON.stringify(rating_val));
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+    
   return (
     <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
       <Tabs.Root
@@ -524,6 +579,95 @@ function FacilityDetailsTabs({ facility }) {
             </div>
           </div>
         </Tabs.Panel>
+        {user && user?.id ==6 ? (
+        <Tabs.Panel
+          value="services"
+          className="grow-1 py-1 px-4 tab-panel"
+        >
+          <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
+            <div className="bg-white w-full p-4 rounded">
+              <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
+                <span className="font-semibold">Services</span>
+              </h3>
+              <ul>
+                  {facility?.facility_services &&
+                  facility?.facility_services.length > 0 ? (
+                    facility?.facility_services.map((service, index) => (
+                      <li
+                        key={service.service_id}
+                        className="w-full grid grid-cols-3 gap-3 place-content-end my-2 p-3 border-b border-gray-300"
+                      >
+                        <div>
+                          <p className="text-gray-800 text-base">
+                            {service.service_name}
+                          </p>
+                          <small className="text-xs text-gray-500">
+                            {service.category_name || ""}
+                          </small>
+                          <label className="text-sm text-gray-600 flex gap-1 items-center">
+                            <CheckCircleIcon className="h-6 w-6 text-green-500" />
+                            <span>Active</span>
+                          </label>
+
+                          <div className="flex flex-col gap-2">
+                            <form
+                              onSubmit={(e) =>
+                                handleServiceRating(e, service.id)
+                              }
+                            >
+                              <div className="flex flex-col gap-1">
+                                <label className="text-sm text-gray-600">
+                                  Comment
+                                </label>
+                                <input
+                                  type="text"
+                                  className="border border-gray-300 rounded p-2"
+                                  value={comment[index]}
+                                  placeholder="Leave a comement"
+                                  onChange={(e) =>
+                                    setComment((prev) => {
+                                      let newComment = [...prev];
+                                      newComment[index] = e.target.value;
+                                      return newComment;
+                                    })
+                                  }
+                                />
+
+                                <StarRatingComponent
+                                  className="text-2xl"
+                                  name="rate1"
+                                  starCount={5}
+                                  value={rating[index]}
+                                  onStarClick={(e) =>
+                                    setRating((prev) => {
+                                      let newRating = Array.isArray(prev) ? [...prev] : [];
+                                      newRating[index] = e; 
+                                      return Array.isArray(newRating) ? newRating : [];
+                                    })
+                                  }
+                                />
+                                <button
+                                  type="submit"
+                                  className="bg-green-500 text-white rounded p-2"
+                                >
+                                  Submit
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                      <p>No services listed for this facility?.</p>
+                    </li>
+                  )}
+                </ul>
+            </div>
+          </div>
+        </Tabs.Panel>
+        ) : (
         <Tabs.Panel
           value="services"
           className="grow-1 py-1 px-4 tab-panel"
@@ -576,6 +720,8 @@ function FacilityDetailsTabs({ facility }) {
             </div>
           </div>
         </Tabs.Panel>
+        )
+        }
         <Tabs.Panel
           value="infrastructure"
           className="grow-1 py-1 px-4 tab-panel"
