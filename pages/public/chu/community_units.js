@@ -6,6 +6,7 @@ import { checkToken } from '../../../controllers/auth/public_auth';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import {SearchIcon } from "@heroicons/react/solid";
+import Select from 'react-select'
 
 
 
@@ -18,13 +19,20 @@ const Home = (props) => {
 	const qf = props?.query?.qf || 'all';
 	const [viewAll, setViewAll] = useState(false);
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 	const code=useRef(null)
 	const allchus = useRef(null)
 	const name = useRef(null)
-	const status = useRef(null)
-	const status_options = props.filters?.chu_status || props.filters?.status || [];
+	const county = useRef(null)
+	const subcounty = useRef(null)
+	const ward = useRef(null)
+	const constituency = useRef(null)
 
-	const [title, setTitle] = useState('Community Health Units') 
+	const status_options = props.filters?.chu_status || props.filters?.status || [];
+	const counties = props?.filters?.county || [];
+	const [units, setUnits]=useState([])
+	const st =useRef(null)
+
 
 	useEffect(() => {
 		
@@ -48,7 +56,34 @@ const Home = (props) => {
 		}
 		
 	}, [props?.current_url]);
-console.log(props?.current_url)
+
+	const administrative_units= [
+		{label:'county', ref:county,array: counties},
+		{label: 'subcounty', ref:subcounty, array: units['sub_counties']},
+		{label: 'constituency', ref:constituency, array: units['sub_counties']},
+		{label: 'wards', ref:ward, array: units['wards']}
+	]
+	const getUnits = async (path, id) => {
+		try{
+			let url = `/api/common/fetch_form_data/?path=${path}&id=${id}`
+
+			const response = await fetch(url, {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json',
+				},
+				method:'GET'
+			})
+
+			let results = await response.json()
+			let res = {}
+			res[path]= results.results
+			setUnits({...units,...res})
+			
+		}catch (err){
+			
+		}
+	}
 
 	const filterCHUs = async (e) => {
 		if(e !== undefined){
@@ -58,7 +93,11 @@ console.log(props?.current_url)
 		const filter_options ={
 			name: name.current.value,
 			code: code.current.value,
-			status: status.current.value,
+			status: st?.current?.state?.value?.value || '',
+			county: county?.current?.state?.value?.value|| '',
+			sub_county: subcounty?.current?.state?.value?.value || '',
+			constituency: constituency?.current?.state?.value?.value|| '',
+			ward:ward?.current?.state?.value?.value|| ''
 		}
 		
 		let qry = Object.keys(filter_options).map(function (key) {
@@ -85,7 +124,6 @@ console.log(props?.current_url)
 			const json = await r.json();
 			setcus(json)
 			setViewAll(true)
-			name.current.value='', code.current.value='', allchus.current.value= '', status.current.value =''
 
 		} catch (error) {
 			console.log(error);
@@ -174,31 +212,87 @@ console.log(props?.current_url)
                                         />  
                                          &nbsp; &nbsp; 
                                         <label className=" text-gray-600">Status</label>
-										<select
-											name="status"
-											ref={status}
-											className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-											>
-											<option defaultValue="" disabled>Select status</option>	
-											{status_options.map((ct, i) => {return (
-												<option value={ct.id} key={i}>
-												{ct.name}
-												</option>
-											)})}
-											</select>
+											<Select name={'status'} ref={st} id={'status'} className="w-full max-w-xs p-1 rounded bg-gray-50"
+										   options={
+											   (() => {
+													   let opts = [...Array.from(status_options || [],
+														   fltopt => {
+															   if (fltopt.id != null && fltopt.id.length > 0) {
+																   return {
+																	   value: fltopt.id, label: fltopt.name 
+																   }
+															   }
+														   })]
+													   return opts
+											   })()
+										   }
+										   placeholder={`Select status`}
+										   />
                             </div>
 							&nbsp;
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+								<h2>Administrative Units</h2> &nbsp;
+								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
+									{administrative_units.map(ct=>(
+										<>
+										<label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label>
+									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1 rounded bg-gray-50"
+										   options={
+											   (() => {
+													   let opts = [...Array.from(ct.array || [],
+														   fltopt => {
+															   if (fltopt.id != null && fltopt.id.length > 0) {
+																   return {
+																	   value: fltopt.id, label: fltopt.name 
+																   }
+															   }
+														   })]
+													   return opts
+											   })()
+										   }
+										   placeholder={`Select ${ct.label}`}
+										   onChange={sl => {
+											   let nf = {}
+											   if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+												   nf[ct.label] = sl.value
+											   } else {
+												   delete nf[ct.label]
+											   }
+											   ct.label == 'county' && sl?.value !== undefined && getUnits('sub_counties', sl?.value)
+											   ct.label == 'subcounty' && sl?.value !== undefined && getUnits('wards', sl?.value)
+										   }} 
+										   />
+   
+										   &nbsp;
+										</>
+									))}
+								</div>
+								
+							</div>
+							&nbsp;
+							<div className='flex flex-row gap-4'> 
+
 							<button
 								type="submit"
 								className="bg-green-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
 							>
 								<SearchIcon className="w-5 h-5" /> Search
 							</button>  
+							<button
+								type="button"
+								className="bg-gray-100 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+								onClick={()=>{
+									setDrillDown({})
+									name.current.value ='',code.current.value='', st.current.select.clearValue(), allchus.current.value,
+									county.current.select.clearValue(),subcounty.current.select.clearValue(),ward.current.select.clearValue(),constituency.current.select.clearValue()
+								}}
+							>Reset
+							</button>  
+							</div>
                         </form>
                     </div>
 
                      {/* Main body */}
-					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
 					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 
 					    <div className='mx-4 float-right'>
@@ -390,7 +484,7 @@ Home.getInitialProps = async (ctx) => {
 	const fetchFilters = async (token) => {
 		let filters_url =
 			API_URL +
-			'/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county';
+			'/common/filtering_summaries/?fields=county,chu_status';
 
 		try {
 			const r = await fetch(filters_url, {
