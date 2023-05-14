@@ -91,7 +91,6 @@ export default function HeaderLayout({
     path = "/facilities";
   }
 
-  console.log(path)
   useEffect(() => {
     let mtd = true;
     if (mtd) {
@@ -301,7 +300,7 @@ export default function HeaderLayout({
                     hidden 
                     sm:inline
                     cursor-pointer
-                    ${(currentPath == "/public/facilities" || currentPath == "/public/community_units"
+                    ${(currentPath == "/public/facility/facilities" || currentPath == "/public/chu/community_units"
                     ? activeClasses
                     : inactiveClasses)
                   }`}>
@@ -320,7 +319,7 @@ export default function HeaderLayout({
                     <Link
                       className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
                         }`}
-                      href="/public/facilities"
+                      href="/public/facility/facilities"
                       target="_blank"
                     >
                       Facilities
@@ -332,7 +331,7 @@ export default function HeaderLayout({
                     <Link
                       className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
                         }`}
-                      href="/public/community_units"
+                      href="/public/chu/community_units"
                       target="_blank"
                     >
                       Community units
@@ -429,7 +428,17 @@ export default function HeaderLayout({
          !isLoggedIn ?
         <form
           className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
-          action={ searchOption =="Facilities"? "/public/facilities": searchOption =="Community Health Unit" ? "/public/community_units" :searchOption =="Services" ? '/public/services': '/public/facilities' }
+          action= {(()=>{
+            if(searchOption == "Facilities"){
+              return "/public/facility/facilities"
+            }else if(searchOption == "Community Health Unit"){
+              return "/public/chu/community_units"
+            }else if(searchOption == "Services"){
+              return "/public/services"
+            }else{
+             return  router.asPath.includes('searchTerm')? router.route : "/public/facility/facilities"
+            }
+          })()}
         >
           <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="find"
           onChange={ev => {

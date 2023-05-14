@@ -187,6 +187,11 @@ export default async function submitFormData(req, res) {
                 url = `${API_URL}/facilities/contacts/${req.query.id}/`
                 method = 'DELETE';
                 break;
+            case `rate_chu`:
+                url = `${API_URL}/chul/chu_ratings/`
+                contentType = 'application/json;charset=utf-8';
+                method = 'POST';
+                break;
             default:
 
 
