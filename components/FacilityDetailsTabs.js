@@ -5,6 +5,8 @@ import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
 import StarRatingComponent from "react-star-rating-component";
 import { StarIcon } from "@heroicons/react/solid";
 
+import { useAlert } from "react-alert";
+
 function FacilityDetailsTabs({ facility }) {
 
   const [user, setUser] = useState(null);
@@ -14,6 +16,12 @@ function FacilityDetailsTabs({ facility }) {
    const [comment, setComment] = useState("");
 
    const userCtx = useContext(UserContext);
+
+   //alert
+    const alert = useAlert();
+
+
+  const [isFormVisible, setIsFormVisible] = useState(false);    
 
    useEffect(() => {
     let user_id
@@ -51,6 +59,7 @@ function FacilityDetailsTabs({ facility }) {
           let rating_val = [];
           rating_val[0] = data.rating;
           rating_val[1] = data.comment;
+          alert.success("Review submitted successfully");
           window.localStorage.setItem("rating", JSON.stringify(rating_val));
         });
     } catch (error) {
@@ -595,29 +604,54 @@ function FacilityDetailsTabs({ facility }) {
                     facility?.facility_services.map((service, index) => (
                       <li
                         key={service.service_id}
-                        className="w-full grid grid-cols-3 gap-3 place-content-end my-2 p-3 border-b border-gray-300"
+                        className="w-full grid grid-cols-1 gap-3 place-content-end my-2 p-3 border-b border-gray-300"
                       >
                         <div>
+                          
                           <p className="text-gray-800 text-base">
+                            {
+                              index + 1 + "."
+                            }
                             {service.service_name}
                           </p>
                           <small className="text-xs text-gray-500">
-                            {service.category_name || ""}
+                          <span><b>Category: </b></span>{service.category_name || ""}
                           </small>
                           <label className="text-sm text-gray-600 flex gap-1 items-center">
                             <CheckCircleIcon className="h-6 w-6 text-green-500" />
                             <span>Active</span>
                           </label>
-
+                          <div class="flex justify-between">
+                          <p class="text-left">
+                            <span className="text-sm text-gray-600">
+                             <b>Average Rating:</b> {service.average_rating.toFixed(2)}
+                            </span>
+                          </p>
+                          <p class="text-left">
+                            <span className="text-sm text-gray-600">
+                             <b>Number of Rating:</b> {service.number_of_ratings}
+                            </span>
+                          </p>
+                          </div>
+                          <div>
+                          </div>
+                          <button
+                            type="button"
+                            className="bg-gray-200 rounded p-1 h-8 px-4"
+                            onClick={() => setIsFormVisible((prev) => !prev)}
+                          >
+                          {isFormVisible ? "Hide Rating" : "Rate Service"}  
+                          </button>
+                          {isFormVisible && (
                           <div className="flex flex-col gap-2">
                             <form
                               onSubmit={(e) =>
                                 handleServiceRating(e, service.id)
                               }
                             >
-                              <div className="flex flex-col gap-1">
+                              <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                 <label className="text-sm text-gray-600">
-                                  Comment
+                                  Rate facility service (You may leave your contacts in the comment)
                                 </label>
                                 <input
                                   type="text"
@@ -632,8 +666,8 @@ function FacilityDetailsTabs({ facility }) {
                                     })
                                   }
                                 />
-
-                                <StarRatingComponent
+                                 <p className='text-sm text-gray-600'>Stars Represent Level Of Satisfaction: 5 (Very Good), 4 (Good), 3 (Average), 2 (Poor), 1 (Very Poor)</p>
+                                 <StarRatingComponent
                                   className="text-2xl"
                                   name="rate1"
                                   starCount={5}
@@ -646,15 +680,20 @@ function FacilityDetailsTabs({ facility }) {
                                     })
                                   }
                                 />
-                                <button
+                                
+                              </div>
+                              <div>
+                              <button
                                   type="submit"
-                                  className="bg-green-500 text-white rounded p-2"
+                                  className="bg-green-500 text-white rounded p-1  h-8 px-4"
                                 >
                                   Submit
                                 </button>
                               </div>
                             </form>
+
                           </div>
+                          )}
                         </div>
                       </li>
                     ))
@@ -663,7 +702,7 @@ function FacilityDetailsTabs({ facility }) {
                       <p>No services listed for this facility?.</p>
                     </li>
                   )}
-                </ul>
+              </ul>
             </div>
           </div>
         </Tabs.Panel>
