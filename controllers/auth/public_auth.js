@@ -153,8 +153,51 @@ const checkToken = async (req, res, isProtected, creds) => {
     }
 }
 
+const getUserDetails = async (token, url) => {
+    if (typeof window != "undefined") {
+        let savedSession = window.sessionStorage.getItem('user')
+        if (savedSession && savedSession.length > 0) {
+            savedSession = JSON.parse(window.sessionStorage.getItem('user'))
+        }
+        if (savedSession && savedSession?.id && savedSession?.id.length > 0) {
+            console.log('Saved session: ', savedSession)
+            return savedSession
+        }
+        // console.log('W getUserDetails URL: ',url)
+    }
+
+    return fetch(url, {
+        'method': 'GET',
+        'headers': {
+            "Accept": "application/json",
+            'cache-control': "no-cache",
+            "Authorization": "Bearer " + token
+        }
+    })
+        .then(j => j.json())
+        .then(response => {
+            // console.log('=================== getUserDetails returned: ', response)
+            if (response.detail || response.error) {
+                console.log('Error in getUserDetails: ', response)
+                return {
+                    error: true, message: response.detail || response.error
+                }
+            }
+            if (typeof window !== "undefined") {
+                // console.log('getUserDetails returning ', response)
+                window.sessionStorage.setItem('user', JSON.stringify(response))
+            }
+            return response
+        }).catch(err => {
+            console.log('Error in getUserDetails: ', err)
+            return {
+                error: true, message: err.message || err
+            }
+        })
+
+}
 
 
 
 
-module.exports = { checkToken, getToken }
+module.exports = { checkToken, getToken, getUserDetails }

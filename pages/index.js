@@ -3,7 +3,7 @@ import Link from 'next/link'
 import MainLayout from '../components/MainLayout'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { getUserDetails } from "../controllers/auth/auth";
+import { getUserDetails } from "../controllers/auth/public_auth";
 import { checkToken } from '../controllers/auth/public_auth';
 
 const Home = (props) => {

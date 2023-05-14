@@ -1,22 +1,39 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import MainLayout from '../../components/MainLayout';
+import MainLayout from '../../../components/MainLayout';
 import {DotsHorizontalIcon} from '@heroicons/react/solid';
-import { checkToken } from '../../controllers/auth/public_auth';
-import React, { useState, useEffect } from 'react';
+import { checkToken } from '../../../controllers/auth/public_auth';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import {SearchIcon } from "@heroicons/react/solid";
+import Select from 'react-select'
+
 
 
 const Home = (props) => {
 	const router = useRouter();
-	const cus = props?.data?.results;
+	// const cus = props?.data?.results;
+	const [cus, setcus] = useState([])
 	const filters = props?.filters;
 	const [drillDown, setDrillDown] = useState({});
 	const qf = props?.query?.qf || 'all';
+	const [viewAll, setViewAll] = useState(false);
+	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-	const [title, setTitle] = useState('Community Health Units') 
+	const code=useRef(null)
+	const allchus = useRef(null)
+	const name = useRef(null)
+	const county = useRef(null)
+	const subcounty = useRef(null)
+	const ward = useRef(null)
+	const constituency = useRef(null)
 
-	
+	const status_options = props.filters?.chu_status || props.filters?.status || [];
+	const counties = props?.filters?.county || [];
+	const [units, setUnits]=useState([])
+	const st =useRef(null)
+
+
 	useEffect(() => {
 		
 		let qry = props?.query;
@@ -29,6 +46,91 @@ const Home = (props) => {
 		}
 
 	}, [filters]);
+	useEffect(() => {
+		if(props?.current_url.includes('search')|| router.asPath.includes('search')){
+			setViewAll(true)
+			setcus(props?.data)
+
+		}else{
+			setViewAll(false)
+		}
+		
+	}, [props?.current_url]);
+
+	const administrative_units= [
+		{label:'county', ref:county,array: counties},
+		{label: 'subcounty', ref:subcounty, array: units['sub_counties']},
+		{label: 'constituency', ref:constituency, array: units['sub_counties']},
+		{label: 'wards', ref:ward, array: units['wards']}
+	]
+	const getUnits = async (path, id) => {
+		try{
+			let url = `/api/common/fetch_form_data/?path=${path}&id=${id}`
+
+			const response = await fetch(url, {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json',
+				},
+				method:'GET'
+			})
+
+			let results = await response.json()
+			let res = {}
+			res[path]= results.results
+			setUnits({...units,...res})
+			
+		}catch (err){
+			
+		}
+	}
+
+	const filterCHUs = async (e) => {
+		if(e !== undefined){
+			e.preventDefault()
+		}
+		let url = API_URL +`/chul/units/?fields=id,code,name,status_name,date_established,facility,facility_name,facility_county,facility_subcounty,facility_ward,facility_constituency`
+		const filter_options ={
+			name: name.current.value,
+			code: code.current.value,
+			status: st?.current?.state?.value?.value || '',
+			county: county?.current?.state?.value?.value|| '',
+			sub_county: subcounty?.current?.state?.value?.value || '',
+			constituency: constituency?.current?.state?.value?.value|| '',
+			ward:ward?.current?.state?.value?.value|| ''
+		}
+		
+		let qry = Object.keys(filter_options).map(function (key) {
+			if(filter_options[key] !== ''){
+				let er = (key) + '=' + (filter_options[key]);
+				return er
+			}
+         }).filter(Boolean).join('&')
+		
+		if(qry !== ''){
+			url += `&${qry}`
+		}
+		if(allchus.current.value !== ''){
+			url += `&search={"query":{"query_string":{"default_field":"name","query":"${allchus.current.value}"}}}`
+		}
+		
+		try {
+			const r = await fetch(url, {
+				headers: {
+					Authorization: 'Bearer ' + props?.token,
+					Accept: 'application/json',
+				},
+			});
+			const json = await r.json();
+			setcus(json)
+			setViewAll(true)
+
+		} catch (error) {
+			console.log(error);
+			setcus([])
+			setViewAll(false)
+		}
+	}
 
 	return (
 		<div className=''>
@@ -50,34 +152,35 @@ const Home = (props) => {
 								{'/'}
 								<span className='text-gray-500'>Community Units</span>
 							</div>
-
-
-						</div>
-					
-
-						<div className='flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between'>
-							
+							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                                <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+                                    {'Community Units'}
+                                </h2>
+								<p>Use the form on the left to filter CHUs or &nbsp;
+								 <button className='text-lg text-blue-500 font-semibold' 
+								 onClick={()=>{
+									setViewAll(true)
+									filterCHUs()
+								}
+								}
+								>view all CHUs</button></p>
+                               
+                        </div>
 
 						</div>
 							
 					</div>
-				    
-					  {/* Side Menu Filters*/}
-
-					{/* <CommunityUnitSideMenu
-					qf={qf}
-					filters={filters}
-					_pathId={props?.path.split('id=')[1]}
-					/> */}
+				
                     <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300 h-full'>
-                        <form>
+                        <form onSubmit={(e)=>filterCHUs(e)}>
                             {/* <div className='card flex flex-wrap'> */}
                             <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 
                                         <label className=" text-gray-600">Search all CHUs</label>
                                         {/* &nbsp; */}
                                         <input
-                                            name="q"
+                                            name="allchus"
+											ref={allchus}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
@@ -90,7 +193,8 @@ const Home = (props) => {
                                         &nbsp; 
                                         <label className=" text-gray-600">CHU Name</label>
                                         <input
-                                            name="q"
+                                            name="name"
+											ref={name}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
@@ -99,7 +203,8 @@ const Home = (props) => {
                                          &nbsp; &nbsp; 
                                         <label className=" text-gray-600">CHU Code</label>
                                         <input
-                                            name="q"
+                                            name="code"
+											ref={code}
                                             id="search-input"
                                             className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
@@ -107,38 +212,107 @@ const Home = (props) => {
                                         />  
                                          &nbsp; &nbsp; 
                                         <label className=" text-gray-600">Status</label>
-                                        <input
-                                            name="q"
-                                            id="search-input"
-                                            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                                            type="search"
-                                            placeholder="Status"
-                                        />                   
+											<Select name={'status'} ref={st} id={'status'} className="w-full max-w-xs p-1 rounded bg-gray-50"
+										   options={
+											   (() => {
+													   let opts = [...Array.from(status_options || [],
+														   fltopt => {
+															   if (fltopt.id != null && fltopt.id.length > 0) {
+																   return {
+																	   value: fltopt.id, label: fltopt.name 
+																   }
+															   }
+														   })]
+													   return opts
+											   })()
+										   }
+										   placeholder={`Select status`}
+										   />
                             </div>
+							&nbsp;
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+								<h2>Administrative Units</h2> &nbsp;
+								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
+									{administrative_units.map(ct=>(
+										<>
+										<label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label>
+									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1 rounded bg-gray-50"
+										   options={
+											   (() => {
+													   let opts = [...Array.from(ct.array || [],
+														   fltopt => {
+															   if (fltopt.id != null && fltopt.id.length > 0) {
+																   return {
+																	   value: fltopt.id, label: fltopt.name 
+																   }
+															   }
+														   })]
+													   return opts
+											   })()
+										   }
+										   placeholder={`Select ${ct.label}`}
+										   onChange={sl => {
+											   let nf = {}
+											   if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+												   nf[ct.label] = sl.value
+											   } else {
+												   delete nf[ct.label]
+											   }
+											   ct.label == 'county' && sl?.value !== undefined && getUnits('sub_counties', sl?.value)
+											   ct.label == 'subcounty' && sl?.value !== undefined && getUnits('wards', sl?.value)
+										   }} 
+										   />
+   
+										   &nbsp;
+										</>
+									))}
+								</div>
+								
+							</div>
+							&nbsp;
+							<div className='flex flex-row gap-4'> 
+
+							<button
+								type="submit"
+								className="bg-green-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+							>
+								<SearchIcon className="w-5 h-5" /> Search
+							</button>  
+							<button
+								type="button"
+								className="bg-gray-100 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+								onClick={()=>{
+									setDrillDown({})
+									name.current.value ='',code.current.value='', st.current.select.clearValue(), allchus.current.value = '',
+									county.current.select.clearValue(),subcounty.current.select.clearValue(),ward.current.select.clearValue(),constituency.current.select.clearValue()
+								}}
+							>Reset
+							</button>  
+							</div>
                         </form>
                     </div>
 
                      {/* Main body */}
-					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
 					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 
 					    <div className='mx-4 float-right'>
 							 
-						    <h5 className="text-lg font-medium text-gray-800 float-right">
-                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
-                            </h5>
+						   {viewAll && <h5 className="text-lg font-medium text-gray-800 float-right">
+                                {cus?.count && cus?.count > 0 && <small className="text-gray-500 ml-2 text-base">{cus?.start_index || 0} - {cus?.end_index || 0} of {cus?.count || 0} </small>}
+                            </h5>}
 						</div>
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
 							{/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
-							{cus && cus.length > 0 ? (
-								cus.map((comm_unit, index) => (
+							{viewAll && cus?.results && cus?.results.length > 0 ? (
+								cus?.results.map((comm_unit, index) => (
 									<div
 										key={comm_unit.id}
 										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full'>
 										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
-													href={'/community-units/' + comm_unit.id}
+													href={'/public/chu/' + comm_unit.id}
+													// href={'#'}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 													<small className='text-gray-500'>
 														{index + props?.data?.start_index}.
@@ -226,12 +400,7 @@ const Home = (props) => {
 											)}
 										</div>
 										<div className='col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
-											{/* <a href={'/community-unit/edit/' + comm_unit.id} className="text-blue-800 hover:underline active:underline focus:underline bg-blue-200 md:bg-transparent px-2 md:px-0 rounded md:rounded-none">
-                                            Edit
-                                        </a>
-                                        <a href="/" className="text-blue-800 hover:underline active:underline focus:underline">
-                                            <DotsHorizontalIcon className="h-5" />
-                                        </a> */}
+										
 										</div>
 									</div>
 								))
@@ -247,7 +416,7 @@ const Home = (props) => {
 									</Link>
 								</div>
 							)}
-							{cus && cus.length >= 30 && (
+							{viewAll && cus?.results && cus?.results.length >= 30 && (
 								<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
 									<li className='text-base text-gray-600'>
 		
@@ -255,23 +424,23 @@ const Home = (props) => {
 											href={
 												(() => 
 												props.path.includes('?page') ?
-												props.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
+												props.path.replace(/\?page=\d+/,`?page=${cus?.current_page}`)
 												:
 												props.path.includes('?q') && props.path.includes('&page') ?
-												props.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
+												props.path.replace(/&page=\d+/, `&page=${cus?.current_page}`)
 												:
 												props.path.includes('?q') ?
-												`${props.path}&page=${props?.data?.current_page}`                                    
+												`${props.path}&page=${cus?.current_page}`                                    
 												:
-												`${props.path}?page=${props?.data?.current_page}`
+												`${props.path}?page=${cus?.current_page}`
 											)()
 											}
 											className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
-											{props?.data?.current_page}
+											{cus?.current_page}
 										</a>
 									</li>
-									{props?.data?.near_pages &&
-										props?.data?.near_pages.map((page) => (
+									{cus?.near_pages &&
+										cus?.near_pages.map((page) => (
 											<li key={page} className='text-base text-gray-600'>
 
 												<a
@@ -303,19 +472,6 @@ const Home = (props) => {
 							)}
 						</div>
 					</div>
-					
-					{/*  Floating div at bottom right of page */}
-
-					{/* <div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3'>
-						<h5 className='text-sm font-bold'>
-							<span className='text-gray-600 uppercase'>Limited results</span>
-						</h5>
-						<p className='text-sm text-gray-800'>
-							For testing reasons, downloads are limited to the first 100
-							results.
-						</p>
-					</div> */}
-				
 				</div>
 			</MainLayout>
 		</div>
@@ -324,12 +480,11 @@ const Home = (props) => {
 
 Home.getInitialProps = async (ctx) => {
 	
-	console.log(ctx.query)
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
 	const fetchFilters = async (token) => {
 		let filters_url =
 			API_URL +
-			'/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county';
+			'/common/filtering_summaries/?fields=county,chu_status';
 
 		try {
 			const r = await fetch(filters_url, {
@@ -393,7 +548,7 @@ Home.getInitialProps = async (ctx) => {
 				query,
 				token,
 				filters: { ...ft },
-				path: ctx.asPath || '/community-units',
+				path: ctx.asPath || '/chu/community_units',
 				current_url: current_url,
 			};
 		} catch (err) {
@@ -403,14 +558,13 @@ Home.getInitialProps = async (ctx) => {
 				err: err,
 				data: [],
 				query: {},
-				path: ctx.asPath || '/community-units',
+				path: ctx.asPath || '/chu/community_units',
 				current_url: '',
 			};
 		}
 	};
 	return checkToken(ctx.req, ctx.res)
 		.then((t) => {
-            console.log(t)
 			if (t.error) {
 				throw new Error('Error checking token');
 			} else {
@@ -424,7 +578,7 @@ Home.getInitialProps = async (ctx) => {
 				if (ctx?.asPath) {
 					window.location.href = ctx?.asPath;
 				} else {
-					window.location.href = '/community-units';
+					window.location.href = '/chu/community_units';
 				}
 			}
 			setTimeout(() => {
@@ -433,7 +587,7 @@ Home.getInitialProps = async (ctx) => {
 					err: err,
 					data: [],
 					query: {},
-					path: ctx.asPath || '/community-units',
+					path: ctx.asPath || '/chu/community_units',
 					current_url: '',
 				};
 			}, 1000);
