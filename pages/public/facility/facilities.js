@@ -35,6 +35,7 @@ const Home = (props) => {
 	const allfacilities = useRef(null)
 	const service = useRef(null)
 	const name = useRef(null)
+<<<<<<< HEAD
 	const county = useRef(null)
 	const subcounty = useRef(null)
 	const ward = useRef(null)
@@ -51,6 +52,10 @@ const Home = (props) => {
 	const available_holiday =useRef(null)
 	const available_weekends =useRef(null)
 	const available_24hrs = useRef(null)
+=======
+
+	const [title, setTitle] = useState('Facilities') 
+>>>>>>> 30ab065 (renoved some unnecessary data from public site)
 
 	
 	useEffect(() => {
