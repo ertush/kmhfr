@@ -158,9 +158,12 @@ const FacilityDetails = (props) => {
                       "KEPH " + facility?.keph_level_name}
                   </p>
                 </div>
+                <p className="tracking-tight font-bold leading-tight">
+                {/* Type : {facility?.facility_type_name ?? ""} */}
+                </p>
               </div>
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
-                <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
+                <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-end">
                   {facility?.operational || facility?.operation_status_name ? (
                     <span
                       className={
@@ -173,7 +176,7 @@ const FacilityDetails = (props) => {
                   ) : (
                     ""
                   )}
-                  {facility?.is_approved ? (
+                  {/* {facility?.is_approved ? (
                     <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       Validated
@@ -183,14 +186,8 @@ const FacilityDetails = (props) => {
                       <XCircleIcon className="h-4 w-4" />
                       Not validated
                     </span>
-                  )}
-                  {facility?.has_edits && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <InformationCircleIcon className="h-4 w-4" />
-                      Has changes
-                    </span>
-                  )}
-                  {facility?.is_complete ? (
+                  )} */}
+                  {/* {facility?.is_complete ? (
                     <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       Completed{" "}
@@ -200,13 +197,16 @@ const FacilityDetails = (props) => {
                       <CheckCircleIcon className="h-4 w-4" />
                       Incomplete{" "}
                     </span>
-                  )}
+                  )} */}
                   {facility?.closed && (
                     <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <LockClosedIcon className="h-4 w-4" />
                       Closed
                     </span>
                   )}
+                </div>
+                <div>
+                  <b>Regulatory Body:</b> {facility.regulatory_body_name || ""}
                 </div>
               </div>
               <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>

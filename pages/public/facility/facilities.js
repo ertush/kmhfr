@@ -22,7 +22,7 @@ const Home = (props) => {
 	const service = useRef(null)
 	const name = useRef(null)
 
-	const [title, setTitle] = useState('Community Health Units') 
+	const [title, setTitle] = useState('Facilities') 
 
 	
 	useEffect(() => {
@@ -102,7 +102,7 @@ const Home = (props) => {
 	return (
 		<div className=''>
 			<Head>
-				<title>KMHFL - Community Units</title>
+				<title>KMHFL - Facilities</title>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 
@@ -294,7 +294,7 @@ const Home = (props) => {
 							) : (
 								<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3'>
 									<span className='text-base text-gray-700'>
-										No community units found
+										No facilities found
 									</span>
 								</div>
 							)}
@@ -431,7 +431,7 @@ Home.getInitialProps = async (ctx) => {
 				current_url: current_url,
 			};
 		} catch (err) {
-			console.log('Error fetching community units: ', err);
+			console.log('Error fetching facilities: ', err);
 			return {
 				error: true,
 				err: err,
