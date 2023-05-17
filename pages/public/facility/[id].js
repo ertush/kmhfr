@@ -2,7 +2,6 @@ import Head from "next/head";
 import { checkToken } from "../../../controllers/auth/public_auth";
 import React, { useState, useEffect, useContext } from "react";
 import MainLayout from "../../../components/MainLayout";
-import PrintBtn from "../../../components/PrintBtn";
 import Link from 'next/link'
 import { useRouter } from 'next/router';
 import cookies from 'next-cookies';
@@ -22,7 +21,7 @@ import {
 import dynamic from "next/dynamic";
 import router from "next/router";
 import { UserContext } from "../../../providers/user";
-import FacilityDetailsTabs from "../../../components/FacilityDetailsTabs";
+import FacilityDetailsTabsPulic from "../../../components/FacilityDetailsTabsPublic";
 
 
 import Backdrop from '@mui/material/Backdrop';
@@ -104,7 +103,10 @@ const FacilityDetails = (props) => {
     };
   }, [isClosingFacility, isReasonRejected]);
 
-
+  const handlePrint = (accessToken, id) => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_detail_report/${id}/?format=pdf&access_token=${accessToken}`;
+    router.push(url);
+  };
   
   return (
     <>
@@ -132,6 +134,14 @@ const FacilityDetails = (props) => {
                 {facility?.official_name ?? ""} ( #
                 <i className="text-black">{facility?.code || "NO_CODE"}</i> )
               </span>
+              <div className="flex flex-row gap-2 items-center ml-auto">
+                <button
+                 onClick={()=>handlePrint(props['4'].token, facility.id)}
+                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500 justify-end mr-2"
+                >
+                 Print
+                </button>
+                </div>
             </div>
             {/* Header Bunner  */}
             <div
@@ -215,7 +225,7 @@ const FacilityDetails = (props) => {
 
           <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full flex flex-col gap-3 mt-4`}>
             {/* Facility Details Tab Section */}
-              <FacilityDetailsTabs facility={facility}/>
+              <FacilityDetailsTabsPulic facility={facility}/>
           </div>
 
           {/* end facility approval */}

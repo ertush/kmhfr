@@ -1,8 +1,89 @@
-import React from 'react'
+import React,{useContext,useEffect,useState} from 'react'
 import * as Tabs from "@radix-ui/react-tabs";
+import { UserContext } from '../providers/user';
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
+import StarRatingComponent from "react-star-rating-component";
+import { StarIcon } from "@heroicons/react/solid";
 
-function FacilityDetailsTabs({ facility }) {
+import { useAlert } from "react-alert";
+
+function FacilityDetailsTabsPulic({ facility }) {
+
+  const [user, setUser] = useState(null);
+
+   //rating
+   const [rating, setRating] = useState(0);
+   const [comment, setComment] = useState("");
+
+   const userCtx = useContext(UserContext);
+
+   //alert
+    const alert = useAlert();
+
+
+  // const [isFormVisible, setIsFormVisible] = useState(false); 
+  const [formVisibility, setFormVisibility] = useState(Array(facility.facility_services.length).fill(false) || []);   
+
+   useEffect(() => {
+    let user_id
+    if(userCtx){
+      let s_r=userCtx
+      user_id=s_r.id
+      setUser(s_r)
+    }
+  }, [userCtx])
+  
+
+  const handleServiceRating = async (event, serviceId) => {
+    event.preventDefault();
+    const commentString = Array.isArray(comment) ? comment.join(" ") : comment;
+    const ratingInteger = Array.isArray(rating) ? rating[0] : rating;
+  
+    if (ratingInteger > 0) {
+      const data = {
+        rating: ratingInteger,
+        comment: commentString,
+        facility_service: serviceId,
+      };
+  
+      const url = `/api/common/submit_form_data/?path=facility_service_ratings`;
+  
+      try {
+        await fetch(url, {
+          headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            let rating_val = [];
+            rating_val[0] = data.rating;
+            rating_val[1] = data.comment;
+            alert.success("Review submitted successfully");
+            window.localStorage.setItem("rating", JSON.stringify(rating_val));
+
+            //clear
+            setRating(0)
+            setComment("")
+
+            //clear the comment section and start rating
+            const inputElement = document.querySelector('input[name="comment"]');
+            if (inputElement) {
+              inputElement.value = '';
+            }
+            
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      alert.error("Rating value must be greater than zero");
+    }
+  };
+    
   return (
     <div className="col-span-5 md:col-span-3 flex flex-col gap-3 mt-4">
       <Tabs.Root
@@ -26,20 +107,6 @@ function FacilityDetailsTabs({ facility }) {
             Services
           </Tabs.Tab>
           <Tabs.Tab
-            id={3}
-            value="infrastructure"
-            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-          >
-            Infrastructure
-          </Tabs.Tab>
-          <Tabs.Tab
-            id={4}
-            value="hr_staffing"
-            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-          >
-            HR &amp; Staffing
-          </Tabs.Tab>
-          <Tabs.Tab
             id={5}
             value="community_units"
             className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
@@ -58,21 +125,13 @@ function FacilityDetailsTabs({ facility }) {
               </h3>
               <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
-                  Facility closed
+                  Type
                 </label>
                 <p className="text-black font-medium text-base flex">
-                  {facility?.closed ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
-                      Closed on {new Date(facility?.closed_date).toLocaleDateString() || ""}
-                    </span>
-                  ) : (
-                    <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      Not closed
-                    </span>
-                  )}
+                {facility?.facility_type_name || ""}
                 </p>
               </div>
-              {facility?.closed && (
+              {/* {facility?.closed && (
                 <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                   <label className=" text-gray-600">
                     Facility closure reason
@@ -82,8 +141,8 @@ function FacilityDetailsTabs({ facility }) {
                     {facility?.closing_reason || ""}
                   </p>
                 </div>
-              )}
-              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              )} */}
+              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   KHIS reporting
                 </label>
@@ -100,8 +159,8 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div>
-              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              </div> */}
+              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   NHIF accreditation
                 </label>
@@ -118,7 +177,7 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div>
+              </div> */}
               <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   Open 24 hours
@@ -137,7 +196,7 @@ function FacilityDetailsTabs({ facility }) {
                   )}
                 </p>
               </div>
-              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   Open weekends
                 </label>
@@ -154,8 +213,8 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div>
-              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              </div> */}
+              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   Open late night
                 </label>
@@ -172,8 +231,8 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div>
-              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              </div> */}
+              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   Facility classified
                 </label>
@@ -190,8 +249,8 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div>
-              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              </div> */}
+              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">Published</label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.is_published ? (
@@ -206,10 +265,10 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div>
+              </div> */}
             </div>
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-              <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
+              {/* <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Regulation:
               </h3>
               {facility?.date_established && (
@@ -259,7 +318,7 @@ function FacilityDetailsTabs({ facility }) {
                     }) || " - "}
                   </p>
                 </div>
-              )}
+              )} */}
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Regulated
@@ -286,7 +345,7 @@ function FacilityDetailsTabs({ facility }) {
                   {facility?.regulatory_status_name || " - "}
                 </p>
               </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Regulating body
                 </label>
@@ -307,8 +366,8 @@ function FacilityDetailsTabs({ facility }) {
                     : facility?.facility_units !== undefined ? (facility?.facility_units[0].registration_number || " - ") : ' - '}
 
                 </p>
-              </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              </div> */}
+              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   License number
                 </label>
@@ -318,7 +377,7 @@ function FacilityDetailsTabs({ facility }) {
                     : facility?.facility_units !== undefined ? (facility?.facility_units[0].license_number || " - ") : ' - '}
 
                 </p>
-              </div>
+              </div> */}
             </div>
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
@@ -390,14 +449,14 @@ function FacilityDetailsTabs({ facility }) {
                   {facility?.number_of_beds}
                 </p>
               </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                    General In-patient beds
                 </label>
                 <p className="col-span-2 text-black font-medium text-base">
                   {facility?.number_of_inpatient_beds}
                 </p>
-              </div>
+              </div> */}
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Cots
@@ -406,7 +465,7 @@ function FacilityDetailsTabs({ facility }) {
                   {facility?.number_of_cots}
                 </p>
               </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Maternity beds
                 </label>
@@ -445,10 +504,10 @@ function FacilityDetailsTabs({ facility }) {
                 <p className="col-span-2 text-black font-medium text-base">
                   {facility?.number_of_isolation_beds}
                 </p>
-              </div>
+              </div> */}
               
             </div>
-            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+            {/* <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Surgical Theatres:
               </h3>
@@ -468,7 +527,7 @@ function FacilityDetailsTabs({ facility }) {
                   {facility?.number_of_maternity_theatres}
                 </p>
               </div>
-            </div>
+            </div> */}
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Contacts:
@@ -532,131 +591,116 @@ function FacilityDetailsTabs({ facility }) {
             <div className="bg-white w-full p-4 rounded">
               <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                 <span className="font-semibold">Services</span>
-                {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
               </h3>
               <ul>
-                {facility?.facility_services &&
+                  {facility?.facility_services &&
                   facility?.facility_services.length > 0 ? (
-                  facility?.facility_services.map((service) => (
-                    <li
-                      key={service.service_id}
-                      className="w-full grid grid-cols-3 gap-3 place-content-end my-2 p-3 border-b border-gray-300"
-                    >
-                      <div>
-                        <p className="text-gray-800 text-base">
-                          {service.service_name}
-                        </p>
-                        <small className="text-xs text-gray-500">
-                          {service.category_name || ""}
-                        </small>
-                      </div>
+                    facility?.facility_services.map((service, index) => (
+                      <li
+                        key={service.service_id}
+                        className="w-full grid grid-cols-1 gap-3 place-content-end my-2 p-3 border-b border-gray-300"
+                      >
+                        <div>
+                          
+                          <p className="text-gray-800 text-base">
+                            {
+                              index + 1 + "."
+                            }
+                            {service.service_name}
+                          </p>
+                          <small className="text-xs text-gray-500">
+                          <span><b>Category: </b></span>{service.category_name || ""}
+                          </small>
+                          <label className="text-sm text-gray-600 flex gap-1 items-center">
+                            <CheckCircleIcon className="h-6 w-6 text-green-500" />
+                            <span>Active</span>
+                          </label>
+                          <div class="flex justify-between">
+                          <p class="text-left">
+                            <span className="text-sm text-gray-600">
+                             <b>Average Rating:</b> {service.average_rating.toFixed(2)}
+                            </span>
+                          </p>
+                          <p class="text-left">
+                            <span className="text-sm text-gray-600">
+                             <b>Number of Rating:</b> {service.number_of_ratings}
+                            </span>
+                          </p>
+                          </div>
+                          <div>
+                          </div>
+                          <button
+                            type="button"
+                            className="bg-gray-200 rounded p-1 h-8 px-4"
+                            onClick={() => {
+                              const newFormVisibility = [...formVisibility];
+                              newFormVisibility[index] = !newFormVisibility[index];
+                              setFormVisibility(newFormVisibility);
+                            }}
+                          >
+                          {formVisibility[index] ?  "Hide Rating" : "Rate Service"}  
+                          </button>
+                          {formVisibility[index] && (
+                          <div className="flex flex-col gap-2">
+                            <form
+                              onSubmit={(e) =>
+                                handleServiceRating(e, service.id)
+                              }
+                            >
+                              <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                <label className="text-sm text-gray-600">
+                                  Rate facility service (You may leave your contacts in the comment)
+                                </label>
+                                <input
+                                  type="text"
+                                  name="comment"
+                                  className="border border-gray-300 rounded p-2"
+                                  value={comment[index]}
+                                  placeholder="Leave a comement"
+                                  onChange={(e) =>
+                                    setComment((prev) => {
+                                      let newComment = [...prev];
+                                      newComment[index] = e.target.value;
+                                      return newComment;
+                                    })
+                                  }
+                                />
+                                 <p className='text-sm text-gray-600'>Stars Represent Level Of Satisfaction: 5 (Very Good), 4 (Good), 3 (Average), 2 (Poor), 1 (Very Poor)</p>
+                                 <StarRatingComponent
+                                  className="text-2xl"
+                                  name="rate1"
+                                  starCount={5}
+                                  value={rating[index]}
+                                  onStarClick={(e) =>
+                                    setRating((prev) => {
+                                      let newRating = Array.isArray(prev) ? [...prev] : [];
+                                      newRating[index] = e; 
+                                      return Array.isArray(newRating) ? newRating : [];
+                                    })
+                                  }
+                                />
+                                
+                              </div>
+                              <div>
+                              <button
+                                  type="submit"
+                                  className="bg-green-500 text-white rounded p-1  h-8 px-4"
+                                >
+                                  Submit
+                                </button>
+                              </div>
+                            </form>
 
-
-                      <div>
-                        <p className="text-gray-800 text-base">
-                          {service.average_rating || 0}/
-                          {service.number_of_ratings || 0}
-                        </p>
-                        <small className="text-xs text-gray-500">
-                          Rating
-                        </small>
-                      </div>
-                      <label className="text-sm text-gray-600 flex gap-1 items-center">
-                        <CheckCircleIcon className="h-6 w-6 text-green-500" />
-                        <span>Active</span>
-                      </label>
+                          </div>
+                          )}
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                      <p>No services listed for this facility?.</p>
                     </li>
-                  ))
-                ) : (
-                  <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                    <p>No services listed for this facility?.</p>
-                  </li>
-                )}
-              </ul>
-            </div>
-          </div>
-        </Tabs.Panel>
-        <Tabs.Panel
-          value="infrastructure"
-          className="grow-1 py-1 px-4 tab-panel"
-        >
-          <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left px-1 py-4">
-            <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-              <span className="font-semibold">Infrastructure</span>
-              {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#infrastructure"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit infrastructure</a> : ""} */}
-            </h3>
-            <div className="bg-white w-full p-4 rounded flex flex-col">
-              <ul>
-                {facility?.facility_infrastructure &&
-                  facility?.facility_infrastructure.length > 0 ? (
-                  facility?.facility_infrastructure.map((infra) => (
-                    <li
-                      key={infra.id}
-                      className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
-                    >
-                      <div>
-                        <p className="text-gray-800 text-base">
-                          {infra.infrastructure_name}
-                        </p>
-                        {/* <small className="text-xs text-gray-500">{infra.id || ''}</small> */}
-                      </div>
-                      <div className="flex flex-row gap-1 items-center">
-                        {/* <CheckCircleIcon className="h-4 w-4 text-green-500" /> */}
-                        <label className="text-lg text-gray-800 font-semibold">
-                          {infra.count || 0}
-                        </label>
-                      </div>
-                    </li>
-                  ))
-                ) : (
-                  <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-                    <p>
-                      No other infrastructure data listed for this
-                      facility?.
-                    </p>
-                  </li>
-                )}
-              </ul>
-            </div>
-          </div>
-        </Tabs.Panel>
-        <Tabs.Panel
-          value="hr_staffing"
-          className="grow-1 py-1 px-4 tab-panel"
-        >
-          <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-            <div className="bg-white w-full p-4 rounded">
-              <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-                <span className="font-semibold">Human Resources</span>
-                {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#hr"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit HR</a> : ""} */}
-              </h3>
-              <ul>
-                {facility?.facility_specialists &&
-                  facility?.facility_specialists.length > 0 ? (
-                  facility?.facility_specialists.map((hr) => (
-                    <li
-                      key={hr.id}
-                      className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
-                    >
-                      <div>
-                        <p className="text-gray-800 text-base">
-                          {hr.speciality_name}
-                        </p>
-                        {/* <small className="text-xs text-gray-500">{hr.id || ''}</small> */}
-                      </div>
-                      <div className="flex flex-row gap-1 items-center">
-                        {/* <CheckCircleIcon className="h-4 w-4 text-green-500" /> */}
-                        <label className="text-lg text-gray-800">
-                          {hr.count || 0}
-                        </label>
-                      </div>
-                    </li>
-                  ))
-                ) : (
-                  <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
-                    <p>No HR data listed for this facility?.</p>
-                  </li>
-                )}
+                  )}
               </ul>
             </div>
           </div>
@@ -709,4 +753,4 @@ function FacilityDetailsTabs({ facility }) {
   )
 }
 
-export default FacilityDetailsTabs
+export default FacilityDetailsTabsPulic
