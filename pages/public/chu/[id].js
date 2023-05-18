@@ -23,7 +23,8 @@ const CommunityUnit = (props) => {
       ssr: false,
     } // This line is important. It's what prevents server-side render
   );
-  let cu = props.data;
+  let cu = props['0']?.data;
+  const center = props['1'].center
   useEffect(() => {
     if (typeof window !== 'undefined') { //auth.add_group
       let usr = JSON.parse(window.sessionStorage.getItem('user'))
@@ -129,7 +130,10 @@ const CommunityUnit = (props) => {
          
 
           {/* Left side */}
-          <div className="col-span-5 md:col-span-6 flex flex-col gap-3 mt-4">
+          <div className="col-span-12 md:col-span-12 flex flex-row gap-3 mt-4">
+
+
+          <div className="col-span-5 md:col-span-5 flex flex-col gap-3 mt-4">
             {/* Approve/Reject, Edit Buttons */}
           
 
@@ -482,6 +486,32 @@ const CommunityUnit = (props) => {
               </Tabs.Panel>
             </Tabs.Root>
           </div>
+          <div className="col-span-4 md:col-span-4 flex flex-col gap-3 mt-4 w-1/2">
+            <h2 className="text-xl font-semibold" >{cu?.facility_ward} Ward</h2>
+            {cu?.lat_long && cu?.lat_long.length > 0 ? (
+                <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col">
+                  <Map
+                    ward_name={cu?.facility_ward}
+                    operational={
+                      cu?.operational ?? cu?.operation_status_name ?? ""
+                    }
+                    code={cu?.code || "NO_CODE"}
+                    lat={cu?.lat_long[0]}
+                    center={center}
+                    long={cu?.lat_long[1]}
+                    name={cu?.official_name || cu?.name || ""}
+                  />
+                </div>
+              ) : (
+                <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
+                  <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                    <p>No location data found for this facility?.</p>
+                  </div>
+                </div>
+              )}       
+
+          </div>
+          </div>
           {/* End of approval or reject validation */}
 
         </div>
@@ -491,6 +521,8 @@ const CommunityUnit = (props) => {
 };
 
 CommunityUnit.getInitialProps = async (ctx) => {
+  const alldata =[]
+  let _data;
   if (ctx.query.q) {
     const query = ctx.query.q;
 
@@ -521,10 +553,37 @@ CommunityUnit.getInitialProps = async (ctx) => {
           },
         })
           .then((r) => r.json())
-          .then((json) => {
-            return {
+          .then( async(json) => {
+            alldata.push({
               data: json,
-            };
+              })
+
+            if (json) {
+              try {
+                const response = await fetch(
+                  `${process.env.NEXT_PUBLIC_API_URL}/gis/drilldown/ward/${json.ward_code}/`,
+                  {
+                    headers: {
+                      Authorization: "Bearer " + token,
+                      Accept: "application/json",
+                    },
+                  }
+                  );
+                  
+                  _data = await response.json();
+                  console.log(_data)
+  
+                  const [lng, lat] =
+                    _data?.properties.center.coordinates;
+  
+                alldata.push({
+                  center: [lat, lng],
+                });
+              } catch (e) {
+                console.error("Error in fetching ward boundaries", e.message);
+              }
+            }
+            return alldata
           })
           .catch((err) => {
             console.log("Error fetching facilities: ", err);
@@ -542,42 +601,16 @@ CommunityUnit.getInitialProps = async (ctx) => {
         if (ctx?.asPath) {
           window.location.href = ctx?.asPath;
         } else {
-          let token = t.token;
-          let url =
-            process.env.NEXT_PUBLIC_API_URL +
-            "/chul/units/" +
-            ctx.query.id +
-            "/";
-          return fetch(url, {
-            headers: {
-              Authorization: "Bearer " + token,
-              Accept: "application/json",
-            },
-          })
-            .then((r) => r.json())
-            .then((json) => {
-              console.log(json);
-              return {
-                data: json,
-              };
-            })
-            .catch((err) => {
-              console.log("Error fetching facilities: ", err);
-              return {
-                error: true,
-                err: err,
-                data: [],
-              };
-            });
+          window.location.href = "/public/chu/community_units";
         }
       }
-      console.log("My Error:" + err);
-
-      return {
-        error: true,
-        err: err,
-        data: [],
-      };
+      setTimeout(() => {
+        return {
+          error: true,
+          err: err,
+          data: [],
+        };
+      }, 1000);
     });
 };
 

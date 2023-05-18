@@ -6,6 +6,8 @@ import { checkToken } from '../../../controllers/auth/public_auth';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import {SearchIcon } from "@heroicons/react/solid";
+import Select from 'react-select'
+
 
 
 const Home = (props) => {
@@ -17,12 +19,38 @@ const Home = (props) => {
 	const qf = props?.query?.qf || 'all';
 	const [viewAll, setViewAll] = useState(false);
 	const API_URL = process.env.NEXT_PUBLIC_API_URL;
+	const counties = props?.filters?.county || [];
+	const facility_type = props?.filters?.facility_type || [];
+	const keph_level = props?.filters?.keph_level || [];
+	const operation_status = props?.filters?.operation_status || [];
+	const owner = props?.filters?.owner || [];
+	const owner_type = props?.filters.owner_type || [];
+	const service_ = props?.filters?.service || [];
+	const service_category = props?.filters?.service_category || [];
+
+
+	const [units, setUnits]=useState([])
+
 	const code=useRef(null)
 	const allfacilities = useRef(null)
 	const service = useRef(null)
 	const name = useRef(null)
-
-	const [title, setTitle] = useState('Facilities') 
+	const county = useRef(null)
+	const subcounty = useRef(null)
+	const ward = useRef(null)
+	const constituency = useRef(null)
+	const facilitytype = useRef(null)
+	const kephlevel = useRef(null)
+	const operationstatus = useRef(null)
+	const facilityowner = useRef(null)
+	const ownertype = useRef(null)
+	const facilityservice= useRef(null)
+	const servicecategory = useRef(null)
+	const beds = useRef(null)
+	const cots = useRef(null)
+	const available_holiday =useRef(null)
+	const available_weekends =useRef(null)
+	const available_24hrs = useRef(null)
 
 	
 	useEffect(() => {
@@ -38,19 +66,60 @@ const Home = (props) => {
 
 	}, [filters]);
 
-	console.log(props?.current_url.includes('search')|| router.asPath.includes('search'))
-		useEffect(() => {
-			if(props?.current_url.includes('search')|| router.asPath.includes('search')){
-				setFacilities(props?.data)
-				setViewAll(true)
+	useEffect(() => {
+		if(props?.current_url.includes('search')|| router.asPath.includes('search')){
+			setFacilities(props?.data)
+			setViewAll(true)
 
-			}else{
-				setViewAll(false)
-			}
+		}else{
+			setViewAll(false)
+		}
 	}, [props?.current_url]);
+ 
+	//admin units
+	const administrative_units= [
+		{label:'county', ref:county,array: counties},
+		{label: 'subcounty', ref:subcounty, array: units['sub_counties']},
+		{label: 'constituency', ref:constituency, array: units['sub_counties']},
+		{label: 'wards', ref:ward, array: units['wards']}
+	]
 
-	console.log({viewAll, facilities, url:props?.current_url})
+	//services
+	const service_units= [
+		{label: 'service category', ref:servicecategory, array: service_category},
+		{label:'service', ref:facilityservice,array: service_},
+	]
 
+	//facility details
+	const facility_details =[
+		{label:'keph level', ref:kephlevel,array: keph_level},
+		{label:'facility type', ref:facilitytype,array: facility_type},
+		{label:'facility owner category', ref:ownertype,array: owner_type},
+		{label:'facility owner', ref:facilityowner,array: owner},
+		{label:'operation status', ref:operationstatus,array: operation_status},
+
+	]
+	const getUnits = async (path, id) => {
+		try{
+			let url = `/api/common/fetch_form_data/?path=${path}&id=${id}`
+
+			const response = await fetch(url, {
+				headers:{
+					'Accept': 'application/json, text/plain, */*',
+					'Content-Type': 'application/json',
+				},
+				method:'GET'
+			})
+
+			let results = await response.json()
+			let res = {}
+			res[path]= results.results
+			setUnits({...units,...res})
+			
+		}catch (err){
+			
+		}
+	}
 	const filterFacilities = async (e) => {
 		if(e !== undefined){
 			e.preventDefault()
@@ -58,7 +127,23 @@ const Home = (props) => {
 		let url = API_URL +`/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status_name`
 		const filter_options ={
 			name: name.current.value,
-			code: code.current.value
+			code: code.current.value,
+			county: county?.current?.state?.value?.value || '',
+			sub_county: subcounty?.current?.state?.value?.value || '',
+			constituency: constituency?.current?.state?.value?.value || '',
+			ward:ward?.current?.state?.value?.value || '',
+			facility_type: facilitytype?.current?.state?.value?.value || '', 
+			keph_level: kephlevel?.current?.state?.value?.value || '',
+			operation_status: operationstatus?.current?.state?.value?.value || '',
+			owner: facilityowner?.current?.state?.value?.value || '',
+			owner_type: ownertype?.current?.state?.value?.value || '',
+			service: facilityservice?.current?.state?.value?.value || '', 
+			service_category: servicecategory?.current?.state?.value?.value || '',
+			number_of_beds:beds?.current.checked || '',
+			number_of_cots:cots?.current.checked || '',
+			open_public_holidays:available_holiday?.current.checked || '',
+			open_weekends:available_weekends?.current.checked || '',
+			open_whole_day: available_24hrs?.current.checked || ''
 		}
 		
 		let qry = Object.keys(filter_options).map(function (key) {
@@ -88,7 +173,6 @@ const Home = (props) => {
 			const json = await r.json();
 			setFacilities(json)
 			setViewAll(true)
-			name.current.value='', code.current.value='', allfacilities.current.value= '', service.current.value =''
 
 		} catch (error) {
 			console.log(error);
@@ -155,7 +239,6 @@ const Home = (props) => {
                                             type="search"
                                             placeholder="Search all facilities"
                                         />      
-                                         &nbsp;
                                         <label className=" text-gray-600">Search services</label>
                                         <input
                                             name="service"
@@ -179,7 +262,6 @@ const Home = (props) => {
                                             type="search"
                                             placeholder="Facility Name"
                                         />    
-                                         &nbsp; &nbsp; 
                                         <label className=" text-gray-600">Facility Code</label>
                                         <input
                                             name="code"
@@ -192,12 +274,209 @@ const Home = (props) => {
                                                           
                             </div>
 							&nbsp;
-							<button
-								type="submit"
-								className="bg-green-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
-							>
-								<SearchIcon className="w-5 h-5" /> Search
-							</button>                        
+							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+								<h2>Administrative Unit</h2> &nbsp;
+								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
+									{administrative_units.map(ct=>(
+										<>
+										<label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label>
+									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1 justify-startrounded bg-gray-50"
+										   options={
+											   (() => {
+													   let opts = [...Array.from(ct.array || [],
+														   fltopt => {
+															   if (fltopt.id != null && fltopt.id.length > 0) {
+																   return {
+																	   value: fltopt.id, label: fltopt.name 
+																   }
+															   }
+														   })]
+													   return opts
+											   })()
+										   }
+										   placeholder={`Select ${ct.label}`}
+										   onChange={sl => {
+											   let nf = {}
+											   if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+												   nf[ct.label] = sl.value
+											   } else {
+												   delete nf[ct.label]
+											   }
+											   ct.label == 'county' && sl?.value !== undefined && getUnits('sub_counties', sl?.value)
+											   ct.label == 'subcounty' && sl?.value !== undefined && getUnits('wards', sl?.value)
+										   }} 
+										   />
+										</>
+									))}
+								</div>
+								
+							</div>
+
+							&nbsp;
+							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+								<h2>Services</h2> &nbsp;
+								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
+									{service_units.map(ct=>(
+										<>
+										<label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label>
+									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1 rounded bg-gray-50"
+										   options={
+											   (() => {
+													   let opts = [...Array.from(ct.array || [],
+														   fltopt => {
+															   if (fltopt.id != null && fltopt.id.length > 0) {
+																   return {
+																	   value: fltopt.id, label: fltopt.name 
+																   }
+															   }
+														   })]
+													   return opts
+											   })()
+										   }
+										   placeholder={`Select ${ct.label}`}
+										   onChange={sl => {
+											   let nf = {}
+											   if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+												   nf[ct.label] = sl.value
+											   } else {
+												   delete nf[ct.label]
+											   }
+											   ct.label == 'county' && sl?.value !== undefined && getUnits('sub_counties', sl?.value)
+											   ct.label == 'subcounty' && sl?.value !== undefined && getUnits('wards', sl?.value)
+										   }} 
+										   />
+										</>
+									))}
+								</div>
+								
+							</div>
+
+							&nbsp;
+							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+								<h2>Facility Details</h2> &nbsp;
+								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
+									{facility_details.map(ct=>(
+										<>
+										<label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label>
+									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1 rounded bg-gray-50"
+										   options={
+											   (() => {
+													   let opts = [...Array.from(ct.array || [],
+														   fltopt => {
+															   if (fltopt.id != null && fltopt.id.length > 0) {
+																   return {
+																	   value: fltopt.id, label: fltopt.name 
+																   }
+															   }
+														   })]
+													   return opts
+											   })()
+										   }
+										   placeholder={`Select ${ct.label}`}
+										   onChange={sl => {
+											   let nf = {}
+											   if (sl && sl !== null && typeof sl === 'object' && !Array.isArray(sl)) {
+												   nf[ct.label] = sl.value
+											   } else {
+												   delete nf[ct.label]
+											   }
+											   ct.label == 'county' && sl?.value !== undefined && getUnits('sub_counties', sl?.value)
+											   ct.label == 'subcounty' && sl?.value !== undefined && getUnits('wards', sl?.value)
+										   }} 
+										   />
+										</>
+									))}
+									<br/>
+									<div  className="w-full max-w-xs  flex-col items-start justify-start mb-3" id='first'>
+									<input
+										className='form-checkbox w-3 h-3'
+										ref={beds}
+                                        type="checkbox"
+                                        name='number_of_beds'
+                                        id='number_of_beds'
+                                    />
+									<label htmlFor={'Has Beds'} className="text-gray-600 capitalize text-sm ml-1">{'Has Beds'}</label>
+									
+									</div>
+									<div  className="w-full max-w-xs  flex-col items-start justify-start mb-3" id='first'>
+									<input
+										className='form-checkbox w-3 h-3'
+										ref={cots}
+                                        type="checkbox"
+                                        name='number_of_cots'
+                                        id='number_of_cots'
+                                    />
+									<label htmlFor={'Has Cots'} className="text-gray-600 capitalize text-sm ml-1">{'Has Cots'}</label>
+									
+									</div>
+								</div>
+								
+							</div>
+
+							&nbsp;
+							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+								<h2>Availability</h2> &nbsp;
+								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
+									<div  className="w-full max-w-xs  flex-col items-start justify-start mb-3" id='first'>
+									<input
+										className='form-checkbox w-3 h-3'
+										ref={available_holiday}
+                                        type="checkbox"
+                                        name='available_holiday'
+                                        id='available_holiday'
+                                    />
+									<label htmlFor={'Open Public Holidays '} className="text-gray-600 capitalize text-sm ml-1">{'Open Public Holidays '}</label>
+									
+									</div>
+									<div  className="w-full max-w-xs  flex-col items-start justify-start mb-3" id='first'>
+									<input
+										className='form-checkbox w-3 h-3'
+										ref={available_weekends}
+                                        type="checkbox"
+                                        name='available_weekends'
+                                        id='available_weekends'
+                                    />
+									<label htmlFor={'Open Weekends '} className="text-gray-600 capitalize text-sm ml-1">{'Open Weekends '}</label>
+									
+									</div>
+									<div  className="w-full max-w-xs  flex-col items-start justify-start mb-3" id='first'>
+									<input
+										className='form-checkbox w-3 h-3'
+										ref={available_24hrs}
+                                        type="checkbox"
+                                        name='available_24hrs'
+                                        id='available_24hrs'
+                                    />
+									<label htmlFor={'Open 24 Hours '} className="text-gray-600 capitalize text-sm ml-1">{'Open 24 Hours '}</label>
+									
+									</div>
+
+								</div>
+								
+							</div>
+
+							&nbsp;
+							<div className='flex flex-row gap-4'> 
+								<button
+									type="submit"
+									className="bg-green-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+								>
+									<SearchIcon className="w-5 h-5" /> Search
+								</button>  
+								<button
+									type="button"
+									className="bg-gray-100 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+									onClick={()=>{
+										setDrillDown({})
+										name.current.value ='',code.current.value='', allfacilities.current.value ='',
+										county.current.select.clearValue(),subcounty.current.select.clearValue(),ward.current.select.clearValue(),constituency.current.select.clearValue(),facilityservice.current.select.clearValue(),
+										facilitytype.current.select.clearValue(),operationstatus.current.select.clearValue(),facilityowner.current.select.clearValue(),ownertype.current.select.clearValue(),servicecategory.current.select.clearValue(),
+										beds.current.checked=false, cots.current.checked=false, available_holiday.current.checked=false, available_24hrs.current.checked=false,available_weekends.current.checked=false
+
+									}}
+								>Reset
+								</button>  
+							</div>                       
 							</form>
                     </div>
 
@@ -366,8 +645,7 @@ Home.getInitialProps = async (ctx) => {
 	const fetchFilters = async (token) => {
 		let filters_url =
 			API_URL +
-			'/common/filtering_summaries/?fields=county,constituency,ward,chu_status,sub_county';
-
+			'/common/filtering_summaries/?fields=county,facility_type,operation_status,service_category,owner_type,owner,service,keph_level';
 		try {
 			const r = await fetch(filters_url, {
 				headers: {
