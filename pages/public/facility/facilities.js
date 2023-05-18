@@ -186,7 +186,7 @@ const Home = (props) => {
 	return (
 		<div className=''>
 			<Head>
-				<title>KMHFL - Community Units</title>
+				<title>KMHFL - Facilities</title>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 
@@ -197,7 +197,7 @@ const Home = (props) => {
 							{/* Bread Crumbs */}
 
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<Link className='text-green-700' href='/'>
+								<Link className='text-green-700' href='/public/facility/facilities'>
 									Home
 								</Link>
 								{'/'}
@@ -500,8 +500,7 @@ const Home = (props) => {
 										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
-													// href={'/community-units/' + hf.id}
-													href={'#'}
+													href={'/public/facility/' + hf.id}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 													<small className='text-gray-500'>
 														{index + props?.data?.start_index}.
@@ -574,7 +573,7 @@ const Home = (props) => {
 							) : (
 								<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3'>
 									<span className='text-base text-gray-700'>
-										No community units found
+										No facilities found
 									</span>
 								</div>
 							)}
@@ -710,7 +709,7 @@ Home.getInitialProps = async (ctx) => {
 				current_url: current_url,
 			};
 		} catch (err) {
-			console.log('Error fetching community units: ', err);
+			console.log('Error fetching facilities: ', err);
 			return {
 				error: true,
 				err: err,

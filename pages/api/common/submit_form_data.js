@@ -192,6 +192,10 @@ export default async function submitFormData(req, res) {
                 contentType = 'application/json;charset=utf-8';
                 method = 'POST';
                 break;
+            case `facility_service_ratings`:
+                url = `${API_URL}/facilities/facility_service_ratings/`
+                contentType = 'application/json;charset=utf-8';
+                method = 'POST';
             default:
 
 
