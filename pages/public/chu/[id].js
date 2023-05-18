@@ -89,7 +89,7 @@ const CommunityUnit = (props) => {
                 Home
               </Link>
               {"/"}
-              <Link className="text-green-700" href="/community-units">
+              <Link className="text-green-700" href="/public/chu/community_units">
                 Community units
               </Link>
               {"/"}
