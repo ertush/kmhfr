@@ -131,53 +131,6 @@ function FacilityDetailsTabsPulic({ facility }) {
                 {facility?.facility_type_name || ""}
                 </p>
               </div>
-              {/* {facility?.closed && (
-                <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                  <label className=" text-gray-600">
-                    Facility closure reason
-                  </label>
-                  <p className="text-black font-medium text-base">
-                    
-                    {facility?.closing_reason || ""}
-                  </p>
-                </div>
-              )} */}
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  KHIS reporting
-                </label>
-                <p className="text-black font-medium text-base flex">
-                  {facility?.reporting_in_dhis ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
-              </div> */}
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  NHIF accreditation
-                </label>
-                <p className="text-black font-medium text-base flex">
-                  {facility?.nhif_accreditation ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
-              </div> */}
               <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   Open 24 hours
@@ -196,129 +149,8 @@ function FacilityDetailsTabsPulic({ facility }) {
                   )}
                 </p>
               </div>
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  Open weekends
-                </label>
-                <p className="text-black font-medium text-base flex">
-                  {facility?.open_weekends ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
-              </div> */}
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  Open late night
-                </label>
-                <p className="text-black font-medium text-base flex">
-                  {facility?.open_late_night ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
-              </div> */}
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">
-                  Facility classified
-                </label>
-                <p className="text-black font-medium text-base flex">
-                  {facility?.is_classified ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
-              </div> */}
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
-                <label className=" text-gray-600">Published</label>
-                <p className="text-black font-medium text-base flex">
-                  {facility?.is_published ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      No
-                    </span>
-                  )}
-                </p>
-              </div> */}
             </div>
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-              {/* <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                Regulation:
-              </h3>
-              {facility?.date_established && (
-                <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Date established
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {new Date(
-                      facility?.date_established
-                    ).toLocaleDateString("en-GB", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }) || " - "}
-                  </p>
-                </div>
-              )}
-              {facility?.date_requested && (
-                <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Date requested
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {new Date(
-                      facility?.date_requested
-                    ).toLocaleDateString("en-GB", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }) || " - "}
-                  </p>
-                </div>
-              )}
-              {facility?.date_approved && (
-                <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                  <label className="col-span-1 text-gray-600">
-                    Date approved
-                  </label>
-                  <p className="col-span-2 text-black font-medium text-base">
-                    {new Date(
-                      facility?.date_approved
-                    ).toLocaleDateString("en-GB", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }) || " - "}
-                  </p>
-                </div>
-              )} */}
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Regulated
@@ -345,39 +177,6 @@ function FacilityDetailsTabsPulic({ facility }) {
                   {facility?.regulatory_status_name || " - "}
                 </p>
               </div>
-              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Regulating body
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.facility_units < 1
-                    ? " - "
-                    : facility?.facility_units !== undefined ? (facility?.facility_units[0].regulating_body_name || " - ") : ' - '}
-
-                </p>
-              </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Registration number
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.facility_units < 1
-                    ? " - "
-                    : facility?.facility_units !== undefined ? (facility?.facility_units[0].registration_number || " - ") : ' - '}
-
-                </p>
-              </div> */}
-              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  License number
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.facility_units < 1
-                    ? " - "
-                    : facility?.facility_units !== undefined ? (facility?.facility_units[0].license_number || " - ") : ' - '}
-
-                </p>
-              </div> */}
             </div>
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
@@ -402,8 +201,40 @@ function FacilityDetailsTabsPulic({ facility }) {
             </div>
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                Location:
+                Location: 
               </h3>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                  County
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.county || " - "}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                  Sub-County
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.sub_county_name || " - "}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                  Constituency
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.constituency_name || " - "}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                  Ward
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.ward_name || " - "}
+                </p>
+              </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Town
@@ -449,14 +280,6 @@ function FacilityDetailsTabsPulic({ facility }) {
                   {facility?.number_of_beds}
                 </p>
               </div>
-              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                   General In-patient beds
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.number_of_inpatient_beds}
-                </p>
-              </div> */}
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Cots
@@ -465,69 +288,6 @@ function FacilityDetailsTabsPulic({ facility }) {
                   {facility?.number_of_cots}
                 </p>
               </div>
-              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Maternity beds
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.number_of_maternity_beds}
-                </p>
-              </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Emergency casualty beds
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.number_of_emergency_casualty_beds}
-                </p>
-              </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Intensive Care Unit beds
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.number_of_icu_beds}
-                </p>
-              </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  High Dependency Unit beds
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.number_of_hdu_beds}
-                </p>
-              </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Isolation beds
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.number_of_isolation_beds}
-                </p>
-              </div> */}
-              
-            </div>
-            {/* <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-              <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
-                Surgical Theatres:
-              </h3>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  General theatres
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.number_of_general_theatres}
-                </p>
-              </div>
-              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
-                <label className="col-span-1 text-gray-600">
-                  Maternity theatres
-                </label>
-                <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.number_of_maternity_theatres}
-                </p>
-              </div>
-            </div> */}
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Contacts:
@@ -581,6 +341,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                   </div>
                 ))}
             </div>
+          </div>
           </div>
         </Tabs.Panel>
         <Tabs.Panel
