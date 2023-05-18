@@ -232,9 +232,9 @@ const CommunityUnit = (props) => {
                       <label className="col-span-1 text-gray-600">
                         Linked facility
                       </label>
-                      <p className="col-span-2 text-black font-medium text-base">
-                        {cu.facility_name || " - "}
-                      </p>
+                      <Link  href={`/public/facility/`+ cu.facility}>
+                         <span className="text-blue-700 underline underline-offset-1">{cu.facility_name || " - "}</span>
+                      </Link>
                     </div>
                     <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                       <label className="col-span-1 text-gray-600">Ward</label>
