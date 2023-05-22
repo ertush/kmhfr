@@ -29,13 +29,12 @@ const Home = (props) => {
 	const service_category = props?.filters?.service_category || [];
 
 
-	const [units, setUnits]=useState([])
+	const [units, setUnits] = useState([])
 
 	const code=useRef(null)
 	const allfacilities = useRef(null)
 	const service = useRef(null)
 	const name = useRef(null)
-<<<<<<< HEAD
 	const county = useRef(null)
 	const subcounty = useRef(null)
 	const ward = useRef(null)
@@ -52,10 +51,8 @@ const Home = (props) => {
 	const available_holiday =useRef(null)
 	const available_weekends =useRef(null)
 	const available_24hrs = useRef(null)
-=======
 
-	const [title, setTitle] = useState('Facilities') 
->>>>>>> 30ab065 (renoved some unnecessary data from public site)
+	// const [title, setTitle] = useState('Facilities') 
 
 	
 	useEffect(() => {
@@ -230,7 +227,7 @@ const Home = (props) => {
 				    
 					  {/* Side Menu Filters*/}
 					
-                    <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300 h-full'>
+                    <div className='col-span-1 w-full md:col-start-1 border-r-2 border-gray-300 h-full'>
                         <form onSubmit={(e)=>filterFacilities(e)}>
                             {/* <div className='card flex flex-wrap'> */}
                             <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>

@@ -274,7 +274,7 @@ const AddUser = (props)=> {
 
 					{/* {status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password} */}
 					</Alert>}</div>
-				<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 mb-3 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+				<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black mb-3 md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
 						<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 							
 							{editMode? <><PencilAltIcon className='ml-2 h-5 w-5' /> Edit user</> : <><UserAddIcon className='text-black ml-2 h-5 w-5'/> Add user </> }
@@ -608,7 +608,7 @@ const AddUser = (props)=> {
 															}
 
 														</div>
-														<div class="sticky top-0 right-10 w-full flex justify-end">
+														<div className="sticky top-0 right-10 w-full flex justify-end">
 															<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
 																onClick={handleAddClick} 
 																>

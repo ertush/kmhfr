@@ -373,13 +373,13 @@ function FacilityDetailsTabsPulic({ facility }) {
                             <CheckCircleIcon className="h-6 w-6 text-green-500" />
                             <span>Active</span>
                           </label>
-                          <div class="flex justify-between">
-                          <p class="text-left">
+                          <div className="flex justify-between">
+                          <p className="text-left">
                             <span className="text-sm text-gray-600">
                              <b>Average Rating:</b> {service.average_rating.toFixed(2)}
                             </span>
                           </p>
-                          <p class="text-left">
+                          <p className="text-left">
                             <span className="text-sm text-gray-600">
                              <b>Number of Rating:</b> {service.number_of_ratings}
                             </span>
