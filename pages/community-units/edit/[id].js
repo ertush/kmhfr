@@ -736,7 +736,7 @@ const CommUnit = (props) => {
                           );
                         })}
                       </div>
-                      <div class="sticky top-0 right-10 w-full flex justify-end">
+                      <div className="sticky top-0 right-10 w-full flex justify-end">
                         <button
                           className="rounded bg-green-600 p-2 text-white flex text-md font-semibold mt-3"
                           onClick={handleContactAdd}
@@ -870,7 +870,7 @@ const CommUnit = (props) => {
                         </>
                       )}
 
-                      <div class="sticky top-0 right-10 w-full flex justify-end">
+                      <div className="sticky top-0 right-10 w-full flex justify-end">
                         <button
                           className="rounded bg-green-600 p-2 text-white flex text-md font-semibold "
                           onClick={handleAddClick}
