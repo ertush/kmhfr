@@ -46,8 +46,7 @@ const Home = (props) => {
                   setIsLoggedIn(false);
                   setUser(null);
                 } else {
-                  usr.id == 6 ?  setIsLoggedIn(false) : setIsLoggedIn(true); 
-                  setUser(usr);
+                  usr.id == 6 ?  setIsLoggedIn(false) :setIsLoggedIn(true); setUser(usr);
                   
                 }
               }
@@ -75,7 +74,7 @@ const Home = (props) => {
         return () => {
             mtd = false
         }
-    }, [isLoggedIn])
+    }, [])
 
 
     return (

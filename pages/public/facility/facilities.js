@@ -29,7 +29,7 @@ const Home = (props) => {
 	const service_category = props?.filters?.service_category || [];
 
 
-	const [units, setUnits] = useState([])
+	const [units, setUnits]=useState([])
 
 	const code=useRef(null)
 	const allfacilities = useRef(null)
@@ -51,8 +51,6 @@ const Home = (props) => {
 	const available_holiday =useRef(null)
 	const available_weekends =useRef(null)
 	const available_24hrs = useRef(null)
-
-	// const [title, setTitle] = useState('Facilities') 
 
 	
 	useEffect(() => {
@@ -188,7 +186,7 @@ const Home = (props) => {
 	return (
 		<div className=''>
 			<Head>
-				<title>KMHFL - Facilities</title>
+				<title>KMHFL - Community Units</title>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 
@@ -199,7 +197,7 @@ const Home = (props) => {
 							{/* Bread Crumbs */}
 
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<Link className='text-green-700' href='/public/facility/facilities'>
+								<Link className='text-green-700' href='/'>
 									Home
 								</Link>
 								{'/'}
@@ -227,7 +225,7 @@ const Home = (props) => {
 				    
 					  {/* Side Menu Filters*/}
 					
-                    <div className='col-span-1 w-full md:col-start-1 border-r-2 border-gray-300 h-full'>
+                    <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300 h-full'>
                         <form onSubmit={(e)=>filterFacilities(e)}>
                             {/* <div className='card flex flex-wrap'> */}
                             <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
@@ -502,7 +500,8 @@ const Home = (props) => {
 										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
-													href={'/public/facility/' + hf.id}
+													// href={'/community-units/' + hf.id}
+													href={'#'}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 													<small className='text-gray-500'>
 														{index + props?.data?.start_index}.
@@ -575,7 +574,7 @@ const Home = (props) => {
 							) : (
 								<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3'>
 									<span className='text-base text-gray-700'>
-										No facilities found
+										No community units found
 									</span>
 								</div>
 							)}
@@ -711,7 +710,7 @@ Home.getInitialProps = async (ctx) => {
 				current_url: current_url,
 			};
 		} catch (err) {
-			console.log('Error fetching facilities: ', err);
+			console.log('Error fetching community units: ', err);
 			return {
 				error: true,
 				err: err,
