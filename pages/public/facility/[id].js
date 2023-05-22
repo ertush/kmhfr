@@ -4,45 +4,42 @@ import React, { useState, useEffect, useContext } from "react";
 import MainLayout from "../../../components/MainLayout";
 import Link from 'next/link'
 import { useRouter } from 'next/router';
-import cookies from 'next-cookies';
+// import cookies from 'next-cookies';
 
 
 
 import {
   CheckCircleIcon,
-  ChevronRightIcon,
-  ChevronDownIcon,
-  InformationCircleIcon,
   LockClosedIcon,
-  XCircleIcon,
+
 } from "@heroicons/react/solid";
 
 
 import dynamic from "next/dynamic";
-import router from "next/router";
+// import router from "next/router";
 import { UserContext } from "../../../providers/user";
 import FacilityDetailsTabsPulic from "../../../components/FacilityDetailsTabsPublic";
 
 
-import Backdrop from '@mui/material/Backdrop';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
-import {Formik, Form, Field} from 'formik'
-import Typography from '@mui/material/Typography';
-import FacilitySideMenu from "../../../components/FacilitySideMenu";
-import { Table, TableBody, TableCell, TableRow } from "@mui/material";
+// import Backdrop from '@mui/material/Backdrop';
+// import Box from '@mui/material/Box';
+// import Modal from '@mui/material/Modal';
+// import Fade from '@mui/material/Fade';
+// import {Formik, Form, Field} from 'formik'
+// import Typography from '@mui/material/Typography';
+// import FacilitySideMenu from "../../../components/FacilitySideMenu";
+// import { Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { PermissionContext } from "../../../providers/permissions";
-import { hasPermission } from "../../../utils/checkPermissions";
+// import { hasPermission } from "../../../utils/checkPermissions";
 import { UserGroupContext } from "../../../providers/userGroup";
-import { belongsToUserGroup } from "../../../utils/checkUserGroup";
-import { useAlert } from "react-alert";
+// import { belongsToUserGroup } from "../../../utils/checkUserGroup";
+// import { useAlert } from "react-alert";
 
 
 const FacilityDetails = (props) => {
 
-  const userPermissions = useContext(PermissionContext)
-  const userGroup = useContext(UserGroupContext)
+  // const userPermissions = useContext(PermissionContext)
+  // const userGroup = useContext(UserGroupContext)
   const userCtx = useContext(UserContext)
 
 
@@ -62,34 +59,34 @@ const FacilityDetails = (props) => {
   const facility = props["0"]?.data;
   const wardName = props["0"]?.data.ward_name;
   const center = props["1"]?.geoLocation.center;
-  const geoLocationData = props["1"]?.geoLocation;
+  // const geoLocationData = props["1"]?.geoLocation;
   const qf = props["3"]?.qf ?? '';
   // const {facility_updated_json } = props["2"]?.updates;  
-  const filters = []
+  // const filters = []
 
 
   const [user, setUser] = useState(null);
 
-  const [open, setOpen] = useState(true);
-  const [openCloseModal, setOpenCloseModal] = useState(true)
+  // const [open, setOpen] = useState(true);
+  // const [openCloseModal, setOpenCloseModal] = useState(true)
   const [isReasonRejected, setIsReasonRejected] = useState(false)
-  const handleClose = () => setOpen(false);
-  const handleCloseModal = () => {setOpenCloseModal(false); setIsClosingFacility(false)};
+  // const handleClose = () => setOpen(false);
+  // const handleCloseModal = () => {setOpenCloseModal(false); setIsClosingFacility(false)};
 
 
-  const [khisSynched, setKhisSynched] = useState(false);
-  const [facilityFeedBack, setFacilityFeedBack] = useState([])
-  const [pathId, setPathId] = useState('') 
-  const [allFctsSelected, setAllFctsSelected] = useState(false);
-  const [title, setTitle] = useState('') 
+  // const [khisSynched, setKhisSynched] = useState(false);
+  // const [facilityFeedBack, setFacilityFeedBack] = useState([])
+  // const [pathId, setPathId] = useState('') 
+  // const [allFctsSelected, setAllFctsSelected] = useState(false);
+  // const [title, setTitle] = useState('') 
 
   const [isViewChangeLog, setIsViewChangeLog] = useState(false)
-  const [changeLogData, setChangeLogData] = useState(null)
+  // const [changeLogData, setChangeLogData] = useState(null)
   const [isClosingFacility, setIsClosingFacility] = useState(false)
 
 
   const _ = require('underscore')
-  const alert = useAlert()
+  // const alert = useAlert()
   const router = useRouter()
 
   
@@ -223,14 +220,14 @@ const FacilityDetails = (props) => {
             </div>
           </div>      
 
-          <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full flex flex-col gap-3 mt-4`}>
+          <div className={`col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4`}>
             {/* Facility Details Tab Section */}
               <FacilityDetailsTabsPulic facility={facility}/>
           </div>
 
           {/* end facility approval */}
               
-          <aside className={`flex flex-col col-span-1 ${isViewChangeLog ? 'md:col-span-3': 'md:col-span-2'} gap-4 md:mt-7`}>
+          <aside className={`flex flex-col col-span-1 md:col-span-3 gap-4 md:mt-7`}>
             <h3 className="text-2xl tracking-tight font-semibold leading-5">
               Map
             </h3>
