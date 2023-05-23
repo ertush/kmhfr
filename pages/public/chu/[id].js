@@ -37,6 +37,7 @@ const CommunityUnit = (props) => {
   
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('')
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/chul/units_detail_report/${cu.id}/?access_token=${props['2'].access_token}&format=pdf`
 
   const handleRating = async (event) => {
     event.preventDefault();
@@ -89,7 +90,7 @@ const CommunityUnit = (props) => {
                 Home
               </Link>
               {"/"}
-              <Link className="text-green-700" href="/community-units">
+              <Link className="text-green-700" href="/public/chu/community_units">
                 Community units
               </Link>
               {"/"}
@@ -124,6 +125,13 @@ const CommunityUnit = (props) => {
                   </p>
                 </div>
               </div>
+
+              <button
+                    className="rounded bg-indigo-500 p-2 text-white text-lg font-semibold"
+                    onClick={() => { window.location.href = url}}
+                  >
+                    {`Print `}
+                  </button>
             </div>
 
           </div>
@@ -232,9 +240,9 @@ const CommunityUnit = (props) => {
                       <label className="col-span-1 text-gray-600">
                         Linked facility
                       </label>
-                      <p className="col-span-2 text-black font-medium text-base">
-                        {cu.facility_name || " - "}
-                      </p>
+                      <Link  href={`/public/facility/`+ cu.facility}>
+                         <span className="text-blue-700 underline underline-offset-1">{cu.facility_name || " - "}</span>
+                      </Link>
                     </div>
                     <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                       <label className="col-span-1 text-gray-600">Ward</label>
@@ -578,6 +586,10 @@ CommunityUnit.getInitialProps = async (ctx) => {
   
                 alldata.push({
                   center: [lat, lng],
+                });
+
+                alldata.push({
+                  access_token: token,
                 });
               } catch (e) {
                 console.error("Error in fetching ward boundaries", e.message);

@@ -48,7 +48,7 @@ import {
     handleServiceSubmit,
     handleInfrastructureSubmit,
 	handleServiceUpdates,
-    handleHrSubmit54287
+    handleHrSubmit
 } from '../../controllers/facility/facilityHandlers';
 
 import { inputValidation } from '../../utils/formValidation';
