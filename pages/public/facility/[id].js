@@ -4,45 +4,15 @@ import React, { useState, useEffect, useContext } from "react";
 import MainLayout from "../../../components/MainLayout";
 import Link from 'next/link'
 import { useRouter } from 'next/router';
-import cookies from 'next-cookies';
-
-
-
-import {
-  CheckCircleIcon,
-  ChevronRightIcon,
-  ChevronDownIcon,
-  InformationCircleIcon,
-  LockClosedIcon,
-  XCircleIcon,
-} from "@heroicons/react/solid";
-
-
+import {CheckCircleIcon,LockClosedIcon} from "@heroicons/react/solid";
 import dynamic from "next/dynamic";
-import router from "next/router";
 import { UserContext } from "../../../providers/user";
 import FacilityDetailsTabsPulic from "../../../components/FacilityDetailsTabsPublic";
-
-
-import Backdrop from '@mui/material/Backdrop';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
-import {Formik, Form, Field} from 'formik'
-import Typography from '@mui/material/Typography';
-import FacilitySideMenu from "../../../components/FacilitySideMenu";
-import { Table, TableBody, TableCell, TableRow } from "@mui/material";
-import { PermissionContext } from "../../../providers/permissions";
-import { hasPermission } from "../../../utils/checkPermissions";
-import { UserGroupContext } from "../../../providers/userGroup";
-import { belongsToUserGroup } from "../../../utils/checkUserGroup";
 import { useAlert } from "react-alert";
 
 
 const FacilityDetails = (props) => {
 
-  const userPermissions = useContext(PermissionContext)
-  const userGroup = useContext(UserGroupContext)
   const userCtx = useContext(UserContext)
 
 
@@ -62,46 +32,10 @@ const FacilityDetails = (props) => {
   const facility = props["0"]?.data;
   const wardName = props["0"]?.data.ward_name;
   const center = props["1"]?.geoLocation.center;
-  const geoLocationData = props["1"]?.geoLocation;
-  const qf = props["3"]?.qf ?? '';
-  // const {facility_updated_json } = props["2"]?.updates;  
-  const filters = []
-
-
-  const [user, setUser] = useState(null);
-
-  const [open, setOpen] = useState(true);
-  const [openCloseModal, setOpenCloseModal] = useState(true)
-  const [isReasonRejected, setIsReasonRejected] = useState(false)
-  const handleClose = () => setOpen(false);
-  const handleCloseModal = () => {setOpenCloseModal(false); setIsClosingFacility(false)};
-
-
-  const [khisSynched, setKhisSynched] = useState(false);
-  const [facilityFeedBack, setFacilityFeedBack] = useState([])
-  const [pathId, setPathId] = useState('') 
-  const [allFctsSelected, setAllFctsSelected] = useState(false);
-  const [title, setTitle] = useState('') 
 
   const [isViewChangeLog, setIsViewChangeLog] = useState(false)
-  const [changeLogData, setChangeLogData] = useState(null)
-  const [isClosingFacility, setIsClosingFacility] = useState(false)
 
-
-  const _ = require('underscore')
-  const alert = useAlert()
   const router = useRouter()
-
-  
-  // let reject = ''
-
-  useEffect(() => {
-   
-    if (userCtx) setUser(userCtx);
-  
-    return () => {
-    };
-  }, [isClosingFacility, isReasonRejected]);
 
   const handlePrint = (accessToken, id) => {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_detail_report/${id}/?format=pdf&access_token=${accessToken}`;
@@ -186,28 +120,6 @@ const FacilityDetails = (props) => {
                   ) : (
                     ""
                   )}
-                  {/* {facility?.is_approved ? (
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Validated
-                    </span>
-                  ) : (
-                    <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <XCircleIcon className="h-4 w-4" />
-                      Not validated
-                    </span>
-                  )} */}
-                  {/* {facility?.is_complete ? (
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Completed{" "}
-                    </span>
-                  ) : (
-                    <span className="bg-yellow-200 text-yellow-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      Incomplete{" "}
-                    </span>
-                  )} */}
                   {facility?.closed && (
                     <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <LockClosedIcon className="h-4 w-4" />
@@ -223,14 +135,14 @@ const FacilityDetails = (props) => {
             </div>
           </div>      
 
-          <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full flex flex-col gap-3 mt-4`}>
+          <div className={`col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4`}>
             {/* Facility Details Tab Section */}
               <FacilityDetailsTabsPulic facility={facility}/>
           </div>
 
           {/* end facility approval */}
               
-          <aside className={`flex flex-col col-span-1 ${isViewChangeLog ? 'md:col-span-3': 'md:col-span-2'} gap-4 md:mt-7`}>
+          <aside className={`flex flex-col col-span-1 md:col-span-3 gap-4 md:mt-7`}>
             <h3 className="text-2xl tracking-tight font-semibold leading-5">
               Map
             </h3>

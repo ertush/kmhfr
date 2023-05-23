@@ -3,8 +3,6 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { UserContext } from '../providers/user';
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
 import StarRatingComponent from "react-star-rating-component";
-import { StarIcon } from "@heroicons/react/solid";
-
 import { useAlert } from "react-alert";
 
 function FacilityDetailsTabsPulic({ facility }) {
@@ -313,8 +311,7 @@ function FacilityDetailsTabsPulic({ facility }) {
               {facility?.officer_in_charge && (
                 <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                   <label className="col-span-1 text-gray-600 capitalize">
-                    {facility?.officer_in_charge.title_name ||
-                      "Officer in charge"}
+                    {"Officer in charge"}
                   </label>
                   <p className="col-span-2 text-black font-medium text-base">
                     {facility?.officer_in_charge.name || " - "}
