@@ -333,7 +333,7 @@ function AddFacility(props) {
 	const [wardOpt, setWardNameOpt] = useState('')
 	const [checklistFile, setChecklistFile] = useState(null)
 	const [licenseFile, setLicenseFile] = useState(null)
-	const [coordinatesError] = useState(false)
+	const [coordinatesError, setCoordinatesError] = useState(false)
 
 
 	const [khisSynched, setKhisSynched] = useState(false);
@@ -454,28 +454,28 @@ function AddFacility(props) {
 		}
 	}
 
-	// useEffect(() => {
-	// 	const isLatLngInRegion = () => {
+	useEffect(() => {
+		const isLatLngInRegion = () => {
 			
-	// 		if(longitude.length >= 9 && latitude.length >= 9){ 
-	// 			let point = turf.point([longitude, latitude]);
+			if(longitude.length >= 9 && latitude.length >= 9){ 
+				let point = turf.point([longitude, latitude]);
 				
-	// 			let polygon = turf.polygon(facilityCoordinates);
+				let polygon = turf.polygon(facilityCoordinates);
 				
-	// 			let found = turf.booleanPointInPolygon(point, polygon);
-	// 			if(!found){
-	// 				setCoordinatesError(true)
-	// 			}else{
-	// 				setCoordinatesError(false)
-	// 			}
-	// 		}
-	// 	}
+				let found = turf.booleanPointInPolygon(point, polygon);
+				if(!found){
+					setCoordinatesError(true)
+				}else{
+					setCoordinatesError(false)
+				}
+			}
+		}
 
-	// 	isLatLngInRegion()
+		isLatLngInRegion()
 
 		
 		
-	// } , [longitude, latitude])
+	} , [formik.values.longitude, formik.values.latitude])
 
 	// Validate Hours/Days of Operation
 
