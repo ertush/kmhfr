@@ -22,9 +22,9 @@ import { hasPermission } from "../../utils/checkPermissions";
 import { PermissionContext } from "../../providers/permissions";
 import { XCircleIcon } from "@heroicons/react/solid";
 
-const Gis = (props) => {
+const Gis = (props) => { 
 
-
+ 
   const router = useRouter();
 
   const userPermissions = useContext(PermissionContext)
@@ -61,35 +61,35 @@ const Gis = (props) => {
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  if (filters) {
+if(filters){
 
-    filters["has_edits"] = [{ id: "has_edits", name: "Has edits" }];
-    filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }];
-    filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }];
-    filters["number_of_beds"] = [
-      { id: "number_of_beds", name: "Number of beds" },
-    ];
-    filters["number_of_cots"] = [
-      { id: "number_of_cots", name: "Number of cots" },
-    ];
-    filters["open_whole_day"] = [
-      { id: "open_whole_day", name: "Open whole day" },
-    ];
-    filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }];
-    filters["open_public_holidays"] = [
-      { id: "open_public_holidays", name: "Open public holidays" },
-    ];
+  filters["has_edits"] = [{ id: "has_edits", name: "Has edits" }];
+  filters["is_approved"] = [{ id: "is_approved", name: "Is approved" }];
+  filters["is_complete"] = [{ id: "is_complete", name: "Is complete" }];
+  filters["number_of_beds"] = [
+    { id: "number_of_beds", name: "Number of beds" },
+  ];
+  filters["number_of_cots"] = [
+    { id: "number_of_cots", name: "Number of cots" },
+  ];
+  filters["open_whole_day"] = [
+    { id: "open_whole_day", name: "Open whole day" },
+  ];
+  filters["open_weekends"] = [{ id: "open_weekends", name: "Open weekends" }];
+  filters["open_public_holidays"] = [
+    { id: "open_public_holidays", name: "Open public holidays" },
+  ];
 
-    delete fltrs.has_edits;
-    delete fltrs.is_approved;
-    delete fltrs.is_complete;
-    delete fltrs.number_of_beds;
-    delete fltrs.number_of_cots;
-    delete fltrs.open_whole_day;
-    delete fltrs.open_weekends;
-    delete fltrs.open_public_holidays;
+  delete fltrs.has_edits;
+  delete fltrs.is_approved;
+  delete fltrs.is_complete;
+  delete fltrs.number_of_beds;
+  delete fltrs.number_of_cots;
+  delete fltrs.open_whole_day;
+  delete fltrs.open_weekends;
+  delete fltrs.open_public_holidays;
 
-  }
+}
 
   let qf = props?.query?.qf || "all";
   // let [currentQuickFilter, setCurrentQuickFilter] = useState(qf)
@@ -175,7 +175,7 @@ const Gis = (props) => {
   const [toDate, setToDate] = useState("");
 
   const onGridReady = (params) => {
-
+  
     setGridApi(params.api);
     setGridColumnApi(params.columnApi);
 
@@ -194,18 +194,18 @@ const Gis = (props) => {
 
   useEffect(() => {
 
-    if (!hasPermission(/^mfl_gis.view_.*$/, userPermissions)) {
+    if(!hasPermission(/^mfl_gis.view_.*$/, userPermissions)){
       router.push('/unauthorized')
-    }
+  }
 
     if (fromDate !== "" && toDate !== "") {
       const results = linelist2
         ?.filter(
           (data) =>
             new Date(moment(data.created).format("YYYY/MM/DD")).getTime() >=
-            new Date(moment(fromDate).format("YYYY/MM/DD")).getTime() &&
+              new Date(moment(fromDate).format("YYYY/MM/DD")).getTime() &&
             new Date(moment(data.created).format("YYYY/MM/DD")).getTime() <=
-            new Date(moment(toDate).format("YYYY/MM/DD")).getTime()
+              new Date(moment(toDate).format("YYYY/MM/DD")).getTime()
         )
         .map((r) => {
           return r;
@@ -461,11 +461,11 @@ const Gis = (props) => {
                                       }
                                     }}
                                   >
-                                    {
-                                      filters &&
+                                    {filters &&
                                       Object.keys(filters).length > 0 &&
                                       (() => {
-                                        const sorted = Object.keys(fltrs).sort();
+                                        const sorted =
+                                          Object.keys(fltrs).sort();
 
                                         const sortOrder = [
                                           1, 9, 10, 2, 3, 4, 5, 6, 8, 7,
@@ -482,13 +482,13 @@ const Gis = (props) => {
                                           className="w-full flex flex-col items-start justify-start gap-1 mb-3"
                                         >
                                           {
-                                            !ft?.includes("constituency") &&
-                                            <label
-                                              htmlFor={ft}
-                                              className="text-gray-600 capitalize text-sm"
-                                            >
-                                              {ft.split("_").join(" ")}
-                                            </label>
+                                            !ft.includes("constituency") &&
+                                          <label
+                                            htmlFor={ft}
+                                            className="text-gray-600 capitalize text-sm"
+                                          >
+                                            {ft.split("_").join(" ")}
+                                          </label>
                                           }
 
                                           {(() => {
@@ -525,7 +525,7 @@ const Gis = (props) => {
                                                         nf[ft] =
                                                           (drillDown[ft]
                                                             ? drillDown[ft] +
-                                                            ","
+                                                              ","
                                                             : "") +
                                                           Array.from(
                                                             ev,
@@ -535,7 +535,7 @@ const Gis = (props) => {
                                                         ev &&
                                                         ev !== null &&
                                                         typeof ev ===
-                                                        "object" &&
+                                                          "object" &&
                                                         !Array.isArray(ev)
                                                       ) {
                                                         nf[ft] = ev.value;
@@ -604,7 +604,7 @@ const Gis = (props) => {
                                                         nf[ft] =
                                                           (drillDown[ft]
                                                             ? drillDown[ft] +
-                                                            ","
+                                                              ","
                                                             : "") +
                                                           Array.from(
                                                             sl,
@@ -614,7 +614,7 @@ const Gis = (props) => {
                                                         sl &&
                                                         sl !== null &&
                                                         typeof sl ===
-                                                        "object" &&
+                                                          "object" &&
                                                         !Array.isArray(sl)
                                                       ) {
                                                         nf[ft] = sl.value;
@@ -704,7 +704,7 @@ const Gis = (props) => {
                                                         nf[ft] =
                                                           (drillDown[ft]
                                                             ? drillDown[ft] +
-                                                            ","
+                                                              ","
                                                             : "") +
                                                           Array.from(
                                                             ev,
@@ -714,7 +714,7 @@ const Gis = (props) => {
                                                         ev &&
                                                         ev !== null &&
                                                         typeof ev ===
-                                                        "object" &&
+                                                          "object" &&
                                                         !Array.isArray(ev)
                                                       ) {
                                                         nf[ft] = ev.value;
@@ -799,8 +799,8 @@ const Gis = (props) => {
                                                             nf[ft] =
                                                               (drillDown[ft]
                                                                 ? drillDown[
-                                                                ft
-                                                                ] + ","
+                                                                    ft
+                                                                  ] + ","
                                                                 : "") +
                                                               Array.from(
                                                                 ev,
@@ -810,7 +810,7 @@ const Gis = (props) => {
                                                             ev &&
                                                             ev !== null &&
                                                             typeof ev ===
-                                                            "object" &&
+                                                              "object" &&
                                                             !Array.isArray(ev)
                                                           ) {
                                                             nf[ft] = ev.value;
@@ -846,7 +846,7 @@ const Gis = (props) => {
                                                   />
                                                 );
 
-
+                                  
 
                                               case "ward":
                                                 return (
@@ -871,7 +871,7 @@ const Gis = (props) => {
                                                         nf[ft] =
                                                           (drillDown[ft]
                                                             ? drillDown[ft] +
-                                                            ","
+                                                              ","
                                                             : "") +
                                                           Array.from(
                                                             sl,
@@ -881,7 +881,7 @@ const Gis = (props) => {
                                                         sl &&
                                                         sl !== null &&
                                                         typeof sl ===
-                                                        "object" &&
+                                                          "object" &&
                                                         !Array.isArray(sl)
                                                       ) {
                                                         nf[ft] = sl.value;
@@ -899,67 +899,67 @@ const Gis = (props) => {
                                               default:
                                                 return (
                                                   <>
-                                                    {
-                                                      !ft.includes("constituency") &&
-                                                      <Select
-                                                        isMulti={multiFilters.includes(
-                                                          ft
-                                                        )}
-                                                        name={ft}
-                                                        defaultValue={
-                                                          drillDown[ft] || ""
-                                                        }
-                                                        id={ft}
-                                                        className="w-full p-1 rounded bg-gray-50"
-                                                        options={Array.from(
-                                                          filters[ft] || [],
-                                                          (fltopt) => {
-                                                            return {
-                                                              value: fltopt.id,
-                                                              label: fltopt.name,
-                                                            };
-                                                          }
-                                                        )}
-                                                        placeholder={
-                                                          ft
-                                                            .split("_")
-                                                            .join(" ")[0]
-                                                            .toUpperCase() +
-                                                          ft
-                                                            .split("_")
-                                                            .join(" ")
-                                                            .slice(1)
-                                                        }
-                                                        onChange={(sl) => {
-                                                          let nf = {};
-                                                          if (Array.isArray(sl)) {
-                                                            nf[ft] =
-                                                              (drillDown[ft]
-                                                                ? drillDown[ft] +
-                                                                ","
-                                                                : "") +
-                                                              Array.from(
-                                                                sl,
-                                                                (l_) => l_.value
-                                                              ).join(",");
-                                                          } else if (
-                                                            sl &&
-                                                            sl !== null &&
-                                                            typeof sl ===
-                                                            "object" &&
-                                                            !Array.isArray(sl)
-                                                          ) {
-                                                            nf[ft] = sl.value;
-                                                          } else {
-                                                            delete nf[ft];
-                                                          }
-                                                          setDrillDown({
-                                                            ...drillDown,
-                                                            ...nf,
-                                                          });
-                                                        }}
-                                                      />
+                                                  {
+                                                    !ft.includes("constituency") &&
+                                                  <Select
+                                                    isMulti={multiFilters.includes(
+                                                      ft
+                                                    )}
+                                                    name={ft}
+                                                    defaultValue={
+                                                      drillDown[ft] || ""
                                                     }
+                                                    id={ft}
+                                                    className="w-full p-1 rounded bg-gray-50"
+                                                    options={Array.from(
+                                                      filters[ft] || [],
+                                                      (fltopt) => {
+                                                        return {
+                                                          value: fltopt.id,
+                                                          label: fltopt.name,
+                                                        };
+                                                      }
+                                                    )}
+                                                    placeholder={
+                                                      ft
+                                                        .split("_")
+                                                        .join(" ")[0]
+                                                        .toUpperCase() +
+                                                      ft
+                                                        .split("_")
+                                                        .join(" ")
+                                                        .slice(1)
+                                                    }
+                                                    onChange={(sl) => {
+                                                      let nf = {};
+                                                      if (Array.isArray(sl)) {
+                                                        nf[ft] =
+                                                          (drillDown[ft]
+                                                            ? drillDown[ft] +
+                                                              ","
+                                                            : "") +
+                                                          Array.from(
+                                                            sl,
+                                                            (l_) => l_.value
+                                                          ).join(",");
+                                                      } else if (
+                                                        sl &&
+                                                        sl !== null &&
+                                                        typeof sl ===
+                                                          "object" &&
+                                                        !Array.isArray(sl)
+                                                      ) {
+                                                        nf[ft] = sl.value;
+                                                      } else {
+                                                        delete nf[ft];
+                                                      }
+                                                      setDrillDown({
+                                                        ...drillDown,
+                                                        ...nf,
+                                                      });
+                                                    }}
+                                                  />
+                                                 }
                                                   </>
                                                 );
                                             }
@@ -1345,16 +1345,16 @@ const Gis = (props) => {
                                           key={ft}
                                           className="w-full flex flex-col items-start justify-start gap-1 mb-3"
                                         >
-
+                                          
                                           {
                                             !ft.includes("constituency") &&
-                                            <label
-                                              htmlFor={ft}
-                                              className="text-gray-600 capitalize text-sm"
-                                            >
-                                              {ft.split("_").join(" ")}
-                                            </label>
-                                          }
+                                          <label
+                                            htmlFor={ft}
+                                            className="text-gray-600 capitalize text-sm"
+                                          >
+                                            {ft.split("_").join(" ")}
+                                          </label>
+                                            }
 
                                           {(() => {
                                             // let serviceOptions = [];
@@ -1390,7 +1390,7 @@ const Gis = (props) => {
                                                         nf[ft] =
                                                           (drillDown[ft]
                                                             ? drillDown[ft] +
-                                                            ","
+                                                              ","
                                                             : "") +
                                                           Array.from(
                                                             ev,
@@ -1400,7 +1400,7 @@ const Gis = (props) => {
                                                         ev &&
                                                         ev !== null &&
                                                         typeof ev ===
-                                                        "object" &&
+                                                          "object" &&
                                                         !Array.isArray(ev)
                                                       ) {
                                                         nf[ft] = ev.value;
@@ -1469,7 +1469,7 @@ const Gis = (props) => {
                                                         nf[ft] =
                                                           (drillDown[ft]
                                                             ? drillDown[ft] +
-                                                            ","
+                                                              ","
                                                             : "") +
                                                           Array.from(
                                                             sl,
@@ -1479,7 +1479,7 @@ const Gis = (props) => {
                                                         sl &&
                                                         sl !== null &&
                                                         typeof sl ===
-                                                        "object" &&
+                                                          "object" &&
                                                         !Array.isArray(sl)
                                                       ) {
                                                         nf[ft] = sl.value;
@@ -1569,7 +1569,7 @@ const Gis = (props) => {
                                                         nf[ft] =
                                                           (drillDown[ft]
                                                             ? drillDown[ft] +
-                                                            ","
+                                                              ","
                                                             : "") +
                                                           Array.from(
                                                             ev,
@@ -1579,7 +1579,7 @@ const Gis = (props) => {
                                                         ev &&
                                                         ev !== null &&
                                                         typeof ev ===
-                                                        "object" &&
+                                                          "object" &&
                                                         !Array.isArray(ev)
                                                       ) {
                                                         nf[ft] = ev.value;
@@ -1651,7 +1651,7 @@ const Gis = (props) => {
                                                           nf[ft] =
                                                             (drillDown[ft]
                                                               ? drillDown[ft] +
-                                                              ","
+                                                                ","
                                                               : "") +
                                                             Array.from(
                                                               ev,
@@ -1661,7 +1661,7 @@ const Gis = (props) => {
                                                           ev &&
                                                           ev !== null &&
                                                           typeof ev ===
-                                                          "object" &&
+                                                            "object" &&
                                                           !Array.isArray(ev)
                                                         ) {
                                                           nf[ft] = ev.value;
@@ -1790,7 +1790,7 @@ const Gis = (props) => {
                                                         nf[ft] =
                                                           (drillDown[ft]
                                                             ? drillDown[ft] +
-                                                            ","
+                                                              ","
                                                             : "") +
                                                           Array.from(
                                                             sl,
@@ -1800,7 +1800,7 @@ const Gis = (props) => {
                                                         sl &&
                                                         sl !== null &&
                                                         typeof sl ===
-                                                        "object" &&
+                                                          "object" &&
                                                         !Array.isArray(sl)
                                                       ) {
                                                         nf[ft] = sl.value;
@@ -1816,71 +1816,71 @@ const Gis = (props) => {
                                                 );
 
                                               default:
-
+                                                
                                                 return (
                                                   <>
-                                                    {
-                                                      ft !== "constituency" &&
-                                                      <Select
-                                                        isMulti={multiFilters.includes(
-                                                          ft
-                                                        )}
-                                                        name={ft}
-                                                        defaultValue={
-                                                          drillDown[ft] || ""
-                                                        }
-                                                        id={ft}
-                                                        className="w-full p-1 rounded bg-gray-50"
-                                                        options={Array.from(
-                                                          filters[ft] || [],
-                                                          (fltopt) => {
-                                                            return {
-                                                              value: fltopt.id,
-                                                              label: fltopt.name,
-                                                            };
-                                                          }
-                                                        )}
-                                                        placeholder={
-                                                          ft
-                                                            .split("_")
-                                                            .join(" ")[0]
-                                                            .toUpperCase() +
-                                                          ft
-                                                            .split("_")
-                                                            .join(" ")
-                                                            .slice(1)
-                                                        }
-                                                        onChange={(sl) => {
-                                                          let nf = {};
-                                                          if (Array.isArray(sl)) {
-                                                            nf[ft] =
-                                                              (drillDown[ft]
-                                                                ? drillDown[ft] +
-                                                                ","
-                                                                : "") +
-                                                              Array.from(
-                                                                sl,
-                                                                (l_) => l_.value
-                                                              ).join(",");
-                                                          } else if (
-                                                            sl &&
-                                                            sl !== null &&
-                                                            typeof sl ===
-                                                            "object" &&
-                                                            !Array.isArray(sl)
-                                                          ) {
-                                                            nf[ft] = sl.value;
-                                                          } else {
-                                                            delete nf[ft];
-                                                          }
-                                                          setDrillDown({
-                                                            ...drillDown,
-                                                            ...nf,
-                                                          });
-                                                        }}
-                                                      />
+                                                  {
+                                                    ft !== "constituency" &&
+                                                  <Select
+                                                    isMulti={multiFilters.includes(
+                                                      ft
+                                                    )}
+                                                    name={ft}
+                                                    defaultValue={
+                                                      drillDown[ft] || ""
                                                     }
-                                                  </>
+                                                    id={ft}
+                                                    className="w-full p-1 rounded bg-gray-50"
+                                                    options={Array.from(
+                                                      filters[ft] || [],
+                                                      (fltopt) => {
+                                                        return {
+                                                          value: fltopt.id,
+                                                          label: fltopt.name,
+                                                        };
+                                                      }
+                                                    )}
+                                                    placeholder={
+                                                      ft
+                                                        .split("_")
+                                                        .join(" ")[0]
+                                                        .toUpperCase() +
+                                                      ft
+                                                        .split("_")
+                                                        .join(" ")
+                                                        .slice(1)
+                                                    }
+                                                    onChange={(sl) => {
+                                                      let nf = {};
+                                                      if (Array.isArray(sl)) {
+                                                        nf[ft] =
+                                                          (drillDown[ft]
+                                                            ? drillDown[ft] +
+                                                              ","
+                                                            : "") +
+                                                          Array.from(
+                                                            sl,
+                                                            (l_) => l_.value
+                                                          ).join(",");
+                                                      } else if (
+                                                        sl &&
+                                                        sl !== null &&
+                                                        typeof sl ===
+                                                          "object" &&
+                                                        !Array.isArray(sl)
+                                                      ) {
+                                                        nf[ft] = sl.value;
+                                                      } else {
+                                                        delete nf[ft];
+                                                      }
+                                                      setDrillDown({
+                                                        ...drillDown,
+                                                        ...nf,
+                                                      });
+                                                    }}
+                                                  />
+                                            }
+                                            </>
                                                 );
                                             }
                                           })(ft)}
@@ -2138,7 +2138,7 @@ const Gis = (props) => {
             results.
           </p>
         </div> */}
-
+      
       </MainLayout>
     </div>
   );

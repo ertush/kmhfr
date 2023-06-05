@@ -38,8 +38,8 @@ jobs:
           if ! [[ -d './.git' ]]; then git init; fi
           if ! [[ `git remote -v | awk '{print $1}' | head -n 1` =~ 'origin' ]]; then git remote add origin ${{ github.server_url }}${{ github.username }}/${{ github.repository }}.git; fi
           git pull origin master
-          yarn
-          yarn build
+          pnpm install
+          pnpm run build
           npx pm2 restart all
           
           
