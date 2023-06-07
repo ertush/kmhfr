@@ -8,7 +8,6 @@ function Unauthorized() {
     <MainLayout isLoading={false} searchTerm={''}>
       <main className='grid place-content-center w-full h-screen'>
         <h2 className='font-semibold text-2xl'>403 | Access to the page was denied</h2>
-    
       </main>
     </MainLayout>
   )
