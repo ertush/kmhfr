@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
 env:
   NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL
   TOKEN_URL: $TOKEN_URL
