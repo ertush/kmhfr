@@ -26,8 +26,6 @@ import FacilitySideMenu from '../../components/FacilitySideMenu'
 const Home = (props) => {
     const router = useRouter()
 
-    
-
     // const permissions = useContext(PermissionContext)
    
     const facilities = props?.data?.results
@@ -36,7 +34,6 @@ const Home = (props) => {
     const [drillDown, setDrillDown] = useState({})
     // const qf = props?.query?.qf ?? null
 
-    // console.log({path:router.query.qf})
     if (filters && typeof filters === "object")
      {
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
