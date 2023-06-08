@@ -1,4 +1,4 @@
-name: Deploy to kmhfl server
+name: CI
 
 on:
   pull_request:
@@ -23,6 +23,8 @@ jobs:
         node-version: 16
     - name: Install Playwright Browsers
       run: npm exec playwright install --with-deps
+    - name: Install dependecies
+      run: npm install
     - name: Build source
       run: npm run build
     - name: Run Playwright tests
@@ -41,10 +43,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      
     - name: Install Build Dependencies
       run : yarn global add pm2; yarn global add pnpm
- 
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master  
       with:
