@@ -10,14 +10,10 @@ test('has loggined and has redirected to dashboard ', async ({ page }) => {
   await page.getByPlaceholder('*********').fill('Test@1234');
   await page.getByRole('button', { name: 'Log in' }).click();
   
-  // await (() => new Promise(res => res(setTimeout(() => console.log('awaiting ..page to load'), 5000))))()
+  await page.waitForTimeout(4000);
 
-  // await expect(page.getByTestId('dashboard-title')).toHaveText("Overview");
-
-  await expect(page).toHaveTitle('KMHFL - Home');
-  // await expect(page).toHaveURL('http://localhost:3000/dashboard/');
-
-
+  await expect(page.locator('#dashboard-title')).toHaveText("Overview");
+    
 
 
 });

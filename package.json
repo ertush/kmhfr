@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "pnpm build && next start",
     "lint": "next lint",
     "test": "pnpm exec playwright test"
   },
