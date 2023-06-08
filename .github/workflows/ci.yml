@@ -33,7 +33,7 @@ jobs:
     - name: Install App dependencies
       run: pnpm install
     - name: Run Playwright tests
-      run: node -e "console.log(process.env)"
+      run: pnpm run test
     - uses: actions/upload-artifact@v3
       if: always()
       with:
