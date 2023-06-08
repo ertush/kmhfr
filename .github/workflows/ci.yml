@@ -23,12 +23,14 @@ jobs:
         node-version: 16
     - name: Install Playwright Browsers
       run: npm exec playwright install --with-deps
-    - name: Install dependecies
-      run: npm install
+    - name: Install build dependecies
+      run: yarn global add pnpm
+    - name: Install App Dependencies
+      run: pnpm install
     - name: Build source
-      run: npm run build
+      run: pnpm run build
     - name: Run Playwright tests
-      run:  npm run test
+      run:  pnpm run test
     - uses: actions/upload-artifact@v3
       if: always()
       with:

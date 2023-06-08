@@ -1,4 +1,5 @@
-[![deploy workflow](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/deploy.yml/badge.svg)](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/deploy.yml)
+[![CI](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/ci.yml)
+
 [![CodeQL](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/ertush/kmhfl-upgrade-alpha-ui/actions/workflows/github-code-scanning/codeql)
 # KMHFL3 Frontend
 
