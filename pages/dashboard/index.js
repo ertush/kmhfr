@@ -257,7 +257,7 @@ const Dash = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - Overview</title>
+                <title>KMHFL - Dashboard</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
@@ -272,7 +272,7 @@ const Dash = (props) => {
                         </div>
                         <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">
                             <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
-                                <span className='no-print'>Overview</span>
+                                <span className='no-print' id="dashboard-title">Overview</span>
                                 <div className='flex items-center gap-x-2 mt-3'>
                                     {drillDown && drillDown?.county && groupID !== 1 &&
                                         <small className="text-blue-900 text-base font-semibold ml-1">
