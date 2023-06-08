@@ -2,8 +2,8 @@ name: Deploy to kmhfl server
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+    
 env:
   NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL
   TOKEN_URL: $TOKEN_URL

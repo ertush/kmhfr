@@ -10,9 +10,7 @@ test('has loggined and has redirected to dashboard ', async ({ page }) => {
   await page.getByPlaceholder('*********').fill('Test@1234');
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  // await expect(page).toHaveTitle(/KMHFL\ -\ Overview/);
-  await expect(page).toHaveURL(/.*dashboard/);
-
-
+  await expect(page).toHaveTitle('KMHFL - Dashboard');
+  
 
 });
