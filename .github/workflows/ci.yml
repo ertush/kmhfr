@@ -1,7 +1,7 @@
 name: CI
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
 
 env:
@@ -26,10 +26,10 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-    - name: Install Playwright Browsers
-      run: npm exec playwright install --with-deps
     - name: Install build dependecies
-      run: yarn global add pnpm
+      run: yarn global add pnpm && yarn global add playwright
+    - name: Install Playwright Browsers
+      run: pnpm exec playwright install --with-deps
     - name: Run Playwright tests
       run:  pnpm run test
     - uses: actions/upload-artifact@v3
