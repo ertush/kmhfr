@@ -10,7 +10,7 @@ test('has loggined and has redirected to dashboard ', async ({ page }) => {
   await page.getByPlaceholder('*********').fill('Test@1234');
   await page.getByRole('button', { name: 'Log in' }).click();
   
-  await page.waitForTimeout(4000);
+  await page.waitForTimeout(5000);
 
   await expect(page.locator('#dashboard-title')).toHaveText("Overview");
     
