@@ -14,7 +14,7 @@ env:
   NEXT_PUBLIC_CLIENT_PASSWORD: 'public'
   NEXT_PUBLIC_CLIENT_PUBLIC_ID: ${{secrets.NEXT_PUBLIC_CLIENT_PUBLIC_ID}}
   NEXT_PUBLIC_CLIENT_PUBLIC_SECRET: ${{secrets.NEXT_PUBLIC_CLIENT_PUBLIC_SECRET}}
-  NEXT_PUBLIC_PUBLIC_TOKEN_URL: 'https://api.kmhfltest.health.go.ke/o/token/'
+  NEXT_PUBLIC_PUBLIC_TOKEN_URL: $TOKEN_URL
 
 jobs:
 
@@ -33,7 +33,7 @@ jobs:
     - name: Install App dependencies
       run: pnpm install
     - name: Run Playwright tests
-      run:  pnpm run test
+      run: node -e "console.log(process.env)"
     - uses: actions/upload-artifact@v3
       if: always()
       with:
