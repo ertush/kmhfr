@@ -30,10 +30,6 @@ jobs:
       run: npm exec playwright install --with-deps
     - name: Install build dependecies
       run: yarn global add pnpm
-    - name: Install App Dependencies
-      run: pnpm install
-    - name: Build source
-      run: pnpm run build
     - name: Run Playwright tests
       run:  pnpm run test
     - uses: actions/upload-artifact@v3
