@@ -5,7 +5,7 @@ const cookieCutter = require('cookie-cutter')
 
 const getToken = (req, res, refresh_token, creds) => {
     const cookies = new Cookies(req, res)
-    console.log('running getToken')
+    // console.log('running getToken')
     // console.log('------------getToken: ', creds)
     const isServer = !!req
     const isBrowser = !req
