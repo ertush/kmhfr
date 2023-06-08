@@ -81,7 +81,7 @@ const Home = (props) => {
     return (
         <>
             <Head>
-                <title>{isLoggedIn ? 'KMHFL - Dashboard' : 'KMHFL'}</title>
+                <title>KMHFL - Home</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
            
