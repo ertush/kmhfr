@@ -30,6 +30,8 @@ jobs:
       run: yarn global add pnpm && yarn global add playwright
     - name: Install Playwright Browsers
       run: pnpm exec playwright install --with-deps
+    - name: Install App dependencies
+      run: pnpm install
     - name: Run Playwright tests
       run:  pnpm run test
     - uses: actions/upload-artifact@v3

@@ -1,1 +1,1 @@
-set -e; npx yarn build;
+set -e; npx pnpm build;
