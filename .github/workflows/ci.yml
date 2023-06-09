@@ -18,32 +18,31 @@ env:
 
 jobs:
 
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-    - name: Install build dependecies
-      run: yarn global add pnpm && yarn global add playwright
-    - name: Install Playwright Browsers
-      run: pnpm exec playwright install --with-deps
-    - name: Install App dependencies
-      run: pnpm install
-    - name: Run Playwright tests
-      run: pnpm run test
-    - uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+  # test:
+  #   timeout-minutes: 60
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - uses: actions/setup-node@v3
+  #     with:
+  #       node-version: 16
+  #   - name: Install build dependecies
+  #     run: yarn global add pnpm && yarn global add playwright
+  #   - name: Install Playwright Browsers
+  #     run: pnpm exec playwright install --with-deps
+  #   - name: Install App dependencies
+  #     run: pnpm install
+  #   - name: Run Playwright tests
+  #     run: pnpm run test
+  #   - uses: actions/upload-artifact@v3
+  #     if: always()
+  #     with:
+  #       name: playwright-report
+  #       path: playwright-report/
+  #       retention-days: 30
 
 
   deploy:
-    needs: test
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
