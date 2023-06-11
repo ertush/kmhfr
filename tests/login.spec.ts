@@ -12,6 +12,8 @@ test('is able to log in', async ({ page }) => {
 
   // Unable to proove that the login is working
   // Will be working on this later
+
+//  expect(page.url()).toEqual(/http:\/\/localhost:3000\/auth\/login.*/)
 });
 
 

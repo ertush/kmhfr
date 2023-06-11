@@ -163,7 +163,7 @@ export default function HeaderLayout({
           </button>
           <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
             {/* Dashboard / Home */}
-            <li className="flex-wrap font-semibold">
+            <li className="flex-wrap font-semibold" id="dashboard">
               <Link href={isLoggedIn ? "/dashboard" : "/"}>
                 <p
                   className={`
