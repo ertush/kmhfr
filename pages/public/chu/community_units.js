@@ -63,6 +63,8 @@ const Home = (props) => {
 		{label: 'constituency', ref:constituency, array: units['sub_counties']},
 		{label: 'wards', ref:ward, array: units['wards']}
 	]
+
+	
 	const getUnits = async (path, id) => {
 		try{
 			let url = `/api/common/fetch_form_data/?path=${path}&id=${id}`
@@ -113,7 +115,8 @@ const Home = (props) => {
 		if(allchus.current.value !== ''){
 			url += `&search={"query":{"query_string":{"default_field":"name","query":"${allchus.current.value}"}}}`
 		}
-		
+
+
 		try {
 			const r = await fetch(url, {
 				headers: {
