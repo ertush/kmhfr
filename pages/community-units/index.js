@@ -181,22 +181,24 @@ const Home = (props) => {
 
                      {/* Main body */}
 					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
-					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+					{/* <div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> */}
+                    <div className="w-full md:col-span-4 md:col-start-2  col-span-5 md:h-auto md:mb-12">
 
-					    <div className='mx-4 float-right'>
+
+					    {/* <div className='mx-4 float-right'> */}
 							 
-						    <h5 className="text-lg font-medium text-gray-800 float-right">
+						    <h5 className="text-lg font-medium text-gray-800 float-right mr-4 mb-2">
                                 {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
                             </h5>
-						</div>
-						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
+						{/* </div> */}
+						<div className='flex-grow w-full flex flex-col items-center gap-4 order-last md:order-none'>
 							{/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
-							{cus && cus.length > 0 ? (
+								{cus && cus.length > 0 ? (
 								cus.map((comm_unit, index) => (
 									<div
 										key={comm_unit.id}
-										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full'>
-										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
+										className='px-1 md:px-3 grid grid-cols-4 gap-2 border-b py-4 hover:bg-gray-50 w-full'>
+										<div className='col-span-8 md:col-span-4 w-full flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
 													href={'/community-units/' + comm_unit.id}
@@ -253,39 +255,46 @@ const Home = (props) => {
 												</div>
 											</div>
 										</div>
-										<div className='col-span-8 md:col-span-3 flex flex-wrap items-center gap-3 text-lg'>
-											{comm_unit.status_name ? (
-												<span
-													className={
-														'leading-none border whitespace-nowrap shadow-xs text-sm rounded py-1 px-2 text-black ' +
-														(comm_unit.status_name
-															.toLocaleLowerCase()
-															.includes('non-')
-															? ' bg-red-200 border-red-300/60'
-															: comm_unit.status_name
-																	.toLocaleLowerCase()
-																	.includes('fully')
-															? ' bg-green-200 border-green-300/60'
-															: ' bg-yellow-200 border-yellow-300/60')
-													}>
-													{comm_unit.status_name[0].toLocaleUpperCase()}
-													{comm_unit.status_name.slice(1).toLocaleLowerCase()}
-												</span>
-											) : (
-												''
-											)}
-											{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
-											{comm_unit.has_edits ? (
-												<span
-													className={
-														'leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black'
-													}>
-													Has edits
-												</span>
-											) : (
-												''
-											)}
+										<div className='col-start-4 row-start-2 text-lg flex-col'>
+											<label className='text-xs text-gray-500'>
+												Status:
+											</label>
+											<div className='w-full'>
+												{comm_unit.status_name ? (
+													<span
+														className={
+															'leading-none border whitespace-nowrap shadow-xs text-sm rounded py-1 px-2 text-black ' +
+															(comm_unit.status_name
+																.toLocaleLowerCase()
+																.includes('non-')
+																? ' bg-red-200 border-red-300/60'
+																: comm_unit.status_name
+																		.toLocaleLowerCase()
+																		.includes('fully')
+																? ' bg-green-200 border-green-300/60'
+																: ' bg-yellow-200 border-yellow-300/60')
+														}>
+														
+														{comm_unit.status_name[0].toLocaleUpperCase()}
+														{comm_unit.status_name.slice(1).toLocaleLowerCase()}
+													</span>
+												) : (
+													''
+												)}
+												{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
+												{comm_unit.has_edits ? (
+													<span
+														className={
+															'leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black'
+														}>
+														Has edits
+													</span>
+												) : (
+													''
+												)}
+											</div>
 										</div>
+										
 										<div className='col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
 											{/* <a href={'/community-unit/edit/' + comm_unit.id} className="text-blue-800 hover:underline active:underline focus:underline bg-blue-200 md:bg-transparent px-2 md:px-0 rounded md:rounded-none">
                                             Edit
