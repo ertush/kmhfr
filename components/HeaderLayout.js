@@ -373,7 +373,7 @@ export default function HeaderLayout({
                 as="ul"
                 className="list-none flex flex-col items-center bg-white outline-none shadow-md font-semibold justify-start gap-2 p-3 absolute mt-3 text-gray-800 right-0 w-40 rounded"
               >
-                <Menu.Item as="li" className="flex items-center w-full gap-1">
+                <Menu.Item as="li" className="flex items-center cursor-pointer w-full gap-1">
                   {({ active }) => (
                     <Link href="/reports/dynamic_reports">
                       <span className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
@@ -384,12 +384,12 @@ export default function HeaderLayout({
                     </Link>
                   )}
                 </Menu.Item>
-                <Menu.Item as="li" className="flex items-center w-full gap-1">
+                <Menu.Item as="li" className="flex items-center cursor-pointer w-full gap-1">
                   {({ active }) => (
-                   <Link href="/reports/dynamic_reports">
+                   <Link href="/reports/standard_reports">
                    <span className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
                      }`}>
-                         Static Reports
+                         Standard Reports
                    </span>
                  
                  </Link>
