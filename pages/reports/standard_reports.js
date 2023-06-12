@@ -111,7 +111,7 @@ const Users = (props) => {
         switch (filterOption) {
             case 'county':
                 router.push({
-                    pathname: `/reports/static_reports/`
+                    pathname: `/reports/standard_reports/`
                 })
                 break;
             case 'sub-county':
@@ -174,7 +174,7 @@ const Users = (props) => {
                           <div className='mx-4'>
                             <form
                                 className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-                                //   action={ "/static_reports"}
+                                //   action={ "/standard_reports"}
                                 // onSubmit={()=> filter(searchTerm)}
                                 >
                                 <input
