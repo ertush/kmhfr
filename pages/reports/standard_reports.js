@@ -44,8 +44,8 @@ const Users = (props) => {
             ><span>{params.value}</span></Link>
         )}
 
-    // const [gridApi, setGridApi] = useState(null);
-    // const [gridColumnApi, setGridColumnApi] = useState(null);
+    const [gridApi, setGridApi] = useState(null);
+    const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
     const [filtered, setFiltered]=useState([])
     const [searchTerm, setSearchTerm] = useState('')
@@ -157,12 +157,12 @@ const Users = (props) => {
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'/'}
-                                <span className="text-gray-500">Static Reports</span> 
+                                <span className="text-gray-500">Standard Reports</span> 
                             </div>
                             <div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Beds and Cots Report by County'}
-                                </h2>
+                                    </h2>
                                 
                         </div>
                         </div>
