@@ -87,11 +87,7 @@ function AddAdminOffice(props) {
                         <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                             {'New Admin Office'}
                         </h2>
-                        <button className='rounded bg-red-600 p-2 text-white flex items-center text-lg font-semibold'
-                            onClick={() => { router.push('add_adminoffices') }}
-                        >
-                            {`Delete `}
-                        </button>
+                        
                     </div>
 
                 </div>

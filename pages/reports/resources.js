@@ -33,7 +33,7 @@ const Resources = ({label}) => {
                     }
                   >	
                 
-                    <ListItemButton sx={{ ml: 8, backgroundColor:`${label?.toLocaleLowerCase() == 'beds_cots' ? '#e7ebf0' : 'none'}`}} onClick={()=>{router.push('/reports/static_reports')}}>
+                    <ListItemButton sx={{ ml: 8, backgroundColor:`${label?.toLocaleLowerCase() == 'beds_cots' ? '#e7ebf0' : 'none'}`}} onClick={()=>{router.push('/reports/standard_reports')}}>
                         <ListItemText primary="Beds and Cots" />
                     </ListItemButton>
                     <ListItemButton sx={{ ml: 8, backgroundColor:`${label?.toLocaleLowerCase() == 'facilities_count' ? '#e7ebf0' : 'none'}` }} onClick={()=>{router.push('/reports/facilities_count')}}>
