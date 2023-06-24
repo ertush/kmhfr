@@ -220,7 +220,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                         setFacilitiesPendingApproval(false)
                         setDHISSyncedFacilities(false)
                         setFailedValidationFctsSelected(false)
-                        setRejectedFctsSelected(false)
+                        setRejectedFctsSelected(false)      
                         setClosedFctsSelected(false)
                         setIncompleteFctsSelected(false)
                         setSyncRegulatedFctsSelected(false)
