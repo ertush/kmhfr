@@ -610,7 +610,7 @@ const Facility = (props) => {
                 }
 
               }}
-              className="bg-green-500 w-auto rounded p-2 text-white text-lg font-semibold flex items-center justify-between">
+              className="bg-green-500 w-auto rounded w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
               <span>{isViewChangeLog ? 'Hide Change Log' : 'View Change Log'}</span>
               {
                 isViewChangeLog ?

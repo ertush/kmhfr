@@ -1970,8 +1970,9 @@ function AddFacility(props) {
 															    <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
 																	{
 																		facilityContacts.map((facilityContact, i) => (
-														
-																			facilityContact
+																			<React.Fragment key={i}>
+																				{facilityContact }
+																			</React.Fragment>
 																		
 																		))
 																	}
@@ -2088,7 +2089,12 @@ function AddFacility(props) {
 																		{
 																			officerContactDetails.map((officerDetailContact, i) => (
 															
-																				officerDetailContact
+																				<React.Fragment key={i}>
+																					{
+																						officerDetailContact
+
+																					}
+																				</React.Fragment>
 																			
 																			))
 																		}
@@ -2249,7 +2255,7 @@ function AddFacility(props) {
 																 
 																	{
 																		facilityDepts.map((facilityDept, i) => (
-																			<div className="w-full flex items-center justify-between gap-3 mt-3" key={facilityDept.index}>
+																			<div className="w-full flex items-center justify-between gap-3 mt-3" key={i}>
 																				<FacilityDeptRegulationFactory
 																					key={facilityDept.index}
 																					index={i}

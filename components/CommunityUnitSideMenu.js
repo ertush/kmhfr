@@ -118,9 +118,9 @@ function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 	}, [])
 
 	return (
-		<div className='col-span-1 w-full md:col-start-1 border-t-2 border-r-2 md:mt-9 border-gray-300 h-auto'>
+		<div className='col-span-1 w-full md:col-start-1 border-r-2 border-gray-300 h-full'>
 			<List
-				sx={{ width: '100%', bgcolor: 'background.paper', flexGrow: 1 }}
+				sx={{ width: '100%', bgcolor: 'background.paper', flexGrow: 1, borderLeft:'2px solid #d1d5db' }}
 				component="nav"
 				aria-labelledby="nested-list-subheader"
 
@@ -133,15 +133,15 @@ function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 							sx={(() => {
 								switch (qf.name) {
 									case 'All Community Health Units':
-										return { backgroundColor: (allCHUSelected && pathId === 'all') ? '#e7ebf0' : 'none', borderLeft: 'solid 2px rgba(209, 213, 219, 1)',  borderBottom: 'solid 2px rgba(209, 213, 219, 1)' }
+										return { backgroundColor: (allCHUSelected && pathId === 'all') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }
 									case 'Approved Community Health Units':
-										return { backgroundColor: (approvedCHUSelected && pathId === 'approved') ? '#e7ebf0' : 'none', borderLeft: 'solid 2px rgba(209, 213, 219, 1)',  borderBottom: 'solid 2px rgba(209, 213, 219, 1)' }
+										return { backgroundColor: (approvedCHUSelected && pathId === 'approved') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }
 									case 'New Community Health Units Pending Approval':
-										return { backgroundColor: (newCHUSelected && pathId === 'new_pending_approval') ? '#e7ebf0' : 'none', borderLeft: 'solid 2px rgba(209, 213, 219, 1)', borderBottom: 'solid 2px rgba(209, 213, 219, 1)' }
+										return { backgroundColor: (newCHUSelected && pathId === 'new_pending_approval') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }
 									case 'Updated Community Health Units Pending Approval':
-										return { backgroundColor: (updatedCHUSelected && pathId === 'has_edits') ? '#e7ebf0' : 'none', borderLeft: 'solid 2px rgba(209, 213, 219, 1)',  borderBottom: 'solid 2px rgba(209, 213, 219, 1)' }
+										return { backgroundColor: (updatedCHUSelected && pathId === 'has_edits') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }
 									case 'Rejected Community Health Units':
-										return { backgroundColor: (rejectedCHUSelected && pathId === 'rejected') ? '#e7ebf0' : 'none', borderLeft: 'solid 2px rgba(209, 213, 219, 1)',  borderBottom: 'solid 2px rgba(209, 213, 219, 1)' }
+										return { backgroundColor: (rejectedCHUSelected && pathId === 'rejected') ? '#e7ebf0' : 'none', borderBottom: 'solid 1px #9ca3af' }
 
 								}
 							})()}

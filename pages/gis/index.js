@@ -1646,7 +1646,7 @@ if(filters){
                                                     }
                                                     onChange={(ev) => {
                                                       if (
-                                                        subCountyOptions !== []
+                                                        subCountyOptions?.length !== 0
                                                       ) {
                                                         let nf = {};
                                                         if (Array.isArray(ev)) {
