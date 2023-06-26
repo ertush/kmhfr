@@ -650,7 +650,7 @@ const handleFacilityContactsUpdates = async (formData, facility_id, alert) => {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8;*/*'
             },
-            method: 'POST',
+            method: 'PATCH',
             body: JSON.stringify(formData)
         })
 

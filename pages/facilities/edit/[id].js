@@ -421,7 +421,7 @@ const EditFacility = (props) => {
   };
 
   const [facilityContacts, setFacilityContacts] = useState(facility_contacts);
-  const [officerContacts, setOfficerContact] = useState(officer_in_charge);
+  const [officerContacts, setOfficerContact] = useState(officer_in_charge ?? [1]);
   const [facilityDepts, setFacilityDepts] = useState(facility_units);
 
   const collection_date = props["21"]?.collection_date
@@ -651,6 +651,7 @@ const EditFacility = (props) => {
   const contactRef = useRef(null);
   const jobTitleRef = useRef(null);
   const otherContactRef = useRef(null);
+  const facilityContactDetailRef = useRef(null);
 
   // Regulation Refs
   const regulatoryBodyRef = useRef(null);
@@ -834,7 +835,7 @@ const EditFacility = (props) => {
       </Head>
 
       <MainLayout>
-        <div className="w-full grid md:grid-cols-7 place-content-center md:grid-cols-4 gap-4 md:p-2 my-6">
+        <div className="w-full grid md:grid-cols-7 place-content-center gap-4 md:p-2 my-6">
           {/* Heading */}
           <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
             {/* Bread crumbs */}
@@ -907,7 +908,7 @@ const EditFacility = (props) => {
             />
           </div>
 
-          <div className="md:col-span-6 md:col-span-4 flex flex-col items-center md:gap-3 gap-y-3 mt-4">
+          <div className="md:col-span-6 flex flex-col items-center md:gap-3 gap-y-3 mt-4">
             {isSavedChanges && facilityUpdateData ? (
               // Display Changes to be updated
               <div className="flex flex-col justify-start w-full space-y-3 md:px-4">
@@ -2491,51 +2492,51 @@ const EditFacility = (props) => {
                       reg_no: officer_in_charge?.reg_no ?? "",
                       contact: facility_contacts
                         ? facility_contacts.length > 0
-                          ? facility_contacts[0].contact
+                          ? facility_contacts[0]?.contact
                           : ""
                         : "",
                       contact_type: facility_contacts
                         ? facility_contacts.length > 0
-                          ? facility_contacts[0].contact_type
-                          : ""
+                          ? facility_contacts[0]?.contact_type
+                            : ""
                         : "",
                       officer_contact_type: officerContacts
-                        ? officerContacts.length > 0
-                          ? officerContacts[0].contact_type
+                        ? officerContacts[0]?.contact_type
+                          ? officerContacts.length > 0 
                           : ""
                         : "",
                       officer_contact: officerContacts
                         ? officerContacts.length > 0
-                          ? officerContacts[0].contact
+                          ? officerContacts[0]?.contact
                           : ""
                         : "",
                     }}
                     onSubmit={(formData) => {
                       console.log({ formData });
 
-                      /*
+    
                                         
-                                            let payload = {}
-                                        
-                                            const contact = facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
-                                            const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
-                                            const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
-                                            const jobTitle = jobTitleRef.current  ? jobTitleRef.current.state.value.value : ''
-                                            const jobTitleName = jobTitleRef.current  ? jobTitleRef.current.state.value.label : ''
-                                            const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
-                                            if(officer_in_charge ) Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
-                                            _payload['title'] = jobTitle
-                                            _payload['titleName'] = jobTitleName
-                                            _payload['contacts'] = [{
-                                                contact,
-                                                contact_id: facility_contacts[0]?.contact_id,
-                                                contact_type_name: contactTypeName,
-                                                official_contact_id:facility_contacts[0]?.id,
-                                                type: contactType
-                                            }]
-                                           
-                                            payload = {officer_in_charge:_payload, contacts:[]}
-                                        */
+                        let payload = {}
+                    
+                        const contact =  facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
+                        const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
+                        const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
+                        const jobTitle = jobTitleRef.current  ? jobTitleRef.current.state.value.value : ''
+                        const jobTitleName = jobTitleRef.current  ? jobTitleRef.current.state.value.label : ''
+                        const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
+                        if(officer_in_charge ) Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
+                        _payload['title'] = jobTitle
+                        _payload['titleName'] = jobTitleName
+                        _payload['contacts'] = [{
+                            contact,
+                            contact_id: facility_contacts[0]?.contact_id,
+                            contact_type_name: contactTypeName,
+                            official_contact_id:facility_contacts[0]?.id,
+                            type: contactType
+                        }]
+                        
+                        payload = {officer_in_charge:_payload, contacts:[]}
+                  
 
                       handleFacilityContactsUpdates(payload, id, alert)
                         .then(({ statusText }) => {
@@ -2740,7 +2741,7 @@ const EditFacility = (props) => {
                               ? officerContacts.map(
                                   (officerContact) => officerContact
                                 )
-                              : officerContacts?.contacts.map(
+                              : officerContacts?.contacts?.map(
                                   (
                                     {
                                       contact,
