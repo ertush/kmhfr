@@ -197,7 +197,9 @@ function EditListWithCount(
 
                 else {
 
-                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, setNextItemCategory], itemId, alert) : /* Infrastructure */ handleItemsSubmit([values, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
+
+                    
+                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, setNextItemCategory], itemId, alert) : console.log({handleItemsSubmit}); /* Infrastructure */ handleItemsSubmit([values, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId) 
                         .catch(e => console.error('unable to submit item data. Error:', e.message))
                 }
 

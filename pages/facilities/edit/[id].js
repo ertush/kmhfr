@@ -14,7 +14,7 @@ import MainLayout from "../../../components/MainLayout";
 import EditListItem from "../../../components/EditListItem";
 import { Formik, Field, Form } from "formik";
 import dynamic from "next/dynamic";
-import router from "next/router";
+// import router from "next/router";
 import { useAlert } from "react-alert";
 import Link from "next/link";
 import FacilityDeptRegulationFactory from "../../../components/generateFacilityDeptRegulation";
@@ -3050,7 +3050,7 @@ const EditFacility = (props) => {
 
                         {/* add other fields */}
                         <div className="flex flex-col items-start justify-start gap-y-4">
-                          {facilityDepts.map((facilityDept, i) => (
+                          {facilityDepts?.map((facilityDept, i) => (
                             <div
                               className="w-full flex flex-grow gap-3 mt-3"
                               key={facilityDept.index}
