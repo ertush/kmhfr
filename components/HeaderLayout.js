@@ -536,10 +536,12 @@ export default function HeaderLayout({
               </Menu.Item> */}
               <Menu.Item
                 as="li"
+
                 className="flex items-center w-full gap-1 mt-2 border-t border-gray-600 py-2"
               >
                 {({ active }) => (
                   <a
+                    data-testid="logout"
                     className={`w-full hover:text-green-400 font-medium ${active && "text-green-400"
                       }`}
                     href="/logout"

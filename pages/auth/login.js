@@ -86,6 +86,7 @@ const Login = (props) => {
                     <div className="flex flex-col gap-0 w-full">
                         <label className="text-gray-800">Username</label>
                         <input type="email"
+                            data-testid="email_input"
                             value={username}
                             onChange={ev => {
                                 setError('')
@@ -96,6 +97,7 @@ const Login = (props) => {
                     <div className="flex flex-col gap-0 w-full">
                         <label className="text-gray-800">Password</label>
                         <input type="password"
+                            data-testid="password_input"
                             value={password}
                             onChange={ev => {
                                 setError('')
@@ -104,10 +106,10 @@ const Login = (props) => {
                             className="text-gray-900 bg-gray-50 border border-gray-300 py-3 px-3 w-full flex items-center leading-none rounded" placeholder="*********" />
                     </div>
                     <div className="flex flex-col gap-4 w-full text-center">
-                        <button type="submit" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-green-800 focus:bg-green-600 active:bg-green-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-green-700")}
+                        <button type="submit" data-testid="login_btn" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-green-800 focus:bg-green-600 active:bg-green-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-green-700")}
                         >{loading ? "Loading..." : "Log in"}</button>
                         <div className="flex justify-end items-center w-full px-2">
-                            <a onClick={()=>router.push('/auth/reset_password')} className="text-base text-gray-700 hover:text-green-700 focus:text-green-700 active:text-green-700 hover:underline focus:underline active:underline">Forgot password?</a>
+                            <a data-testid="forgot_password_link" onClick={()=>router.push('/auth/reset_password')} className="text-base text-gray-700 hover:text-green-700 focus:text-green-700 active:text-green-700 hover:underline focus:underline active:underline">Forgot password?</a>
 
                         </div>
                     </div>

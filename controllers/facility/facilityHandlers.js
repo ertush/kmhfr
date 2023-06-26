@@ -160,10 +160,11 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
 // handleGeolocationSubmit
 const handleGeolocationSubmit = (formData, stateSetters) => {
 
-    const [setFormId,  facilityId] = stateSetters
-
+    const [setFormId, setLongitude, setLatitude, facilityId] = stateSetters
+   
 
     const geolocationData = {};
+
 
     formData.forEach(({ name, value }) => {
         
@@ -193,6 +194,10 @@ const handleGeolocationSubmit = (formData, stateSetters) => {
     geolocationData['latitude'] = Number(geolocationData.latitude)
     geolocationData['longitude'] = Number(geolocationData.longitude)
 
+    setLongitude(geolocationData.longitude);
+    setLatitude(geolocationData.latitude);
+
+
     // Set missing geolocationData i.e coordinates & facility
 
     geolocationData['coordinates'] = {
@@ -205,6 +210,10 @@ const handleGeolocationSubmit = (formData, stateSetters) => {
 
     
     // Post Geolocation Details
+
+    // console.log({formData, setFormId, stateSetters, geolocationData})
+
+    // return
 
     try{
         fetch('/api/common/submit_form_data/?path=gis', {
@@ -474,7 +483,6 @@ const handleServiceSubmit = async (stateSetters, facilityId) => {
 const handleInfrastructureSubmit = (stateSetters, facilityId) => {
 
 
-
     const [formData, setFormId, setSelectedItems, setIsFormSubmit, resetForm] = stateSetters
 
 
@@ -485,9 +493,9 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
     })
     )
 
+   
 
-
-    if (facilityId && _payload) {
+    if (_payload) {
 
         try {
             fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
@@ -1025,6 +1033,11 @@ const handleRegulationSubmitUpdates = (event, stateSetters, file) => {
 
 };
 
+
+const handleInfra = () => {
+    console.log("handle infra...")
+}
+
 export {
     handleBasicDetailsSubmit,
     handleGeolocationSubmit,
@@ -1044,5 +1057,7 @@ export {
     handleServiceDelete,
     handleHrDelete,
     handleInfrastructureDelete,
-    handleRegulationSubmitUpdates
+    handleRegulationSubmitUpdates,
+    handleInfra
+
 }

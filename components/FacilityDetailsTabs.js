@@ -26,6 +26,20 @@ function FacilityDetailsTabs({ facility }) {
             Services
           </Tabs.Tab>
           <Tabs.Tab
+            id={3}
+            value="infrastructure"
+            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+          >
+            Infrastructure
+          </Tabs.Tab>
+          <Tabs.Tab
+            id={4}
+            value="hr_staffing"
+            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+          >
+            HR &amp; Staffing
+          </Tabs.Tab>
+          <Tabs.Tab
             id={5}
             value="community_units"
             className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
@@ -44,13 +58,21 @@ function FacilityDetailsTabs({ facility }) {
               </h3>
               <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
-                  Type
+                  Facility closed
                 </label>
                 <p className="text-black font-medium text-base flex">
-                {facility?.facility_type_name || ""}
+                  {facility?.closed ? (
+                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
+                      Closed on {new Date(facility?.closed_date).toLocaleDateString() || ""}
+                    </span>
+                  ) : (
+                    <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                      Not closed
+                    </span>
+                  )}
                 </p>
               </div>
-              {/* {facility?.closed && (
+              {facility?.closed && (
                 <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                   <label className=" text-gray-600">
                     Facility closure reason
@@ -60,8 +82,8 @@ function FacilityDetailsTabs({ facility }) {
                     {facility?.closing_reason || ""}
                   </p>
                 </div>
-              )} */}
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              )}
+              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   KHIS reporting
                 </label>
@@ -78,8 +100,8 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div> */}
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              </div>
+              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   NHIF accreditation
                 </label>
@@ -96,7 +118,7 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div> */}
+              </div>
               <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   Open 24 hours
@@ -115,7 +137,7 @@ function FacilityDetailsTabs({ facility }) {
                   )}
                 </p>
               </div>
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   Open weekends
                 </label>
@@ -132,8 +154,8 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div> */}
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              </div>
+              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   Open late night
                 </label>
@@ -150,8 +172,8 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div> */}
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              </div>
+              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">
                   Facility classified
                 </label>
@@ -168,8 +190,8 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div> */}
-              {/* <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+              </div>
+              <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                 <label className=" text-gray-600">Published</label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.is_published ? (
@@ -184,10 +206,10 @@ function FacilityDetailsTabs({ facility }) {
                     </span>
                   )}
                 </p>
-              </div> */}
+              </div>
             </div>
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-              {/* <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
+              <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Regulation:
               </h3>
               {facility?.date_established && (
@@ -237,7 +259,7 @@ function FacilityDetailsTabs({ facility }) {
                     }) || " - "}
                   </p>
                 </div>
-              )} */}
+              )}
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Regulated
@@ -264,7 +286,7 @@ function FacilityDetailsTabs({ facility }) {
                   {facility?.regulatory_status_name || " - "}
                 </p>
               </div>
-              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Regulating body
                 </label>
@@ -285,8 +307,8 @@ function FacilityDetailsTabs({ facility }) {
                     : facility?.facility_units !== undefined ? (facility?.facility_units[0].registration_number || " - ") : ' - '}
 
                 </p>
-              </div> */}
-              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   License number
                 </label>
@@ -296,7 +318,7 @@ function FacilityDetailsTabs({ facility }) {
                     : facility?.facility_units !== undefined ? (facility?.facility_units[0].license_number || " - ") : ' - '}
 
                 </p>
-              </div> */}
+              </div>
             </div>
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
@@ -368,14 +390,14 @@ function FacilityDetailsTabs({ facility }) {
                   {facility?.number_of_beds}
                 </p>
               </div>
-              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                    General In-patient beds
                 </label>
                 <p className="col-span-2 text-black font-medium text-base">
                   {facility?.number_of_inpatient_beds}
                 </p>
-              </div> */}
+              </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Cots
@@ -384,7 +406,7 @@ function FacilityDetailsTabs({ facility }) {
                   {facility?.number_of_cots}
                 </p>
               </div>
-              {/* <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Maternity beds
                 </label>
@@ -423,10 +445,10 @@ function FacilityDetailsTabs({ facility }) {
                 <p className="col-span-2 text-black font-medium text-base">
                   {facility?.number_of_isolation_beds}
                 </p>
-              </div> */}
+              </div>
               
             </div>
-            {/* <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Surgical Theatres:
               </h3>
@@ -446,7 +468,7 @@ function FacilityDetailsTabs({ facility }) {
                   {facility?.number_of_maternity_theatres}
                 </p>
               </div>
-            </div> */}
+            </div>
             <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Contacts:

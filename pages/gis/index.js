@@ -21,6 +21,7 @@ import MainLayout from "../../components/MainLayout";
 import { hasPermission } from "../../utils/checkPermissions";
 import { PermissionContext } from "../../providers/permissions";
 import { XCircleIcon } from "@heroicons/react/solid";
+import { FlagTwoTone } from "@mui/icons-material";
 
 const Gis = (props) => { 
 
@@ -468,7 +469,7 @@ if(filters){
                                           Object.keys(fltrs).sort();
 
                                         const sortOrder = [
-                                          1, 9, 10, 2, 3, 4, 5, 6, 8, 7,
+                                          1, 9, 10, 2, 3, 4, 5, 6, 8, 7, 0
                                         ];
 
                                         return sortOrder.map((v, i) =>
@@ -481,8 +482,9 @@ if(filters){
                                           key={ft}
                                           className="w-full flex flex-col items-start justify-start gap-1 mb-3"
                                         >
+                                          {console.log({ft})}
                                           {
-                                            !ft.includes("constituency") &&
+                                            ft && !ft.includes("constituency") &&
                                           <label
                                             htmlFor={ft}
                                             className="text-gray-600 capitalize text-sm"
@@ -900,7 +902,7 @@ if(filters){
                                                 return (
                                                   <>
                                                   {
-                                                    !ft.includes("constituency") &&
+                                                   ft && !ft.includes("constituency") &&
                                                   <Select
                                                     isMulti={multiFilters.includes(
                                                       ft
@@ -1347,7 +1349,7 @@ if(filters){
                                         >
                                           
                                           {
-                                            !ft.includes("constituency") &&
+                                            ft && !ft.includes("constituency") &&
                                           <label
                                             htmlFor={ft}
                                             className="text-gray-600 capitalize text-sm"
@@ -1644,7 +1646,7 @@ if(filters){
                                                     }
                                                     onChange={(ev) => {
                                                       if (
-                                                        subCountyOptions !== []
+                                                        subCountyOptions?.length !== 0
                                                       ) {
                                                         let nf = {};
                                                         if (Array.isArray(ev)) {
@@ -1841,18 +1843,18 @@ if(filters){
                                                       }
                                                     )}
                                                     placeholder={
-                                                      ft
+                                                     ft && ft
                                                         .split("_")
                                                         .join(" ")[0]
                                                         .toUpperCase() +
-                                                      ft
+                                                     ft && ft
                                                         .split("_")
                                                         .join(" ")
                                                         .slice(1)
                                                     }
                                                     onChange={(sl) => {
                                                       let nf = {};
-                                                      if (Array.isArray(sl)) {
+                                                      if (Array.isArray(sl) && ft) {
                                                         nf[ft] =
                                                           (drillDown[ft]
                                                             ? drillDown[ft] +

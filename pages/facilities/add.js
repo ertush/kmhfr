@@ -46,9 +46,9 @@ import {
     handleFacilityContactsSubmit,
     handleRegulationSubmit,
     handleServiceSubmit,
-    handleInfrastructureSubmit,
 	handleServiceUpdates,
-    handleHrSubmit
+    handleHrSubmit,
+	handleInfrastructureSubmit
 } from '../../controllers/facility/facilityHandlers';
 
 import { inputValidation } from '../../utils/formValidation';
@@ -56,7 +56,7 @@ import { inputValidation } from '../../utils/formValidation';
 export const FacilityDeptContext = createContext(null)
 export const FacilityContactsContext = createContext(null)
 
-// const turf = require('@turf/turf');
+const turf = require('@turf/turf');
 const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
@@ -305,6 +305,8 @@ function AddFacility(props) {
 	const noMartenityTheatersRef = useRef('')
 	const noInpatientBedsRef = useRef('')
 	const facilityPopulationRef = useRef('')
+	const latRef = useRef('')
+	const longRef = useRef('')
 
 
 
@@ -425,9 +427,9 @@ function AddFacility(props) {
     }, [facilityOfficialName, facilityOption, formId, geoJSON])
 
 
-	// useEffect(() => {
-	// 	console.log({longitude, latitude})
-	// }, [longitude, latitude])
+	useEffect(() => {
+		setFacilityCoordinates([formik.values.longitude, formik.values.latitude])
+	}, [formik.values.longitude, formik.values.latitude])
       
 
 	if(facilityTypeDetail !== '' && kephLvlRef.current){
@@ -456,19 +458,24 @@ function AddFacility(props) {
 
 	useEffect(() => {
 		const isLatLngInRegion = () => {
+
+			console.log('running lat, long ref...')
+
 			
-			if(longitude.length >= 9 && latitude.length >= 9){ 
-				let point = turf.point([longitude, latitude]);
+			// if(formik.values.longitude?.length >= 9 && formik.values.latitude?.length >= 9){ 
+			// 	let point = turf.point([formik.values.longitude, formik.values.latitude]);
 				
-				let polygon = turf.polygon(facilityCoordinates);
+			// 	// let polygon = turf.polygon(facilityCoordinates);
+
+			// 	// console.log({point, polygon})
 				
-				let found = turf.booleanPointInPolygon(point, polygon);
-				if(!found){
-					setCoordinatesError(true)
-				}else{
-					setCoordinatesError(false)
-				}
-			}
+			// 	// let found = turf.booleanPointInPolygon(point, polygon);
+			// 	if(!found){
+			// 		setCoordinatesError(true)
+			// 	}else{
+			// 		setCoordinatesError(false)
+			// 	}
+			// }
 		}
 
 		isLatLngInRegion()
@@ -1866,7 +1873,9 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='decimal'
+																	ref={longRef}
 																	name='longitude'
+																	value={formik.values.longitude}
 																	onChange={formik.handleChange}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
@@ -1885,7 +1894,9 @@ function AddFacility(props) {
 																<input
 																	required
 																	type='decimal'
+																	ref={latRef}
 																	name='latitude'
+																	value={formik.values.latitude}
 																	onChange={formik.handleChange}
 																	className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																/>
@@ -1899,7 +1910,7 @@ function AddFacility(props) {
 																{
 																	 geoJSON &&
 
-																	<Map markerCoordinates={[latitude.length < 4 ? '0.000000' : latitude, longitude.length < 4 ? '0.000000' : longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
+																	<Map markerCoordinates={[formik.values?.latitude.length < 4 ? '0.000000' : formik.values?.latitude, formik.values?.longitude.length < 4 ? '0.000000' : formik.values?.longitude]} geoJSON={geoJSON} ward={wardName} center={center} />
 															
 																}	
 																</div>
@@ -1970,8 +1981,9 @@ function AddFacility(props) {
 															    <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
 																	{
 																		facilityContacts.map((facilityContact, i) => (
-														
-																			facilityContact
+																			<React.Fragment key={i}>
+																				{facilityContact }
+																			</React.Fragment>
 																		
 																		))
 																	}
@@ -2088,7 +2100,12 @@ function AddFacility(props) {
 																		{
 																			officerContactDetails.map((officerDetailContact, i) => (
 															
-																				officerDetailContact
+																				<React.Fragment key={i}>
+																					{
+																						officerDetailContact
+
+																					}
+																				</React.Fragment>
 																			
 																			))
 																		}
@@ -2249,7 +2266,7 @@ function AddFacility(props) {
 																 
 																	{
 																		facilityDepts.map((facilityDept, i) => (
-																			<div className="w-full flex items-center justify-between gap-3 mt-3" key={facilityDept.index}>
+																			<div className="w-full flex items-center justify-between gap-3 mt-3" key={i}>
 																				<FacilityDeptRegulationFactory
 																					key={facilityDept.index}
 																					index={i}
@@ -2390,8 +2407,8 @@ function AddFacility(props) {
 																setItemsUpdateData={null}
 																handleItemPrevious={handleInfrastructurePrevious}
 																setNextItemCategory={setFormId}
-																nextItemCategory={'services'}
-																previousItemCategory={'human resources'}
+																nextItemCategory={'human resources'}
+																previousItemCategory={'services'}
                                               					setIsSaveAndFinish={() => null}
 																/>
 
