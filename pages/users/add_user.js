@@ -59,7 +59,7 @@ const AddUser = (props)=> {
 		})
 	};
 
-	const handleOnChange =(val)=>{
+	const handleOnChange = (val) => {
 		if (val.target && val.target != undefined && val.target != null) {
 				const newObj = {}
 				newObj[val.target.name] = {}
@@ -89,7 +89,7 @@ const AddUser = (props)=> {
         }
 	}
 
-	const selectedGroups = userData.groups?.map((ft)=>{
+	const selectedGroups = userData.groups?.map((ft)=> {
 		return{ id: ft.id}
 	})
 
