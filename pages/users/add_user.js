@@ -264,7 +264,7 @@ const AddUser = (props)=> {
 					
 					{
 					status?.status.includes("error") &&
-					<Alert severity={status.status} sx={{width:'100%'}}>
+					<Alert severity={status?.status} sx={{width:'100%'}}>
 				      
 					{status.message?.__all__[0] }
 				
