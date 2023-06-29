@@ -8,18 +8,15 @@ import Select from 'react-select'
 import { UserContext } from '../../providers/user'
 import Link from 'next/link'
 import { useReactToPrint } from 'react-to-print'
-// import { PermissionContext } from '../../providers/permissions'
-// import { hasPermission } from '../../utils/checkPermissions'
-// import { Button, Hidden } from '@mui/material'
-// import { route } from 'next/dist/server/router'
-// import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-// import { Dropdown } from 'antd'
-// import { fromJSON } from 'postcss'
+
+
 const Dash = (props) => {
     const router = useRouter()
 
     const userCtx = useContext(UserContext)
+
+    // console.log({userCtx})
     // const userPermissions = useContext(PermissionContext)
     const filters = props?.filters
 
@@ -146,9 +143,10 @@ const Dash = (props) => {
         }
     }
     useEffect(() => {
-        fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
-        fetchSubCounties(userCtx?.county)
-        fetchCounties()
+        
+        if(userCtx.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
+        if(userCtx.groups[0].id == 1) fetchSubCounties(userCtx?.county)
+        if(userCtx.groups[0].id == 7) fetchCounties()
     }, [])
 
     useEffect(() => {
