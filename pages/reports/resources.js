@@ -63,10 +63,11 @@ const Resources = ({ label }) => {
                 className='border-b border-green-600 p-0'
                 subheader={
                     <ListItemButton 
-                    onClick={() => dispatch({ type: 'health_facility_reports', value: !menu.openFacilityReports })} 
-                    className={`${menu.openFacilityReports && 'bg-gray-500 bg-opacity-25 text-gray-800'}`}>
+                    onClick={() => dispatch({ type: 'health_facility_reports', value: !menu.openFacilityReports })}
+                    className={`${menu.openFacilityReports && 'bg-gray-500 bg-opacity-25 text-gray-800'} border-t-2 border-gray-500`} 
+                    >
                         <ListItemIcon>
-                            <LocalHospital className={`${menu.openFacilityReports && 'text-gray-500' } group-hover:text-gray-500 group-hover:bg-gray-100 `} />
+                            <LocalHospital className={`${menu.openFacilityReports && 'text-gray-500' } group-hover:text-gray-500`} />
                         </ListItemIcon>
                         <ListItemText sx={{fontWeight:'2rem'}} primary="Facilities" />
                         {menu.openFacilityReports ? <ExpandLess /> : <ExpandMore />}
@@ -77,33 +78,33 @@ const Resources = ({ label }) => {
 
                 <Collapse in={menu.openFacilityReports} timeout="auto" unmountOnExit>
                     <List component="ul" disablePadding>
-                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'beds_cots' && 'bg-green-600 text-white'}  group hover:text-gray-600 hover:bg-gray-100`} onClick={() => { console.log('/reports') }}>
+                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'beds_cots' && 'bg-green-600 text-white'}   hover:text-gray-600`} onClick={() => { console.log('/reports') }}>
                             <ListItemText  primary="Beds and Cots" />
                         </ListItemButton>
                         {console.log({label})}
-                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'facilities_count' && 'bg-green-600 text-white'}  group hover:text-gray-600 hover:bg-gray-100`} onClick={() => { console.log('/reports/facilities_count') }}>
+                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'facilities_count' && 'bg-green-600 text-white'}  hover:text-gray-600`} onClick={() => { console.log('/reports/facilities_count') }}>
                             <ListItemText  primary="Facilities Count" />
                         </ListItemButton>
 
-                        <ListItemButton className="" sx={{  backgroundColor: `${label?.toLocaleLowerCase() == 'facilities_owners' ? '#e7ebf0' : 'none'}` }} onClick={() => { console.log('/reports/facilities_by_owners') }}>
+                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'facilities_owners' && 'bg-green-600 text-white'}  hover:text-gray-600`}  onClick={() => { console.log('/reports/facilities_by_owners') }}>
                             <ListItemText  primary="Facilities by Owners" />
                         </ListItemButton>
 
-                        <ListItemButton className="" sx={{  backgroundColor: `${label?.toLocaleLowerCase() == 'facilities_owner_categories' ? '#e7ebf0' : 'none'}` }} onClick={() => { console.log('/reports/facilities_by_owner_categories') }}>
+                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'facilities_owner_categories' && 'bg-green-600 text-white'}  hover:text-gray-600`} onClick={() => { console.log('/reports/facilities_by_owner_categories') }}>
                             <ListItemText  primary="Facilities by Owner Categories" />
                         </ListItemButton>
-                        <ListItemButton className="" sx={{  backgroundColor: `${label?.toLocaleLowerCase() == 'facilities_type' ? '#e7ebf0' : 'none'}` }} onClick={() => { console.log('/reports/facilities_by_type') }}>
+                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'facilities_type' && 'bg-green-600 text-white'}  hover:text-gray-600`}  onClick={() => { console.log('/reports/facilities_by_type') }}>
                             <ListItemText  primary="Facilities by Facility Type" />
                         </ListItemButton>
 
-                        <ListItemButton className="" sx={{  backgroundColor: `${label?.toLocaleLowerCase() == 'facilities_keph_level' ? '#e7ebf0' : 'none'}` }} onClick={() => { console.log('/reports/facilities_by_keph_levels') }}>
+                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'facilities_keph_level' && 'bg-green-600 text-white'}  hover:text-gray-600`}  onClick={() => { console.log('/reports/facilities_by_keph_levels') }}>
                             <ListItemText  primary="Keph Levels" />
                         </ListItemButton>
-                        <ListItemButton className="" sx={{  backgroundColor: `${label?.toLocaleLowerCase() == 'facilities_coordinates' ? '#e7ebf0' : 'none'}` }} onClick={() => { console.log('/reports/facility_coordinates') }}>
+                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'facilities_coordinates' && 'bg-green-600 text-white'}  hover:text-gray-600`} onClick={() => { console.log('/reports/facility_coordinates') }}>
                             <ListItemText  primary="Facility Coordinates" />
                         </ListItemButton>
 
-                        <ListItemButton className="" sx={{  backgroundColor: `${label?.toLocaleLowerCase() == 'officers_in_charge' ? '#e7ebf0' : 'none'}` }} onClick={() => { console.log('/reports/officers_in_charge') }}>
+                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'officers_in_charge' && 'bg-green-600 text-white'}  hover:text-gray-600`} onClick={() => { console.log('/reports/officers_in_charge') }}>
                             <ListItemText  primary="Officers In-charge" />
                         </ListItemButton>
                     </List>
@@ -133,7 +134,7 @@ const Resources = ({ label }) => {
             >
                 <Collapse in={menu.openAdminOfficesReports} timeout="auto" unmountOnExit>
                 <List component="ul" disablePadding>
-                    <ListItemButton className="" sx={{  backgroundColor: `${label?.toLocaleLowerCase() == 'admin_offices' ? '#e7ebf0' : 'none'}` }} onClick={() => { console.log('/reports/admin_offices') }}>
+                    <ListItemButton className={`${label?.toLocaleLowerCase() == 'admin_offices' && 'bg-green-600 text-white'}  hover:text-gray-600`} onClick={() => { console.log('/reports/admin_offices') }}>
                         <ListItemText  primary="Admin Offices" />
                     </ListItemButton>
                 </List>
@@ -150,7 +151,7 @@ const Resources = ({ label }) => {
                 subheader={
                     <ListItemButton 
                     onClick={() => dispatch({ type: 'community_health_units', value: !menu.openCUReports })}
-                    className={`${menu.openCUReports && 'bg-gray-500 bg-opacity-25'}`}>
+                    className={`${menu.openCUReports && 'bg-gray-500 bg-opacity-25'} border-t-2 border-gray-500`}>
                         <ListItemIcon>
                             <Groups />
                         </ListItemIcon>
@@ -161,10 +162,10 @@ const Resources = ({ label }) => {
             >
                 <Collapse in={menu.openCUReports} timeout="auto" unmountOnExit>
                     <List component="ul" disablePadding>
-                        <ListItemButton className="" sx={{  backgroundColor: `${label?.toLocaleLowerCase() == 'chus_count' ? '#e7ebf0' : 'none'}` }} onClick={() => { console.log('/reports/chus_count') }}>
+                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'chus_count' && 'bg-green-600 text-white'}  hover:text-gray-600`} onClick={() => { console.log('/reports/chus_count') }}>
                             <ListItemText  primary="Community Health Units Count" />
                         </ListItemButton>
-                        <ListItemButton className="" sx={{  backgroundColor: `${label?.toLocaleLowerCase() == 'chus_status' ? '#e7ebf0' : 'none'}` }} onClick={() => { console.log('/reports/chus_status') }}>
+                        <ListItemButton className={`${label?.toLocaleLowerCase() == 'chus_status' && 'bg-green-600 text-white'}  hover:text-gray-600`}  onClick={() => { console.log('/reports/chus_status') }}>
                             <ListItemText  primary="Community Health Units (Status)" />
                         </ListItemButton>
                      </List>

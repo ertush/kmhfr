@@ -12,6 +12,7 @@ module.exports = {
         },
         color:{
             'django-green': '#e7edd1',
+            'charred-paper': 'whitesmoke'
         }
     },
     variants: {

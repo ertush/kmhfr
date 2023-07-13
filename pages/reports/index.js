@@ -232,10 +232,11 @@ const Users = (props) => {
                             />
                                    
                                    
-                 </div>
+                    </div>
 
                     {/* Side Menu */}
                     <Resources label={label}/>
+
                     <main className="col-span-5 md:col-span-5 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                                
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">

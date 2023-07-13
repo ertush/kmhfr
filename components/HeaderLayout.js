@@ -142,7 +142,7 @@ export default function HeaderLayout({
   // console.log(isLoggedIn)
 
   return (
-    <header className="flex flex-wrap items-center justify-start gap-x-4 w-full p-1 max-w-screen-3xl">
+    <header className="flex flex-wrap items-center justify-start gap-x-4 w-full bg-yellow-50 p-1 max-w-screen-3xl">
       <title>KMHFL 3</title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-3 md:gap-5">
         <div id="logo" className="mx:px-3 pb-1">
