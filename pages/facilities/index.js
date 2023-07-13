@@ -4,7 +4,7 @@ import MainLayout from '../../components/MainLayout'
 import { DotsHorizontalIcon, DownloadIcon, PlusIcon } from '@heroicons/react/solid'
 
 import { checkToken } from '../../controllers/auth/auth'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
 import { ChevronDownIcon, FilterIcon } from '@heroicons/react/outline'
@@ -19,6 +19,8 @@ import Alert from '@mui/material/Alert';
 import NativePickers from '../../components/date-picker'
 // import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
+import { UserContext } from '../../providers/user'
+
 
 // import { set } from 'nprogress'
 
@@ -32,8 +34,9 @@ const Home = (props) => {
     const filters = props?.filters
     let fltrs = filters
     const [drillDown, setDrillDown] = useState({})
-    // const qf = props?.query?.qf ?? null
+    const userCtx = useContext(UserContext);
 
+    // const qf = props?.query?.qf ?? null
     if (filters && typeof filters === "object")
      {
     filters["has_edits"] = [{ id: "has_edits", name: "Has edits" },]
@@ -56,16 +59,14 @@ const Home = (props) => {
 
     const multiFilters = ['service_category', 'service', 'county', 'subcounty', 'ward', 'constituency']
 
-   
 
     const [fromDate, setFromDate] = React.useState(new Date());
     const [toDate, setToDate] = React.useState(new Date());
+
     const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
     const [title, setTitle] = useState('Facilities') 
 
     // quick filter themes
-    
-   
     const [khisSynched, setKhisSynched] = useState(false);
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
     const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '') 
@@ -74,8 +75,6 @@ const Home = (props) => {
 
 
     useEffect(() => {
-    
-     
         let qry = props?.query
         
         delete qry.searchTerm
@@ -94,8 +93,6 @@ const Home = (props) => {
     
      }
 
- 
-
     const handleAccordionExpand = (ev) => {
         if(isAccordionExpanded){
             setIsAccordionExpanded(false)
@@ -105,9 +102,9 @@ const Home = (props) => {
         
     }
 
+    // console.log({userCtx})
+
   
-
-
     return (
         <>
             <Head>
@@ -314,6 +311,8 @@ const Home = (props) => {
                                 (allFctsSelected || pathId === 'all') &&
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Facility Button */}
+                                    {
+                                        userCtx?.groups[0]?.id == 2 && // Display add facility button if  user belong to SCHRIO group
                                    <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facilities/add')}} className='flex items-center justify-center'>
 
@@ -321,6 +320,7 @@ const Home = (props) => {
                                             <PlusIcon className="w-4 h-4 ml-2" />
                                         </button>
                                     </Menu.Item>
+                                    }
 
                                      {/* Export Button */}
                                      <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase">
@@ -552,9 +552,8 @@ const Home = (props) => {
 
 Home.getInitialProps = async (ctx) => {
 
-    
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL 
     const fetchFilters = token => {
         let filters_url = API_URL + '/common/filtering_summaries/?fields=county%2Cfacility_type%2Cconstituency%2Cward%2Coperation_status%2Cservice_category%2Cowner_type%2Cowner%2Cservice%2Ckeph_level%2Csub_county'
 

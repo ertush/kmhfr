@@ -10,10 +10,14 @@ module.exports = {
             'sans': ['Karla', 'sans-serif'],
             'mono': ['monospace']
         },
-        extend: {},
+        color:{
+            'django-green': '#e7edd1',
+        }
     },
     variants: {
-        extend: {},
+        extend: {
+            
+        },
     },
     plugins: [
         

@@ -346,30 +346,32 @@ export default function HeaderLayout({
             {/* Reports */}
             {isLoggedIn &&
             <Menu as="div" className="relative ">
-              <Menu.Button
-                as="div"
-                className="flex items-center justify-center gap-1 cursor-pointer"
-              >
-                <span className={`
-                    text-base 
-                    md:text-lg 
-                    font-semibold 
-                    leading-none 
-                    p-0 
-                    hidden 
-                    sm:inline
-                    cursor-pointer
-                    ${(currentPath == "/reports/static_reports" || currentPath == "/reports/dynamic_reports"
-                    ? activeClasses
-                    : inactiveClasses)
-                  }`}>
+             <Menu.Item as="li" className="flex items-center w-full gap-1">
+                  {({ active }) => (
+                    <Link
+                      className={`w-full hover:text-gray-400 font-medium flex items-center ${active && "text-green-400"
+                        }`}
+                      href="/reports"
+                      target="_blank"
+                    >
+                          <p
+                    className={`
+                text-base 
+                md:text-lg
+                font-semibold
+                cursor-pointer
+                ${(currentPath == "/reports" ? activeClasses : inactiveClasses)
+
+                      }`}
+                  >
+
                   Reports
-                </span>
-                <span className="leading-none p-0">
-                  <ChevronDownIcon className="h-4 w-5" />
-                </span>
-              </Menu.Button>
-              <Menu.Items
+                  </p>
+                      
+                    </Link>
+                  )}
+                </Menu.Item>
+              {/* <Menu.Items
                 as="ul"
                 className="list-none flex flex-col items-center bg-white outline-none shadow-md font-semibold justify-start gap-2 p-3 absolute mt-3 text-gray-800 right-0 w-40 rounded"
               >
@@ -396,8 +398,9 @@ export default function HeaderLayout({
                   )}
                 </Menu.Item>
 
-              </Menu.Items>
-            </Menu>}
+              </Menu.Items> */}
+            </Menu>
+            }
 
             {/* Admin Offices */}
             { hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) && isLoggedIn &&

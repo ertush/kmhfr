@@ -1,5 +1,6 @@
 import 'tailwindcss/tailwind.css'
-import '/assets/css/style.css'
+import '/assets/css/style.css';
+import '../public/assets/css/global.css';
 import NProgress from 'nprogress';
 import { Router } from 'next/router';
 import { positions, Provider } from "react-alert";
