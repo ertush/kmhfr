@@ -125,7 +125,7 @@ const Home = (props) => {
 
                             {/* Accordion Filter */}
 
-                            <Accordion sx={{my:1, width:'100%', boxShadow:'none', border:'solid 1px #d5d8de', borderRadius:1}} expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
+                            <Accordion sx={{borderRadius:'none', backgroundColor:'#e7edd1'}} className='bg-django-green border border-green-600 w-full rounded-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon />}
                                                 aria-controls="panel1a-content"
