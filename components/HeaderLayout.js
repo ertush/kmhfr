@@ -64,7 +64,7 @@ export default function HeaderLayout({
 
   const router = useRouter();
   const activeClasses =
-    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4 rounded  border-green-600";
+    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4  border-green-600";
   const inactiveClasses =
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];
@@ -151,8 +151,8 @@ export default function HeaderLayout({
             className="leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative"
           >
             <img src="/MOH.png" alt="KMHFL3" className="h-14" />
-            <span className="font-mono text-3xl leading-none">KMHFR</span>
-            <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-4">
+            <span className="text-3xl leading-none">KMHFR</span>
+            <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-2">
               v3
             </span>
           </a>

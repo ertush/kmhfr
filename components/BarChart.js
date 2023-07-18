@@ -10,7 +10,8 @@ const BarChart = props => {
 
     const options = {
         chart: {
-            type: 'column'
+            type: 'column',
+            backgroundColor: "rgb(255, 251, 235, 1)"
         },
         title: {
             text: props.title || ''
@@ -63,16 +64,15 @@ const BarChart = props => {
         <div
             className="flex flex-col items-start justify-center p-2 w-full"
         >
-            <hr className="my-2 border-b border-gray-300" />
-          
-            <div className="flex flex-col items-center justify-center w-full p-2 rounded bg-white shadow" style={{ minHeight: '350px' }}>
+   
+            <div className="flex flex-col items-center justify-center w-full p-2  bg-transparent" style={{ minHeight: '350px' }}>
                 <div className="w-full p-0">
                     {props.data.length <= 0 ? (
                         <div className="p-2 bg-blue-200 border rounded border-blue-600 shadow-sm">
                             <p className="text-gray-800 text-base font-medium">Loading&hellip;</p>
                         </div>
                     ) : (
-                        <HighchartsReact highcharts={Highcharts} options={options} />
+                        <HighchartsReact  highcharts={Highcharts} options={options} />
                     )}
                 </div>
             </div>

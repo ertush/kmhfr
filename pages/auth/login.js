@@ -22,8 +22,8 @@ const Login = (props) => {
                     <div className="text-center text-5xl w-full font-black text-gray-700 flex justify-center gap-x-2 items-center h-24">
                         <img src="/MOH.png" className="h-24" alt="KMHFL 3" />
                         <div className='leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative'>
-                            <span className="font-mono text-6xl leading-none top-0">KMHFR</span>
-                            <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 px-1 absolute -bottom-3 -right-4">
+                            <span className="text-6xl leading-none top-0">KMHFR</span>
+                            <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 p-1 absolute -bottom-3 -right-4">
                             v3
                             </span>
                         </div>

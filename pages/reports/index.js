@@ -170,7 +170,7 @@ const Users = (props) => {
                                     {'Beds and Cots Report by County'}
                                     </h2>
                                 
-                        </div>
+                            </div>
                         </div>
                     </div>
 

@@ -7,7 +7,7 @@ export default function NativePickers({ onSelected }) {
   const [toDate, setToDate] = React.useState(new Date());
 
   //Date now string in form of yyyy-mm-dd
-  const dateNow = '2022-06-28';
+  const dateNow = new Date();
 
 
   const handleDates = () => {
@@ -22,12 +22,13 @@ export default function NativePickers({ onSelected }) {
         type="date"
         size='small'
         defaultValue={dateNow}
-        sx={{ width: '100%', marginTop: 3 }}
+        className='border border-green-600'
+        sx={{ width: '100%', marginTop: 3, borderRadius:'0px' }}
         InputLabelProps={{
           shrink: true,
         }}
         onChange={(e) => {
-          setFromDate(e.target.value)
+          setFromDate(e.target.value) 
           handleDates()
         }}
       />
@@ -40,7 +41,8 @@ export default function NativePickers({ onSelected }) {
 
         sx={{
           width: '100%',
-          marginTop: 1
+          marginTop: 1,
+          borderRadius:'0px'
         }}
         onChange={(e) => {
           setToDate(e.target.value)
