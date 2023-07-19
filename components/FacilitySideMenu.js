@@ -206,25 +206,11 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 {/* All Facilities */}
               
                 <ListItemButton 
-                sx={{ backgroundColor: (allFctsSelected || pathId === 'all') && 'rgba(5, 150, 105, 1)',  color:(allFctsSelected || pathId === 'all') && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-600 hover:bg-gray-500'
+                  sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+                  className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
                  name="rt"
                     onClick={(ev) => {
-                        setTitle('Facilities')
-                        setPathId('all')
-                        setAllFctsSelected(true)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setFailedValidationFctsSelected(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
-
+                        
                         handleQuickFiltersClick('all')
 
                     }}
@@ -238,24 +224,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <ListItemButton 
-                sx={{ backgroundColor: (approvedFctsSelected || pathId === 'approved') && 'rgba(5, 150, 105, 1)',  color:(approvedFctsSelected || pathId === 'approved') && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-600 hover:bg-gray-500'
+                sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
                 onClick={(ev) => {
-                        setTitle('Approved Facilities')
-                        setAllFctsSelected(false)
-                        setPathId('approved')
-                        setApprovedFctsSelected(true)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setFailedValidationFctsSelected(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
-
+                       
                         handleQuickFiltersClick('approved')
 
 
@@ -271,23 +243,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 hasPermission(/^facilities.view_facilityapproval$/, userPermissions) &&
                 <ListItemButton 
-                sx={{ backgroundColor: (newFtsSelected || pathId === 'new_pending_validation')  && 'rgba(5, 150, 105, 1)',  color:(newFtsSelected || pathId === 'new_pending_validation')  && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-600 hover:bg-gray-500'
+                sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
                 onClick={() => {
-                        setTitle('Validate New Facilities')
-                        setPathId('new_pending_validation')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(true)
-                        setUpdatedFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setFailedValidationFctsSelected(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
+                        
 
                         handleQuickFiltersClick('new_pending_validation')
 
@@ -303,24 +262,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_facilityapproval$/, userPermissions) &&
                 <ListItemButton 
 
-                sx={{ backgroundColor: (updatedFctsSelected || pathId === 'updated_pending_validation') && 'rgba(5, 150, 105, 1)',  color:(updatedFctsSelected || pathId === 'updated_pending_validation')  && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-600 hover:bg-gray-500'
+                sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
                     onClick={() => {
-                        setTitle('Validate Updated Facilities')
-                        setPathId('updated_pending_validation')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(true)
-                        setFailedValidationFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
-
+                      
                         handleQuickFiltersClick('updated_pending_validation')
 
                     }}
@@ -335,23 +280,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                  hasPermission(/^facilities.view_facilityapproval$/, userPermissions) && // confirm permission
                  
                 <ListItemButton 
-                sx={{ backgroundColor: (facilitiesPendingApproval || pathId === 'to_publish') && 'rgba(5, 150, 105, 1)',  color:(facilitiesPendingApproval || pathId === 'to_publish')  && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-600 hover:bg-gray-500'
+                sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
                     onClick={() => {
-                        setTitle('Facilities Pending Approval')
-                        setPathId('to_publish')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFacilitiesPendingApproval(true)
-                        setDHISSyncedFacilities(false)
-                        setFailedValidationFctsSelected(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
+                     
 
                         handleQuickFiltersClick('to_publish')
 
@@ -366,24 +298,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                     hasPermission(/^facilities.view_facilityapproval$/, userPermissions) && // confirm permission
 
                 <ListItemButton 
-                sx={{ backgroundColor: (DHISSyncedFacilities || pathId === 'dhis_synced_facilities') && 'rgba(5, 150, 105, 1)',  color:(DHISSyncedFacilities || pathId === 'dhis_synced_facilities')  && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-600 hover:bg-gray-500'
+                sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
                 onClick={() => {
-                        setTitle('DHIS Synced Approved Facilities')
-                        setPathId('dhis_synced_facilities')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(true)
-                        setFailedValidationFctsSelected(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
-
+    
                         handleQuickFiltersClick('dhis_synced_facilities')
 
                     }}
@@ -397,23 +315,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 hasPermission(/^facilities.view_rejected_facilities$/, userPermissions) &&
                 <ListItemButton 
-                sx={{ backgroundColor: (failedValidationFctsSelected || pathId === 'failed_validation') && 'rgba(5, 150, 105, 1)',  color:(failedValidationFctsSelected || pathId === 'failed_validation')  && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-600 hover:bg-gray-500'
+                sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+               className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
                 onClick={() => {
-                        setTitle('Failed Validation Facilities')
-                        setPathId('failed_validation')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFailedValidationFctsSelected(true)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
+                      
 
                         handleQuickFiltersClick('failed_validation')
                     }}
@@ -427,23 +332,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 hasPermission(/^facilities.view_rejected_facilities$/, userPermissions) &&
                 <ListItemButton 
-                sx={{ backgroundColor: (rejectedFctsSelected || pathId === 'rejected') && 'rgba(5, 150, 105, 1)',  color:(rejectedFctsSelected || pathId === 'rejected')  && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-600 hover:bg-gray-500'    
+                sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white'     
                 onClick={() => {
-                        setTitle('Rejected Facilities')
-                        setPathId('rejected')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFailedValidationFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setRejectedFctsSelected(true)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
+                      
                         handleQuickFiltersClick('rejected')
 
                     }}
@@ -457,24 +349,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 hasPermission(/^facilities.view_closed_facilities$/, userPermissions) &&
                 <ListItemButton 
-                sx={{ backgroundColor: (closedFctsSelected || pathId == "closed") && 'rgba(5, 150, 105, 1)',  color:(closedFctsSelected || pathId == "closed")  && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-600 hover:bg-gray-500' 
+                sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+               className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white'  
                     onClick={() => {
-                        setTitle('Closed Facilities')
-                        setPathId('closed')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFailedValidationFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(true)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
-
+                       
                         handleQuickFiltersClick('closed')
 
                     }}
@@ -489,23 +367,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <ListItemButton
-                    sx={{ backgroundColor: (incompleteFctsSelected || pathId == "incomplete") && 'rgba(5, 150, 105, 1)',  color:(incompleteFctsSelected || pathId == "incomplete")  && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                    className='hover:text-gray-600 hover:bg-gray-500'
+                    sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+                    className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
                     onClick={() => {
-                        setTitle('Incomplete Facilities')
-                        setPathId('incomplete')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFailedValidationFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(true)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(false)
+                   
 
                         handleQuickFiltersClick('incomplete')
 
@@ -520,24 +385,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
               hasPermission(/^facilities.view_facility$/, userPermissions) &&
                <ListItemButton 
-               sx={{ backgroundColor: (syncRegulatedFctsSelected || pathId == "khis_synched") && 'rgba(5, 150, 105, 1)',  color:(syncRegulatedFctsSelected || pathId == "khis_synched")  && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-               className='hover:text-gray-600 hover:bg-gray-500'  
+               sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+               className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
                 onClick={() => {
-                            setTitle('Synchronize Regulated Facilities')
-                            setPathId('khis_synched')
-                            setAllFctsSelected(false)
-                            setApprovedFctsSelected(false)
-                            setNewFctsSelected(false)
-                            setUpdatedFctsSelected(false)
-                            setFailedValidationFctsSelected(false)
-                            setFacilitiesPendingApproval(false)
-                            setDHISSyncedFacilities(false)
-                            setRejectedFctsSelected(false)
-                            setClosedFctsSelected(false)
-                            setIncompleteFctsSelected(false)
-                            setSyncRegulatedFctsSelected(true)
-                            setFeedBackFctsSelected(false)
-
+                      
                             handleQuickFiltersClick('khis_synched')
 
                         }}
@@ -551,23 +402,10 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 hasPermission(/^facilities.view_facilityservicerating$/, userPermissions) &&
                 <ListItemButton 
-                    sx={{ backgroundColor: (feedBackFctsSelected || pathId == "feedback") && 'rgba(5, 150, 105, 1)',  color:(feedBackFctsSelected || pathId == "feedback")  && '#ffff', borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                    className='hover:text-gray-600 hover:bg-gray-500' 
+                sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
+                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
                     onClick={() => {
-                        setTitle('Facilities Feedback From Public')
-                        setPathId('feedback')
-                        setAllFctsSelected(false)
-                        setApprovedFctsSelected(false)
-                        setNewFctsSelected(false)
-                        setUpdatedFctsSelected(false)
-                        setFailedValidationFctsSelected(false)
-                        setFacilitiesPendingApproval(false)
-                        setDHISSyncedFacilities(false)
-                        setRejectedFctsSelected(false)
-                        setClosedFctsSelected(false)
-                        setIncompleteFctsSelected(false)
-                        setSyncRegulatedFctsSelected(false)
-                        setFeedBackFctsSelected(true)
+                     
 
                         handleQuickFiltersClick('feedback')
 
@@ -577,6 +415,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                     <ListItemText primary="Feedback on Facilities" />
                 </ListItemButton>
                 }
+                
 
             </List>
         </div>
