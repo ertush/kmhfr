@@ -10,49 +10,49 @@ function FacilityDetailsTabs({ facility }) {
         className="w-full flex flex-col tab-root"
         defaultValue="overview"
       >
-        <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+        <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-green-600">
           <Tabs.Tab
             id={1}
             value="overview"
-            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
           >
             Overview
           </Tabs.Tab>
           <Tabs.Tab
             id={2}
             value="services"
-            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
           >
             Services
           </Tabs.Tab>
           <Tabs.Tab
             id={3}
             value="infrastructure"
-            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
           >
             Infrastructure
           </Tabs.Tab>
           <Tabs.Tab
             id={4}
             value="hr_staffing"
-            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
           >
             HR &amp; Staffing
           </Tabs.Tab>
           <Tabs.Tab
             id={5}
             value="community_units"
-            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+            className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
           >
             Facility Units
           </Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel
-          value="overview"
+          value="overview"border
           className="grow-1 py-1 px-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-green-600 w-full p-3  grid grid-cols-2 gap-3 shadow-sm mt-4">
+            <div className="bg-transparent border border-green-600 w-full p-3 grid grid-cols-2 gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                 Status:
               </h3>
@@ -469,7 +469,7 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm my-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Contacts:
               </h3>
@@ -529,7 +529,7 @@ function FacilityDetailsTabs({ facility }) {
           className="grow-1 py-1 px-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-green-600 w-full px-2 mt-4">
+            <div className="bg-transparent border border-green-600 w-full px-2 my-4">
               {/* <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight"> */}
                 {/* <span className="font-semibold">Services</span> */}
                 {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
@@ -582,7 +582,7 @@ function FacilityDetailsTabs({ facility }) {
         >
          
             <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-green-600 w-full px-2 mt-4">
+            <div className="bg-transparent border border-green-600 w-full px-2 my-4">
               <ul>
                 {facility?.facility_infrastructure &&
                   facility?.facility_infrastructure.length > 0 ? (
@@ -624,7 +624,7 @@ function FacilityDetailsTabs({ facility }) {
 
               {/* </h3> */}
             <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-green-600 w-full px-2 mt-4">
+            <div className="bg-transparent border border-green-600 w-full px-2 my-4">
               <ul>
                 {facility?.facility_specialists &&
                   facility?.facility_specialists.length > 0 ? (
@@ -641,7 +641,7 @@ function FacilityDetailsTabs({ facility }) {
                       </div>
                       <div className="flex flex-row gap-1 items-center">
                         {/* <CheckCircleIcon className="h-4 w-4 text-green-500" /> */}
-                        <label className="text-lg text-gray-800">
+                        <label className="text-lg font-semibold text-gray-800">
                           {hr.count || 0}
                         </label>
                       </div>
@@ -663,7 +663,7 @@ function FacilityDetailsTabs({ facility }) {
 
               {/* </h3> */}
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-green-600 w-full px-2 mt-4">
+            <div className="bg-transparent border border-green-600 w-full px-2 my-4">
               <ul>
                 {facility?.facility_units &&
                   facility?.facility_units.length > 0 ? (

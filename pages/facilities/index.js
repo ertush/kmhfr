@@ -26,6 +26,7 @@ import { UserContext } from '../../providers/user'
 
 
 const Home = (props) => {
+    
     const router = useRouter()
 
     // const permissions = useContext(PermissionContext)
