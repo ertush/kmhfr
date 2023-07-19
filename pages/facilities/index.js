@@ -481,7 +481,7 @@ const Home = (props) => {
                                                     </div>
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
                                                         {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 font-semibold text-gray-900"}>Operational</span> : ""}
-                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-black" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-gray-500 text-gray-50"}>{facility?.rejected ? "Rejected" : ""}</span>}
+                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-black" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-gray-500 text-gray-50"}>{facility?.rejected ? "Rejected" : ""}</span>}
                                                         {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Has edits</span> : ""}
                                                     </div>
                                                 </div>
@@ -539,9 +539,11 @@ const Home = (props) => {
                                             }
 
                                             {facilities && facilities?.length >= 30 && !khisSynched && 
-                                            <ul className="list-none flex flex-row gap-2 w-full items-center my-2">
-                                                <li className="text-base text-gray-600">
-                                                    <Link href={
+                                            <div className='self-end mx-2'>
+                                            <ul className="list-none flex flex-row gap-2 w-full  items-center my-2">
+                                                <li className="text-base text-green-500 cursor-pointer">
+                                                    <Link 
+                                                    href={
                                                         (() => 
                                                             props.path.includes('?page') ?
                                                             props.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
@@ -555,11 +557,11 @@ const Home = (props) => {
                                                             `${props.path}?page=${props?.data?.current_page}`
                                                         )()
                                                     }>
-                                                        <span className="text-gray-400 font-semibold p-2 underline">{props?.data?.current_page}</span>
+                                                        <span className="text-white  bg-green-600 cursor-pointer font-semibold px-2 py-1 underline">{props?.data?.current_page}</span>
                                                     </Link>
                                                 </li>
                                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map((page, i) => (
-                                                    <li key={i} className="text-base text-gray-600">
+                                                    <li key={i} className="text-base group text-green-500">
                                                         <Link href={(() => 
                                                             props.path.includes('?page') ?
                                                             props.path.replace(/\?page=\d+/,`?page=${page}`)
@@ -573,7 +575,7 @@ const Home = (props) => {
                                                             `${props.path}?page=${page}`
                    
                                                         )()}>
-                                                            <span className="text-blue-800 p-2 hover:underline">{page}</span>
+                                                            <span className="text-green-800 cursor-pointer  px-2 py-1 hover:underline">{page}</span>
                                                         </Link>
                                                     </li>
                                                 ))}
@@ -582,7 +584,9 @@ const Home = (props) => {
                                                 </li>
                                                
 
-                                            </ul>}
+                                            </ul>
+                                            </div>
+                                            }
                                         </div>
                                     </div>
 

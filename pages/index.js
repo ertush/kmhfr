@@ -96,7 +96,7 @@ const Home = (props) => {
                         </div>
                         <div className="col-span-2 md:col-span-1 border border-green-600 group hover:bg-green-600 hover:text-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
                             <Link href="/facilities">
-                                <span className="text-left w-full cursor-pointer text-gree-600 group:hover:text-white font-semibold text-xl">Facilities</span>
+                                <span className="text-left w-full cursor-pointer  group:hover:text-white font-semibold text-xl">Facilities</span>
                             </Link>
                             <p className="text-base">
                                 This provides a list of all health facilities and there is a provided advanced search where you can refine your search.
@@ -104,7 +104,7 @@ const Home = (props) => {
                         </div>
                         <div className="col-span-2 md:col-span-1 border border-green-600 group hover:bg-green-600 hover:text-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
                             <Link href="/community-units">
-                                <span className="text-left w-full cursor-pointer text-gree-600 group:hover:text-white font-semibold text-xl">Community Units</span>
+                                <span className="text-left w-full cursor-pointer  group:hover:text-white font-semibold text-xl">Community Units</span>
                             </Link>
                             <p className="text-base">
                                 This provides a list of all community health units and the system provided advance search where you can refine your search by using administrative units.
@@ -112,7 +112,7 @@ const Home = (props) => {
                         </div>
                         <div className="col-span-2 md:col-span-1 border border-green-600 group hover:bg-green-600 hover:text-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
                             <Link href="/gis">
-                                <span className="text-left w-full cursor-pointer text-gree-600 group:hover:text-white font-semibold text-xl">GIS Explorer</span>
+                                <span className="text-left w-full cursor-pointer  group:hover:text-white font-semibold text-xl">GIS Explorer</span>
                             </Link>
                             <p className="text-base">
                                 This visualizes administrative units (counties, constituencies, wards) and their facilities and Community Health Units. Users can also rate Facilities and Community Health Units.
@@ -120,13 +120,13 @@ const Home = (props) => {
                         </div>
                         
                         <div className="col-span-2 md:col-span-1 border border-green-600 group hover:bg-green-600 hover:text-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
-                            <a href="https://mfl-api-docs.readthedocs.io/en/latest/" className="text-left w-full cursor-pointer text-gree-600 group:hover:text-white font-semibold text-xl">KMHFL API</a>
+                            <a href="https://mfl-api-docs.readthedocs.io/en/latest/" className="text-left w-full cursor-pointer  group:hover:text-white font-semibold text-xl">KMHFL API</a>
                             <p className="text-base">
                                 This provides a RESTful API for developers to use. The documentation is available at <br /> <a className="text-green-700 group-hover:underline group-hover:text-gray-50 focus:underline active:underline" href="https://mfl-api-docs.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">https://mfl-api-docs.readthedocs.io/en/latest</a>
                             </p>
                         </div>
                         <div className="col-span-2 md:col-span-1 border border-green-600 group hover:bg-green-600 hover:text-gray-50 focus:bg-gray-50 active:bg-gray-50 p-4 flex flex-col items-center justify-start">
-                            <a className="font-semibold text-left text-xl w-full cursor-pointer text-green-600 group-hover:text-white focus:text-black active:text-black" href="https://elearning.health.go.ke" target="_blank" rel="noopener noreferrer">MoH Virtual Academy</a>
+                            <a className="font-semibold text-left text-xl w-full cursor-pointer group-hover:text-white focus:text-black active:text-black" href="https://elearning.health.go.ke" target="_blank" rel="noopener noreferrer">MoH Virtual Academy</a>
                             <p className="text-base">
                                 You can learn all about KMHFL, its implementation and how to use it here (<a className="text-green-700 group-hover:underline group-hover:text-white focus:underline active:underline" target="_blank" rel="noopener noreferrer" href="https://elearning.health.go.ke">https://elearning.health.go.ke</a>). Enrol and start learning.
                             </p>

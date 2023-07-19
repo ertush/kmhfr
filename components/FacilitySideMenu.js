@@ -207,7 +207,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
               
                 <ListItemButton 
                   sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                  className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
+                  className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white' 
                  name="rt"
                     onClick={(ev) => {
                         
@@ -225,7 +225,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <ListItemButton 
                 sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
+                className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white' 
                 onClick={(ev) => {
                        
                         handleQuickFiltersClick('approved')
@@ -244,7 +244,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_facilityapproval$/, userPermissions) &&
                 <ListItemButton 
                 sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
+                className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white' 
                 onClick={() => {
                         
 
@@ -263,7 +263,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 <ListItemButton 
 
                 sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
+                className=' hover:bg-yellow-50 text-gray-900 bg-transparent  focus:bg-green-600 focus:text-white' 
                     onClick={() => {
                       
                         handleQuickFiltersClick('updated_pending_validation')
@@ -281,7 +281,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                  
                 <ListItemButton 
                 sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
+                className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white' 
                     onClick={() => {
                      
 
@@ -299,7 +299,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
                 <ListItemButton 
                 sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
+                className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white' 
                 onClick={() => {
     
                         handleQuickFiltersClick('dhis_synced_facilities')
@@ -316,7 +316,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_rejected_facilities$/, userPermissions) &&
                 <ListItemButton 
                 sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-               className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
+               className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white' 
                 onClick={() => {
                       
 
@@ -333,7 +333,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_rejected_facilities$/, userPermissions) &&
                 <ListItemButton 
                 sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white'     
+                className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white'     
                 onClick={() => {
                       
                         handleQuickFiltersClick('rejected')
@@ -350,7 +350,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_closed_facilities$/, userPermissions) &&
                 <ListItemButton 
                 sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-               className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white'  
+               className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white'  
                     onClick={() => {
                        
                         handleQuickFiltersClick('closed')
@@ -368,7 +368,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_facility$/, userPermissions) &&
                 <ListItemButton
                     sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                    className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
+                    className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white' 
                     onClick={() => {
                    
 
@@ -386,7 +386,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
               hasPermission(/^facilities.view_facility$/, userPermissions) &&
                <ListItemButton 
                sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-               className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
+               className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white' 
                 onClick={() => {
                       
                             handleQuickFiltersClick('khis_synched')
@@ -403,7 +403,7 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                 hasPermission(/^facilities.view_facilityservicerating$/, userPermissions) &&
                 <ListItemButton 
                 sx={{ borderBottom: 'solid 1px rgba(5, 150, 105, 1)' }} 
-                className='hover:text-gray-900 hover:bg-yellow-50 bg-transparent focus:bg-green-600 focus:text-white' 
+                className=' hover:bg-yellow-50 text-gray-900 bg-transparent focus:bg-green-600 focus:text-white' 
                     onClick={() => {
                      
 
