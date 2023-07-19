@@ -232,7 +232,7 @@ function ApproveReject(props) {
                     
                     <div className="col-start-1 col-span-1 ">
                     <button
-                        className="bg-green-500 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md"
+                        className="bg-green-600 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md"
                         onClick={() => {
                         if (isFacDetails) {
                             setIsFacDetails(false);
@@ -312,7 +312,7 @@ function ApproveReject(props) {
                         
                         <button
                         type="submit"
-                        className="bg-green-500  text-gray-100 -md p-2 font-semibold"
+                        className="bg-green-600  text-gray-100 -md p-2 font-semibold"
                         onClick={() => reject = facility?.has_edits ? true : facility?.is_approved ? true : false}
                         
                         >
