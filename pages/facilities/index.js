@@ -281,9 +281,9 @@ const Home = (props) => {
                                                                         ))}
                                                                     {/* From and To Date Picker Components */}
 
-                                                                    <NativePickers onSelected={
+                                                                    {/* <NativePickers onSelected={
                                                                         handleDates
-                                                                    }></NativePickers>
+                                                                    }></NativePickers> */}
                                                                     
 
                                                                     {/* Yes/No Dialog */}
@@ -394,7 +394,7 @@ const Home = (props) => {
 
                                                                         }
                                                                         setIsAccordionExpanded(false)
-                                                                    }} className="bg-django-green  border border-green-600  text-green-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">Filter</button>
+                                                                    }} className="bg-django-green col-start-1  border border-green-600  text-green-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">Filter</button>
                                                                     
                                                                     <button className="bg-green-700 boder border-green-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center" onClick={ev => {
                                                                         router.push('/facilities')
@@ -479,10 +479,10 @@ const Home = (props) => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="col-span-8 md:col-span-8 lg:col-span-2 flex flex-wrap items-center justify-evenly gap-x-2 gap-y-1 text-lg">
-                                                        {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 font-semibold text-gray-900"}>Operational</span> : ""}
-                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-black" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-gray-500 text-gray-50"}>{facility?.rejected ? "Rejected" : ""}</span>}
-                                                        {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Has edits</span> : ""}
+                                                    <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
+                                                        {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 font-semibold text-gray-900"}>Operational</span> : ""}
+                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-black" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-gray-500 text-gray-50"}>{facility?.rejected ? "Rejected" : ""}</span>}
+                                                        {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Has edits</span> : ""}
                                                     </div>
                                                 </div>
                                             ))
