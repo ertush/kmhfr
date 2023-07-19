@@ -113,10 +113,10 @@ const Home = (props) => {
             </Head>
 
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                <div className="w-full grid grid-cols-5 gap-3 md:mt-3 border border-red-500">
+                <div className="w-full grid grid-cols-5 gap-3 md:mt-3 ">
 
                     {/* Header Matters */}
-                    <div className="col-span-5 flex flex-col gap-3 px-4">
+                    <div className="col-span-5 flex flex-col gap-3 ">
 
                           {/* Buttons section */}
 
@@ -419,11 +419,11 @@ const Home = (props) => {
                    
                     
                     {/* Main Body */}
-                    <div className="w-full md:col-span-4 md:col-start-2 col-span-5 mr-4 md:h-auto md:mb-12 border border-green-600">
+                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto md:mb-12 border border-green-600">
                                     {/* Data Indicator section */}
-                                    <h5 className="text-lg font-medium text-gray-800 float-right mb-2">
+                                    <h5 className="text-lg font-medium text-gray-800 float-right pr-2 mb-2">
                                                   
-                                        {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || ''} - {props?.data?.end_index || ''} of {props?.data?.count || ''} </small>}
+                                        {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 text-base">{props?.data?.start_index || ''} - {props?.data?.end_index || ''} of {props?.data?.count || ''} </small>}
                                     </h5>
                         
                                     {/*  Quick Filters status display */}
@@ -434,11 +434,11 @@ const Home = (props) => {
                                             facilities.map((facility, index) => (
                                                 <div key={index} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
-                                                className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b border-green-600 py-4 hover:bg-yellow-50 w-full">
-                                                    <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
+                                                className="grid grid-cols-8 gap-2 border-b border-green-600 py-4 hover:bg-yellow-50 w-full">
+                                                    <div className=" px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl w-full">
                                                             <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className="cursor-pointer hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 " >
-                                                                <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}{facility?.official_name || facility?.official_name || facility?.name}
+                                                                {/* <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}*/}{facility?.official_name || facility?.official_name || facility?.name} 
                                                             </span>
                                                         </h3>
                                                         
@@ -477,7 +477,7 @@ const Home = (props) => {
                                             {/* FeedBack Facilities View */}
                                             {
                                                 facilityFeedBack && facilityFeedBack.length > 0  ? facilityFeedBack.map((facility, index) => (
-                                                    <div key={index} className="px-1 md:px-3 grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
+                                                    <div key={index} className="grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-6 flex flex-col gap-1 group items-center justify-start text-left">
                                                         <h3 className="text-2xl w-full">
                                                             <a href={'/facilities/' + facility?.id} className="hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800 ">
@@ -525,7 +525,7 @@ const Home = (props) => {
                                             }
 
                                             {facilities && facilities?.length >= 30 && !khisSynched && 
-                                            <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
+                                            <ul className="list-none flex flex-row gap-2 w-full items-center my-2">
                                                 <li className="text-base text-gray-600">
                                                     <Link href={
                                                         (() => 

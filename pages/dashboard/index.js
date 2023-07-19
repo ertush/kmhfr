@@ -341,9 +341,7 @@ const Dash = (props) => {
                                                       height:'4px'
                                                     }),
                                                    
-                                                }
-                                                    
-                                                }
+                                                }}
                                                 
                                                 onChange={async (sl) => {
                                                     let startdate = ''
@@ -511,7 +509,7 @@ const Dash = (props) => {
                                         <div id={quarters} className="w-full max-w-xs flex flex-col items-start justify-start">
                                             {/* <label htmlFor={quarters} className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Quarter</label> */}
 
-                                            <Select id="quarterselector" name={quarters} className="w-full max-w-xs p-1  bg-django-green border border-green-600"
+                                            <Select id="quarterselector" name={quarters} className="w-full max-w-xs  bg-django-green border border-green-600"
                                                 options={quarters}
                                                 placeholder='Select Quarter'
                                                 styles={{
@@ -521,8 +519,12 @@ const Dash = (props) => {
                                                       outLine:'none',
                                                       border:'none',
                                                       outLine:'none',
-                                                      textColor: 'transparent'
-                                                    })}}
+                                                      textColor: 'transparent',
+                                                      padding:0,
+                                                      height:'4px'
+                                                    }),
+                                                   
+                                                }}
                                                 onChange={async (sl) => {
 
                                                     let period = {}
@@ -619,12 +621,12 @@ const Dash = (props) => {
 
                                 {/* filter by organizational units  */}
                                 {/* national */}
-                                {(groupID === 5 || groupID === 7) && <div className="w-full flex  items-center justify-end space-x-1">
+                                {(groupID === 5 || groupID === 7) && <div className="w-full flex  items-center justify-end space-x-3">
                                     {filters && Object.keys(filters).length > 0 &&
                                         Object.keys(filters).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id='first'>
                                                 {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}</label> */}
-                                                <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 bg-django-green border border-green-600"
+                                                <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs bg-django-green border border-green-600"
                                                  styles={{
                                                     control: (baseStyles) => ({
                                                       ...baseStyles,
@@ -632,8 +634,12 @@ const Dash = (props) => {
                                                       outLine:'none',
                                                       border:'none',
                                                       outLine:'none',
-                                                      textColor: 'transparent'
-                                                    })}}
+                                                      textColor: 'transparent',
+                                                      padding:0,
+                                                      height:'4px'
+                                                    }),
+                                                   
+                                                }}
                                                     options={
                                                         (() => {
                                                             if (groupID === 5 || groupID === 7) {
@@ -706,7 +712,7 @@ const Dash = (props) => {
                                         Object.keys(subcounties).map(ft => (
                                             <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id="second">
                                                 {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('ies', 'y')}</label> */}
-                                                <Select name={ft} id={ft} className="w-full max-w-xs p-1  bg-gray-50"
+                                                <Select name={ft} id={ft} className="w-full max-w-xs border border-green-600"
                                                     styles={{
                                                         control: (baseStyles) => ({
                                                           ...baseStyles,
@@ -714,8 +720,12 @@ const Dash = (props) => {
                                                           outLine:'none',
                                                           border:'none',
                                                           outLine:'none',
-                                                          textColor: 'transparent'
-                                                        })}}
+                                                          textColor: 'transparent',
+                                                          padding:0,
+                                                          height:'4px'
+                                                        }),
+                                                       
+                                                    }}
                                                     options={
                                                         (() => {
                                                             if (groupID === 1) {
@@ -794,7 +804,7 @@ const Dash = (props) => {
                                             Object.keys(wards).map(ft => (
                                                 <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id="third">
                                                     {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('s', '')}</label> */}
-                                                    <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs p-1  bg-django-gree border border-green-600"
+                                                    <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs  bg-django-gree border border-green-600"
                                                          styles={{
                                                             control: (baseStyles) => ({
                                                               ...baseStyles,
@@ -802,9 +812,13 @@ const Dash = (props) => {
                                                               outLine:'none',
                                                               border:'none',
                                                               outLine:'none',
-                                                              textColor: 'transparent'
-                                                            })}}
-                                                        options={
+                                                              textColor: 'transparent',
+                                                              padding:0,
+                                                              height:'4px'
+                                                            }),
+                                                           
+                                                        }}
+                                                        options={   
                                                             (() => {
                                                                 if (groupID === 2) {
                                                                     let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
