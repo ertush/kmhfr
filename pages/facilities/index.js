@@ -422,7 +422,7 @@ const Home = (props) => {
                    
                     
                     {/* Main Body */}
-                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto md:mb-12 border border-green-600">
+                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto border border-green-600">
                                     {/* Data Indicator section */}
                                     <div className='w-full flex justify-end border-b border-green-600'>
                                         <h5 className="text-lg font-medium text-gray-800 pr-2">      

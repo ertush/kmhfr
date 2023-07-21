@@ -341,7 +341,6 @@ const Facility = (props) => {
             </Modal>
           }
 
-
           {/* Header */}
           <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
             {/* Breadcramps */}
@@ -370,7 +369,7 @@ const Facility = (props) => {
                 <h1 className="text-4xl tracking-tight font-bold leading-tight">
                   {facility?.official_name}
                 </h1>
-                <div className="flex gap-2 items-center w-full justify-between">
+                <div className="flex flex-col gap-1 w-full items-start justify-start">
                   <span
                     className={
                       "font-bold text-2xl " +
@@ -379,6 +378,8 @@ const Facility = (props) => {
                   >
                     #{facility?.code || "NO_CODE"}
                   </span>
+
+                  <span className="font-semibold text-green-900 text-base">{facility?.keph_level_name}</span>
                   
                 </div>
               </div>
@@ -450,20 +451,55 @@ const Facility = (props) => {
           <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full flex flex-col gap-3 mt-4`}>
 
             {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
-            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
-              <div className="flex flex-row justify-start items-center space-x-3 p-3">
 
-                {/* Render button conditionally for both facility approval and validation*/}
-                {
+            {
+              (
+              userCtx?.groups[0].id == 1 || 
+              userCtx?.groups[0].id == 2 ||
+              userCtx?.groups[0].id == 3 
+              ) &&
+              <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                <div className="flex flex-row justify-start items-center space-x-3 p-3">
+
+                  {/* Render button conditionally for both facility approval and validation*/}
+                  {
+                      // hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
+                      // hasPermission(/^facilities.view_facility$/, userPermissions) &&
+                      // (!belongsToUserGroup(userGroup, 'County He alth Records Information Officer') || 
+                      // (belongsToUserGroup(userGroup, 'County Health Records Information Officer') && facility.has_edits)) &&
+                      (qf.includes('updated_pending_validation') || qf.includes('to_publish')) &&
+                      // facility?.is_approved &&
+
+                      userCtx?.groups[0].id == 1 &&
+
+                    <button
+                      onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
+                      className={
+                        "p-2 text-center -md font-semibold text-base text-white bg-green-600"
+                          
+                      }
+                    >
+                      {
+                      facility.has_edits ? qf.includes('updated_pending_validation') && 'Validate Facility Updates' : qf.includes('to_publish') && 'Approve/Reject Facility' 
+                      }
+                      
+      
+                    </button>
+                  } 
+
+                    {
                     // hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
                     // hasPermission(/^facilities.view_facility$/, userPermissions) &&
-                    // (!belongsToUserGroup(userGroup, 'County He alth Records Information Officer') || 
-                    // (belongsToUserGroup(userGroup, 'County Health Records Information Officer') && facility.has_edits)) &&
-                    (qf.includes('updated_pending_validation') || qf.includes('to_publish')) &&
-                    // facility?.is_approved &&
+                    // (
+                    // belongsToUserGroup(userGroup, 'County Health Records Information Officer') ||
+                    // belongsToUserGroup(userGroup, 'National Administrators') ||
+                    // belongsToUserGroup(userGroup, 'Superusers') 
+                    // ) &&
 
-                    userCtx?.groups[0].id == 1 &&
-
+                    // qf.includes('new_pending_validation') &&
+                    // !facility?.is_approved &&
+                    userCtx?.groups[0]?.id == 1 &&
+                    
                   <button
                     onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
                     className={
@@ -471,103 +507,76 @@ const Facility = (props) => {
                         
                     }
                   >
-                    {
-                    facility.has_edits ? qf.includes('updated_pending_validation') && 'Validate Facility Updates' : qf.includes('to_publish') && 'Approve/Reject Facility' 
-                    }
-                    
+                    Validate/Reject Facility
     
                   </button>
-                } 
+                  } 
+                  {/* {
+                    hasPermission(/^common.view_documentupload$/, userPermissions) &&
+                    !qf.includes('new_pending_validation') &&
+                    !qf.includes('failed_validation') &&
+                  <button
+                    onClick={() => console.log(props.data)}
+                    className="p-2 text-center -md font-semibold text-base text-white bg-black"
+                  >
+                    Print
+                  </button>
+                  } */}
+                  {
+                      !facility?.closed &&
+                      userCtx?.groups[0]?.id == 2 ||
+                      userCtx?.groups[0]?.id == 1 &&
+                      // hasPermission(/^facilities.change_facility$/, userPermissions) &&
+                          <button
+                          onClick={() => router.push(`edit/${facility?.id}`)}
+                          className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                        >
+                          Edit
+                        </button>
+                  }
 
                   {
-                  // hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
-                  // hasPermission(/^facilities.view_facility$/, userPermissions) &&
-                  // (
-                  // belongsToUserGroup(userGroup, 'County Health Records Information Officer') ||
-                  // belongsToUserGroup(userGroup, 'National Administrators') ||
-                  // belongsToUserGroup(userGroup, 'Superusers') 
-                  // ) &&
+                    // hasPermission(/^facilities.add_facilityregulationstatus$/, userPermissions) &&
+                    // hasPermission(/^facilities.change_facilityregulationstatus$/, userPermissions) &&
+                    // hasPermission(/^facilities.view_facility$/, userPermissions) &&
+                    // !qf.includes('failed_validation') &&
+                    userCtx?.groups[0]?.id == 3 &&
 
-                  // qf.includes('new_pending_validation') &&
-                  // !facility?.is_approved &&
-                  userCtx?.groups[0]?.id == 1 &&
-                  
-                <button
-                  onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
-                  className={
-                    "p-2 text-center -md font-semibold text-base text-white bg-green-600"
-                      
+                  <button
+                    onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
+                    className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                  >
+                    Regulate
+                  </button>
                   }
-                >
-                   Validate/Reject Facility
-  
-                </button>
-                } 
-                {/* {
-                  hasPermission(/^common.view_documentupload$/, userPermissions) &&
-                  !qf.includes('new_pending_validation') &&
-                  !qf.includes('failed_validation') &&
-                <button
-                  onClick={() => console.log(props.data)}
-                  className="p-2 text-center -md font-semibold text-base text-white bg-black"
-                >
-                  Print
-                </button>
-                } */}
-                {
-                    !facility?.closed &&
-                    userCtx?.groups[0]?.id == 2 ||
-                    userCtx?.groups[0]?.id == 1 &&
-                    // hasPermission(/^facilities.change_facility$/, userPermissions) &&
-                        <button
-                        onClick={() => router.push(`edit/${facility?.id}`)}
-                        className="p-2 text-center -md font-semibold text-base  text-white bg-black"
-                      >
-                        Edit
-                      </button>
-                }
-
-                {
-                  // hasPermission(/^facilities.add_facilityregulationstatus$/, userPermissions) &&
-                  // hasPermission(/^facilities.change_facilityregulationstatus$/, userPermissions) &&
-                  // hasPermission(/^facilities.view_facility$/, userPermissions) &&
-                  // !qf.includes('failed_validation') &&
-                  userCtx?.groups[0]?.id == 3 &&
-
-                <button
-                  onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
-                  className="p-2 text-center -md font-semibold text-base  text-white bg-black"
-                >
-                  Regulate
-                </button>
-                }
-                {
-                  // hasPermission(/^facilities.add_facilityupgrade$/, userPermissions) &&
-                  // hasPermission(/^facilities.change_facilityupgrade$/, userPermissions) &&
-                  // hasPermission(/^facilities.add_facilityservice$/, userPermissions) &&
-                  // hasPermission(/^facilities.change_facilityservice$/, userPermissions) &&
-                  userCtx?.groups[0]?.id == 2 &&
-                  !qf.includes('new_pending_validation') &&
-                <button
-                  onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
-                  className="p-2 text-center -md font-semibold text-base  text-white bg-black"
-                >
-                  Upgrade/Downgrade
-                </button>
-                }
-                {
-                  !qf.includes('new_pending_validation') &&
-                  (userCtx?.groups[0]?.id == 1 ||
-                  userCtx?.groups[0]?.id == 2) && 
-                <button
-                  onClick={() => setIsClosingFacility(true)}
-                  className="p-2 text-center -md font-semibold text-base  text-white bg-black"
-                >
-                  Close
-                </button>
-                }
+                  {
+                    // hasPermission(/^facilities.add_facilityupgrade$/, userPermissions) &&
+                    // hasPermission(/^facilities.change_facilityupgrade$/, userPermissions) &&
+                    // hasPermission(/^facilities.add_facilityservice$/, userPermissions) &&
+                    // hasPermission(/^facilities.change_facilityservice$/, userPermissions) &&
+                    userCtx?.groups[0]?.id == 2 &&
+                    !qf.includes('new_pending_validation') &&
+                  <button
+                    onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
+                    className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                  >
+                    Upgrade/Downgrade
+                  </button>
+                  }
+                  {
+                    !qf.includes('new_pending_validation') &&
+                    (userCtx?.groups[0]?.id == 1 ||
+                    userCtx?.groups[0]?.id == 2) && 
+                  <button
+                    onClick={() => setIsClosingFacility(true)}
+                    className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                  >
+                    Close
+                  </button>
+                  }
+                </div>
               </div>
-            </div>
+            }
 
             {/* Facility Details Tab Section */}
               <FacilityDetailsTabs facility={facility}/>
@@ -596,7 +605,7 @@ const Facility = (props) => {
                 />
               </div>
             ) : (
-              <div className="w-full bg-gray-200 shadow -lg flex flex-col items-center justify-center relative">
+              <div className="w-full bg-transparent p-2 border border-green-600 shadow -lg flex mt-1 flex-col items-center justify-center relative">
                 <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                   <p>No location data found for this facility?.</p>
                 </div>
@@ -621,7 +630,7 @@ const Facility = (props) => {
                 }
 
               }}
-              className="bg-green-600   w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
+              className="bg-green-600 w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
               <span>{isViewChangeLog ? 'Hide Change Log' : 'View Change Log'}</span>
               {
                 isViewChangeLog ?
@@ -636,7 +645,7 @@ const Facility = (props) => {
               isViewChangeLog &&
               
               <Table>
-              <TableBody className="w-full">
+              <TableBody className="w-full border border-green-600">
                 <TableRow>
                   <TableCell className="font-semibold">Date</TableCell>
                   <TableCell className="font-semibold">User</TableCell>
@@ -648,7 +657,7 @@ const Facility = (props) => {
                 {
                   changeLogData &&
                   changeLogData.map(({updated_on, updated_by, updates}, i) => (
-                    <TableRow key={i}>
+                    <TableRow className="border-b border-green-600 " key={i}>
                       <TableCell>
                         {new Date(updated_on).toLocaleString()}
                       </TableCell>
@@ -659,7 +668,7 @@ const Facility = (props) => {
                         {
                           updates && updates.length > 0 &&
                           updates.map(({old, new:_new, name}) => (
-                            <span className="grid grid-cols-2">
+                            <span className="grid grid-cols-2 text-wrap">
                               <span className="font-semibold text-base md:col-start-1">{name}{" :"}</span>
                               <span className="text-red-400 md:col-start-2">{old}
                               <span className="text-black">{" >> "}</span>

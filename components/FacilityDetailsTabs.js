@@ -4,7 +4,7 @@ import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
 
 function FacilityDetailsTabs({ facility }) {
   return (
-    <div className="col-span-5 md:col-span-3 flex border border-green-600 mb-12 flex-col gap-3 mt-4">
+    <div className="col-span-5 md:col-span-3 flex border border-green-600 flex-col gap-3 mt-4">
       <Tabs.Root
         orientation="horizontal"
         className="w-full flex flex-col tab-root"
@@ -540,7 +540,7 @@ function FacilityDetailsTabs({ facility }) {
                   facility?.facility_services.map((service) => (
                     <li
                       key={service.service_id}
-                      className="w-full grid grid-cols-3 gap-3 place-content-end my-2 p-3 border-b border-gray-300"
+                      className="w-full grid grid-cols-3 gap-3 place-content-end my-2 p-3 border-b border-gray-400"
                     >
                       <div>
                         <p className="text-gray-800 text-base">
@@ -589,7 +589,7 @@ function FacilityDetailsTabs({ facility }) {
                   facility?.facility_infrastructure.map((infra) => (
                     <li
                       key={infra.id}
-                      className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
+                      className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-400"
                     >
                       <div>
                         <p className="text-gray-800 text-base">
@@ -631,7 +631,7 @@ function FacilityDetailsTabs({ facility }) {
                   facility?.facility_specialists.map((hr) => (
                     <li
                       key={hr.id}
-                      className="w-full flex flex-row justify-between gap-2 my-2  border-b border-gray-300"
+                      className="w-full flex flex-row justify-between gap-2 myp-3 border-b border-gray-400"
                     >
                       <div>
                         <p className="text-gray-800 text-base">
@@ -670,7 +670,7 @@ function FacilityDetailsTabs({ facility }) {
                   facility?.facility_units.map((unit) => (
                     <li
                       key={unit.id}
-                      className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-300"
+                      className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-400"
                     >
                       <div>
                         <p className="text-gray-800 text-base">
