@@ -59,47 +59,17 @@ const Home = (props) => {
 							</div>
 
 
-						</div>
-					
+						<div className={"col-span-5 flex justify-between w-full bg-django-green border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border-l-8 " + (true ? "border-green-700" : "border-red-600")}>
+							<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+								{'Community Health Units'}
+							</h2>
 
-						<div className='flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between '>
-							<div className='flex flex-col items-start justify-start gap-y-1'>
-								<h1 className='text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2'>
-									{title}
-								</h1>
-								<h5 className='text-lg font-medium text-gray-800'>
-									{drillDown &&
-										Object.keys(drillDown).length > 0 &&
-										`Matching ${Object.keys(drillDown)
-											.map(
-												(k) =>
-													`${k[0].toLocaleUpperCase()}${k
-														.split('_')
-														.join(' ')
-														.slice(1)
-														.toLocaleLowerCase()}: (${
-														filters[k]
-															? Array.from(
-																	drillDown[k].split(','),
-																	(j) =>
-																		filters[k]
-																			.find((w) => w.id == j)
-																			?.name.split('_')
-																			.join(' ') || j.split('_').join(' ')
-															  ).join(', ')
-															: 'v' + k.split('_').join(' ')
-													})`
-											)
-											?.join(' & ')}`}
-								</h5>
-                           
-                            </div>
 							{props?.current_url && props?.current_url.length > 5 && (
 								<Menu as='div' className='relative'>
 									<div className='flex items-center space-x-6 w-auto '>
 										<Menu.Item
 											as='div'
-											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-semibold whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
+											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<button
 												onClick={() => {
 													router.push('/community-units/add');
@@ -112,7 +82,7 @@ const Home = (props) => {
 
 										<Menu.Button
 											as='button'
-											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap rounded hover:bg-black focus:bg-black active:bg-black uppercase'>
+											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<DownloadIcon className='w-5 h-5 mr-1' />
 											<span className='text-base uppercase font-semibold'>Export</span>
 											<ChevronDownIcon className='w-4 h-4 ml-2' />
@@ -120,7 +90,7 @@ const Home = (props) => {
 									</div>
 									<Menu.Items
 										as='ul'
-										className='absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white rounded shadow-lg border border-gray-200 p-1 w-full'>
+										className='absolute top-10 left-0 flex flex-col gap-y-1 items-center justify-start bg-white  shadow-lg border border-gray-200 p-1 w-full'>
 										<Menu.Item
 											as='li'
 											className='p-0 flex items-center w-full text-center hover:bg-gray-200 focus:bg-gray-200 active:bg-gray-200'>
@@ -167,12 +137,52 @@ const Home = (props) => {
 								</Menu>
 							)}
 
+							
+						</div>
+
+
+						</div>
+					
+
+						<div className='flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between '>
+							<div className='flex flex-col items-start justify-start gap-y-1'>
+								{/* <h1 className='text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2'>
+									{title}
+								</h1> */}
+								<h5 className='text-lg font-medium text-gray-800'>
+									{drillDown &&
+										Object.keys(drillDown).length > 0 &&
+										`Matching ${Object.keys(drillDown)
+											.map(
+												(k) =>
+													`${k[0].toLocaleUpperCase()}${k
+														.split('_')
+														.join(' ')
+														.slice(1)
+														.toLocaleLowerCase()}: (${
+														filters[k]
+															? Array.from(
+																	drillDown[k].split(','),
+																	(j) =>
+																		filters[k]
+																			.find((w) => w.id == j)
+																			?.name.split('_')
+																			.join(' ') || j.split('_').join(' ')
+															  ).join(', ')
+															: 'v' + k.split('_').join(' ')
+													})`
+											)
+											?.join(' & ')}`}
+								</h5>
+                           
+                            </div>
+							
 							</div>
 							
 					</div>
 					
 				 </div>
-					<div className='w-full grid grid-cols-5 gap-0 place-content-start rounded border-gray-300'>
+					<div className='w-full grid grid-cols-5 gap-0 place-content-start  border-gray-300'>
 							{/* Side Menu Filters*/}
 
 							<CommunityUnitSideMenu
@@ -264,7 +274,7 @@ const Home = (props) => {
 														{comm_unit.status_name ? (
 															<span
 																className={
-																	'leading-none border whitespace-nowrap shadow-xs text-sm rounded py-1 px-2 text-black ' +
+																	'leading-none border whitespace-nowrap shadow-xs text-sm  py-1 px-2 text-black ' +
 																	(comm_unit.status_name
 																		.toLocaleLowerCase()
 																		.includes('non-')
@@ -282,11 +292,11 @@ const Home = (props) => {
 														) : (
 															''
 														)}
-														{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
+														{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
 														{comm_unit.has_edits ? (
 															<span
 																className={
-																	'leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black'
+																	'leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black'
 																}>
 																Has edits
 															</span>
@@ -297,7 +307,7 @@ const Home = (props) => {
 												</div>
 												
 												<div className='col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
-													{/* <a href={'/community-unit/edit/' + comm_unit.id} className="text-blue-800 hover:underline active:underline focus:underline bg-blue-200 md:bg-transparent px-2 md:px-0 rounded md:rounded-none">
+													{/* <a href={'/community-unit/edit/' + comm_unit.id} className="text-blue-800 hover:underline active:underline focus:underline bg-blue-200 md:bg-transparent px-2 md:px-0  md:-none">
 													Edit
 												</a>
 												<a href="/" className="text-blue-800 hover:underline active:underline focus:underline">
@@ -307,7 +317,7 @@ const Home = (props) => {
 											</div>
 										))
 									) : (
-										<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3'>
+										<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium  border-yellow-300 p-3'>
 											<span className='text-base text-gray-700'>
 												No community units found
 											</span>
