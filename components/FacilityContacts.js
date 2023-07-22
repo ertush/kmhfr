@@ -50,6 +50,18 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                 ref={contactTypeRef}
                 id={`facility-contact-type-${index}`}
                 placeholder="Select Name"
+
+                styles={{
+                    control: (baseStyles) => ({
+                        ...baseStyles,
+                        backgroundColor: 'transparent',
+                        outLine: 'none',
+                        border: 'none',
+                        outLine: 'none',
+                        textColor: 'transparent',
+                        padding: 0,
+                        height: '4px'
+                    })}}
                 onChange={
                     e => {
                         if(contactTypeRef.current && contactTypeOptions){
@@ -59,14 +71,15 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                     }
                 }
                 name={fieldNames[0]} 
-                className="col-start-1  w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+ />
             
             <div className="w-full col-start-2 flex items-center gap-x-3 justify-between">
                     {/* Regulatory Body */}
                     <input ref={contactDetailsRef} id={`facility-contact-detail-${index}`} 
                     type="text" 
                     name={fieldNames[1]} 
-                    className="w-full flex-grow  flex-1 bg-gray-50 rounded p-2 border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                    className="w-full flex-grow  flex-1 bg-transparent p-2 border placeholder-gray-500 border-green-600 focus:shadow-none  focus:border-black outline-none" />
 
                     
                 
@@ -148,6 +161,17 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
                 ref={contactTypeRef}
                 id={`officer-contact-type-${index}`}
                 placeholder="Select Name"
+                styles={{
+                    control: (baseStyles) => ({
+                        ...baseStyles,
+                        backgroundColor: 'transparent',
+                        outLine: 'none',
+                        border: 'none',
+                        outLine: 'none',
+                        textColor: 'transparent',
+                        padding: 0,
+                        height: '4px'
+                    })}}
                 onChange={
                     e => {
                         if(contactTypeRef.current){
@@ -157,7 +181,8 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
                     }
                 }
                 name={fieldNames[0]} 
-                className="col-start-1  w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                 />
             
             <div className="w-full col-start-2 flex items-center gap-x-3 justify-between">
                     {/* Regulatory Body */}
@@ -165,7 +190,7 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
                     type="text" 
                      
                     name={fieldNames[1]} 
-                    className="w-full flex-grow  flex-1 bg-gray-50 rounded p-2 border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                    className="w-full flex-grow  flex-1 bg-transparent p-2 border placeholder-gray-500 border-green-600 focus:shadow-none  focus:border-black outline-none" />
 
                     
                 

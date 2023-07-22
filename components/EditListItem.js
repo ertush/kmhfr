@@ -162,16 +162,30 @@ function EditListItem({
             <Select
               options={itemOptions}
               formatGroupLabel={formatGroupLabel}
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  backgroundColor: 'transparent',
+                  outLine: 'none',
+                  border: 'none',
+                  outLine: 'none',
+                  textColor: 'transparent',
+                  padding: 0,
+                  height: '4px'
+                }),
+
+              }}
+              className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
               onChange={(e) => {
                 setCurrentItem({ id: e?.value, name: e?.label })
               }
               }
               name="item_drop_down_edit_list"
-              className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+             
             />
 
             {/* Add Item Button */}
-            <button name="add_item_btn" className="bg-green-700 rounded p-2 flex items-center justify-evenly gap-2"
+            <button name="add_item_btn" className="bg-green-700  p-2 flex items-center justify-evenly gap-2"
               onClick={e => {
                 e.preventDefault()
                 if (currentItem)
@@ -191,7 +205,7 @@ function EditListItem({
         <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
           Assigned {itemsCategoryName}
         </span>{" "}
-        <Table className="md:px-4">
+        <Table className="border-b border-green-600" >
           <TableBody>
             <TableRow>
               <TableCell>
@@ -229,7 +243,7 @@ function EditListItem({
                           removeItemHandler(e, item_id, alert)
 
                         }}
-                        className="flex items-center justify-center space-x-2 bg-red-400 rounded p-1 px-2"
+                        className="flex items-center justify-center space-x-2 bg-red-400  p-1 px-2"
                       >
                         <span className="text-medium font-semibold text-white">
                           Remove
@@ -241,7 +255,7 @@ function EditListItem({
               ) : (
                 item !== null &&
                 <>
-                  <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                  <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                     <p>
                       {item?.name || item?.official_name} has not listed
                       the {'item'} it offers. Add some below.
@@ -260,7 +274,7 @@ function EditListItem({
           selectedItems.length > 0 && item !== null &&
 
           <div className=" w-full flex justify-end h-auto mr-3">
-            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
+            <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save & finish</button>
           </div>
         }
 
@@ -268,14 +282,21 @@ function EditListItem({
           item === null &&
 
           <div className='flex justify-between items-center w-full mt-4' style={{ maxWidth: '90%' }}>
-            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-              <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-              <span className='text-medium font-semibold text-black '>{previousItemCategory}</span>
-            </button>
-            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-              <span className='text-medium font-semibold text-white'>{nextItemCategory}</span>
-              <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-            </button>
+            									<button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
+																<span className='text-medium font-semibold text-green-900 '>
+                                  {previousItemCategory}
+																</span>
+															</button>
+															<button
+																type='submit'
+																className='flex items-center justify-start space-x-2 bg-green-700  p-1 px-2'>
+																<span className='text-medium font-semibold text-white'>
+                                  {nextItemCategory}
+																</span>
+																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+															</button>
+           
           </div>
         }
 

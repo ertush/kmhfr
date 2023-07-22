@@ -119,28 +119,28 @@ function AddFacility(props) {
 		for (let type in f_types) all_ftypes.push(props[0]?.facility_types.find(({ sub_division }) => sub_division === f_types[type]))
 
 		return [{
-			label: all_ftypes[0].sub_division,
-			value: all_ftypes[0].parent
+			label: all_ftypes[0]?.sub_division,
+			value: all_ftypes[0]?.parent
 		},
 		{
-			label: all_ftypes[1].sub_division,
-			value: all_ftypes[1].parent
+			label: all_ftypes[1]?.sub_division,
+			value: all_ftypes[1]?.parent
 		},
 		{
-			label: all_ftypes[2].sub_division,
-			value: all_ftypes[2].parent
+			label: all_ftypes[2]?.sub_division,
+			value: all_ftypes[2]?.parent
 		},
 		{
-			label: all_ftypes[3].sub_division,
-			value: all_ftypes[3].parent
+			label: all_ftypes[3]?.sub_division,
+			value: all_ftypes[3]?.parent
 		},
 		{
-			label: all_ftypes[4].sub_division,
-			value: all_ftypes[4].parent
+			label: all_ftypes[4]?.sub_division,
+			value: all_ftypes[4]?.parent
 		},
 		{
-			label: all_ftypes[5].sub_division,
-			value: all_ftypes[5].parent
+			label: all_ftypes[5]?.sub_division,
+			value: all_ftypes[5]?.parent
 		}
 
 		]
@@ -194,7 +194,7 @@ function AddFacility(props) {
 		}
 
 		return _serviceOptions
-	})(props['15'].service ?? [])
+	})(props['15']?.service ?? [])
 
 	const infrastructureOption = ((_infrastructure) => {
 
@@ -226,7 +226,7 @@ function AddFacility(props) {
 		}
 
 		return _infrastructureOptions
-	})(props['16'].infrastructure ?? [])
+	})(props['16']?.infrastructure ?? [])
 
 	const hrOptions = ((_hr) => {
 
@@ -258,7 +258,7 @@ function AddFacility(props) {
 		}
 
 		return _hrOptions
-	})(props['17'].hr ?? [])
+	})(props['17']?.hr ?? [])
 
 
 	//  Refs
@@ -666,7 +666,7 @@ function AddFacility(props) {
 																type='text'
 																onChange={e => setFacilityOfficialName(e.target.value)}
 																name='official_name'
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 														</div>
 														{/* Facility Unique Name  */}
@@ -686,7 +686,7 @@ function AddFacility(props) {
 																value={facilityOfficialName ?? ''}
 																onChange={() => { }}
 																name='name'
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 														</div>
 														{/* Facility Type */}
@@ -908,7 +908,7 @@ function AddFacility(props) {
 																required
 																type='date'
 																name='date_established'
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 														</div>
 
@@ -1108,8 +1108,7 @@ function AddFacility(props) {
 																name='number_of_beds'
 																ref={totalBedsRef}
 																readOnly
-
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 
 
@@ -1142,7 +1141,7 @@ function AddFacility(props) {
 																	}
 																}}
 
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 															<label ref={noInpatientBedsRef} className='text-red-500 mt-1'></label>
 
@@ -1173,7 +1172,7 @@ function AddFacility(props) {
 																		noCotsRef?.current?.textContent = ''
 																	}
 																}}
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 															<label ref={noCotsRef} className='text-red-500 mt-1'></label>
 														</div>
@@ -1203,7 +1202,7 @@ function AddFacility(props) {
 																		noEmergencyBedsRef?.current?.textContent = ''
 																	}
 																}}
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 															<label ref={noEmergencyBedsRef} className='text-red-500 mt-1'></label>
 
@@ -1235,7 +1234,7 @@ function AddFacility(props) {
 																		noICUBedsRef?.current?.textContent = ''
 																	}
 																}}
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 															<label ref={noICUBedsRef} className='text-red-500 mt-1'></label>
 
@@ -1267,7 +1266,7 @@ function AddFacility(props) {
 																		noHDUBedsRef?.current?.textContent = ''
 																	}
 																}}
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 															<label ref={noHDUBedsRef} className='text-red-500 mt-1'></label>
 
@@ -1298,7 +1297,7 @@ function AddFacility(props) {
 																		noMartenityBedsRef?.current?.textContent = ''
 																	}
 																}}
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 															<label ref={noMartenityBedsRef} className='text-red-500 mt-1'></label>
 
@@ -1329,7 +1328,7 @@ function AddFacility(props) {
 																		noIsolationBedsRef?.current?.textContent = ''
 																	}
 																}}
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 															<label ref={noIsolationBedsRef} className='text-red-500 mt-1'></label>
 
@@ -1359,7 +1358,7 @@ function AddFacility(props) {
 																		noGeneralTheatersRef?.current?.textContent = ''
 																	}
 																}}
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 															<label ref={noGeneralTheatersRef} className='text-red-500 mt-1'></label>
 
@@ -1389,7 +1388,7 @@ function AddFacility(props) {
 																		noMartenityTheatersRef?.current?.textContent = ''
 																	}
 																}}
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 															<label ref={noMartenityTheatersRef} className='text-red-500 mt-1'></label>
 
@@ -1419,7 +1418,7 @@ function AddFacility(props) {
 																		facilityPopulationRef?.current?.textContent = ''
 																	}
 																}}
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 															<label ref={facilityPopulationRef} className='text-red-500 mt-1'></label>
 
@@ -1524,16 +1523,16 @@ function AddFacility(props) {
 
 														{/* Armed Forces Facilities */}
 
-														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-gray-50 h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent border-green-600 h-auto'>
+															<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 																Armed Forces Facilities
 															</h4>
-															<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+															<div className='w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3'>
 																<input
 																	type='checkbox'
 																	defaultValue={true}
 																	name='is_classified'
-																	id='is_armed_forces'
+																	id='is_armed_forces'																	
 
 																/>
 																<label
@@ -1547,8 +1546,8 @@ function AddFacility(props) {
 
 														{/* Hours/Days of Operation */}
 
-														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-gray-50 h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent border-green-600 h-auto'>
+															<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 																Hours/Days of Operation
 															</h4>
 															<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
@@ -1642,8 +1641,8 @@ function AddFacility(props) {
 														</div>
 
 														{/* Location Details */}
-														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-gray-50 h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent border-green-600 h-auto'>
+															<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 																Location Details
 															</h4>
 															<div className='grid grid-cols-4 place-content-start gap-3 w-full'>
@@ -1735,7 +1734,7 @@ function AddFacility(props) {
 																			placeholder='Select Sub County'
 																			name='sub_county_id'
 
-																			className='flex-none w-full   flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																			className='flex-none w-full bg-transparent flex-grow  placeholder-gray-500 border border-green-600 outline-none'
 																		/>
 																	</div>
 																</div>
@@ -1787,7 +1786,7 @@ function AddFacility(props) {
 																				}
 																			}}
 																			name='constituency_id'
-																			className='flex-none w-full   flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																			className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
 																		/>
 																	</div>
 																</div>
@@ -1824,7 +1823,7 @@ function AddFacility(props) {
 																			placeholder='Select Ward'
 
 																			name='ward'
-																			className='flex-none w-full   flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																			className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
 																		/>
 																	</div>
 																</div>
@@ -1845,7 +1844,7 @@ function AddFacility(props) {
 
 																	type='text'
 																	name='town_name'
-																	className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																	className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 																/>
 															</div>
 
@@ -1864,7 +1863,7 @@ function AddFacility(props) {
 
 																	type='text'
 																	name='plot_number'
-																	className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																	className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 																/>
 															</div>
 
@@ -1883,7 +1882,7 @@ function AddFacility(props) {
 
 																	type='text'
 																	name='nearest_landmark'
-																	className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																	className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 																/>
 															</div>
 
@@ -1902,13 +1901,13 @@ function AddFacility(props) {
 
 																	type='text'
 																	name='location_desc'
-																	className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																	className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 																/>
 															</div>
 														</div>
 
 														{/* check file upload */}
-														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-gray-50 h-auto'>
+														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent border-green-600 h-auto'>
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
 																	htmlFor='facility_checklist_document'
@@ -1928,22 +1927,22 @@ function AddFacility(props) {
 																		setChecklistFile(e.target.files[0])
 																	}}
 																	name='facility_checklist_document'
-																	className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																	className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 																/>
 															</div>
 														</div>
 
 														{/* Cancel & Geolocation */}
 														<div className='flex justify-between items-center w-full'>
-															<button className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																<span className='text-medium font-semibold text-black '>
+															<button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
+																<span className='text-medium font-semibold text-green-900 '>
 																	Cancel
 																</span>
 															</button>
 															<button
 																type='submit'
-																className='flex items-center justify-start space-x-2 bg-indigo-500  p-1 px-2'>
+																className='flex items-center justify-start space-x-2 bg-green-700  p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>
 																	Geolocation
 																</span>
@@ -1965,7 +1964,7 @@ function AddFacility(props) {
 
 											return (
 												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+													<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 														Geolocation Details
 													</h4>
 
@@ -2014,7 +2013,7 @@ function AddFacility(props) {
 																type='date'
 																name='collection_date'
 																onChange={formik.handleChange}
-																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 bg-transparent border-green-600 focus:shadow-none focus:border-black outline-none'
 															/>
 														</div>
 
@@ -2037,7 +2036,7 @@ function AddFacility(props) {
 																	name='longitude'
 																	value={formik.values.longitude}
 																	onChange={formik.handleChange}
-																	className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																	className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 																/>
 															</div>
 
@@ -2058,7 +2057,7 @@ function AddFacility(props) {
 																	name='latitude'
 																	value={formik.values.latitude}
 																	onChange={formik.handleChange}
-																	className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																	className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 																/>
 															</div>
 															<>{coordinatesError && <Alert severity="error" sx={{ width: '100%' }}> Please enter the right coordinates</Alert>}</>
@@ -2080,19 +2079,19 @@ function AddFacility(props) {
 														<div className='flex justify-between items-center w-full'>
 															<button
 																onClick={handleGeolocationPrevious}
-																className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																<span className='text-medium font-semibold text-black '>
+																className='flex items-center justify-start space-x-2 p-1 group hover:bg-green-700 border border-green-700 px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-green-900' />
+																<span className='text-medium font-semibold group-hover:text-white text-green-900 '>
 																	Basic Details
 																</span>
 															</button>
 															<button
 																type='submit'
-																className='flex items-center justify-start space-x-2 bg-indigo-500  p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>
+																className='flex items-center justify-start space-x-2 bg-green-700 group hover:bg-transparent border border-green-700 p-1 px-2'>
+																<span className='text-medium font-semibold group-hover:text-green-900 text-white'>
 																	Facility Contacts
 																</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+																<ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-green-900 text-white' />
 															</button>
 														</div>
 													</form>
@@ -2112,7 +2111,7 @@ function AddFacility(props) {
 
 											return (
 												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+													<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 														Facility Contact
 													</h4>
 													<form
@@ -2126,10 +2125,10 @@ function AddFacility(props) {
 															className='grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3'
 														>
 															{/* Contact Headers */}
-															<h3 className='text-medium font-semibold text-blue-900'>
+															<h3 className='text-medium font-semibold text-green-900'>
 																Contact Type
 															</h3>
-															<h3 className='text-medium font-semibold text-blue-900'>
+															<h3 className='text-medium font-semibold text-green-900'>
 																Contact Details
 															</h3>
 															<hr className='col-span-2' />
@@ -2174,7 +2173,7 @@ function AddFacility(props) {
 
 																	])
 																}}
-																className='flex items-center space-x-1 bg-indigo-500 p-1 '>
+																className='flex items-center space-x-1 bg-green-700 p-1 '>
 																<PlusIcon className='w-4 h-4 text-white' />
 																<p className='text-medium font-semibold text-white'>
 																	Add
@@ -2184,7 +2183,7 @@ function AddFacility(props) {
 
 														{/* Facility Officer In-charge Details */}
 
-														<h5 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														<h5 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 															Facility Officer In-Charge Details
 														</h5>
 														<div className='flex flex-col items-start justify-start gap-1 w-full  h-auto'>
@@ -2203,7 +2202,7 @@ function AddFacility(props) {
 																	required
 																	type='text'
 																	name='officer_name'
-																	className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																	className='flex-none w-full  bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 																/>
 															</div>
 
@@ -2217,7 +2216,7 @@ function AddFacility(props) {
 																<input
 																	type='text'
 																	name='officer_reg_no'
-																	className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+																	className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
 																/>
 															</div>
 
@@ -2259,10 +2258,10 @@ function AddFacility(props) {
 																className='grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3'
 															>
 																{/* Contact Headers */}
-																<h3 className='text-medium font-semibold text-blue-900'>
+																<h3 className='text-medium font-semibold text-green-900'>
 																	Contact Type
 																</h3>
-																<h3 className='text-medium font-semibold text-blue-900'>
+																<h3 className='text-medium font-semibold text-green-900'>
 																	Contact Details
 																</h3>
 																<hr className='col-span-2' />
@@ -2311,7 +2310,7 @@ function AddFacility(props) {
 																				/*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
 																			])
 																		}}
-																	className='flex items-center space-x-1 bg-indigo-500 p-1 '>
+																	className='flex items-center space-x-1 bg-green-700 p-1 '>
 																	<PlusIcon className='w-4 h-4 text-white' />
 																	<p className='text-medium font-semibold text-white'>
 																		Add
@@ -2321,22 +2320,23 @@ function AddFacility(props) {
 														</div>
 
 														<div className='flex justify-between items-center w-full'>
-															<button
-																onClick={handleFacilityContactsPrevious}
-																className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																<span className='text-medium font-semibold text-black '>
+														<button
+																onClick={handleGeolocationPrevious}
+																className='flex items-center justify-start space-x-2 p-1 group hover:bg-green-700 border border-green-700 px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-green-900' />
+																<span className='text-medium font-semibold group-hover:text-white text-green-900 '>
 																	Geolocation
 																</span>
 															</button>
 															<button
 																type='submit'
-																className='flex items-center justify-start space-x-2 bg-indigo-500  p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>
-																	Regulation
+																className='flex items-center justify-start space-x-2 bg-green-700 group hover:bg-transparent border border-green-700 p-1 px-2'>
+																<span className='text-medium font-semibold group-hover:text-green-900 text-white'>
+																Regulation
 																</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+																<ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-green-900 text-white' />
 															</button>
+								
 														</div>
 													</form>
 												</>
@@ -2354,7 +2354,7 @@ function AddFacility(props) {
 
 											return (
 												<>
-													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
+													<h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">Facility Regulation</h4>
 													<form ref={facilityRegulationFormRef} name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId, facilityOfficialName, facilityRegulationFormRef], licenseFile)}>
 
 														{/* Regulatory Body */}
@@ -2434,19 +2434,19 @@ function AddFacility(props) {
 
 														{/* License Number */}
 														<div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-															<label htmlFor="license_number" className="text-gray-600 capitalize text-sm">License Number</label>
-															<input type="text" name="license_number" className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none" />
+															<label htmlFor="license_number" className="text-gray-600 bg-transparent capitalize text-sm">License Number</label>
+															<input type="text" name="license_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none" />
 														</div>
 
 
 														{/* Registration Number */}
 														<div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-															<label htmlFor="registration_number" className="text-gray-600 capitalize text-sm">Registration Number</label>
-															<input type="text" name="registration_number" className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none" />
+															<label htmlFor="registration_number" className="text-gray-600 bg-transparent capitalize text-sm">Registration Number</label>
+															<input type="text" name="registration_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none" />
 														</div>
 
 														{/* check file upload */}
-														<div className=" w-full flex flex-col items-start justify-start p-3  h-auto">
+														<div className=" w-full flex flex-col items-start justify-start py-3  h-auto">
 															<div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
 																<label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
 																<input onChange={e => setLicenseFile(e.target.files[0])} type="file" name="license_document" className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none" />
@@ -2454,14 +2454,14 @@ function AddFacility(props) {
 														</div>
 
 														{/* Facility Departments Regulation  */}
-														<h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Departments Regulation</h5>
+														<h5 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">Facility Departments Regulation</h5>
 														<div className='grid grid-cols-4 place-content-start gap-3 w-full border border-green-600  p-3' ref={facilityRegulatoryBodyRef}>
 
 															{/* Contact Headers */}
-															<h3 className='text-medium font-semibold text-blue-900'>Name</h3>
-															<h3 className='text-medium font-semibold text-blue-900'>Regulatory Body</h3>
-															<h3 className='text-medium font-semibold text-blue-900'>License Number</h3>
-															<h3 className='text-medium font-semibold text-blue-900'>Reg. Number</h3>
+															<h3 className='text-medium font-semibold border-b border-green-600 text-green-900'>Name</h3>
+															<h3 className='text-medium font-semibold border-b border-green-600 text-green-900'>Regulatory Body</h3>
+															<h3 className='text-medium font-semibold border-b border-green-600 text-green-900'>License Number</h3>
+															<h3 className='text-medium font-semibold border-b border-green-600 text-green-900'>Reg. Number</h3>
 
 															<hr className='col-span-4' />
 
@@ -2515,7 +2515,7 @@ function AddFacility(props) {
 																		},
 																	]
 																})
-															}} className='flex items-center space-x-1 bg-indigo-500 p-1 '>
+															}} className='flex items-center space-x-1 bg-green-700 p-1 '>
 
 																<PlusIcon className='w-4 h-4 text-white' />
 																<p className='text-medium font-semibold text-white'>Add</p>
@@ -2525,13 +2525,14 @@ function AddFacility(props) {
 
 														{/* Prev / Next */}
 														<div className='flex justify-between items-center w-full'>
-															<button onClick={handleRegulationPrevious} className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-																<span className='text-medium font-semibold text-black '>Facility Contacts</span>
+															<button onClick={handleRegulationPrevious} 
+															className='flex items-center justify-start space-x-2 p-1 group hover:bg-green-700 border border-green-700 px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-green-900' />
+																<span className='text-medium font-semibold group-hover:text-white text-green-900'>Facility Contacts</span>
 															</button>
-															<button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500  p-1 px-2'>
-																<span className='text-medium font-semibold text-white'> Services</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+															<button type="submit" className='flex items-center justify-start space-x-2 bg-green-700 group hover:bg-transparent border border-green-700 p-1 px-2'>
+																<span className='text-medium font-semibold group-hover:text-green-900 text-white'> Services</span>
+																<ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-green-900 text-white' />
 															</button>
 														</div>
 													</form>
@@ -2550,7 +2551,7 @@ function AddFacility(props) {
 
 											return (
 												<>
-													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Services</h4>
+													<h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">Services</h4>
 													<div className='flex flex-col w-full items-start justify-staFacilityDeptRegulationFactoryrt gap-3 mt-6'>
 
 														{/* Edit list Container */}
@@ -2594,7 +2595,7 @@ function AddFacility(props) {
 
 											return (
 												<>
-													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
+													<h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">Infrastracture</h4>
 													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
 														{/* Edit List With Count Container*/}
@@ -2637,7 +2638,7 @@ function AddFacility(props) {
 
 											return (
 												<>
-													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Human resources</h4>
+													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Human resources</h4>
 													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
 														{/* Edit List With Count Container*/}
@@ -2672,7 +2673,7 @@ function AddFacility(props) {
 											// 
 											return (
 												<>
-													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Basic Details</h4>
+													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Facility Basic Details</h4>
 													<form>
 
 													</form>
