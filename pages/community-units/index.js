@@ -275,15 +275,15 @@ const Home = (props) => {
 													No community units found
 												</span>
 												<Link href={props.path || '/'}>
-													<a className='text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
+													<a className='text-green-700 hover:text-green-800 group-focus:text-blue-800 active:text-blue-800'>
 														Refresh.
 													</a>
 												</Link>
 											</div>
 										)}
 										{cus && cus.length >= 30 && (
-											<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
-												<li className='text-base text-gray-600'>
+											<ul className='list-none flex p-2 flex-row justify-end gap-2 w-full items-center my-2'>
+												<li className='text-base text-green-500 cursor-pointer'>
 					
 													<a
 														href={
@@ -300,13 +300,13 @@ const Home = (props) => {
 															`${props.path}?page=${props?.data?.current_page}`
 														)()
 														}
-														className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
+														className='text-white  bg-green-600 cursor-pointer font-semibold px-2 py-1 underline'>
 														{props?.data?.current_page}
 													</a>
 												</li>
 												{props?.data?.near_pages &&
 													props?.data?.near_pages.map((page) => (
-														<li key={page} className='text-base text-gray-600'>
+														<li key={page} className='text-base group text-green-500'>
 
 															<a
 																href={
@@ -324,7 +324,7 @@ const Home = (props) => {
 							
 																	)()
 																}
-																className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
+																className='text-green-800 p-2 hover:underline active:underline focus:underline'>
 																{page}
 															</a>
 														</li>
