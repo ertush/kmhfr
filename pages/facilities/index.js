@@ -79,7 +79,7 @@ const Home = (props) => {
         let qry = props?.query
         
         delete qry.searchTerm
-        delete qry.qf
+        delete qry.qfstart
         setDrillDown({ ...drillDown, ...qry })
 
         return () => {
@@ -114,7 +114,7 @@ const Home = (props) => {
             </Head>
 
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-                <div className="w-full grid grid-cols-5 gap-3 md:mt-3 ">
+                <div className="w-full grid grid-cols-5 gap-3 md:mt-3 mb-12">
 
                     {/* Header Matters */}
                     <div className="col-span-5 flex flex-col gap-3 ">
@@ -440,7 +440,7 @@ const Home = (props) => {
                                                 <div key={index} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
                                                 className="grid grid-cols-8 gap-2 border-b border-green-600 py-4 hover:bg-yellow-50 w-full">
-                                                    <div className=" px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
+                                                    <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
                                                             <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className="cursor-pointer hover:text-green-600 group-focus:text-blue-800 active:text-blue-800 " >
                                                                 {/* <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}*/}{facility?.official_name || facility?.official_name || facility?.name} 
@@ -489,7 +489,7 @@ const Home = (props) => {
                                             ))
                                             }
 
-                                            {/* FeedBack Facilities View */}
+                                            {/* Feedback Facilities View */}
                                             {
                                                 facilityFeedBack && facilityFeedBack.length > 0  ? facilityFeedBack.map((facility, index) => (
                                                     <div key={index} className="grid grid-cols-8 gap-2 border-b py-4 hover:bg-gray-50 w-full">

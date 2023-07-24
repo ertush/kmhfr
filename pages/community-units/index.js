@@ -146,9 +146,7 @@ const Home = (props) => {
 
 						<div className='flex flex-wrap gap-2 text-sm md:text-base py-3 items-center justify-between '>
 							<div className='flex flex-col items-start justify-start gap-y-1'>
-								{/* <h1 className='text-4xl tracking-tight font-bold leading-tight flex items-center justify-start gap-x-2'>
-									{title}
-								</h1> */}
+								
 								<h5 className='text-lg font-medium text-gray-800'>
 									{drillDown &&
 										Object.keys(drillDown).length > 0 &&
@@ -182,7 +180,7 @@ const Home = (props) => {
 					</div>
 					
 				 </div>
-					<div className='w-full grid grid-cols-5 gap-0 place-content-start  border-gray-300'>
+					<div className='w-full grid grid-cols-5 gap-3 mb-12 place-content-start  border-gray-300'>
 							{/* Side Menu Filters*/}
 
 							<CommunityUnitSideMenu
@@ -193,195 +191,152 @@ const Home = (props) => {
 
 							{/* Main body */}
 							
-							<div className="w-full md:col-span-4 md:col-start-2 md:mx-auto md:px-4 col-span-5 md:h-auto md:mb-12">
-
-
-								{/* <div className='mx-4 float-right'> */}
+							<div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto border border-green-600">
+								 {/* Data Indicator section */}
+								 <div className='w-full flex justify-end border-b border-green-600'>
+                                        <h5 className="text-lg font-medium text-gray-800 pr-2">      
+                                            {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 text-base">{props?.data?.start_index ?? ''} - {props?.data?.end_index ?? ''} of {props?.data?.count ?? ''} </small>}
+                                        </h5>
+                                    </div>
+                                  
+								<div className='flex-grow w-full flex flex-col items-center gap-1 order-last md:order-none'>
+								
+									<div className="flex flex-col justify-center items-center w-full">
 									
-									<h5 className="text-lg font-medium text-gray-800 float-right mr-4 mb-2">
-										{props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
-									</h5>
-								{/* </div> */}
-								<div className='flex-grow w-full flex flex-col items-center gap-4 order-last md:order-none'>
-									{/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
 										{cus && cus.length > 0 ? (
 										cus.map((comm_unit, index) => (
 											<div
 												key={comm_unit.id}
-												className='px-1 md:px-3 grid grid-cols-4 gap-2 border-b py-4 hover:bg-gray-50 w-full'>
-												<div className='col-span-8 md:col-span-4 w-full flex flex-col gap-1 group items-center justify-start text-left'>
-													<h3 className='text-2xl w-full'>
+												className='grid grid-cols-8 gap-2 border-b border-green-600 py-4 hover:bg-yellow-50 w-full'>
+												<div className='px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left'>
+													<h3 className='text-2xl  font-semibold w-full'>
 														<a
 															href={'/community-units/' + comm_unit.id}
-															className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
-															<small className='text-gray-500'>
-																{index + props?.data?.start_index}.
-															</small>{' '}
+															className='cursor-pointer hover:text-green-600 group-focus:text-blue-800 active:text-blue-800 '>
+															
 															{comm_unit.official_name ||
 																comm_unit.official_name ||
 																comm_unit.name}
 														</a>
 													</h3>
-													{/* <p className="text-sm text-gray-600 w-full">{comm_unit.nearest_landmark || ' '}{' '} {comm_unit.location_desc || ' '}</p> */}
-													<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
-														<span className='text-lg text-black font-semibold'>
-															# {comm_unit.code ? comm_unit.code : 'NO_CODE' || ' '}
-														</span>
-														<span>{comm_unit.facility_name || ' '}</span>
-													</p>
-													<div className='text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full'>
-														<div className='flex flex-col items-start justify-start gap-0 leading-none'>
-															<label className='text-xs text-gray-500'>
-																County:
-															</label>
-															<span>
-																{comm_unit.facility_county ||
+
+													<div className="w-full grid grid-cols-4 gap-1">
+															<div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap mb-2">
+                                                                <label className="text-xs text-gray-500 ">Code:</label>
+                                                                <span className="whitespace-pre-line font-semibold"># {comm_unit.code ? comm_unit.code : 'NO_CODE' || ' '}</span>
+                                                            </div>
+                                                          
+                                                            <div className="flex flex-col col-span-2 items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Linked Facility:</label>
+                                                                <span className="whitespace-pre-line">{comm_unit.facility_name ?? ' '}</span>
+                                                            </div>
+													</div>
+
+													<div className="text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full">
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">County:</label>
+                                                                <span className="whitespace-pre-line">{comm_unit.facility_county ||
 																	comm_unit.county ||
 																	'N/A'}
-															</span>
-														</div>
-														<div className='flex flex-col items-start justify-start gap-0 leading-none'>
-															<label className='text-xs text-gray-500'>
-																Sub-county:
-															</label>
-															<span>
-																{comm_unit.facility_subcounty ||
+																	</span>
+                                                            </div>
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Sub-county:</label>
+                                                                <span className="whitespace-pre-line">{comm_unit.facility_subcounty ||
 																	comm_unit.sub_county ||
-																	'N/A'}
-															</span>
-														</div>
-														<div className='flex flex-col items-start justify-start gap-0 leading-none'>
-															<label className='text-xs text-gray-500'>Ward:</label>
-															<span>{comm_unit.facility_ward || 'N/A'}</span>
-														</div>
-														<div className='flex flex-col items-start justify-start gap-0 leading-none'>
-															<label className='text-xs text-gray-500'>
-																Constituency:
-															</label>
-															<span>
-																{comm_unit.constituency_name ||
+																	'N/A'}</span>
+                                                            </div>
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Ward:</label>
+                                                                <span className="whitespace-pre-line">{comm_unit.facility_ward || 'N/A'}</span>
+                                                            </div>
+                                                            <div className="flex flex-col items-start justify-start gap-0 leading-none whitespace-pre-wrap">
+                                                                <label className="text-xs text-gray-500">Constituency:</label>
+                                                                <span className="whitespace-pre-line">{comm_unit.constituency_name ||
 																	comm_unit.facility_constituency ||
-																	'N/A'}
-															</span>
-														</div>
-													</div>
+																	'N/A'}</span>
+                                                            </div>
+                                                    </div>
 												</div>
-												<div className='col-start-4 row-start-2 text-lg flex-col'>
-													<label className='text-xs text-gray-500'>
-														Status:
-													</label>
-													<div className='w-full'>
-														{comm_unit.status_name ? (
-															<span
-																className={
-																	'leading-none border whitespace-nowrap shadow-xs text-sm  py-1 px-2 text-black ' +
-																	(comm_unit.status_name
-																		.toLocaleLowerCase()
-																		.includes('non-')
-																		? ' bg-red-200 border-red-300/60'
-																		: comm_unit.status_name
-																				.toLocaleLowerCase()
-																				.includes('fully')
-																		? ' bg-green-200 border-green-300/60'
-																		: ' bg-yellow-200 border-yellow-300/60')
-																}>
-																
-																{comm_unit.status_name[0].toLocaleUpperCase()}
-																{comm_unit.status_name.slice(1).toLocaleLowerCase()}
-															</span>
-														) : (
-															''
-														)}
-														{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
-														{comm_unit.has_edits ? (
-															<span
-																className={
-																	'leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black'
-																}>
-																Has edits
-															</span>
-														) : (
-															''
-														)}
-													</div>
-												</div>
-												
-												<div className='col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
-													{/* <a href={'/community-unit/edit/' + comm_unit.id} className="text-blue-800 hover:underline active:underline focus:underline bg-blue-200 md:bg-transparent px-2 md:px-0  md:-none">
-													Edit
-												</a>
-												<a href="/" className="text-blue-800 hover:underline active:underline focus:underline">
-													<DotsHorizontalIcon className="h-5" />
-												</a> */}
-												</div>
-											</div>
-										))
-									) : (
-										<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium  border-yellow-300 p-3'>
-											<span className='text-base text-gray-700'>
-												No community units found
-											</span>
-											<Link href={props.path || '/'}>
-												<a className='text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
-													Refresh.
-												</a>
-											</Link>
-										</div>
-									)}
-									{cus && cus.length >= 30 && (
-										<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
-											<li className='text-base text-gray-600'>
-				
-												<a
-													href={
-														(() => 
-														props.path.includes('?page') ?
-														props.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
-														:
-														props.path.includes('?q') && props.path.includes('&page') ?
-														props.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
-														:
-														props.path.includes('?q') ?
-														`${props.path}&page=${props?.data?.current_page}`                                    
-														:
-														`${props.path}?page=${props?.data?.current_page}`
-													)()
-													}
-													className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
-													{props?.data?.current_page}
-												</a>
-											</li>
-											{props?.data?.near_pages &&
-												props?.data?.near_pages.map((page) => (
-													<li key={page} className='text-base text-gray-600'>
 
-														<a
-															href={
-																(() => 
-																	props.path.includes('?page') ?
-																	props.path.replace(/\?page=\d+/,`?page=${page}`)
-																	:
-																	props.path.includes('?q') && props.path.includes('&page') ?
-																	props.path.replace(/&page=\d+/, `&page=${page}`)
-																	:
-																	props.path.includes('?q') ?
-																	`${props.path}&page=${page}`
-																	:
-																	`${props.path}?page=${page}`
-						
-																)()
-															}
-															className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
-															{page}
-														</a>
-													</li>
-												))}
-											<li className='text-sm text-gray-400 flex'>
-												<DotsHorizontalIcon className='h-3' />
-											</li>
-											
-										</ul>
-									)}
+													<div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
+                                                        {comm_unit.status_name && <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 font-semibold text-gray-900"}>{comm_unit.status_name}</span>}
+                                                        {comm_unit.has_edits && <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Has edits</span>}
+														{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
+                                                    </div>
+									
+												</div>
+								
+										
+										))
+										) : (
+											<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium  border-yellow-300 p-3'>
+												<span className='text-base text-gray-700'>
+													No community units found
+												</span>
+												<Link href={props.path || '/'}>
+													<a className='text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
+														Refresh.
+													</a>
+												</Link>
+											</div>
+										)}
+										{cus && cus.length >= 30 && (
+											<ul className='list-none flex p-2 flex-row gap-2 w-full items-center my-2'>
+												<li className='text-base text-gray-600'>
+					
+													<a
+														href={
+															(() => 
+															props.path.includes('?page') ?
+															props.path.replace(/\?page=\d+/,`?page=${props?.data?.current_page}`)
+															:
+															props.path.includes('?q') && props.path.includes('&page') ?
+															props.path.replace(/&page=\d+/, `&page=${props?.data?.current_page}`)
+															:
+															props.path.includes('?q') ?
+															`${props.path}&page=${props?.data?.current_page}`                                    
+															:
+															`${props.path}?page=${props?.data?.current_page}`
+														)()
+														}
+														className='text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline'>
+														{props?.data?.current_page}
+													</a>
+												</li>
+												{props?.data?.near_pages &&
+													props?.data?.near_pages.map((page) => (
+														<li key={page} className='text-base text-gray-600'>
+
+															<a
+																href={
+																	(() => 
+																		props.path.includes('?page') ?
+																		props.path.replace(/\?page=\d+/,`?page=${page}`)
+																		:
+																		props.path.includes('?q') && props.path.includes('&page') ?
+																		props.path.replace(/&page=\d+/, `&page=${page}`)
+																		:
+																		props.path.includes('?q') ?
+																		`${props.path}&page=${page}`
+																		:
+																		`${props.path}?page=${page}`
+							
+																	)()
+																}
+																className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
+																{page}
+															</a>
+														</li>
+													))}
+												<li className='text-sm text-gray-400 flex'>
+													<DotsHorizontalIcon className='h-3' />
+												</li>
+												
+											</ul>
+										)}
+									</div>
+
 								</div>
 							</div>
 					</div>

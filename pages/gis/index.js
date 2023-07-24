@@ -229,7 +229,7 @@ if(filters){
     () => import("../../components/GISMap"), // replace '@components/map' with your component's location
     {
       loading: () => (
-        <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
+        <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">
           Loading&hellip;
         </div>
       ),
@@ -251,9 +251,9 @@ if(filters){
   ]);
 
   return (
-    <div className="">
+    <>
       <Head>
-        <title>KMHFL - GIS Explorer</title>
+        <title>KMHFR - GIS Explorer</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainLayout isLoading={false} isFullWidth={true}>
@@ -261,7 +261,7 @@ if(filters){
           {/* Check for errors and show them */}
           {props?.error ? (
             <div className="w-full flex flex-col gap-5 px-1 md:px-4 p-4 my-4 mx-auto bg-gray-100 min-h-screen items-center">
-              <div className="flex flex-col items-center justify-center bg-red-100 rounded border border-red-300 shadow w-full max-w-screen-sm">
+              <div className="flex flex-col items-center justify-center bg-red-100  border border-red-300 shadow w-full max-w-screen-sm">
                 <h1 className="text-red-700 text-3xl flex items-center gap-x-2">
                   <XCircleIcon className="text-red-500 h-4 w-4 text-5xl" />
                   <span>Error</span>
@@ -288,7 +288,7 @@ if(filters){
                 {/* Aside with filters */}
                 <div className="w-full grid grid-cols-6 gap-5 px-1 md:px-4 p-4 mx-auto bg-gray-100 min-h-screen">
                   {/* Actual Aside */}
-                  <aside className="col-span-6 md:col-span-2 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start bg-white rounded-lg shadow">
+                  <aside className="col-span-6 md:col-span-2 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start bg-white -lg shadow">
                     {/* Tabs */}
                     <Tabs.Root
                       orientation="horizontal"
@@ -336,7 +336,7 @@ if(filters){
                       >
                         <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                           {/* Result count */}
-                          <div className="bg-white w-full p-3 rounded">
+                          <div className="bg-white w-full p-3 ">
                             {props?.data && props?.data?.results && (
                               <h4 className="text-base md:text-xl tracking-tight font-bold leading-tight">
                                 {props?.data?.results?.length}{" "}
@@ -351,7 +351,7 @@ if(filters){
 
                           {/* Filters */}
                           <details
-                            className="rounded bg-transparent py-1 flex flex-col w-full md:stickyz"
+                            className=" bg-transparent py-1 flex flex-col w-full md:stickyz"
                             open
                           >
                             <summary className="flex cursor-pointer w-full bg-white p-0">
@@ -360,7 +360,7 @@ if(filters){
 
                             <div className="flex flex-row items-center justify-start w-full gap-2">
                               {filters && filters?.error ? (
-                                <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                   <p>No filters.</p>
                                 </div>
                               ) : (
@@ -557,7 +557,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50"
+                                                    className="w-full p-1  bg-gray-50"
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -588,7 +588,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                    className="w-full p-1  bg-gray-50 col-start-1"
                                                     options={serviceOptions}
                                                     placeholder={
                                                       ft
@@ -736,7 +736,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50"
+                                                    className="w-full p-1  bg-gray-50"
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -832,7 +832,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                    className="w-full p-1  bg-gray-50 col-start-1"
                                                     options={subCountyOptions}
                                                     placeholder={
                                                       ft
@@ -855,7 +855,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                    className="w-full p-1  bg-gray-50 col-start-1"
                                                     options={wardOptions}
                                                     placeholder={
                                                       ft
@@ -912,7 +912,7 @@ if(filters){
                                                       drillDown[ft] || ""
                                                     }
                                                     id={ft}
-                                                    className="w-full p-1 rounded bg-gray-50"
+                                                    className="w-full p-1  bg-gray-50"
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1172,7 +1172,7 @@ if(filters){
                                           },
                                         });
                                       }}
-                                      className="bg-black border-2 border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg rounded w-full whitespace-nowrap text-center uppercase"
+                                      className="bg-black border-2 border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg  w-full whitespace-nowrap text-center uppercase"
                                     >
                                       Apply Filters
                                     </button>
@@ -1201,7 +1201,7 @@ if(filters){
                       >
                         <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                           {/* Result count */}
-                          <div className="bg-white w-full p-3 rounded">
+                          <div className="bg-white w-full p-3 ">
                             {props?.data && props?.data?.results && (
                               <h4 className="text-base md:text-xl tracking-tight font-bold leading-tight">
                                 {props?.data?.results?.length}{" "}
@@ -1216,7 +1216,7 @@ if(filters){
 
                           {/* Filters */}
                           <details
-                            className="rounded bg-transparent py-1 flex flex-col w-full md:stickyz"
+                            className=" bg-transparent py-1 flex flex-col w-full md:stickyz"
                             open
                           >
                             <summary className="flex cursor-pointer w-full bg-white p-0">
@@ -1225,7 +1225,7 @@ if(filters){
 
                             <div className="flex flex-row items-center justify-start w-full gap-2">
                               {filters && filters?.error ? (
-                                <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                   <p>No filters.</p>
                                 </div>
                               ) : (
@@ -1422,7 +1422,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50"
+                                                    className="w-full p-1  bg-gray-50"
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1453,7 +1453,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                    className="w-full p-1  bg-gray-50 col-start-1"
                                                     options={serviceOptions}
                                                     placeholder={
                                                       ft
@@ -1601,7 +1601,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50"
+                                                    className="w-full p-1  bg-gray-50"
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1632,7 +1632,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                    className="w-full p-1  bg-gray-50 col-start-1"
                                                     options={subCountyOptions}
                                                     placeholder={
                                                       ft
@@ -1749,7 +1749,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                    className="w-full p-1  bg-gray-50 col-start-1"
                                                     options={
                                                       constituencyOptions
                                                     }
@@ -1774,7 +1774,7 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                    className="w-full p-1  bg-gray-50 col-start-1"
                                                     options={wardOptions}
                                                     placeholder={
                                                       ft
@@ -1832,7 +1832,7 @@ if(filters){
                                                       drillDown[ft] || ""
                                                     }
                                                     id={ft}
-                                                    className="w-full p-1 rounded bg-gray-50"
+                                                    className="w-full p-1  bg-gray-50"
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -2092,7 +2092,7 @@ if(filters){
                                           },
                                         });
                                       }}
-                                      className="bg-black border-2 border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg rounded w-full whitespace-nowrap text-center uppercase"
+                                      className="bg-black border-2 border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg  w-full whitespace-nowrap text-center uppercase"
                                     >
                                       Apply Filters
                                     </button>
@@ -2118,7 +2118,7 @@ if(filters){
 
                   {/* Map the results */}
                   <div
-                    className="col-span-6 md:col-span-4 lg:col-span-4 xl:col-span-5 flex flex-col gap-4 items-center justify-center bg-green-100 rounded-lg shadow-lg border border-gray-300"
+                    className="col-span-6 md:col-span-4 lg:col-span-4 xl:col-span-5 flex flex-col gap-4 items-center justify-center bg-green-100 -lg shadow-lg border border-gray-300"
                     style={{ minHeight: "650px" }}
                   >
                     {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
@@ -2131,7 +2131,7 @@ if(filters){
         </>
 
         {/* Floating div at bottom right of page */}
-        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
           <h5 className="text-sm font-bold">
             <span className="text-gray-600 uppercase">Limited results</span>
           </h5>
@@ -2142,7 +2142,7 @@ if(filters){
         </div> */}
       
       </MainLayout>
-    </div>
+    </>
   );
 };
 

@@ -214,14 +214,53 @@ function EditListWithCount(
             >
 
                 {/* Item List Dropdown */}
-                <div className='w-full flex flex-col items-start justify-start gap-3 mb-3'>
+                <div className='w-full flex flex-col border p-3 border-green-600 items-start justify-start gap-3 mb-3'>
+                    {/* category */}
+
                     <label
                         htmlFor='available_items_with_count'
-                        className='capitalize text-md  leading-tight tracking-tight'>
-                        Available {itemsCategoryName}
+                        className='capitalize text-md font-semibold leading-tight tracking-tight'>
+                        Category {itemsCategoryName}
                     </label>
 
-                    <div style={{ maxWidth: '95%' }} className="flex items-start gap-2 w-full h-auto">
+                    <div className="flex items-start gap-2 w-full h-auto">
+
+                        <Select
+
+                            options={itemOptions}
+                            formatGroupLabel={formatGroupLabel}
+                            onChange={(e) => {
+                                setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
+                            }
+                            }
+                            name="category_items_with_count"
+                            styles={{
+                                control: (baseStyles) => ({
+                                  ...baseStyles,
+                                  backgroundColor: 'transparent',
+                                  outLine: 'none',
+                                  border: 'none',
+                                  outLine: 'none',
+                                  textColor: 'transparent',
+                                  padding: 0,
+                                  height: '4px',
+                                  width: '100%'
+                                }),
+                
+                              }}
+                              
+                              className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                        />
+                        </div>
+                   
+                   
+                    <label
+                        htmlFor='available_items_with_count'
+                        className='capitalize text-md font-semibold leading-tight tracking-tight'>
+                         {itemsCategoryName}
+                    </label>
+
+                    <div className="flex items-start gap-2 w-full h-auto">
 
                         <Select
 
@@ -241,11 +280,12 @@ function EditListWithCount(
                                   outLine: 'none',
                                   textColor: 'transparent',
                                   padding: 0,
-                                  height: '4px'
+                                  height: '4px',
+                                  width: '100%'
                                 }),
                 
                               }}
-                              className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                         />
                         <button className="bg-green-700  p-2 flex items-center justify-evenly gap-2"
                             onClick={e => {
@@ -261,17 +301,22 @@ function EditListWithCount(
                             <p className='text-white font-semibold'>Add</p>
                             <PlusIcon className='w-4 h-4 text-white' />
                         </button>
+
+
                     </div>
                 </div>
 
 
                 {/* Item Selected Table */}
-                <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-                    Assigned {itemsCategoryName}
-                </span>{" "}
-                <Table className="md:px-4">
+               
+                <Table className="md:px-4 border border-green-600">
                     <TableBody>
                         <TableRow>
+                            <span className="text-md w-full flex flex-wrap m-3 font-bold justify-between items-center leading-tight tracking-tight">
+                            Assigned {itemsCategoryName}
+                            </span>{" "}
+                        </TableRow>
+                        <TableRow className="border-b border-green-600">
                             <TableCell>
                                 <p className='capitalize text-base font-semibold'>{itemsCategoryName}</p>
                             </TableCell>
@@ -288,7 +333,6 @@ function EditListWithCount(
                                 selectedItems?.map(({ name, id, meta_id }, __id) => (
                                     <TableRow
                                         key={id}
-
                                     >
                                         <TableCell>{name}</TableCell>
                                         <TableCell>
@@ -298,7 +342,7 @@ function EditListWithCount(
                                                 min={1}
                                                 name={id}
                                                 validate={validateCount}
-                                                className="flex-none w-24 bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                                className="flex-none w-24 bg-green-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
                                        {errors[id] && <div><span className='text-red-600 mt-1'>{errors[id]}</span></div>}
                                         </TableCell>
@@ -332,7 +376,7 @@ function EditListWithCount(
                                 item !== null &&
                                 <TableRow>
                                     <TableCell>
-                                        <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                        <li className="w-full bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                             <p>
                                                 {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
                                             </p>

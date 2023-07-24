@@ -152,13 +152,14 @@ function EditListItem({
 
       >
         {/* Item List Dropdown */}
-        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+        <div className='w-full flex flex-col items-start border border-green-600 p-3 justify-start gap-1 mb-3'>
+          {/* Iten Category Dropdown */}
           <label
             htmlFor='item_drop_down_edit_list'
-            className='capitalize text-md  leading-tight tracking-tight'>
-            Available {itemsCategoryName}
+            className='capitalize text-md font-semibold leading-tight tracking-tight'>
+            Category {itemsCategoryName}
           </label>
-          <div className="flex items-start gap-2 md:w-5/6 w-full h-auto">
+          <div className="flex items-start gap-2  w-full h-auto">
             <Select
               options={itemOptions}
               formatGroupLabel={formatGroupLabel}
@@ -171,11 +172,46 @@ function EditListItem({
                   outLine: 'none',
                   textColor: 'transparent',
                   padding: 0,
-                  height: '4px'
+                  height: '4px',
+                  width:'100%'
                 }),
 
               }}
-              className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+              className='flex w-full placeholder-gray-500 border border-green-600 outline-none'
+              onChange={(e) => {
+                setCurrentItem({ id: e?.value, name: e?.label })
+              }
+              }
+              name="category_item_drop_down_edit_list"
+             
+            />
+            </div>
+          
+          {/* Item Dropdown */}
+          <label
+            htmlFor='item_drop_down_edit_list'
+            className='capitalize text-md font-semibold leading-tight tracking-tight'>
+             {itemsCategoryName}
+          </label>
+          <div className="flex items-start gap-2  w-full h-auto">
+            <Select
+              options={itemOptions}
+              formatGroupLabel={formatGroupLabel}
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  backgroundColor: 'transparent',
+                  outLine: 'none',
+                  border: 'none',
+                  outLine: 'none',
+                  textColor: 'transparent',
+                  padding: 0,
+                  height: '4px',
+                  width:'100%'
+                }),
+
+              }}
+              className='flex w-full placeholder-gray-500 border border-green-600 outline-none'
               onChange={(e) => {
                 setCurrentItem({ id: e?.value, name: e?.label })
               }
@@ -202,12 +238,15 @@ function EditListItem({
 
 
         {/* Item Selected Table */}
-        <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-          Assigned {itemsCategoryName}
-        </span>{" "}
-        <Table className="border-b border-green-600" >
-          <TableBody>
+       
+        <Table className="border border-green-600 p-3">
+          <TableBody className='px-3'>
             <TableRow>
+            <span className="text-md w-full flex flex-wrap m-3 font-bold justify-between items-center leading-tight tracking-tight">
+              Assigned {itemsCategoryName}
+            </span>{" "}
+            </TableRow>
+            <TableRow className="border-b border-green-600">
               <TableCell>
                 <p className='text-base font-semibold'>{itemsCategoryName}</p>
               </TableCell>
@@ -223,7 +262,7 @@ function EditListItem({
                   <TableRow
                     key={id}
                   >
-                    <TableCell>{name}</TableCell>
+                    <TableCell className='px-3'>{name}</TableCell>
 
                     <TableCell>
                       <button
@@ -255,7 +294,7 @@ function EditListItem({
               ) : (
                 item !== null &&
                 <>
-                  <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                  <li className="w-full m-3 bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                     <p>
                       {item?.name || item?.official_name} has not listed
                       the {'item'} it offers. Add some below.

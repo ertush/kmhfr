@@ -89,13 +89,13 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                     onClick={async ev => {
                         ev.preventDefault();
                       
-                        if(contacts){
+                        if(!contacts.includes(undefined)){
                             const _contacts = editContacts
                             _contacts.splice(index, 1);
                             delete _contacts[index]
                             setFacilityContacts(_contacts);
 
-                            console.log(editContacts, _contacts)
+                            console.log(editContacts, contacts)
 
                             try{
                                 if(contactTypeRef?.current) {
@@ -109,9 +109,10 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                                 console.error(e.message)
                             }
                         }else{
-                            contactTypes.splice(index, 1);
-                            delete contactTypes[index]
-                            setFacilityContacts(contactTypes);
+                            console.log("[ >>>> Deleting]: Value")
+                            contacts.splice(index, 1);
+                            // delete contactTypes[index]
+                            setFacilityContacts(contacts);
                         }
                      
                       

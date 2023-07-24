@@ -33,7 +33,7 @@ function FacilityUpgradeModal({ subject, facilityId }) {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             width: 600,
-            bgcolor: 'background.paper',
+            bgcolor: 'transparent',
             borderRadius: '6px',
             borderLeft: 'solid 10px #818cf8',
             boxShadow: 24,
@@ -41,7 +41,7 @@ function FacilityUpgradeModal({ subject, facilityId }) {
           }
         }>
           <span className="flex gap-2 items-center">
-            <InformationCircleIcon className="w-24 h-24 text-indigo-400" />
+            <InformationCircleIcon className="w-24 h-24 text-green-600" />
             <Typography id="transition-modal-title" variant="h6" >
               Would you like to upgrade/downgrade or save edited facility {subject}?
             </Typography>
@@ -53,8 +53,8 @@ function FacilityUpgradeModal({ subject, facilityId }) {
 
             <form className='my-3 flex-col gap-y-2'>
               <div className='flex justify-between gap-4 mt-4'>
-                <button className="bg-green-400 text-white font-semibold rounded p-2 text-center" type="button" onClick={() => router.push(`/facilities/upgrade/${facilityId}`)}>Upgrade Facility</button>
-                <button className="bg-indigo-400 text-white font-semibold rounded p-2 text-center" type="button" onClick={handleClose}>Save Facility {subject}{'(s)'}</button>
+                <button className="bg-green-600 text-white font-semibold rounded p-2 text-center" type="button" onClick={() => router.push(`/facilities/upgrade/${facilityId}`)}>Upgrade Facility</button>
+                <button className="bg-black text-white font-semibold rounded p-2 text-center" type="button" onClick={handleClose}>Save Facility {subject}{'(s)'}</button>
               </div>
 
             </form>

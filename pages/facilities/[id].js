@@ -110,7 +110,7 @@ const Facility = (props) => {
   return (
     <>
       <Head>
-        <title>KMHFL - {facility?.official_name ?? ""}</title>
+        <title>KMHFR - {facility?.official_name ?? ""}</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="/assets/css/leaflet.css" />
       </Head>
@@ -361,9 +361,9 @@ const Facility = (props) => {
             {/* Header Bunner  */}
             <div
               className={
-                "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border border-green-600 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                (facility?.is_approved ? "border-green-600" : "border-red-600")
-              }
+                `col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border ${facility?.is_approved ? "border-green-600" : "border-yellow-600"} drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                ${facility?.is_approved ? "border-green-600" : "border-yellow-600"}
+              `}
             >
               <div className="col-span-6 md:col-span-3">
                 <h1 className="text-4xl tracking-tight font-bold leading-tight">
@@ -523,9 +523,9 @@ const Facility = (props) => {
                   </button>
                   } */}
                   {
-                      !facility?.closed &&
-                      userCtx?.groups[0]?.id == 2 ||
-                      userCtx?.groups[0]?.id == 1 &&
+                      ((!facility?.closed &&
+                      userCtx?.groups[0]?.id == 2) ||
+                      userCtx?.groups[0]?.id == 1 ) &&
                       // hasPermission(/^facilities.change_facility$/, userPermissions) &&
                           <button
                           onClick={() => router.push(`edit/${facility?.id}`)}
@@ -540,7 +540,7 @@ const Facility = (props) => {
                     // hasPermission(/^facilities.change_facilityregulationstatus$/, userPermissions) &&
                     // hasPermission(/^facilities.view_facility$/, userPermissions) &&
                     // !qf.includes('failed_validation') &&
-                    userCtx?.groups[0]?.id == 3 &&
+                    (!facility?.closed && userCtx?.groups[0]?.id == 3) &&
 
                   <button
                     onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
@@ -564,8 +564,8 @@ const Facility = (props) => {
                   </button>
                   }
                   {
-                    !qf.includes('new_pending_validation') &&
-                    (userCtx?.groups[0]?.id == 1 ||
+                    ((!qf.includes('new_pending_validation') &&
+                    userCtx?.groups[0]?.id == 1 && !facility?.closed) ||
                     userCtx?.groups[0]?.id == 2) && 
                   <button
                     onClick={() => setIsClosingFacility(true)}

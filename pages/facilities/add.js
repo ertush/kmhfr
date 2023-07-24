@@ -538,7 +538,7 @@ function AddFacility(props) {
 	return (
 		<>
 			<Head>
-				<title>KMHFL - Add Facility</title>
+				<title>KMHFR - Add Facility</title>
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
@@ -2295,7 +2295,9 @@ function AddFacility(props) {
 																			setOfficerContactDetails([
 																				...officerContactDetails,
 																				(() => (
-																					<FacilityContactsContext.Provider value={officerContactDetails} key={(officerContactDetails.length + 1) - 1}>
+																					<FacilityContactsContext.Provider 
+																					value={officerContactDetails} 
+																					key={(officerContactDetails.length + 1) - 1}>
 																						<OfficerContactDetails
 																							contactTypeOptions={contactTypeOptions}
 																							setFacilityContacts={setOfficerContactDetails}
@@ -2552,7 +2554,7 @@ function AddFacility(props) {
 											return (
 												<>
 													<h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">Services</h4>
-													<div className='flex flex-col w-full items-start justify-staFacilityDeptRegulationFactoryrt gap-3 mt-6'>
+													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
 														{/* Edit list Container */}
 														<div className='flex items-center w-full h-auto min-h-[300px]'>
