@@ -240,13 +240,13 @@ function EditListItem({
         {/* Item Selected Table */}
        
         <Table className="border border-green-600 p-3">
-          <TableBody className='px-3'>
+          <TableBody className='px-3 border border-green-600'>
             <TableRow>
             <span className="text-md w-full flex flex-wrap m-3 font-bold justify-between items-center leading-tight tracking-tight">
               Assigned {itemsCategoryName}
             </span>{" "}
             </TableRow>
-            <TableRow className="border-b border-green-600">
+            <TableRow className="border-b">
               <TableCell>
                 <p className='text-base font-semibold'>{itemsCategoryName}</p>
               </TableCell>
@@ -261,6 +261,7 @@ function EditListItem({
                 selectedItems?.map(({ name, id, item_id }, __id) => (
                   <TableRow
                     key={id}
+                    className='border-t border-green-600'
                   >
                     <TableCell className='px-3'>{name}</TableCell>
 
@@ -320,7 +321,7 @@ function EditListItem({
         {
           item === null &&
 
-          <div className='flex justify-between items-center w-full mt-4' style={{ maxWidth: '90%' }}>
+          <div className='flex justify-between items-center w-full mt-4' >
             									<button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
 																<span className='text-medium font-semibold text-green-900 '>
