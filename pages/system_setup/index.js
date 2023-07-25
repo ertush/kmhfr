@@ -564,7 +564,7 @@ const system_setup = (props) => {
     const ChangeLog = () => {
         return(
             <>
-            <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'
+            <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black  px-2'
             onClick={() => {
                 setViewLog(!viewLog);
                 fetchChangeLogs()
@@ -762,8 +762,8 @@ console.log(editData, editMode, editID);
                                       Are you sure you want to delete<b>{editData.name}</b> ?
                                 </span>
                                <div className='flex justify-start gap-4 mt-4'>
-                                    <button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="button" onClick={()=>{handleDelete(addBtnLabel);setOpen(false)}}>Yes</button>
-                                    <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" 
+                                    <button className="bg-green-500 text-white font-semibold  p-2 text-center" type="button" onClick={()=>{handleDelete(addBtnLabel);setOpen(false)}}>Yes</button>
+                                    <button className="bg-red-500 text-white font-semibold  p-2 text-center" 
                                     onClick={()=> {setEditMode(false);setEditID(null);setIsAddForm(false);setEditData([]);setOpen(false)}} 
                                     >No</button>
                                 </div>     
@@ -776,33 +776,29 @@ console.log(editData, editMode, editID);
                             <span className="text-gray-500" >System setup</span>   
                     </div>
                     {/* Header Bunner */}
-                    <div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                    <div className={"col-span-5 flex justify-between w-full bg-transparent drop-shadow border border-green-600 text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                         <h2 className='text-xl font-bold text-black capitalize'>{title}</h2>
                         {
                         !isAddForm && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' &&
-                        <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setTitle(`Add ${addBtnLabel}`); setIsAddForm(true)}}>
+                        <button className=' bg-green-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setTitle(`Add ${addBtnLabel}`); setIsAddForm(true)}}>
                         {`Add ${addBtnLabel}`}
                         <PlusIcon className='text-white ml-2 h-5 w-5'/>
                         </button>
                         }
                         {isAddForm && editMode && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' && addBtnLabel !== 'county' && addBtnLabel !== 'constituency' &&
-                        <button className='rounded bg-red-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setOpen(true)}}>
+                        <button className=' bg-red-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setOpen(true)}}>
                         {`Delete `}
                         </button>
                         }
                     </div> 
 
                     {/* Side Menu */}
-                    <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
+                    <div className='col-span-1 w-full col-start-1 h-auto border border-green-600'>
                                 <List
-                                    sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                                    sx={{ width: '100%', bgcolor: 'transparent', flexGrow:1 }}
                                     component="div"
                                     aria-labelledby="nested-list-subheader"
-                                    subheader={
-                                        <ListSubheader component="div" id="nested-list-subheader">
-                                            Resources
-                                        </ListSubheader>
-                                    }
+                                    
                                     >
                                     {/* Administrative Units */}
                                     <ListItemButton onClick={handleAdminUnitsClick}>
@@ -1040,10 +1036,10 @@ console.log(editData, editMode, editID);
                             <>
                             {/* Table Section */}
                             <div className='col-span-4 w-full h-auto'>
-                            <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow:'0', flexDirection:'column', alignContent:'start', justifyContent:'start', backgroundColor:'#f9fafb', borderRadius:'10px'}}>
+                            <Paper className="border border-green-600 border-radius-none" sx={{ width: '100%', overflow: 'hidden', boxShadow:'0', flexDirection:'column', alignContent:'start', justifyContent:'start', backgroundColor:'transparent'}}>
                                 <form className="flex items-center space-x-3 m-3" onSubmit={e => {e.preventDefault()}}>
                                     <TextField id="search_table_data" label="Search anything" variant="standard" />
-                                    <button type= "submit" className='bg-indigo-500 rounded p-2 text-base font-semibold text-white'>Export</button>
+                                    <button type= "submit" className='bg-green-500  p-2 text-base font-semibold text-white'>Export</button>
                                 </form>
                                 <TableContainer sx={{ maxHeight: 440 }}>
                                     <Table stickyHeader aria-label="sticky table">
@@ -1073,7 +1069,7 @@ console.log(editData, editMode, editID);
                                                         {
                                                         column.id === 'action' ?
                                                             
-                                                                <button className='bg-indigo-500 rounded p-2 text-white font-semibold' onClick={() => {setEditID(row.id); setEditMode(true); setIsAddForm(true);}}>{
+                                                                <button className='bg-green-500  p-2 text-white font-semibold' onClick={() => {setEditID(row.id); setEditMode(true); setIsAddForm(true);}}>{
                                                                     resourceCategory === "HealthInfrastructure" || resourceCategory === "HR" ?
                                                                     'Edit' : 'View'
                                                                 }</button>
@@ -1137,7 +1133,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}`}
                                                                             name='name'
                                                                             defaultValue={editMode ? editData[0]?.name : ''}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                        
                                                                     </div>
@@ -1159,14 +1155,14 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}`}
                                                                             name='county_code'
                                                                             defaultValue={editMode ? editData[0]?.code : ''}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                        
                                                                     </div>}
 
                                                                     <div className='flex items-center space-x-3 mt-4'>
-                                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                            <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                         </div>
                                                             </form>
                                                            &nbsp;
@@ -1298,7 +1294,7 @@ console.log(editData, editMode, editID);
                                                                                 id={`add_${addBtnLabel}_constituency_field`}
                                                                                 name='name'
                                                                                 defaultValue={editData[0]?.name}
-                                                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -1320,7 +1316,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}`}
                                                                             name='code'
                                                                             defaultValue={editData[0]?.code}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                        
                                                                     </div>}
@@ -1345,15 +1341,15 @@ console.log(editData, editMode, editID);
                                                                             name='county'
                                                                             key={editData[0]?.county}
                                                                             defaultValue={{value:editData[0]?.county, label:editData[0]?.county_name}}
-                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
 
                                         
                                                                     </div>
 
                                                                     <div className='flex items-center space-x-3 mt-4'>
-                                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                            <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                         </div>
                                                                 </form>
                                                              &nbsp;
@@ -1433,7 +1429,7 @@ console.log(editData, editMode, editID);
                                                                                 id={`add_${addBtnLabel}_field`}
                                                                                 name='name'
                                                                                 defaultValue={editData?.name}
-                                                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -1458,7 +1454,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_county_field`}
                                                                             name='county'
                                                                             defaultValue={{value:editData?.county?.id, label:editData?.county_name}}
-                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
                                                                     </div>
                                                                     {sbcty_constituency.length > 0 && <>
@@ -1483,7 +1479,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_sub_county_field`}
                                                                             name='sub_county'
                                                                             defaultValue={{value:editData?.sub_county, label:editData?.sub_county_name}}
-                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
                                                                     </div>
 
@@ -1507,7 +1503,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_constituency_field`}
                                                                             name='constituency'
                                                                             defaultValue={{value:editData?.constituency, label:editData?.constituency_name}}
-                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
 
                                                                        
@@ -1518,8 +1514,8 @@ console.log(editData, editMode, editID);
                                                                     {editMode && <ChangeLog/>}
 
                                                                     <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                     </div>
 
                                                                 </form>
@@ -1545,14 +1541,14 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_town_field`}
                                                                             name="name"
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                       
                                                                     </div>
 
                                                                     <div className='flex items-center space-x-3 mt-4'>
-                                                                            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                            <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                            <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                     </div>
                                                                 </form>
                                                                 &nbsp;
@@ -1583,7 +1579,7 @@ console.log(editData, editMode, editID);
                                                                                         id={`add_${addBtnLabel}_constituency_field`}
                                                                                         name='name'
                                                                                         defaultValue={editData.name}
-                                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                     />
                                                                             </div>
 
@@ -1606,7 +1602,7 @@ console.log(editData, editMode, editID);
                                                                                     name='parent'
                                                                                     key={editData.parent}
                                                                                     defaultValue={{value: editData?.parent, label: selectOptionss?.find(so=> so.value === editData?.parent)?.label}}
-                                                                                    className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                                    className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                                 />
 
                                                                             </div>
@@ -1630,7 +1626,7 @@ console.log(editData, editMode, editID);
                                                                                         id={`add_${addBtnLabel}_constituency_field`}
                                                                                         name='abbreviation'
                                                                                         defaultValue={editData?.abbreviation}
-                                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                     />
                                                                             </div>
 
@@ -1653,14 +1649,14 @@ console.log(editData, editMode, editID);
                                                                                     id={`add_${addBtnLabel}_constituency_field`}
                                                                                     name='description'
                                                                                     defaultValue={editData?.description}
-                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                 />
                                                                                
                                                                             </div>
 
                                                                             <div className='flex items-center space-x-3 mt-4'>
-                                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                                    <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                             </div>
                                                                     </form>
                                                                     &nbsp;
@@ -1691,7 +1687,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -1714,13 +1710,13 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                 </div>
 
                                                                     </form>
@@ -1814,7 +1810,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_option_group`}
                                                                             name='name'
                                                                             defaultValue={editData?.name}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                      </div>
                                                                      {editMode && (
@@ -1856,7 +1852,7 @@ console.log(editData, editMode, editID);
                                                                                 id={index}
                                                                                 name='option_type'
                                                                                 defaultValue={option.option_type}
-                                                                                className='flex-none w-full bg-gray-50 rounded flex-grow placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                                className='flex-none w-full bg-gray-50  flex-grow placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                             >
                                                                                     <option value='BOOLEAN'>BOOLEAN</option>
                                                                                     <option value='INTEGER'>INTEGER</option>
@@ -1871,7 +1867,7 @@ console.log(editData, editMode, editID);
                                                                                     id={index}
                                                                                     name='display_text'
                                                                                     defaultValue={option.display_text}
-                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                 />
 
                                                                             {/* Option Value */}
@@ -1883,7 +1879,7 @@ console.log(editData, editMode, editID);
                                                                                     id={index}
                                                                                     name='value'
                                                                                     defaultValue={option.value}
-                                                                                    className='flex-none w-full bg-gray-50 col-span-3 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-gray-50 col-span-3  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                 />
                                                                             </div>
                                                                         
@@ -1892,7 +1888,7 @@ console.log(editData, editMode, editID);
                                                                 }): (<><p>No Options Assigned to Option Group </p></>)}
                                                                  
                                                                     <div className='col-span-3 flex items-center justify-end'>
-                                                                        <button className='rounded p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
+                                                                        <button className=' p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
                                                                         onClick={handleAddOptionGroupClick}
                                                                         >Add <PlusIcon className='w-5 h-5 text-white'/></button>
                                                                     </div>
@@ -1902,8 +1898,8 @@ console.log(editData, editMode, editID);
                                                                 </div>
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                  </div>
                                                                 </form>
                                                                 &nbsp;
@@ -1952,7 +1948,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_field`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -1975,7 +1971,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_field`}
                                                                             name='abbreviation'
                                                                             defaultValue={editData.abbreviation}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -1999,7 +1995,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_category_field`}
                                                                         name='category'
                                                                         defaultValue={{value:editData.category, label:editData.category_name}}
-                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
 
@@ -2023,7 +2019,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_sub_county_field`}
                                                                         name='group'
                                                                         defaultValue={{value:editData.group, label:(selectOptionss[0])?.find(i=> i.value ==editData.group)?.label}}
-                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
 
@@ -2046,7 +2042,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2090,8 +2086,8 @@ console.log(editData, editMode, editID);
                                                                     )}
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                 </div>
 
                                                                 </form>
@@ -2123,7 +2119,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                                     </div>                                                            
 
@@ -2146,7 +2142,7 @@ console.log(editData, editMode, editID);
                                                                         name='category'
                                                                         key={editData.category} 
                                                                         defaultValue={{value: editData.category, label: editData.category_name}}
-                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
 
@@ -2186,15 +2182,15 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
                                                                
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                 </div>
 
                                                                 </form>
@@ -2224,7 +2220,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2247,13 +2243,13 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                 </div>
 
                                                                 </form>
@@ -2284,7 +2280,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                                     </div>                                                            
 
@@ -2308,7 +2304,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_category_field`}
                                                                         name='category'
                                                                         defaultValue={{value: editData.category, label: editData.category_name}} 
-                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                 </div>
 
@@ -2331,15 +2327,15 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
                                                                
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                 </div>
 
                                                                 </form>
@@ -2369,7 +2365,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2393,7 +2389,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                  </div>
                                                                  {/* Active */} 
@@ -2422,8 +2418,8 @@ console.log(editData, editMode, editID);
 
  
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                 </div>
 
                                                                 </form>
@@ -2455,7 +2451,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2479,7 +2475,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_desc`}
                                                                         name='description'
                                                                         defaultValue={editData.description}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2504,14 +2500,14 @@ console.log(editData, editMode, editID);
                                                                         name='regulatory_body'
                                                                         key={editData.regulatory_body}
                                                                         defaultValue={{value:editData.regulatory_body, label: editData.regulatory_body_name}}
-                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                                    
                                                             </div>
 
                                                             <div className='flex items-center space-x-3 mt-4'>
-                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                             </div>
 
                                                             </form>
@@ -2543,13 +2539,13 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' />
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' />
                                                                     </div>
 
 
                                                                     <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                     </div>
 
 
@@ -2591,7 +2587,7 @@ console.log(editData, editMode, editID);
                                                                         name='sub_division'
                                                                         key={editData.parent}
                                                                         defaultValue={{value:editData.sub_division, label: editData.sub_division}}
-                                                                        className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                     />
                                                             </div>
 
@@ -2614,14 +2610,14 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_type_detail`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
 
 
                                                             <div className='flex items-center space-x-3 mt-4'>
-                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                             </div>
 
                                                             </form>
@@ -2650,7 +2646,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_status`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2679,8 +2675,8 @@ console.log(editData, editMode, editID);
 
 
                                                             <div className='flex items-center space-x-3 mt-4'>
-                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                             </div>
 
                                                             </form>
@@ -2712,14 +2708,14 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_status`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
 
 
                                                             <div className='flex items-center space-x-3 mt-4'>
-                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                             </div>
 
                                                             </form>
@@ -2751,7 +2747,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2774,7 +2770,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_desc`}
                                                                         name='description'
                                                                         defaultValue={editData.description}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
                                                             {editMode && (
@@ -2801,8 +2797,8 @@ console.log(editData, editMode, editID);
                                                             )}
 
                                                             <div className='flex items-center space-x-3 mt-4'>
-                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                             </div>
 
                                                                 </form>
@@ -2835,7 +2831,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2862,7 +2858,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_owner_type`}
                                                                             name='owner_type'
                                                                             defaultValue={{value:editData.owner_type, label:editData.owner_type_name}}
-                                                                            className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
                                                                         />
                                                                        
                                                                 </div>
@@ -2886,7 +2882,7 @@ console.log(editData, editMode, editID);
                                                                                     id={`add_${addBtnLabel}_constituency_field`}
                                                                                     name='abbreviation'
                                                                                     defaultValue={editData.abbreviation}
-                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                 />
                                                                      </div>
 
@@ -2911,7 +2907,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
                                                                 {editMode && (
@@ -2938,8 +2934,8 @@ console.log(editData, editMode, editID);
                                                                 )}
     
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                 </div>
         
                                                                     </form>
@@ -2971,7 +2967,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2994,7 +2990,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_desc`}
                                                                         name='description'
                                                                         defaultValue={editData.description}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -3022,8 +3018,8 @@ console.log(editData, editMode, editID);
                                                             )}
 
                                                             <div className='flex items-center space-x-3 mt-4'>
-                                                                    <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                    <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                    <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                    <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                             </div>
 
                                                                 </form>
@@ -3060,7 +3056,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name="name"
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -3083,7 +3079,7 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_abbr`}
                                                                         name="abbreviation"
                                                                         defaultValue={editData.abbreviation}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
                                                             {editMode && (
@@ -3124,7 +3120,7 @@ console.log(editData, editMode, editID);
                                                                                 id={`${index}`}
                                                                                 name='contact_type'
                                                                                 defaultValue={contact?.contact_type}
-                                                                                className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
 
                                                                             >
 
@@ -3142,14 +3138,14 @@ console.log(editData, editMode, editID);
                                                                                     id={index}
                                                                                     name="contact"
                                                                                     defaultValue={contact?.contact}
-                                                                                    className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                                 />
                                                                         
                                                                         </>
                                                                     )})}
                                                                     
                                                                     <div className='col-span-2 flex items-center justify-end'>
-                                                                        <button className='rounded p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
+                                                                        <button className=' p-2 w-auto h-auto bg-indigo-600 text-white flex items-center self-start'
                                                                         onClick={handleAddClick}
                                                                         >Add <PlusIcon className='w-5 h-5 text-white'/></button>
                                                                     </div>
@@ -3157,8 +3153,8 @@ console.log(editData, editMode, editID);
                                                                 </div>
                                                                 
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                  </div>
                                                     
                                                             
@@ -3192,13 +3188,13 @@ console.log(editData, editMode, editID);
                                                                         id={`add_${addBtnLabel}_status`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                     />
                                                             </div>
 
                                                             <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                              </div>
                                                     
                                                             </form>
@@ -3230,7 +3226,7 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_reason`}
                                                                             name='reason'
                                                                             defaultValue={editData.reason}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3253,13 +3249,13 @@ console.log(editData, editMode, editID);
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                 </div>
 
                                                                 </form>
@@ -3289,7 +3285,7 @@ console.log(editData, editMode, editID);
                                                                             type='text'
                                                                             placeholder=''
                                                                             name={`add_${addBtnLabel}_reason`}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3310,7 +3306,7 @@ console.log(editData, editMode, editID);
                                                                             type='text'
                                                                             placeholder='Description'
                                                                             name={`add_${addBtnLabel}_desc`}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3331,13 +3327,13 @@ console.log(editData, editMode, editID);
                                                                             type='file'
                                                                             placeholder=''
                                                                             name={`add_${addBtnLabel}_file`}
-                                                                            className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
                                                                 <div className='flex items-center space-x-3 mt-4'>
-                                                                        <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save</button>
-                                                                        <button className='p-2 text-white bg-indigo-500 rounded font-semibold'>cancel</button>
+                                                                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save</button>
+                                                                        <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
                                                                 </div>
 
                                                                 </form>
