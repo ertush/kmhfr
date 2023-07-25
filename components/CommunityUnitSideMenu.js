@@ -165,8 +165,8 @@ function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 
 									case 'Updated Community Health Units Pending Approval':
 										return { 
-											backgroundColor: (updatedCHUSelected || pathId === 'has_edits') && 'rgba(5, 150, 105,  1)',
-											color: (updatedCHUSelected || pathId === 'has_edits') && '#ffff',
+											backgroundColor: (updatedCHUSelected || pathId === 'updated_pending_approval') && 'rgba(5, 150, 105,  1)',
+											color: (updatedCHUSelected || pathId === 'updated_pending_approval') && '#ffff',
 											borderBottom: 'solid 1px rgba(5, 150, 105, 1)', 
 											"&:hover": {
 											backgroundColor: "rgba(255, 251, 235, 1)",

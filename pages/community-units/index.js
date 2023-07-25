@@ -40,7 +40,7 @@ const Home = (props) => {
 	return (
 		<div className=''>
 			<Head>
-				<title>KMHFL - Community Units</title>
+				<title>KMHFR - Community Units</title>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 

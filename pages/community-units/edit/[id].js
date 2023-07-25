@@ -223,7 +223,7 @@ const CommUnit = (props) => {
 
       <MainLayout>
         <div className="w-full grid grid-cols-1 md:grid-cols-7 place-content-center md:grid gap-4 md:p-2 my-6">
-          <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
+          <div className="md:col-span-7 flex flex-col items-start justify-start gap-3">
             {/* Breadcrumb */}
             <div className="flex flex-row gap-2 text-sm md:text-base">
               <Link className="text-green-700" href="/">
@@ -243,9 +243,9 @@ const CommUnit = (props) => {
             {/* Header snippet */}
             <div
               className={
-                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                (cu.active ? "border-green-600" : "border-red-600")
-              }
+                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? "border-green-600" : "border-red-600"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+                ${cu.active ? "border-green-600" : "border-yellow-700"}
+              `}
             >
               <div className="col-span-6 md:col-span-3">
                 <h1 className="text-4xl tracking-tight font-bold leading-tight">
@@ -255,7 +255,7 @@ const CommUnit = (props) => {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (cu.code ? "text-green-900" : "text-gray-400")
+                      (cu.code ? "text-green-900" : "text-gray-500")
                     }
                   >
                     #{cu.code || "NO_CODE"}
@@ -270,36 +270,36 @@ const CommUnit = (props) => {
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                   {cu.is_approved ? (
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Approved
                     </span>
                   ) : (
-                    <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-red-200 text-red-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
                       Not approved
                     </span>
                   )}
                   {cu.is_closed && (
-                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <LockClosedIcon className="h-4 w-4" />
                       CHU Closed
                     </span>
                   )}
                   {cu.deleted && (
-                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
                       CHU Deleted
                     </span>
                   )}
                   {cu.active && (
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Active
                     </span>
                   )}
                   {cu.has_fffedits && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
                     </span>
@@ -322,29 +322,29 @@ const CommUnit = (props) => {
           </div>
 
           {/* Form */}
-          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-4">
+          <div className="col-span-1 md:col-span-6 flex flex-col md:gap-3 mt-8 border border-green-600 pt-2">
             <Tabs.Root
               orientation="horizontal"
               className="w-full flex flex-col tab-root"
               defaultValue="basic_details"
             >
               {/* Tabs List */}
-              <Tabs.List className="list-none md:grid md:grid-cols-3 flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+              <Tabs.List className="list-none  border-b border-green-600 md:grid md:grid-cols-3 flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
                 <Tabs.Tab
                   value="basic_details"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
                   Basic Details
                 </Tabs.Tab>
                 <Tabs.Tab
                   value="chews"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
-                  CHEWs
+                  CHPs
                 </Tabs.Tab>
                 <Tabs.Tab
                   value="services"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
                   Services
                 </Tabs.Tab>
@@ -378,7 +378,7 @@ const CommUnit = (props) => {
                         name="name"
                         defaultValue={cu.name}
                         onChange={(ev) => handleChange(ev)}
-                        className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                        className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                       />
                     </div>
 
@@ -395,6 +395,19 @@ const CommUnit = (props) => {
                         </span>
                       </label>
                       <Select
+                        	
+                          styles={{
+                            control: (baseStyles) => ({
+                              ...baseStyles,
+                              backgroundColor: 'transparent',
+                              outLine: 'none',
+                              border: 'none',
+                              outLine: 'none',
+                              textColor: 'transparent',
+                              padding: 0,
+                              height: '4px'
+                            }),
+                          }}
                         onChange={(value) => {
                           handleChange({
                             target: { name: "facility", value: value.value },
@@ -420,7 +433,8 @@ const CommUnit = (props) => {
                           label: formData?.facility !== undefined ? facilities.find(fc => fc.id == formData.facility).name : cu.facility_name || "",
                         }}
                         name="facility"
-                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+												className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                        
                       />
                     </div>
 
@@ -437,6 +451,18 @@ const CommUnit = (props) => {
                         </span>
                       </label>
                       <Select
+                      styles={{
+                        control: (baseStyles) => ({
+                          ...baseStyles,
+                          backgroundColor: 'transparent',
+                          outLine: 'none',
+                          border: 'none',
+                          outLine: 'none',
+                          textColor: 'transparent',
+                          padding: 0,
+                          height: '4px'
+                        }),
+                      }}
                         options={operation_status}
                         value={{
                           value: formData?.status !== undefined ? formData.status : cu.status || "",
@@ -448,7 +474,8 @@ const CommUnit = (props) => {
                           })
                         }
                         name="status"
-                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+												className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                        
                       />
                     </div>
 
@@ -474,7 +501,7 @@ const CommUnit = (props) => {
                               defaultValue={cu.date_established}
                               onChange={(ev) => handleChange(ev)}
                               placeholder={cu.date_established}
-                              className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                             />
                           </div>
                         </div>
@@ -498,7 +525,7 @@ const CommUnit = (props) => {
                               defaultValue={cu.date_operational}
                               onChange={(ev) => handleChange(ev)}
                               placeholder={cu.date_operational}
-                              className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                             />
                           </div>
                         </div>
@@ -523,7 +550,7 @@ const CommUnit = (props) => {
                         defaultValue={cu.households_monitored}
                         onChange={(ev) => handleChange(ev)}
                         min={0}
-                        className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                        className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                       />
                     </div>
 
@@ -545,7 +572,7 @@ const CommUnit = (props) => {
                         defaultValue={cu.number_of_chvs || 0}
                         onChange={(ev) => handleChange(ev)}
                         min={0}
-                        className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                        className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                       />
                     </div>
 
@@ -570,7 +597,7 @@ const CommUnit = (props) => {
                               value={countyValue || cu.facility_county}
                               type="text"
                               name="facility_county"
-                              className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                             />
                           </div>
                         </div>
@@ -593,7 +620,7 @@ const CommUnit = (props) => {
                               value={subCountyValue || cu.facility_subcounty}
                               type="text"
                               name="facility_subcounty"
-                              className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                             />
                           </div>
                         </div>
@@ -616,7 +643,7 @@ const CommUnit = (props) => {
                               value={constituencyValue || cu.facility_constituency}
                               type="text"
                               name="facility_constituency"
-                              className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                             />
                           </div>
                         </div>
@@ -639,7 +666,7 @@ const CommUnit = (props) => {
                               value={wardValue || cu.facility_ward}
                               type="text"
                               name="facility_ward"
-                              className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                             />
                           </div>
                         </div>
@@ -661,23 +688,23 @@ const CommUnit = (props) => {
                           placeholder="Description of the area of coverage"
                           defaultValue={cu.location}
                           min={0}
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                         />
                       </div>
 
-                      <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto">
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">
+                      <div className=" w-full flex flex-col items-start justify-start p  border border-gray-300/70 bg-transparent h-auto">
+                        <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
                           Community Health Unit Contacts
                         </h4>
 
                         {contactList.map((x, i) => {
                           return (
                             <div
-                              className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3"
+                              className="w-full flex flex-row items-center  gap-1 gap-x-3 mb-3"
                               key={i}
                             >
                               <div
-                                className="w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3"
+                                className="w-full flex flex-col items-left   gap-1 gap-x-3 mb-3"
                                 key={i}
                               >
                                 <label
@@ -699,7 +726,7 @@ const CommUnit = (props) => {
                                   defaultValue={
                                     cu.contacts[i]?.contact_type || ""
                                   }
-                                  className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                  className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                 >
                                   {contact_type.map((ct, i) => (
                                     <option value={ct.id} key={i}>
@@ -709,7 +736,7 @@ const CommUnit = (props) => {
                                 </select>
                               </div>
                               <div
-                                className="w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3"
+                                className="w-full flex flex-col items-left  justify-  gap-1 gap-x-3 mb-3"
                                 key={i}
                               >
                                 <label
@@ -729,7 +756,7 @@ const CommUnit = (props) => {
                                   id={i}
                                   defaultValue={cu.contacts[i]?.contact || ""}
                                   onChange={(e) => { handleChange(e) }}
-                                  className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                  className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                 />
                               </div>
                             </div>
@@ -738,7 +765,7 @@ const CommUnit = (props) => {
                       </div>
                       <div className="sticky top-0 right-10 w-full flex justify-end">
                         <button
-                          className="rounded bg-green-600 p-2 text-white flex text-md font-semibold mt-3"
+                          className=" bg-green-600 p-2 text-white flex text-md font-semibold mt-3"
                           onClick={handleContactAdd}
                         >
                           {`Add Contact`}
@@ -752,7 +779,7 @@ const CommUnit = (props) => {
 
                         <button
                           type="submit"
-                          className="flex items-center justify-end space-x-2 bg-green-500 rounded p-1 px-2"
+                          className="flex items-center justify-end space-x-2 bg-green-700  p-1 px-2"
                         >
                           <span className="text-medium font-semibold text-white">
                             Save & Continue
@@ -801,7 +828,7 @@ const CommUnit = (props) => {
                                   name="first_name"
                                   onChange={(e) => handleChange(e)}
                                   value={formData.health_unit_workers !== undefined ? formData?.health_unit_workers[index]?.first_name : cu.health_unit_workers[index]?.first_name || ""}
-                                  className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                  className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                 />
                               </div>
                               {/* Second Name */}
@@ -819,7 +846,7 @@ const CommUnit = (props) => {
                                   name="last_name"
                                   onChange={(e) => handleChange(e)}
                                   value={formData.health_unit_workers !== undefined ? formData?.health_unit_workers[index]?.last_name : cu.health_unit_workers[index]?.last_name || ""}
-                                  className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                  className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                 />
                               </div>
                               {/* In charge */}
@@ -851,7 +878,7 @@ const CommUnit = (props) => {
                                     onClick={(e) => {
                                       remove(e, index, contact.id);
                                     }}
-                                    className="flex items-center justify-start space-x-2 bg-red-600 rounded p-1 px-2"
+                                    className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2"
                                   >
                                     <span className="text-medium font-semibold text-white">
                                       Remove
@@ -864,7 +891,7 @@ const CommUnit = (props) => {
                         })
                       ) : (
                         <>
-                          <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                          <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                             <p>No HR data listed for this cu.</p>
                           </li>
                         </>
@@ -872,7 +899,7 @@ const CommUnit = (props) => {
 
                       <div className="sticky top-0 right-10 w-full flex justify-end">
                         <button
-                          className="rounded bg-green-600 p-2 text-white flex text-md font-semibold "
+                          className=" bg-green-600 p-2 text-white flex text-md font-semibold "
                           onClick={handleAddClick}
                         >
                           {`Add`}
@@ -886,7 +913,7 @@ const CommUnit = (props) => {
                      
                       <button
                         type="submit"
-                        className="flex items-center justify-end space-x-2 bg-green-500 rounded p-1 px-2"
+                        className="flex items-center justify-end space-x-2 bg-green-600  p-1 px-2"
                       >
                         <span className="text-medium font-semibold text-white">
                           Save Changes
@@ -906,15 +933,29 @@ const CommUnit = (props) => {
                 <>
                   <form
                     name="chu_services_form"
-                    className="flex flex-col w-full items-center justify-start gap-3"
+                    className="flex flex-col w-full items-center border border-green-600 p-3 justify-start gap-3"
                     onSubmit={(ev) => handleServices(ev)}
                   >
                     {/* Transfer list Container */}
-                    <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
+                    <span className="text-md w-full font-semibold flex flex-wrap justify-between items-center leading-tight tracking-tight">
                       Available Services
                     </span>
                     <div className="flex items-center w-full h-auto">
                       <Select
+                      styles={{
+                        control: (baseStyles) => ({
+                          ...baseStyles,
+                          backgroundColor: 'transparent',
+                          outLine: 'none',
+                          border: 'none',
+                          outLine: 'none',
+                          textColor: 'transparent',
+                          padding: 0,
+                          height: '4px'
+                        }),
+
+                      }}
+
                         options={props.service_categories.results.map(
                           (service) => {
                             return {
@@ -930,21 +971,22 @@ const CommUnit = (props) => {
                           ])
                         }
                         name="services"
-                        className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+												className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                        
                       />
                     </div>
                     <br />
                     {/* Service Category Table */}
-                    <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
+                    <span className="text-md w-full flex font-semibold flex-wrap justify-between items-center leading-tight tracking-tight">
                       Assigned Services
                     </span>{" "}
-                    <table className="w-full  h-auto my-4">
+                    <table className="w-full  h-auto my-1">
                       <thead className="w-full">
-                        <tr className="grid grid-cols-2 place-content-end border-b-4 border-gray-300">
-                          <td className="text-lg font-semibold text-indigo-900 ">
+                        <tr className="grid grid-cols-2 place-content-end border-b border-green-600">
+                          <td className="text-lg font-semibold text-green-900 ">
                             Service
                           </td>
-                          <td className="text-lg font-semibold text-indigo-900 ml-12">
+                          <td className="text-lg font-semibold text-green-900 ml-12">
                             Action
                           </td>
                         </tr>
@@ -968,7 +1010,7 @@ const CommUnit = (props) => {
                                       )
                                     );
                                   }}
-                                  className="flex items-center justify-start space-x-2 bg-red-600 rounded p-1 px-2"
+                                  className="flex items-center justify-start space-x-2 bg-red-600  p-1 px-2"
                                 >
                                   <span className="text-medium font-semibold text-white">
                                     Remove
@@ -979,7 +1021,7 @@ const CommUnit = (props) => {
                           ))
                         ) : (
                           <>
-                            <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                            <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                               <p>
                                 {cu?.name || cu?.official_name} has not listed
                                 the services it offers. Add some below.
@@ -993,7 +1035,7 @@ const CommUnit = (props) => {
                     <div className="flex justify-end items-center w-full">
                       <button
                         type="submit"
-                        className="flex items-center justify-end space-x-2 bg-green-500 rounded p-1 px-2"
+                        className="flex items-center justify-end space-x-2 bg-green-600  p-1 px-2"
                       >
                         <span className="text-medium font-semibold text-white">
                           Save & Finish
