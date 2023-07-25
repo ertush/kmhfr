@@ -241,8 +241,8 @@ const AddUser = (props)=> {
 							Are you sure you want to delete<b>{userData?.first_name + ' '+ userData?.last_name + ' '+ userData?.other_names}</b> ?
 					</span>
 					<div className='flex justify-start gap-4 mt-4'> 
-						<button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="button"  disabled={!delete_user} onClick={(e)=>{deleteUser(e);setOpen(false)}} >Delete</button>
-						<button className="bg-red-500 text-white font-semibold rounded p-2 text-center" 
+						<button className="bg-green-500 text-white font-semibold  p-2 text-center" type="button"  disabled={!delete_user} onClick={(e)=>{deleteUser(e);setOpen(false)}} >Delete</button>
+						<button className="bg-red-500 text-white font-semibold  p-2 text-center" 
 						onClick={()=> {setOpen(false)}} 
 						>Cancel</button>
 					</div>     
@@ -273,7 +273,7 @@ const AddUser = (props)=> {
 					{/* {status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password} */}
 
 				</div>
-				<div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black mb-3 md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+				<div className={"col-span-5 flex bg-transparent items-center border border-green-600 justify-between p-6 w-full drop-shadow  text-black mb-3 md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
 						<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 							
 							{editMode? <><PencilAltIcon className='ml-2 h-5 w-5' /> Edit user</> : <><UserAddIcon className='text-black ml-2 h-5 w-5'/> Add user </> }
@@ -283,7 +283,7 @@ const AddUser = (props)=> {
 							<button
 								type='button'
 								onClick={()=>setOpen(true)}
-								className='rounded bg-red-500 p-2 text-white flex text-md font-semibold '>
+								className=' bg-red-500 p-2 text-white flex text-md font-semibold '>
 								<span className='text-medium font-semibold text-white'>
 									Delete
 								</span>
@@ -294,11 +294,11 @@ const AddUser = (props)=> {
 			</div>
 
 						<div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-							<div className=' w-full flex flex-col items-start p-3 rounded border border-gray-300/70 bg-gray-50'
+							<div className=' w-full flex flex-col items-start p-3  border border-green-600 bg-transparent'
 								style={{ minHeight: '250px' }}>
 							
 												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+													<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 														Bio Details
 													</h4>
 													<form
@@ -327,7 +327,7 @@ const AddUser = (props)=> {
 																	)
 																}}
 																value={userData.first_name || ''}
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 														{/* Last name */}
@@ -351,7 +351,7 @@ const AddUser = (props)=> {
 																	)
 																}}
 																value={userData.last_name ||''}
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 														{/* Other names */}
@@ -371,7 +371,7 @@ const AddUser = (props)=> {
 																	)
 																}}
 																value={userData.other_names ||''}
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
@@ -396,7 +396,7 @@ const AddUser = (props)=> {
 																	)
 																}}
 																value={userData.email ||''}
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
@@ -421,7 +421,7 @@ const AddUser = (props)=> {
 																	)
 																}}
 																value={userData.employee_number ||''}
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
@@ -437,6 +437,19 @@ const AddUser = (props)=> {
 																</span>
 															</label>
 															<Select
+																styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
 																options={jobs|| []}
 																required
 																placeholder='Select job title..'
@@ -449,7 +462,9 @@ const AddUser = (props)=> {
 																	label: jobs?.find(r=> r.value == userData?.job_title)?.label
 																  } || ''}
 																name='job_title'
-																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+
+																
 															/>
 														</div>
 
@@ -475,7 +490,7 @@ const AddUser = (props)=> {
 																	setIsCPasswordDirty(true);
 																}}
 																value={userData.password || ''}
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
                                                         {/* confirm password */}
@@ -499,7 +514,7 @@ const AddUser = (props)=> {
 																	)
 																}}
 																value={userData.conf_password || ''}
-																className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 															 {showErrorMessage && isCPasswordDirty ? <div> <p className='text-red-600'>Passwords did not match</p> </div> : ''}
 
@@ -527,8 +542,8 @@ const AddUser = (props)=> {
 															</div>}
 														{/* Contacts */}
 
-														<div className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														<div className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
+															<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 																Contacts
 															</h4>
 														
@@ -536,8 +551,8 @@ const AddUser = (props)=> {
 																// console.log(x)
 															
 																return( 
-																<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3' key={i}>
-																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
+																<div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3' key={i}>
+																<div className='w-full flex flex-col items-left gap-1 gap-x-3 mb-3'>
 																	<label
 																		htmlFor='contact_type'
 																		className='text-gray-600 capitalize text-sm'
@@ -550,6 +565,19 @@ const AddUser = (props)=> {
 																		</span>
 																	</label>	
 																	<Select
+																	styles={{
+																		control: (baseStyles) => ({
+																			...baseStyles,
+																			backgroundColor: 'transparent',
+																			outLine: 'none',
+																			border: 'none',
+																			outLine: 'none',
+																			textColor: 'transparent',
+																			padding: 0,
+																			height: '4px'
+																		}),
+	
+																	}}
 																		options={contact_types || [] }
 																		required
 																		placeholder='Select contact type..'
@@ -568,7 +596,8 @@ const AddUser = (props)=> {
 																			}
 																		}
 																		name='contact_type'
-																		className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																		className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																		
 																	/>
 																</div>	
 																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
@@ -597,7 +626,7 @@ const AddUser = (props)=> {
 																		value={
 																			 (userData.contacts[i])?.contact_text || ''
 																		}
-																		className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																		className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
 
@@ -608,7 +637,7 @@ const AddUser = (props)=> {
 
 														</div>
 														<div className="sticky top-0 right-10 w-full flex justify-end">
-															<button className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '
+															<button className=' bg-green-600 p-2 text-white flex text-md font-semibold '
 																onClick={handleAddClick} 
 																>
 																	{`Add Contact`}
@@ -618,13 +647,26 @@ const AddUser = (props)=> {
 														</div>
 
 														{/* Group Details */}
-														<div className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														<div className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
+															<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 																Group
 															</h4>
-															 <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
-																<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
+															 <div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
+																<div className='w-full flex flex-col items-left  justify-  gap-1 gap-x-3 mb-3'>
 																<Select
+																styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
 																options={groups || []}
 																required
 																isMulti
@@ -638,7 +680,8 @@ const AddUser = (props)=> {
 																	value: value.id || '',
 																	label: value.name || ''
 																  })) || ''}
-																className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																
 															    />
 																</div>	
 																
@@ -653,14 +696,27 @@ const AddUser = (props)=> {
 																	if(grp.id==1 || grp.id== 12|| grp.id ==2){
 																		return(
 																			// Administrative area 
-																		<div key={i} className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
-																			<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+																		<div key={i} className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
+																			<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 																				Administrative Areas
 																			</h4>
-																			<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
-																				<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
+																			<div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
+																				<div className='w-full flex flex-col items-left  gap-2 gap-x-3 mb-3'>
 																					
 																					<Select
+																					styles={{
+																						control: (baseStyles) => ({
+																							...baseStyles,
+																							backgroundColor: 'transparent',
+																							outLine: 'none',
+																							border: 'none',
+																							outLine: 'none',
+																							textColor: 'transparent',
+																							padding: 0,
+																							height: '4px'
+																						}),
+					
+																					}}
 																					options={counties || []}
 																					isMulti
 																					required
@@ -690,9 +746,23 @@ const AddUser = (props)=> {
 																						label: value.county_name || value.name || ''
 																					  })) || ''}
 																					name='county'
-																					className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																					className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																					
 																					/>
 																					<Select
+																					styles={{
+																						control: (baseStyles) => ({
+																							...baseStyles,
+																							backgroundColor: 'transparent',
+																							outLine: 'none',
+																							border: 'none',
+																							outLine: 'none',
+																							textColor: 'transparent',
+																							padding: 0,
+																							height: '4px'
+																						}),
+					
+																					}}
 																					options={subCountyOptions || []}
 																					isMulti
 																					required
@@ -706,7 +776,7 @@ const AddUser = (props)=> {
 																					  })) || ''}
 
 																					name='sub_county'
-																					className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																					className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
 																					/>
 																				</div>	
 																				
@@ -717,14 +787,27 @@ const AddUser = (props)=> {
 																	else if(grp.id==3){
 																		return (
 																			//  Regulatory body 
-																			<div className=' w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto'>
-																				<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+																			<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto'>
+																				<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 																					Regulatory Body
 																				</h4>
 																				<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
 																					<div className='w-full flex flex-col items-left px-2 justify-  gap-1 gap-x-3 mb-3'>
 																						
 																						<Select
+																						styles={{
+																							control: (baseStyles) => ({
+																								...baseStyles,
+																								backgroundColor: 'transparent',
+																								outLine: 'none',
+																								border: 'none',
+																								outLine: 'none',
+																								textColor: 'transparent',
+																								padding: 0,
+																								height: '4px'
+																							}),
+						
+																						}}
 																						options={regbodies || []}
 																						isMulti
 																						required
@@ -737,7 +820,7 @@ const AddUser = (props)=> {
 																							label: value.name
 																						  })) || ''}
 																						name='regulatory_body'
-																						className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+																						className='flex-none w-full bg-transparent  flex-grow  placeholder-gray-5 focus:bg-white focus:border-green-600 outline-none'
 																						/>
 																					</div>	
 																					
@@ -756,7 +839,7 @@ const AddUser = (props)=> {
  
 														{/* Cancel & Save */}
 														<div className='flex justify-between items-center w-full'>
-															<button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+															<button className='flex items-center justify-start space-x-2 p-1 border-2 border-black  px-2'>
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
 																<span className='text-medium font-semibold text-black '>
 																	Cancel
@@ -765,7 +848,7 @@ const AddUser = (props)=> {
 															<button
 															    disabled={!add_user}
 																type='submit'
-																className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '>
+																className=' bg-green-600 p-2 text-white flex text-md font-semibold '>
 																<span className='text-medium font-semibold text-white'>
 																	{editMode? 'Update' : ' Save'}
 																</span>
@@ -780,7 +863,7 @@ const AddUser = (props)=> {
 
                    
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

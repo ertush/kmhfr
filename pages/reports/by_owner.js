@@ -26,7 +26,7 @@ const ByOwner = (props) => {
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-            return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+            return <button  className=' bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
@@ -86,7 +86,7 @@ const ByOwner = (props) => {
     //             {headerName: "Beds", field: "beds"},
     //             {headerName: "Cots", field: "cots"},
     //             {headerName: "Actions", cellRendererFramework: function(params) {
-    //                 return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+    //                 return <button  className=' bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
     //                 onClick={() => {
     //                     router.push({
     //                         pathname: `/reports/dynamic_reports/`,
@@ -107,7 +107,7 @@ const ByOwner = (props) => {
     //             {headerName: "Number of CHVs", field: "chvs"},
     //             {headerName: "Number of CHEWs", field: "chews"},
     //             {headerName: "Actions", cellRendererFramework: function(params) {
-    //                 return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+    //                 return <button  className=' bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
     //                 onClick={() => {
     //                     router.push({
     //                         pathname: `/reports/by_facility/`,
@@ -160,13 +160,13 @@ const ByOwner = (props) => {
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
                 <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
-                    <div className="col-span-7 flex flex-col gap-x-1 px-4">
+                    <div className="col-span-7 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">{title}</span> 
                             </div>
-                            <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                            <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {title}
                                 </h2>
@@ -174,7 +174,7 @@ const ByOwner = (props) => {
                         </div>
                     </div>
                     <Resources label={label}/>
-                    <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> 
+                    <main className="col-span-6 md:col-sapn-5 flex flex-col gap-4 order-last md:order-none"> 
                         
                           <div className='mx-4'>
                             <form
@@ -183,7 +183,7 @@ const ByOwner = (props) => {
                                 <input
                                     name="q"
                                     id="search-input"
-                                    className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                    className="flex-none bg-transparent  p-2 flex-grow shadow-sm border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                     type="search"
                                     onChange={(e) => {
                                         setSearchTerm(e.target.value)
@@ -192,13 +192,13 @@ const ByOwner = (props) => {
                                 />
                                 <button
                                     type="submit"
-                                    className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+                                    className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 "
                                 >
                                     <SearchIcon className="w-5 h-5" />
                                 </button>
                                 <div className='text-white text-md'>
 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
+                                <button className="flex items-center bg-green-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
                                                 e.preventDefault()  
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
@@ -228,7 +228,7 @@ const ByOwner = (props) => {
                                 placeholder='Filter By:'
                                 onChange={(e) => setFilterOption(e.value)}
                                 name='filter_by'
-                                className='flex-none w-1/5 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
+                                className='flex-none w-1/5 bg-transparent  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
                             />}
                             <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
@@ -281,7 +281,7 @@ const ByOwner = (props) => {
 
 
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

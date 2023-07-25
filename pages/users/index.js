@@ -124,7 +124,7 @@ const Users = (props) => {
     return (
         <div className="">
             <Head>
-                <title>KMHFL - Reports</title>
+                <title>KMHFR - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
@@ -153,19 +153,23 @@ const Users = (props) => {
                         
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto border-r-2 border-gray-300'>
+                    <div className='col-span-1 w-full col-start-1 h-auto border border-green-600'>
 						
                         <List
-                        sx={{ width: '100%', bgcolor: 'background.paper', flexGrow:1 }}
+                        sx={{ width: '100%', bgcolor: 'transparent', flexGrow:1 }}
                         component="nav"
                         aria-labelledby="nested-list-subheader"
-                        subheader={
-                            <ListSubheader component="div" id="nested-list-subheader">
-                                Resources
-                            </ListSubheader>
-                        }
+                       
                         >	
-                            <ListItemButton sx={{backgroundColor: usersTheme ? '#e7ebf0' : 'none' }} name="rt"
+                            <ListItemButton className='border-b border-green-600' sx={{
+                            backgroundColor: usersTheme && 'rgba(5, 150, 105,  1)',
+											color: usersTheme && '#ffff',
+											borderBottom: 'solid 1px rgba(5, 150, 105, 1)', 
+											"&:hover": {
+											backgroundColor: "rgba(255, 251, 235, 1)",
+											color: "rgba(17, 24, 39, 1)"
+										  }
+                            }} name="rt"
                                 onClick={()=>{
                                     setUsersTheme(true)
                                     setInactiveUsersTheme(false)
@@ -176,7 +180,16 @@ const Users = (props) => {
                             >
                                 <ListItemText primary="Users" />
                             </ListItemButton>
-                            <ListItemButton sx={{ backgroundColor: inactiveUsersTheme ? '#e7ebf0' : 'none'  }} 
+                            <ListItemButton 
+                                sx={{
+                                    backgroundColor: inactiveUsersTheme && 'rgba(5, 150, 105,  1)',
+                                                    color: inactiveUsersTheme && '#ffff',
+                                                    borderBottom: 'solid 1px rgba(5, 150, 105, 1)', 
+                                                    "&:hover": {
+                                                    backgroundColor: "rgba(255, 251, 235, 1)",
+                                                    color: "rgba(17, 24, 39, 1)"
+                                                  }
+                                    }} 
                                 onClick={()=>{
                                     setUsersTheme(false)
                                     setInactiveUsersTheme(true)
@@ -188,7 +201,16 @@ const Users = (props) => {
                                 <ListItemText primary="InActive Users" />
                             </ListItemButton>
                             {!showGroup && 
-                            <ListItemButton sx={{ backgroundColor: groupsTheme ? '#e7ebf0' : 'none' }}
+                            <ListItemButton 
+                            sx={{
+                                backgroundColor: groupsTheme && 'rgba(5, 150, 105,  1)',
+                                                color: groupsTheme && '#ffff',
+                                                borderBottom: 'solid 1px rgba(5, 150, 105, 1)', 
+                                                "&:hover": {
+                                                backgroundColor: "rgba(255, 251, 235, 1)",
+                                                color: "rgba(17, 24, 39, 1)"
+                                              }
+                                }}
                                 onClick={()=>{
                                     setUsersTheme(false)
                                     setInactiveUsersTheme(false)
@@ -247,7 +269,7 @@ const Users = (props) => {
                                 {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
                             </h5>
                           </div>
-                        <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
+                        <div className="flex flex-col justify-center items-center px-1 w-full">
                       
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
                                 <AgGridReact
@@ -267,16 +289,16 @@ const Users = (props) => {
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
-                                <li className="text-base text-gray-600">
+                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full border border-green-600 items-center justify-end my-2">
+                                <li className="text-base text-green-500">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                        <span className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</span>
+                                        <span className="text-white bg-green-600 font-semibold px-2 py-1 ">{props?.data?.current_page}</span>
                                     </Link>
                                 </li>
                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
                                     <li key={page} className="text-base text-gray-600">
                                         <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
-                                            <span className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</span>
+                                            <span className="text-green-800 p-2 hover:underline active:underline focus:underline">{page}</span>
                                         </Link>
                                     </li>
                                 ))}

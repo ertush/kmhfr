@@ -845,7 +845,7 @@ function AddFacility(props) {
 																	}
 																}}
 																name='facility_type_details'
-																className='flex-none w-full   flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
 															/>
 
 														</div>
