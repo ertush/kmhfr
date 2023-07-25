@@ -40,7 +40,7 @@ const DelayedLoginButton = () => {
     return (
       <a
         href="/auth/login"
-        className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-2 md:mr-3 whitespace-nowrap py-2 rounded text-base font-semibold"
+        className="bg-green-700 hover:bg-black focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-2 md:mr-3 whitespace-nowrap py-2 text-base font-semibold"
       >
         Log in
       </a>
@@ -64,7 +64,7 @@ export default function HeaderLayout({
 
   const router = useRouter();
   const activeClasses =
-    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4 rounded  border-green-600";
+    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4  border-green-600";
   const inactiveClasses =
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];
@@ -142,7 +142,7 @@ export default function HeaderLayout({
   // console.log(isLoggedIn)
 
   return (
-    <header className="flex flex-wrap items-center justify-start gap-x-4 w-full p-1 max-w-screen-3xl">
+    <header className="flex flex-wrap items-center justify-start gap-x-4 w-full bg-yellow-50 p-1 max-w-screen-3xl">
       <title>KMHFL 3</title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-3 md:gap-5">
         <div id="logo" className="mx:px-3 pb-1">
@@ -151,9 +151,9 @@ export default function HeaderLayout({
             className="leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative"
           >
             <img src="/MOH.png" alt="KMHFL3" className="h-14" />
-            <span className="font-mono text-3xl leading-none">KMHFL</span>
-            <span className="text-sm bg-yellow-300 rounded-sm shadow uppercase border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-4">
-              V3 Alpha
+            <span className="text-3xl leading-none">KMHFR</span>
+            <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-2">
+              v3
             </span>
           </a>
         </div>
@@ -346,58 +346,33 @@ export default function HeaderLayout({
             {/* Reports */}
             {isLoggedIn &&
             <Menu as="div" className="relative ">
-              <Menu.Button
-                as="div"
-                className="flex items-center justify-center gap-1 cursor-pointer"
-              >
-                <span className={`
-                    text-base 
-                    md:text-lg 
-                    font-semibold 
-                    leading-none 
-                    p-0 
-                    hidden 
-                    sm:inline
-                    cursor-pointer
-                    ${(currentPath == "/reports/static_reports" || currentPath == "/reports/dynamic_reports"
-                    ? activeClasses
-                    : inactiveClasses)
-                  }`}>
-                  Reports
-                </span>
-                <span className="leading-none p-0">
-                  <ChevronDownIcon className="h-4 w-5" />
-                </span>
-              </Menu.Button>
-              <Menu.Items
-                as="ul"
-                className="list-none flex flex-col items-center bg-white outline-none shadow-md font-semibold justify-start gap-2 p-3 absolute mt-3 text-gray-800 right-0 w-40 rounded"
-              >
-                <Menu.Item as="li" className="flex items-center cursor-pointer w-full gap-1">
+             <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
-                    <Link href="/reports/dynamic_reports">
-                      <span className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
-                        }`}>
-                        Dynamic Reports
-                      </span>
+                    <Link
+                      className={`w-full hover:text-gray-400 font-medium flex items-center ${active && "text-green-400"
+                        }`}
+                      href="/reports"
+                      target="_blank"
+                    >
+                          <p
+                    className={`
+                text-base 
+                md:text-lg
+                font-semibold
+                cursor-pointer
+                ${(currentPath == "/reports" ? activeClasses : inactiveClasses)
 
+                      }`}
+                  >
+
+                  Reports
+                  </p>
+                      
                     </Link>
                   )}
                 </Menu.Item>
-                <Menu.Item as="li" className="flex items-center cursor-pointer w-full gap-1">
-                  {({ active }) => (
-                   <Link href="/reports/standard_reports">
-                   <span className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
-                     }`}>
-                         Standard Reports
-                   </span>
-                 
-                 </Link>
-                  )}
-                </Menu.Item>
-
-              </Menu.Items>
-            </Menu>}
+            </Menu>
+            }
 
             {/* Admin Offices */}
             { hasPermission(/^admin_offices.view_adminoffice.*$/, userPermissions) && isLoggedIn &&
@@ -427,7 +402,7 @@ export default function HeaderLayout({
           // !router.asPath.includes('/facilities') &&
          !isLoggedIn ?
         <form
-          className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
+          className="inline-flex flex-row justify-start flex-grow mt-2 lg:py-0"
           action= {(()=>{
             if(searchOption == "Facilities"){
               return "/public/facility/facilities"
@@ -440,7 +415,7 @@ export default function HeaderLayout({
             }
           })()}
         >
-          <select className="rounded border border-gray-300 p-2 w-full focus:outline-none focus:ring-1 focus:ring-blue-500" name="find"
+          <select className="bg-transparent border border-green-600 p-2 w-6/9 focus:outline-none focus:ring-1 focus:ring-black" name="find"
           onChange={ev => {
               if (ev.target.value && ev.target.value.length > 0) {
                   // setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
@@ -452,39 +427,42 @@ export default function HeaderLayout({
                <option value="Community Health Unit">{`Community Health Unit`}</option>
                <option value="Services">{`Services`}</option>
           </select>          
+
           <input
             name="q"
             id="search-input"
-            className="flex-none bg-gray-50 rounded p-2 md:w-9/12 md:flex-grow-0 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
             type="search"
             defaultValue={searchTerm}
-            placeholder="Search a facility/CHU"
+            placeholder="Search a facility/CHU..."
+            className="flex-none bg-transparent ml-2 p-2 md:w-6/12 md:flex-grow-0 flex-grow shadow-sm border border-green-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
           />
           <button
             type="submit"
-            className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+          className="bg-transparent border-t border-r border-b border-green-600 text-black flex items-center justify-center px-4 py-1"
+            
           >
-            <SearchIcon className="w-5 h-5" />
+            <SearchIcon className="w-5 h-5 text-green-600" />
           </button>
         </form> :
         <form
-        className="inline-flex flex-row justify-start flex-grow gap-x-2 py-2 lg:py-0"
+        className="inline-flex flex-row justify-start flex-grow py-2 lg:py-0"
         action={ path || '/facilities' }
       >
                
         <input
           name="q"
           id="search-input"
-          className="flex-none bg-gray-50 rounded p-2 md:w-9/12 md:flex-grow-0 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+          className="flex-none bg-transparent p-2 md:w-9/12 md:flex-grow-0 flex-grow shadow-sm border border-green-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
           type="search"
           defaultValue={searchTerm}
-          placeholder="Search a facility/CHU"
+          placeholder="Search a facility/CHU..."
         />
         <button
           type="submit"
-          className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+          className="bg-transparent border-t border-r border-b border-green-600 text-black flex items-center justify-center px-4 py-1"
+          
         >
-          <SearchIcon className="w-5 h-5" />
+          <SearchIcon className="w-5 h-5 text-green-600" />
         </button>
       </form>
       }

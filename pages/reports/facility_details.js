@@ -33,7 +33,7 @@ const FacilityByTypeDetails = (props) => {
         {headerName: "Facility Type", field: "type_category"},
         {headerName: "Number of Facilities", field: "number_of_facilities"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-            return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+            return <button  className=' bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
                     pathname: `/reports/dynamic_reports/`,
@@ -102,13 +102,13 @@ const FacilityByTypeDetails = (props) => {
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
                 <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
-                    <div className="col-span-7 flex flex-col gap-x-1 px-4">
+                    <div className="col-span-7 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Facility Report by Type Details</span> 
                             </div>
-                            <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                            <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                   {'Facility Report by Type Details'}
                                 </h2>
@@ -119,14 +119,14 @@ const FacilityByTypeDetails = (props) => {
                     {/* list */}
                     <Resources label ={label} />
                     
-                    <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+                    <main className="col-span-6 md:col-sapn-5 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                     <div className="w-full flex flex items-center justify-start space-x-3 mb-3">
                             {filters_county && Object.keys(filters_county).length > 0 &&
                                 Object.keys(filters_county).map(ft => (
                                     <div key={ft} className="w-1/5 max-w-xs flex flex-col items-start justify-start mb-3">
                                         <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
-                                        <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                        <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1  bg-transparent"
                                             options={
                                                 (() => {
                                                     
@@ -160,7 +160,7 @@ const FacilityByTypeDetails = (props) => {
                                 Object.keys(sub_counties).map(ft => (
                                     <div key={ft} className="w-1/5 max-w-xs flex flex-col items-start justify-start mb-3">
                                         <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
-                                        <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                        <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1  bg-transparent"
                                             options={
                                                 (() => {
                                                     
@@ -194,7 +194,7 @@ const FacilityByTypeDetails = (props) => {
                                 Object.keys(wards).map(ft => (
                                     <div key={ft} className="w-1/5 max-w-xs flex flex-col items-start justify-start mb-3">
                                         <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
-                                        <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                        <Select name={ft} id={ft} className="w-full max-w-xs p-1  bg-transparent"
                                             options={
                                                 (() => {
                                                     
@@ -224,13 +224,13 @@ const FacilityByTypeDetails = (props) => {
                                             }} />
                                     </div>
                                 ))}
-                                 <button className="flex items-center bg-indigo-500 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
+                                 <button className="flex items-center bg-indigo-500 text-white  justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
                                                 filter()
                                             }}
                                             >
                                                 <span>Filter</span>
                                 </button> 
-                                <button className="flex items-center bg-indigo-500 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
+                                <button className="flex items-center bg-indigo-500 text-white  justify-start text-center font-medium active:bg-gray-200 p-2" onClick={() => {
                                                 setDrillDown({county:'', sub_county:'', ward:''})
                                                 setFacilities(props.data.results)
                                                 setSubcounties([])
@@ -241,7 +241,7 @@ const FacilityByTypeDetails = (props) => {
                                                 
                                                 <span>Clear</span>
                                 </button> 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
+                                <button className="flex items-center bg-green-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2" onClick={(e) => {
                                                 e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += `&format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}&access_token=${props.token}` } else { dl_url += `?format=excel&county=${drillDown.county}&sub_county=${drillDown.sub_county}&ward=${drillDown.ward}&access_token=${props.token}` }
@@ -296,7 +296,7 @@ const FacilityByTypeDetails = (props) => {
 
 
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

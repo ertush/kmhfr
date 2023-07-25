@@ -71,7 +71,7 @@ const CommUnit = (props) => {
 
       <MainLayout>
         <div className='w-full grid md:grid-cols-7 gap-4 p-2 my-6'>
-          <div className='col-span-5 flex flex-col md:col-span-7 items-start px-4 justify-start gap-3'>
+          <div className='col-span-5 flex flex-col md:col-span-7 items-start justify-start gap-3'>
 
             {/* Breadcrumb */}
             <div className='flex flex-row gap-2 text-sm md:text-base'>
@@ -91,7 +91,7 @@ const CommUnit = (props) => {
 
             {/* Header snippet */}
             <div
-              className={'col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 ' + (cu.active ? 'border-green-600' : 'border-red-600')}   
+              className={`col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? 'border-green-600' : 'border-yellow-600'} bg-transparent drop-shadow text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 ${cu.active ? 'border-green-600' : 'border-yellow-600'}`}   
             >
               <div className='col-span-6 md:col-span-3'>
                 <h1 className='text-4xl tracking-tight font-bold leading-tight'> {cu.name} </h1>
@@ -107,30 +107,30 @@ const CommUnit = (props) => {
               <div className='flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2'>
                 <div className='flex flex-wrap gap-3 w-full items-center justify-start md:justify-center'>
                   {cu.is_approved && (
-                    <span className={'p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1' +' '+ (cu.is_approved ? 'bg-green-200 text-green-900' : 'bg-red-200 text-red-900')}>
+                    <span className={'p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1' +' '+ (cu.is_approved ? 'bg-green-200 text-green-900' : 'bg-red-200 text-red-900')}>
                       {cu.is_approved ? <>  <CheckCircleIcon className='h-4 w-4' />CHU Approved</>: <><XCircleIcon className='h-4 w-4' />Not approved </>}
                     </span>
                   )}
                   {cu.is_closed &&  (
-                    <span className='bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1'>
+                    <span className='bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                       <LockClosedIcon className='h-4 w-4' />
                       CHU Closed
                     </span>
                   )}
                   {cu.deleted && (
-                    <span className='bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1'>
+                    <span className='bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                       <XCircleIcon className='h-4 w-4' />
                       CHU Deleted
                     </span>
                   )}
                   {cu.active && (
-                    <span className='bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1'>
+                    <span className='bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                       <CheckCircleIcon className='h-4 w-4' />
                       CHU Active
                     </span>
                   )}
                   {cu.has_fffedits && (
-                    <span className='bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1'>
+                    <span className='bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                       <InformationCircleIcon className='h-4 w-4' />
                       Has changes
                     </span>
@@ -152,13 +152,13 @@ const CommUnit = (props) => {
           </div>      
 
             
-          <div className="col-span-5 md:col-span-6 flex flex-col gap-3 mt-4 mx-3">
+          <div className="col-span-5 md:col-span-6 flex flex-col gap-3 mt-8 mx-3">
               <h3 className="text-2xl tracking-tight font-semibold leading-5">
                   Approve/Reject Community Unit
               </h3>
 
               {/* CHU details */}
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+              <div className="bg-yellow-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-4">
                 {CHU_MainDetails.map((dt)=>(
 
                   <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
@@ -188,8 +188,8 @@ const CommUnit = (props) => {
 
 
               {/* CHU details hidden section */}
-              <div className="flex w-full w-auto leading-none items-center">
-                  <button className="flex bg-green-500 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto rounded-md" onClick={() => {
+              <div className="flex w-full leading-none mt-4 items-center">
+                  <button className="flex bg-green-700 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto -md" onClick={() => {
                       if (isCHULDetails) {
                           setIsCHULDetails(false)
                       } else {
@@ -208,7 +208,7 @@ const CommUnit = (props) => {
               </div>
 
               {!isCHULDetails && (
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+                  <div className="bg-yellow-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                       {CHULDetails.map((dt)=>(
                           <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
                               <label className="col-span-1 text-gray-600">{dt.label}</label>
@@ -223,7 +223,7 @@ const CommUnit = (props) => {
 
               {/* Pending updates approval */}
               {cu.pending_updates && Object.keys(cu.pending_updates).length > 0 && (
-              <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+              <div className="bg-yellow-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                 <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                   Pending Updates
                 </h3>
@@ -237,11 +237,11 @@ const CommUnit = (props) => {
                                         return ( 
                                           <>
                                           
-                                          <h5 className='col-span-1 text-gray-900 italic font-semibold leading-16 text-medium mt-5'>{'Basic :'}</h5>
+                                          <h5 className='col-span-1 text-gray-900 pb-2 font-semibold leading-16 text-medium mt-5'>{'Basic :'}</h5>
                                           <TableContainer sx={{ maxHeight: 440 }}>
-                                          <Table stickyHeader aria-label="sticky table">
-                                          <TableHead>
-                                              <TableRow>
+                                          <Table stickyHeader aria-label="sticky table" className='bg-transparent'>
+                                          <TableHead > 
+                                              <TableRow >
                                               {columns.map((column,i) => (
                                                   <TableCell
                                                   key={i}
@@ -397,14 +397,14 @@ const CommUnit = (props) => {
                   <div className="flex flex-row justify-start items-center space-x-3 p-3">
                       <button
                         type="submit"
-                        className={"p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
+                        className={"p-2 text-center -md font-semibold text-base text-white bg-green-700"}
                         onClick={(e) => approveCHUUpdates(e,cu.latest_update,true, router) }
                       >
                         {"Approve CHU Updates"}
                       </button>
                       <button
                         type="submit"
-                        className={"p-2 text-center rounded-md font-semibold text-base text-white bg-red-500" }
+                        className={"p-2 text-center -md font-semibold text-base text-white bg-black" }
                         onClick={(e) => approveCHUUpdates(e,cu.latest_update,false, router) }
                       >
                         {"Reject CHU Updates"}
@@ -417,7 +417,7 @@ const CommUnit = (props) => {
               {/* CHU Rejection Commment */}
               {cu.pending_updates && Object.keys(cu.pending_updates).length == 0 && (
 
-                <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+                <div className="bg-yellow-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                   <h3 className="text-gray-900 font-semibold leading-16 text-medium">Approval comment: </h3>
                   {cu.is_approved}
                   <form
@@ -428,7 +428,7 @@ const CommUnit = (props) => {
                     <textarea
                       cols="70"
                       rows="auto"
-                      className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
+                      className="flex col-span-2 border border-gray-200 -md text-gray-600 font-normal text-medium p-2"
                       placeholder="Enter a comment"
                       onChange={(e) => setAppRejReason(e.target.value)}
                     ></textarea>
@@ -437,14 +437,14 @@ const CommUnit = (props) => {
                     <div className="flex flex-row justify-start items-center space-x-3 p-3">
                     <button
                       type="submit"
-                      className={ cu.is_approved ? ''  : "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
+                      className={ cu.is_approved ? ''  : "p-2 text-center -md font-semibold text-base text-white bg-green-700"}
                       onClick={(e) => setIsApproveReject(true)}
                     >
                       {cu.is_approved ? "": "Approve Community Health Unit"}
                     </button>
                     <button
                       type="submit"
-                      className={  cu.is_rejected ? '' : "p-2 text-center rounded-md font-semibold text-base text-white bg-red-500"}
+                      className={  cu.is_rejected ? '' : "p-2 text-center -md font-semibold text-base text-white bg-red-500"}
                       onClick={(e) => setIsApproveReject(false) }
                     >
                       {cu.is_rejected ? "" : "Reject Community Health Unit"}

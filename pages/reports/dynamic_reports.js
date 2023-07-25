@@ -329,7 +329,7 @@ const DynamicReports = (props) => {
 
 
                 <div className="w-full grid grid-cols-7 gap-4 p-1 md:px-4 my-2">
-                    <div className="col-span-7 flex flex-col gap-x-1 px-4">
+                    <div className="col-span-7 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <Link className="text-green-700" href="/">Home</Link> {'/'}
@@ -350,7 +350,7 @@ const DynamicReports = (props) => {
                                     <div className="flex flex-row items-center justify-start w-full gap-2">
                                     {filters && filters?.error ?
                                         (
-                                            <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                            <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                                 <p>No filters.</p>
                                             </div>
                                         )
@@ -526,7 +526,7 @@ const DynamicReports = (props) => {
                                                                                         <Select 
                                                                                             id={ft}
                                                                                             name={ft}
-                                                                                            className="w-full p-1 rounded bg-gray-50"
+                                                                                            className="w-full p-1  bg-gray-50"
                                                                                             options={ 
                                                                                                 Array.from(filters[ft] || [],
                                                                                                 fltopt => {
@@ -554,7 +554,7 @@ const DynamicReports = (props) => {
                                                                                             name={ft}
                                                                                             isMulti
                                                                                             
-                                                                                            className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                            className="w-full p-1  bg-gray-50 col-start-1"
                                                                                         
                                                                                             options={serviceOptions}
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -620,7 +620,7 @@ const DynamicReports = (props) => {
                                                                                             <Select 
                                                                                             id={ft}
                                                                                             name={ft}
-                                                                                            className="w-full p-1 rounded bg-gray-50"
+                                                                                            className="w-full p-1  bg-gray-50"
                                                                                             options={ 
                                                                                                 Array.from(filters[ft] || [],
                                                                                                 fltopt => {
@@ -646,7 +646,7 @@ const DynamicReports = (props) => {
                                                                                             name={ft}
                                                                                             isMulti
                                                                                             
-                                                                                            className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                            className="w-full p-1  bg-gray-50 col-start-1"
                                                                                             
                                                                                             options={infrastructureOptions}
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -712,7 +712,7 @@ const DynamicReports = (props) => {
                                                                                             <Select 
                                                                                             id={ft}
                                                                                             name={ft}
-                                                                                            className="w-full p-1 rounded bg-gray-50"
+                                                                                            className="w-full p-1  bg-gray-50"
                                                                                             options={ 
                                                                                                 Array.from(filters[ft] || [],
                                                                                                 fltopt => {
@@ -739,7 +739,7 @@ const DynamicReports = (props) => {
                                                                                             name={ft}
                                                                                             isMulti
                                                                                             
-                                                                                            className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                            className="w-full p-1  bg-gray-50 col-start-1"
                                                                                             
                                                                                             options={specialityOptions}
                                                                                             placeholder={ft.split('_').join(' ')[0].toUpperCase() + ft.split('_').join(' ').slice(1)}
@@ -889,7 +889,7 @@ const DynamicReports = (props) => {
                                                                                         id={ft}
                                                                                         name={ft}
                                                                                         
-                                                                                        className="w-full p-1 rounded bg-gray-50"
+                                                                                        className="w-full p-1  bg-gray-50"
                                                                                 
                                                                                         options={options}
 
@@ -968,7 +968,7 @@ const DynamicReports = (props) => {
                                                                                         id={ft}
                                                                                         name={ft}
                                                                                     
-                                                                                        className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                        className="w-full p-1  bg-gray-50 col-start-1"
                                                                                     
                                                                                         options={subCountyOptions}
                                                                                         value={
@@ -1034,7 +1034,7 @@ const DynamicReports = (props) => {
                                                                                             id={ft}
                                                                                             name={ft}
                                                                                         
-                                                                                            className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                            className="w-full p-1  bg-gray-50 col-start-1"
                                                                                             options={subCountyOptions}
                                                                                             value={
                                                                                         
@@ -1057,7 +1057,7 @@ const DynamicReports = (props) => {
                                                                                                 id={ft}
                                                                                                 name={ft}
                                                                                             
-                                                                                                className="w-full p-1 rounded bg-gray-50 col-start-1"
+                                                                                                className="w-full p-1  bg-gray-50 col-start-1"
                                                                                                 options={wardOptions}
                                                                                                 value={
                                                                                         
@@ -1087,7 +1087,7 @@ const DynamicReports = (props) => {
 
                                                                                 return( <Select 
                                                                                         
-                                                                                        isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1 rounded bg-gray-50"
+                                                                                        isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full p-1  bg-gray-50"
                                                                                         options={
                                                                                             
                                                                                         ft === 'keph_level' ?
@@ -1208,11 +1208,11 @@ const DynamicReports = (props) => {
                                                     
                                                     <div  className="col-md-2" >
                                                         <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">From date:</label>
-                                                        <input  type="date" name="from_date" onChange={(e)=> { e.preventDefault(); setFromDate(e.target.value)}} value={fromDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                        <input  type="date" name="from_date" onChange={(e)=> { e.preventDefault(); setFromDate(e.target.value)}} value={fromDate} className="flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                     </div>
                                                     <div  className="col-md-2" >
                                                         <label htmlFor="collection_date" className="text-gray-600 capitalize text-sm">To date:</label>
-                                                        <input  type="date" name="to_date" onChange={(e)=> {e.preventDefault(); setToDate(e.target.value)}} value={toDate} className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+                                                        <input  type="date" name="to_date" onChange={(e)=> {e.preventDefault(); setToDate(e.target.value)}} value={toDate} className="flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none" />
                                                     </div>
 
                                                     <div className='col-md-2 flex-col  items-start'>
@@ -1341,7 +1341,7 @@ const DynamicReports = (props) => {
                                         
                                                         <button 
                                                         type='submit'                   
-                                                        className="bg-white border-2 md:px-4 border-black text-black mx-auto flex items-center justify-center font-semibold px-1 py-1 h-[38px] text-base rounded w-auto mt-7 whitespace-nowrap text-center">
+                                                        className="bg-white border-2 md:px-4 border-black text-black mx-auto flex items-center justify-center font-semibold px-1 py-1 h-[38px] text-base  w-auto mt-7 whitespace-nowrap text-center">
 
                                                     {
                                                         isLoading ?  
@@ -1354,7 +1354,7 @@ const DynamicReports = (props) => {
                                                     }
                                                      </button>
                                                      <button  
-                                                        className="bg-white border-2 md:px-4 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base rounded hover:text-white focus:text-white active:text-white w-auto mt-7 whitespace-nowrap text-cente" 
+                                                        className="bg-white border-2 md:px-4 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-1 py-1 h-[38px] text-base  hover:text-white focus:text-white active:text-white w-auto mt-7 whitespace-nowrap text-cente" 
                                                         onClick={ev => {
                                                         ev.preventDefault()
                                                             setDrillDown({})
@@ -1389,7 +1389,7 @@ const DynamicReports = (props) => {
                             <div>
                                
 
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2" onClick={onBtExport}
+                                <button className="flex items-center bg-green-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2" onClick={onBtExport}
                                             >
                                                 <DownloadIcon className="w-4 h-4 mr-1" />
                                                 <span>Export</span>
@@ -1403,13 +1403,13 @@ const DynamicReports = (props) => {
 
 
                     {/* <aside className="flex flex-col col-span-7 md:col-span-1 p-1 md:h-full ">
-                        <details className="rounded bg-transparent py-1 text-basez flex flex-col w-full md:stickyz md:top-2z" open>
+                        <details className=" bg-transparent py-1 text-basez flex flex-col w-full md:stickyz md:top-2z" open>
                             <summary className="flex cursor-pointer w-full bg-white px-2">
                                 <h3 className="text-2xl tracking-tight font-bold leading-3">Filters</h3>
                             </summary>
                             <div className="flex flex-col gap-2 p-2">
                                 {filters && filters?.error ?
-                                    (<div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                    (<div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                         <p>No filters.</p>
                                     </div>)
                                     : (
@@ -1422,7 +1422,7 @@ const DynamicReports = (props) => {
                                                 scoped_filters.map((ft, ky) => (
                                                     <div key={ft + "_" + ky} className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                                         <label htmlFor={ft} className="text-gray-600 capitalize text-xs">{ft.name.split('_').join(' ')}</label>
-                                                        <Select isMulti={multiFilters.includes(ft.name)} name={ft.name} defaultValue={drillDown[ft.name] || ""} id={ft.name}instanceId={ft.name} className="w-full p-px rounded bg-gray-50 text-sm"
+                                                        <Select isMulti={multiFilters.includes(ft.name)} name={ft.name} defaultValue={drillDown[ft.name] || ""} id={ft.name}instanceId={ft.name} className="w-full p-px  bg-gray-50 text-sm"
                                                             options={
                                                                 ft.options.map(v => ({ value: v, label: v }))
                                                             
@@ -1466,7 +1466,7 @@ const DynamicReports = (props) => {
                                                         }
                                                     }
                                                 }
-                                            }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base rounded hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
+                                            }} className="bg-white border-2 border-black text-black hover:bg-black focus:bg-black active:bg-black font-semibold px-5 py-1 text-base  hover:text-white focus:text-white active:text-white w-full whitespace-nowrap text-center">
                                                 
                                                 Filter
                                                 </button>
@@ -1532,7 +1532,7 @@ const DynamicReports = (props) => {
 
 
                     {/* Floating div at bottom right of page */}
-                    <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

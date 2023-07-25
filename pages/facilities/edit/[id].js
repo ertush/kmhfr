@@ -1,4 +1,4 @@
-import Head from "next/head";
+  import Head from "next/head";
 import { useRouter } from "next/router";
 import * as Tabs from "@radix-ui/react-tabs";
 import { checkToken } from "../../../controllers/auth/auth";
@@ -13,7 +13,7 @@ import Select from "react-select";
 import MainLayout from "../../../components/MainLayout";
 import EditListItem from "../../../components/EditListItem";
 import { Formik, Field, Form } from "formik";
-import dynamic from "next/dynamic";
+import dynamic from "next/dynamic"; 
 // import router from "next/router";
 import { useAlert } from "react-alert";
 import Link from "next/link";
@@ -69,7 +69,7 @@ const WardMap = dynamic(
   () => import("../../../components/WardGISMap"), // replace '@components/map' with your component's location
   {
     loading: () => (
-      <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
+      <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">
         Loading&hellip;
       </div>
     ),
@@ -420,8 +420,26 @@ const EditFacility = (props) => {
     ward,
   };
 
-  const [facilityContacts, setFacilityContacts] = useState(facility_contacts);
-  const [officerContacts, setOfficerContact] = useState(officer_in_charge ?? [1]);
+  const [facilityContacts, setFacilityContacts] = useState([(() => (
+    <FacilityContact
+      contactTypeOptions={contactTypeOptions}
+      fieldNames={['contact_type', 'contact']}
+      setFacilityContacts={() => null}
+      contacts={facility_contacts}
+      index={0}
+    />
+  ))()]);
+  const [officerContacts, setOfficerContact] = useState([
+		(() => (
+			<OfficerContactDetails
+				contactTypeOptions={contactTypeOptions}
+				fieldNames={['officer_details_contact_type', 'officer_details_contact']}
+				contacts={[officer_in_charge]}
+				setFacilityContacts={() => null}
+				index={0}
+			/>
+		))()
+	]);
   const [facilityDepts, setFacilityDepts] = useState(facility_units);
 
   const collection_date = props["21"]?.collection_date
@@ -829,15 +847,15 @@ const EditFacility = (props) => {
   return (
     <>
       <Head>
-        <title>KMHFL - {official_name}</title>
+        <title>KMHFR - {official_name ?? "Edit facility"}</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="/assets/css/leaflet.css" />
       </Head>
 
       <MainLayout>
-        <div className="w-full grid md:grid-cols-7 place-content-center gap-4 md:p-2 my-6">
+        <div className="w-full grid md:grid-cols-7 mb-12 gap-4 my-6">
           {/* Heading */}
-          <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
+          <div className="md:col-span-7 flex flex-col items-start mb-4 justify-start gap-3">
             {/* Bread crumbs */}
             <div className="flex flex-row gap-2 text-sm md:text-base">
               <Link className="text-green-700" href="/">
@@ -857,9 +875,9 @@ const EditFacility = (props) => {
             {/* Header */}
             <div
               className={
-                "col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                (is_approved ? "border-green-600" : "border-green-600")
-              }
+                `col-span-5 grid grid-cols-6 gap-5 border ${is_approved ? "border-green-600" : "border-yellow-600"} md:gap-8 py-6 w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                ${is_approved ? "border-green-600" : "border-yellow-600"}
+              `}
             >
               <div className="col-span-6 md:col-span-3">
                 <span
@@ -868,7 +886,7 @@ const EditFacility = (props) => {
                 >
                   {official_name}
                 </span>
-                <div className="flex gap-2 items-center w-full justify-between">
+                <div className="flex flex-col gap-1 w-full items-start justify-start">
                   <span
                     className={
                       "font-bold text-2xl " +
@@ -877,9 +895,8 @@ const EditFacility = (props) => {
                   >
                     #{code || "NO_CODE"}
                   </span>
-                  <p className="text-gray-600 leading-tight">
-                    {keph_level_name && "KEPH " + keph_level_name}
-                  </p>
+                  <span className="font-semibold text-green-900 text-base">{keph_level_name}</span>
+
                 </div>
               </div>
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2"></div>
@@ -908,7 +925,7 @@ const EditFacility = (props) => {
             />
           </div>
 
-          <div className="md:col-span-6 flex flex-col items-center md:gap-3 gap-y-3 mt-4">
+          <div className="md:col-span-6 flex flex-col items-center md:gap-3 gap-y-3 mt-8">
             {isSavedChanges && facilityUpdateData ? (
               // Display Changes to be updated
               <div className="flex flex-col justify-start w-full space-y-3 md:px-4">
@@ -919,7 +936,7 @@ const EditFacility = (props) => {
                 <div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
                   <p className="text-base font-normal flex -leading-3">
                     Updates were made on
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
+                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
                       {
                         new Date(facilityUpdateData?.updated)
                           .toLocaleString()
@@ -927,27 +944,27 @@ const EditFacility = (props) => {
                       }
                     </span>
                     by
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
+                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
                       {facilityUpdateData?.created_by_name}
                     </span>
                   </p>
 
                   <p className="text-base font-normal flex -leading-3">
                     Facility Code:
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
+                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
                       {code}
                     </span>
                   </p>
 
                   <span className="flex space-x-2">
                     <button
-                      className="flex justify-center text-base font-semibold text-white bg-green-500 rounded py-1 px-2"
+                      className="flex justify-center text-base font-semibold text-white bg-green-500  py-1 px-2"
                       onClick={() => router.push(`/facilities/${id}`)}
                     >
                       Edit
                     </button>
                     <button
-                      className="flex justify-center text-base font-semibold text-white bg-green-500 rounded py-1 px-2"
+                      className="flex justify-center text-base font-semibold text-white bg-green-500  py-1 px-2"
                       onClick={() => router.push("/facilities")}
                     >
                       Confirm Updates
@@ -966,53 +983,55 @@ const EditFacility = (props) => {
               // Display Tabs with Edit Forms
               <Tabs.Root
                 orientation="horizontal"
-                className="w-full flex flex-col tab-root"
+                className="w-full flex flex-col py-2 tab-root border border-green-600"
                 defaultValue="geolocation"
+                
               >
-                <Tabs.List className="list-none md:grid md:grid-cols-7 grid grid-cols-2 gap-2  md:mx-3 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+                <Tabs.List className="list-none md:grid border-b border-green-600 md:grid-cols-7 grid grid-cols-2 gap-2  px-2 md:gap-3  uppercase leading-none tab-list font-semibold">
                   <Tabs.Tab
                     value="basic_details"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
                     Basic Details
                   </Tabs.Tab>
                   <Tabs.Tab
                     value="geolocation"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
                     Geolocation
                   </Tabs.Tab>
                   <Tabs.Tab
                     value="facility_contacts"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
                     Facility contacts
                   </Tabs.Tab>
                   <Tabs.Tab
                     value="regulation"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
                     Regulation
                   </Tabs.Tab>
                   <Tabs.Tab
                     value="services"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
                     Services
                   </Tabs.Tab>
                   <Tabs.Tab
                     value="infrastructure"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
                     Infrastructure
                   </Tabs.Tab>
                   <Tabs.Tab
                     value="human_resource"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
                     Human Resources
                   </Tabs.Tab>
                 </Tabs.List>
+
                 {/* Basic Details */}
                 <Tabs.Panel
                   value="basic_details"
@@ -1162,7 +1181,7 @@ const EditFacility = (props) => {
                           required
                           type="text"
                           name="official_name"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1182,7 +1201,7 @@ const EditFacility = (props) => {
                           required
                           type="text"
                           name="name"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1199,13 +1218,27 @@ const EditFacility = (props) => {
                           </span>
                         </label>
                         <Select
+                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                          styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                           ref={facilityTypeRef}
                           options={facilityOptions || []}
                           required
                           placeholder="Select a facility type..."
                           onChange={(e) => setFacilityOption(e.label)}
                           name="facility_type"
-                          className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                         
                         />
                       </div>
 
@@ -1222,6 +1255,20 @@ const EditFacility = (props) => {
                           </span>
                         </label>
                         <Select
+                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                          styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                           ref={facilityTypeDetailsRef}
                           options={(() => {
                             switch (facilityOption) {
@@ -1407,7 +1454,7 @@ const EditFacility = (props) => {
                             }
                           }}
                           name="facility_type_details"
-                          className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                          
                         />
                       </div>
 
@@ -1424,6 +1471,20 @@ const EditFacility = (props) => {
                           </span>
                         </label>
                         <Select
+                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                          styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                           ref={operationStatusRef}
                           options={operationStatusOptions || []}
                           required
@@ -1432,7 +1493,7 @@ const EditFacility = (props) => {
                             setOperationStatus(ev.value);
                           }}
                           name="operation_status"
-                          className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                         
                         />
                       </div>
 
@@ -1452,7 +1513,7 @@ const EditFacility = (props) => {
                           required
                           type="date"
                           name="date_established"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1487,13 +1548,27 @@ const EditFacility = (props) => {
                           </span>
                         </label>
                         <Select
+                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                          styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                           ref={ownerTypeOptionsRef}
                           options={ownerTypeOptions || []}
                           required
                           placeholder="Select owner.."
                           onChange={(e) => setOwnerTypeOption(e.label)}
                           name="owner_type"
-                          className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                          
                         />
                       </div>
 
@@ -1510,6 +1585,20 @@ const EditFacility = (props) => {
                           </span>
                         </label>
                         <Select
+                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                          styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                           ref={ownerDetailsRef}
                           options={
                             (() => {
@@ -1622,7 +1711,7 @@ const EditFacility = (props) => {
                           required
                           placeholder="Select an owner.."
                           name="owner"
-                          className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                         
                         />
                       </div>
 
@@ -1635,13 +1724,27 @@ const EditFacility = (props) => {
                           KEPH Level
                         </label>
                         <Select
+                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                          styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                           ref={kephLvlRef}
                           isDisabled={true}
                           options={kephOptions ?? []}
                           placeholder="Select a KEPH Level.."
                           onChange={(ev) => ev.preventDefault()}
                           name="keph_level"
-                          className="flex-none  w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                          
                         />
                       </div>
 
@@ -1662,7 +1765,7 @@ const EditFacility = (props) => {
                           type="number"
                           name="number_of_beds"
                           readOnly
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1683,7 +1786,7 @@ const EditFacility = (props) => {
                           min={0}
                           type="number"
                           name="number_of_inpatient_beds"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1704,7 +1807,7 @@ const EditFacility = (props) => {
                           min={0}
                           type="number"
                           name="number_of_cots"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1725,7 +1828,7 @@ const EditFacility = (props) => {
                           min={0}
                           type="number"
                           name="number_of_emergency_casualty_beds"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1746,7 +1849,7 @@ const EditFacility = (props) => {
                           min={0}
                           type="number"
                           name="number_of_icu_beds"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1767,7 +1870,7 @@ const EditFacility = (props) => {
                           min={0}
                           type="number"
                           name="number_of_hdu_beds"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1788,7 +1891,7 @@ const EditFacility = (props) => {
                           min={0}
                           type="number"
                           name="number_of_maternity_beds"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1809,7 +1912,7 @@ const EditFacility = (props) => {
                           min={0}
                           type="number"
                           name="number_of_isolation_beds"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1830,7 +1933,7 @@ const EditFacility = (props) => {
                           min={0}
                           type="number"
                           name="number_of_general_theatres"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1851,7 +1954,7 @@ const EditFacility = (props) => {
                           min={0}
                           type="number"
                           name="number_of_maternity_theatres"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1872,7 +1975,7 @@ const EditFacility = (props) => {
                           min={0}
                           type="number"
                           name="facility_catchment_population"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -1907,12 +2010,26 @@ const EditFacility = (props) => {
                           </span>
                         </label>
                         <Select
+                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                          styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                           ref={facilityAdmissionRef}
                           options={facilityAdmissionOptions || []}
                           required
                           placeholder="Select an admission status.."
                           name="admission_status"
-                          className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                         
                         />
                       </div>
 
@@ -1936,8 +2053,8 @@ const EditFacility = (props) => {
 
                       {/* Armed Forces Facilities */}
 
-                      <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto">
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">
+                      <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
+                        <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
                           Armed Forces Facilities
                         </h4>
                         <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
@@ -1958,8 +2075,8 @@ const EditFacility = (props) => {
 
                       {/* Hours/Days of Operation */}
 
-                      <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto">
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">
+                      <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
+                        <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
                           Hours/Days of Operation
                         </h4>
                         <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
@@ -2039,8 +2156,8 @@ const EditFacility = (props) => {
                       </div>
 
                       {/* Location Details */}
-                      <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto">
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">
+                      <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
+                        <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
                           Location Details
                         </h4>
                         <div className="grid grid-cols-4 place-content-start gap-3 w-full">
@@ -2058,6 +2175,20 @@ const EditFacility = (props) => {
                                 </span>
                               </label>
                               <Select
+                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                 options={countyOptions || []}
                                 ref={countyRef}
                                 required
@@ -2096,7 +2227,7 @@ const EditFacility = (props) => {
                                   }
                                 }}
                                 name="county_id"
-                                className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                                
                               />
                             </div>
                           </div>
@@ -2115,12 +2246,26 @@ const EditFacility = (props) => {
                                 </span>
                               </label>
                               <Select
+                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                 options={subCountyOpt ?? subCountyOptions}
                                 ref={subCountyRef}
                                 required
                                 placeholder="Select Sub County"
                                 name="sub_county_id"
-                                className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                              
                               />
                             </div>
                           </div>
@@ -2139,6 +2284,20 @@ const EditFacility = (props) => {
                                 </span>
                               </label>
                               <Select
+                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                 ref={constituencyRef}
                                 options={subCountyOpt ?? constituencyOptions}
                                 required
@@ -2171,7 +2330,7 @@ const EditFacility = (props) => {
                                   }
                                 }}
                                 name="constituency_id"
-                                className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                                
                               />
                             </div>
                           </div>
@@ -2190,12 +2349,26 @@ const EditFacility = (props) => {
                                 </span>
                               </label>
                               <Select
+                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                 ref={wardRef}
                                 options={wardOpt ?? wardOptions}
                                 required
                                 placeholder="Select Ward"
                                 name="ward"
-                                className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                               
                               />
                             </div>
                           </div>
@@ -2213,7 +2386,7 @@ const EditFacility = (props) => {
                           <Field
                             type="text"
                             name="town_name"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
 
@@ -2229,7 +2402,7 @@ const EditFacility = (props) => {
                           <Field
                             type="text"
                             name="plot_number"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
 
@@ -2245,7 +2418,7 @@ const EditFacility = (props) => {
                           <Field
                             type="text"
                             name="nearest_landmark"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
 
@@ -2261,13 +2434,13 @@ const EditFacility = (props) => {
                           <Field
                             type="text"
                             name="location_desc"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
                       </div>
 
                       {/* check file upload */}
-                      <div className=" w-full flex flex-col items-start justify-start p-3 rounded border border-gray-300/70 bg-gray-50 h-auto">
+                      <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
                         <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                           <label
                             htmlFor="facility_checklist_document"
@@ -2282,7 +2455,7 @@ const EditFacility = (props) => {
                             value={_checklistFile}
                             onChange={setCheckListFile}
                             name="facility_checklist_document"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
                       </div>
@@ -2290,7 +2463,7 @@ const EditFacility = (props) => {
                       <div className=" w-full flex justify-end h-auto mr-3">
                         <button
                           type="submit"
-                          className="p-2 text-white bg-green-600 rounded font-semibold"
+                          className="p-2 text-white bg-green-700  font-semibold"
                         >
                           save & finish
                         </button>
@@ -2298,6 +2471,7 @@ const EditFacility = (props) => {
                     </Form>
                   </Formik>
                 </Tabs.Panel>
+
                 {/* Geolocation */}
                 <Tabs.Panel
                   value="geolocation"
@@ -2392,7 +2566,7 @@ const EditFacility = (props) => {
                         <Field
                           type="date"
                           name="collection_date"
-                          className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                         />
                       </div>
 
@@ -2414,7 +2588,7 @@ const EditFacility = (props) => {
                             required
                             type="decimal"
                             name="longitude"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
 
@@ -2434,7 +2608,7 @@ const EditFacility = (props) => {
                             required
                             type="decimal"
                             name="latitude"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
 
@@ -2449,14 +2623,14 @@ const EditFacility = (props) => {
                           <Field
                             type="decimal"
                             name="accuracy"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
                       </div>
 
                       {/* Ward Geo Map */}
-                      <div className="w-full h-auto">
-                        <div className="w-full bg-gray-200  rounded flex flex-col items-start justify-center text-left relative">
+                      <div className="w-full h-au to">
+                        <div className="w-full bg-gray-200 border border-green-600 flex flex-col items-start justify-center text-left relative">
                           <Map
                             markerCoordinates={[
                               _lat.length < 4 ? "0.000000" : _lat,
@@ -2473,7 +2647,7 @@ const EditFacility = (props) => {
                       <div className=" w-full flex justify-end h-auto mr-3">
                         <button
                           type="submit"
-                          className="p-2 text-white bg-green-600 rounded font-semibold"
+                          className="p-2 text-white bg-green-700  font-semibold"
                         >
                           save & finish
                         </button>
@@ -2481,6 +2655,7 @@ const EditFacility = (props) => {
                     </Form>
                   </Formik>
                 </Tabs.Panel>
+
                 {/* Facility contacts */}
                 <Tabs.Panel
                   value="facility_contacts"
@@ -2589,19 +2764,19 @@ const EditFacility = (props) => {
                     >
                       {/* Contacts */}
 
-                      <div className="grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3">
+                      <div className="grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3">
                         {/* Contact Headers */}
-                        <h3 className="text-medium font-semibold text-blue-900">
+                        <h3 className="text-medium font-semibold text-green-900">
                           Contact Type
                         </h3>
-                        <h3 className="text-medium font-semibold text-blue-900">
+                        <h3 className="text-medium font-semibold text-green-900">
                           Contact Details
                         </h3>
                         <hr className="col-span-2" />
 
                         <div className="col-span-2 flex-col w-full items-start justify-start gap-y-3 ">
                           {facilityContacts &&
-                            facilityContacts.length > 0 &&
+                            facilityContacts.length > 0 && 
                             facilityContacts.map(
                               ({ contact, contact_type_name, id }, i) => (
                                 <EditFacilityContactsContext.Provider
@@ -2611,7 +2786,7 @@ const EditFacility = (props) => {
                                   <FacilityContact
                                     contactTypeOptions={contactTypeOptions}
                                     setFacilityContacts={setFacilityContacts}
-                                    contacts={[contact, contact_type_name, id]}
+                                    contacts={[(contact ?? ''), (contact_type_name ?? ''), (id ?? '')]}
                                     index={id}
                                     fieldNames={["contact_type", "contact"]}
                                   />
@@ -2630,21 +2805,22 @@ const EditFacility = (props) => {
                               ...facilityContacts,
                               (() => (
                                 <EditFacilityContactsContext.Provider
-                                  value={facilityContacts}
-                                  key={facilityContacts.length + 1 - 1}
+                                value={facilityContacts} 
+                                key={(facilityContacts.length + 1) - 1}
                                 >
                                   <FacilityContact
-                                    contactTypeOptions={contactTypeOptions}
-                                    setFacilityContacts={setFacilityContacts}
-                                    contacts={null}
-                                    fieldNames={["contact_type", "contact"]}
-                                    index={facilityContacts.length + 1 - 1}
-                                  />
+																					contactTypeOptions={contactTypeOptions}
+																					setFacilityContacts={setFacilityContacts}
+																					contacts={[null, null, null]}
+																					fieldNames={['contact_type', 'contact']}
+																					index={(facilityContacts.length + 1) - 1}
+
+																		/>
                                 </EditFacilityContactsContext.Provider>
                               ))(),
                             ]);
                           }}
-                          className="flex items-center space-x-1 bg-indigo-500 p-1 rounded"
+                          className="flex items-center space-x-1 bg-green-700 p-1 "
                         >
                           <PlusIcon className="w-4 h-4 text-white" />
                           <p className="text-medium font-semibold text-white">
@@ -2655,10 +2831,10 @@ const EditFacility = (props) => {
 
                       {/* Facility Officer In-charge Details */}
 
-                      <h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">
+                      <h5 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
                         Facility Officer In-Charge Details
                       </h5>
-                      <div className="flex flex-col items-start justify-start gap-1 w-full rounded h-auto">
+                      <div className="flex flex-col items-start justify-start gap-1 w-full  h-auto">
                         {/*  Name  */}
                         <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                           <label
@@ -2676,7 +2852,7 @@ const EditFacility = (props) => {
                             required
                             type="text"
                             name="name"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
 
@@ -2691,7 +2867,7 @@ const EditFacility = (props) => {
                           <Field
                             type="text"
                             name="reg_no"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
 
@@ -2708,26 +2884,40 @@ const EditFacility = (props) => {
                             </span>{" "}
                           </label>
                           <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                             options={jobTitleOptions || []}
                             required
                             ref={jobTitleRef}
                             placeholder="Select Job Title"
                             name="title"
-                            className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                           
                           />
                         </div>
 
                         {/* Facility Officer Contact Type / Contact Details */}
 
                         <div
-                          className="grid grid-cols-2 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3"
+                          className="grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3"
                           ref={facilityContact2Ref}
                         >
                           {/* Contact Headers */}
-                          <h3 className="text-medium font-semibold text-blue-900">
+                          <h3 className="text-medium font-semibold text-green-900">
                             Contact Type
                           </h3>
-                          <h3 className="text-medium font-semibold text-blue-900">
+                          <h3 className="text-medium font-semibold text-green-900">
                             Contact Details
                           </h3>
                           <hr className="col-span-2" />
@@ -2736,8 +2926,7 @@ const EditFacility = (props) => {
 
                           <div className="col-span-2 flex-col w-full items-start justify-start gap-y-3 ">
                             {officerContacts &&
-                            officerContacts?.contacts &&
-                            typeof officerContacts[0] === "function"
+                            !officerContacts?.length > 1 
                               ? officerContacts.map(
                                   (officerContact) => officerContact
                                 )
@@ -2780,14 +2969,14 @@ const EditFacility = (props) => {
                                 (() => (
                                   <EditOfficerContactsContext.Provider
                                     value={officerContacts}
-                                    key={[officerContacts].length + 1 - 1 ?? 0}
+                                    key={([officerContacts].length + 1) - 1}
                                   >
                                     <OfficerContactDetails
                                       contactTypeOptions={contactTypeOptions}
                                       setFacilityContacts={setOfficerContact}
-                                      contacts={null}
+                                      contacts={[null, null, null]}
                                       index={
-                                        [officerContacts].length + 1 - 1 ?? 0
+                                        ([officerContacts].length + 1) - 1 
                                       }
                                       fieldNames={["type", "contact"]}
                                     />
@@ -2795,7 +2984,7 @@ const EditFacility = (props) => {
                                 ))(),
                               ]);
                             }}
-                            className="flex items-center space-x-1 bg-indigo-500 p-1 rounded"
+                            className="flex items-center space-x-1 bg-green-700 p-1 "
                           >
                             <PlusIcon className="w-4 h-4 text-white" />
                             <p className="text-medium font-semibold text-white">
@@ -2809,7 +2998,7 @@ const EditFacility = (props) => {
                       <div className=" w-full flex justify-end h-auto mr-3">
                         <button
                           type="submit"
-                          className="p-2 text-white bg-green-600 rounded font-semibold"
+                          className="p-2 text-white bg-green-700  font-semibold"
                         >
                           save & finish
                         </button>
@@ -2823,7 +3012,7 @@ const EditFacility = (props) => {
                   className="grow-1 py-1 px-4 tab-panel"
                 >
                   <>
-                    <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">
+                    <h4 className="text-lg uppercase mt-2 pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
                       Facility Regulation
                     </h4>
                     <form
@@ -2859,6 +3048,20 @@ const EditFacility = (props) => {
                           // Filtered Regulaotry Body Options
 
                           <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                             ref={regulatoryFilteredBodyRef}
                             options={filteredRegBodyOptions || []}
                             required
@@ -2869,10 +3072,23 @@ const EditFacility = (props) => {
                             }}
                             placeholder="Select Regulatory Body"
                             name="regulatory_body"
-                            className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
-                          />
+                           />
                         ) : (
                           <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                             ref={regulatoryBodyRef}
                             options={regBodyOptions || []}
                             required
@@ -2883,7 +3099,7 @@ const EditFacility = (props) => {
                             }}
                             placeholder="Select Regulatory Body"
                             name="regulatory_body"
-                            className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                           
                           />
                         )}
                       </div>
@@ -2901,6 +3117,20 @@ const EditFacility = (props) => {
                           //    Filtered Regulatory State Options
 
                           <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                             ref={regulatoryStateRef}
                             options={filteredRegulationStateOptions || []}
                             required
@@ -2911,10 +3141,24 @@ const EditFacility = (props) => {
                             }}
                             placeholder="Select Regulation Status"
                             name="regulation_status"
-                            className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                            
                           />
                         ) : (
                           <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                             ref={regulatoryStateRef}
                             options={regulationStateOptions || []}
                             required
@@ -2925,7 +3169,7 @@ const EditFacility = (props) => {
                             }}
                             placeholder="Select Regulation Status"
                             name="regulation_status"
-                            className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+                           
                           />
                         )}
                       </div>
@@ -2943,14 +3187,14 @@ const EditFacility = (props) => {
                             type="text"
                             id="license_number"
                             name="license_number"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         ) : (
                           <input
                             type="text"
                             id="license_number"
                             name="license_number"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         )}
                       </div>
@@ -2968,6 +3212,20 @@ const EditFacility = (props) => {
                           </span>{" "}
                         </label>
                         <Select
+                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                          styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                           ref={regulatoryBodyRef}
                           options={regBodyOptions || []}
                           required
@@ -2978,7 +3236,6 @@ const EditFacility = (props) => {
                           }}
                           placeholder="Select Licensing Body"
                           name="regulatory_body"
-                          className="flex-none col-start-1 w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
                         />
                       </div>
 
@@ -2996,19 +3253,19 @@ const EditFacility = (props) => {
                             required
                             type="text"
                             name="registration_number"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         ) : (
                           <input
                             type="text"
                             name="registration_number"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         )}
                       </div>
 
                       {/* check file upload */}
-                      <div className=" w-full flex flex-col items-start justify-start p-3 rounded h-auto">
+                      <div className=" w-full flex flex-col items-start justify-start p-3  h-auto">
                         <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                           <label
                             htmlFor="license_document"
@@ -3020,30 +3277,30 @@ const EditFacility = (props) => {
                             onChange={(e) => setLicenseFile(e.target.files[0])}
                             type="file"
                             name="license_document"
-                            className="flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
                       </div>
 
                       {/* Facility Departments Regulation  */}
-                      <h5 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">
+                      <h5 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
                         Facility Departments Regulation
                       </h5>
                       <div
-                        className="grid grid-cols-4 place-content-start gap-3 w-full border-2 border-gray-200 rounded p-3"
+                        className="grid grid-cols-4 place-content-start gap-3 w-full border border-green-600  p-3"
                         ref={facilityRegulatoryBodyRef}
                       >
                         {/* Contact Headers */}
-                        <h3 className="text-medium font-semibold text-blue-900">
+                        <h3 className="text-medium font-semibold text-green-900">
                           Name
                         </h3>
-                        <h3 className="text-medium font-semibold text-blue-900">
+                        <h3 className="text-medium font-semibold text-green-900">
                           Regulatory Body
                         </h3>
-                        <h3 className="text-medium font-semibold text-blue-900">
+                        <h3 className="text-medium font-semibold text-green-900">
                           License Number
                         </h3>
-                        <h3 className="text-medium font-semibold text-blue-900">
+                        <h3 className="text-medium font-semibold text-green-900">
                           Reg. Number
                         </h3>
 
@@ -3120,7 +3377,7 @@ const EditFacility = (props) => {
                               ];
                             });
                           }}
-                          className="flex items-center space-x-1 bg-indigo-500 p-1 rounded"
+                          className="flex items-center space-x-1 bg-green-700 p-1 "
                         >
                           <PlusIcon className="w-4 h-4 text-white" />
                           <p className="text-medium font-semibold text-white">
@@ -3130,14 +3387,14 @@ const EditFacility = (props) => {
                       </div>
 
                       {/* Prev / Next */}
-                      <div className="flex justify-between items-center w-full">
-                        {/* <button onClick={handleRegulationPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                      <div className="flex justify-end   items-center w-full">
+                        {/* <button onClick={handleRegulationPrevious} className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'>
 																	<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
 																	<span className='text-medium font-semibold text-black '>Facility Contacts</span>
 																</button> */}
                         <button
                           type="submit"
-                          className="p-2 text-white bg-green-600 rounded font-semibold"
+                          className="p-2 text-white bg-green-700 font-semibold"
                         >
                           save & finish
                         </button>

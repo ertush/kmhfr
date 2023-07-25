@@ -47,7 +47,7 @@ const Facility = (props) => {
     () => import("../../components/Map"), // replace '@components/map' with your component's location
     {
       loading: () => (
-        <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
+        <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">
           Loading&hellip;
         </div>
       ),
@@ -110,7 +110,7 @@ const Facility = (props) => {
   return (
     <>
       <Head>
-        <title>KMHFL - {facility?.official_name ?? ""}</title>
+        <title>KMHFR - {facility?.official_name ?? ""}</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="/assets/css/leaflet.css" />
       </Head>
@@ -213,12 +213,12 @@ const Facility = (props) => {
                             cols={'30'}
                             rows={'6'}
                             name='closing_reason'
-                            className='border-2 border-gray-400 rounded'
+                            className='border-2 border-gray-400 '
                             >
                             </Field>
                             <div className='flex justify-start gap-4 mt-4'>
-                                <button className="bg-green-500 text-white font-semibold rounded p-2 text-center" type="submit">Reopen</button>
-                                <button className="bg-red-500 text-white font-semibold rounded p-2 text-center"  type="button" onClick={handleClose}>Cancel</button>
+                                <button className="bg-green-500 text-white font-semibold  p-2 text-center" type="submit">Reopen</button>
+                                <button className="bg-red-500 text-white font-semibold  p-2 text-center"  type="button" onClick={handleClose}>Cancel</button>
                             </div>
                           </Form>
                         </Formik>
@@ -316,7 +316,7 @@ const Facility = (props) => {
                         cols={'30'}
                         rows={'6'}
                         name='closing_reason'
-                        className='border-2 border-gray-400 rounded'
+                        className='border-2 border-gray-400 '
                         >
                         </Field>
 
@@ -328,8 +328,8 @@ const Facility = (props) => {
                         </div>
 
                         <div className='flex justify-start gap-4 mt-4'>
-                            <button className="bg-red-500 text-white font-semibold rounded p-2 text-center" type="submit">Close Facility</button>
-                            <button className="bg-indigo-500 text-white font-semibold rounded p-2 text-center" type="button" onClick={handleCloseModal}>Cancel</button>
+                            <button className="bg-red-500 text-white font-semibold  p-2 text-center" type="submit">Close Facility</button>
+                            <button className="bg-indigo-500 text-white font-semibold  p-2 text-center" type="button" onClick={handleCloseModal}>Cancel</button>
                         </div>
                       </Form>
                     </Formik>
@@ -338,9 +338,8 @@ const Facility = (props) => {
                   
               </Box>
               </Fade>
-          </Modal>
+            </Modal>
           }
-
 
           {/* Header */}
           <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
@@ -362,15 +361,15 @@ const Facility = (props) => {
             {/* Header Bunner  */}
             <div
               className={
-                "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                (facility?.is_approved ? "border-green-600" : "border-red-600")
-              }
+                `col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border ${facility?.is_approved ? "border-green-600" : "border-yellow-600"} drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                ${facility?.is_approved ? "border-green-600" : "border-yellow-600"}
+              `}
             >
               <div className="col-span-6 md:col-span-3">
                 <h1 className="text-4xl tracking-tight font-bold leading-tight">
                   {facility?.official_name}
                 </h1>
-                <div className="flex gap-2 items-center w-full justify-between">
+                <div className="flex flex-col gap-1 w-full items-start justify-start">
                   <span
                     className={
                       "font-bold text-2xl " +
@@ -379,18 +378,18 @@ const Facility = (props) => {
                   >
                     #{facility?.code || "NO_CODE"}
                   </span>
-                  <p className="text-gray-600 leading-tight">
-                    {facility?.keph_level_name &&
-                      "KEPH " + facility?.keph_level_name}
-                  </p>
+
+                  <span className="font-semibold text-green-900 text-base">{facility?.keph_level_name}</span>
+                  
                 </div>
               </div>
-              <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
+
+              <div className="flex flex-wrap gap-3 items-center justify-end  md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                   {facility?.operational || facility?.operation_status_name ? (
                     <span
                       className={
-                        "leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"
+                        "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"
                       }
                     >
                       <CheckCircleIcon className="h-4 w-4" />
@@ -400,41 +399,42 @@ const Facility = (props) => {
                     ""
                   )}
                   {facility?.is_approved ?  (
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       {facility?.approved_national_level ? 'Approved': 'pending approval'}
                     </span>
                   ) : (
-                    <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-red-200 text-red-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
                       pending validation
                     </span>
                   )}
                   {facility?.has_edits && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
                     </span>
                   )}
                   {facility?.is_complete ? (
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       Completed{" "}
                     </span>
                   ) : (
-                    <span className="bg-yellow-200 text-yellow-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-yellow-200 text-yellow-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       Incomplete{" "}
                     </span>
                   )}
                   {facility?.closed && (
-                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <LockClosedIcon className="h-4 w-4" />
                       Closed
                     </span>
                   )}
                 </div>
               </div>
+
               <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
             </div>
           </div>
@@ -451,112 +451,132 @@ const Facility = (props) => {
           <div className={`col-span-1 ${isViewChangeLog ? 'md:col-span-3':'md:col-span-4'} md:w-full flex flex-col gap-3 mt-4`}>
 
             {/* Action Buttons e.g (Approve/Reject, Edit, Regulate, Upgrade, Close) */}
-            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
-              <div className="flex flex-row justify-start items-center space-x-3 p-3">
 
-                {/* Render button conditionally for both facility approval and validation*/}
-                {
-                  hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
-                  hasPermission(/^facilities.view_facility$/, userPermissions) &&
-                  (!belongsToUserGroup(userGroup, 'County Health Records Information Officer') || 
-                  (belongsToUserGroup(userGroup, 'County Health Records Information Officer') && facility.has_edits)) &&
-                  (qf.includes('updated_pending_validation') || qf.includes('to_publish')) &&
-                  facility?.is_approved &&
-                
-                <button
-                  onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
-                  className={
-                    "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
-                      
-                  }
-                >
+            {
+              (
+              userCtx?.groups[0].id == 1 || 
+              userCtx?.groups[0].id == 2 ||
+              userCtx?.groups[0].id == 3 
+              ) &&
+              <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                <div className="flex flex-row justify-start items-center space-x-3 p-3">
+
+                  {/* Render button conditionally for both facility approval and validation*/}
                   {
-                   facility.has_edits ? qf.includes('updated_pending_validation') && 'Validate Facility Updates' : qf.includes('to_publish') && 'Approve/Reject Facility' 
+                      // hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
+                      // hasPermission(/^facilities.view_facility$/, userPermissions) &&
+                      // (!belongsToUserGroup(userGroup, 'County He alth Records Information Officer') || 
+                      // (belongsToUserGroup(userGroup, 'County Health Records Information Officer') && facility.has_edits)) &&
+                      (qf.includes('updated_pending_validation') || qf.includes('to_publish')) &&
+                      // facility?.is_approved &&
+
+                      userCtx?.groups[0].id == 1 &&
+
+                    <button
+                      onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
+                      className={
+                        "p-2 text-center -md font-semibold text-base text-white bg-green-600"
+                          
+                      }
+                    >
+                      {
+                      facility.has_edits ? qf.includes('updated_pending_validation') && 'Validate Facility Updates' : qf.includes('to_publish') && 'Approve/Reject Facility' 
+                      }
+                      
+      
+                    </button>
+                  } 
+
+                    {
+                    // hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
+                    // hasPermission(/^facilities.view_facility$/, userPermissions) &&
+                    // (
+                    // belongsToUserGroup(userGroup, 'County Health Records Information Officer') ||
+                    // belongsToUserGroup(userGroup, 'National Administrators') ||
+                    // belongsToUserGroup(userGroup, 'Superusers') 
+                    // ) &&
+
+                    // qf.includes('new_pending_validation') &&
+                    // !facility?.is_approved &&
+                    userCtx?.groups[0]?.id == 1 &&
+                    
+                  <button
+                    onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
+                    className={
+                      "p-2 text-center -md font-semibold text-base text-white bg-green-600"
+                        
+                    }
+                  >
+                    Validate/Reject Facility
+    
+                  </button>
+                  } 
+                  {/* {
+                    hasPermission(/^common.view_documentupload$/, userPermissions) &&
+                    !qf.includes('new_pending_validation') &&
+                    !qf.includes('failed_validation') &&
+                  <button
+                    onClick={() => console.log(props.data)}
+                    className="p-2 text-center -md font-semibold text-base text-white bg-black"
+                  >
+                    Print
+                  </button>
+                  } */}
+                  {
+                      ((!facility?.closed &&
+                      userCtx?.groups[0]?.id == 2) ||
+                      userCtx?.groups[0]?.id == 1 ) &&
+                      // hasPermission(/^facilities.change_facility$/, userPermissions) &&
+                          <button
+                          onClick={() => router.push(`edit/${facility?.id}`)}
+                          className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                        >
+                          Edit
+                        </button>
                   }
-  
-                </button>
-                } 
 
                   {
-                  hasPermission(/^facilities.add_facilityapproval$/, userPermissions) &&
-                  hasPermission(/^facilities.view_facility$/, userPermissions) &&
-                  (
-                  belongsToUserGroup(userGroup, 'County Health Records Information Officer') ||
-                  belongsToUserGroup(userGroup, 'National Administrators') ||
-                  belongsToUserGroup(userGroup, 'Superusers') 
-                  ) &&
-                  qf.includes('new_pending_validation') &&
-                  !facility?.is_approved &&
-                  
-                
-                <button
-                  onClick={() => router.push(`/facilities/approve_reject/${facility?.id}`)}
-                  className={
-                    "p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"
-                      
+                    // hasPermission(/^facilities.add_facilityregulationstatus$/, userPermissions) &&
+                    // hasPermission(/^facilities.change_facilityregulationstatus$/, userPermissions) &&
+                    // hasPermission(/^facilities.view_facility$/, userPermissions) &&
+                    // !qf.includes('failed_validation') &&
+                    (!facility?.closed && userCtx?.groups[0]?.id == 3) &&
+
+                  <button
+                    onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
+                    className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                  >
+                    Regulate
+                  </button>
                   }
-                >
-                   Validate/Reject Facility
-  
-                </button>
-                } 
-                {
-                  hasPermission(/^common.view_documentupload$/, userPermissions) &&
-                  !qf.includes('new_pending_validation') &&
-                  !qf.includes('failed_validation') &&
-                <button
-                  onClick={() => console.log(props.data)}
-                  className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
-                >
-                  Print
-                </button>
-                }
-                {
-                    !facility?.closed &&
-                    hasPermission(/^facilities.change_facility$/, userPermissions) &&
-                        <button
-                        onClick={() => router.push(`edit/${facility?.id}`)}
-                        className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                      >
-                        Edit
-                      </button>
-                }
-                {
-                  hasPermission(/^facilities.add_facilityregulationstatus$/, userPermissions) &&
-                  hasPermission(/^facilities.change_facilityregulationstatus$/, userPermissions) &&
-                  hasPermission(/^facilities.view_facility$/, userPermissions) &&
-                  !qf.includes('failed_validation') &&
-                <button
-                  onClick={() => router.push(`/facilities/regulate/${facility?.id}`)}
-                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                >
-                  Regulate
-                </button>
-                }
-                {
-                  hasPermission(/^facilities.add_facilityupgrade$/, userPermissions) &&
-                  hasPermission(/^facilities.change_facilityupgrade$/, userPermissions) &&
-                  hasPermission(/^facilities.add_facilityservice$/, userPermissions) &&
-                  hasPermission(/^facilities.change_facilityservice$/, userPermissions) &&
-                  !qf.includes('new_pending_validation') &&
-                <button
-                  onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
-                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                >
-                  Upgrade
-                </button>
-                }
-                {
-                  !qf.includes('new_pending_validation') &&
-                <button
-                  onClick={() => setIsClosingFacility(true)}
-                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
-                >
-                  Close
-                </button>
-                }
+                  {
+                    // hasPermission(/^facilities.add_facilityupgrade$/, userPermissions) &&
+                    // hasPermission(/^facilities.change_facilityupgrade$/, userPermissions) &&
+                    // hasPermission(/^facilities.add_facilityservice$/, userPermissions) &&
+                    // hasPermission(/^facilities.change_facilityservice$/, userPermissions) &&
+                    userCtx?.groups[0]?.id == 2 &&
+                    !qf.includes('new_pending_validation') &&
+                  <button
+                    onClick={() => router.push(`/facilities/upgrade/${facility?.id}`)}
+                    className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                  >
+                    Upgrade/Downgrade
+                  </button>
+                  }
+                  {
+                    ((!qf.includes('new_pending_validation') &&
+                    userCtx?.groups[0]?.id == 1 && !facility?.closed) ||
+                    userCtx?.groups[0]?.id == 2) && 
+                  <button
+                    onClick={() => setIsClosingFacility(true)}
+                    className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                  >
+                    Close
+                  </button>
+                  }
+                </div>
               </div>
-            </div>
+            }
 
             {/* Facility Details Tab Section */}
               <FacilityDetailsTabs facility={facility}/>
@@ -564,13 +584,13 @@ const Facility = (props) => {
 
           {/* end facility approval */}
               
-          <aside className={`flex flex-col col-span-1 ${isViewChangeLog ? 'md:col-span-3': 'md:col-span-2'} gap-4 md:mt-7`}>
+          <aside className={`flex flex-col col-span-1 ${isViewChangeLog ? 'md:col-span-3': 'md:col-span-2'}  gap-4 md:mt-7`}>
             {/* <h3 className="text-2xl tracking-tight font-semibold leading-5">
               Map
             </h3> */}
 
             {facility?.lat_long && facility?.lat_long.length > 0 ? (
-              <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
+              <div className="w-full bg-gray-200 shadow -lg flex flex-col items-center justify-center relative">
                 <Map
                   ward_name={wardName}
                   operational={
@@ -585,8 +605,8 @@ const Facility = (props) => {
                 />
               </div>
             ) : (
-              <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
-                <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+              <div className="w-full bg-transparent p-2 border border-green-600 shadow -lg flex mt-1 flex-col items-center justify-center relative">
+                <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                   <p>No location data found for this facility?.</p>
                 </div>
               </div>
@@ -610,7 +630,7 @@ const Facility = (props) => {
                 }
 
               }}
-              className="bg-green-500  rounded w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
+              className="bg-green-600 w-auto p-2 text-white text-lg font-semibold flex items-center justify-between">
               <span>{isViewChangeLog ? 'Hide Change Log' : 'View Change Log'}</span>
               {
                 isViewChangeLog ?
@@ -625,7 +645,7 @@ const Facility = (props) => {
               isViewChangeLog &&
               
               <Table>
-              <TableBody className="w-full">
+              <TableBody className="w-full border border-green-600">
                 <TableRow>
                   <TableCell className="font-semibold">Date</TableCell>
                   <TableCell className="font-semibold">User</TableCell>
@@ -637,7 +657,7 @@ const Facility = (props) => {
                 {
                   changeLogData &&
                   changeLogData.map(({updated_on, updated_by, updates}, i) => (
-                    <TableRow key={i}>
+                    <TableRow className="border-b border-green-600 " key={i}>
                       <TableCell>
                         {new Date(updated_on).toLocaleString()}
                       </TableCell>
@@ -648,7 +668,7 @@ const Facility = (props) => {
                         {
                           updates && updates.length > 0 &&
                           updates.map(({old, new:_new, name}) => (
-                            <span className="grid grid-cols-2">
+                            <span className="grid grid-cols-2 text-wrap">
                               <span className="font-semibold text-base md:col-start-1">{name}{" :"}</span>
                               <span className="text-red-400 md:col-start-2">{old}
                               <span className="text-black">{" >> "}</span>

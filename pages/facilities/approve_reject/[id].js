@@ -77,7 +77,7 @@ function ApproveReject(props) {
                 {/* Header Bunner  */}
                 <div
                 className={
-                    "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+                    "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border border-green-600 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
                     (facility?.is_approved ? "border-green-600" : "border-red-600")
                 }
                 >
@@ -94,10 +94,7 @@ function ApproveReject(props) {
                     >
                         #{facility?.code || "NO_CODE"}
                     </span>
-                    <p className="text-gray-600 leading-tight">
-                        {facility?.keph_level_name &&
-                        "KEPH " + facility?.keph_level_name}
-                    </p>
+                 
                     </div>
                 </div>
                 <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
@@ -105,7 +102,7 @@ function ApproveReject(props) {
                     {facility?.operational || facility?.operation_status_name ? (
                         <span
                         className={
-                            "leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"
+                            "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"
                         }
                         >
                         <CheckCircleIcon className="h-4 w-4" />
@@ -115,35 +112,35 @@ function ApproveReject(props) {
                         ""
                     )}
                     {facility?.approved ? (
-                        <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <CheckCircleIcon className="h-4 w-4" />
                         Validated
                         </span>
                     ) : (
-                        <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-red-200 text-red-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <XCircleIcon className="h-4 w-4" />
                         Not Validated
                         </span>
                     )}
                     {facility?.has_edits && (
-                        <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <InformationCircleIcon className="h-4 w-4" />
                         Has changes
                         </span>
                     )}
                     {facility?.is_complete ? (
-                        <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <CheckCircleIcon className="h-4 w-4" />
                         Completed{" "}
                         </span>
                     ) : (
-                        <span className="bg-yellow-200 text-yellow-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-yellow-200 text-yellow-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <CheckCircleIcon className="h-4 w-4" />
                         Incomplete{" "}
                         </span>
                     )}
                     {facility?.closed && (
-                        <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <LockClosedIcon className="h-4 w-4" />
                         Closed
                         </span>
@@ -174,7 +171,7 @@ function ApproveReject(props) {
 
 
                     {/* Facility details */}
-                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                    <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                         <label className="col-span-1 text-gray-600">
                         Functional Status
@@ -235,7 +232,7 @@ function ApproveReject(props) {
                     
                     <div className="col-start-1 col-span-1 ">
                     <button
-                        className="bg-green-500 font-semibold w-auto text-white flex text-left items-center p-2 h-auto rounded-md"
+                        className="bg-green-600 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md"
                         onClick={() => {
                         if (isFacDetails) {
                             setIsFacDetails(false);
@@ -256,14 +253,14 @@ function ApproveReject(props) {
 
                     {!isFacDetails && 
                     
-                    <div className="border border-gray-100 rounded pb-2">
+                    <div className="pb-2">
                         <FacilityDetailsTabs facility={facility}/>
                     </div>
                     }
 
                     {/* Comments and Updates Section  */}
 
-                    <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-6">
+                    <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-6">
                     <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                         {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Comment on the validation"}
                     </h3>
@@ -301,7 +298,7 @@ function ApproveReject(props) {
                         cols="130"
                         rows="auto"
                         name="comment"
-                        className="flex col-span-2 border border-gray-200 rounded-md text-gray-600 font-normal text-medium p-2"
+                        className="flex col-span-2 bg-transparent border focus:ring-1 focus:ring-green-900 border-green-600 text-gray-600 font-normal text-medium p-2"
                         placeholder="Enter a comment"
                        
                         ></Field>
@@ -315,7 +312,7 @@ function ApproveReject(props) {
                         
                         <button
                         type="submit"
-                        className="bg-green-500  text-gray-100 rounded-md p-2 font-semibold"
+                        className="bg-green-600  text-gray-100 -md p-2 font-semibold"
                         onClick={() => reject = facility?.has_edits ? true : facility?.is_approved ? true : false}
                         
                         >
@@ -325,7 +322,7 @@ function ApproveReject(props) {
                         {!facility?.approved_national_level &&
                         <button
                         type="submit"
-                        className="bg-red-600  text-gray-100 rounded-md p-2 font-semibold"
+                        className="bg-red-600  text-gray-100 -md p-2 font-semibold"
                         onClick={() => reject = facility?.has_edits ? false : facility?.is_approved ? false : true}
                         
                         >

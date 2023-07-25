@@ -9,6 +9,8 @@ import { UserContext } from '../../providers/user'
 import Link from 'next/link'
 import { useReactToPrint } from 'react-to-print'
 import 'react-datepicker/dist/react-datepicker.css';
+import { DownloadIcon } from '@heroicons/react/outline'
+
 
 
 const Dash = (props) => {
@@ -144,9 +146,9 @@ const Dash = (props) => {
     }
     useEffect(() => {
         
-        if(userCtx.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
-        if(userCtx.groups[0].id == 1) fetchSubCounties(userCtx?.county)
-        if(userCtx.groups[0].id == 7) fetchCounties()
+        if(userCtx?.groups[0].id == 2) fetchWards(user?.user_sub_counties[0]?.sub_county ?? null)
+        if(userCtx?.groups[0].id == 1) fetchSubCounties(userCtx?.county)
+        if(userCtx?.groups[0].id == 7) fetchCounties()
     }, [])
 
     useEffect(() => {
@@ -262,23 +264,23 @@ const Dash = (props) => {
             <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 
                 <div className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4 main"  ref={dwn}> 
-                    <div className="col-span-6 flex flex-col gap-3 md:gap-5 px-2">
+                    <div className="col-span-6 flex flex-col gap-3 md:gap-5 mb-8 px-2">
                         <div className="no-print flex flex-row gap-2 text-sm md:text-base py-3">
                             <Link className="text-green-700" href="/" >Home</Link> {'/'}
-                            <span className="text-gray-500">Dashboard</span>
+                            <span className="text-gray-600">Dashboard</span>
 
                         </div>
-                        <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base py-1 items-center justify-between">
+                        <div className="flex flex-col w-full md:flex-wrap lg:flex-row xl:flex-row gap-1 text-sm md:text-base items-center justify-between">
                             <h1 className="w-full md:w-auto text-4xl tracking-tight font-bold leading-3 flex items-start justify-center gap-x-1 gap-y-2 flex-grow mb-4 md:mb-2 flex-col">
                                 <span className='no-print' id="dashboard-title">Overview</span>
                                 <div className='flex items-center gap-x-2 mt-3'>
                                     {drillDown && drillDown?.county && groupID !== 1 &&
-                                        <small className="text-blue-900 text-base font-semibold ml-1">
+                                        <small className="text-green-900 text-base font-semibold ml-1">
                                             {filters && filters?.county && filters?.county.find(ft => ft.id == drillDown?.county)?.name ? filters?.county.find(ft => ft.id == drillDown?.county)?.name + " County" : "National Summary" || ""}
                                         </small>
                                     }
                                     {user && userCounty &&
-                                        <small className="text-blue-900 text-base font-semibold">
+                                        <small className="text-green-900 text-base font-semibold">
                                           
                                             {`${userCounty ?? user?.county_name} County`}
                                            
@@ -288,7 +290,7 @@ const Dash = (props) => {
                                          <>
                                             <span className='text-gray-500 text-base'> / </span>
 
-                                            <small className="text-blue-900 text-base font-semibold ">
+                                            <small className="text-green-900 text-base font-semibold ">
                                                
                                             {`${userSubCounty ?? user?.sub_county_name} Sub county`}
                                                 
@@ -297,7 +299,7 @@ const Dash = (props) => {
                                         :
                                         <>
                                             {groupID !== 7 && groupID !== 5 && <span className='text-gray-500 text-base text-center'> / </span>}
-                                            <small className="text-blue-900 text-base font-semibold">
+                                            <small className="text-green-900 text-base font-semibold">
                                                 {subcounties && subcounties?.subcounties && subcounties?.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name != undefined ? subcounties.subcounties.find(ft => ft.id == drillDown?.subcounties)?.name + " Sub county" : !drillDown?.county && "" || ""}
                                 
                                             </small>
@@ -306,7 +308,7 @@ const Dash = (props) => {
                                     {drillDown && drillDown?.wards &&
                                     <>
                                         <span className='text-gray-500 text-base text-center'> / </span>
-                                        <small className="text-blue-900 text-base font-semibold ml-1">
+                                        <small className="text-green-900 text-base font-semibold ml-1">
                                             
                                             {wards && wards?.wards && wards?.wards.find(ft => ft.id == drillDown?.wards)?.name != undefined ? wards?.wards.find(ft => ft.id == drillDown?.wards)?.name + " Ward" : "Subcounty Summary" || ""}
                                         </small>
@@ -314,19 +316,33 @@ const Dash = (props) => {
                                     }
                                 </div>
                             </h1>
-                            <button className="no-print text-blue-600" onClick={exportToPdf}>Export to PDF</button>
-                            <div className=" no-print flex-grow flex items-center justify-end w-full md:w-auto">
+                           
+                            <div className=" no-print flex-grow flex gap-x-3 items-center justify-end w-full md:w-auto">
 
                                 {/* show datetime filters */}
                                 {/* --- */}
                                 {user &&
-                                    <div className="w-full flex  items-center justify-end space-x-3 mb-3">
-                                        <div className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
-                                            <label htmlFor='Yearselector' className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Year:</label>
-                                            <Select id="Yearselector" className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                    <div className="w-full flex  items-center justify-end space-x-3 ">
+                                        <div className="w-full max-w-xs flex flex-col items-start justify-start">
+                                            {/* <label htmlFor='Yearselector' className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Year</label> */}
+                                            <Select id="Yearselector" className="w-full max-w-xs border border-green-600"
                                                 options={Years}
                                                 placeholder='Filter by Year'
                                                 data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                                                styles={{
+                                                    control: (baseStyles) => ({
+                                                      ...baseStyles,
+                                                      backgroundColor: 'transparent',
+                                                      outLine:'none',
+                                                      border:'none',
+                                                      outLine:'none',
+                                                      textColor: 'transparent',
+                                                      padding:0,
+                                                      height:'4px'
+                                                    }),
+                                                   
+                                                }}
+                                                
                                                 onChange={async (sl) => {
                                                     let startdate = ''
                                                     let enddate = ''
@@ -415,7 +431,7 @@ const Dash = (props) => {
                                                 {isOpen && (
                                                     <div className="fixed z-50 inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
                                                         {/* Modal content */}
-                                                        <div className="bg-white p-4 rounded-md">
+                                                        <div className="bg-white p-4 -md">
                                                             <h1 className="text-lg font-bold mb-2 ">Select Date Range</h1>
 
                                                             <div className='grid grid-cols-2 gap-4'>
@@ -424,7 +440,7 @@ const Dash = (props) => {
                                                                     <br />
                                                                     <input id='startdate'
                                                                         type="date"
-                                                                        className="border border-gray-400 p-2 rounded-md"
+                                                                        className="border border-gray-400 p-2 -md"
                                                                     />
                                                                 </div>
                                                                 <div>
@@ -432,7 +448,7 @@ const Dash = (props) => {
                                                                     <br />
                                                                     <input id='enddate'
                                                                         type="date"
-                                                                        className="border border-gray-400 p-2 rounded-md"
+                                                                        className="border border-gray-400 p-2 -md"
                                                                     />
                                                                 </div>
                                                             </div>
@@ -442,7 +458,7 @@ const Dash = (props) => {
                                                                         setIsOpen(false)
                                                                     }
                                                                     }
-                                                                    className="w-full px-4 py-2 bg-gray-400 text-white rounded-md mr-2"
+                                                                    className="w-full px-4 py-2 bg-gray-400 text-white -md mr-2"
                                                                 >
                                                                     Cancel
                                                                 </button>
@@ -472,7 +488,7 @@ const Dash = (props) => {
                                                                         router.push(`/dashboard ${encodeURI(querySelector)}`)
                                                                     }
                                                                     }
-                                                                    className="w-full px-4 py-2 bg-blue-500 text-white rounded-md"
+                                                                    className="w-full px-4 py-2 bg-green-500 text-white -md"
                                                                 >
                                                                     Set
                                                                 </button>
@@ -489,13 +505,26 @@ const Dash = (props) => {
 
                                 }
                                 {user && isquarterOpen &&
-                                    <div id="quarterdiv" visibility="collapsed" className="w-full flex  items-center justify-end space-x-3 mb-3">
-                                        <div id={quarters} className="w-full max-w-xs flex flex-col items-start justify-start mb-3">
-                                            <label htmlFor={quarters} className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Quarter:</label>
+                                    <div id="quarterdiv" visibility="collapsed" className="w-full flex  items-center justify-end space-x-3">
+                                        <div id={quarters} className="w-full max-w-xs flex flex-col items-start justify-start">
+                                            {/* <label htmlFor={quarters} className="text-gray-600 capitalize font-semibold text-sm ml-1">Filter by Quarter</label> */}
 
-                                            <Select id="quarterselector" name={quarters} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                            <Select id="quarterselector" name={quarters} className="w-full max-w-xs  bg-django-green border border-green-600"
                                                 options={quarters}
                                                 placeholder='Select Quarter'
+                                                styles={{
+                                                    control: (baseStyles) => ({
+                                                      ...baseStyles,
+                                                      backgroundColor: 'transparent',
+                                                      outLine:'none',
+                                                      border:'none',
+                                                      outLine:'none',
+                                                      textColor: 'transparent',
+                                                      padding:0,
+                                                      height:'4px'
+                                                    }),
+                                                   
+                                                }}
                                                 onChange={async (sl) => {
 
                                                     let period = {}
@@ -592,12 +621,25 @@ const Dash = (props) => {
 
                                 {/* filter by organizational units  */}
                                 {/* national */}
-                                {(groupID === 5 || groupID === 7) && <div className="w-full flex  items-center justify-end space-x-1 mb-3">
+                                {(groupID === 5 || groupID === 7) && <div className="w-full flex  items-center justify-end space-x-3">
                                     {filters && Object.keys(filters).length > 0 &&
                                         Object.keys(filters).map(ft => (
-                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
-                                                <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}:</label>
-                                                <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id='first'>
+                                                {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ')}</label> */}
+                                                <Select name={ft} defaultValue={drillDown[ft] || "national"} id={ft} className="w-full max-w-xs bg-django-green border border-green-600"
+                                                 styles={{
+                                                    control: (baseStyles) => ({
+                                                      ...baseStyles,
+                                                      backgroundColor: 'transparent',
+                                                      outLine:'none',
+                                                      border:'none',
+                                                      outLine:'none',
+                                                      textColor: 'transparent',
+                                                      padding:0,
+                                                      height:'4px'
+                                                    }),
+                                                   
+                                                }}
                                                     options={
                                                         (() => {
                                                             if (groupID === 5 || groupID === 7) {
@@ -665,12 +707,25 @@ const Dash = (props) => {
                                     {/* ~~~F L T R S~~~ */}
                                 </div>}
                                 {/* county user */}
-                                {groupID === 1  && <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                {groupID === 1  && <div className="w-full flex  items-center justify-end space-x-3">
                                     {subcounties && Object.keys(subcounties).length > 0 &&
                                         Object.keys(subcounties).map(ft => (
-                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="second">
-                                                <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('ies', 'y')}:</label>
-                                                <Select name={ft} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
+                                            <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id="second">
+                                                {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('ies', 'y')}</label> */}
+                                                <Select name={ft} id={ft} className="w-full max-w-xs border border-green-600"
+                                                    styles={{
+                                                        control: (baseStyles) => ({
+                                                          ...baseStyles,
+                                                          backgroundColor: 'transparent',
+                                                          outLine:'none',
+                                                          border:'none',
+                                                          outLine:'none',
+                                                          textColor: 'transparent',
+                                                          padding:0,
+                                                          height:'4px'
+                                                        }),
+                                                       
+                                                    }}
                                                     options={
                                                         (() => {
                                                             if (groupID === 1) {
@@ -743,14 +798,27 @@ const Dash = (props) => {
                                 {/* sub_county user */}
                                 
                                 { groupID === 2 &&
-                                    <div className="w-full flex  items-center justify-end space-x-3 mb-3">
+                                    <div className="w-full flex  items-center justify-end space-x-3">
                                        
                                         {wards && Object.keys(wards).length > 0 &&
                                             Object.keys(wards).map(ft => (
-                                                <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id="third">
-                                                    <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('s', '')}:</label>
-                                                    <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs p-1 rounded bg-gray-50"
-                                                        options={
+                                                <div key={ft} className="w-full max-w-xs flex flex-col items-start justify-start" id="third">
+                                                    {/* <label htmlFor={ft} className="text-gray-600 capitalize font-semibold text-sm ml-1">{ft.split('_').join(' ').replace('s', '')}</label> */}
+                                                    <Select name={ft} defaultValue={drillDown[ft] || "Subcounty"} id={ft} className="w-full max-w-xs  bg-django-gree border border-green-600"
+                                                         styles={{
+                                                            control: (baseStyles) => ({
+                                                              ...baseStyles,
+                                                              backgroundColor: 'transparent',
+                                                              outLine:'none',
+                                                              border:'none',
+                                                              outLine:'none',
+                                                              textColor: 'transparent',
+                                                              padding:0,
+                                                              height:'4px'
+                                                            }),
+                                                           
+                                                        }}
+                                                        options={   
                                                             (() => {
                                                                 if (groupID === 2) {
                                                                     let opts = [{ value: "Subcounty", label: "Subcounty summary" }, ...Array.from(wards[ft] || [],
@@ -831,12 +899,19 @@ const Dash = (props) => {
                                 }
 
                             </div>
+
+                            <button className="flex items-center bg-green-600 ml-6 text-white text-center font-medium active:bg-gray-200 p-2" onClick={exportToPdf}>
+                                <DownloadIcon className="w-4 h-4 mr-1" />
+                                <span>Export</span>
+                            </button>
+
+                           
                         </div>
                     </div>
                  
                     {/* <div id="dashboard" className="w-full grid grid-cols-6 gap-4 px-1 md:px-4 py-2 my-4"> */}
-                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility owners </h4>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Facility owners </h4>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -855,8 +930,8 @@ const Dash = (props) => {
                         </table>
                     </div>
 
-                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility Types </h4>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Facility Types </h4>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -876,8 +951,8 @@ const Dash = (props) => {
                     </div>
 
                     {/* Facilities summary 1/3 - FILTERABLE */}
-                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facilities summary</h4>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Facilities summary</h4>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -896,8 +971,8 @@ const Dash = (props) => {
                         </table>
                     </div>
                     {/* CUs summary - FILTERABLE 1/3 */}
-                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Community Units summary</h4>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Community Units summary</h4>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -916,8 +991,8 @@ const Dash = (props) => {
                         </table>
                     </div>
                     {/* Recent changes 1/3 - FILTERABLE */}
-                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Recent changes</h4>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Recent changes</h4>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -936,8 +1011,8 @@ const Dash = (props) => {
                         </table>
                     </div>
                     {/* facilities by keph level */}
-                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900">Facility KEPH Level </h4>
+                    <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Facility KEPH Level </h4>
                         <table className="w-full text-sm md:text-base p-2">
                             <thead className="border-b border-gray-300">
                                 <tr>
@@ -957,11 +1032,11 @@ const Dash = (props) => {
                     </div>
                     {/* Facilities & CHUs by county (bar) 1/1 */}
                     {(groupID === 7 || groupID === 5) &&
-                        <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by County</h4>
+                        <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                            <h4 className="text-lg uppercase pt-4 border-b text-center border-gray-100 w-full mb-2 font-semibold text-green-900">Facilities &amp; CHUs by County</h4>
                             <BarChart
-                                title="Facilities & CHUs by County"
-                                categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
+                                title=""
+                                  categories={Array?.from(props?.data?.county_summary ?? [], cs => cs.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="County"
                                 yaxistitle="Number"
@@ -981,10 +1056,10 @@ const Dash = (props) => {
                     }
                     {/* Facilities & CHUs by subcounties (bar) 1/1 */}
                     {groupID === 1 &&
-                        <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Subcounty</h4>
+                        <div className="no-print col-span-6 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                            <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-green-900">Facilities &amp; CHUs by Subcounty</h4>
                             <BarChart
-                                title="Facilities & CHUs by Subcounty"
+                                title=""
                                 categories={Array?.from(props?.data?.constituencies_summary ?? [], cs => cs.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="Subcounty"
@@ -1005,10 +1080,10 @@ const Dash = (props) => {
                     }
                     {/* Facilities & CHUs by ward (bar) 1/1 */}
                     {groupID === 2 &&
-                        <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                            <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facilities &amp; CHUs by Ward</h4>
+                        <div className="no-print col-span-6 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                            <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-green-900">Facilities &amp; CHUs by Ward</h4>
                             <BarChart
-                                title="Facilities & CHUs by ward"
+                                title=""
                                 categories={Array?.from(props?.data?.wards_summary ?? [], cs => cs.name) || []}
                                 tooltipsuffix="#"
                                 xaxistitle="Ward"
@@ -1028,10 +1103,10 @@ const Dash = (props) => {
                         </div>
                     }
                     {/* Facility owners & categories - national summary - FILTERABLE (bar) 1/2 */}
-                    <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility owners</h4>
+                    <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-green-900">Facility owners</h4>
                         <BarChart
-                            title="Facility owners"
+                            title=""
                             categories={Array.from(props?.data?.owner_types ?? [], ot => ot.name) || []}
                             tooltipsuffix="#"
                             xaxistitle="Owner"
@@ -1041,10 +1116,10 @@ const Dash = (props) => {
                             })() || []} />
                     </div>
                     {/* Facility types - national summary - FILTERABLE (bar) 1/2 */}
-                    <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '250px' }}>
-                        <h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-2 font-semibold text-blue-900">Facility types</h4>
+                    <div className="no-print col-span-6 md:col-span-3 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-yellow-50" style={{ minHeight: '250px' }}>
+                        <h4 className="text-lg uppercase pt-4 text-center border-b border-gray-100 w-full mb-2 font-semibold text-green-900">Facility types</h4>
                         <BarChart
-                            title="Facility types"
+                            title=""
                             categories={Array.from(props?.data?.types_summary ?? [], ts => ts.name) || []}
                             tooltipsuffix="#"
                             xaxistitle="Type"
@@ -1056,7 +1131,7 @@ const Dash = (props) => {
 
 
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

@@ -83,7 +83,7 @@ function AddAdminOffice(props) {
                             <span className="text-gray-500">Add Admin Office</span>
                         </div>
                     </div>
-                    <div className={"col-span-5 flex items-center justify-between  w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z  border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                    <div className={"col-span-5 flex items-center justify-between  w-full bg-transparent border border-green-600 drop-shadow text-green text-black p-4 md:divide-x md:divide-gray-200z  border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                         <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                             {'New Admin Office'}
                         </h2>
@@ -93,7 +93,7 @@ function AddAdminOffice(props) {
                 </div>
 
                 <div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-                    <div className=' w-full flex flex-col items-start p-3 rounded border border-gray-300/70 bg-gray-50'
+                    <div className=' w-full flex flex-col items-start p-3 text-green border border-green-600 bg-transparent'
                         style={{ minHeight: '250px' }}>
 
                         <>
@@ -118,7 +118,7 @@ function AddAdminOffice(props) {
                                         required
                                         type='text'
                                         name='name'
-                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent text-green p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
@@ -152,6 +152,20 @@ function AddAdminOffice(props) {
                                                 County
                                             </label>
                                             <Select
+                                                													
+                                                styles={{
+                                                    control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px'
+                                                    }),
+
+                                                }}
                                                 options={countyOptions || []}
                                                 ref={countyRef}
                                                 placeholder='Select County'
@@ -176,8 +190,7 @@ function AddAdminOffice(props) {
                                                     }
                                                 }}
                                                 name='county'
-
-                                                className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
                                             />
                                         </div>
 
@@ -193,13 +206,27 @@ function AddAdminOffice(props) {
                                                 </span>
                                             </label>
                                             <Select
+                        									
+																styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                 options={subCountyOpt ?? subCountyOptions}
 
                                                 ref={subCountyRef}
                                                 placeholder='Select Sub County'
                                                 name='sub_county'
                                                 id='sub_county'
-                                                className='flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
                                             />
                                         </div>
                                     </>
@@ -221,7 +248,7 @@ function AddAdminOffice(props) {
                                         required
                                         type='email'
                                         name='email'
-                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent text-green p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
@@ -237,19 +264,19 @@ function AddAdminOffice(props) {
                                         required
                                         type='number'
                                         name='phone_number'
-                                        className='flex-none w-full bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                        className='flex-none w-full bg-transparent text-green p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                     />
                                 </div>
 
                                 {/* Cancel & Save */}
                                 <div className='flex justify-between items-center w-full'>
-                                    <button type='submit' className='rounded bg-green-600 p-2 text-white flex text-md font-semibold'
+                                    <button type='submit' className='text-green bg-green-600 p-2 text-white flex text-md font-semibold'
                                     >
                                         <span className='text-medium font-semibold text-white'>
                                             Save
                                         </span>
                                     </button>
-                                    <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
+                                    <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black text-green px-2'>
                                         <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
                                         <span className='text-medium font-semibold text-black ' onClick={() => { router.push('admin_offices') }}>
                                             Cancel

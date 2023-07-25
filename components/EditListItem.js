@@ -152,26 +152,76 @@ function EditListItem({
 
       >
         {/* Item List Dropdown */}
-        <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+        <div className='w-full flex flex-col items-start border border-green-600 p-3 justify-start gap-1 mb-3'>
+          {/* Iten Category Dropdown */}
           <label
             htmlFor='item_drop_down_edit_list'
-            className='capitalize text-md  leading-tight tracking-tight'>
-            Available {itemsCategoryName}
+            className='capitalize text-md font-semibold leading-tight tracking-tight'>
+            Category {itemsCategoryName}
           </label>
-          <div className="flex items-start gap-2 md:w-5/6 w-full h-auto">
+          <div className="flex items-start gap-2  w-full h-auto">
             <Select
               options={itemOptions}
               formatGroupLabel={formatGroupLabel}
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  backgroundColor: 'transparent',
+                  outLine: 'none',
+                  border: 'none',
+                  outLine: 'none',
+                  textColor: 'transparent',
+                  padding: 0,
+                  height: '4px',
+                  width:'100%'
+                }),
+
+              }}
+              className='flex w-full placeholder-gray-500 border border-green-600 outline-none'
+              onChange={(e) => {
+                setCurrentItem({ id: e?.value, name: e?.label })
+              }
+              }
+              name="category_item_drop_down_edit_list"
+             
+            />
+            </div>
+          
+          {/* Item Dropdown */}
+          <label
+            htmlFor='item_drop_down_edit_list'
+            className='capitalize text-md font-semibold leading-tight tracking-tight'>
+             {itemsCategoryName}
+          </label>
+          <div className="flex items-start gap-2  w-full h-auto">
+            <Select
+              options={itemOptions}
+              formatGroupLabel={formatGroupLabel}
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  backgroundColor: 'transparent',
+                  outLine: 'none',
+                  border: 'none',
+                  outLine: 'none',
+                  textColor: 'transparent',
+                  padding: 0,
+                  height: '4px',
+                  width:'100%'
+                }),
+
+              }}
+              className='flex w-full placeholder-gray-500 border border-green-600 outline-none'
               onChange={(e) => {
                 setCurrentItem({ id: e?.value, name: e?.label })
               }
               }
               name="item_drop_down_edit_list"
-              className="flex-none w-full bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none"
+             
             />
 
             {/* Add Item Button */}
-            <button name="add_item_btn" className="bg-green-700 rounded p-2 flex items-center justify-evenly gap-2"
+            <button name="add_item_btn" className="bg-green-700  p-2 flex items-center justify-evenly gap-2"
               onClick={e => {
                 e.preventDefault()
                 if (currentItem)
@@ -188,12 +238,15 @@ function EditListItem({
 
 
         {/* Item Selected Table */}
-        <span className="text-md w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
-          Assigned {itemsCategoryName}
-        </span>{" "}
-        <Table className="md:px-4">
-          <TableBody>
+       
+        <Table className="border border-green-600 p-3">
+          <TableBody className='px-3 border border-green-600'>
             <TableRow>
+            <span className="text-md w-full flex flex-wrap m-3 font-bold justify-between items-center leading-tight tracking-tight">
+              Assigned {itemsCategoryName}
+            </span>{" "}
+            </TableRow>
+            <TableRow className="border-b">
               <TableCell>
                 <p className='text-base font-semibold'>{itemsCategoryName}</p>
               </TableCell>
@@ -208,8 +261,9 @@ function EditListItem({
                 selectedItems?.map(({ name, id, item_id }, __id) => (
                   <TableRow
                     key={id}
+                    className='border-t border-green-600'
                   >
-                    <TableCell>{name}</TableCell>
+                    <TableCell className='px-3'>{name}</TableCell>
 
                     <TableCell>
                       <button
@@ -229,7 +283,7 @@ function EditListItem({
                           removeItemHandler(e, item_id, alert)
 
                         }}
-                        className="flex items-center justify-center space-x-2 bg-red-400 rounded p-1 px-2"
+                        className="flex items-center justify-center space-x-2 bg-red-400  p-1 px-2"
                       >
                         <span className="text-medium font-semibold text-white">
                           Remove
@@ -241,7 +295,7 @@ function EditListItem({
               ) : (
                 item !== null &&
                 <>
-                  <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                  <li className="w-full m-3 bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                     <p>
                       {item?.name || item?.official_name} has not listed
                       the {'item'} it offers. Add some below.
@@ -260,22 +314,29 @@ function EditListItem({
           selectedItems.length > 0 && item !== null &&
 
           <div className=" w-full flex justify-end h-auto mr-3">
-            <button type='submit' className='p-2 text-white bg-green-600 rounded font-semibold'>save & finish</button>
+            <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save & finish</button>
           </div>
         }
 
         {
           item === null &&
 
-          <div className='flex justify-between items-center w-full mt-4' style={{ maxWidth: '90%' }}>
-            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'>
-              <ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
-              <span className='text-medium font-semibold text-black '>{previousItemCategory}</span>
-            </button>
-            <button type="submit" className='flex items-center justify-start space-x-2 bg-indigo-500 rounded p-1 px-2'>
-              <span className='text-medium font-semibold text-white'>{nextItemCategory}</span>
-              <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-            </button>
+          <div className='flex justify-between items-center w-full mt-4' >
+            									<button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
+																<ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
+																<span className='text-medium font-semibold text-green-900 '>
+                                  {previousItemCategory}
+																</span>
+															</button>
+															<button
+																type='submit'
+																className='flex items-center justify-start space-x-2 bg-green-700  p-1 px-2'>
+																<span className='text-medium font-semibold text-white'>
+                                  {nextItemCategory}
+																</span>
+																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+															</button>
+           
           </div>
         }
 

@@ -26,7 +26,7 @@ const CommunityUnit = (props) => {
     () => import("../../components/Map"),
     {
       loading: () => (
-        <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
+        <div className="text-gray-800 text-lg  bg-transparent border-green-600 py-2 px-5 shadow w-auto mx-2 my-3">
           Loading&hellip;
         </div>
       ),
@@ -91,7 +91,7 @@ const CommunityUnit = (props) => {
 
       <MainLayout>
         <div className="w-full grid grid-cols-1 md:grid-cols-7 gap-3 my-4 place-content-center">
-          <div className="md:col-span-7 flex flex-col items-start px-4 justify-start gap-3">
+          <div className="md:col-span-7 flex flex-col items-start justify-start gap-3">
 
             {/* Header */}
             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
@@ -112,9 +112,9 @@ const CommunityUnit = (props) => {
 
             <div
               className={
-                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                (cu.active ? "border-green-600" : "border-red-600")
-              }
+                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? "border-green-600" : "border-yellow-700"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                ${cu.active ? "border-green-600" : "border-yellow-700"}
+              `}
             >
               <div className="col-span-6 md:col-span-3">
                 <h1 className="text-4xl tracking-tight font-bold leading-tight">
@@ -124,7 +124,7 @@ const CommunityUnit = (props) => {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (cu.code ? "text-green-900" : "text-gray-400")
+                      (cu.code ? "text-green-900" : "text-gray-500")
                     }
                   >
                     #{cu.code || "NO_CODE"}
@@ -137,36 +137,36 @@ const CommunityUnit = (props) => {
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                   {cu.is_approved ? (
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Approved
                     </span>
                   ) : (
-                    <span className="bg-red-200 text-red-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-red-200 text-red-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
                       Not approved
                     </span>
                   )}
                   {cu.is_closed && (
-                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <LockClosedIcon className="h-4 w-4" />
                       CHU Closed
                     </span>
                   )}
                   {cu.deleted && (
-                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
                       CHU Deleted
                     </span>
                   )}
                   {cu.active && (
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Active
                     </span>
                   )}
                   {cu.has_edits && (
-                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
                     </span>
@@ -190,20 +190,20 @@ const CommunityUnit = (props) => {
           {/* Left side */}
           <div className="col-span-5 md:col-span-6 flex flex-col gap-3 mt-4">
             {/* Approve/Reject, Edit Buttons */}
-            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <div className="flex flex-row justify-start items-center space-x-3 p-3">
                 {isApproveReject && <button
                   onClick={() => {
                     router.push("/community-units/approve/" + cu.id)
                   }}
-                  className={"p-2 text-center rounded-md font-semibold text-base text-white bg-green-500"}
+                  className={"p-2 text-center -md font-semibold text-base text-white bg-green-600"}
                 >
                   {/* Dynamic Button Rendering */}
                   {"Approve/Reject"}
                 </button>}
                 <button
                   onClick={() => null}
-                  className="p-2 text-center rounded-md font-semibold text-base text-white bg-indigo-500"
+                  className="p-2 text-center -md font-semibold text-base text-white bg-black"
                 >
                   Print
                 </button>
@@ -213,7 +213,7 @@ const CommunityUnit = (props) => {
                       "/community-units/edit/" + cu.id
                     )
                   }
-                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500"
+                  className="p-2 text-center -md font-semibold text-base  text-white bg-black"
                 >
                   Edit
                 </button>
@@ -222,28 +222,28 @@ const CommunityUnit = (props) => {
 
             <Tabs.Root
               orientation="horizontal"
-              className="w-full flex flex-col tab-root"
+              className="w-full flex flex-col border border-green-600 tab-root"
               defaultValue="overview"
             >
-              <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+              <Tabs.List className="list-none border-b border-green-600 flex flex-wrap gap-2 md:gap-3 uppercase leading-none tab-list font-semibold ">
                 <Tabs.Tab
                   id={1}
                   value="overview"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
                   Overview
                 </Tabs.Tab>
                 <Tabs.Tab
                   id={2}
                   value="services"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
                   Services
                 </Tabs.Tab>
                 <Tabs.Tab
                   id={3}
                   value="hr_staffing"
-                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-400 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                  className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                 >
                   HR &amp; Staffing
                 </Tabs.Tab>
@@ -255,11 +255,11 @@ const CommunityUnit = (props) => {
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded grid grid-cols-2 gap-3 shadow-sm mt-4">
+                  <div className="bg-transparent border border-green-600 w-full p-3  grid grid-cols-2 gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                       Status:
                     </h3>
-                    <div className="grid grid-cols-2 w-full md:w-11/12 md:px-3 col-span-2 md:col-span-1 mx-auto leading-none items-center">
+                    <div className="grid grid-cols-2 w-full md:w-11/12 col-span-2 md:col-span-1 mx-auto leading-none items-center">
                       <label className=" text-gray-600">
                         Functionality status
                       </label>
@@ -267,19 +267,19 @@ const CommunityUnit = (props) => {
                         {cu.status_name
                           ?.toLocaleLowerCase()
                           .includes("fully-") ? (
-                          <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "Yes"}
                           </span>
                         ) : cu.status_name
                           ?.toLocaleLowerCase()
                           .includes("semi") ? (
-                          <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-green-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "Yes"}
                           </span>
                         ) : (
-                          <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                          <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                             <XCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "No"}
                           </span>
@@ -290,12 +290,12 @@ const CommunityUnit = (props) => {
                       <label className=" text-gray-600">CHU approved</label>
                       <p className="text-black font-medium text-base flex">
                         {cu.is_approved ? (
-                          <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             Yes
                           </span>
                         ) : (
-                          <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                          <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                             <XCircleIcon className="h-4 w-4" />
                             No
                           </span>
@@ -307,11 +307,11 @@ const CommunityUnit = (props) => {
                         <label className=" text-gray-600">CHU deleted</label>
                         <p className="text-black font-medium text-base flex">
                           {cu.deleted ? (
-                            <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
                               Deleted
                             </span>
                           ) : (
-                            <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                               Not Deleted
                             </span>
                           )}
@@ -323,11 +323,11 @@ const CommunityUnit = (props) => {
                         <label className=" text-gray-600">CHU closed</label>
                         <p className="text-black font-medium text-base flex">
                           {cu.is_closed ? (
-                            <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
                               CHU Closed {cu.closed_date || ""}
                             </span>
                           ) : (
-                            <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                               Not closed
                             </span>
                           )}
@@ -350,11 +350,11 @@ const CommunityUnit = (props) => {
                         <label className=" text-gray-600">Has edits</label>
                         <p className="text-black font-medium text-base flex">
                           {cu.has_edits ? (
-                            <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-green-900 flex gap-x-1 items-center cursor-default">
                               Yes
                             </span>
                           ) : (
-                            <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                               No edits
                             </span>
                           )}
@@ -366,11 +366,11 @@ const CommunityUnit = (props) => {
                         <label className=" text-gray-600">Rejected</label>
                         <p className="text-black font-medium text-base flex">
                           {cu.is_rejected ? (
-                            <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-red-200 text-red-900 flex gap-x-1 items-center cursor-default">
                               CHU rejected {cu.closed_date || ""}
                             </span>
                           ) : (
-                            <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                               Not rejected
                             </span>
                           )}
@@ -378,7 +378,7 @@ const CommunityUnit = (props) => {
                       </div>
                     )}
                   </div>
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Coverage:
                     </h3>
@@ -399,7 +399,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Location:
                     </h3>
@@ -442,7 +442,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Regulation:
                     </h3>
@@ -486,12 +486,12 @@ const CommunityUnit = (props) => {
                       </label>
                       <p className="col-span-2 text-black font-medium text-base flex">
                         {cu.regulated ? (
-                          <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             Yes
                           </span>
                         ) : (
-                          <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                          <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                             <XCircleIcon className="h-4 w-4" />
                             No
                           </span>
@@ -499,7 +499,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Contacts:
                     </h3>
@@ -554,7 +554,7 @@ const CommunityUnit = (props) => {
 
                   {/* </div> */}
                   <div className='flex justify-between items-center w-full mt-5'>
-                    <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black rounded px-2'
+                    <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black  px-2'
                       onClick={() => {
                         setViewLog(!viewLog);
                         fetchChangeLogs()
@@ -596,7 +596,7 @@ const CommunityUnit = (props) => {
                                           {
                                             column.id === 'action' ?
 
-                                              <button className='bg-indigo-500 rounded p-2 text-white font-semibold'>{
+                                              <button className='bg-black  p-2 text-white font-semibold'>{
                                                 resourceCategory === "HealthInfrastructure" || resourceCategory === "HR" ?
                                                   'Edit' : 'View'
                                               }</button>
@@ -622,23 +622,23 @@ const CommunityUnit = (props) => {
                   )}
 
 
-                  <details className="bg-gray-100 w-full py-2 px-4 text-gray-400 cursor-default rounded">
+                  <details className="bg-transparent w-full py-2 px-4 text-gray-500 cursor-default ">
                     <summary>All data</summary>
                     <pre
                       className="language-json leading-normal text-sm whitespace-pre-wrap text-gray-800 overflow-y-auto"
                       style={{ maxHeight: "70vh" }}
                     >
-                      {JSON.stringify({ ...cu }, null, 2)}
+                      {/* {JSON.stringify({ ...cu }, null, 2)} */}
                     </pre>
                   </details>
                 </div>
               </Tabs.Panel>
               <Tabs.Panel
                 value="services"
-                className="grow-1 py-1 px-4 tab-panel"
+                className="grow-1 py-1  px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                  <div className="bg-white w-full p-4 rounded">
+                  <div className="bg-transparent w-full p-4 ">
                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                       <span className="font-semibold">Services</span>
                       <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
@@ -659,7 +659,7 @@ const CommunityUnit = (props) => {
                           </li>
                         ))
                       ) : (
-                        <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                        <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                           <p>No services listed for this cu.</p>
                         </li>
                       )}
@@ -673,7 +673,7 @@ const CommunityUnit = (props) => {
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                  <div className="bg-white w-full p-4 rounded">
+                  <div className="bg-transparent w-full p-4 ">
                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                       <span className="font-semibold">
                         Health Unit workers
@@ -695,7 +695,7 @@ const CommunityUnit = (props) => {
                           </li>
                         ))
                       ) : (
-                        <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                        <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                           <p>No HR data listed for this cu.</p>
                         </li>
                       )}

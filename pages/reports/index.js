@@ -14,6 +14,7 @@ import { UserContext } from '../../providers/user'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import tailwindConfig from '../../tailwind.config'
 
 
 const Users = (props) => {
@@ -47,17 +48,20 @@ const Users = (props) => {
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
     const [users, setUsers]=useState([])
-    const [filtered, setFiltered]=useState([])
-    const [searchTerm, setSearchTerm] = useState('')
-    const [filterOption, setFilterOption] = useState('')
-    let label = 'beds_cots'
+    const [filtered, setFiltered]=useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterOption, setFilterOption] = useState('');
+    let label = 'facilities_count';
+
+
+
     const [columns]=useState([
         {headerName: "County", field: "county_name",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Beds", field: "beds"},
         {headerName: "Cots", field: "cots"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
           
-            return <button  className='rounded bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
+            return <button  className=' bg-green-600 p-2 text-white flex items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
                     pathname: `/reports/by_facility/`,
@@ -151,64 +155,58 @@ const Users = (props) => {
                 <title>KMHFL - Reports</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+
+
             <MainLayout isLoading={false} isFullWidth={false}>
-                <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
-                    <div className="col-span-7 flex flex-col gap-x-1 px-4">
+                <div className="w-full grid grid-cols-7 gap-4 p-1  my-2">
+                    <div className="col-span-7 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-green-700" href="/">Home</a> {'/'}
-                                <span className="text-gray-500">Standard Reports</span> 
+                                <a className="text-green-900" href="/">Home</a> {'/'}
+                                <span className="text-gray-500">Reports</span> 
                             </div>
-                            <div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
-                                <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+                            <div className={"col-span-5 flex justify-between w-full bg-django-green border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                                <h2 className='flex items-center text-xl font-bold text-green-900 capitalize gap-2'>
                                     {'Beds and Cots Report by County'}
                                     </h2>
                                 
-                        </div>
+                            </div>
                         </div>
                     </div>
-                    <Resources label={label}/>
 
-                    <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
-                        
-                          <div className='mx-4'>
+                    {/* Search input & filters  */}
+                    <div className='container col-span-7 w-full flex justify-between items-center'>
                             <form
-                                className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-                                //   action={ "/standard_reports"}
-                                // onSubmit={()=> filter(searchTerm)}
+                                className="gap-x-6 py-2 lg:py-0 w-full inline-flex"
                                 >
                                 <input
                                     // name="q"
                                     id="search-input"
-                                    className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                    className="bg-transparent w-2/6 p-2 border border-green-600 shadow-sm placeholder-green-900 focus:shadow-none focus:bg-django-green focus:border-black outline-none"
                                     type="search"
                                     // defaultValue={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     placeholder="Search anything ...."
                                 />
-                                <button
-                                    type="submit"
-                                    className="bg-white border-2 border-black text-black flex items-center justify-center px-4 py-1 rounded"
-                                >
-                                    <SearchIcon className="w-5 h-5" />
-                                </button>
-                                <div className='text-white text-md'>
-
-                                <button className="flex items-center bg-green-600 text-white rounded justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
-                                                console.log('Downloading CSV. ' + dl_url || '')
-                                                // window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                window.location.href = dl_url
-                                            }}
-                                            >
-                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>Export</span>
-                                </button> 
-                                </div>
-                           
-                                    
+                        
+                             
+                                <button className="flex items-center bg-green-600  text-white text-center font-medium active:bg-gray-200 p-2" onClick={() => {
+                                                        let dl_url = props?.current_url
+                                                        if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
+                                                        console.log('Downloading CSV. ' + dl_url || '')
+                                                        // window.open(dl_url, '_blank', 'noopener noreferrer')
+                                                        window.location.href = dl_url
+                                                    }}
+                                                    >
+                                                        <DownloadIcon className="w-4 h-4 mr-1" />
+                                                        <span>Export</span>
+                                    </button>
+                        
+                               
                             </form>
+
+
+                           
                             <Select
                                 options={[
                                 {value: 'county' , label:'Beds and Cots (County)' }, 
@@ -220,13 +218,27 @@ const Users = (props) => {
                                 required
                                 placeholder='Filter By:'
                                 onChange={(e) => setFilterOption(e.value)}
+                                styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: tailwindConfig.theme.color['django-green'],
+                                      outLine:'none',
+                                      border:'none',
+                                      outLine:'none',
+                                      textColor: tailwindConfig.theme.color['django-green']
+                                    })}}
                                 name='filter_by'
-                                className='flex-none w-1/5 bg-gray-50 rounded flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none float-right'
+                                className='w-1/5 border bg-transparent focus:outline-green-600 border-green-600 placeholder-gray-500  outline-none'
                             />
-                            <h5 className="text-lg font-medium text-gray-800 float-right">
-                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
-                            </h5>
-                          </div>
+                                   
+                                   
+                    </div>
+
+                    {/* Side Menu */}
+                    <Resources label={label}/>
+
+                    <main className="col-span-5 md:col-span-5 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+                               
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
                       
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
@@ -273,7 +285,7 @@ const Users = (props) => {
 
 
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>
@@ -301,19 +313,7 @@ Users.getInitialProps = async (ctx) => {
             query.searchTerm = ctx.query.q
             url += `&search={"query":{"query_string":{"default_field":"name","query":"${query.searchTerm}"}}}`
         }
-        // let other_posssible_filters = ["is_active"]
-
-        // other_posssible_filters.map(flt => {
-        //     console.log(flt);
-        //     if (ctx?.query[flt]) {
-        //         query[flt] = ctx?.query[flt]
-        //         if (url.includes('?')) {
-        //             url += `&${flt}=${ctx?.query[flt]}`
-        //         } else {
-        //             url += `?${flt}=${ctx?.query[flt]}`
-        //         }
-        //     }
-        // })
+    
         
         let current_url = url + '&page_size=100000'
         if (ctx?.query?.page) {
