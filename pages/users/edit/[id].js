@@ -130,8 +130,7 @@ console.log(delete_permission);
                                     left: '50%',
                                     transform: 'translate(-50%, -50%)',
                                     width: 700,
-                                    bgcolor: 'background.paper',
-                                    borderRadius: '6px',
+                                    bgcolor: 'rgba(255, 251, 235, 1)',
                                     boxShadow: 24,
                                     p: 4,
                                 }
@@ -151,13 +150,13 @@ console.log(delete_permission);
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <a className="text-indigo-700" href="/">Home</a> {'/'}
-                                <a className="text-indigo-700" href="/users/groups">Groups</a> {'/'}
+                                <a className="text-green-700" href="/">Home</a> {'/'}
+                                <a className="text-green-700" href="/users/groups">Groups</a> {'/'}
                                 <span className="text-gray-500">Edit group</span>
                             </div>
                         </div>
 						<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password || status?.message}</Alert>}</div>
-                        <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                        <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow  text-black md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <PencilAltIcon className='ml-2 h-5 w-5' />
                                     {'Edit Group'}
@@ -165,9 +164,9 @@ console.log(delete_permission);
 								<button
 								type='button'
 								onClick={()=>setOpen(true)}
-								className=' bg-red-500 p-2 text-white flex text-md font-semibold '>
+								className=' bg-black p-2 text-white flex text-md font-semibold '>
 								<span className='text-medium font-semibold text-white'>
-									Delete
+									Disable
 								</span>
 							</button>
                         </div>

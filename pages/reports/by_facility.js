@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import { SearchIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
-import Resources from './resources'
+import ReportsSideMenu  from './reportsSideMenu'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -117,7 +117,7 @@ const ByWard = (props) => {
                         </div>
                         </div>
                     </div>
-                    <Resources label={label}/>
+                    <ReportsSideMenu />
                     <main className="col-span-6 md:col-span-5 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
                           <div className='mx-4'>
