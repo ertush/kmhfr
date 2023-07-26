@@ -52,6 +52,7 @@ import {
 } from '../../controllers/facility/facilityHandlers';
 
 import { inputValidation } from '../../utils/formValidation';
+import { idID } from '@mui/material/locale';
 
 export const FacilityDeptContext = createContext(null)
 export const FacilityContactsContext = createContext(null)
@@ -70,6 +71,7 @@ const Map = React.memo(WardMap)
 function AddFacility(props) {
 
 	// const alert = useAlert();
+	console.log({props})
 
 	const formik = useFormik({
 
@@ -166,66 +168,66 @@ function AddFacility(props) {
 
 	const serviceOptions = ((_services) => {
 
-		const _serviceOptions = []
-		let _values = []
-		let _subCtgs = []
+		// extract service categories and compose into an array of objects
 
-		if (_services.length > 0) {
-			_services.forEach(({ category_name: ctg }) => {
-				let allOccurences = _services.filter(({ category_name }) => category_name === ctg)
+		const categories = _services.map(({category_name, category}) => ({label:category_name, value:category}));
 
-				allOccurences.forEach(({ id, name }) => {
-					_subCtgs.push(name)
-					_values.push(id)
-				})
+		const serviceCategoryValues = [ ...(new Set(categories.map(({value}) => value)).values()) ];
 
-				if (_serviceOptions.map(({ name }) => name).indexOf(ctg) === -1) {
-					_serviceOptions.push({
-						name: ctg,
-						subCategories: _subCtgs,
-						value: _values
-					})
-				}
+		const serviceCategories = serviceCategoryValues.map((id) => {
+			return categories.filter(({value}) => value === id)[0]
+		})
 
-				_values = []
-				_subCtgs = []
-
-			})
+		return {
+			categories: serviceCategories,
 		}
-
-		return _serviceOptions
 	})(props['15']?.service ?? [])
+
+
 
 	const infrastructureOption = ((_infrastructure) => {
 
-		const _infrastructureOptions = []
-		let _values = []
-		let _subCtgs = []
+		// const _infrastructureOptions = []
+		// let _values = []
+		// let _subCtgs = []
 
-		if (_infrastructure.length > 0) {
-			_infrastructure.forEach(({ category_name: ctg }) => {
-				let allOccurences = _infrastructure.filter(({ category_name }) => category_name === ctg)
+		// if (_infrastructure.length > 0) {
+		// 	_infrastructure.forEach(({ category_name: ctg }) => {
+		// 		let allOccurences = _infrastructure.filter(({ category_name }) => category_name === ctg)
 
-				allOccurences.forEach(({ id, name }) => {
-					_subCtgs.push(name)
-					_values.push(id)
-				})
+		// 		allOccurences.forEach(({ id, name }) => {
+		// 			_subCtgs.push(name)
+		// 			_values.push(id)
+		// 		})
 
-				if (_infrastructureOptions.map(({ name }) => name).indexOf(ctg) === -1) {
-					_infrastructureOptions.push({
-						name: ctg,
-						subCategories: _subCtgs,
-						value: _values
-					})
-				}
+		// 		if (_infrastructureOptions.map(({ name }) => name).indexOf(ctg) === -1) {
+		// 			_infrastructureOptions.push({
+		// 				name: ctg,
+		// 				subCategories: _subCtgs,
+		// 				value: _values
+		// 			})
+		// 		}
 
-				_values = []
-				_subCtgs = []
+		// 		_values = []
+		// 		_subCtgs = []
 
-			})
+		// 	})
+		// }
+
+		// extract infrastructure categories and compose into an array of objects
+
+		const categories = _infrastructure.map(({category_name, category}) => ({label:category_name, value:category}));
+
+		const infraCategoryValues = [ ...(new Set(categories.map(({value}) => value)).values()) ];
+
+		const infraCategories = infraCategoryValues.map((id) => {
+			return categories.filter(({value}) => value === id)[0]
+		})
+
+		return {
+			categories: infraCategories,
 		}
 
-		return _infrastructureOptions
 	})(props['16']?.infrastructure ?? [])
 
 	const hrOptions = ((_hr) => {
@@ -391,7 +393,6 @@ function AddFacility(props) {
 
 
 	useEffect(() => {
-
 
 		const formIdState = window.sessionStorage.getItem('formId');
 
@@ -2561,12 +2562,13 @@ function AddFacility(props) {
 
 															<EditListItem
 																initialSelectedItems={[]}
-																itemsCategory={serviceOptions}
+																categoryItems={serviceOptions.categories}
 																itemsCategoryName={'Services'}
 																setUpdatedItem={() => null}
 																itemId={facilityId}
 																setItems={setServices}
 																item={null}
+																options={props['15']?.service}
 																removeItemHandler={() => null}
 																handleItemsSubmit={handleServiceSubmit}
 																handleItemsUpdate={handleServiceUpdates}
@@ -2575,6 +2577,7 @@ function AddFacility(props) {
 																previousItemCategory={'regulation'}
 																handleItemPrevious={handleServicePrevious}
 																setIsSaveAndFinish={() => null}
+																
 
 
 															/>
@@ -2606,9 +2609,10 @@ function AddFacility(props) {
 															{/* Edit List With Count*/}
 															<EditListWithCount
 																initialSelectedItems={[]}
-																itemsCategory={infrastructureOption}
 																otherItemsCategory={null}
 																itemsCategoryName={'infrastructure'}
+																categoryItems={infrastructureOption.categories}
+																options={props['16']?.infrastructure}
 																itemId={facilityId}
 																item={null}
 																handleItemsSubmit={handleInfrastructureSubmit}
@@ -3081,7 +3085,7 @@ AddFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								allOptions.push({ infrastructure: (await _data.json()).results.map(({ id, name, category_name }) => ({ id, name, category_name })) })
+								allOptions.push({ infrastructure: (await _data.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category })) })
 
 							}
 							catch (err) {
