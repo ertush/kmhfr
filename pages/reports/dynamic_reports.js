@@ -115,7 +115,7 @@ const DynamicReports = (props) => {
         'admission_status_name',
         'facility_services',
         'facility_infrastructure',
-        'facility_humanresources',
+        'facility_humanReportsSideMenu ',
         'created',
         'closed'
     ]
@@ -410,7 +410,7 @@ const DynamicReports = (props) => {
                                                                                         tempInfra = [];
                                                                                     }
                                                                                 break;
-                                                                                case 'facility_humanresources':
+                                                                                case 'facility_humanReportsSideMenu ':
                                                                                     if(row[col].length > 0){
                                                                                         let tempHr = [];
                                                                                         row[col].forEach(hr => {tempHr.push(hr.name)})

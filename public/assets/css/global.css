@@ -15,3 +15,25 @@
 }
     
 
+.ag-theme-alpine {
+
+    /* disable all borders */
+
+ 
+    --ag-row-border-width: 1px;
+    --ag-row-border-color: rgb(3, 128, 51);
+    --ag-border-color: rgb(3, 128, 51);
+    --ag-border-width: 1px;
+
+    /* --ag-header-height: 30px;
+    --ag-header-foreground-color: white;
+    --ag-header-background-color: black;
+    --ag-header-cell-hover-background-color: rgb(80, 40, 140);
+    --ag-header-cell-moving-background-color: rgb(80, 40, 140); */
+
+  }
+
+  .ag-header {
+    color: red;
+    background-color:white
+  }

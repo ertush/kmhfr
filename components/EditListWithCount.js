@@ -357,15 +357,15 @@ function EditListWithCount(
                     <TableBody>
                         
                         <TableRow>
-                        <TableCell className='bg-yellow-100 text-black border-b border-green-600'>
+                        <TableCell className='bg-yellow-50 text-black border-b border-green-600'>
                             <p className="text-md w-full flex flex-wrap font-bold justify-between items-center leading-tight tracking-tight">
                             Assigned {itemsCategoryName}
                             </p>{" "}
                             </TableCell>
-                            <TableCell className='bg-yellow-100 text-green-700 border-b border-green-600'>
+                            <TableCell className='bg-yellow-50 text-green-700 border-b border-green-600'>
 
                             </TableCell>
-                            <TableCell className='bg-yellow-100 text-green-700 border-b border-green-600'>
+                            <TableCell className='bg-yellow-50 text-green-700 border-b border-green-600'>
 
                             </TableCell>
                         </TableRow>
@@ -429,7 +429,7 @@ function EditListWithCount(
                                 item !== null &&
                                 <TableRow>
                                     <TableCell>
-                                        <li className="w-full bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                        <li className="w-full bg-yellow-50 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                             <p>
                                                 {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
                                             </p>
@@ -455,7 +455,7 @@ function EditListWithCount(
                 {
                     item === null &&
 
-                    <div className='flex justify-between items-center w-full mt-4' style={{ maxWidth: '90%' }}>
+                    <div className='flex justify-between items-center w-full mt-4 w-full'>
                         		<button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
 																<span className='text-medium font-semibold text-green-900 '>

@@ -138,8 +138,7 @@ const Facility = (props) => {
                           left: '50%',
                           transform: 'translate(-50%, -50%)',
                           width: 400,
-                          bgcolor: 'background.paper',
-                          borderRadius: '6px',
+                          bgcolor: 'rgba(255, 251, 235, 1)',
                           borderLeft: 'solid 10px red',
                           boxShadow: 24,
                           p: 4,
@@ -213,7 +212,7 @@ const Facility = (props) => {
                             cols={'30'}
                             rows={'6'}
                             name='closing_reason'
-                            className='border-2 border-gray-400 '
+                            className='border border-green-600 '
                             >
                             </Field>
                             <div className='flex justify-start gap-4 mt-4'>
@@ -250,7 +249,7 @@ const Facility = (props) => {
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
                       width: 400,
-                      bgcolor: 'background.paper',
+                      bgcolor: 'rgba(255, 251, 235, 1)',
                       borderRadius: '6px',
                       borderLeft: 'solid 10px red',
                       boxShadow: 24,
