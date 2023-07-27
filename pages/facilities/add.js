@@ -52,6 +52,7 @@ import {
 } from '../../controllers/facility/facilityHandlers';
 
 import { inputValidation } from '../../utils/formValidation';
+import { idID } from '@mui/material/locale';
 
 export const FacilityDeptContext = createContext(null)
 export const FacilityContactsContext = createContext(null)
@@ -70,6 +71,7 @@ const Map = React.memo(WardMap)
 function AddFacility(props) {
 
 	// const alert = useAlert();
+	console.log({props})
 
 	const formik = useFormik({
 
@@ -166,98 +168,57 @@ function AddFacility(props) {
 
 	const serviceOptions = ((_services) => {
 
-		const _serviceOptions = []
-		let _values = []
-		let _subCtgs = []
+		// extract service categories and compose into an array of objects
 
-		if (_services.length > 0) {
-			_services.forEach(({ category_name: ctg }) => {
-				let allOccurences = _services.filter(({ category_name }) => category_name === ctg)
+		const categories = _services.map(({category_name, category}) => ({label:category_name, value:category}));
 
-				allOccurences.forEach(({ id, name }) => {
-					_subCtgs.push(name)
-					_values.push(id)
-				})
+		const serviceCategoryValues = [ ...(new Set(categories.map(({value}) => value)).values()) ];
 
-				if (_serviceOptions.map(({ name }) => name).indexOf(ctg) === -1) {
-					_serviceOptions.push({
-						name: ctg,
-						subCategories: _subCtgs,
-						value: _values
-					})
-				}
+		const serviceCategories = serviceCategoryValues.map((id) => {
+			return categories.filter(({value}) => value === id)[0]
+		})
 
-				_values = []
-				_subCtgs = []
-
-			})
+		return {
+			categories: serviceCategories,
 		}
-
-		return _serviceOptions
 	})(props['15']?.service ?? [])
+
+
 
 	const infrastructureOption = ((_infrastructure) => {
 
-		const _infrastructureOptions = []
-		let _values = []
-		let _subCtgs = []
+		// extract infrastructure categories and compose into an array of objects
 
-		if (_infrastructure.length > 0) {
-			_infrastructure.forEach(({ category_name: ctg }) => {
-				let allOccurences = _infrastructure.filter(({ category_name }) => category_name === ctg)
+		const categories = _infrastructure.map(({category_name, category}) => ({label:category_name, value:category}));
 
-				allOccurences.forEach(({ id, name }) => {
-					_subCtgs.push(name)
-					_values.push(id)
-				})
+		const infraCategoryValues = [ ...(new Set(categories.map(({value}) => value)).values()) ];
 
-				if (_infrastructureOptions.map(({ name }) => name).indexOf(ctg) === -1) {
-					_infrastructureOptions.push({
-						name: ctg,
-						subCategories: _subCtgs,
-						value: _values
-					})
-				}
+		const infraCategories = infraCategoryValues.map((id) => {
+			return categories.filter(({value}) => value === id)[0]
+		})
 
-				_values = []
-				_subCtgs = []
-
-			})
+		return {
+			categories: infraCategories,
 		}
 
-		return _infrastructureOptions
 	})(props['16']?.infrastructure ?? [])
 
 	const hrOptions = ((_hr) => {
 
-		const _hrOptions = []
-		let _values = []
-		let _subCtgs = []
+		// extract infrastructure categories and compose into an array of objects
 
-		if (_hr.length > 0) {
-			_hr.forEach(({ category_name: ctg }) => {
-				let allOccurences = _hr.filter(({ category_name }) => category_name === ctg)
+		const categories = _hr.map(({category_name, category}) => ({label:category_name, value:category}));
 
-				allOccurences.forEach(({ id, name }) => {
-					_subCtgs.push(name)
-					_values.push(id)
-				})
+		const hrCategoryValues = [ ...(new Set(categories.map(({value}) => value)).values()) ];
 
-				if (_hrOptions.map(({ name }) => name).indexOf(ctg) === -1) {
-					_hrOptions.push({
-						name: ctg,
-						subCategories: _subCtgs,
-						value: _values
-					})
-				}
+		const hrCategories = hrCategoryValues.map((id) => {
+			return categories.filter(({value}) => value === id)[0]
+		})
 
-				_values = []
-				_subCtgs = []
-
-			})
+		return {
+			categories: hrCategories,
 		}
 
-		return _hrOptions
 	})(props['17']?.hr ?? [])
 
 
@@ -273,7 +234,7 @@ function AddFacility(props) {
 		'Regulation',
 		'Services',
 		'Infrastructure',
-		'Human resources'
+		'Human ReportsSideMenu '
 	];
 
 	const [formId, setFormId] = useState(0)
@@ -391,7 +352,6 @@ function AddFacility(props) {
 
 
 	useEffect(() => {
-
 
 		const formIdState = window.sessionStorage.getItem('formId');
 
@@ -625,7 +585,7 @@ function AddFacility(props) {
 													<form
 														encType="multipart/form-data"
 														ref={basicDetailsRef}
-														className='flex flex-col w-full items-start border border-green-600 p-4 justify-start gap-3'
+														className='flex flex-col w-full items-start bg-yellow-50 shadow-md p-4 justify-start gap-3'
 														onSubmit={ev => {
 															//  check if form validation works
 
@@ -1994,7 +1954,7 @@ function AddFacility(props) {
 
 													<form
 														name='geolocation_form'
-														className='flex flex-col w-full items-start justify-start gap-3'
+														className='flex flex-col w-full items-start bg-yellow-50 p-4 shadow-md justify-start gap-3'
 														onSubmit={formik.handleSubmit}
 													>
 														{/* Collection Date */}
@@ -2122,7 +2082,7 @@ function AddFacility(props) {
 														{/* Contacts */}
 
 														<div
-															className='grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3'
+															className='grid grid-cols-2 place-content-start gap-3 w-full bg-yellow-50 shadow-md p-3'
 														>
 															{/* Contact Headers */}
 															<h3 className='text-medium font-semibold text-green-900'>
@@ -2186,7 +2146,7 @@ function AddFacility(props) {
 														<h5 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
 															Facility Officer In-Charge Details
 														</h5>
-														<div className='flex flex-col items-start justify-start gap-1 w-full  h-auto'>
+														<div className='flex flex-col items-start bg-yellow-50 p-3 shadow-md justify-start gap-1 w-full  h-auto'>
 															{/*  Name  */}
 															<div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
 																<label
@@ -2357,10 +2317,10 @@ function AddFacility(props) {
 											return (
 												<>
 													<h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">Facility Regulation</h4>
-													<form ref={facilityRegulationFormRef} name="facility_regulation_form" className='flex flex-col w-full items-start justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId, facilityOfficialName, facilityRegulationFormRef], licenseFile)}>
+													<form ref={facilityRegulationFormRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-yellow-50 shadow-md p-4 justify-start gap-3' onSubmit={ev => handleRegulationSubmit(ev, [setFormId, facilityId, facilityOfficialName, facilityRegulationFormRef], licenseFile)}>
 
 														{/* Regulatory Body */}
-														<div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+														<div className="w-full flex flex-col background items-start justify-start gap-1 mb-3">
 															<label htmlFor="regulatory_body" className="text-gray-600 capitalize text-sm">Regulatory Body<span className='text-medium leading-12 font-semibold'> *</span> </label>
 															<Select
 																
@@ -2460,10 +2420,10 @@ function AddFacility(props) {
 														<div className='grid grid-cols-4 place-content-start gap-3 w-full border border-green-600  p-3' ref={facilityRegulatoryBodyRef}>
 
 															{/* Contact Headers */}
-															<h3 className='text-medium font-semibold border-b border-green-600 text-green-900'>Name</h3>
-															<h3 className='text-medium font-semibold border-b border-green-600 text-green-900'>Regulatory Body</h3>
-															<h3 className='text-medium font-semibold border-b border-green-600 text-green-900'>License Number</h3>
-															<h3 className='text-medium font-semibold border-b border-green-600 text-green-900'>Reg. Number</h3>
+															<h3 className='text-medium font-semibold text-green-900'>Name</h3>
+															<h3 className='text-medium font-semibold  text-green-900'>Regulatory Body</h3>
+															<h3 className='text-medium font-semibold  text-green-900'>License Number</h3>
+															<h3 className='text-medium font-semibold  text-green-900'>Reg. Number</h3>
 
 															<hr className='col-span-4' />
 
@@ -2561,12 +2521,13 @@ function AddFacility(props) {
 
 															<EditListItem
 																initialSelectedItems={[]}
-																itemsCategory={serviceOptions}
+																categoryItems={serviceOptions.categories}
 																itemsCategoryName={'Services'}
 																setUpdatedItem={() => null}
 																itemId={facilityId}
 																setItems={setServices}
 																item={null}
+																options={props['15']?.service}
 																removeItemHandler={() => null}
 																handleItemsSubmit={handleServiceSubmit}
 																handleItemsUpdate={handleServiceUpdates}
@@ -2575,6 +2536,7 @@ function AddFacility(props) {
 																previousItemCategory={'regulation'}
 																handleItemPrevious={handleServicePrevious}
 																setIsSaveAndFinish={() => null}
+																
 
 
 															/>
@@ -2606,9 +2568,10 @@ function AddFacility(props) {
 															{/* Edit List With Count*/}
 															<EditListWithCount
 																initialSelectedItems={[]}
-																itemsCategory={infrastructureOption}
 																otherItemsCategory={null}
 																itemsCategoryName={'infrastructure'}
+																categoryItems={infrastructureOption.categories}
+																options={props['16']?.infrastructure}
 																itemId={facilityId}
 																item={null}
 																handleItemsSubmit={handleInfrastructureSubmit}
@@ -2618,7 +2581,7 @@ function AddFacility(props) {
 																setItemsUpdateData={null}
 																handleItemPrevious={handleInfrastructurePrevious}
 																setNextItemCategory={setFormId}
-																nextItemCategory={'human resources'}
+																nextItemCategory={'human ReportsSideMenu '}
 																previousItemCategory={'services'}
 																setIsSaveAndFinish={() => null}
 															/>
@@ -2628,7 +2591,7 @@ function AddFacility(props) {
 												</>
 											)
 										case 6:
-											// Human resources form
+											// Human ReportsSideMenu  form
 
 											const handleHrPrevious = (event) => {
 												event.preventDefault()
@@ -2640,7 +2603,7 @@ function AddFacility(props) {
 
 											return (
 												<>
-													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Human resources</h4>
+													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Human ReportsSideMenu </h4>
 													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
 														{/* Edit List With Count Container*/}
@@ -3081,7 +3044,7 @@ AddFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								allOptions.push({ infrastructure: (await _data.json()).results.map(({ id, name, category_name }) => ({ id, name, category_name })) })
+								allOptions.push({ infrastructure: (await _data.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category })) })
 
 							}
 							catch (err) {
@@ -3107,7 +3070,7 @@ AddFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								allOptions.push({ hr: (await _data.json()).results.map(({ id, name, category_name }) => ({ id, name, category_name })) })
+								allOptions.push({ hr: (await _data.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category })) })
 
 							}
 							catch (err) {

@@ -9,7 +9,8 @@ import { DotsHorizontalIcon } from "@heroicons/react/solid";
 import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 import Select from 'react-select'; 
-import Resources from './resources'
+import ReportsSideMenu from './reportsSideMenu'
+
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -117,7 +118,7 @@ const FacilityByTypeDetails = (props) => {
                         </div>
                     </div>
                     {/* list */}
-                    <Resources label ={label} />
+                    <ReportsSideMenu  label ={label} />
                     
                     <main className="col-span-6 md:col-sapn-5 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         

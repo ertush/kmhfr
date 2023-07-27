@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
 import { useAlert } from 'react-alert'
@@ -16,7 +16,7 @@ import {
 function EditListItem({
   initialSelectedItems,
   setItems,
-  itemsCategory,
+  categoryItems,
   itemsCategoryName,
   setUpdatedItem,
   itemId,
@@ -27,20 +27,15 @@ function EditListItem({
   setNextItemCategory,
   nextItemCategory,
   previousItemCategory,
-  handleItemPrevious,
+  options,
   setIsSavedChanges,
   setItemsUpdateData,
-  setIsSaveAndFinish
+  setIsSaveAndFinish,
 }) {
 
   const alert = useAlert()
 
-  const itemOptions = ((options) => {
-    return options.map(({ name, subCategories, value }) => ({
-      label: name,
-      options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
-    }))
-  })(itemsCategory)
+  
 
 
   const formatGroupLabel = (data) => (
@@ -72,14 +67,16 @@ function EditListItem({
 
   const [currentItem, setCurrentItem] = useState(null)
   const [isRemoveItem, setIsRemoveItem] = useState(false)
+  const [itemOptions, setItemOptions] = useState([])
+  const [deletedItems, setDeletedItems] = useState([])
   const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
-    const result = []
+  const result = []
 
-    initialSelectedItems.map(({ subCategories, value, facility_service_id: item_id }) => {
+  initialSelectedItems.map(({ subCategories, value, facility_service_id: item_id }) => {
 
-      result.push({ name: subCategories[0], id: value[0], item_id })
+    result.push({ name: subCategories[0], id: value[0], item_id })
 
-    })
+  })
 
 
 
@@ -88,13 +85,11 @@ function EditListItem({
   })() : []))
 
 
-  const [deletedItems, setDeletedItems] = useState([])
 
 
   useEffect(() => {
     setUpdatedItem(selectedItems)
   }, [selectedItems, isRemoveItem])
-
 
 
   return (
@@ -152,16 +147,16 @@ function EditListItem({
 
       >
         {/* Item List Dropdown */}
-        <div className='w-full flex flex-col items-start border border-green-600 p-3 justify-start gap-1 mb-3'>
+        <div className='w-full flex flex-col items-start bg-yellow-50 shadow-md p-4 justify-start gap-1 mb-3'>
           {/* Iten Category Dropdown */}
           <label
-            htmlFor='item_drop_down_edit_list'
+            htmlFor='category_item_drop_down_edit_list'
             className='capitalize text-md font-semibold leading-tight tracking-tight'>
             Category {itemsCategoryName}
           </label>
-          <div className="flex items-start gap-2  w-full h-auto">
+          <div className="flex items-start gap-2 w-full h-auto">
             <Select
-              options={itemOptions}
+              options={categoryItems}
               formatGroupLabel={formatGroupLabel}
               styles={{
                 control: (baseStyles) => ({
@@ -179,18 +174,58 @@ function EditListItem({
               }}
               className='flex w-full placeholder-gray-500 border border-green-600 outline-none'
               onChange={(e) => {
-                setCurrentItem({ id: e?.value, name: e?.label })
-              }
-              }
+
+                const _options = []
+                let _values = []
+                let _subCtgs = []
+
+                if (options.length > 0) {
+                	options.forEach(({ category_name: ctg, category }) => {
+                		let allOccurences = options.filter(({ category_name }) => category_name === ctg)
+
+                		allOccurences.forEach(({ id, name }) => {
+                			_subCtgs.push(name)
+                			_values.push(id)
+                		})
+
+                		if (_options.map(({ name }) => name).indexOf(ctg) === -1) {
+
+                			_options.push({
+                				category: ctg,
+                        categoryId: category,
+                				itemLabels: _subCtgs,
+                				itemIds: _values
+                			})
+                		}
+
+                		_values = []
+                		_subCtgs = []
+
+                	})
+                }
+               
+                  const filters =_options.filter(({categoryId}) => (categoryId === e.value))[0]
+                 
+                  const item_options = filters.itemLabels.map((label, i) => ({label, value: filters.itemIds[i]}))
+                
+             
+
+                setItemOptions(item_options)
+        
+              }}
               name="category_item_drop_down_edit_list"
              
             />
+
+            <div name="hidden_btn" className="bg-transparent w-20 p-2 flex items-center justify-evenly gap-2"
+             ></div>
+             
             </div>
           
           {/* Item Dropdown */}
           <label
             htmlFor='item_drop_down_edit_list'
-            className='capitalize text-md font-semibold leading-tight tracking-tight'>
+            className='capitalize mt-4 text-md font-semibold leading-tight tracking-tight'>
              {itemsCategoryName}
           </label>
           <div className="flex items-start gap-2  w-full h-auto">
@@ -239,14 +274,20 @@ function EditListItem({
 
         {/* Item Selected Table */}
        
-        <Table className="border border-green-600 p-3">
-          <TableBody className='px-3 border border-green-600'>
-            <TableRow>
-            <span className="text-md w-full flex flex-wrap m-3 font-bold justify-between items-center leading-tight tracking-tight">
+        <Table className="card bg-yellow-50 shadow-md">
+          <TableBody >
+            <TableRow >
+              <TableCell className='bg-transparent text-green-700 border-b border-green-600'>
+              <span className="text-md w-full flex flex-wrap  font-bold justify-between items-center leading-tight tracking-tight">
               Assigned {itemsCategoryName}
             </span>{" "}
+              </TableCell>
+              <TableCell className='bg-transparent text-green-700 border-b border-green-600'>
+
+              </TableCell>
+            
             </TableRow>
-            <TableRow className="border-b">
+            <TableRow>
               <TableCell>
                 <p className='text-base font-semibold'>{itemsCategoryName}</p>
               </TableCell>

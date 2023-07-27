@@ -27,7 +27,9 @@ function EditListWithCount(
         setNextItemCategory,
         nextItemCategory,
         previousItemCategory,
-        setIsSaveAndFinish
+        setIsSaveAndFinish,
+        categoryItems,
+        options
     }
 ) {
 
@@ -36,17 +38,18 @@ function EditListWithCount(
 
 
     const [isFormSubmit, setIsFormSubmit] = useState(false)
-    const [itemOptions, setItemOptions] = useState(((options) => {
-        if (options == null) return []
-        return options.map(({ name, subCategories, value }) => ({
-            label: name,
-            options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
-        }))
-    })(itemsCategory ?? otherItemsCategory))
+    // const [itemOptions, setItemOptions] = useState(((options) => {
+    //     if (options == null) return []
+    //     return options.map(({ name, subCategories, value }) => ({
+    //         label: name,
+    //         options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
+    //     }))
+    // })(itemsCategory ?? otherItemsCategory))
 
 
     const [currentItem, setCurrentItem] = useState(null)
     const [deletedItems, setDeletedItems] = useState([])
+    const [itemOptions, setItemOptions] = useState([])
 
 
     const [selectedItems, setSelectedItems] = useState((initialSelectedItems ? (() => {
@@ -137,6 +140,9 @@ function EditListWithCount(
 
     }, [isFormSubmit])
 
+
+    console.log({options, categoryItems})
+
     return (
 
         <Formik
@@ -209,12 +215,12 @@ function EditListWithCount(
 
             <Form
                 name="list_item_with_count_form"
-                className="flex flex-col w-full items-start justify-start gap-3 md:mx-3"
+                className="flex flex-col w-full items-start justify-start gap-3 "
 
             >
 
                 {/* Item List Dropdown */}
-                <div className='w-full flex flex-col border p-3 border-green-600 items-start justify-start gap-3 mb-3'>
+                <div className='w-full flex flex-col p-3 bg-yellow-50  shadow-md items-start justify-start gap-3 mb-3'>
                     {/* category */}
 
                     <label
@@ -227,10 +233,45 @@ function EditListWithCount(
 
                         <Select
 
-                            options={itemOptions}
+                            options={categoryItems}
                             formatGroupLabel={formatGroupLabel}
                             onChange={(e) => {
-                                setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
+                                const _options = []
+                                let _values = []
+                                let _subCtgs = []
+                
+                                if (options.length > 0) {
+                                    options.forEach(({ category_name: ctg, category }) => {
+                                        let allOccurences = options.filter(({ category_name }) => category_name === ctg)
+                
+                                        allOccurences.forEach(({ id, name }) => {
+                                            _subCtgs.push(name)
+                                            _values.push(id)
+                                        })
+                
+                                        if (_options.map(({ name }) => name).indexOf(ctg) === -1) {
+                
+                                            _options.push({
+                                                category: ctg,
+                                                categoryId: category,
+                                                itemLabels: _subCtgs,
+                                                itemIds: _values
+                                            })
+                                        }
+                
+                                        _values = []
+                                        _subCtgs = []
+                
+                                    })
+                                }
+                               
+                                  const filters =_options.filter(({categoryId}) => (categoryId === e.value))[0]
+                                 
+                                  const item_options = filters.itemLabels.map((label, i) => ({label, value: filters.itemIds[i]}))
+                                
+                             
+                
+                                setItemOptions(item_options)
                             }
                             }
                             name="category_items_with_count"
@@ -251,6 +292,9 @@ function EditListWithCount(
                               
                               className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                         />
+
+                    <div name="hidden_btn" className="bg-transparent w-20 p-2 flex items-center justify-evenly gap-2"
+                                ></div>
                         </div>
                    
                    
@@ -309,12 +353,21 @@ function EditListWithCount(
 
                 {/* Item Selected Table */}
                
-                <Table className="md:px-4 border border-green-600">
+                <Table className="card bg-yellow-50 shadow-md">
                     <TableBody>
+                        
                         <TableRow>
-                            <span className="text-md w-full flex flex-wrap m-3 font-bold justify-between items-center leading-tight tracking-tight">
+                        <TableCell className='bg-yellow-50 text-black border-b border-green-600'>
+                            <p className="text-md w-full flex flex-wrap font-bold justify-between items-center leading-tight tracking-tight">
                             Assigned {itemsCategoryName}
-                            </span>{" "}
+                            </p>{" "}
+                            </TableCell>
+                            <TableCell className='bg-yellow-50 text-green-700 border-b border-green-600'>
+
+                            </TableCell>
+                            <TableCell className='bg-yellow-50 text-green-700 border-b border-green-600'>
+
+                            </TableCell>
                         </TableRow>
                         <TableRow className="border-b border-green-600">
                             <TableCell>
@@ -342,7 +395,7 @@ function EditListWithCount(
                                                 min={1}
                                                 name={id}
                                                 validate={validateCount}
-                                                className="flex-none w-24 bg-green-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                                className="flex-none w-24 bg-transparent border border-green-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             />
                                        {errors[id] && <div><span className='text-red-600 mt-1'>{errors[id]}</span></div>}
                                         </TableCell>
@@ -376,7 +429,7 @@ function EditListWithCount(
                                 item !== null &&
                                 <TableRow>
                                     <TableCell>
-                                        <li className="w-full bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                        <li className="w-full bg-yellow-50 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                             <p>
                                                 {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
                                             </p>
@@ -402,7 +455,7 @@ function EditListWithCount(
                 {
                     item === null &&
 
-                    <div className='flex justify-between items-center w-full mt-4' style={{ maxWidth: '90%' }}>
+                    <div className='flex justify-between items-center w-full mt-4 w-full'>
                         		<button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
 																<span className='text-medium font-semibold text-green-900 '>

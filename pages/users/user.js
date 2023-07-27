@@ -16,7 +16,7 @@ import { hasPermission } from '../../utils/checkPermissions';
 import Alert from '@mui/material/Alert';
 import Link from 'next/link'
 
-const AddUser = (props)=> {
+const User = (props)=> {
 	const [subCountyOptions, setSubCountyOptions] = useState([])
 	const [editMode, setEditMode]= useState(false)
 	const alert = useAlert()
@@ -283,9 +283,9 @@ const AddUser = (props)=> {
 							<button
 								type='button'
 								onClick={()=>setOpen(true)}
-								className=' bg-red-500 p-2 text-white flex text-md font-semibold '>
+								className=' bg-black p-2 text-white flex text-md font-semibold '>
 								<span className='text-medium font-semibold text-white'>
-									Delete
+									Disable
 								</span>
 							</button>
 						}
@@ -877,7 +877,7 @@ const AddUser = (props)=> {
   )
 }
 
-AddUser.getInitialProps = async (ctx) => {
+User.getInitialProps = async (ctx) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL
 	const person_id = ctx.query.id
 	const allOptions =[]
@@ -1074,4 +1074,4 @@ AddUser.getInitialProps = async (ctx) => {
   
 }
   
-  export default withRouter(AddUser)
+  export default withRouter(User)

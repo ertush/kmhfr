@@ -334,7 +334,21 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
                     color: "rgba(17, 24, 39, 1)"
                   }}} 
                     onClick={() => {
-                      
+                        setTitle('Validate Updated Facilities')
+                        setPathId('updated_pending_validation')
+                        setAllFctsSelected(false)
+                        setApprovedFctsSelected(false)
+                        setNewFctsSelected(false)
+                        setUpdatedFctsSelected(true)
+                        setFailedValidationFctsSelected(false)
+                        setFacilitiesPendingApproval(false)
+                        setDHISSyncedFacilities(false)
+                        setRejectedFctsSelected(false)
+                        setClosedFctsSelected(false)
+                        setIncompleteFctsSelected(false)
+                        setSyncRegulatedFctsSelected(false)
+                        setFeedBackFctsSelected(false)
+                        
                         handleQuickFiltersClick('updated_pending_validation')
 
                     }}

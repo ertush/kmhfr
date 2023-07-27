@@ -260,7 +260,7 @@ if(filters){
         <>
           {/* Check for errors and show them */}
           {props?.error ? (
-            <div className="w-full flex flex-col gap-5 px-1 md:px-4 p-4 my-4 mx-auto bg-gray-100 min-h-screen items-center">
+            <div className="w-full flex flex-col gap-5 px-1 md:px-4 p-4 my-4 mx-auto bg-transparent min-h-screen items-center">
               <div className="flex flex-col items-center justify-center bg-red-100  border border-red-300 shadow w-full max-w-screen-sm">
                 <h1 className="text-red-700 text-3xl flex items-center gap-x-2">
                   <XCircleIcon className="text-red-500 h-4 w-4 text-5xl" />
@@ -273,7 +273,7 @@ if(filters){
             </div>
           ) : (
             <>
-              <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 pt-2 justify-between items-center w-full bg-gray-100">
+              <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 pt-2 justify-between items-center w-full bg-transparent">
                 {/* BREADCRUMB */}
                 <div className="flex flex-row items-center justify-between gap-2 md:ml-6 text-sm md:text-base py-3">
                   <Link className="text-green-700" href="/">
@@ -286,9 +286,9 @@ if(filters){
                 {/* TODO: Check the viability of the export button */}
 
                 {/* Aside with filters */}
-                <div className="w-full grid grid-cols-6 gap-5 px-1 md:px-4 p-4 mx-auto bg-gray-100 min-h-screen">
+                <div className="w-full grid grid-cols-6 gap-5 px-1 md:px-4 p-4 mx-auto bg-transparent min-h-screen">
                   {/* Actual Aside */}
-                  <aside className="col-span-6 md:col-span-2 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start bg-white -lg shadow">
+                  <aside className="col-span-6 bg-yellow-50 md:col-span-3 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start shadow-md">
                     {/* Tabs */}
                     <Tabs.Root
                       orientation="horizontal"
@@ -354,7 +354,7 @@ if(filters){
                             className=" bg-transparent py-1 flex flex-col w-full md:stickyz"
                             open
                           >
-                            <summary className="flex cursor-pointer w-full bg-white p-0">
+                            <summary className="flex cursor-pointer w-fulp-0">
                               <h5 className="text-xl font-semibold">Filters</h5>
                             </summary>
 
@@ -557,7 +557,22 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50"
+                                                    styles={{
+                                control: (baseStyles) => ({
+                                  ...baseStyles,
+                                  backgroundColor: 'transparent',
+                                  outLine: 'none',
+                                  border: 'none',
+                                  outLine: 'none',
+                                  textColor: 'transparent',
+                                  padding: 0,
+                                  height: '4px',
+                                  width: '100%'
+                                }),
+                
+                              }}
+                              
+                              className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -588,7 +603,22 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50 col-start-1"
+                                                    styles={{
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+                                                      }),
+                                      
+                                                    }}
+                                                    
+                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={serviceOptions}
                                                     placeholder={
                                                       ft
@@ -736,7 +766,22 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50"
+                                                    styles={{
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+                                                      }),
+                                      
+                                                    }}
+                                                    
+                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -832,7 +877,22 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50 col-start-1"
+                                                    styles={{
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+                                                      }),
+                                      
+                                                    }}
+                                                    
+                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={subCountyOptions}
                                                     placeholder={
                                                       ft
@@ -855,7 +915,22 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50 col-start-1"
+                                                    styles={{
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+                                                      }),
+                                      
+                                                    }}
+                                                    
+                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={wardOptions}
                                                     placeholder={
                                                       ft
@@ -912,7 +987,22 @@ if(filters){
                                                       drillDown[ft] || ""
                                                     }
                                                     id={ft}
-                                                    className="w-full p-1  bg-gray-50"
+                                                    styles={{
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+                                                      }),
+                                      
+                                                    }}
+                                                    
+                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1422,7 +1512,22 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50"
+                                                    styles={{
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+                                                      }),
+                                      
+                                                    }}
+                                                    
+                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1453,7 +1558,22 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50 col-start-1"
+                                                    styles={{
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+                                                      }),
+                                      
+                                                    }}
+                                                    
+                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={serviceOptions}
                                                     placeholder={
                                                       ft
@@ -1601,7 +1721,22 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50"
+                                                    styles={{
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+                                                      }),
+                                      
+                                                    }}
+                                                    
+                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1632,7 +1767,22 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50 col-start-1"
+                                                    styles={{
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+                                                      }),
+                                      
+                                                    }}
+                                                    
+                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={subCountyOptions}
                                                     placeholder={
                                                       ft
@@ -1774,7 +1924,22 @@ if(filters){
                                                   <Select
                                                     id={ft}
                                                     name={ft}
-                                                    className="w-full p-1  bg-gray-50 col-start-1"
+                                                    styles={{
+                                                      control: (baseStyles) => ({
+                                                        ...baseStyles,
+                                                        backgroundColor: 'transparent',
+                                                        outLine: 'none',
+                                                        border: 'none',
+                                                        outLine: 'none',
+                                                        textColor: 'transparent',
+                                                        padding: 0,
+                                                        height: '4px',
+                                                        width: '100%'
+                                                      }),
+                                      
+                                                    }}
+                                                    
+                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={wardOptions}
                                                     placeholder={
                                                       ft
@@ -1832,7 +1997,22 @@ if(filters){
                                                       drillDown[ft] || ""
                                                     }
                                                     id={ft}
-                                                    className="w-full p-1  bg-gray-50"
+                                                    styles={{
+                                control: (baseStyles) => ({
+                                  ...baseStyles,
+                                  backgroundColor: 'transparent',
+                                  outLine: 'none',
+                                  border: 'none',
+                                  outLine: 'none',
+                                  textColor: 'transparent',
+                                  padding: 0,
+                                  height: '4px',
+                                  width: '100%'
+                                }),
+                
+                              }}
+                              
+                              className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -2092,13 +2272,13 @@ if(filters){
                                           },
                                         });
                                       }}
-                                      className="bg-black border-2 border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg  w-full whitespace-nowrap text-center uppercase"
+                                      className="bg-black border border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg  w-full whitespace-nowrap text-center uppercase"
                                     >
                                       Apply Filters
                                     </button>
                                     <div className="w-full flex items-center py-2 justify-center">
                                       <button
-                                        className="cursor-pointer text-sm bg-transparent text-blue-700 hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline"
+                                        className="cursor-pointer text-sm bg-transparent text-black hover:text-black hover:underline focus:text-black focus:underline active:text-black active:underline"
                                         onClick={(ev) => {
                                           router.push("/gis");
                                         }}
@@ -2118,7 +2298,7 @@ if(filters){
 
                   {/* Map the results */}
                   <div
-                    className="col-span-6 md:col-span-4 lg:col-span-4 xl:col-span-5 flex flex-col gap-4 items-center justify-center bg-green-100 -lg shadow-lg border border-gray-300"
+                    className="col-span-6 md:col-span-3 lg:col-span-4 xl:col-span-5 flex flex-col gap-4 items-center justify-center bg-green-100 shadow-lg border border-gray-300"
                     style={{ minHeight: "650px" }}
                   >
                     {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}

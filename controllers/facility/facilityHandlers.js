@@ -564,7 +564,7 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
 
     }
     catch (e) {
-        console.error('Unable to submit facility human resources details', e.message)
+        console.error('Unable to submit facility human ReportsSideMenu  details', e.message)
     }
 
 
@@ -857,7 +857,7 @@ const handleHrUpdates = async (stateSetters, alert) => {
 
     }
     catch (e) {
-        console.error('Unable to patch facility Human resources details', e.message)
+        console.error('Unable to patch facility Human ReportsSideMenu  details', e.message)
     }
 }
 

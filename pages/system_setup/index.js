@@ -752,8 +752,7 @@ console.log(editData, editMode, editID);
                                     left: '50%',
                                     transform: 'translate(-50%, -50%)',
                                     width: 700,
-                                    bgcolor: 'background.paper',
-                                    borderRadius: '6px',
+                                    bgcolor: 'rgba(255, 251, 235, 1)',
                                     boxShadow: 24,
                                     p: 4,
                                 }
@@ -786,7 +785,7 @@ console.log(editData, editMode, editID);
                         </button>
                         }
                         {isAddForm && editMode && addBtnLabel !== 'feedback' && addBtnLabel !== 'CHU Rating Comment' && addBtnLabel !== 'county' && addBtnLabel !== 'constituency' &&
-                        <button className=' bg-red-600 p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setOpen(true)}}>
+                        <button className=' bg-black p-2 text-white flex items-center text-lg font-semibold' onClick={() => {setOpen(true)}}>
                         {`Delete `}
                         </button>
                         }

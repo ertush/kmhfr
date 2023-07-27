@@ -1028,7 +1028,7 @@ const EditFacility = (props) => {
                     value="human_resource"
                     className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                   >
-                    Human Resources
+                    Human ReportsSideMenu 
                   </Tabs.Tab>
                 </Tabs.List>
 
@@ -3479,7 +3479,7 @@ const EditFacility = (props) => {
                   </div>
                 </Tabs.Panel>
 
-                {/* Human Resources */}
+                {/* Human ReportsSideMenu  */}
                 <Tabs.Panel
                   value="human_resource"
                   className="grow-1 py-1 px-4 tab-panel"
