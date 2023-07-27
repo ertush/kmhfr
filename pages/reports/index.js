@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
-import { DownloadIcon, EyeIcon, PencilAltIcon } from '@heroicons/react/outline'
+import { DownloadIcon, EyeIcon } from '@heroicons/react/outline'
 import { useEffect, useState, useContext, useMemo } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
+import {  DotsHorizontalIcon } from "@heroicons/react/solid";
 
 import Select from 'react-select';
 import ReportsSideMenu from './reportsSideMenu'
