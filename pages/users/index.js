@@ -38,7 +38,7 @@ const Users = (props) => {
     const LinkCellRenderer = (params) =>{
     return(
         <Link
-        href={{ pathname: `/users/add_user/`,
+        href={{ pathname: `/users/user/`,
         query: { id: params.data.id } }}
 
         ><span>{params.value}</span></Link>
@@ -145,7 +145,7 @@ const Users = (props) => {
                                     {'Manage Users'}
                                 </h2>
                                 <button className=' bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
-                                onClick={() => {router.push('/users/add_user')}} 
+                                onClick={() => {router.push('/users/user')}} 
                                 >
                                     {`Add User `}
                                     <PlusIcon className='text-white ml-2 h-5 w-5'/>

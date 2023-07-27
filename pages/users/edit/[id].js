@@ -166,7 +166,7 @@ console.log(delete_permission);
 								onClick={()=>setOpen(true)}
 								className=' bg-black p-2 text-white flex text-md font-semibold '>
 								<span className='text-medium font-semibold text-white'>
-									Disable
+									Delete
 								</span>
 							</button>
                         </div>

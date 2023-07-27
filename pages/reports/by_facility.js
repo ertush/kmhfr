@@ -167,15 +167,18 @@ const ByWard = (props) => {
                             <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
                                 <AgGridReact
                                     rowStyle={{width: '100vw'}}
-                                    sideBar={true}
+                                    sideBar={false}
                                     defaultColDef={{
                                         sortable: true,
                                         filter: true,
+                                        resizable: true
                                     }}
                                     enableCellTextSelection={true}
                                     onGridReady={onGridReady}
                                     rowData={filtered}
                                     columnDefs={columns}
+                                    suppressAutoSize={false}
+                                    suppressMenuHide={true}
                                     frameworkComponents={{
                                         LinkCellRenderer
                                       }}
