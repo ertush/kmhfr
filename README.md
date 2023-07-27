@@ -16,7 +16,7 @@ Currently, this uses the test API available through [api.kmhfltest.health.go.ke]
 
 An on-premise test server is needed. Currently, you can preview the example live on [kmhfl3.vercel.app](https://kmhfl3.vercel.app):
 
-## How to use
+## Setting up local instance
 
 - Clone this repository ```git clone https://github.com/uonafya/kmhfl-upgrade-alpha-ui mfl3```
 - cd into the folder ```cd mfl3```
