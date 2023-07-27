@@ -113,14 +113,14 @@ const FacilitiesByType = (props) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
-                <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
-                    <div className="col-span-7 flex flex-col gap-x-1">
+                <div className="w-full grid grid-cols-8 gap-4 p-1 md:mx-4 my-2">
+                    <div className="col-span-8 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
                                 <a className="text-green-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Facility Report by Type</span> 
                             </div>
-                            <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                            <div className={`col-span-5 flex justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-green-600 border-l-8 ${'border-green-600'}`}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                      {'Facility Report by Type'}
                                 </h2>
@@ -133,7 +133,7 @@ const FacilitiesByType = (props) => {
                     
                     <main className="col-span-6 md:col-sapn-5 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
-                    <div className="w-full flex flex items-center justify-start space-x-3 mb-3">
+                    <div className="w-full flex items-center justify-start space-x-3 mb-3">
                             {filters_county && Object.keys(filters_county).length > 0 &&
                                 Object.keys(filters_county).map(ft => (
                                     <div key={ft} className="w-1/5 max-w-xs flex flex-col items-start justify-start mb-3">

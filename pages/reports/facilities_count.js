@@ -101,7 +101,7 @@ const FacilitiesCount = (props) => {
                                 <a className="text-green-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Facility Report by County</span> 
                             </div>
-                            <div className={"col-span-5 flex ustify-between border border-green-600 p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                            <div className={`col-span-5 flex justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-green-600 border-l-8 ${'border-green-600'}`}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Facility Report by County'}
                                 </h2>
