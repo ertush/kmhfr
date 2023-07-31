@@ -196,7 +196,7 @@ const AddCommunityUnit = (props) => {
 						{/* Stepper Body */}
 						<div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
 							<div
-								className=' w-full flex flex-col items-start justify-start p-3 bg-transparent border border-green-600'
+								className=' w-full flex flex-col items-start justify-start p-3 bg-yellow-50 shadow-md'
 								style={{ minHeight: '250px' }}>
 								{/* Form-changing switch statement */}
 								{(() => {
@@ -940,7 +940,7 @@ const AddCommunityUnit = (props) => {
 													console.error('Unable to patch CHU service details'.e.message)
 												}
 
-												window.sessionStorage.setItem('chuformId', 3);
+												window.sessionStorage.setItem('chuformId', 0);
 
 												setFormId(window.sessionStorage.getItem('chuformId'))
 												setServices([])
