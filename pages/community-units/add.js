@@ -82,7 +82,14 @@ const AddCommunityUnit = (props) => {
 			})
 		}
 
-		return _serviceOptions
+		 
+
+		
+	return _serviceOptions.map(({ name, subCategories, value }) => ({
+		label: name,
+		options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
+	}))
+		  
 	})(serviceCtg ?? [])
 
 
@@ -105,13 +112,14 @@ const AddCommunityUnit = (props) => {
 		const formIdState = window.sessionStorage.getItem('chuformId');
 
 		if (formIdState == undefined || formIdState == null || formIdState == '') {
-			window.sessionStorage.setItem('chuformId', 1);
+			window.sessionStorage.setItem('chuformId', 0);
 		}
 
 		setFormId(window.sessionStorage.getItem('chuformId'));
 
 		return () => {
-			if (window.sessionStorage.getItem('chuformId') == '3') {
+
+			if (!window.sessionStorage.getItem('chuformId')) {
 				window.sessionStorage.setItem('chuformId', 0);
 			}
 		};
@@ -188,7 +196,7 @@ const AddCommunityUnit = (props) => {
 						{/* Stepper Body */}
 						<div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
 							<div
-								className=' w-full flex flex-col items-start justify-start p-3 bg-transparent border border-green-600'
+								className=' w-full flex flex-col items-start justify-start p-3 bg-yellow-50 shadow-md'
 								style={{ minHeight: '250px' }}>
 								{/* Form-changing switch statement */}
 								{(() => {
@@ -932,7 +940,7 @@ const AddCommunityUnit = (props) => {
 													console.error('Unable to patch CHU service details'.e.message)
 												}
 
-												window.sessionStorage.setItem('chuformId', 3);
+												window.sessionStorage.setItem('chuformId', 0);
 
 												setFormId(window.sessionStorage.getItem('chuformId'))
 												setServices([])
@@ -959,11 +967,12 @@ const AddCommunityUnit = (props) => {
 
 															{/* Edit list Item Container */}
 															<div className='flex items-center w-full h-auto min-h-[300px]'>
+																
 
 																<EditListItem
 																	initialSelectedItems={[]}
-																	itemsCategory={serviceOptions} //serviceOptions
-																	itemsCategoryName={'Services'}
+																	itemsCategory={serviceOptions} //serviceOptions	
+																	itemsCategoryName={'CHU Services'}
 																	setUpdatedItem={() => null}
 																	itemId={chulId} //chulId
 																	setItems={setServices}

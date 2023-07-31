@@ -17,6 +17,7 @@ function EditListItem({
   initialSelectedItems,
   setItems,
   categoryItems,
+  itemsCategory,
   itemsCategoryName,
   setUpdatedItem,
   itemId,
@@ -25,6 +26,7 @@ function EditListItem({
   handleItemsSubmit,
   handleItemsUpdate,
   setNextItemCategory,
+  handleItemPrevious,
   nextItemCategory,
   previousItemCategory,
   options,
@@ -149,6 +151,9 @@ function EditListItem({
         {/* Item List Dropdown */}
         <div className='w-full flex flex-col items-start bg-yellow-50 shadow-md p-4 justify-start gap-1 mb-3'>
           {/* Iten Category Dropdown */}
+          {
+          itemsCategoryName !== 'CHU Services' &&
+          <>
           <label
             htmlFor='category_item_drop_down_edit_list'
             className='capitalize text-md font-semibold leading-tight tracking-tight'>
@@ -220,7 +225,9 @@ function EditListItem({
             <div name="hidden_btn" className="bg-transparent w-20 p-2 flex items-center justify-evenly gap-2"
              ></div>
              
-            </div>
+          </div>
+          </>
+          }
           
           {/* Item Dropdown */}
           <label
@@ -229,8 +236,9 @@ function EditListItem({
              {itemsCategoryName}
           </label>
           <div className="flex items-start gap-2  w-full h-auto">
+            {console.log({itemOptions})}
             <Select
-              options={itemOptions}
+              options={itemsCategoryName !== 'CHU Services' ? itemOptions : itemsCategory}
               formatGroupLabel={formatGroupLabel}
               styles={{
                 control: (baseStyles) => ({
@@ -363,7 +371,7 @@ function EditListItem({
           item === null &&
 
           <div className='flex justify-between items-center w-full mt-4' >
-            									<button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
+            									<button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
 																<span className='text-medium font-semibold text-green-900 '>
                                   {previousItemCategory}
