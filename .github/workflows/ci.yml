@@ -66,7 +66,8 @@ jobs:
           git pull origin main
           pnpm install
           pnpm run build
-          npx pm2 restart all
+          npx pm2 stop kmhflv3 ; npx pm2 delete kmhflv3 ;  npx pm2 start yarn --name kmhflv3 --instances 1 --interpreter bash -- start
+
           
           
   
