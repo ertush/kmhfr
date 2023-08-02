@@ -45,7 +45,7 @@ const FacilityDetails = (props) => {
   return (
     <>
       <Head>
-        <title>KMHFL - {facility?.official_name ?? ""}</title>
+        <title>KMHFR - {facility?.official_name ?? ""}</title>
         <link rel="icon" href="/favicon.ico" />
        
       </Head>

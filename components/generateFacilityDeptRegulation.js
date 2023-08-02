@@ -53,7 +53,7 @@ const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptValue, 
                 className="flex-none col-start-1 w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none" 
                 onChange={
                     e => {
-                        if(regBodyRef.current){ className="flex-none col-start-1 w-full   flex-grow  placeholder-gray-500 border border-green-600 outline-none" 
+                        if(regBodyRef.current){
                         
                             regBodyRef.current.value = facilityDeptOptions.filter(({label}) => label === e.label)[0].reg_body_name
                         }

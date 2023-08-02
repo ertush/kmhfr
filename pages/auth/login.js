@@ -13,14 +13,14 @@ const Login = (props) => {
     return (
         <div>
             <Head>
-                <title>Log in | KMHFL</title>
+                <title>Log in | KMHFR</title>
                 <link rel="icon" href="/favicon.ico" />
               
             </Head>
             <div className="w-full h-screen overflow-hidden bg-django-green flex flex-col gap-2 items-center justify-center p-3 md:p-0">
                 <div className="w-full flex flex-col max-w-screen-sm items-center justify-between px-2">
                     <div className="text-center text-5xl w-full font-black text-gray-700 flex justify-center gap-x-2 items-center h-24">
-                        <img src="/MOH.png" className="h-24" alt="KMHFL 3" />
+                        <img src="/MOH.png" className="h-24" alt="KMHFR 3" />
                         <div className='leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative'>
                             <span className="text-6xl leading-none top-0">KMHFR</span>
                             <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 p-1 absolute -bottom-3 -right-4">
