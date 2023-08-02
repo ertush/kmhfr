@@ -481,7 +481,7 @@ function EditListWithCount(
                         item === null &&
 
                         <div className='flex justify-between items-center w-full mt-4'>
-                            <button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
+                            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
                                 <ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
                                 <span className='text-medium font-semibold text-green-900 '>
                                     {previousItemCategory}
