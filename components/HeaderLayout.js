@@ -143,7 +143,7 @@ export default function HeaderLayout({
 
   return (
     <header className="flex flex-wrap items-center justify-start gap-x-4 w-full bg-yellow-50 p-1 max-w-screen-3xl">
-      <title>KMHFL 3</title>
+      <title>KMHFR 3</title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-3 md:gap-5">
         <div id="logo" className="mx:px-3 pb-1">
           <a
@@ -505,10 +505,10 @@ export default function HeaderLayout({
                   <a
                     className={`w-full hover:text-green-400 font-medium flex items-center ${active && "text-green-400"
                       }`}
-                    href="https://kmhfl.health.go.ke/"
+                    href="https://KMHFR.health.go.ke/"
                     target="_blank"
                   >
-                    KMHFL live <ExternalLinkIcon className="h-4 w-4 ml-2" />
+                    KMHFR live <ExternalLinkIcon className="h-4 w-4 ml-2" />
                   </a>
                 )}
               </Menu.Item> */}

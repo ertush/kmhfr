@@ -80,19 +80,19 @@ function EditListWithCount(
 
         let error;
         if (value == null || value == undefined || value == '') {
-          error = 'This field is required'
-        }else{
-        
-            if(value){
-                if (value.toString().match(/^-\d+$/) !== null){
+            error = 'This field is required'
+        } else {
+
+            if (value) {
+                if (value.toString().match(/^-\d+$/) !== null) {
                     error = 'This field must be at least 1'
                 }
             }
         }
-     
+
         return error;
-     
-      }
+
+    }
 
 
     const formatGroupLabel = (data) => (
@@ -125,7 +125,7 @@ function EditListWithCount(
 
         // reset itemOptions
         if (isFormSubmit && otherItemsCategory) setItemOptions(((options) => {
-            return options.map(({ name, subCategories, value }) => ({
+            return options?.map(({ name, subCategories, value }) => ({
                 label: name,
                 options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
             }))
@@ -141,7 +141,7 @@ function EditListWithCount(
     }, [isFormSubmit])
 
 
-    console.log({options, categoryItems})
+    console.log({ options, categoryItems })
 
     return (
 
@@ -204,8 +204,8 @@ function EditListWithCount(
                 else {
 
 
-                    
-                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, setNextItemCategory], itemId, alert) : console.log({handleItemsSubmit}); /* Infrastructure */ handleItemsSubmit([values, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId) 
+
+                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, setNextItemCategory], itemId, alert) : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([values, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
                         .catch(e => console.error('unable to submit item data. Error:', e.message))
                 }
 
@@ -213,269 +213,294 @@ function EditListWithCount(
         >
             {({ errors }) => (
 
-            <Form
-                name="list_item_with_count_form"
-                className="flex flex-col w-full items-start justify-start gap-3 "
+                <Form
+                    name="list_item_with_count_form"
+                    className="flex flex-col w-full items-start justify-start gap-3 "
 
-            >
+                >
 
-                {/* Item List Dropdown */}
-                <div className='w-full flex flex-col p-3 bg-yellow-50  shadow-md items-start justify-start gap-3 mb-3'>
-                    {/* category */}
+                    {/* Item List Dropdown */}
+                    <div className='w-full flex flex-col p-3 bg-yellow-50  shadow-md items-start justify-start gap-3 mb-3'>
+                        {/* category */}
 
-                    <label
-                        htmlFor='available_items_with_count'
-                        className='capitalize text-md font-semibold leading-tight tracking-tight'>
-                        Category {itemsCategoryName}
-                    </label>
+                        <label
+                            htmlFor='available_items_with_count'
+                            className='capitalize text-md font-semibold leading-tight tracking-tight'>
+                            Category {itemsCategoryName}
+                        </label>
 
-                    <div className="flex items-start gap-2 w-full h-auto">
+                        <div className="flex items-start gap-2 w-full h-auto">
 
-                        <Select
+                            <Select
 
-                            options={categoryItems}
-                            formatGroupLabel={formatGroupLabel}
-                            onChange={(e) => {
-                                const _options = []
-                                let _values = []
-                                let _subCtgs = []
-                
-                                if (options.length > 0) {
-                                    options.forEach(({ category_name: ctg, category }) => {
-                                        let allOccurences = options.filter(({ category_name }) => category_name === ctg)
-                
-                                        allOccurences.forEach(({ id, name }) => {
-                                            _subCtgs.push(name)
-                                            _values.push(id)
-                                        })
-                
-                                        if (_options.map(({ name }) => name).indexOf(ctg) === -1) {
-                
-                                            _options.push({
-                                                category: ctg,
-                                                categoryId: category,
-                                                itemLabels: _subCtgs,
-                                                itemIds: _values
+                                options={categoryItems}
+                                formatGroupLabel={formatGroupLabel}
+                                onChange={(e) => {
+                                    const _options = []
+                                    let _values = []
+                                    let _subCtgs = []
+
+                                    if (options.length > 0) {
+                                        options.forEach(({ category_name: ctg, category }) => {
+                                            let allOccurences = options.filter(({ category_name }) => category_name === ctg)
+
+                                            allOccurences.forEach(({ id, name }) => {
+                                                _subCtgs.push(name)
+                                                _values.push(id)
                                             })
-                                        }
-                
-                                        _values = []
-                                        _subCtgs = []
-                
-                                    })
+
+                                            if (_options.map(({ name }) => name).indexOf(ctg) === -1) {
+
+                                                _options.push({
+                                                    category: ctg,
+                                                    categoryId: category,
+                                                    itemLabels: _subCtgs,
+                                                    itemIds: _values
+                                                })
+                                            }
+
+                                            _values = []
+                                            _subCtgs = []
+
+                                        })
+                                    }
+
+                                    const filters = _options.filter(({ categoryId }) => (categoryId === e.value))[0]
+
+                                    const item_options = filters.itemLabels.map((label, i) => ({ label, value: filters.itemIds[i] }))
+
+
+
+                                    setItemOptions(item_options)
                                 }
-                               
-                                  const filters =_options.filter(({categoryId}) => (categoryId === e.value))[0]
-                                 
-                                  const item_options = filters.itemLabels.map((label, i) => ({label, value: filters.itemIds[i]}))
-                                
-                             
-                
-                                setItemOptions(item_options)
-                            }
-                            }
-                            name="category_items_with_count"
-                            styles={{
-                                control: (baseStyles) => ({
-                                  ...baseStyles,
-                                  backgroundColor: 'transparent',
-                                  outLine: 'none',
-                                  border: 'none',
-                                  outLine: 'none',
-                                  textColor: 'transparent',
-                                  padding: 0,
-                                  height: '4px',
-                                  width: '100%'
-                                }),
-                
-                              }}
-                              
-                              className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
-                        />
+                                }
+                                name="category_items_with_count"
+                                styles={{
+                                    control: (baseStyles) => ({
+                                        ...baseStyles,
+                                        backgroundColor: 'transparent',
+                                        outLine: 'none',
+                                        border: 'none',
+                                        outLine: 'none',
+                                        textColor: 'transparent',
+                                        padding: 0,
+                                        height: '4px',
+                                        width: '100%'
+                                    }),
 
-                    <div name="hidden_btn" className="bg-transparent w-20 p-2 flex items-center justify-evenly gap-2"
-                                ></div>
+                                }}
+
+                                className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                            />
+
+                            <div name="hidden_btn" className="bg-transparent w-20 p-2 flex items-center justify-evenly gap-2"
+                            ></div>
                         </div>
-                   
-                   
-                    <label
-                        htmlFor='available_items_with_count'
-                        className='capitalize text-md font-semibold leading-tight tracking-tight'>
-                         {itemsCategoryName}
-                    </label>
-
-                    <div className="flex items-start gap-2 w-full h-auto">
-
-                        <Select
-
-                            options={itemOptions}
-                            formatGroupLabel={formatGroupLabel}
-                            onChange={(e) => {
-                                setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
-                            }
-                            }
-                            name="available_items_with_count"
-                            styles={{
-                                control: (baseStyles) => ({
-                                  ...baseStyles,
-                                  backgroundColor: 'transparent',
-                                  outLine: 'none',
-                                  border: 'none',
-                                  outLine: 'none',
-                                  textColor: 'transparent',
-                                  padding: 0,
-                                  height: '4px',
-                                  width: '100%'
-                                }),
-                
-                              }}
-                              className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
-                        />
-                        <button className="bg-green-700  p-2 flex items-center justify-evenly gap-2"
-                            onClick={e => {
-                                e.preventDefault()
-
-                                if (currentItem)
-                                    setSelectedItems([
-                                        currentItem,
-                                        ...selectedItems,
-                                    ])
-
-                            }}>
-                            <p className='text-white font-semibold'>Add</p>
-                            <PlusIcon className='w-4 h-4 text-white' />
-                        </button>
 
 
+                        <label
+                            htmlFor='available_items_with_count'
+                            className='capitalize text-md font-semibold leading-tight tracking-tight'>
+                            {itemsCategoryName}
+                        </label>
+
+                        <div className="flex items-start gap-2 w-full h-auto">
+
+                            <Select
+
+                                options={itemOptions}
+                                formatGroupLabel={formatGroupLabel}
+                                onChange={(e) => {
+                                    setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
+                                }
+                                }
+                                name="available_items_with_count"
+                                styles={{
+                                    control: (baseStyles) => ({
+                                        ...baseStyles,
+                                        backgroundColor: 'transparent',
+                                        outLine: 'none',
+                                        border: 'none',
+                                        outLine: 'none',
+                                        textColor: 'transparent',
+                                        padding: 0,
+                                        height: '4px',
+                                        width: '100%'
+                                    }),
+
+                                }}
+                                className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                            />
+                            <button className="bg-green-700  p-2 flex items-center justify-evenly gap-2"
+                                onClick={e => {
+                                    e.preventDefault()
+
+                                    if (currentItem)
+                                        setSelectedItems([
+                                            currentItem,
+                                            ...selectedItems,
+                                        ])
+
+                                }}>
+                                <p className='text-white font-semibold'>Add</p>
+                                <PlusIcon className='w-4 h-4 text-white' />
+                            </button>
+
+
+                        </div>
                     </div>
-                </div>
 
 
-                {/* Item Selected Table */}
-               
-                <Table className="card bg-yellow-50 shadow-md">
-                    <TableBody>
-                        
-                        <TableRow>
-                        <TableCell className='bg-yellow-50 text-black border-b border-green-600'>
-                            <p className="text-md w-full flex flex-wrap font-bold justify-between items-center leading-tight tracking-tight">
-                            Assigned {itemsCategoryName}
-                            </p>{" "}
-                            </TableCell>
-                            <TableCell className='bg-yellow-50 text-green-700 border-b border-green-600'>
+                    {/* Item Selected Table */}
 
-                            </TableCell>
-                            <TableCell className='bg-yellow-50 text-green-700 border-b border-green-600'>
+                    <Table className="card bg-yellow-50 shadow-md">
+                        <TableBody>
 
-                            </TableCell>
-                        </TableRow>
-                        <TableRow className="border-b border-green-600">
-                            <TableCell>
-                                <p className='capitalize text-base font-semibold'>{itemsCategoryName}</p>
-                            </TableCell>
-                            <TableCell>
-                                <p className='text-base font-semibold'>Number</p>
-                            </TableCell>
-                            <TableCell className='text-xl font-semibold'>
-                                <p className='text-base font-semibold'>Action</p>
-                            </TableCell>
-                        </TableRow>
+                            <TableRow>
+                                <TableCell className='bg-yellow-50 text-black border-b border-green-600'>
+                                    <p className="text-md w-full flex flex-wrap font-bold justify-between items-center leading-tight tracking-tight">
+                                        Assigned {itemsCategoryName}
+                                    </p>{" "}
+                                </TableCell>
+                                <TableCell className='bg-yellow-50 text-green-700 border-b border-green-600'>
 
-                        <>
-                            {selectedItems && selectedItems?.length > 0 ? (
-                                selectedItems?.map(({ name, id, meta_id }, __id) => (
-                                    <TableRow
-                                        key={id}
-                                    >
-                                        <TableCell>{name}</TableCell>
+                                </TableCell>
+                                <TableCell className='bg-yellow-50 text-green-700 border-b border-green-600'>
+
+                                </TableCell>
+                            </TableRow>
+                            <TableRow className="border-b border-green-600">
+                                <TableCell>
+                                    <p className='capitalize text-base font-semibold'>{itemsCategoryName}</p>
+                                </TableCell>
+                                <TableCell>
+                                    <p className='text-base font-semibold'>Number</p>
+                                </TableCell>
+                                <TableCell className='text-xl font-semibold'>
+                                    <p className='text-base font-semibold'>Action</p>
+                                </TableCell>
+                            </TableRow>
+
+                            <>
+                                {selectedItems && selectedItems?.length > 0 ? (
+                                    selectedItems?.map(({ name, id, meta_id }, __id) => (
+                                        <TableRow
+                                            key={id}
+                                        >
+                                            <TableCell>{name}</TableCell>
+                                            {console.log({ selectedItems })}
+                                            <TableCell>
+                                                {
+                                                    !(
+                                                        // Exclude the Number input if   
+                                                        // POWER SOURCE  
+                                                        name.includes("Main Grid") ||
+                                                        name.includes("Gas") ||
+                                                        name.includes("Bio-Gas") ||
+                                                        // WATER SOURCE
+                                                        name.includes("Roof Harvested Water") ||
+                                                        name.includes("River / Dam / Lake") ||
+                                                        name.includes("Donkey Cart / Vendor") ||
+                                                        name.includes("Piped Water") ||
+                                                        // MEDICAL WASTE MANAGEMENT
+                                                        name.includes("Sewer systems") ||
+                                                        name.includes("Dump without burning") ||
+                                                        name.includes("Open burning") ||
+                                                        name.includes("Remove offsite") ||
+                                                        // ACCESS ROADS
+                                                        name.includes("Tarmac") ||
+                                                        name.includes("Earthen Road") ||
+                                                        name.includes("Graded ( Murrum )") ||
+                                                        name.includes("Gravel")
+                                                    ) &&
+                                                    <Field
+                                                        as='input'
+                                                        type='number'
+                                                        min={1}
+                                                        name={id}
+                                                        validate={validateCount}
+                                                        className="flex-none w-24 bg-transparent border border-green-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                                    />
+                                                }
+                                                {errors[id] && <div><span className='text-red-600 mt-1'>{errors[id]}</span></div>}
+                                            </TableCell>
+                                            <TableCell>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={async (e) => {
+                                                        e.preventDefault()
+                                                        let _items = selectedItems
+                                                        setDeletedItems([...deletedItems, _items.splice(__id, 1)])
+                                                        setSelectedItems(
+                                                            _items
+                                                        );
+
+
+
+                                                        removeItemHandler(e, meta_id, alert)
+
+                                                    }}
+                                                    className="flex items-center justify-center space-x-2 bg-red-400  p-1 px-2"
+                                                >
+                                                    <span className="text-medium font-semibold text-white">
+                                                        Remove
+                                                    </span>
+                                                </button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    item !== null &&
+                                    <TableRow>
                                         <TableCell>
-                                            <Field
-                                                as='input'
-                                                type='number'
-                                                min={1}
-                                                name={id}
-                                                validate={validateCount}
-                                                className="flex-none w-24 bg-transparent border border-green-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none"
-                                            />
-                                       {errors[id] && <div><span className='text-red-600 mt-1'>{errors[id]}</span></div>}
-                                        </TableCell>
-                                        <TableCell>
-
-                                            <button
-                                                type="button"
-                                                onClick={async (e) => {
-                                                    e.preventDefault()
-                                                    let _items = selectedItems
-                                                    setDeletedItems([...deletedItems, _items.splice(__id, 1)])
-                                                    setSelectedItems(
-                                                        _items
-                                                    );
-
-
-
-                                                    removeItemHandler(e, meta_id, alert)
-
-                                                }}
-                                                className="flex items-center justify-center space-x-2 bg-red-400  p-1 px-2"
-                                            >
-                                                <span className="text-medium font-semibold text-white">
-                                                    Remove
-                                                </span>
-                                            </button>
+                                            <li className="w-full bg-yellow-50 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                                <p>
+                                                    {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
+                                                </p>
+                                            </li>
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            ) : (
-                                item !== null &&
-                                <TableRow>
-                                    <TableCell>
-                                        <li className="w-full bg-yellow-50 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                                            <p>
-                                                {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
-                                            </p>
-                                        </li>
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </>
-                    </TableBody>
-                </Table>
+                                )}
+                            </>
+                        </TableBody>
+                    </Table>
 
 
-                {/* Save btn */}
+                    {/* Save btn */}
 
-                {
-                    selectedItems.length > 0 && item !== null &&
+                    {
+                        selectedItems.length > 0 && item !== null &&
 
-                    <div style={{ maxWidth: '88%' }} className="w-full flex justify-end h-auto mt-3">
-                        <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save & finish</button>
-                    </div>
-                }
+                        <div style={{ maxWidth: '88%' }} className="w-full flex justify-end h-auto mt-3">
+                            <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save & finish</button>
+                        </div>
+                    }
 
-                {
-                    item === null &&
+                    {
+                        item === null &&
 
-                    <div className='flex justify-between items-center w-full mt-4 w-full'>
-                        		<button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
-																<ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
-																<span className='text-medium font-semibold text-green-900 '>
-                                  {previousItemCategory}
-																</span>
-															</button>
-															<button
-																type='submit'
-																className='flex items-center justify-start space-x-2 bg-green-700  p-1 px-2'>
-																<span className='text-medium font-semibold text-white'>
-                                  {nextItemCategory}
-																</span>
-																<ChevronDoubleRightIcon className='w-4 h-4 text-white' />
-															</button>
-                    </div>
-                }
+                        <div className='flex justify-between items-center w-full mt-4'>
+                            <button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
+                                <ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
+                                <span className='text-medium font-semibold text-green-900 '>
+                                    {previousItemCategory}
+                                </span>
+                            </button>
+                            <button
+                                type='submit'
+                                className='flex items-center justify-start space-x-2 bg-green-700  p-1 px-2'>
+                                <span className='text-medium font-semibold text-white'>
+                                    {nextItemCategory}
+                                </span>
+                                <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
+                            </button>
+                        </div>
+                    }
 
 
 
-            </Form>
+                </Form>
             )}
         </Formik>
 

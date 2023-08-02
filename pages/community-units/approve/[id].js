@@ -64,7 +64,7 @@ const CommUnit = (props) => {
   return (
     <>
       <Head>
-        <title>KMHFL - {cu?.name || cu?.official_name}</title>
+        <title>KMHFR - {cu?.name || cu?.official_name}</title>
         <link rel='icon' href='/favicon.ico' />
         <link rel='stylesheet' href='/assets/css/leaflet.css' />
       </Head>

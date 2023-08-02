@@ -234,7 +234,7 @@ function AddFacility(props) {
 		'Regulation',
 		'Services',
 		'Infrastructure',
-		'Human ReportsSideMenu '
+		'Human resource '
 	];
 
 	const [formId, setFormId] = useState(0)
@@ -2581,7 +2581,7 @@ function AddFacility(props) {
 																setItemsUpdateData={null}
 																handleItemPrevious={handleInfrastructurePrevious}
 																setNextItemCategory={setFormId}
-																nextItemCategory={'human ReportsSideMenu '}
+																nextItemCategory={'human resource'}
 																previousItemCategory={'services'}
 																setIsSaveAndFinish={() => null}
 															/>
@@ -2591,7 +2591,7 @@ function AddFacility(props) {
 												</>
 											)
 										case 6:
-											// Human ReportsSideMenu  form
+											// Human resource  form
 
 											const handleHrPrevious = (event) => {
 												event.preventDefault()
@@ -2603,7 +2603,7 @@ function AddFacility(props) {
 
 											return (
 												<>
-													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Human ReportsSideMenu </h4>
+													<h4 className="text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-green-900">Human resource </h4>
 													<div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
 														{/* Edit List With Count Container*/}
@@ -2613,8 +2613,9 @@ function AddFacility(props) {
 															<EditListWithCount
 																initialSelectedItems={[]}
 																itemsCategory={null}
-																otherItemsCategory={hrOptions}
+																categoryItems={hrOptions.categories}
 																itemsCategoryName={'human resource'}
+																options={props['17']?.hr}
 																itemId={facilityId}
 																item={null}
 																handleItemsSubmit={handleHrSubmit}
