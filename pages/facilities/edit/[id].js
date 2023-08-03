@@ -82,7 +82,7 @@ export const EditOfficerContactsContext = createContext(null);
 
 const Map = React.memo(WardMap);
 
-const EditFacility = (props) => {
+function EditFacility(props) {
   const router = useRouter();
   const facilityId = router.query.id;
 
@@ -842,2012 +842,379 @@ const EditFacility = (props) => {
     setFacilityDepts((draft) => [...values]);
   };
 
-  useEffect(() => {}, [facilityContacts]);
+  const [isReady, setIsReady] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState('');
 
-  return (
-    <>
-      <Head>
-        <title>KMHFR - {official_name ?? "Edit facility"}</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="/assets/css/leaflet.css" />
-      </Head>
+  useEffect(() => {
+    setIsReady(true);
+    if(window !== undefined) setCurrentUrl(window.location.href)
+  }, []);
 
-      <MainLayout>
-        <div className="w-full grid md:grid-cols-7 mb-12 gap-4 my-6">
-          {/* Heading */}
-          <div className="md:col-span-7 flex flex-col items-start mb-4 justify-start gap-3">
-            {/* Bread crumbs */}
-            <div className="flex flex-row gap-2 text-sm md:text-base">
-              <Link className="text-green-700" href="/">
-                Home
-              </Link>{" "}
-              {"/"}
-              <Link className="text-green-700" href="/facilities">
-                Facilities
-              </Link>{" "}
-              {"/"}
-              <span className="text-gray-500">
-                {official_name} ( #
-                <i className="text-black">{code || "NO_CODE"}</i> )
-              </span>
-            </div>
+  if (!isReady) {
 
-            {/* Header */}
-            <div
-              className={
-                `col-span-5 grid grid-cols-6 gap-5 border ${is_approved ? "border-green-600" : "border-yellow-600"} md:gap-8 py-6 w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
-                ${is_approved ? "border-green-600" : "border-yellow-600"}
-              `}
-            >
-              <div className="col-span-6 md:col-span-3">
-                <span
-                  onClick={() => router.push(`/facilities/${id}`)}
-                  className="text-4xl cursor-pointer tracking-tight hover:text-green-600 font-bold leading-tight"
-                >
-                  {official_name}
+    return null;
+  }
+
+  // useEffect(() => {}, [facilityContacts]);
+
+  if(typeof window === 'undefined'){
+    return <a href={currentUrl} >Edit Facility</a>
+  }else {
+   
+    return (
+      <>
+        <Head>
+          <title>KMHFR - {official_name ?? "Edit facility"}</title>
+          <link rel="icon" href="/favicon.ico" />
+          <link rel="stylesheet" href="/assets/css/leaflet.css" />
+        </Head>
+  
+        <MainLayout>
+          <div className="w-full grid md:grid-cols-7 mb-12 gap-4 my-6">
+            {/* Heading */}
+            <div className="md:col-span-7 flex flex-col items-start mb-4 justify-start gap-3">
+              {/* Bread crumbs */}
+              <div className="flex flex-row gap-2 text-sm md:text-base">
+                <Link className="text-green-700" href="/">
+                  Home
+                </Link>{" "}
+                {"/"}
+                <Link className="text-green-700" href="/facilities">
+                  Facilities
+                </Link>{" "}
+                {"/"}
+                <span className="text-gray-500">
+                  {official_name} ( #
+                  <i className="text-black">{code || "NO_CODE"}</i> )
                 </span>
-                <div className="flex flex-col gap-1 w-full items-start justify-start">
-                  <span
-                    className={
-                      "font-bold text-2xl " +
-                      (code ? "text-green-900" : "text-gray-400")
-                    }
-                  >
-                    #{code || "NO_CODE"}
-                  </span>
-                  <span className="font-semibold text-green-900 text-base">{keph_level_name}</span>
-
-                </div>
               </div>
-              <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2"></div>
-              <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
-            </div>
-          </div>
-
-          {/* Facility Side Menu Filters */}
-          <div className="md:col-span-1 md:mt-8">
-            <FacilitySideMenu
-              filters={filters}
-              states={[
-                khisSynched,
-                facilityFeedBack,
-                pathId,
-                allFctsSelected,
-                title,
-              ]}
-              stateSetters={[
-                setKhisSynched,
-                setFacilityFeedBack,
-                setPathId,
-                setAllFctsSelected,
-                setTitle,
-              ]}
-            />
-          </div>
-
-          <div className="md:col-span-6 flex flex-col items-center md:gap-3 gap-y-3 mt-8">
-            {isSavedChanges && facilityUpdateData ? (
-              // Display Changes to be updated
-              <div className="flex flex-col justify-start w-full space-y-3 md:px-4">
-                <h2 className="text-2xl font-bold justify-center items-center md:ml-0 ml-4">
-                  Updated details
-                </h2>
-                {/* Update Metadata */}
-                <div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
-                  <p className="text-base font-normal flex -leading-3">
-                    Updates were made on
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
-                      {
-                        new Date(facilityUpdateData?.updated)
-                          .toLocaleString()
-                          .split(",")[0]
-                      }
-                    </span>
-                    by
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
-                      {facilityUpdateData?.created_by_name}
-                    </span>
-                  </p>
-
-                  <p className="text-base font-normal flex -leading-3">
-                    Facility Code:
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
-                      {code}
-                    </span>
-                  </p>
-
-                  <span className="flex space-x-2">
-                    <button
-                      className="flex justify-center text-base font-semibold text-white bg-green-500  py-1 px-2"
-                      onClick={() => router.push(`/facilities/${id}`)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="flex justify-center text-base font-semibold text-white bg-green-500  py-1 px-2"
-                      onClick={() => router.push("/facilities")}
-                    >
-                      Confirm Updates
-                    </button>
-                  </span>
-                </div>
-
-                {/* Update Details */}
-
-                <FacilityUpdatesTable
-                  facilityUpdatedJson={facility_updated_json}
-                  originalData={props["18"]}
-                />
-              </div>
-            ) : (
-              // Display Tabs with Edit Forms
-              <Tabs.Root
-                orientation="horizontal"
-                className="w-full flex flex-col py-2 tab-root border border-green-600"
-                defaultValue="geolocation"
-                
+  
+              {/* Header */}
+              <div
+                className={
+                  `col-span-5 grid grid-cols-6 gap-5 border ${is_approved ? "border-green-600" : "border-yellow-600"} md:gap-8 py-6 w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                  ${is_approved ? "border-green-600" : "border-yellow-600"}
+                `}
               >
-                <Tabs.List className="list-none md:grid border-b border-green-600 md:grid-cols-7 grid grid-cols-2 gap-2  px-2 md:gap-3  uppercase leading-none tab-list font-semibold">
-                  <Tabs.Tab
-                    value="basic_details"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                <div className="col-span-6 md:col-span-3">
+                  <span
+                    onClick={() => router.push(`/facilities/${id}`)}
+                    className="text-4xl cursor-pointer tracking-tight hover:text-green-600 font-bold leading-tight"
                   >
-                    Basic Details
-                  </Tabs.Tab>
-                  <Tabs.Tab
-                    value="geolocation"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                  >
-                    Geolocation
-                  </Tabs.Tab>
-                  <Tabs.Tab
-                    value="facility_contacts"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                  >
-                    Facility contacts
-                  </Tabs.Tab>
-                  <Tabs.Tab
-                    value="regulation"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                  >
-                    Regulation
-                  </Tabs.Tab>
-                  <Tabs.Tab
-                    value="services"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                  >
-                    Services
-                  </Tabs.Tab>
-                  <Tabs.Tab
-                    value="infrastructure"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                  >
-                    Infrastructure
-                  </Tabs.Tab>
-                  <Tabs.Tab
-                    value="human_resource"
-                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                  >
-                    Human ReportsSideMenu 
-                  </Tabs.Tab>
-                </Tabs.List>
-
-                {/* Basic Details */}
-                <Tabs.Panel
-                  value="basic_details"
-                  className="grow-1 py-1 px-4 tab-panel"
-                >
-                  <Formik
-                    initialValues={{
-                      official_name: official_name ?? "",
-                      name: official_name ?? "",
-                      facility_type: "",
-                      date_established: date_established ?? "",
-                      accredited_lab_iso_15189:
-                        accredited_lab_iso_15189 ?? false,
-                      number_of_beds: number_of_beds ?? "",
-                      number_of_inpatient_beds: number_of_inpatient_beds ?? "",
-                      number_of_cots: number_of_cots ?? "",
-                      number_of_emergency_casualty_beds:
-                        number_of_emergency_casualty_beds ?? "",
-                      number_of_general_theatres:
-                        number_of_general_theatres ?? "",
-                      number_of_hdu_beds: number_of_hdu_beds ?? "",
-                      number_of_icu_beds: number_of_icu_beds ?? "",
-                      number_of_isolation_beds: number_of_isolation_beds ?? "",
-                      number_of_maternity_beds: number_of_maternity_beds ?? "",
-                      number_of_maternity_theatres:
-                        number_of_maternity_theatres ?? "",
-                      facility_catchment_population:
-                        facility_catchment_population ?? "",
-                      reporting_in_dhis: reporting_in_dhis ?? "",
-                      nhif_accreditation: nhif_accreditation ?? "",
-                      is_classified: is_classified ?? "",
-                      open_whole_day: open_whole_day ?? "",
-                      open_weekends: open_weekends ?? "",
-                      open_public_holidays: open_public_holidays ?? "",
-                      open_normal_day: open_normal_day ?? "",
-                      open_late_night: open_late_night ?? "",
-                      town_name: town_name ?? "",
-                      location_desc: location_desc ?? "",
-                      plot_number: plot_number ?? "",
-                      nearest_landmark: nearest_landmark ?? "",
-                    }}
-                    onSubmit={(values) => {
-                      // Ensure isSaveChnages is false
-                      setIsSavedChanges(false);
-                      let formData = values;
-                      formData["facility_type"] =
-                        facilityTypeRef.current.state.value.value;
-                      formData["operation_status"] =
-                        operationStatusRef.current.state.value.value;
-                      formData["owner_type"] =
-                        ownerTypeOptionsRef.current.state.value.value;
-                      formData["owner"] =
-                        ownerDetailsRef.current.state.value.value;
-                      formData["keph_level"] =
-                        kephLvlRef.current.state.value.value;
-                      formData["county_id"] =
-                        countyRef.current.state.value.value;
-                      formData["sub_county_id"] =
-                        subCountyRef.current.state.value.value;
-                      formData["constituency_id"] =
-                        constituencyRef.current.state.value.value;
-                      formData["ward"] = wardRef.current.state.value.value;
-
-                      let payload = {};
-
-                      const _payload = _.omit(formData, function (v, k) {
-                        return basicDetailsData[k] === v;
-                      });
-                      payload = { ..._payload };
-                      // if(officer_in_charge) {
-                      //     payload = {..._payload, officer_in_charge}
-                      // }
-                      // else{
-                      //     payload = {..._payload,
-                      //         officer_in_charge: {
-                      //             contacts: [],
-                      //             id_number: null,
-                      //             name: "",
-                      //             reg_no: "",
-                      //             title: "",
-                      //             title_name: ""
-                      //         }
-                      //     }
-
-                      // }
-
-                      handleBasicDetailsUpdates(payload, id, alert)
-                        .then(({ statusText }) => {
-                          defer(() => setIsSavedChanges(true));
-                          let update_id;
-                          if (statusText == "OK") {
-                            fetch(
-                              `/api/facility/get_facility/?path=facilities&id=${id}`
-                            )
-                              .then(async (resp) => {
-                                const results = await resp.json();
-
-                                update_id = results?.latest_update;
-                                code = results?.code;
-
-                                if (update_id) {
-                                  try {
-                                    const _facilityUpdateData = await (
-                                      await fetch(
-                                        `/api/facility/get_facility/?path=facility_updates&id=${update_id}`
-                                      )
-                                    ).json();
-                                    setFacilityUpdateData(_facilityUpdateData);
-                                  } catch (e) {
-                                    console.error(
-                                      "Encountered error while fetching facility update data",
-                                      e.message
-                                    );
-                                  }
-                                }
-                              })
-                              .catch((e) =>
-                                console.error(
-                                  "unable to fetch facility update data. Error:",
-                                  e.message
-                                )
-                              );
-                          }
-                        })
-                        .catch((e) =>
-                          console.error(
-                            "unable to fetch facility data. Error:",
-                            e.message
-                          )
-                        );
-                    }}
-                  >
-                    <Form className="flex flex-col w-full items-start justify-start gap-3 md:mt-6">
-                      {/* Facility Official Name */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="official_name"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Facility Official Name
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          type="text"
-                          name="official_name"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* Facility Unique Name  */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="name"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Facility Unique Name
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          type="text"
-                          name="name"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* Facility Type */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="facility_type"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Facility Type{" "}
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Select
-                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                          styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                          ref={facilityTypeRef}
-                          options={facilityOptions || []}
-                          required
-                          placeholder="Select a facility type..."
-                          onChange={(e) => setFacilityOption(e.label)}
-                          name="facility_type"
-                         
-                        />
-                      </div>
-
-                      {/* Facility Type Details */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="facility_type_details"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Facility Type Details
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Select
-                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                          styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                          ref={facilityTypeDetailsRef}
-                          options={(() => {
-                            switch (facilityOption) {
-                              case "STAND ALONE":
-                                if (kephLvlRef.current)
-                                  kephLvlRef.current.state.value =
-                                    kephOptions.filter(
-                                      ({ label }) => label === "Level 2"
-                                    )[0];
-
-                                return [
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Dermatology"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label ==
-                                      "Rehab. Center - Drug and Substance abuse"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label == "Nutrition and Dietetics"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Dialysis Center"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label ==
-                                      "Rehab. Center - Physiotherapy, Orthopaedic & Occupational Therapy"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "VCT"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Farewell Home"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Laboratory"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Radiology Clinic"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Pharmacy"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label ==
-                                      "Regional Blood Transfusion Centre"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Ophthalmology"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Dental Clinic"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Blood Bank"
-                                  )[0] || {},
-                                ];
-
-                              case "DISPENSARY":
-                                if (kephLvlRef.current)
-                                  kephLvlRef.current.state.value =
-                                    kephOptions.filter(
-                                      ({ label }) => label === "Level 2"
-                                    )[0];
-                                return (
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "DISPENSARY"
-                                  ) || []
-                                );
-
-                              case "MEDICAL CLINIC":
-                                if (kephLvlRef.current)
-                                  kephLvlRef.current.state.value =
-                                    kephOptions.filter(
-                                      ({ label }) => label === "Level 2"
-                                    )[0];
-                                return (
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Medical Clinic"
-                                  ) || []
-                                );
-
-                              case "NURSING HOME":
-                                if (kephLvlRef.current)
-                                  kephLvlRef.current.state.value =
-                                    kephOptions.filter(
-                                      ({ label }) => label === "Level 2"
-                                    )[0];
-
-                                return [
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label == "Nursing and Maternity Home"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Nursing Homes"
-                                  )[0] || {},
-                                ];
-
-                              case "HOSPITALS":
-                                return [
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label ==
-                                      "Specialized & Tertiary Referral hospitals"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label == "Secondary care hospitals"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label ==
-                                      "Comprehensive Teaching & Tertiary Referral Hospital"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label == "Primary care hospitals"
-                                  )[0] || {},
-                                ];
-
-                              case "HEALTH CENTRE":
-                                if (kephLvlRef.current)
-                                  kephLvlRef.current.state.value =
-                                    kephOptions.filter(
-                                      ({ label }) => label === "Level 3"
-                                    )[0];
-                                return [
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label == "Basic Health Centre"
-                                  )[0] || {},
-                                  facilityTypeOptions.filter(
-                                    ({ label }) =>
-                                      label == "Comprehensive health Centre"
-                                  )[0] || {},
-                                ];
-
-                              case "MEDICAL CENTRE":
-                                if (kephLvlRef.current)
-                                  kephLvlRef.current.state.value =
-                                    kephOptions.filter(
-                                      ({ label }) => label === "Level 3"
-                                    )[0];
-
-                                return (
-                                  facilityTypeOptions.filter(
-                                    ({ label }) => label == "Medical Center"
-                                  ) || []
-                                );
-                            }
-                          })()}
-                          required
-                          placeholder="Select a facility type details..."
-                          onChange={(ev) => {
-                            switch (ev.label) {
-                              case "Comprehensive Teaching & Tertiary Referral Hospital":
-                                setFacilityTypeDetail(
-                                  "Comprehensive Teaching & Tertiary Referral Hospital"
-                                );
-
-                                break;
-                              case "Specialized & Tertiary Referral hospitals":
-                                setFacilityTypeDetail(
-                                  "Specialized & Tertiary Referral hospitals"
-                                );
-
-                                break;
-                              case "Secondary care hospitals":
-                                setFacilityTypeDetail(
-                                  "Secondary care hospitals"
-                                );
-
-                                break;
-                              case "Primary care hospitals":
-                                setFacilityTypeDetail("Primary care hospitals");
-
-                                break;
-                            }
-                          }}
-                          name="facility_type_details"
-                          
-                        />
-                      </div>
-
-                      {/* Operation Status */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="operation_status"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Operation Status{" "}
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Select
-                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                          styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                          ref={operationStatusRef}
-                          options={operationStatusOptions || []}
-                          required
-                          placeholder="Select an operation status..."
-                          onChange={(ev) => {
-                            setOperationStatus(ev.value);
-                          }}
-                          name="operation_status"
-                         
-                        />
-                      </div>
-
-                      {/* Date Established */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="date_established"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Date Established
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          type="date"
-                          name="date_established"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* Is Facility accredited */}
-                      <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                        <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
-                          <Field
-                            type="checkbox"
-                            name="accredited_lab_iso_15189"
-                            id="accredited_lab_iso_15189"
-                          />
-                          <label
-                            htmlFor="accredited_lab_iso_15189"
-                            className="text-gray-700 capitalize text-sm flex-grow"
-                          >
-                            {" "}
-                            *Is the facility accredited Lab ISO 15189?
-                          </label>
-                        </div>
-                      </div>
-
-                      {/* Owner Category */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="owner_type"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Owner Category
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Select
-                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                          styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                          ref={ownerTypeOptionsRef}
-                          options={ownerTypeOptions || []}
-                          required
-                          placeholder="Select owner.."
-                          onChange={(e) => setOwnerTypeOption(e.label)}
-                          name="owner_type"
-                          
-                        />
-                      </div>
-
-                      {/* Owner Details */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="owner"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Owner Details
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Select
-                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                          styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                          ref={ownerDetailsRef}
-                          options={
-                            (() => {
-                              switch (ownerTypeOption) {
-                                case "Private Practice":
-                                  return [
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label == "Private Practice- Pharmacist"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Private Practice - Private Company"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Private Practice Lab Technician/Technologist"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Private Practice - Nurse / Midwifery"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Private Practice - Medical Specialist"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Private Practice - General Practitioner"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Private Practice - Clinical Officer"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Private Practice - Private Institution Academic"
-                                    )[0] || {},
-                                  ];
-
-                                case "Non-Governmental Organizations":
-                                  return (
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Non-Governmental Organizations"
-                                    ) || []
-                                  );
-
-                                case "Ministry of Health":
-                                  return [
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Public Institution - Parastatal"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label == "Ministry of Health"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) => label == "Armed Forces"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label == "Public Institution - Academic"
-                                    )[0] || {},
-                                  ];
-
-                                case "Faith Based Organization":
-                                  return [
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label == "Seventh Day Adventist"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Supreme Council for Kenya Muslims"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label == "Other Faith Based"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label == "Seventh Day Adventist"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Kenya Episcopal Conference-Catholic Secretariat"
-                                    )[0] || {},
-                                    ownerOptions.filter(
-                                      ({ label }) =>
-                                        label ==
-                                        "Christian Health Association of Kenya"
-                                    )[0] || {},
-                                  ];
-                              }
-                            })() ?? ownerTypeOptions
-                          }
-                          required
-                          placeholder="Select an owner.."
-                          name="owner"
-                         
-                        />
-                      </div>
-
-                      {/* KEPH Level */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="keph_level"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          KEPH Level
-                        </label>
-                        <Select
-                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                          styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                          ref={kephLvlRef}
-                          isDisabled={true}
-                          options={kephOptions ?? []}
-                          placeholder="Select a KEPH Level.."
-                          onChange={(ev) => ev.preventDefault()}
-                          name="keph_level"
-                          
-                        />
-                      </div>
-
-                      {/* No. Total Functional In-patient Beds */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="number_of_beds"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Total Functional In-patient Beds
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          type="number"
-                          name="number_of_beds"
-                          readOnly
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* No. General In-patient Beds */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="number_of_inpatient_beds"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Number of General In-patient Beds
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          min={0}
-                          type="number"
-                          name="number_of_inpatient_beds"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* No. Functional cots */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="number_of_cots"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Number of functional cots
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          min={0}
-                          type="number"
-                          name="number_of_cots"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* No. Emergency Casulty Beds */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="number_of_emergency_casualty_beds"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Number of Emergency Casulty Beds
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          min={0}
-                          type="number"
-                          name="number_of_emergency_casualty_beds"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* No. Intensive Care Unit Beds */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="number_of_icu_beds"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Number of Intensive Care Unit (ICU) Beds
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          min={0}
-                          type="number"
-                          name="number_of_icu_beds"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* No. High Dependency Unit HDU */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="number_of_hdu_beds"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Number of High Dependency Unit (HDU) Beds
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          min={0}
-                          type="number"
-                          name="number_of_hdu_beds"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* No. of maternity beds */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="number_of_maternity_beds"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Number of maternity beds
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          min={0}
-                          type="number"
-                          name="number_of_maternity_beds"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* No. of isolation beds */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="number_of_isolation_beds"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Number of isolation beds
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          min={0}
-                          type="number"
-                          name="number_of_isolation_beds"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* No. of General Theatres */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="number_of_general_theatres"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Number of General Theatres
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          min={0}
-                          type="number"
-                          name="number_of_general_theatres"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* No. of Maternity Theatres */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="number_of_maternity_theatres"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Number of Maternity Theatres
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          min={0}
-                          type="number"
-                          name="number_of_maternity_theatres"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* Facility Catchment Population */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="facility_catchment_population"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Facility Catchment Population
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          required
-                          min={0}
-                          type="number"
-                          name="facility_catchment_population"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* Is Reporting DHIS2 */}
-                      <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                        <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
-                          <Field
-                            type="checkbox"
-                            name="reporting_in_dhis"
-                            id="reporting_in_dhis"
-                          />
-                          <label
-                            htmlFor="reporting_in_dhis"
-                            className="text-gray-700 capitalize text-sm flex-grow"
-                          >
-                            {" "}
-                            *Should this facility have reporting in DHIS2?
-                          </label>
-                        </div>
-                      </div>
-
-                      {/* Facility Admissions */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="admission_status"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Facility admissions
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Select
-                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                          styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                          ref={facilityAdmissionRef}
-                          options={facilityAdmissionOptions || []}
-                          required
-                          placeholder="Select an admission status.."
-                          name="admission_status"
-                         
-                        />
-                      </div>
-
-                      {/* Is NHIF accredited */}
-                      <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                        <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
-                          <Field
-                            type="checkbox"
-                            name="nhif_accreditation"
-                            id="is_armed_forces"
-                          />
-                          <label
-                            htmlFor="nhif_accreditation"
-                            className="text-gray-700 capitalize text-sm flex-grow"
-                          >
-                            {" "}
-                            *Does this facility have NHIF accreditation?
-                          </label>
-                        </div>
-                      </div>
-
-                      {/* Armed Forces Facilities */}
-
-                      <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
-                        <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
-                          Armed Forces Facilities
-                        </h4>
-                        <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
-                          <Field
-                            type="checkbox"
-                            name="is_classified"
-                            id="is_armed_forces"
-                          />
-                          <label
-                            htmlFor="is_classified"
-                            className="text-gray-700 capitalize text-sm flex-grow"
-                          >
-                            {" "}
-                            Is this an Armed Force facility?{" "}
-                          </label>
-                        </div>
-                      </div>
-
-                      {/* Hours/Days of Operation */}
-
-                      <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
-                        <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
-                          Hours/Days of Operation
-                        </h4>
-                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                          <Field
-                            type="checkbox"
-                            name="open_whole_day"
-                            id="open_24hrs"
-                          />
-                          <label
-                            htmlFor="open_whole_day"
-                            className="text-gray-700 capitalize text-sm flex-grow"
-                          >
-                            {" "}
-                            Open 24 hours
-                          </label>
-                        </div>
-
-                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                          <Field
-                            type="checkbox"
-                            name="open_late_night"
-                            id="open_late_night"
-                          />
-                          <label
-                            htmlFor="open_late_night"
-                            className="text-gray-700 capitalize text-sm flex-grow"
-                          >
-                            {" "}
-                            Open Late Night
-                          </label>
-                        </div>
-
-                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                          <Field
-                            type="checkbox"
-                            name="open_public_holidays"
-                            id="open_public_holidays"
-                          />
-                          <label
-                            htmlFor="open_public_holidays"
-                            className="text-gray-700 capitalize text-sm flex-grow"
-                          >
-                            {" "}
-                            Open on public holidays
-                          </label>
-                        </div>
-
-                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                          <Field
-                            type="checkbox"
-                            name="open_weekends"
-                            id="open_weekends"
-                          />
-                          <label
-                            htmlFor="open_weekends"
-                            className="text-gray-700ds capitalize text-sm flex-grow"
-                          >
-                            {" "}
-                            Open during weekends
-                          </label>
-                        </div>
-
-                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
-                          <Field
-                            type="checkbox"
-                            name="open_normal_day"
-                            id="open_8_5"
-                          />
-                          <label
-                            htmlFor="open_normal_day"
-                            className="text-gray-700 capitalize text-sm flex-grow"
-                          >
-                            {" "}
-                            Open from 8am to 5pm
-                          </label>
-                        </div>
-                      </div>
-
-                      {/* Location Details */}
-                      <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
-                        <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
-                          Location Details
-                        </h4>
-                        <div className="grid grid-cols-4 place-content-start gap-3 w-full">
-                          {/* County  */}
-                          <div className="col-start-1 col-span-1">
-                            <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                              <label
-                                htmlFor="county_id"
-                                className="text-gray-600 capitalize text-sm"
-                              >
-                                County
-                                <span className="text-medium leading-12 font-semibold">
-                                  {" "}
-                                  *
-                                </span>
-                              </label>
-                              <Select
-                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                                styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                                options={countyOptions || []}
-                                ref={countyRef}
-                                required
-                                placeholder="Select County"
-                                onChange={async (ev) => {
-                                  if (ev.value.length > 0) {
-                                    // setCounty(String(ev.label).toLocaleUpperCase())
-
-                                    try {
-                                      const resp = await fetch(
-                                        `/api/filters/subcounty/?county=${
-                                          ev.value
-                                        }${"&fields=id,name,county&page_size=30"}`
-                                      );
-                                      const data = await resp.json();
-
-                                      if (data && data.results) {
-                                        const options = data.results.map(
-                                          ({ id, name }) => ({
-                                            value: id,
-                                            label: name,
-                                          })
-                                        );
-                                        setSubCountyOpt(options);
-                                      } else {
-                                        setSubCountyOpt([]);
-                                      }
-                                    } catch (e) {
-                                      console.error(
-                                        "Unable to fetch sub_county options"
-                                      );
-                                      setSubCountyOpt(null);
-                                    }
-                                  } else {
-                                    return setSubCountyOpt(null);
-                                  }
-                                }}
-                                name="county_id"
-                                
-                              />
-                            </div>
-                          </div>
-
-                          {/* Sub-county */}
-                          <div className="col-start-2 col-span-1">
-                            <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                              <label
-                                htmlFor="sub_county_id"
-                                className="text-gray-600 capitalize text-sm"
-                              >
-                                Sub-county
-                                <span className="text-medium leading-12 font-semibold">
-                                  {" "}
-                                  *
-                                </span>
-                              </label>
-                              <Select
-                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                                styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                                options={subCountyOpt ?? subCountyOptions}
-                                ref={subCountyRef}
-                                required
-                                placeholder="Select Sub County"
-                                name="sub_county_id"
-                              
-                              />
-                            </div>
-                          </div>
-
-                          {/* Constituency */}
-                          <div className="col-start-3 col-span-1">
-                            <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                              <label
-                                htmlFor="constituency_id"
-                                className="text-gray-600 capitalize text-sm"
-                              >
-                                Constituency
-                                <span className="text-medium leading-12 font-semibold">
-                                  {" "}
-                                  *
-                                </span>
-                              </label>
-                              <Select
-                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                                styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                                ref={constituencyRef}
-                                options={subCountyOpt ?? constituencyOptions}
-                                required
-                                placeholder="Select Constituency"
-                                onChange={async (ev) => {
-                                  if (ev.value.length > 0) {
-                                    try {
-                                      const resp = await fetch(
-                                        `/api/filters/ward/?sub_county=${
-                                          ev.value
-                                        }${"&fields=id,name,sub_county,constituency&page_size=30"}`
-                                      );
-
-                                      setWardNameOpt(
-                                        (await resp.json()).results.map(
-                                          ({ id, name }) => ({
-                                            value: id,
-                                            label: name,
-                                          })
-                                        ) ?? []
-                                      );
-                                    } catch (e) {
-                                      console.error(
-                                        "Unable to fetch sub_county options"
-                                      );
-                                      setWardNameOpt(null);
-                                    }
-                                  } else {
-                                    return setWardNameOpt(null);
-                                  }
-                                }}
-                                name="constituency_id"
-                                
-                              />
-                            </div>
-                          </div>
-
-                          {/* Ward */}
-                          <div className="col-start-4 col-span-1">
-                            <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                              <label
-                                htmlFor="ward"
-                                className="text-gray-600 capitalize text-sm"
-                              >
-                                Ward
-                                <span className="text-medium leading-12 font-semibold">
-                                  {" "}
-                                  *
-                                </span>
-                              </label>
-                              <Select
-                                className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                                styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                                ref={wardRef}
-                                options={wardOpt ?? wardOptions}
-                                required
-                                placeholder="Select Ward"
-                                name="ward"
-                               
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Nearest Town/Shopping Center */}
-                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                          <label
-                            htmlFor="town_name"
-                            className="text-gray-600 capitalize text-sm"
-                          >
-                            Nearest Town/Shopping Center
-                            <span className="text-medium leading-12 font-semibold"></span>
-                          </label>
-                          <Field
-                            type="text"
-                            name="town_name"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        </div>
-
-                        {/* Plot Number */}
-                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                          <label
-                            htmlFor="plot_number"
-                            className="text-gray-600 capitalize text-sm"
-                          >
-                            Plot number
-                            <span className="text-medium leading-12 font-semibold"></span>
-                          </label>
-                          <Field
-                            type="text"
-                            name="plot_number"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        </div>
-
-                        {/* Nearest landmark */}
-                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                          <label
-                            htmlFor="nearest_landmark"
-                            className="text-gray-600 capitalize text-sm"
-                          >
-                            Nearest landmark
-                            <span className="text-medium leading-12 font-semibold"></span>
-                          </label>
-                          <Field
-                            type="text"
-                            name="nearest_landmark"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        </div>
-
-                        {/* Location Description */}
-                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                          <label
-                            htmlFor="location_desc"
-                            className="text-gray-600 capitalize text-sm"
-                          >
-                            location description
-                            <span className="text-medium leading-12 font-semibold"></span>
-                          </label>
-                          <Field
-                            type="text"
-                            name="location_desc"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        </div>
-                      </div>
-
-                      {/* check file upload */}
-                      <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
-                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                          <label
-                            htmlFor="facility_checklist_document"
-                            className="text-gray-600 capitalize text-sm"
-                          >
-                            checklist file upload
-                            <span className="text-medium leading-12 font-semibold"></span>
-                          </label>
-                          <Field
-                            type="file"
-                            ref={checklistFileRef}
-                            value={_checklistFile}
-                            onChange={setCheckListFile}
-                            name="facility_checklist_document"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        </div>
-                      </div>
-
-                      <div className=" w-full flex justify-end h-auto mr-3">
-                        <button
-                          type="submit"
-                          className="p-2 text-white bg-green-700  font-semibold"
-                        >
-                          save & finish
-                        </button>
-                      </div>
-                    </Form>
-                  </Formik>
-                </Tabs.Panel>
-
-                {/* Geolocation */}
-                <Tabs.Panel
-                  value="geolocation"
-                  className="grow-1 py-1 px-4 tab-panel"
-                >
-                  <Formik
-                    initialValues={{
-                      collection_date: collection_date ?? "",
-                      latitude: lat_long ? lat_long[0] ?? "" : "",
-                      longitude: lat_long ? lat_long[1] ?? "" : "",
-                    }}
-                    onSubmit={(formData) => {
-                      // Ensure isSaveChnages is false
-                      setIsSavedChanges(false);
-                      let payload = {};
-                      const _payload = _.omit(formData, function (v, k) {
-                        return geolocationData[k] === v;
-                      });
-
-                      payload = {
-                        ..._payload,
-                        facility: id,
-                        coordinates: {
-                          coordinates: [lat_long[1], lat_long[0]],
-                          type: "point",
-                        },
-                      }; // {..._payload}
-
-                      // payload['collection_date'] = new Date(payload.collection_date)
-
-                      handleGeolocationUpdates(payload, coordinates, alert)
-                        .then(({ statusText }) => {
-                          defer(() => setIsSavedChanges(true));
-                          let update_id;
-                          if (statusText == "OK") {
-                            fetch(
-                              `/api/facility/get_facility/?path=facilities&id=${id}`
-                            )
-                              .then(async (resp) => {
-                                const results = await resp.json();
-
-                                update_id = results?.latest_update;
-
-                                if (update_id) {
-                                  try {
-                                    const _facilityUpdateData = await (
-                                      await fetch(
-                                        `/api/facility/get_facility/?path=facility_updates&id=${update_id}`
-                                      )
-                                    ).json();
-                                    setFacilityUpdateData(_facilityUpdateData);
-                                  } catch (e) {
-                                    console.error(
-                                      "Encountered error while fetching facility update data",
-                                      e.message
-                                    );
-                                  }
-                                }
-                              })
-                              .catch((e) =>
-                                console.error(
-                                  "unable to fetch facility update data. Error:",
-                                  e.message
-                                )
-                              );
-                          }
-                        })
-                        .catch((e) =>
-                          console.error(
-                            "unable to fetch facility data. Error:",
-                            e.message
-                          )
-                        );
-                    }}
-                  >
-                    <Form
-                      name="geolocation_form"
-                      className="flex flex-col w-full items-start justify-start gap-3 md:mt-6"
+                    {official_name}
+                  </span>
+                  <div className="flex flex-col gap-1 w-full items-start justify-start">
+                    <span
+                      className={
+                        "font-bold text-2xl " +
+                        (code ? "text-green-900" : "text-gray-400")
+                      }
                     >
-                      {/* Collection Date */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="collection_date"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Collection date:
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>
-                        </label>
-                        <Field
-                          type="date"
-                          name="collection_date"
-                          className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                        />
-                      </div>
-
-                      {/* Lon/Lat */}
-                      <div className="grid grid-cols-3 gap-4 place-content-start w-full">
-                        {/* Longitude */}
-                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3 ">
-                          <label
-                            htmlFor="longitude"
-                            className="text-gray-600 capitalize text-sm"
-                          >
-                            Longitude
-                            <span className="text-medium leading-12 font-semibold">
-                              {" "}
-                              *
-                            </span>
-                          </label>
-                          <Field
-                            required
-                            type="decimal"
-                            name="longitude"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        </div>
-
-                        {/* Latitude */}
-                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3 ">
-                          <label
-                            htmlFor="latitude"
-                            className="text-gray-600 capitalize text-sm"
-                          >
-                            Latitude
-                            <span className="text-medium leading-12 font-semibold">
-                              {" "}
-                              *
-                            </span>
-                          </label>
-                          <Field
-                            required
-                            type="decimal"
-                            name="latitude"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        </div>
-
-                        {/* Accuracy */}
-                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3 ">
-                          <label
-                            htmlFor="accuracy"
-                            className="text-gray-600 capitalize text-sm"
-                          >
-                            Accurcay
-                          </label>
-                          <Field
-                            type="decimal"
-                            name="accuracy"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Ward Geo Map */}
-                      <div className="w-full h-au to">
-                        <div className="w-full bg-gray-200 border border-green-600 flex flex-col items-start justify-center text-left relative">
-                          <Map
-                            markerCoordinates={[
-                              _lat.length < 4 ? "0.000000" : _lat,
-                              _long.length < 4 ? "0.000000" : _long,
-                            ]}
-                            geoJSON={gJSON}
-                            ward={wardName}
-                            center={centerCoordinates}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Next/Previous Form  */}
-                      <div className=" w-full flex justify-end h-auto mr-3">
-                        <button
-                          type="submit"
-                          className="p-2 text-white bg-green-700  font-semibold"
-                        >
-                          save & finish
-                        </button>
-                      </div>
-                    </Form>
-                  </Formik>
-                </Tabs.Panel>
-
-                {/* Facility contacts */}
-                <Tabs.Panel
-                  value="facility_contacts"
-                  className="grow-1 py-1 px-4 tab-panel"
-                >
-                  <Formik
-                    initialValues={{
-                      name: officer_in_charge?.name ?? "",
-                      reg_no: officer_in_charge?.reg_no ?? "",
-                      contact: facility_contacts
-                        ? facility_contacts.length > 0
-                          ? facility_contacts[0]?.contact
-                          : ""
-                        : "",
-                      contact_type: facility_contacts
-                        ? facility_contacts.length > 0
-                          ? facility_contacts[0]?.contact_type
-                            : ""
-                        : "",
-                      officer_contact_type: officerContacts
-                        ? officerContacts[0]?.contact_type
-                          ? officerContacts.length > 0 
-                          : ""
-                        : "",
-                      officer_contact: officerContacts
-                        ? officerContacts.length > 0
-                          ? officerContacts[0]?.contact
-                          : ""
-                        : "",
-                    }}
-                    onSubmit={(formData) => {
-                      console.log({ formData });
-
-    
-                                        
-                        let payload = {}
-                    
-                        const contact =  facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
-                        const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
-                        const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
-                        const jobTitle = jobTitleRef.current  ? jobTitleRef.current.state.value.value : ''
-                        const jobTitleName = jobTitleRef.current  ? jobTitleRef.current.state.value.label : ''
-                        const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
-                        if(officer_in_charge ) Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
-                        _payload['title'] = jobTitle
-                        _payload['titleName'] = jobTitleName
-                        _payload['contacts'] = [{
-                            contact,
-                            contact_id: facility_contacts[0]?.contact_id,
-                            contact_type_name: contactTypeName,
-                            official_contact_id:facility_contacts[0]?.id,
-                            type: contactType
-                        }]
-                        
-                        payload = {officer_in_charge:_payload, contacts:[]}
+                      #{code || "NO_CODE"}
+                    </span>
+                    <span className="font-semibold text-green-900 text-base">{keph_level_name}</span>
+  
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2"></div>
+                <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
+              </div>
+            </div>
+  
+            {/* Facility Side Menu Filters */}
+            <div className="md:col-span-1 md:mt-8">
+              <FacilitySideMenu
+                filters={filters}
+                states={[
+                  khisSynched,
+                  facilityFeedBack,
+                  pathId,
+                  allFctsSelected,
+                  title,
+                ]}
+                stateSetters={[
+                  setKhisSynched,
+                  setFacilityFeedBack,
+                  setPathId,
+                  setAllFctsSelected,
+                  setTitle,
+                ]}
+              />
+            </div>
+  
+            <div className="md:col-span-6 flex flex-col items-center md:gap-3 gap-y-3 mt-8">
+              {isSavedChanges && facilityUpdateData ? (
+                // Display Changes to be updated
+                <div className="flex flex-col justify-start w-full space-y-3 md:px-4">
+                  <h2 className="text-2xl font-bold justify-center items-center md:ml-0 ml-4">
+                    Updated details
+                  </h2>
+                  {/* Update Metadata */}
+                  <div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
+                    <p className="text-base font-normal flex -leading-3">
+                      Updates were made on
+                      <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
+                        {
+                          new Date(facilityUpdateData?.updated)
+                            .toLocaleString()
+                            .split(",")[0]
+                        }
+                      </span>
+                      by
+                      <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
+                        {facilityUpdateData?.created_by_name}
+                      </span>
+                    </p>
+  
+                    <p className="text-base font-normal flex -leading-3">
+                      Facility Code:
+                      <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
+                        {code}
+                      </span>
+                    </p>
+  
+                    <span className="flex space-x-2">
+                      <button
+                        className="flex justify-center text-base font-semibold text-white bg-green-500  py-1 px-2"
+                        onClick={() => router.push(`/facilities/${id}`)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="flex justify-center text-base font-semibold text-white bg-green-500  py-1 px-2"
+                        onClick={() => router.push("/facilities")}
+                      >
+                        Confirm Updates
+                      </button>
+                    </span>
+                  </div>
+  
+                  {/* Update Details */}
+  
+                  <FacilityUpdatesTable
+                    facilityUpdatedJson={facility_updated_json}
+                    originalData={props["18"]}
+                  />
+                </div>
+              ) : (
+                // Display Tabs with Edit Forms
+                <Tabs.Root
+                  orientation="horizontal"
+                  className="w-full flex flex-col py-2 tab-root border border-green-600"
+                  defaultValue="geolocation"
                   
-
-                      handleFacilityContactsUpdates(payload, id, alert)
-                        .then(({ statusText }) => {
-                          defer(() => setIsSavedChanges(true));
-                          let update_id;
-                          if (statusText == "OK") {
-                            fetch(
-                              `/api/facility/get_facility/?path=facilities&id=${id}`
-                            )
-                              .then(async (resp) => {
-                                const results = await resp.json();
-
-                                update_id = results?.latest_update;
-
-                                if (update_id) {
-                                  try {
-                                    const _facilityUpdateData = await (
-                                      await fetch(
-                                        `/api/facility/get_facility/?path=facility_updates&id=${update_id}`
-                                      )
-                                    ).json();
-                                    setFacilityUpdateData(_facilityUpdateData);
-                                  } catch (e) {
-                                    console.error(
-                                      "Encountered error while fetching facility update data",
-                                      e.message
-                                    );
-                                  }
-                                }
-                              })
-                              .catch((e) =>
-                                console.error(
-                                  "unable to fetch facility update data. Error:",
-                                  e.message
-                                )
-                              );
-                          }
-                        })
-                        .catch((e) =>
-                          console.error(
-                            "unable to fetch facility data. Error:",
-                            e.message
-                          )
-                        );
-                    }}
-                  >
-                    <Form
-                      className="flex flex-col w-full items-start justify-start gap-3 md:mt-6"
-                      name="facility_contacts_form"
+                >
+                  <Tabs.List className="list-none md:grid border-b border-green-600 md:grid-cols-7 grid grid-cols-2 gap-2  px-2 md:gap-3  uppercase leading-none tab-list font-semibold">
+                    <Tabs.Tab
+                      value="basic_details"
+                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
                     >
-                      {/* Contacts */}
-
-                      <div className="grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3">
-                        {/* Contact Headers */}
-                        <h3 className="text-medium font-semibold text-green-900">
-                          Contact Type
-                        </h3>
-                        <h3 className="text-medium font-semibold text-green-900">
-                          Contact Details
-                        </h3>
-                        <hr className="col-span-2" />
-
-                        <div className="col-span-2 flex-col w-full items-start justify-start gap-y-3 ">
-                          {facilityContacts &&
-                            facilityContacts.length > 0 && 
-                            facilityContacts.map(
-                              ({ contact, contact_type_name, id }, i) => (
-                                <EditFacilityContactsContext.Provider
-                                  value={facilityContacts}
-                                  key={i}
-                                >
-                                  <FacilityContact
-                                    contactTypeOptions={contactTypeOptions}
-                                    setFacilityContacts={setFacilityContacts}
-                                    contacts={[(contact ?? ''), (contact_type_name ?? ''), (id ?? '')]}
-                                    index={id}
-                                    fieldNames={["contact_type", "contact"]}
-                                  />
-                                </EditFacilityContactsContext.Provider>
+                      Basic Details
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      value="geolocation"
+                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    >
+                      Geolocation
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      value="facility_contacts"
+                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    >
+                      Facility contacts
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      value="regulation"
+                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    >
+                      Regulation
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      value="services"
+                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    >
+                      Services
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      value="infrastructure"
+                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    >
+                      Infrastructure
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      value="human_resource"
+                      className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                    >
+                      Human Resource 
+                    </Tabs.Tab>
+                  </Tabs.List>
+  
+                  {/* Basic Details */}
+                  <Tabs.Panel
+                    value="basic_details"
+                    className="grow-1 py-1 px-4 tab-panel"
+                  >
+                    <Formik
+                      initialValues={{
+                        official_name: official_name ?? "",
+                        name: official_name ?? "",
+                        facility_type: "",
+                        date_established: date_established ?? "",
+                        accredited_lab_iso_15189:
+                          accredited_lab_iso_15189 ?? false,
+                        number_of_beds: number_of_beds ?? "",
+                        number_of_inpatient_beds: number_of_inpatient_beds ?? "",
+                        number_of_cots: number_of_cots ?? "",
+                        number_of_emergency_casualty_beds:
+                          number_of_emergency_casualty_beds ?? "",
+                        number_of_general_theatres:
+                          number_of_general_theatres ?? "",
+                        number_of_hdu_beds: number_of_hdu_beds ?? "",
+                        number_of_icu_beds: number_of_icu_beds ?? "",
+                        number_of_isolation_beds: number_of_isolation_beds ?? "",
+                        number_of_maternity_beds: number_of_maternity_beds ?? "",
+                        number_of_maternity_theatres:
+                          number_of_maternity_theatres ?? "",
+                        facility_catchment_population:
+                          facility_catchment_population ?? "",
+                        reporting_in_dhis: reporting_in_dhis ?? "",
+                        nhif_accreditation: nhif_accreditation ?? "",
+                        is_classified: is_classified ?? "",
+                        open_whole_day: open_whole_day ?? "",
+                        open_weekends: open_weekends ?? "",
+                        open_public_holidays: open_public_holidays ?? "",
+                        open_normal_day: open_normal_day ?? "",
+                        open_late_night: open_late_night ?? "",
+                        town_name: town_name ?? "",
+                        location_desc: location_desc ?? "",
+                        plot_number: plot_number ?? "",
+                        nearest_landmark: nearest_landmark ?? "",
+                      }}
+                      onSubmit={(values) => {
+                        // Ensure isSaveChnages is false
+                        setIsSavedChanges(false);
+                        let formData = values;
+                        formData["facility_type"] =
+                          facilityTypeRef.current.state.value.value;
+                        formData["operation_status"] =
+                          operationStatusRef.current.state.value.value;
+                        formData["owner_type"] =
+                          ownerTypeOptionsRef.current.state.value.value;
+                        formData["owner"] =
+                          ownerDetailsRef.current.state.value.value;
+                        formData["keph_level"] =
+                          kephLvlRef.current.state.value.value;
+                        formData["county_id"] =
+                          countyRef.current.state.value.value;
+                        formData["sub_county_id"] =
+                          subCountyRef.current.state.value.value;
+                        formData["constituency_id"] =
+                          constituencyRef.current.state.value.value;
+                        formData["ward"] = wardRef.current.state.value.value;
+  
+                        let payload = {};
+  
+                        const _payload = _.omit(formData, function (v, k) {
+                          return basicDetailsData[k] === v;
+                        });
+                        payload = { ..._payload };
+                        // if(officer_in_charge) {
+                        //     payload = {..._payload, officer_in_charge}
+                        // }
+                        // else{
+                        //     payload = {..._payload,
+                        //         officer_in_charge: {
+                        //             contacts: [],
+                        //             id_number: null,
+                        //             name: "",
+                        //             reg_no: "",
+                        //             title: "",
+                        //             title_name: ""
+                        //         }
+                        //     }
+  
+                        // }
+  
+                        handleBasicDetailsUpdates(payload, id, alert)
+                          .then(({ statusText }) => {
+                            defer(() => setIsSavedChanges(true));
+                            let update_id;
+                            let code
+                            if (statusText == "OK") {
+                              fetch(
+                                `/api/facility/get_facility/?path=facilities&id=${id}`
                               )
-                            )}
+                                .then(async (resp) => {
+                                  const results = await resp.json();
+  
+                                  update_id = results?.latest_update;
+                                  code = results?.code;
+  
+                                  if (update_id) {
+                                    try {
+                                      const _facilityUpdateData = await (
+                                        await fetch(
+                                          `/api/facility/get_facility/?path=facility_updates&id=${update_id}`
+                                        )
+                                      ).json();
+                                      setFacilityUpdateData(_facilityUpdateData);
+                                    } catch (e) {
+                                      console.error(
+                                        "Encountered error while fetching facility update data",
+                                        e.message
+                                      );
+                                    }
+                                  }
+                                })
+                                .catch((e) =>
+                                  console.error(
+                                    "unable to fetch facility update data. Error:",
+                                    e.message
+                                  )
+                                );
+                            }
+                          })
+                          .catch((e) =>
+                            console.error(
+                              "unable to fetch facility data. Error:",
+                              e.message
+                            )
+                          );
+                      }}
+                    >
+                      <Form className="flex flex-col w-full items-start justify-start gap-3 md:mt-6">
+                        {/* Facility Official Name */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="official_name"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Facility Official Name
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            type="text"
+                            name="official_name"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
                         </div>
-                      </div>
-
-                      <div className="w-full flex justify-end items-center">
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-
-                            setFacilityContacts([
-                              ...facilityContacts,
-                              (() => (
-                                <EditFacilityContactsContext.Provider
-                                value={facilityContacts} 
-                                key={(facilityContacts.length + 1) - 1}
-                                >
-                                  <FacilityContact
-																					contactTypeOptions={contactTypeOptions}
-																					setFacilityContacts={setFacilityContacts}
-																					contacts={[null, null, null]}
-																					fieldNames={['contact_type', 'contact']}
-																					index={(facilityContacts.length + 1) - 1}
-
-																		/>
-                                </EditFacilityContactsContext.Provider>
-                              ))(),
-                            ]);
-                          }}
-                          className="flex items-center space-x-1 bg-green-700 p-1 "
-                        >
-                          <PlusIcon className="w-4 h-4 text-white" />
-                          <p className="text-medium font-semibold text-white">
-                            Add
-                          </p>
-                        </button>
-                      </div>
-
-                      {/* Facility Officer In-charge Details */}
-
-                      <h5 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
-                        Facility Officer In-Charge Details
-                      </h5>
-                      <div className="flex flex-col items-start justify-start gap-1 w-full  h-auto">
-                        {/*  Name  */}
+  
+                        {/* Facility Unique Name  */}
                         <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                           <label
                             htmlFor="name"
                             className="text-gray-600 capitalize text-sm"
                           >
-                            Name
+                            Facility Unique Name
                             <span className="text-medium leading-12 font-semibold">
                               {" "}
                               *
                             </span>
                           </label>
-
                           <Field
                             required
                             type="text"
@@ -2855,64 +1222,1567 @@ const EditFacility = (props) => {
                             className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
-
-                        {/*  Registration Number */}
+  
+                        {/* Facility Type */}
                         <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                           <label
-                            htmlFor="reg_no"
+                            htmlFor="facility_type"
                             className="text-gray-600 capitalize text-sm"
                           >
-                            Registration Number/License Number{" "}
-                          </label>
-                          <Field
-                            type="text"
-                            name="reg_no"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        </div>
-
-                        {/* Job Title */}
-                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                          <label
-                            htmlFor="title"
-                            className="text-gray-600 capitalize text-sm"
-                          >
-                            Job Title
+                            Facility Type{" "}
                             <span className="text-medium leading-12 font-semibold">
                               {" "}
                               *
-                            </span>{" "}
+                            </span>
                           </label>
                           <Select
                             className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
                             styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                            options={jobTitleOptions || []}
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                            ref={facilityTypeRef}
+                            options={facilityOptions || []}
                             required
-                            ref={jobTitleRef}
-                            placeholder="Select Job Title"
-                            name="title"
+                            placeholder="Select a facility type..."
+                            onChange={(e) => setFacilityOption(e.label)}
+                            name="facility_type"
                            
                           />
                         </div>
-
-                        {/* Facility Officer Contact Type / Contact Details */}
-
-                        <div
-                          className="grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3"
-                          ref={facilityContact2Ref}
-                        >
+  
+                        {/* Facility Type Details */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="facility_type_details"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Facility Type Details
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                            ref={facilityTypeDetailsRef}
+                            options={(() => {
+                              switch (facilityOption) {
+                                case "STAND ALONE":
+                                  if (kephLvlRef.current)
+                                    kephLvlRef.current.state.value =
+                                      kephOptions.filter(
+                                        ({ label }) => label === "Level 2"
+                                      )[0];
+  
+                                  return [
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Dermatology"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label ==
+                                        "Rehab. Center - Drug and Substance abuse"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label == "Nutrition and Dietetics"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Dialysis Center"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label ==
+                                        "Rehab. Center - Physiotherapy, Orthopaedic & Occupational Therapy"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "VCT"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Farewell Home"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Laboratory"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Radiology Clinic"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Pharmacy"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label ==
+                                        "Regional Blood Transfusion Centre"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Ophthalmology"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Dental Clinic"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Blood Bank"
+                                    )[0] || {},
+                                  ];
+  
+                                case "DISPENSARY":
+                                  if (kephLvlRef.current)
+                                    kephLvlRef.current.state.value =
+                                      kephOptions.filter(
+                                        ({ label }) => label === "Level 2"
+                                      )[0];
+                                  return (
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "DISPENSARY"
+                                    ) || []
+                                  );
+  
+                                case "MEDICAL CLINIC":
+                                  if (kephLvlRef.current)
+                                    kephLvlRef.current.state.value =
+                                      kephOptions.filter(
+                                        ({ label }) => label === "Level 2"
+                                      )[0];
+                                  return (
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Medical Clinic"
+                                    ) || []
+                                  );
+  
+                                case "NURSING HOME":
+                                  if (kephLvlRef.current)
+                                    kephLvlRef.current.state.value =
+                                      kephOptions.filter(
+                                        ({ label }) => label === "Level 2"
+                                      )[0];
+  
+                                  return [
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label == "Nursing and Maternity Home"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Nursing Homes"
+                                    )[0] || {},
+                                  ];
+  
+                                case "HOSPITALS":
+                                  return [
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label ==
+                                        "Specialized & Tertiary Referral hospitals"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label == "Secondary care hospitals"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label ==
+                                        "Comprehensive Teaching & Tertiary Referral Hospital"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label == "Primary care hospitals"
+                                    )[0] || {},
+                                  ];
+  
+                                case "HEALTH CENTRE":
+                                  if (kephLvlRef.current)
+                                    kephLvlRef.current.state.value =
+                                      kephOptions.filter(
+                                        ({ label }) => label === "Level 3"
+                                      )[0];
+                                  return [
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label == "Basic Health Centre"
+                                    )[0] || {},
+                                    facilityTypeOptions.filter(
+                                      ({ label }) =>
+                                        label == "Comprehensive health Centre"
+                                    )[0] || {},
+                                  ];
+  
+                                case "MEDICAL CENTRE":
+                                  if (kephLvlRef.current)
+                                    kephLvlRef.current.state.value =
+                                      kephOptions.filter(
+                                        ({ label }) => label === "Level 3"
+                                      )[0];
+  
+                                  return (
+                                    facilityTypeOptions.filter(
+                                      ({ label }) => label == "Medical Center"
+                                    ) || []
+                                  );
+                              }
+                            })()}
+                            required
+                            placeholder="Select a facility type details..."
+                            onChange={(ev) => {
+                              switch (ev.label) {
+                                case "Comprehensive Teaching & Tertiary Referral Hospital":
+                                  setFacilityTypeDetail(
+                                    "Comprehensive Teaching & Tertiary Referral Hospital"
+                                  );
+  
+                                  break;
+                                case "Specialized & Tertiary Referral hospitals":
+                                  setFacilityTypeDetail(
+                                    "Specialized & Tertiary Referral hospitals"
+                                  );
+  
+                                  break;
+                                case "Secondary care hospitals":
+                                  setFacilityTypeDetail(
+                                    "Secondary care hospitals"
+                                  );
+  
+                                  break;
+                                case "Primary care hospitals":
+                                  setFacilityTypeDetail("Primary care hospitals");
+  
+                                  break;
+                              }
+                            }}
+                            name="facility_type_details"
+                            
+                          />
+                        </div>
+  
+                        {/* Operation Status */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="operation_status"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Operation Status{" "}
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                            ref={operationStatusRef}
+                            options={operationStatusOptions || []}
+                            required
+                            placeholder="Select an operation status..."
+                            onChange={(ev) => {
+                              setOperationStatus(ev.value);
+                            }}
+                            name="operation_status"
+                           
+                          />
+                        </div>
+  
+                        {/* Date Established */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="date_established"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Date Established
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            type="date"
+                            name="date_established"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* Is Facility accredited */}
+                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                          <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
+                            <Field
+                              type="checkbox"
+                              name="accredited_lab_iso_15189"
+                              id="accredited_lab_iso_15189"
+                            />
+                            <label
+                              htmlFor="accredited_lab_iso_15189"
+                              className="text-gray-700 capitalize text-sm flex-grow"
+                            >
+                              {" "}
+                              *Is the facility accredited Lab ISO 15189?
+                            </label>
+                          </div>
+                        </div>
+  
+                        {/* Owner Category */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="owner_type"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Owner Category
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                            ref={ownerTypeOptionsRef}
+                            options={ownerTypeOptions || []}
+                            required
+                            placeholder="Select owner.."
+                            onChange={(e) => setOwnerTypeOption(e.label)}
+                            name="owner_type"
+                            
+                          />
+                        </div>
+  
+                        {/* Owner Details */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="owner"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Owner Details
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                            ref={ownerDetailsRef}
+                            options={
+                              (() => {
+                                switch (ownerTypeOption) {
+                                  case "Private Practice":
+                                    return [
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label == "Private Practice- Pharmacist"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Private Practice - Private Company"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Private Practice Lab Technician/Technologist"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Private Practice - Nurse / Midwifery"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Private Practice - Medical Specialist"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Private Practice - General Practitioner"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Private Practice - Clinical Officer"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Private Practice - Private Institution Academic"
+                                      )[0] || {},
+                                    ];
+  
+                                  case "Non-Governmental Organizations":
+                                    return (
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Non-Governmental Organizations"
+                                      ) || []
+                                    );
+  
+                                  case "Ministry of Health":
+                                    return [
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Public Institution - Parastatal"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label == "Ministry of Health"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) => label == "Armed Forces"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label == "Public Institution - Academic"
+                                      )[0] || {},
+                                    ];
+  
+                                  case "Faith Based Organization":
+                                    return [
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label == "Seventh Day Adventist"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Supreme Council for Kenya Muslims"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label == "Other Faith Based"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label == "Seventh Day Adventist"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Kenya Episcopal Conference-Catholic Secretariat"
+                                      )[0] || {},
+                                      ownerOptions.filter(
+                                        ({ label }) =>
+                                          label ==
+                                          "Christian Health Association of Kenya"
+                                      )[0] || {},
+                                    ];
+                                }
+                              })() ?? ownerTypeOptions
+                            }
+                            required
+                            placeholder="Select an owner.."
+                            name="owner"
+                           
+                          />
+                        </div>
+  
+                        {/* KEPH Level */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="keph_level"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            KEPH Level
+                          </label>
+                          <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                            ref={kephLvlRef}
+                            isDisabled={true}
+                            options={kephOptions ?? []}
+                            placeholder="Select a KEPH Level.."
+                            onChange={(ev) => ev.preventDefault()}
+                            name="keph_level"
+                            
+                          />
+                        </div>
+  
+                        {/* No. Total Functional In-patient Beds */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="number_of_beds"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Total Functional In-patient Beds
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            type="number"
+                            name="number_of_beds"
+                            readOnly
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* No. General In-patient Beds */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="number_of_inpatient_beds"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Number of General In-patient Beds
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            min={0}
+                            type="number"
+                            name="number_of_inpatient_beds"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* No. Functional cots */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="number_of_cots"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Number of functional cots
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            min={0}
+                            type="number"
+                            name="number_of_cots"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* No. Emergency Casulty Beds */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="number_of_emergency_casualty_beds"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Number of Emergency Casulty Beds
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            min={0}
+                            type="number"
+                            name="number_of_emergency_casualty_beds"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* No. Intensive Care Unit Beds */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="number_of_icu_beds"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Number of Intensive Care Unit (ICU) Beds
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            min={0}
+                            type="number"
+                            name="number_of_icu_beds"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* No. High Dependency Unit HDU */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="number_of_hdu_beds"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Number of High Dependency Unit (HDU) Beds
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            min={0}
+                            type="number"
+                            name="number_of_hdu_beds"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* No. of maternity beds */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="number_of_maternity_beds"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Number of maternity beds
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            min={0}
+                            type="number"
+                            name="number_of_maternity_beds"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* No. of isolation beds */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="number_of_isolation_beds"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Number of isolation beds
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            min={0}
+                            type="number"
+                            name="number_of_isolation_beds"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* No. of General Theatres */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="number_of_general_theatres"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Number of General Theatres
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            min={0}
+                            type="number"
+                            name="number_of_general_theatres"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* No. of Maternity Theatres */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="number_of_maternity_theatres"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Number of Maternity Theatres
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            min={0}
+                            type="number"
+                            name="number_of_maternity_theatres"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* Facility Catchment Population */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="facility_catchment_population"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Facility Catchment Population
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            required
+                            min={0}
+                            type="number"
+                            name="facility_catchment_population"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* Is Reporting DHIS2 */}
+                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                          <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
+                            <Field
+                              type="checkbox"
+                              name="reporting_in_dhis"
+                              id="reporting_in_dhis"
+                            />
+                            <label
+                              htmlFor="reporting_in_dhis"
+                              className="text-gray-700 capitalize text-sm flex-grow"
+                            >
+                              {" "}
+                              *Should this facility have reporting in DHIS2?
+                            </label>
+                          </div>
+                        </div>
+  
+                        {/* Facility Admissions */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="admission_status"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Facility admissions
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Select
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                            ref={facilityAdmissionRef}
+                            options={facilityAdmissionOptions || []}
+                            required
+                            placeholder="Select an admission status.."
+                            name="admission_status"
+                           
+                          />
+                        </div>
+  
+                        {/* Is NHIF accredited */}
+                        <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                          <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
+                            <Field
+                              type="checkbox"
+                              name="nhif_accreditation"
+                              id="is_armed_forces"
+                            />
+                            <label
+                              htmlFor="nhif_accreditation"
+                              className="text-gray-700 capitalize text-sm flex-grow"
+                            >
+                              {" "}
+                              *Does this facility have NHIF accreditation?
+                            </label>
+                          </div>
+                        </div>
+  
+                        {/* Armed Forces Facilities */}
+  
+                        <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
+                          <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                            Armed Forces Facilities
+                          </h4>
+                          <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
+                            <Field
+                              type="checkbox"
+                              name="is_classified"
+                              id="is_armed_forces"
+                            />
+                            <label
+                              htmlFor="is_classified"
+                              className="text-gray-700 capitalize text-sm flex-grow"
+                            >
+                              {" "}
+                              Is this an Armed Force facility?{" "}
+                            </label>
+                          </div>
+                        </div>
+  
+                        {/* Hours/Days of Operation */}
+  
+                        <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
+                          <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                            Hours/Days of Operation
+                          </h4>
+                          <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                            <Field
+                              type="checkbox"
+                              name="open_whole_day"
+                              id="open_24hrs"
+                            />
+                            <label
+                              htmlFor="open_whole_day"
+                              className="text-gray-700 capitalize text-sm flex-grow"
+                            >
+                              {" "}
+                              Open 24 hours
+                            </label>
+                          </div>
+  
+                          <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                            <Field
+                              type="checkbox"
+                              name="open_late_night"
+                              id="open_late_night"
+                            />
+                            <label
+                              htmlFor="open_late_night"
+                              className="text-gray-700 capitalize text-sm flex-grow"
+                            >
+                              {" "}
+                              Open Late Night
+                            </label>
+                          </div>
+  
+                          <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                            <Field
+                              type="checkbox"
+                              name="open_public_holidays"
+                              id="open_public_holidays"
+                            />
+                            <label
+                              htmlFor="open_public_holidays"
+                              className="text-gray-700 capitalize text-sm flex-grow"
+                            >
+                              {" "}
+                              Open on public holidays
+                            </label>
+                          </div>
+  
+                          <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                            <Field
+                              type="checkbox"
+                              name="open_weekends"
+                              id="open_weekends"
+                            />
+                            <label
+                              htmlFor="open_weekends"
+                              className="text-gray-700ds capitalize text-sm flex-grow"
+                            >
+                              {" "}
+                              Open during weekends
+                            </label>
+                          </div>
+  
+                          <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
+                            <Field
+                              type="checkbox"
+                              name="open_normal_day"
+                              id="open_8_5"
+                            />
+                            <label
+                              htmlFor="open_normal_day"
+                              className="text-gray-700 capitalize text-sm flex-grow"
+                            >
+                              {" "}
+                              Open from 8am to 5pm
+                            </label>
+                          </div>
+                        </div>
+  
+                        {/* Location Details */}
+                        <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
+                          <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                            Location Details
+                          </h4>
+                          <div className="grid grid-cols-4 place-content-start gap-3 w-full">
+                            {/* County  */}
+                            <div className="col-start-1 col-span-1">
+                              <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                <label
+                                  htmlFor="county_id"
+                                  className="text-gray-600 capitalize text-sm"
+                                >
+                                  County
+                                  <span className="text-medium leading-12 font-semibold">
+                                    {" "}
+                                    *
+                                  </span>
+                                </label>
+                                <Select
+                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                  styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                                  options={countyOptions || []}
+                                  ref={countyRef}
+                                  required
+                                  placeholder="Select County"
+                                  onChange={async (ev) => {
+                                    if (ev.value.length > 0) {
+                                      // setCounty(String(ev.label).toLocaleUpperCase())
+  
+                                      try {
+                                        const resp = await fetch(
+                                          `/api/filters/subcounty/?county=${
+                                            ev.value
+                                          }${"&fields=id,name,county&page_size=30"}`
+                                        );
+                                        const data = await resp.json();
+  
+                                        if (data && data.results) {
+                                          const options = data.results.map(
+                                            ({ id, name }) => ({
+                                              value: id,
+                                              label: name,
+                                            })
+                                          );
+                                          setSubCountyOpt(options);
+                                        } else {
+                                          setSubCountyOpt([]);
+                                        }
+                                      } catch (e) {
+                                        console.error(
+                                          "Unable to fetch sub_county options"
+                                        );
+                                        setSubCountyOpt(null);
+                                      }
+                                    } else {
+                                      return setSubCountyOpt(null);
+                                    }
+                                  }}
+                                  name="county_id"
+                                  
+                                />
+                              </div>
+                            </div>
+  
+                            {/* Sub-county */}
+                            <div className="col-start-2 col-span-1">
+                              <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                <label
+                                  htmlFor="sub_county_id"
+                                  className="text-gray-600 capitalize text-sm"
+                                >
+                                  Sub-county
+                                  <span className="text-medium leading-12 font-semibold">
+                                    {" "}
+                                    *
+                                  </span>
+                                </label>
+                                <Select
+                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                  styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                                  options={subCountyOpt ?? subCountyOptions}
+                                  ref={subCountyRef}
+                                  required
+                                  placeholder="Select Sub County"
+                                  name="sub_county_id"
+                                
+                                />
+                              </div>
+                            </div>
+  
+                            {/* Constituency */}
+                            <div className="col-start-3 col-span-1">
+                              <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                <label
+                                  htmlFor="constituency_id"
+                                  className="text-gray-600 capitalize text-sm"
+                                >
+                                  Constituency
+                                  <span className="text-medium leading-12 font-semibold">
+                                    {" "}
+                                    *
+                                  </span>
+                                </label>
+                                <Select
+                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                  styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                                  ref={constituencyRef}
+                                  options={subCountyOpt ?? constituencyOptions}
+                                  required
+                                  placeholder="Select Constituency"
+                                  onChange={async (ev) => {
+                                    if (ev.value.length > 0) {
+                                      try {
+                                        const resp = await fetch(
+                                          `/api/filters/ward/?sub_county=${
+                                            ev.value
+                                          }${"&fields=id,name,sub_county,constituency&page_size=30"}`
+                                        );
+  
+                                        setWardNameOpt(
+                                          (await resp.json()).results.map(
+                                            ({ id, name }) => ({
+                                              value: id,
+                                              label: name,
+                                            })
+                                          ) ?? []
+                                        );
+                                      } catch (e) {
+                                        console.error(
+                                          "Unable to fetch sub_county options"
+                                        );
+                                        setWardNameOpt(null);
+                                      }
+                                    } else {
+                                      return setWardNameOpt(null);
+                                    }
+                                  }}
+                                  name="constituency_id"
+                                  
+                                />
+                              </div>
+                            </div>
+  
+                            {/* Ward */}
+                            <div className="col-start-4 col-span-1">
+                              <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                <label
+                                  htmlFor="ward"
+                                  className="text-gray-600 capitalize text-sm"
+                                >
+                                  Ward
+                                  <span className="text-medium leading-12 font-semibold">
+                                    {" "}
+                                    *
+                                  </span>
+                                </label>
+                                <Select
+                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                  styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                                  ref={wardRef}
+                                  options={wardOpt ?? wardOptions}
+                                  required
+                                  placeholder="Select Ward"
+                                  name="ward"
+                                 
+                                />
+                              </div>
+                            </div>
+                          </div>
+  
+                          {/* Nearest Town/Shopping Center */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                            <label
+                              htmlFor="town_name"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              Nearest Town/Shopping Center
+                              <span className="text-medium leading-12 font-semibold"></span>
+                            </label>
+                            <Field
+                              type="text"
+                              name="town_name"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
+  
+                          {/* Plot Number */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                            <label
+                              htmlFor="plot_number"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              Plot number
+                              <span className="text-medium leading-12 font-semibold"></span>
+                            </label>
+                            <Field
+                              type="text"
+                              name="plot_number"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
+  
+                          {/* Nearest landmark */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                            <label
+                              htmlFor="nearest_landmark"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              Nearest landmark
+                              <span className="text-medium leading-12 font-semibold"></span>
+                            </label>
+                            <Field
+                              type="text"
+                              name="nearest_landmark"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
+  
+                          {/* Location Description */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                            <label
+                              htmlFor="location_desc"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              location description
+                              <span className="text-medium leading-12 font-semibold"></span>
+                            </label>
+                            <Field
+                              type="text"
+                              name="location_desc"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
+                        </div>
+  
+                        {/* check file upload */}
+                        <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                            <label
+                              htmlFor="facility_checklist_document"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              checklist file upload
+                              <span className="text-medium leading-12 font-semibold"></span>
+                            </label>
+                            <Field
+                              type="file"
+                              ref={checklistFileRef}
+                              value={_checklistFile}
+                              onChange={setCheckListFile}
+                              name="facility_checklist_document"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
+                        </div>
+  
+                        <div className=" w-full flex justify-end h-auto mr-3">
+                          <button
+                            type="submit"
+                            className="p-2 text-white bg-green-700  font-semibold"
+                          >
+                            save & finish
+                          </button>
+                        </div>
+                      </Form>
+                    </Formik>
+                  </Tabs.Panel>
+  
+                  {/* Geolocation */}
+                  <Tabs.Panel
+                    value="geolocation"
+                    className="grow-1 py-1 px-4 tab-panel"
+                  >
+                    <Formik
+                      initialValues={{
+                        collection_date: collection_date ?? "",
+                        latitude: lat_long ? lat_long[0] ?? "" : "",
+                        longitude: lat_long ? lat_long[1] ?? "" : "",
+                      }}
+                      onSubmit={(formData) => {
+                        // Ensure isSaveChnages is false
+                        setIsSavedChanges(false);
+                        let payload = {};
+                        const _payload = _.omit(formData, function (v, k) {
+                          return geolocationData[k] === v;
+                        });
+  
+                        payload = {
+                          ..._payload,
+                          facility: id,
+                          coordinates: {
+                            coordinates: [lat_long[1], lat_long[0]],
+                            type: "point",
+                          },
+                        }; // {..._payload}
+  
+                        // payload['collection_date'] = new Date(payload.collection_date)
+  
+                        handleGeolocationUpdates(payload, coordinates, alert)
+                          .then(({ statusText }) => {
+                            defer(() => setIsSavedChanges(true));
+                            let update_id;
+                            if (statusText == "OK") {
+                              fetch(
+                                `/api/facility/get_facility/?path=facilities&id=${id}`
+                              )
+                                .then(async (resp) => {
+                                  const results = await resp.json();
+  
+                                  update_id = results?.latest_update;
+  
+                                  if (update_id) {
+                                    try {
+                                      const _facilityUpdateData = await (
+                                        await fetch(
+                                          `/api/facility/get_facility/?path=facility_updates&id=${update_id}`
+                                        )
+                                      ).json();
+                                      setFacilityUpdateData(_facilityUpdateData);
+                                    } catch (e) {
+                                      console.error(
+                                        "Encountered error while fetching facility update data",
+                                        e.message
+                                      );
+                                    }
+                                  }
+                                })
+                                .catch((e) =>
+                                  console.error(
+                                    "unable to fetch facility update data. Error:",
+                                    e.message
+                                  )
+                                );
+                            }
+                          })
+                          .catch((e) =>
+                            console.error(
+                              "unable to fetch facility data. Error:",
+                              e.message
+                            )
+                          );
+                      }}
+                    >
+                      <Form
+                        name="geolocation_form"
+                        className="flex flex-col w-full items-start justify-start gap-3 md:mt-6"
+                      >
+                        {/* Collection Date */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="collection_date"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Collection date:
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>
+                          </label>
+                          <Field
+                            type="date"
+                            name="collection_date"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                          />
+                        </div>
+  
+                        {/* Lon/Lat */}
+                        <div className="grid grid-cols-3 gap-4 place-content-start w-full">
+                          {/* Longitude */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3 ">
+                            <label
+                              htmlFor="longitude"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              Longitude
+                              <span className="text-medium leading-12 font-semibold">
+                                {" "}
+                                *
+                              </span>
+                            </label>
+                            <Field
+                              required
+                              type="decimal"
+                              name="longitude"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
+  
+                          {/* Latitude */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3 ">
+                            <label
+                              htmlFor="latitude"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              Latitude
+                              <span className="text-medium leading-12 font-semibold">
+                                {" "}
+                                *
+                              </span>
+                            </label>
+                            <Field
+                              required
+                              type="decimal"
+                              name="latitude"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
+  
+                          {/* Accuracy */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3 ">
+                            <label
+                              htmlFor="accuracy"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              Accuracy
+                            </label>
+                            <Field
+                              type="decimal"
+                              name="accuracy"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
+                        </div>
+  
+                        {/* Ward Geo Map */}
+                        <div className="w-full h-au to">
+                          <div className="w-full bg-gray-200 border border-green-600 flex flex-col items-start justify-center text-left relative">
+                            <Map
+                              markerCoordinates={[
+                                _lat.length < 4 ? "0.000000" : _lat,
+                                _long.length < 4 ? "0.000000" : _long,
+                              ]}
+                              geoJSON={gJSON}
+                              ward={wardName}
+                              center={centerCoordinates}
+                            />
+                          </div>
+                        </div>
+  
+                        {/* Next/Previous Form  */}
+                        <div className=" w-full flex justify-end h-auto mr-3">
+                          <button
+                            type="submit"
+                            className="p-2 text-white bg-green-700  font-semibold"
+                          >
+                            save & finish
+                          </button>
+                        </div>
+                      </Form>
+                    </Formik>
+                  </Tabs.Panel>
+  
+                  {/* Facility contacts */}
+                  <Tabs.Panel
+                    value="facility_contacts"
+                    className="grow-1 py-1 px-4 tab-panel"
+                  >
+                    <Formik
+                      initialValues={{
+                        name: officer_in_charge?.name ?? "",
+                        reg_no: officer_in_charge?.reg_no ?? "",
+                        contact: facility_contacts
+                          ? facility_contacts.length > 0
+                            ? facility_contacts[0]?.contact
+                            : ""
+                          : "",
+                        contact_type: facility_contacts
+                          ? facility_contacts.length > 0
+                            ? facility_contacts[0]?.contact_type
+                              : ""
+                          : "",
+                        officer_contact_type: officerContacts
+                          ? officerContacts[0]?.contact_type
+                            ? officerContacts.length > 0 
+                            : ""
+                          : "",
+                        officer_contact: officerContacts
+                          ? officerContacts.length > 0
+                            ? officerContacts[0]?.contact
+                            : ""
+                          : "",
+                      }}
+                      onSubmit={(formData) => {
+                        console.log({ formData });
+  
+      
+                                          
+                          let payload = {}
+                      
+                          const contact =  facilityContactDetailRef.current  ? facilityContactDetailRef.current.value : ''
+                          const contactType = contactRef.current  ? contactRef.current.state.value.value : ''
+                          const contactTypeName = contactRef.current  ? contactRef.current.state.value.label : ''
+                          const jobTitle = jobTitleRef.current  ? jobTitleRef.current.state.value.value : ''
+                          const jobTitleName = jobTitleRef.current  ? jobTitleRef.current.state.value.label : ''
+                          const _payload = _.omit(formData, function (v, k) { return facilityContactsData[k] === v})
+                          if(officer_in_charge ) Object.keys(_payload).forEach(k => officer_in_charge[k] = _payload[k])
+                          _payload['title'] = jobTitle
+                          _payload['titleName'] = jobTitleName
+                          _payload['contacts'] = [{
+                              contact,
+                              contact_id: facility_contacts[0]?.contact_id,
+                              contact_type_name: contactTypeName,
+                              official_contact_id:facility_contacts[0]?.id,
+                              type: contactType
+                          }]
+                          
+                          payload = {officer_in_charge:_payload, contacts:[]}
+                    
+  
+                        handleFacilityContactsUpdates(payload, id, alert)
+                          .then(({ statusText }) => {
+                            defer(() => setIsSavedChanges(true));
+                            let update_id;
+                            if (statusText == "OK") {
+                              fetch(
+                                `/api/facility/get_facility/?path=facilities&id=${id}`
+                              )
+                                .then(async (resp) => {
+                                  const results = await resp.json();
+  
+                                  update_id = results?.latest_update;
+  
+                                  if (update_id) {
+                                    try {
+                                      const _facilityUpdateData = await (
+                                        await fetch(
+                                          `/api/facility/get_facility/?path=facility_updates&id=${update_id}`
+                                        )
+                                      ).json();
+                                      setFacilityUpdateData(_facilityUpdateData);
+                                    } catch (e) {
+                                      console.error(
+                                        "Encountered error while fetching facility update data",
+                                        e.message
+                                      );
+                                    }
+                                  }
+                                })
+                                .catch((e) =>
+                                  console.error(
+                                    "unable to fetch facility update data. Error:",
+                                    e.message
+                                  )
+                                );
+                            }
+                          })
+                          .catch((e) =>
+                            console.error(
+                              "unable to fetch facility data. Error:",
+                              e.message
+                            )
+                          );
+                      }}
+                    >
+                      <Form
+                        className="flex flex-col w-full items-start justify-start gap-3 md:mt-6"
+                        name="facility_contacts_form"
+                      >
+                        {/* Contacts */}
+  
+                        <div className="grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3">
                           {/* Contact Headers */}
                           <h3 className="text-medium font-semibold text-green-900">
                             Contact Type
@@ -2921,66 +2791,50 @@ const EditFacility = (props) => {
                             Contact Details
                           </h3>
                           <hr className="col-span-2" />
-
-                          {/* Contact Type / Contact Details */}
-
+  
                           <div className="col-span-2 flex-col w-full items-start justify-start gap-y-3 ">
-                            {officerContacts &&
-                            !officerContacts?.length > 1 
-                              ? officerContacts.map(
-                                  (officerContact) => officerContact
-                                )
-                              : officerContacts?.contacts?.map(
-                                  (
-                                    {
-                                      contact,
-                                      contact_type_name,
-                                      officer_contact_id,
-                                    },
-                                    i
-                                  ) => (
-                                    <OfficerContactDetails
-                                      key={i}
+                            {facilityContacts &&
+                              facilityContacts.length > 0 && 
+                              facilityContacts.map(
+                                ({ contact, contact_type_name, id }, i) => (
+                                  <EditFacilityContactsContext.Provider
+                                    value={facilityContacts}
+                                    key={i}
+                                  >
+                                    <FacilityContact
                                       contactTypeOptions={contactTypeOptions}
-                                      setFacilityContacts={setOfficerContact}
-                                      contacts={[
-                                        contact_type_name,
-                                        contact,
-                                        officer_contact_id,
-                                      ]}
-                                      index={i}
-                                      fieldNames={[
-                                        "officer_contact_type",
-                                        "officer_contact",
-                                      ]}
+                                      setFacilityContacts={setFacilityContacts}
+                                      contacts={[(contact ?? ''), (contact_type_name ?? ''), (id ?? '')]}
+                                      index={id}
+                                      fieldNames={["contact_type", "contact"]}
                                     />
-                                  )
-                                )}
+                                  </EditFacilityContactsContext.Provider>
+                                )
+                              )}
                           </div>
                         </div>
-
-                        <div className="w-full flex justify-end items-center mt-2">
+  
+                        <div className="w-full flex justify-end items-center">
                           <button
                             onClick={(e) => {
                               e.preventDefault();
-
-                              setOfficerContact([
-                                ...[officerContacts],
+  
+                              setFacilityContacts([
+                                ...facilityContacts,
                                 (() => (
-                                  <EditOfficerContactsContext.Provider
-                                    value={officerContacts}
-                                    key={([officerContacts].length + 1) - 1}
+                                  <EditFacilityContactsContext.Provider
+                                  value={facilityContacts} 
+                                  key={(facilityContacts.length + 1) - 1}
                                   >
-                                    <OfficerContactDetails
-                                      contactTypeOptions={contactTypeOptions}
-                                      setFacilityContacts={setOfficerContact}
-                                      contacts={[null, null, null]}
-                                      index={
-                                        ([officerContacts].length + 1) - 1 
-                                      }
-                                      fieldNames={["type", "contact"]}
-                                    />
-                                  </EditOfficerContactsContext.Provider>
+                                    <FacilityContact
+                                            contactTypeOptions={contactTypeOptions}
+                                            setFacilityContacts={setFacilityContacts}
+                                            contacts={[null, null, null]}
+                                            fieldNames={['contact_type', 'contact']}
+                                            index={(facilityContacts.length + 1) - 1}
+  
+                                      />
+                                  </EditFacilityContactsContext.Provider>
                                 ))(),
                               ]);
                             }}
@@ -2992,103 +2846,404 @@ const EditFacility = (props) => {
                             </p>
                           </button>
                         </div>
-                      </div>
-                      {/* Save btn */}
-
-                      <div className=" w-full flex justify-end h-auto mr-3">
-                        <button
-                          type="submit"
-                          className="p-2 text-white bg-green-700  font-semibold"
-                        >
-                          save & finish
-                        </button>
-                      </div>
-                    </Form>
-                  </Formik>
-                </Tabs.Panel>
-                {/* Regulation */}
-                <Tabs.Panel
-                  value="regulation"
-                  className="grow-1 py-1 px-4 tab-panel"
-                >
-                  <>
-                    <h4 className="text-lg uppercase mt-2 pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
-                      Facility Regulation
-                    </h4>
-                    <form
-                      ref={facilityRegulationFormRef}
-                      name="facility_regulation_form"
-                      className="flex flex-col w-full items-start justify-start gap-3"
-                      onSubmit={(ev) =>
-                        handleRegulationSubmitUpdates(
-                          ev,
-                          [
-                            setFormId,
-                            facilityId,
-                            facilityOfficialName,
-                            facilityRegulationFormRef,
-                          ],
-                          licenseFile
-                        )
-                      }
-                    >
-                      {/* Regulatory Body */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="regulatory_body"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Regulatory Body
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>{" "}
-                        </label>
-                        {ownerTypeName === "Ministry of Health" ? (
-                          // Filtered Regulaotry Body Options
-
+  
+                        {/* Facility Officer In-charge Details */}
+  
+                        <h5 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                          Facility Officer In-Charge Details
+                        </h5>
+                        <div className="flex flex-col items-start justify-start gap-1 w-full  h-auto">
+                          {/*  Name  */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                            <label
+                              htmlFor="name"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              Name
+                              <span className="text-medium leading-12 font-semibold">
+                                {" "}
+                                *
+                              </span>
+                            </label>
+  
+                            <Field
+                              required
+                              type="text"
+                              name="name"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
+  
+                          {/*  Registration Number */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                            <label
+                              htmlFor="reg_no"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              Registration Number/License Number{" "}
+                            </label>
+                            <Field
+                              type="text"
+                              name="reg_no"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
+  
+                          {/* Job Title */}
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                            <label
+                              htmlFor="title"
+                              className="text-gray-600 capitalize text-sm"
+                            >
+                              Job Title
+                              <span className="text-medium leading-12 font-semibold">
+                                {" "}
+                                *
+                              </span>{" "}
+                            </label>
+                            <Select
+                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                              options={jobTitleOptions || []}
+                              required
+                              ref={jobTitleRef}
+                              placeholder="Select Job Title"
+                              name="title"
+                             
+                            />
+                          </div>
+  
+                          {/* Facility Officer Contact Type / Contact Details */}
+  
+                          <div
+                            className="grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3"
+                            ref={facilityContact2Ref}
+                          >
+                            {/* Contact Headers */}
+                            <h3 className="text-medium font-semibold text-green-900">
+                              Contact Type
+                            </h3>
+                            <h3 className="text-medium font-semibold text-green-900">
+                              Contact Details
+                            </h3>
+                            <hr className="col-span-2" />
+  
+                            {/* Contact Type / Contact Details */}
+  
+                            <div className="col-span-2 flex-col w-full items-start justify-start gap-y-3 ">
+                              {officerContacts &&
+                              !officerContacts?.length > 1 
+                                ? officerContacts.map(
+                                    (officerContact) => officerContact
+                                  )
+                                : officerContacts?.contacts?.map(
+                                    (
+                                      {
+                                        contact,
+                                        contact_type_name,
+                                        officer_contact_id,
+                                      },
+                                      i
+                                    ) => (
+                                      <OfficerContactDetails
+                                        key={i}
+                                        contactTypeOptions={contactTypeOptions}
+                                        setFacilityContacts={setOfficerContact}
+                                        contacts={[
+                                          contact_type_name,
+                                          contact,
+                                          officer_contact_id,
+                                        ]}
+                                        index={i}
+                                        fieldNames={[
+                                          "officer_contact_type",
+                                          "officer_contact",
+                                        ]}
+                                      />
+                                    )
+                                  )}
+                            </div>
+                          </div>
+  
+                          <div className="w-full flex justify-end items-center mt-2">
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+  
+                                setOfficerContact([
+                                  ...[officerContacts],
+                                  (() => (
+                                    <EditOfficerContactsContext.Provider
+                                      value={officerContacts}
+                                      key={([officerContacts].length + 1) - 1}
+                                    >
+                                      <OfficerContactDetails
+                                        contactTypeOptions={contactTypeOptions}
+                                        setFacilityContacts={setOfficerContact}
+                                        contacts={[null, null, null]}
+                                        index={
+                                          ([officerContacts].length + 1) - 1 
+                                        }
+                                        fieldNames={["type", "contact"]}
+                                      />
+                                    </EditOfficerContactsContext.Provider>
+                                  ))(),
+                                ]);
+                              }}
+                              className="flex items-center space-x-1 bg-green-700 p-1 "
+                            >
+                              <PlusIcon className="w-4 h-4 text-white" />
+                              <p className="text-medium font-semibold text-white">
+                                Add
+                              </p>
+                            </button>
+                          </div>
+                        </div>
+                        {/* Save btn */}
+  
+                        <div className=" w-full flex justify-end h-auto mr-3">
+                          <button
+                            type="submit"
+                            className="p-2 text-white bg-green-700  font-semibold"
+                          >
+                            save & finish
+                          </button>
+                        </div>
+                      </Form>
+                    </Formik>
+                  </Tabs.Panel>
+                  {/* Regulation */}
+                  <Tabs.Panel
+                    value="regulation"
+                    className="grow-1 py-1 px-4 tab-panel"
+                  >
+                    <>
+                      <h4 className="text-lg uppercase mt-2 pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                        Facility Regulation
+                      </h4>
+                      <form
+                        ref={facilityRegulationFormRef}
+                        name="facility_regulation_form"
+                        className="flex flex-col w-full items-start justify-start gap-3"
+                        onSubmit={(ev) =>
+                          handleRegulationSubmitUpdates(
+                            ev,
+                            [
+                              setFormId,
+                              facilityId,
+                              facilityOfficialName,
+                              facilityRegulationFormRef,
+                            ],
+                            licenseFile
+                          )
+                        }
+                      >
+                        {/* Regulatory Body */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="regulatory_body"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Regulatory Body
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>{" "}
+                          </label>
+                          {ownerTypeName === "Ministry of Health" ? (
+                            // Filtered Regulaotry Body Options
+  
+                            <Select
+                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                              ref={regulatoryFilteredBodyRef}
+                              options={filteredRegBodyOptions || []}
+                              required
+                              onChange={(ev) => {
+                                setIsPendingRegistration(false);
+                                if (ev.label === "Pending Registration")
+                                  setIsPendingRegistration(true);
+                              }}
+                              placeholder="Select Regulatory Body"
+                              name="regulatory_body"
+                             />
+                          ) : (
+                            <Select
+                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                              ref={regulatoryBodyRef}
+                              options={regBodyOptions || []}
+                              required
+                              onChange={(ev) => {
+                                setIsPendingRegistration(false);
+                                if (ev.label === "Pending Registration")
+                                  setIsPendingRegistration(true);
+                              }}
+                              placeholder="Select Regulatory Body"
+                              name="regulatory_body"
+                             
+                            />
+                          )}
+                        </div>
+  
+                        {/* Regulation Status */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="regulation_status"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Regulation Status
+                          </label>
+  
+                          {ownerTypeName === "Ministry of Health" ? (
+                            //    Filtered Regulatory State Options
+  
+                            <Select
+                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                              ref={regulatoryStateRef}
+                              options={filteredRegulationStateOptions || []}
+                              required
+                              onChange={(ev) => {
+                                setIsPendingLicense(false);
+                                if (ev.label === "Pending License")
+                                  setIsPendingLicense(true);
+                              }}
+                              placeholder="Select Regulation Status"
+                              name="regulation_status"
+                              
+                            />
+                          ) : (
+                            <Select
+                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              styles={{
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
+                              ref={regulatoryStateRef}
+                              options={regulationStateOptions || []}
+                              required
+                              onChange={(ev) => {
+                                setIsPendingLicense(false);
+                                if (ev.label === "Pending License")
+                                  setIsPendingLicense(true);
+                              }}
+                              placeholder="Select Regulation Status"
+                              name="regulation_status"
+                             
+                            />
+                          )}
+                        </div>
+                        {/* License Number */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="license_number"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            License Number{isPendingLicense ? " *" : ""}
+                          </label>
+                          {isPendingLicense ? (
+                            <input
+                              required
+                              type="text"
+                              id="license_number"
+                              name="license_number"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          ) : (
+                            <input
+                              type="text"
+                              id="license_number"
+                              name="license_number"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          )}
+                        </div>
+  
+                        {/* Licensing Body */}
+                        <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                          <label
+                            htmlFor="regulatory_body"
+                            className="text-gray-600 capitalize text-sm"
+                          >
+                            Licensing Body
+                            <span className="text-medium leading-12 font-semibold">
+                              {" "}
+                              *
+                            </span>{" "}
+                          </label>
                           <Select
                             className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
                             styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                            ref={regulatoryFilteredBodyRef}
-                            options={filteredRegBodyOptions || []}
-                            required
-                            onChange={(ev) => {
-                              setIsPendingRegistration(false);
-                              if (ev.label === "Pending Registration")
-                                setIsPendingRegistration(true);
-                            }}
-                            placeholder="Select Regulatory Body"
-                            name="regulatory_body"
-                           />
-                        ) : (
-                          <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                            styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      backgroundColor: 'transparent',
+                                      outLine: 'none',
+                                      border: 'none',
+                                      outLine: 'none',
+                                      textColor: 'transparent',
+                                      padding: 0,
+                                      height: '4px'
+                                    }),
+  
+                                  }}
                             ref={regulatoryBodyRef}
                             options={regBodyOptions || []}
                             required
@@ -3097,425 +3252,289 @@ const EditFacility = (props) => {
                               if (ev.label === "Pending Registration")
                                 setIsPendingRegistration(true);
                             }}
-                            placeholder="Select Regulatory Body"
+                            placeholder="Select Licensing Body"
                             name="regulatory_body"
-                           
                           />
-                        )}
-                      </div>
-
-                      {/* Regulation Status */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="regulation_status"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Regulation Status
-                        </label>
-
-                        {ownerTypeName === "Ministry of Health" ? (
-                          //    Filtered Regulatory State Options
-
-                          <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                            styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                            ref={regulatoryStateRef}
-                            options={filteredRegulationStateOptions || []}
-                            required
-                            onChange={(ev) => {
-                              setIsPendingLicense(false);
-                              if (ev.label === "Pending License")
-                                setIsPendingLicense(true);
-                            }}
-                            placeholder="Select Regulation Status"
-                            name="regulation_status"
-                            
-                          />
-                        ) : (
-                          <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                            styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                            ref={regulatoryStateRef}
-                            options={regulationStateOptions || []}
-                            required
-                            onChange={(ev) => {
-                              setIsPendingLicense(false);
-                              if (ev.label === "Pending License")
-                                setIsPendingLicense(true);
-                            }}
-                            placeholder="Select Regulation Status"
-                            name="regulation_status"
-                           
-                          />
-                        )}
-                      </div>
-                      {/* License Number */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="license_number"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          License Number{isPendingLicense ? " *" : ""}
-                        </label>
-                        {isPendingLicense ? (
-                          <input
-                            required
-                            type="text"
-                            id="license_number"
-                            name="license_number"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        ) : (
-                          <input
-                            type="text"
-                            id="license_number"
-                            name="license_number"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        )}
-                      </div>
-
-                      {/* Licensing Body */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="regulatory_body"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Licensing Body
-                          <span className="text-medium leading-12 font-semibold">
-                            {" "}
-                            *
-                          </span>{" "}
-                        </label>
-                        <Select
-                          className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
-                          styles={{
-																	control: (baseStyles) => ({
-																		...baseStyles,
-																		backgroundColor: 'transparent',
-																		outLine: 'none',
-																		border: 'none',
-																		outLine: 'none',
-																		textColor: 'transparent',
-																		padding: 0,
-																		height: '4px'
-																	}),
-
-																}}
-                          ref={regulatoryBodyRef}
-                          options={regBodyOptions || []}
-                          required
-                          onChange={(ev) => {
-                            setIsPendingRegistration(false);
-                            if (ev.label === "Pending Registration")
-                              setIsPendingRegistration(true);
-                          }}
-                          placeholder="Select Licensing Body"
-                          name="regulatory_body"
-                        />
-                      </div>
-
-                      {/* Registration Number */}
-                      <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                        <label
-                          htmlFor="registration_number"
-                          className="text-gray-600 capitalize text-sm"
-                        >
-                          Registration Number
-                          {isPendingRegistration ? " *" : ""}
-                        </label>
-                        {isPendingRegistration ? (
-                          <input
-                            required
-                            type="text"
-                            name="registration_number"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        ) : (
-                          <input
-                            type="text"
-                            name="registration_number"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
-                        )}
-                      </div>
-
-                      {/* check file upload */}
-                      <div className=" w-full flex flex-col items-start justify-start p-3  h-auto">
+                        </div>
+  
+                        {/* Registration Number */}
                         <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                           <label
-                            htmlFor="license_document"
+                            htmlFor="registration_number"
                             className="text-gray-600 capitalize text-sm"
                           >
-                            Upload license document
+                            Registration Number
+                            {isPendingRegistration ? " *" : ""}
                           </label>
-                          <input
-                            onChange={(e) => setLicenseFile(e.target.files[0])}
-                            type="file"
-                            name="license_document"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
-                          />
+                          {isPendingRegistration ? (
+                            <input
+                              required
+                              type="text"
+                              name="registration_number"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          ) : (
+                            <input
+                              type="text"
+                              name="registration_number"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          )}
                         </div>
-                      </div>
-
-                      {/* Facility Departments Regulation  */}
-                      <h5 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
-                        Facility Departments Regulation
-                      </h5>
-                      <div
-                        className="grid grid-cols-4 place-content-start gap-3 w-full border border-green-600  p-3"
-                        ref={facilityRegulatoryBodyRef}
-                      >
-                        {/* Contact Headers */}
-                        <h3 className="text-medium font-semibold text-green-900">
-                          Name
-                        </h3>
-                        <h3 className="text-medium font-semibold text-green-900">
-                          Regulatory Body
-                        </h3>
-                        <h3 className="text-medium font-semibold text-green-900">
-                          License Number
-                        </h3>
-                        <h3 className="text-medium font-semibold text-green-900">
-                          Reg. Number
-                        </h3>
-
-                        <hr className="col-span-4" />
-
-                        {/* add other fields */}
-                        <div className="flex flex-col items-start justify-start gap-y-4">
-                          {facilityDepts?.map((facilityDept, i) => (
-                            <div
-                              className="w-full flex flex-grow gap-3 mt-3"
-                              key={facilityDept.index}
+  
+                        {/* check file upload */}
+                        <div className=" w-full flex flex-col items-start justify-start p-3  h-auto">
+                          <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                            <label
+                              htmlFor="license_document"
+                              className="text-gray-600 capitalize text-sm"
                             >
-                              <div className="flex flex-grow gap-3 justify-between items-center w-full">
-                                <FacilityDeptRegulationFactory
-                                  key={facilityDept.index}
-                                  index={i}
-                                  isRegBodyChange={null}
-                                  setIsRegBodyChange={() => null}
-                                  setFacilityDepts={() => null}
-                                  regNo={facilityDept.registration_number}
-                                  licenseNo={facilityDept.license_number}
-                                  facilityDeptRegBody={
-                                    facilityDept.regulating_body_name
-                                  }
-                                  facilityDeptValue={[
-                                    {
-                                      value: facilityDept.id,
-                                      label: facilityDept.unit_name,
-                                    },
-                                  ]}
-                                  facilityDeptOptions={facilityDeptOptions}
-                                  {...facilityDept}
-                                />
-
-                                <button
-                                  id={`delete-btn-${i}`}
-                                  key={facilityDept.index}
-                                  onClick={(ev) => {
-                                    ev.preventDefault();
-                                    handleDeleteField(i);
-                                  }}
-                                >
-                                  <XCircleIcon className="w-7 h-7 text-red-400" />
-                                </button>
-                              </div>
-                            </div>
-                          ))}
+                              Upload license document
+                            </label>
+                            <input
+                              onChange={(e) => setLicenseFile(e.target.files[0])}
+                              type="file"
+                              name="license_document"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            />
+                          </div>
                         </div>
-                      </div>
-
-                      {/* Add btn */}
-                      <div className="w-full flex justify-end items-center mt-2">
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setFacilityDepts((s) => {
-                              return [
-                                ...s,
-                                {
-                                  index: facilityDepts.some(
-                                    (o) => o.index === s.length
-                                  )
-                                    ? s.length + 1
-                                    : s.length,
-                                  isRegBodyChange: isRegBodyChange,
-                                  setIsRegBodyChange: setIsRegBodyChange,
-                                  setFacilityDepts: setFacilityDepts,
-                                  facilityDeptRegBody: null,
-                                  facilityDeptValue: null,
-                                  regNo: null,
-                                  licenseNo: null,
-                                  facilityDeptOptions: facilityDeptOptions,
-                                },
-                              ];
-                            });
-                          }}
-                          className="flex items-center space-x-1 bg-green-700 p-1 "
+  
+                        {/* Facility Departments Regulation  */}
+                        <h5 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                          Facility Departments Regulation
+                        </h5>
+                        <div
+                          className="grid grid-cols-4 place-content-start gap-3 w-full border border-green-600  p-3"
+                          ref={facilityRegulatoryBodyRef}
                         >
-                          <PlusIcon className="w-4 h-4 text-white" />
-                          <p className="text-medium font-semibold text-white">
-                            Add
-                          </p>
-                        </button>
+                          {/* Contact Headers */}
+                          <h3 className="text-medium font-semibold text-green-900">
+                            Name
+                          </h3>
+                          <h3 className="text-medium font-semibold text-green-900">
+                            Regulatory Body
+                          </h3>
+                          <h3 className="text-medium font-semibold text-green-900">
+                            License Number
+                          </h3>
+                          <h3 className="text-medium font-semibold text-green-900">
+                            Reg. Number
+                          </h3>
+  
+                          <hr className="col-span-4" />
+  
+                          {/* add other fields */}
+                          <div className="flex flex-col items-start justify-start gap-y-4">
+                            {facilityDepts?.map((facilityDept, i) => (
+                              <div
+                                className="w-full flex flex-grow gap-3 mt-3"
+                                key={facilityDept.index}
+                              >
+                                <div className="flex flex-grow gap-3 justify-between items-center w-full">
+                                  <FacilityDeptRegulationFactory
+                                    key={facilityDept.index}
+                                    index={i}
+                                    isRegBodyChange={null}
+                                    setIsRegBodyChange={() => null}
+                                    setFacilityDepts={() => null}
+                                    regNo={facilityDept.registration_number}
+                                    licenseNo={facilityDept.license_number}
+                                    facilityDeptRegBody={
+                                      facilityDept.regulating_body_name
+                                    }
+                                    facilityDeptValue={[
+                                      {
+                                        value: facilityDept.id,
+                                        label: facilityDept.unit_name,
+                                      },
+                                    ]}
+                                    facilityDeptOptions={facilityDeptOptions}
+                                    {...facilityDept}
+                                  />
+  
+                                  <button
+                                    id={`delete-btn-${i}`}
+                                    key={facilityDept.index}
+                                    onClick={(ev) => {
+                                      ev.preventDefault();
+                                      handleDeleteField(i);
+                                    }}
+                                  >
+                                    <XCircleIcon className="w-7 h-7 text-red-400" />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+  
+                        {/* Add btn */}
+                        <div className="w-full flex justify-end items-center mt-2">
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setFacilityDepts((s) => {
+                                return [
+                                  ...s,
+                                  {
+                                    index: facilityDepts.some(
+                                      (o) => o.index === s.length
+                                    )
+                                      ? s.length + 1
+                                      : s.length,
+                                    isRegBodyChange: isRegBodyChange,
+                                    setIsRegBodyChange: setIsRegBodyChange,
+                                    setFacilityDepts: setFacilityDepts,
+                                    facilityDeptRegBody: null,
+                                    facilityDeptValue: null,
+                                    regNo: null,
+                                    licenseNo: null,
+                                    facilityDeptOptions: facilityDeptOptions,
+                                  },
+                                ];
+                              });
+                            }}
+                            className="flex items-center space-x-1 bg-green-700 p-1 "
+                          >
+                            <PlusIcon className="w-4 h-4 text-white" />
+                            <p className="text-medium font-semibold text-white">
+                              Add
+                            </p>
+                          </button>
+                        </div>
+  
+                        {/* Prev / Next */}
+                        <div className="flex justify-end   items-center w-full">
+                          {/* <button onClick={handleRegulationPrevious} className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'>
+                                    <ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
+                                    <span className='text-medium font-semibold text-black '>Facility Contacts</span>
+                                  </button> */}
+                          <button
+                            type="submit"
+                            className="p-2 text-white bg-green-700 font-semibold"
+                          >
+                            save & finish
+                          </button>
+                        </div>
+                      </form>
+                    </>
+                  </Tabs.Panel>
+                  {/* Services */}
+                  <Tabs.Panel
+                    value="services"
+                    className="grow-1 py-1 px-4 tab-panel"
+                  >
+                    <div className="flex flex-col w-full items-start justify-start gap-3 mt-6">
+                      {/* Display Facility Upgrade Modal */}
+  
+                      {isSaveAndFinishService && (
+                        <FacilityUpgradeModal subject="Service" facilityId={id} />
+                      )}
+  
+                      {/* Edit list item Container */}
+                      <div className="flex items-center w-full h-auto min-h-[300px]">
+                        <EditListItem
+                          initialSelectedItems={serviceSelected}
+                          itemsCategory={serviceOptions}
+                          itemsCategoryName={"Services"}
+                          setUpdatedItem={setServiceUpdates}
+                          item={{ name, official_name }}
+                          itemId={id}
+                          setItems={() => null}
+                          removeItemHandler={handleServiceDelete}
+                          handleItemsUpdate={handleServiceUpdates}
+                          setIsSavedChanges={setIsSavedChanges}
+                          setItemsUpdateData={setFacilityUpdateData}
+                          setNextItemCategory={() => null}
+                          nextItemCategory={null}
+                          previousItemCategory={null}
+                          setIsSaveAndFinish={setIsSaveAndFinishService}
+                          handleItemPrevious={null}
+                        />
                       </div>
-
-                      {/* Prev / Next */}
-                      <div className="flex justify-end   items-center w-full">
-                        {/* <button onClick={handleRegulationPrevious} className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'>
-																	<ChevronDoubleLeftIcon className='w-4 h-4 text-black'/>
-																	<span className='text-medium font-semibold text-black '>Facility Contacts</span>
-																</button> */}
-                        <button
-                          type="submit"
-                          className="p-2 text-white bg-green-700 font-semibold"
-                        >
-                          save & finish
-                        </button>
+                    </div>
+  
+                    {/* </form> */}
+                  </Tabs.Panel>
+                  {/* Infrastructure */}
+                  <Tabs.Panel
+                    value="infrastructure"
+                    className="grow-1 py-1 px-4 tab-panel"
+                  >
+                    <div className="flex flex-col w-full items-start justify-start gap-3 mt-6">
+                      {/* Display Facility Upgrade Modal */}
+  
+                      {isSaveAndFinishInfra && (
+                        <FacilityUpgradeModal
+                          subject="infrastructure"
+                          facilityId={id}
+                        />
+                      )}
+  
+                      {/* Edit List With Count Container*/}
+                      <div className="flex items-center w-full h-auto min-h-[300px]">
+                        {/* Edit List With Count*/}
+                        <EditListWithCount
+                          initialSelectedItems={infrastructureSelected}
+                          itemsCategory={infrastructureOption}
+                          otherItemsCategory={null}
+                          itemsCategoryName={"infrastructure"}
+                          itemId={id}
+                          item={{ name, official_name }}
+                          handleItemsSubmit={() => null}
+                          handleItemsUpdate={handleInfrastructureUpdates}
+                          removeItemHandler={handleInfrastructureDelete}
+                          setIsSavedChanges={setIsSavedChanges}
+                          setItemsUpdateData={setFacilityUpdateData}
+                          handleItemPrevious={() => null}
+                          setNextItemCategory={() => null}
+                          nextItemCategory={null}
+                          previousItemCategory={null}
+                          setIsSaveAndFinish={setIsSaveAndFinishInfra}
+                        />
                       </div>
-                    </form>
-                  </>
-                </Tabs.Panel>
-                {/* Services */}
-                <Tabs.Panel
-                  value="services"
-                  className="grow-1 py-1 px-4 tab-panel"
-                >
-                  <div className="flex flex-col w-full items-start justify-start gap-3 mt-6">
-                    {/* Display Facility Upgrade Modal */}
-
-                    {isSaveAndFinishService && (
-                      <FacilityUpgradeModal subject="Service" facilityId={id} />
-                    )}
-
-                    {/* Edit list item Container */}
-                    <div className="flex items-center w-full h-auto min-h-[300px]">
-                      <EditListItem
-                        initialSelectedItems={serviceSelected}
-                        itemsCategory={serviceOptions}
-                        itemsCategoryName={"Services"}
-                        setUpdatedItem={setServiceUpdates}
-                        item={{ name, official_name }}
-                        itemId={id}
-                        setItems={() => null}
-                        removeItemHandler={handleServiceDelete}
-                        handleItemsUpdate={handleServiceUpdates}
-                        setIsSavedChanges={setIsSavedChanges}
-                        setItemsUpdateData={setFacilityUpdateData}
-                        setNextItemCategory={() => null}
-                        nextItemCategory={null}
-                        previousItemCategory={null}
-                        setIsSaveAndFinish={setIsSaveAndFinishService}
-                        handleItemPrevious={null}
-                      />
                     </div>
-                  </div>
-
-                  {/* </form> */}
-                </Tabs.Panel>
-                {/* Infrastructure */}
-                <Tabs.Panel
-                  value="infrastructure"
-                  className="grow-1 py-1 px-4 tab-panel"
-                >
-                  <div className="flex flex-col w-full items-start justify-start gap-3 mt-6">
-                    {/* Display Facility Upgrade Modal */}
-
-                    {isSaveAndFinishInfra && (
-                      <FacilityUpgradeModal
-                        subject="infrastructure"
-                        facilityId={id}
-                      />
-                    )}
-
-                    {/* Edit List With Count Container*/}
-                    <div className="flex items-center w-full h-auto min-h-[300px]">
-                      {/* Edit List With Count*/}
-                      <EditListWithCount
-                        initialSelectedItems={infrastructureSelected}
-                        itemsCategory={infrastructureOption}
-                        otherItemsCategory={null}
-                        itemsCategoryName={"infrastructure"}
-                        itemId={id}
-                        item={{ name, official_name }}
-                        handleItemsSubmit={() => null}
-                        handleItemsUpdate={handleInfrastructureUpdates}
-                        removeItemHandler={handleInfrastructureDelete}
-                        setIsSavedChanges={setIsSavedChanges}
-                        setItemsUpdateData={setFacilityUpdateData}
-                        handleItemPrevious={() => null}
-                        setNextItemCategory={() => null}
-                        nextItemCategory={null}
-                        previousItemCategory={null}
-                        setIsSaveAndFinish={setIsSaveAndFinishInfra}
-                      />
+                  </Tabs.Panel>
+  
+                  {/* Human resources  */}
+                  <Tabs.Panel
+                    value="human_resource"
+                    className="grow-1 py-1 px-4 tab-panel"
+                  >
+                    <div className="flex flex-col w-full items-start justify-start gap-3 mt-6">
+                      {/* Edit List With Count Container*/}
+                      <div className="flex items-center w-full h-auto min-h-[300px]">
+                        {/* Edit List With Count*/}
+                        <EditListWithCount
+                          initialSelectedItems={hrSelected}
+                          itemsCategory={null}
+                          otherItemsCategory={hrOptions}
+                          itemsCategoryName={"Human resource"}
+                          itemId={id}
+                          item={{ name, official_name }}
+                          handleItemsSubmit={() => null}
+                          handleItemsUpdate={handleHrUpdates}
+                          removeItemHandler={handleHrDelete}
+                          setIsSavedChanges={setIsSavedChanges}
+                          setItemsUpdateData={setFacilityUpdateData}
+                          handleItemPrevious={() => null}
+                          setNextItemCategory={() => null}
+                          nextItemCategory={null}
+                          previousItemCategory={null}
+                          setIsSaveAndFinish={() => null}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </Tabs.Panel>
-
-                {/* Human ReportsSideMenu  */}
-                <Tabs.Panel
-                  value="human_resource"
-                  className="grow-1 py-1 px-4 tab-panel"
-                >
-                  <div className="flex flex-col w-full items-start justify-start gap-3 mt-6">
-                    {/* Edit List With Count Container*/}
-                    <div className="flex items-center w-full h-auto min-h-[300px]">
-                      {/* Edit List With Count*/}
-                      <EditListWithCount
-                        initialSelectedItems={hrSelected}
-                        itemsCategory={null}
-                        otherItemsCategory={hrOptions}
-                        itemsCategoryName={"Human resource"}
-                        itemId={id}
-                        item={{ name, official_name }}
-                        handleItemsSubmit={() => null}
-                        handleItemsUpdate={handleHrUpdates}
-                        removeItemHandler={handleHrDelete}
-                        setIsSavedChanges={setIsSavedChanges}
-                        setItemsUpdateData={setFacilityUpdateData}
-                        handleItemPrevious={() => null}
-                        setNextItemCategory={() => null}
-                        nextItemCategory={null}
-                        previousItemCategory={null}
-                        setIsSaveAndFinish={() => null}
-                      />
-                    </div>
-                  </div>
-                </Tabs.Panel>
-              </Tabs.Root>
-            )}
+                  </Tabs.Panel>
+                </Tabs.Root>
+              )}
+            </div>
           </div>
-        </div>
-      </MainLayout>
-    </>
-  );
+        </MainLayout>
+      </>
+    )
+  }
 };
 
 EditFacility.getInitialProps = async (ctx) => {
