@@ -1,8 +1,9 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { checkToken } from '../../controllers/auth/auth';
 import MainLayout from '../../components/MainLayout';
+import * as Tabs from "@radix-ui/react-tabs";
 import { darken, styled } from '@mui/material/styles';
 
 import {
@@ -83,7 +84,7 @@ const propsToGridData = ({ data: { results } }) => {
             ward__name: ward,
             number_of_hdu_beds: hdu_beds,
             number_of_icu_beds: icu_beds,
-            number_of_maternity_beds:maternity_beds,
+            number_of_maternity_beds: maternity_beds,
             number_of_inpatient_beds: inpatient_beds,
             number_of_emergency_casualty_beds: emergency_casualty_beds,
             cots,
@@ -100,7 +101,7 @@ const propsToGridData = ({ data: { results } }) => {
         inpatient_beds,
         emergency_casualty_beds,
         cots,
-        id:index
+        id: index
 
     }))
 
@@ -114,7 +115,13 @@ const propsToGridData = ({ data: { results } }) => {
 
 function Reports(props) {
 
-    console.log({props})
+    // console.log({ props })
+
+    const [reportTitle, setReportTitle] = useState('Beds and Cots');
+
+    useEffect(() => {
+       
+    }, [reportTitle])
 
     return (
         <div className="w-full">
@@ -134,8 +141,12 @@ function Reports(props) {
                                 Home
                             </Link>
                             {"/"}
-                            <span className="text-gray-700" href="/facilities">
+                            <Link className="text-green-700" href="/reports">
                                 Reports
+                            </Link>
+                            {"/"}
+                            <span className="text-gray-700" href="/facilities">
+                               {reportTitle} Report
                             </span>
 
 
@@ -149,7 +160,7 @@ function Reports(props) {
                         >
                             <div className="col-span-6 md:col-span-3">
                                 <h1 className="text-4xl tracking-tight font-bold leading-tight">
-                                    Reports
+                                   {reportTitle} Report
                                 </h1>
                                 <div className="flex flex-col gap-1 w-full items-start justify-start">
 
@@ -159,34 +170,186 @@ function Reports(props) {
                         </div>
                     </div>
 
+                    {/* Tabs */}
+                    <div className='w-full col-span-1 md:col-span-7 flex border border-green-600 px-0 mx-0 h-700 flex-1'>
+                        <Tabs.Root
+                            orientation="horizontal"
+                            className="w-full flex flex-col tab-root"
+                            defaultValue="beds_cots"
+                        >
+                            <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-green-600">
+                                <Tabs.Tab
+                                    id={1}
+                                    value="beds_cots"
+                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                    onClick={() => setReportTitle('Beds and Cots')}
+                                >
+                                    Beds and Cots
+                                </Tabs.Tab>
+                                <Tabs.Tab
+                                    id={2}
+                                    value="keph_level"
+                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                    onClick={() => setReportTitle('Keph Level')}
+                                >
+                                    Keph Level
+                                </Tabs.Tab>
+                                <Tabs.Tab
+                                    id={3}
+                                    value="facility_ownership"
+                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                    onClick={() => setReportTitle('Facility Ownership')}
+                                >
+                                    Facility Ownership
+                                </Tabs.Tab>
+                                <Tabs.Tab
+                                    id={4}
+                                    value="facility_type"
+                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                    onClick={() => setReportTitle('Facility Type')}
+                                >
+                                    Facility Type
+                                </Tabs.Tab>
 
-                    {/* Data grid */}
+                                <Tabs.Tab
+                                    id={5}
+                                    value="regulatory_body"
+                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                    onClick={() => setReportTitle('Regulatory Body')}
+                                >
+                                    Regulatory Body
+                                </Tabs.Tab>
+                                <Tabs.Tab
+                                    id={6}
+                                    value="services"
+                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                    onClick={() => setReportTitle('Services')}
+                               >
+                                    Services
+                                </Tabs.Tab>
+                                <Tabs.Tab
+                                    id={7}
+                                    value="infrastructure"
+                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                    onClick={() => setReportTitle('Infrastructure')}
+                                >
+                                    Infrastructure
+                                </Tabs.Tab>
+                                <Tabs.Tab
+                                    id={8}
+                                    value="human_resources"
+                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                    onClick={() => setReportTitle('Human Resources')}
 
-                    <div style={{ height: 700, width: '100%' }} className='col-span-7 border border-green-600'>
-                        <StyledDataGrid
-                            columns={propsToGridData(props).columns}
-                            rows={propsToGridData(props)?.rows}
-                            getRowClassName={() => `super-app-theme--Row`}
-                            rowSpacingType="border"
-                            showColumnRightBorder
-                            showCellRightBorder
-                            rowSelection={false}
-                            getCellClassName={() => 'super-app-theme--Cell'}
-                            slots={{
-                                toolbar: () => (
-                                    <GridToolbar
-                                        sx={{
-                                            flex: 1,
-                                            display: 'flex',
-                                            marginX: 'auto',
-                                            gap:5,
-                                            padding: '0.45rem'
+                                >
+                                    Human resources
+                                </Tabs.Tab>
+                                <Tabs.Tab
+                                    id={9}
+                                    value="Geo coordinates"
+                                    className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                                    onClick={() => setReportTitle('Geo Coordinates')}
+
+                               >
+                                    Geo Codes
+                                </Tabs.Tab>
+                                {/* <Tabs.Tab
+                                id={4}
+                                value="regulatory_body"
+                                className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
+                            >
+                                Facility Incharge Details
+                            </Tabs.Tab> */}
+
+                            </Tabs.List>
+                            <Tabs.Panel
+                                value="beds_cots"
+                                className="grow-1 tab-panel"
+                            >
+                                {/* Data grid */}
+
+                                <div style={{ height: 700, width: '100%' }} className='col-span-7'>
+                                    <StyledDataGrid
+                                        columns={propsToGridData(props).columns}
+                                        rows={propsToGridData(props)?.rows}
+                                        getRowClassName={() => `super-app-theme--Row`}
+                                        rowSpacingType="border"
+                                        showColumnRightBorder
+                                        showCellRightBorder
+                                        rowSelection={false}
+                                        getCellClassName={() => 'super-app-theme--Cell'}
+                                        slots={{
+                                            toolbar: () => (
+                                                <GridToolbar
+                                                    sx={{
+                                                        flex: 1,
+                                                        display: 'flex',
+                                                        marginX: 'auto',
+                                                        gap: 5,
+                                                        padding: '0.45rem'
+                                                    }}
+                                                />
+                                            ),
                                         }}
                                     />
-                                ),
-                            }}
-                        />
+                                </div>
+
+
+                            </Tabs.Panel>
+                            <Tabs.Panel
+                                value="keph_level"
+                                className="grow-1 py-1 px-4 tab-panel"
+                            >
+
+                            </Tabs.Panel>
+                            <Tabs.Panel
+                                value="facility_ownership"
+                                className="grow-1 py-1 px-4 tab-panel"
+                            >
+
+
+                            </Tabs.Panel>
+                            <Tabs.Panel
+                                value="facility_type"
+                                className="grow-1 py-1 px-4 tab-panel"
+                            >
+
+                            </Tabs.Panel>
+                            <Tabs.Panel
+                                value="regulatory_body"
+                                className="grow-1 py-1 px-4 tab-panel"
+                            >
+                            </Tabs.Panel>
+                            <Tabs.Panel
+                                value="services"
+                                className="grow-1 py-1 px-4 tab-panel"
+                            >
+
+                            </Tabs.Panel>
+                            <Tabs.Panel
+                                value="infrastructure"
+                                className="grow-1 py-1 px-4 tab-panel"
+                            >
+
+                            </Tabs.Panel>
+                            <Tabs.Panel
+                                value="human_resources"
+                                className="grow-1 py-1 px-4 tab-panel"
+                            >
+
+                            </Tabs.Panel>
+                            <Tabs.Panel
+                                value="geocodes"
+                                className="grow-1 py-1 px-4 tab-panel"
+                            >
+
+                            </Tabs.Panel>
+
+
+                        </Tabs.Root>
                     </div>
+
+
 
                 </div>
             </MainLayout>

@@ -48,7 +48,7 @@ function FacilityDetailsTabs({ facility }) {
           </Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel
-          value="overview"border
+          value="overview"
           className="grow-1 py-1 px-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
