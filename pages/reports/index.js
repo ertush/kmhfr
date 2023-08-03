@@ -7,28 +7,114 @@ import { darken, styled } from '@mui/material/styles';
 
 import {
     DataGrid,
+    GridToolbar
 } from '@mui/x-data-grid';
 
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     '& .super-app-theme--Row': {
         borderTop: `1px solid ${darken('rgba(5, 150, 105, 1)', 1)}`,
-        },
+        FontFace: 'IBM Plex Sans'
+    },
     '& .super-app-theme--Cell': {
         borderRight: `1px solid ${darken('rgba(5, 150, 105, 0.4)', 0.2)}`,
-        }
+        FontFace: 'IBM Plex Sans'
+
+    }
 }))
 
 
+
+const propsToGridData = ({ data: { results } }) => {
+
+    const columns = [
+        {
+            headerName: 'County',
+            field: 'county',
+            flex: 1
+        },
+        {
+            headerName: 'Sub County',
+            field: 'sub_county',
+            flex: 1
+        },
+        {
+            headerName: 'Ward',
+            field: 'ward',
+            flex: 1
+        },
+        {
+            headerName: 'HDU Beds',
+            field: 'hdu_beds',
+            flex: 1
+        },
+        {
+            headerName: 'ICU Beds',
+            field: 'icu_beds',
+            flex: 1
+        },
+        {
+            headerName: 'Maternity Beds',
+            field: 'maternity_beds',
+            flex: 1
+        },
+        {
+            headerName: 'Inpatient Beds',
+            field: 'inpatient_beds',
+            flex: 1
+        },
+        {
+            headerName: 'Emergency Casualty Beds',
+            field: 'emergency_casualty_beds',
+            flex: 1
+        },
+        {
+            headerName: 'Cots',
+            field: 'cots',
+            flex: 1
+        },
+
+    ];
+
+    const rows = results.map((
+        {
+            ward__sub_county__county__name: county,
+            ward__sub_county__name: sub_county,
+            ward__name: ward,
+            number_of_hdu_beds: hdu_beds,
+            number_of_icu_beds: icu_beds,
+            number_of_maternity_beds:maternity_beds,
+            number_of_inpatient_beds: inpatient_beds,
+            number_of_emergency_casualty_beds: emergency_casualty_beds,
+            cots,
+
+        },
+        index
+    ) => ({
+        county,
+        sub_county,
+        ward,
+        hdu_beds,
+        icu_beds,
+        maternity_beds,
+        inpatient_beds,
+        emergency_casualty_beds,
+        cots,
+        id:index
+
+    }))
+
+
+
+    return { rows, columns }
+
+
+
+}
+
 function Reports(props) {
 
-
-    const VISIBLE_FIELDS = ['name', 'rating', 'country', 'dateCreated', 'isAdmin'];
-
-    // const defaultColumnTypes = getGridDefaultColumnTypes();
-
-    console.log({ props })
-
+    console.log({props})
 
     return (
         <div className="w-full">
@@ -76,89 +162,29 @@ function Reports(props) {
 
                     {/* Data grid */}
 
-                    <div style={{ height: 400, width:'100%'}} className='col-span-7 border border-green-600'>
-                    <StyledDataGrid
-                     
-                            
-                        columns={[{
-                            headerName: 'Class',
-                            field: 'class',
-                            flex:1
-                        },
-                        {
-                            headerName: 'Model',
-                            field: 'model',
-                            flex:1
-                        },
-                        {
-                            headerName: 'Id',
-                            field: 'id',
-                            flex:1
-                        },
-                        {
-                            headerName: 'Name',
-                            field: 'name',
-                            flex:1
-                        }
-                        ]}
-
-                        rows={[
-                            {
-                                class:'A',
-                                model:'B21',
-                                id:'83928980',
-                                name:'Class A',
-                                status:'Open',
-                                
-
-                            },
-                            {
-                                class:'B',
-                                model:'B21',
-                                id:'83921180',
-                                name:'Class B'
-
-                            },
-                            {
-                                class:'C',
-                                model:'F21',
-                                id:'23424',
-                                name:'Class C'
-
-                            },
-                            {
-                                class:'D',
-                                model:'D21',
-                                id:'242424',
-                                name:'Class D'
-
-                            },
-                            {
-                                class:'E',
-                                model:'A21',
-                                id:'239043',
-                                name:'Class E'
-
-                            },
-
-                        ]}
-
-                        slotProps={{
-                            toolbar: {
-                              showQuickFilter: true,
-                              quickFilterProps: { debounceMs: 500 },
-                            },
-                          }}
-
-                        getRowClassName={() => `super-app-theme--Row`}
-                        rowSpacingType='border'
-                        showColumnRightBorder
-                        showCellRightBorder
-                        getCellClassName={() => 'super-app-theme--Cell'}
-                        showQuickFilter
-                        filterMode='server'
-                    
-                        
+                    <div style={{ height: 700, width: '100%' }} className='col-span-7 border border-green-600'>
+                        <StyledDataGrid
+                            columns={propsToGridData(props).columns}
+                            rows={propsToGridData(props)?.rows}
+                            getRowClassName={() => `super-app-theme--Row`}
+                            rowSpacingType="border"
+                            showColumnRightBorder
+                            showCellRightBorder
+                            rowSelection={false}
+                            getCellClassName={() => 'super-app-theme--Cell'}
+                            slots={{
+                                toolbar: () => (
+                                    <GridToolbar
+                                        sx={{
+                                            flex: 1,
+                                            display: 'flex',
+                                            marginX: 'auto',
+                                            gap:5,
+                                            padding: '0.45rem'
+                                        }}
+                                    />
+                                ),
+                            }}
                         />
                     </div>
 
