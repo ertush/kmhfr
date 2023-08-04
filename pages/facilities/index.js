@@ -72,7 +72,13 @@ const Home = (props) => {
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
     const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '') 
     const [allFctsSelected, setAllFctsSelected] = useState(true);
+    const [isClient, setIsClient] = useState(false)
+ 
 
+
+	useEffect(() => {
+	  setIsClient(true)
+	}, [])
 
 
     useEffect(() => {
@@ -103,9 +109,7 @@ const Home = (props) => {
         
     }
 
-    // console.log({userCtx})
-
-  
+    if(isClient){
     return (
         <>
             <Head>
@@ -602,6 +606,9 @@ const Home = (props) => {
             </MainLayout >
         </>
     )
+    } else {
+        return null
+    }
 }
 
 Home.getInitialProps = async (ctx) => {
