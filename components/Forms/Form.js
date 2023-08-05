@@ -15,6 +15,7 @@ import { HumanresourcesForm } from './HumanResourceForm';
 import { RegulationForm } from './RegulationForm';
 import { ServicesForm } from './ServicesForm';
 import { GeolocationForm } from './GeolocationForm';
+import { useLocalStorageState } from './hooks/formHook';
 
 
 export const FormContext  = createContext(() => null)
@@ -31,7 +32,12 @@ export function Form () {
 
 
 
-  const [formId, setFormId] = useState(0); //1
+//   const [formId, setFormId] = useState(0); //
+
+const [formId, setFormId] = useLocalStorageState({
+    key: 'formId',
+    value: 0
+})
  
 
   const steps = [
@@ -64,8 +70,9 @@ export function Form () {
 														label === "Basic Details" ?
 														<span className='cursor-pointer hover:text-indigo-600' onClick={
 															() => {
-																setFormId(0)
-																window.sessionStorage.setItem('formId', 0)
+																setFormId(JSON.stringify(0))
+																// window.sessionStorage.setItem('formId', 0)
+
 															}
 														} >{label}</span>
 														:
@@ -81,41 +88,44 @@ export function Form () {
 
               {/* Stepper Body */}
               <div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-                  <FormContext.Provider value={setFormId}>
+                  <FormContext.Provider value={[formId, setFormId]}>
                       <div
                         className=' w-full flex flex-col items-start justify-start p-4 shadow-md bg-yellow-50'
                         style={{ minHeight: '250px' }}>
-                            { console.log("Rerendering Form.js ...")}
+                            { console.log({formId})}
                            {
-                                formId == 0 && 
-                                  <BasicDeatilsForm />
+                                formId == '0' && 
+                                <BasicDeatilsForm />
+
+
                               }
                               {
-                                  formId == 1 && 
+                                  formId == '1' && 
                                   <GeolocationForm />
+                                 
                               } 
                               {
-                                  formId == 2 &&    
+                                  formId == '2' &&    
                                   <FacilityContactsForm />
                                 
                               } 
                               {
-                                  formId == 3 &&    
+                                  formId == '3' &&    
                                   <RegulationForm />
                                 
                               }
                               {
-                                  formId == 4 &&    
+                                  formId == '4' &&    
                                   <ServicesForm />
                                 
                               }
                                {
-                                  formId == 5 &&    
+                                  formId == '5' &&    
                                   <InfrastructureForm />
                                 
                               }
                                {
-                                  formId == 6 &&    
+                                  formId == '6' &&    
                                   <HumanresourcesForm />
                                 
                               }

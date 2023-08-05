@@ -1,5 +1,5 @@
 
-import { useContext, useRef, useEffect, useState } from 'react';
+import { useContext, useRef, useEffect, useState, useCallback } from 'react';
 import { Field, Form, Formik } from 'formik';
 import { object, string, number, boolean } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
@@ -19,7 +19,7 @@ export function BasicDeatilsForm() {
 
   // Constants
 
-  const formNames = {
+  const formFields = {
     official_name: "",
     name: "",
     facility_type: "",
@@ -63,14 +63,19 @@ export function BasicDeatilsForm() {
 
   // State
 
-  // const [savedValues, setSavedValues] = useState();
+
   const [facilityTypeValue, setFacilityTypeValue] = useState(null);
   const [ownerTypeLabel, setOwnerTypeLabel] = useState(null);
 
   const [initialValues, handleFormUpdate] = useLocalStorageState({
     key: 'basic_details_form',
-    value: formNames
+    value: formFields
   })
+
+  const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+
+  delete formValues['facility_checklist_document'];
+
 
   const [filteredOptions, setFilteredOptions] = useState({
     facilityTypeDetailOptions: [],
@@ -79,7 +84,7 @@ export function BasicDeatilsForm() {
 
 
   // Context
-  const setFormId = useContext(FormContext);
+  const [formId, setFormId] = useContext(FormContext);
   const options = useContext(FormOptionsContext);
 
 
@@ -116,24 +121,6 @@ export function BasicDeatilsForm() {
       label: 'Operational',
     },
   ];
-
-
-  // Effects
-
-  // useEffect(() => {
-
-  //   // console.log({session: window.sessionStorage.getItem('basic_details_form')})
-  //   if (typeof window !== undefined) {
-  //     console.log({basicDetails:  JSON.parse(window.localStorage?.getItem('basic_details_form'))})
-
-  //     // setSavedValues(() => JSON.parse(window.localStorage.getItem('basic_details_form')))
-      
-  //     // console.log({session: window.localStorage.getItem('basic_details_form')})
-  //     // setSavedValues(undefined)
-     
-  //   }
-  // }, [])
-
 
   useEffect(() => {
 
@@ -333,19 +320,21 @@ export function BasicDeatilsForm() {
   const facilityTypeDetailsRef = useRef(null);
 
 
+  // Event Handlers
+
+  const handleSubmit = useCallback((values) => {
+   
+
+      setFormId(`${parseInt(formId) + 1}`);
+
+      console.log({ ...values })
+    
+  }, [])
+
   return (
     <Formik
-      initialValues={initialValues}
-      onSubmit={async (values) => {
-        if (window) {
-          // window.localStorage.setItem('basic_details_form', JSON.stringify({ ...values }))
-          handleFormUpdate(JSON.stringify({ ...values }))
-        }
-
-        setFormId(prev => (prev + 1));
-
-        console.log({ ...values })
-      }}
+      initialValues={formValues}
+      onSubmit={handleSubmit}
       validationSchema={toFormikValidationSchema(formSchema)}
       enableReinitialize
     >
@@ -353,6 +342,16 @@ export function BasicDeatilsForm() {
       {
         (formikState) => {
           const errors = formikState.errors;
+
+          //Effects
+
+          useEffect(() => {
+
+            handleFormUpdate(JSON.stringify(formikState.values))
+
+          }, [handleFormUpdate, formikState.values])
+
+          // Form Validations
 
           // Hours/Days duration form rules
           if (formikState.values.open_whole_day) {
