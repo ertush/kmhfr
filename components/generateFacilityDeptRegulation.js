@@ -50,7 +50,7 @@ const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptValue, 
                     }),
 
                 }}
-                className="flex-none col-start-1 w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none" 
+                className="flex-none col-start-1 w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none" 
                 onChange={
                     e => {
                         if(regBodyRef.current){
@@ -63,14 +63,14 @@ const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptValue, 
                 />
             
             {/* Regulatory Body */}
-            <input ref={regBodyRef} id={`facility-dept-reg-body-${index}`} type="text" readOnly={true}  name={`facility_regulating_body_name`} className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+            <input ref={regBodyRef} id={`facility-dept-reg-body-${index}`} type="text" readOnly={true}  name={`facility_regulating_body_name`} className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
             {/* License No. */}
-            <input ref={facilityDeptLicenseRef}  id={`facility-dept-license_no-${index}`} type="text" name={`facility_license_number`} className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+            <input ref={facilityDeptLicenseRef}  id={`facility-dept-license_no-${index}`} type="text" name={`facility_license_number`} className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none" />
 
 
             {/* Reg No. */}
-            <input ref={facilityDeptRegNoRef}  id={`facility-dept-reg_no-${index}`} type="text" name={`facility_registration_number`} className="flex-none  bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none" />
+            <input ref={facilityDeptRegNoRef}  id={`facility-dept-reg_no-${index}`} type="text" name={`facility_registration_number`} className="flex-none  bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none" />
         
                 
             

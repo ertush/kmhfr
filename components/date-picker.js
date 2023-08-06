@@ -22,7 +22,7 @@ export default function NativePickers({ onSelected }) {
         type="date"
         size='small'
         defaultValue={dateNow}
-        className='border border-green-600'
+        className='border border-blue-600'
         sx={{ width: '100%', marginTop: 3, borderRadius:'0px' }}
         InputLabelProps={{
           shrink: true,

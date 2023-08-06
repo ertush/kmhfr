@@ -16,12 +16,14 @@ import {
 } from "../utils/checkPermissions"
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { UserContext } from "../providers/user";
 
 
 const DelayedLoginButton = () => {
 
 
   const [delayed, setDelayed] = useState(false);
+
 
   useEffect(() => {
    
@@ -40,7 +42,7 @@ const DelayedLoginButton = () => {
     return (
       <a
         href="/auth/login"
-        className="bg-green-700 hover:bg-black focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-2 md:mr-3 whitespace-nowrap py-2 text-base font-semibold"
+        className="bg-blue-700 hover:bg-black focus:bg-blue-700 active:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-2 md:mr-3 whitespace-nowrap py-2 text-base font-semibold"
       >
         Log in
       </a>
@@ -60,17 +62,20 @@ export default function HeaderLayout({
 }) {
 
   const userPermissions = useContext(PermissionContext)
+  const userCtx = useContext(UserContext)
 
 
   const router = useRouter();
   const activeClasses =
-    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4  border-green-600";
+    "text-black hover:text-gray-700 focus:text-gray-700 active:text-gray-700 font-medium border-b-4  border-blue-600";
   const inactiveClasses =
     "text-gray-700 hover:text-black focus:text-black active:text-black";
   const currentPath = router.asPath.split("?", 1)[0];
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchOption, setSearchOption]=useState('');
   const [user, setUser] = useState(null);
+
+  const groupID = userCtx?.groups[0]?.id
 
   let API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -142,8 +147,8 @@ export default function HeaderLayout({
   // console.log(isLoggedIn)
 
   return (
-    <header className="flex flex-wrap items-center justify-start gap-x-4 w-full bg-yellow-50 p-1 max-w-screen-3xl">
-      <title>KMHFR 3</title>
+    <header className="flex flex-wrap items-center justify-start gap-x-4 w-full bg-blue-50 p-1 max-w-screen-3xl">
+      <title>KMHFR </title>
       <nav className="flex flex-wrap px-2 items-center justify-between md:justify-start flex-grow sm:flex-grow-0 gap-x-3 gap-y-2 py-1 md:py-3 md:gap-5">
         <div id="logo" className="mx:px-3 pb-1">
           <a
@@ -152,9 +157,9 @@ export default function HeaderLayout({
           >
             <img src="/MOH.png" alt="KMHFL3" className="h-14" />
             <span className="text-3xl leading-none">KMHFR</span>
-            <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-2">
-              v3
-            </span>
+            {/* <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-2">
+              v1
+            </span> */}
           </a>
         </div>
         <div className="group px-3 py-2">
@@ -180,7 +185,7 @@ export default function HeaderLayout({
               </Link>
             </li>
             {/* Facilities */}
-            {hasPermission(/^facilities.view_facility$/, userPermissions) && isLoggedIn && 
+          
             <li className="flex-wrap font-semibold">
               <Link href="/facilities">
                 <p
@@ -200,9 +205,9 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
-            }
+            
             {/* Community Units */}
-            {hasPermission(/^chul.view_communityhealthunit$/, userPermissions) && isLoggedIn &&
+           
             <li className="flex-wrap font-semibold">
               <Link href="/community-units">
                 <p
@@ -220,10 +225,12 @@ export default function HeaderLayout({
                 </p>
               </Link>
             </li>
-            }
+            
             {/* Users */}
          
-            {hasPermission(/^users.view_mfluser$/, userPermissions) && isLoggedIn &&
+            {( groupID == 7 ||
+               groupID == 2 ||
+               groupID == 3 ) && isLoggedIn &&
               <li className="flex-wrap font-semibold">
                 <Link href="/users">
                   <p
@@ -317,7 +324,7 @@ export default function HeaderLayout({
                 <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
                     <Link
-                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
+                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-blue-400"
                         }`}
                       href="/public/facility/facilities"
                       target="_blank"
@@ -329,7 +336,7 @@ export default function HeaderLayout({
                 <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
                     <Link
-                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-green-400"
+                      className={`w-full hover:text-gray-400  font-medium flex items-center ${active && "text-blue-400"
                         }`}
                       href="/public/chu/community_units"
                       target="_blank"
@@ -348,10 +355,11 @@ export default function HeaderLayout({
             <Menu as="div" className="relative ">
              <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
-                    <Link
-                      className={`w-full hover:text-gray-400 font-medium flex items-center ${active && "text-green-400"
+                    <span
+                      className={`w-full hover:text-gray-400 font-medium flex items-center ${active && "text-blue-400"
                         }`}
-                      href="/reports"
+                      // href="/reports"
+                      onClick={() => router.push('/reports')}
                       target="_blank"
                     >
                           <p
@@ -368,7 +376,7 @@ export default function HeaderLayout({
                   Reports
                   </p>
                       
-                    </Link>
+                    </span>
                   )}
                 </Menu.Item>
             </Menu>
@@ -415,7 +423,7 @@ export default function HeaderLayout({
             }
           })()}
         >
-          <select className="bg-transparent border border-green-600 p-2 w-6/9 focus:outline-none focus:ring-1 focus:ring-black" name="find"
+          <select className="bg-transparent border border-blue-600 p-2 w-6/9 focus:outline-none focus:ring-1 focus:ring-black" name="find"
           onChange={ev => {
               if (ev.target.value && ev.target.value.length > 0) {
                   // setFormDetails({ ...formDetails, [ev.target.name]: ev.target.value });
@@ -434,14 +442,14 @@ export default function HeaderLayout({
             type="search"
             defaultValue={searchTerm}
             placeholder="Search a facility/CHU..."
-            className="flex-none bg-transparent ml-2 p-2 md:w-6/12 md:flex-grow-0 flex-grow shadow-sm border border-green-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+            className="flex-none bg-transparent ml-2 p-2 md:w-6/12 md:flex-grow-0 flex-grow shadow-sm border border-blue-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
           />
           <button
             type="submit"
-          className="bg-transparent border-t border-r border-b border-green-600 text-black flex items-center justify-center px-4 py-1"
+          className="bg-transparent border-t border-r border-b border-blue-600 text-black flex items-center justify-center px-4 py-1"
             
           >
-            <SearchIcon className="w-5 h-5 text-green-600" />
+            <SearchIcon className="w-5 h-5 text-blue-600" />
           </button>
         </form> :
         <form
@@ -452,17 +460,17 @@ export default function HeaderLayout({
         <input
           name="q"
           id="search-input"
-          className="flex-none bg-transparent p-2 md:w-9/12 md:flex-grow-0 flex-grow shadow-sm border border-green-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+          className="flex-none bg-transparent p-2 md:w-9/12 md:flex-grow-0 flex-grow shadow-sm border border-blue-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
           type="search"
           defaultValue={searchTerm}
           placeholder="Search a facility/CHU..."
         />
         <button
           type="submit"
-          className="bg-transparent border-t border-r border-b border-green-600 text-black flex items-center justify-center px-4 py-1"
+          className="bg-transparent border-t border-r border-b border-blue-600 text-black flex items-center justify-center px-4 py-1"
           
         >
-          <SearchIcon className="w-5 h-5 text-green-600" />
+          <SearchIcon className="w-5 h-5 text-blue-600" />
         </button>
       </form>
       }
@@ -492,7 +500,7 @@ export default function HeaderLayout({
               <Menu.Item as="li" className="flex items-center w-full gap-1">
                 {({ active }) => (
                   <a
-                    className={`w-full hover:text-green-400 font-medium flex items-center ${active && "text-green-400"
+                    className={`w-full hover:text-blue-400 font-medium flex items-center ${active && "text-blue-400"
                       }`}
                     href="/account"
                   >
@@ -503,7 +511,7 @@ export default function HeaderLayout({
               {/* <Menu.Item as="li" className="flex items-center w-full gap-1">
                 {({ active }) => (
                   <a
-                    className={`w-full hover:text-green-400 font-medium flex items-center ${active && "text-green-400"
+                    className={`w-full hover:text-blue-400 font-medium flex items-center ${active && "text-blue-400"
                       }`}
                     href="https://KMHFR.health.go.ke/"
                     target="_blank"
@@ -520,7 +528,7 @@ export default function HeaderLayout({
                 {({ active }) => (
                   <a
                     data-testid="logout"
-                    className={`w-full hover:text-green-400 font-medium ${active && "text-green-400"
+                    className={`w-full hover:text-blue-400 font-medium ${active && "text-blue-400"
                       }`}
                     href="/logout"
                   >

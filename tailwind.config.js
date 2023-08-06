@@ -11,7 +11,7 @@ module.exports = {
             'mono': ['monospace']
         },
         color:{
-            'django-green': '#e7edd1',
+            'django-blue': '#d2e2ed',
             'charred-paper': 'whitesmoke'
         }
     },

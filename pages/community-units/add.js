@@ -142,11 +142,11 @@ const AddCommunityUnit = (props) => {
 					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-0'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 							<div className='flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3'>
-								<Link className='text-green-800' href='/'>
+								<Link className='text-blue-800' href='/'>
 									Home
 								</Link>
 								{'/'}
-								<Link className='text-green-800' href='/community-units'>
+								<Link className='text-blue-800' href='/community-units'>
 									Community Units
 								</Link>
 								{'/'}
@@ -156,7 +156,7 @@ const AddCommunityUnit = (props) => {
 						</div>
 
 
-						<div className={"col-span-5 flex justify-between w-full bg-transparent border border-green drop-shadow  text-green-900 p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+						<div className={"col-span-5 flex justify-between w-full bg-transparent border border-blue drop-shadow  text-blue-900 p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
 							<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 								{'New Community Unit'}
 							</h2>
@@ -173,7 +173,7 @@ const AddCommunityUnit = (props) => {
 					</div>
 
 					{/* Stepper and Form */}
-					<div className='col-span-5 md:col-span-4 flex flex-col items-center border border-green-600  pt-8 pb-4 gap-4 mt-3 order-last md:order-none'>
+					<div className='col-span-5 md:col-span-4 flex flex-col items-center border border-blue-600  pt-8 pb-4 gap-4 mt-3 order-last md:order-none'>
 						{/* Stepper Header */}
 						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
 							<Box sx={{ width: '100%' }}>
@@ -182,7 +182,7 @@ const AddCommunityUnit = (props) => {
 										<Step key={i}>
 											<StepLabel
 											StepIconComponent={() => (
-												<span className="w-6 h-6 bg-green-600 text-white text-sm rounded-full flex items-center justify-center">
+												<span className="w-6 h-6 bg-blue-600 text-white text-sm rounded-full flex items-center justify-center">
 													{(i + 1)}
 												</span>
 											)}
@@ -196,7 +196,7 @@ const AddCommunityUnit = (props) => {
 						{/* Stepper Body */}
 						<div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
 							<div
-								className=' w-full flex flex-col items-start justify-start p-4 bg-yellow-50 shadow-md'
+								className=' w-full flex flex-col items-start justify-start p-4 bg-blue-50 shadow-md'
 								style={{ minHeight: '250px' }}>
 								{/* Form-changing switch statement */}
 								{(() => {
@@ -263,7 +263,7 @@ const AddCommunityUnit = (props) => {
 											// Basic Details Form
 											return (
 												<>
-													<h4 className='text-lg uppercase  pb-2 border-b border-green-600 w-full font-semibold'>
+													<h4 className='text-lg uppercase  pb-2 border-b border-blue-600 w-full font-semibold'>
 														Community Health Unit Basic Details
 													</h4>
 													{/* Actual form */}
@@ -287,7 +287,7 @@ const AddCommunityUnit = (props) => {
 																type='text'
 																name='name'
 																id='comm_unit_name'
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
@@ -316,7 +316,7 @@ const AddCommunityUnit = (props) => {
 																}),
 															}}
 
-															className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+															className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 
 																onChange={(value) => {
 																	setSelectedFacility(value);
@@ -398,7 +398,7 @@ const AddCommunityUnit = (props) => {
 																placeholder='Select an operation status ...'
 																name='status'
 																inputId='comm_unit_status'
-																className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 															/>
 														</div>
 
@@ -422,7 +422,7 @@ const AddCommunityUnit = (props) => {
 																			type='date'
 																			name='date_established'
 																			id='date_established'
-																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -444,7 +444,7 @@ const AddCommunityUnit = (props) => {
 																			type='date'
 																			name='date_operational'
 																			id='date_operational'
-																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -469,7 +469,7 @@ const AddCommunityUnit = (props) => {
 																id='households_monitored'
 																placeholder='Number of households served by the unit'
 																min={0}
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
@@ -491,7 +491,7 @@ const AddCommunityUnit = (props) => {
 																id='number_of_chvs'
 																placeholder='Number of Community Health Volunteers in the unit'
 																min={0}
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
@@ -516,7 +516,7 @@ const AddCommunityUnit = (props) => {
 																			type='text'
 																			name='facility_county'
 																			id='facility_county'
-																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -539,7 +539,7 @@ const AddCommunityUnit = (props) => {
 																			type='text'
 																			name='facility_sub_county'
 																			id='facility_sub_county'
-																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -562,7 +562,7 @@ const AddCommunityUnit = (props) => {
 																			type='text'
 																			name='facility_constituency'
 																			id='facility_constituency'
-																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -585,7 +585,7 @@ const AddCommunityUnit = (props) => {
 																			type='text'
 																			name='facility_ward'
 																			id='facility_ward'
-																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	</div>
 																</div>
@@ -605,12 +605,12 @@ const AddCommunityUnit = (props) => {
 																name='location'
 																id='location'
 																placeholder='Description of the area of coverage'
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
-														<div className=' w-full flex flex-col items-start justify-start p-3  border border-green-600 bg-transparent h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+														<div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transparent h-auto'>
+															<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
 																Community Health Unit Contacts
 															</h4>
 
@@ -634,7 +634,7 @@ const AddCommunityUnit = (props) => {
 																				key={i}
 																				id={`${i}`}
 																				name='contact_type'
-																				className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																				className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 
 																			>
 																				{contact_type.map((ct, i) => (
@@ -657,7 +657,7 @@ const AddCommunityUnit = (props) => {
 																				type='text'
 																				name='contact'
 																				id={i}
-																				className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																				className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																			/>
 																		</div>
 
@@ -667,7 +667,7 @@ const AddCommunityUnit = (props) => {
 
 														</div>
 														<div className="sticky top-0 right-10 w-full flex justify-end">
-															<button className=' bg-green-600 p-2 text-white flex text-md font-semibold '
+															<button className=' bg-blue-600 p-2 text-white flex text-md font-semibold '
 																onClick={handleContactAdd}
 															>
 																{`Add Contact`}
@@ -685,7 +685,7 @@ const AddCommunityUnit = (props) => {
 															</button>
 															<button
 																type='submit'
-																className='flex items-center justify-start space-x-2 bg-green-700  p-1 px-2'>
+																className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>
 																	CHEWs
 																</span>
@@ -771,7 +771,7 @@ const AddCommunityUnit = (props) => {
 											};
 											return (
 												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+													<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
 														CHEWs: Community Health Promoters 
 													</h4>
 													<form
@@ -806,7 +806,7 @@ const AddCommunityUnit = (props) => {
 																	className='block text-sm font-medium text-gray-700'>
 																	Delete
 																</label>
-																	<button className=' w-auto  bg-green-600 p-2 text-white flex text-md font-semibold '
+																	<button className=' w-auto  bg-blue-600 p-2 text-white flex text-md font-semibold '
 																			onClick={handleAddCHEW}
 																			>
 																				{`Add +`}
@@ -830,7 +830,7 @@ const AddCommunityUnit = (props) => {
 																			
 																			type='text'
 																			name='first_name'
-																			className='flex-none  md:w-52 w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			className='flex-none  md:w-52 w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																		
 																	
@@ -842,7 +842,7 @@ const AddCommunityUnit = (props) => {
 																			id={index}
 																			type='text'
 																			name='last_name'
-																			className='flex-none  md:w-52 w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																			className='flex-none  md:w-52 w-auto bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																		/>
 																	
 																
@@ -854,7 +854,7 @@ const AddCommunityUnit = (props) => {
 																			name='is_incharge'
 																			id={index}
 																			type='checkbox'
-																			className='focus:ring-indigo-50 bg-transparent h-4 w-4 border-green-600'
+																			className='focus:ring-indigo-50 bg-transparent h-4 w-4 border-blue-600'
 																		/>
 																		
 																
@@ -896,7 +896,7 @@ const AddCommunityUnit = (props) => {
 															</button>
 															<button
 																type='submit'
-																className='flex items-center justify-start space-x-2 bg-green-700  p-1 px-2'>
+																className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
 																<span className='text-medium font-semibold text-white'>
 																	Services
 																</span>
@@ -955,7 +955,7 @@ const AddCommunityUnit = (props) => {
 
 											return (
 												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+													<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
 														Services Offered
 													</h4>
 
@@ -1003,7 +1003,7 @@ const AddCommunityUnit = (props) => {
 
 
 					{/* Floating div at bottom right of page */}
-					{/* <div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3'>
+					{/* <div className='fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3'>
 						<h5 className='text-sm font-bold'>
 							<span className='text-gray-600 uppercase'>Limited results</span>
 						</h5>

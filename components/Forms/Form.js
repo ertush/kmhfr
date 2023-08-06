@@ -51,7 +51,7 @@ const [formId, setFormId] = useLocalStorageState({
 ];
 
     return (
-       <div className='border col-span-4 border-green-600  p-3 pb-4 flex flex-col justify-center items-center w-full'>
+       <div className='border col-span-4 border-blue-600  p-3 pb-4 flex flex-col justify-center items-center w-full'>
       	{/* Stepper Header */}  
         <div className='flex flex-col justify-center items-center px-1 md:px-4 w-full m-6'>
 								<Box sx={{ width: '100%' }}>
@@ -60,7 +60,7 @@ const [formId, setFormId] = useLocalStorageState({
 											<Step key={label}>
 												<StepLabel
                                                 StepIconComponent={() => (
-													<span className="w-6 h-6 bg-green-600 text-white text-sm rounded-full flex items-center justify-center">
+													<span className="w-6 h-6 bg-blue-600 text-white text-sm rounded-full flex items-center justify-center">
 														{(i + 1)}
 													</span>
 												)}
@@ -90,7 +90,7 @@ const [formId, setFormId] = useLocalStorageState({
               <div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
                   <FormContext.Provider value={[formId, setFormId]}>
                       <div
-                        className=' w-full flex flex-col items-start justify-start p-4 shadow-md bg-yellow-50'
+                        className=' w-full flex flex-col items-start justify-start p-4 shadow-md bg-blue-50'
                         style={{ minHeight: '250px' }}>
                             { console.log({formId})}
                            {

@@ -91,7 +91,7 @@ const AddGroup = (props)=> {
                                 <span className="text-gray-500">Add group</span>
                             </div>
                         </div>
-                        <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                        <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                    <UserGroupIcon className='text-black ml-2 h-5 w-5'/>
                                     {'New Group'}
@@ -330,7 +330,7 @@ const AddGroup = (props)=> {
 															<button
 																disabled={!add_permission}
 																type='submit'
-																className='rounded bg-green-600 p-2 text-white flex text-md font-semibold '>
+																className='rounded bg-blue-600 p-2 text-white flex text-md font-semibold '>
 																<span className='text-medium font-semibold text-white'>
 																	Save
 																</span>
@@ -345,7 +345,7 @@ const AddGroup = (props)=> {
                 
                
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

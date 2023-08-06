@@ -75,11 +75,11 @@ const CommUnit = (props) => {
 
             {/* Breadcrumb */}
             <div className='flex flex-row gap-2 text-sm md:text-base'>
-              <a className='text-green-700' href='/'>
+              <a className='text-blue-700' href='/'>
                 Home
               </a>
               {'/'}
-              <a className='text-green-700' href='/community-units'>
+              <a className='text-blue-700' href='/community-units'>
                 Community units
               </a>
               {'/'}
@@ -91,12 +91,12 @@ const CommUnit = (props) => {
 
             {/* Header snippet */}
             <div
-              className={`col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? 'border-green-600' : 'border-yellow-600'} bg-transparent drop-shadow text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 ${cu.active ? 'border-green-600' : 'border-yellow-600'}`}   
+              className={`col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? 'border-blue-600' : 'border-yellow-600'} bg-transparent drop-shadow text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 ${cu.active ? 'border-blue-600' : 'border-yellow-600'}`}   
             >
               <div className='col-span-6 md:col-span-3'>
                 <h1 className='text-4xl tracking-tight font-bold leading-tight'> {cu.name} </h1>
                 <div className='flex gap-2 items-center w-full justify-between'>
-                  <span className={'font-bold text-2xl ' + (cu.code ? 'text-green-900' : 'text-gray-400')}> #{cu.code || 'NO_CODE'} </span>
+                  <span className={'font-bold text-2xl ' + (cu.code ? 'text-blue-900' : 'text-gray-400')}> #{cu.code || 'NO_CODE'} </span>
                   <p className='text-gray-600 leading-tight'>
                     {cu.keph_level_name && 'KEPH ' + cu.keph_level_name}
                   </p>
@@ -107,7 +107,7 @@ const CommUnit = (props) => {
               <div className='flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2'>
                 <div className='flex flex-wrap gap-3 w-full items-center justify-start md:justify-center'>
                   {cu.is_approved && (
-                    <span className={'p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1' +' '+ (cu.is_approved ? 'bg-green-200 text-green-900' : 'bg-red-200 text-red-900')}>
+                    <span className={'p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1' +' '+ (cu.is_approved ? 'bg-blue-200 text-blue-900' : 'bg-red-200 text-red-900')}>
                       {cu.is_approved ? <>  <CheckCircleIcon className='h-4 w-4' />CHU Approved</>: <><XCircleIcon className='h-4 w-4' />Not approved </>}
                     </span>
                   )}
@@ -124,7 +124,7 @@ const CommUnit = (props) => {
                     </span>
                   )}
                   {cu.active && (
-                    <span className='bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
+                    <span className='bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1'>
                       <CheckCircleIcon className='h-4 w-4' />
                       CHU Active
                     </span>
@@ -158,7 +158,7 @@ const CommUnit = (props) => {
               </h3>
 
               {/* CHU details */}
-              <div className="bg-yellow-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-4">
+              <div className="bg-blue-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-4">
                 {CHU_MainDetails.map((dt)=>(
 
                   <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
@@ -189,7 +189,7 @@ const CommUnit = (props) => {
 
               {/* CHU details hidden section */}
               <div className="flex w-full leading-none mt-4 items-center">
-                  <button className="flex bg-green-700 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto -md" onClick={() => {
+                  <button className="flex bg-blue-700 font-semibold text-white flex-row justify-between text-left items-center p-3 h-auto -md" onClick={() => {
                       if (isCHULDetails) {
                           setIsCHULDetails(false)
                       } else {
@@ -208,7 +208,7 @@ const CommUnit = (props) => {
               </div>
 
               {!isCHULDetails && (
-                  <div className="bg-yellow-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
+                  <div className="bg-blue-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                       {CHULDetails.map((dt)=>(
                           <div className="grid grid-cols-3 w-full md:w-11/12  leading-none items-center">
                               <label className="col-span-1 text-gray-600">{dt.label}</label>
@@ -223,7 +223,7 @@ const CommUnit = (props) => {
 
               {/* Pending updates approval */}
               {cu.pending_updates && Object.keys(cu.pending_updates).length > 0 && (
-              <div className="bg-yellow-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
+              <div className="bg-blue-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                 <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                   Pending Updates
                 </h3>
@@ -397,7 +397,7 @@ const CommUnit = (props) => {
                   <div className="flex flex-row justify-start items-center space-x-3 p-3">
                       <button
                         type="submit"
-                        className={"p-2 text-center -md font-semibold text-base text-white bg-green-700"}
+                        className={"p-2 text-center -md font-semibold text-base text-white bg-blue-700"}
                         onClick={(e) => approveCHUUpdates(e,cu.latest_update,true, router) }
                       >
                         {"Approve CHU Updates"}
@@ -417,7 +417,7 @@ const CommUnit = (props) => {
               {/* CHU Rejection Commment */}
               {cu.pending_updates && Object.keys(cu.pending_updates).length == 0 && (
 
-                <div className="bg-yellow-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
+                <div className="bg-blue-50  shadow-lg border border-gray-300/70 w-full p-3  flex flex-col gap-3 mt-6">
                   <h3 className="text-gray-900 font-semibold leading-16 text-medium">Approval comment: </h3>
                   {cu.is_approved}
                   <form
@@ -437,7 +437,7 @@ const CommUnit = (props) => {
                     <div className="flex flex-row justify-start items-center space-x-3 p-3">
                     <button
                       type="submit"
-                      className={ cu.is_approved ? ''  : "p-2 text-center -md font-semibold text-base text-white bg-green-700"}
+                      className={ cu.is_approved ? ''  : "p-2 text-center -md font-semibold text-base text-white bg-blue-700"}
                       onClick={(e) => setIsApproveReject(true)}
                     >
                       {cu.is_approved ? "": "Approve Community Health Unit"}

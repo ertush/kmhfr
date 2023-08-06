@@ -86,11 +86,11 @@ const CommunityUnit = (props) => {
 
             {/* Header */}
             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-              <Link className="text-green-700" href="/">
+              <Link className="text-blue-700" href="/">
                 Home
               </Link>
               {"/"}
-              <Link className="text-green-700" href="/public/chu/community_units">
+              <Link className="text-blue-700" href="/public/chu/community_units">
                 Community units
               </Link>
               {"/"}
@@ -104,7 +104,7 @@ const CommunityUnit = (props) => {
             <div
               className={
                 "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                (cu.active ? "border-green-600" : "border-red-600")
+                (cu.active ? "border-blue-600" : "border-red-600")
               }
             >
               <div className="col-span-6 md:col-span-3">
@@ -115,7 +115,7 @@ const CommunityUnit = (props) => {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (cu.code ? "text-green-900" : "text-gray-400")
+                      (cu.code ? "text-blue-900" : "text-gray-400")
                     }
                   >
                     #{cu.code || "NO_CODE"}
@@ -199,7 +199,7 @@ const CommunityUnit = (props) => {
                         {cu.status_name
                           ?.toLocaleLowerCase()
                           .includes("fully-") ? (
-                          <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "Yes"}
                           </span>
@@ -481,7 +481,7 @@ const CommunityUnit = (props) => {
                                 />
                             <button
                                 type='submit'
-                                className='flex items-center justify-start space-x-2 bg-green-500 rounded p-1 px-2'>
+                                className='flex items-center justify-start space-x-2 bg-blue-500 rounded p-1 px-2'>
                                 <span className='text-medium font-semibold text-white'>
                                     Submit Rating
                                 </span>

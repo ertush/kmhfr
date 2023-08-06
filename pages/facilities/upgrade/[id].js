@@ -53,27 +53,27 @@ const Upgrade = props => {
                <link rel="icon" href="/favicon.ico" />
         </Head>
        <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-        <div className="w-full grid md:grid-cols-7 gap-4 px-1 border border-green-600 md:px-4 py-2 my-1">
+        <div className="w-full grid md:grid-cols-7 gap-4 px-1 border border-blue-600 md:px-4 py-2 my-1">
                 {/* Header */}
                 <div className="md:col-span-7 flex flex-col gap-3 md:gap-5 bg-transparent">
                             <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base">
                                 <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                    <Link className="text-green-700 cursor-pointer" href='/'>Home</Link>{'/'}
-                                    <Link className="text-green-700 cursor-pointer" href='/facilities'>Facilities</Link> {'/'}
+                                    <Link className="text-blue-700 cursor-pointer" href='/'>Home</Link>{'/'}
+                                    <Link className="text-blue-700 cursor-pointer" href='/facilities'>Facilities</Link> {'/'}
                                     <span className="text-gray-500">Upgrade</span>
                                 </div>
                             </div>
-                            <div className={"col-span-5 gap-2 flex-col  justify-between p-6 w-full bg-transparent border border-green-600 drop-shadow  text-black  md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                            <div className={"col-span-5 gap-2 flex-col  justify-between p-6 w-full bg-transparent border border-blue-600 drop-shadow  text-black  md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
                             {/* <div className="col-span-6 md:col-span-3"> */}
                                 <h2 className='flex items-center ml-1 text-xl font-bold text-black capitalize '>
                                     Upgrade Facility
                                 </h2>
-                                <span onClick={() => router.push(`/facilities/${facility_id}`)} className="text-4xl tracking-tight hover:text-green-600 font-bold cursor-pointer leading-tight">{official_name}</span>
+                                <span onClick={() => router.push(`/facilities/${facility_id}`)} className="text-4xl tracking-tight hover:text-blue-600 font-bold cursor-pointer leading-tight">{official_name}</span>
                                 <div className="flex items-center w-full justify-between">
                                     <span
                                         className={
                                             "font-bold text-2xl " +
-                                            (code ? "text-green-900" : "text-gray-400")
+                                            (code ? "text-blue-900" : "text-gray-400")
                                         }
                                     >
                                         #{code ?? "NO_CODE"}
@@ -122,7 +122,7 @@ const Upgrade = props => {
                         }
                     }
                     >
-                        <Form className='md:col-span-5 flex flex-col border border-green-600 p-3 w-full justify-start items-start gap-2 md:mt-1'>
+                        <Form className='md:col-span-5 flex flex-col border border-blue-600 p-3 w-full justify-start items-start gap-2 md:mt-1'>
                             {/* Previous KEPH Level */}
                             <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                 <label
@@ -137,7 +137,7 @@ const Upgrade = props => {
                                     type='text'
                                     name='previous_keph'
                                     disabled={true}
-                                    className='flex-none w-full bg-transparent border-green-600 p-2 flex-grow border placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                    className='flex-none w-full bg-transparent border-blue-600 p-2 flex-grow border placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none'
                                 />
                             </div>
 
@@ -164,7 +164,7 @@ const Upgrade = props => {
                                 
                                 
                                 name="keph_level" 
-                                className='flex-none w-full flex-grow placeholder-gray-500 border border-green-600 outline-none'/>
+                                className='flex-none w-full flex-grow placeholder-gray-500 border border-blue-600 outline-none'/>
                             </div>
 
 
@@ -183,7 +183,7 @@ const Upgrade = props => {
                                     type='text'
                                     name='previous_facility_type'
                                     disabled={true}
-                                    className='flex-none w-full bg-transparent border-green-600 p-2 flex-grow border placeholder-gray-500 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                    className='flex-none w-full bg-transparent border-blue-600 p-2 flex-grow border placeholder-gray-500 focus:shadow-none focus:bg-white focus:border-black outline-none'
                                 />
                             </div>
 
@@ -209,7 +209,7 @@ const Upgrade = props => {
                                     required
                                     placeholder="Select a facility type..."
                                     name="facility_type"   
-                                    className="flex-none w-full bg-transparent border border-green-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                    className="flex-none w-full bg-transparent border border-blue-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                             </div>
 
 
@@ -236,13 +236,13 @@ const Upgrade = props => {
                                     required
                                     placeholder="Select a reason"
                                     name="reason_upgrade" 
-                                    className="flex-none w-full bg-transparent border border-green-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                    className="flex-none w-full bg-transparent border border-blue-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
                                     
                             </div>
 
                             {/* View Facility Services Button */}
                             <button
-                                className="bg-green-600 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md"
+                                className="bg-blue-600 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md"
                                 onClick={() => {
                                 if (isFacilityServices) {
                                     setIsFacilityServices(false);
@@ -296,7 +296,7 @@ const Upgrade = props => {
 
                             <button
                             type="submit"
-                            className="bg-green-600  mt-3 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md">
+                            className="bg-blue-600  mt-3 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md">
                             Update Facility
                             </button>
 

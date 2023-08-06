@@ -39,7 +39,7 @@ const AdminOffices = (props) => {
     const LinkCellRenderer = (params) => {
 
         return (
-            <button className=' bg-green-600 p-2 text-white flex items-center text-sm font-semibold'
+            <button className=' bg-blue-600 p-2 text-white flex items-center text-sm font-semibold'
                 onClick={() => {
                     router.push({
                         pathname: `/admin_offices/edit/${params.data.id}`
@@ -88,15 +88,15 @@ const AdminOffices = (props) => {
                     <div className="col-span-7 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-green-700" href="/">Home</a> {'/'}
+                                <a className="text-blue-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Adminoffices</span>
                             </div>
-                            <div className={"col-span-5 flex  justify-between w-full  drop-shadow  text-black p-4 md:divide-x border border-green-600 md:divide-gray-200z items-center border-l-8 " + (true && "border-green-600")}>
+                            <div className={"col-span-5 flex  justify-between w-full  drop-shadow  text-black p-4 md:divide-x border border-blue-600 md:divide-gray-200z items-center border-l-8 " + (true && "border-blue-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 
                                     {'Admin Offices'}
                                 </h2>
-                                <button className=' bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
+                                <button className=' bg-blue-600 p-2 text-white flex items-center text-lg font-semibold'
                                     onClick={() => { router.push('admin_offices/add') }}
                                 >
                                     {`Add Admin Office `}
@@ -105,7 +105,7 @@ const AdminOffices = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto border border-green-600'>
+                    <div className='col-span-1 w-full col-start-1 h-auto border border-blue-600'>
 
                         <List
                             sx={{ width: '100%', bgcolor: 'transparent', flexGrow: 1 }}
@@ -145,18 +145,18 @@ const AdminOffices = (props) => {
                                     type="search"
                                     defaultValue={''}
                                     placeholder="Search a facility/CHU..."
-                                    className="flex-none bg-transparent p-2 md:w-6/12 md:flex-grow-0 flex-grow shadow-sm border border-green-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                                    className="flex-none bg-transparent p-2 md:w-6/12 md:flex-grow-0 flex-grow shadow-sm border border-blue-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
                                 />
                                 <button
                                     type="submit"
-                                className="bg-transparent border-t border-r border-b border-green-600 text-black flex items-center justify-center px-4 py-1"
+                                className="bg-transparent border-t border-r border-b border-blue-600 text-black flex items-center justify-center px-4 py-1"
                                     
                                 >
-                                    <SearchIcon className="w-5 h-5 text-green-600" />
+                                    <SearchIcon className="w-5 h-5 text-blue-600" />
                                 </button>
                                 <div className='text-white ml-4 text-md'>
 
-                                    <button className="flex items-center bg-green-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
+                                    <button className="flex items-center bg-blue-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
                                         let dl_url = props?.current_url
                                         if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
 
@@ -193,16 +193,16 @@ const AdminOffices = (props) => {
                                 />
                             </div>
                         </div>
-                        {adminoffices && adminoffices.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full border border-green-600 items-center justify-end my-2">
-                                <li className="text-base text-green-500">
+                        {adminoffices && adminoffices.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full border border-blue-600 items-center justify-end my-2">
+                                <li className="text-base text-blue-500">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                        <span className="text-white bg-green-600 font-semibold px-2 py-1 ">{props?.data?.current_page}</span>
+                                        <span className="text-white bg-blue-600 font-semibold px-2 py-1 ">{props?.data?.current_page}</span>
                                     </Link>
                                 </li>
                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
                                     <li key={page} className="text-base text-gray-600">
                                         <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
-                                            <span className="text-green-800 p-2 hover:underline active:underline focus:underline">{page}</span>
+                                            <span className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</span>
                                         </Link>
                                     </li>
                                 ))}

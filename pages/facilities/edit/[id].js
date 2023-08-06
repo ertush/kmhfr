@@ -875,11 +875,11 @@ function EditFacility(props) {
             <div className="md:col-span-7 flex flex-col items-start mb-4 justify-start gap-3">
               {/* Bread crumbs */}
               <div className="flex flex-row gap-2 text-sm md:text-base">
-                <Link className="text-green-700" href="/">
+                <Link className="text-blue-700" href="/">
                   Home
                 </Link>{" "}
                 {"/"}
-                <Link className="text-green-700" href="/facilities">
+                <Link className="text-blue-700" href="/facilities">
                   Facilities
                 </Link>{" "}
                 {"/"}
@@ -892,14 +892,14 @@ function EditFacility(props) {
               {/* Header */}
               <div
                 className={
-                  `col-span-5 grid grid-cols-6 gap-5 border ${is_approved ? "border-green-600" : "border-yellow-600"} md:gap-8 py-6 w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
-                  ${is_approved ? "border-green-600" : "border-yellow-600"}
+                  `col-span-5 grid grid-cols-6 gap-5 border ${is_approved ? "border-blue-600" : "border-yellow-600"} md:gap-8 py-6 w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                  ${is_approved ? "border-blue-600" : "border-yellow-600"}
                 `}
               >
                 <div className="col-span-6 md:col-span-3">
                   <span
                     onClick={() => router.push(`/facilities/${id}`)}
-                    className="text-4xl cursor-pointer tracking-tight hover:text-green-600 font-bold leading-tight"
+                    className="text-4xl cursor-pointer tracking-tight hover:text-blue-600 font-bold leading-tight"
                   >
                     {official_name}
                   </span>
@@ -907,12 +907,12 @@ function EditFacility(props) {
                     <span
                       className={
                         "font-bold text-2xl " +
-                        (code ? "text-green-900" : "text-gray-400")
+                        (code ? "text-blue-900" : "text-gray-400")
                       }
                     >
                       #{code || "NO_CODE"}
                     </span>
-                    <span className="font-semibold text-green-900 text-base">{keph_level_name}</span>
+                    <span className="font-semibold text-blue-900 text-base">{keph_level_name}</span>
   
                   </div>
                 </div>
@@ -953,7 +953,7 @@ function EditFacility(props) {
                   <div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
                     <p className="text-base font-normal flex -leading-3">
                       Updates were made on
-                      <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
+                      <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
                         {
                           new Date(facilityUpdateData?.updated)
                             .toLocaleString()
@@ -961,27 +961,27 @@ function EditFacility(props) {
                         }
                       </span>
                       by
-                      <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
+                      <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
                         {facilityUpdateData?.created_by_name}
                       </span>
                     </p>
   
                     <p className="text-base font-normal flex -leading-3">
                       Facility Code:
-                      <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
+                      <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center mx-2 gap-x-1">
                         {code}
                       </span>
                     </p>
   
                     <span className="flex space-x-2">
                       <button
-                        className="flex justify-center text-base font-semibold text-white bg-green-500  py-1 px-2"
+                        className="flex justify-center text-base font-semibold text-white bg-blue-500  py-1 px-2"
                         onClick={() => router.push(`/facilities/${id}`)}
                       >
                         Edit
                       </button>
                       <button
-                        className="flex justify-center text-base font-semibold text-white bg-green-500  py-1 px-2"
+                        className="flex justify-center text-base font-semibold text-white bg-blue-500  py-1 px-2"
                         onClick={() => router.push("/facilities")}
                       >
                         Confirm Updates
@@ -1000,11 +1000,11 @@ function EditFacility(props) {
                 // Display Tabs with Edit Forms
                 <Tabs.Root
                   orientation="horizontal"
-                  className="w-full flex flex-col py-2 tab-root border border-green-600"
+                  className="w-full flex flex-col py-2 tab-root border border-blue-600"
                   defaultValue="geolocation"
                   
                 >
-                  <Tabs.List className="list-none md:grid border-b border-green-600 md:grid-cols-7 grid grid-cols-2 gap-2  px-2 md:gap-3  uppercase leading-none tab-list font-semibold">
+                  <Tabs.List className="list-none md:grid border-b border-blue-600 md:grid-cols-7 grid grid-cols-2 gap-2  px-2 md:gap-3  uppercase leading-none tab-list font-semibold">
                     <Tabs.Tab
                       value="basic_details"
                       className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
@@ -1199,7 +1199,7 @@ function EditFacility(props) {
                             required
                             type="text"
                             name="official_name"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1219,7 +1219,7 @@ function EditFacility(props) {
                             required
                             type="text"
                             name="name"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1236,7 +1236,7 @@ function EditFacility(props) {
                             </span>
                           </label>
                           <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                             styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -1273,7 +1273,7 @@ function EditFacility(props) {
                             </span>
                           </label>
                           <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                             styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -1489,7 +1489,7 @@ function EditFacility(props) {
                             </span>
                           </label>
                           <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                             styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -1531,7 +1531,7 @@ function EditFacility(props) {
                             required
                             type="date"
                             name="date_established"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1566,7 +1566,7 @@ function EditFacility(props) {
                             </span>
                           </label>
                           <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                             styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -1603,7 +1603,7 @@ function EditFacility(props) {
                             </span>
                           </label>
                           <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                             styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -1742,7 +1742,7 @@ function EditFacility(props) {
                             KEPH Level
                           </label>
                           <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                             styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -1783,7 +1783,7 @@ function EditFacility(props) {
                             type="number"
                             name="number_of_beds"
                             readOnly
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1804,7 +1804,7 @@ function EditFacility(props) {
                             min={0}
                             type="number"
                             name="number_of_inpatient_beds"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1825,7 +1825,7 @@ function EditFacility(props) {
                             min={0}
                             type="number"
                             name="number_of_cots"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1846,7 +1846,7 @@ function EditFacility(props) {
                             min={0}
                             type="number"
                             name="number_of_emergency_casualty_beds"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1867,7 +1867,7 @@ function EditFacility(props) {
                             min={0}
                             type="number"
                             name="number_of_icu_beds"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1888,7 +1888,7 @@ function EditFacility(props) {
                             min={0}
                             type="number"
                             name="number_of_hdu_beds"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1909,7 +1909,7 @@ function EditFacility(props) {
                             min={0}
                             type="number"
                             name="number_of_maternity_beds"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1930,7 +1930,7 @@ function EditFacility(props) {
                             min={0}
                             type="number"
                             name="number_of_isolation_beds"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1951,7 +1951,7 @@ function EditFacility(props) {
                             min={0}
                             type="number"
                             name="number_of_general_theatres"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1972,7 +1972,7 @@ function EditFacility(props) {
                             min={0}
                             type="number"
                             name="number_of_maternity_theatres"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -1993,7 +1993,7 @@ function EditFacility(props) {
                             min={0}
                             type="number"
                             name="facility_catchment_population"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -2028,7 +2028,7 @@ function EditFacility(props) {
                             </span>
                           </label>
                           <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                             styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -2072,7 +2072,7 @@ function EditFacility(props) {
                         {/* Armed Forces Facilities */}
   
                         <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
-                          <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                          <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">
                             Armed Forces Facilities
                           </h4>
                           <div className="w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3">
@@ -2094,7 +2094,7 @@ function EditFacility(props) {
                         {/* Hours/Days of Operation */}
   
                         <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
-                          <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                          <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">
                             Hours/Days of Operation
                           </h4>
                           <div className="w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3">
@@ -2175,7 +2175,7 @@ function EditFacility(props) {
   
                         {/* Location Details */}
                         <div className=" w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto">
-                          <h4 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                          <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">
                             Location Details
                           </h4>
                           <div className="grid grid-cols-4 place-content-start gap-3 w-full">
@@ -2193,7 +2193,7 @@ function EditFacility(props) {
                                   </span>
                                 </label>
                                 <Select
-                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                   styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -2264,7 +2264,7 @@ function EditFacility(props) {
                                   </span>
                                 </label>
                                 <Select
-                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                   styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -2302,7 +2302,7 @@ function EditFacility(props) {
                                   </span>
                                 </label>
                                 <Select
-                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                   styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -2367,7 +2367,7 @@ function EditFacility(props) {
                                   </span>
                                 </label>
                                 <Select
-                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                                  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                   styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -2404,7 +2404,7 @@ function EditFacility(props) {
                             <Field
                               type="text"
                               name="town_name"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
   
@@ -2420,7 +2420,7 @@ function EditFacility(props) {
                             <Field
                               type="text"
                               name="plot_number"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
   
@@ -2436,7 +2436,7 @@ function EditFacility(props) {
                             <Field
                               type="text"
                               name="nearest_landmark"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
   
@@ -2452,7 +2452,7 @@ function EditFacility(props) {
                             <Field
                               type="text"
                               name="location_desc"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
                         </div>
@@ -2473,7 +2473,7 @@ function EditFacility(props) {
                               value={_checklistFile}
                               onChange={setCheckListFile}
                               name="facility_checklist_document"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
                         </div>
@@ -2481,7 +2481,7 @@ function EditFacility(props) {
                         <div className=" w-full flex justify-end h-auto mr-3">
                           <button
                             type="submit"
-                            className="p-2 text-white bg-green-700  font-semibold"
+                            className="p-2 text-white bg-blue-700  font-semibold"
                           >
                             save & finish
                           </button>
@@ -2584,7 +2584,7 @@ function EditFacility(props) {
                           <Field
                             type="date"
                             name="collection_date"
-                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                            className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                           />
                         </div>
   
@@ -2606,7 +2606,7 @@ function EditFacility(props) {
                               required
                               type="decimal"
                               name="longitude"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
   
@@ -2626,7 +2626,7 @@ function EditFacility(props) {
                               required
                               type="decimal"
                               name="latitude"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
   
@@ -2641,14 +2641,14 @@ function EditFacility(props) {
                             <Field
                               type="decimal"
                               name="accuracy"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
                         </div>
   
                         {/* Ward Geo Map */}
                         <div className="w-full h-au to">
-                          <div className="w-full bg-gray-200 border border-green-600 flex flex-col items-start justify-center text-left relative">
+                          <div className="w-full bg-gray-200 border border-blue-600 flex flex-col items-start justify-center text-left relative">
                             <Map
                               markerCoordinates={[
                                 _lat.length < 4 ? "0.000000" : _lat,
@@ -2665,7 +2665,7 @@ function EditFacility(props) {
                         <div className=" w-full flex justify-end h-auto mr-3">
                           <button
                             type="submit"
-                            className="p-2 text-white bg-green-700  font-semibold"
+                            className="p-2 text-white bg-blue-700  font-semibold"
                           >
                             save & finish
                           </button>
@@ -2782,12 +2782,12 @@ function EditFacility(props) {
                       >
                         {/* Contacts */}
   
-                        <div className="grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3">
+                        <div className="grid grid-cols-2 place-content-start gap-3 w-full border border-blue-600  p-3">
                           {/* Contact Headers */}
-                          <h3 className="text-medium font-semibold text-green-900">
+                          <h3 className="text-medium font-semibold text-blue-900">
                             Contact Type
                           </h3>
-                          <h3 className="text-medium font-semibold text-green-900">
+                          <h3 className="text-medium font-semibold text-blue-900">
                             Contact Details
                           </h3>
                           <hr className="col-span-2" />
@@ -2838,7 +2838,7 @@ function EditFacility(props) {
                                 ))(),
                               ]);
                             }}
-                            className="flex items-center space-x-1 bg-green-700 p-1 "
+                            className="flex items-center space-x-1 bg-blue-700 p-1 "
                           >
                             <PlusIcon className="w-4 h-4 text-white" />
                             <p className="text-medium font-semibold text-white">
@@ -2849,7 +2849,7 @@ function EditFacility(props) {
   
                         {/* Facility Officer In-charge Details */}
   
-                        <h5 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                        <h5 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">
                           Facility Officer In-Charge Details
                         </h5>
                         <div className="flex flex-col items-start justify-start gap-1 w-full  h-auto">
@@ -2870,7 +2870,7 @@ function EditFacility(props) {
                               required
                               type="text"
                               name="name"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
   
@@ -2885,7 +2885,7 @@ function EditFacility(props) {
                             <Field
                               type="text"
                               name="reg_no"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
   
@@ -2902,7 +2902,7 @@ function EditFacility(props) {
                               </span>{" "}
                             </label>
                             <Select
-                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                               styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -2928,14 +2928,14 @@ function EditFacility(props) {
                           {/* Facility Officer Contact Type / Contact Details */}
   
                           <div
-                            className="grid grid-cols-2 place-content-start gap-3 w-full border border-green-600  p-3"
+                            className="grid grid-cols-2 place-content-start gap-3 w-full border border-blue-600  p-3"
                             ref={facilityContact2Ref}
                           >
                             {/* Contact Headers */}
-                            <h3 className="text-medium font-semibold text-green-900">
+                            <h3 className="text-medium font-semibold text-blue-900">
                               Contact Type
                             </h3>
-                            <h3 className="text-medium font-semibold text-green-900">
+                            <h3 className="text-medium font-semibold text-blue-900">
                               Contact Details
                             </h3>
                             <hr className="col-span-2" />
@@ -3002,7 +3002,7 @@ function EditFacility(props) {
                                   ))(),
                                 ]);
                               }}
-                              className="flex items-center space-x-1 bg-green-700 p-1 "
+                              className="flex items-center space-x-1 bg-blue-700 p-1 "
                             >
                               <PlusIcon className="w-4 h-4 text-white" />
                               <p className="text-medium font-semibold text-white">
@@ -3016,7 +3016,7 @@ function EditFacility(props) {
                         <div className=" w-full flex justify-end h-auto mr-3">
                           <button
                             type="submit"
-                            className="p-2 text-white bg-green-700  font-semibold"
+                            className="p-2 text-white bg-blue-700  font-semibold"
                           >
                             save & finish
                           </button>
@@ -3030,7 +3030,7 @@ function EditFacility(props) {
                     className="grow-1 py-1 px-4 tab-panel"
                   >
                     <>
-                      <h4 className="text-lg uppercase mt-2 pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                      <h4 className="text-lg uppercase mt-2 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">
                         Facility Regulation
                       </h4>
                       <form
@@ -3066,7 +3066,7 @@ function EditFacility(props) {
                             // Filtered Regulaotry Body Options
   
                             <Select
-                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                               styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -3093,7 +3093,7 @@ function EditFacility(props) {
                              />
                           ) : (
                             <Select
-                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                               styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -3135,7 +3135,7 @@ function EditFacility(props) {
                             //    Filtered Regulatory State Options
   
                             <Select
-                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                               styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -3163,7 +3163,7 @@ function EditFacility(props) {
                             />
                           ) : (
                             <Select
-                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                              className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                               styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -3205,14 +3205,14 @@ function EditFacility(props) {
                               type="text"
                               id="license_number"
                               name="license_number"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           ) : (
                             <input
                               type="text"
                               id="license_number"
                               name="license_number"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           )}
                         </div>
@@ -3230,7 +3230,7 @@ function EditFacility(props) {
                             </span>{" "}
                           </label>
                           <Select
-                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                             styles={{
                                     control: (baseStyles) => ({
                                       ...baseStyles,
@@ -3271,13 +3271,13 @@ function EditFacility(props) {
                               required
                               type="text"
                               name="registration_number"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           ) : (
                             <input
                               type="text"
                               name="registration_number"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           )}
                         </div>
@@ -3295,30 +3295,30 @@ function EditFacility(props) {
                               onChange={(e) => setLicenseFile(e.target.files[0])}
                               type="file"
                               name="license_document"
-                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none"
+                              className="flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none"
                             />
                           </div>
                         </div>
   
                         {/* Facility Departments Regulation  */}
-                        <h5 className="text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900">
+                        <h5 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">
                           Facility Departments Regulation
                         </h5>
                         <div
-                          className="grid grid-cols-4 place-content-start gap-3 w-full border border-green-600  p-3"
+                          className="grid grid-cols-4 place-content-start gap-3 w-full border border-blue-600  p-3"
                           ref={facilityRegulatoryBodyRef}
                         >
                           {/* Contact Headers */}
-                          <h3 className="text-medium font-semibold text-green-900">
+                          <h3 className="text-medium font-semibold text-blue-900">
                             Name
                           </h3>
-                          <h3 className="text-medium font-semibold text-green-900">
+                          <h3 className="text-medium font-semibold text-blue-900">
                             Regulatory Body
                           </h3>
-                          <h3 className="text-medium font-semibold text-green-900">
+                          <h3 className="text-medium font-semibold text-blue-900">
                             License Number
                           </h3>
-                          <h3 className="text-medium font-semibold text-green-900">
+                          <h3 className="text-medium font-semibold text-blue-900">
                             Reg. Number
                           </h3>
   
@@ -3395,7 +3395,7 @@ function EditFacility(props) {
                                 ];
                               });
                             }}
-                            className="flex items-center space-x-1 bg-green-700 p-1 "
+                            className="flex items-center space-x-1 bg-blue-700 p-1 "
                           >
                             <PlusIcon className="w-4 h-4 text-white" />
                             <p className="text-medium font-semibold text-white">
@@ -3412,7 +3412,7 @@ function EditFacility(props) {
                                   </button> */}
                           <button
                             type="submit"
-                            className="p-2 text-white bg-green-700 font-semibold"
+                            className="p-2 text-white bg-blue-700 font-semibold"
                           >
                             save & finish
                           </button>

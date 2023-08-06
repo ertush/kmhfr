@@ -465,7 +465,7 @@ export function BasicDeatilsForm() {
                   required
                   type='text'
                   name='official_name'
-                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.official_name && <span className='font-normal text-sm text-red-500 text-start'>{errors.official_name}</span>}
               </div>
@@ -484,7 +484,7 @@ export function BasicDeatilsForm() {
                   required
                   type='text'
                   name='name'
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.name && <span className='font-normal text-sm text-red-500 text-start'>{errors.name}</span>}
 
@@ -570,7 +570,7 @@ export function BasicDeatilsForm() {
                   type="date"
                   required
                   name="date_established"
-                  className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-green-600 focus:shadow-none  focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent p-2 flex-grow placeholder-gray-500 border border-blue-600 focus:shadow-none  focus:border-black outline-none'
 
                 />
                 {errors.date_established && <span className='font-normal text-sm text-red-500 text-start'>{errors.collection_date}</span>}
@@ -681,7 +681,7 @@ export function BasicDeatilsForm() {
                   type='number'
                   min={0}
                   name='number_of_beds'
-                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.number_of_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_beds}</span>}
 
@@ -705,7 +705,7 @@ export function BasicDeatilsForm() {
                   type='number'
                   min={0}
                   name='number_of_inpatient_beds'
-                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.number_of_inpatient_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_inpatient_beds}</span>}
 
@@ -727,7 +727,7 @@ export function BasicDeatilsForm() {
                   type='number'
                   min={0}
                   name='number_of_cots'
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.number_of_cots && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_cots}</span>}
 
@@ -749,7 +749,7 @@ export function BasicDeatilsForm() {
                   type='number'
                   min={0}
                   name='number_of_emergency_casualty_beds'
-                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.number_of_emergency_casualty_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_emergency_casualty_beds}</span>}
 
@@ -772,7 +772,7 @@ export function BasicDeatilsForm() {
                   type='number'
                   min={0}
                   name='number_of_icu_beds'
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.number_of_icu_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_icu_beds}</span>}
 
@@ -795,7 +795,7 @@ export function BasicDeatilsForm() {
                   type='number'
                   min={0}
                   name='number_of_hdu_beds'
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.number_of_hdu_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_hdu_beds}</span>}
 
@@ -818,7 +818,7 @@ export function BasicDeatilsForm() {
                   type='number'
                   min={0}
                   name='number_of_maternity_beds'
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.number_of_maternity_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_maternity_beds}</span>}
 
@@ -842,7 +842,7 @@ export function BasicDeatilsForm() {
                   min={0}
                   name='number_of_isolation_beds'
 
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.number_of_isolation_beds && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_isolation_beds}</span>}
 
@@ -867,7 +867,7 @@ export function BasicDeatilsForm() {
                   min={0}
                   name='number_of_general_theatres'
 
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.number_of_general_theatres && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_general_theatres}</span>}
 
@@ -891,7 +891,7 @@ export function BasicDeatilsForm() {
                   min={0}
                   name='number_of_maternity_theatres'
 
-                  className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full  bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.number_of_maternity_theatres && <span className='font-normal text-sm text-red-500 text-start'>{errors.number_of_maternity_theatres}</span>}
 
@@ -912,7 +912,7 @@ export function BasicDeatilsForm() {
                   type='number'
                   min={0}
                   name='facility_catchment_population'
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
 
               </div>
@@ -1007,8 +1007,8 @@ export function BasicDeatilsForm() {
               </div>
 
               {/* Armed Forces Facilities */}
-              <div className=' w-full flex flex-col items-start justify-start p-3  border border-green-600 bg-transaprent h-auto'>
-                <h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+              <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
+                <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
                   Armed Forces Facilities
                 </h4>
                 <div className='w-full flex flex-row items-center px-2 justify-start gap-1 gap-x-3 mb-3'>
@@ -1027,8 +1027,8 @@ export function BasicDeatilsForm() {
               </div>
 
               {/* Hours/Days of Operation */}
-              <div className=' w-full flex flex-col items-start justify-start p-3  border border-green-600 bg-transaprent h-auto'>
-                <h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+              <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
+                <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
                   Hours/Days of Operation
                 </h4>
                 <div className='w-full flex flex-row items-center px-2 gap-1 gap-x-3 mb-3'>
@@ -1105,8 +1105,8 @@ export function BasicDeatilsForm() {
 
 
               {/* Location Details */}
-              <div className=' w-full flex flex-col items-start justify-start p-3  border border-green-600 bg-transaprent h-auto'>
-                <h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+              <div className=' w-full flex flex-col items-start justify-start p-3  border border-blue-600 bg-transaprent h-auto'>
+                <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
                   Location Details
                 </h4>
                 <div className='grid grid-cols-4 place-content-start gap-3 w-full'>
@@ -1229,7 +1229,7 @@ export function BasicDeatilsForm() {
 
                   type='text'
                   name='town_name'
-                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
               </div>
 
@@ -1248,7 +1248,7 @@ export function BasicDeatilsForm() {
 
                   type='text'
                   name='plot_number'
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
               </div>
 
@@ -1267,7 +1267,7 @@ export function BasicDeatilsForm() {
 
                   type='text'
                   name='nearest_landmark'
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
               </div>
 
@@ -1286,13 +1286,13 @@ export function BasicDeatilsForm() {
 
                   type='text'
                   name='location_desc'
-                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
               </div>
 
 
               {/* check file upload */}
-              <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent border-green-600 h-auto'>
+              <div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent border-blue-600 h-auto'>
                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                   <label
                     htmlFor='facility_checklist_document'
@@ -1308,7 +1308,7 @@ export function BasicDeatilsForm() {
                     required
                     type='file'
                     name='facility_checklist_document'
-                    className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                    className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                   />
 
                 {errors.facility_checklist_document && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_checklist_document}</span>}
@@ -1319,15 +1319,15 @@ export function BasicDeatilsForm() {
 
               {/* Cancel & Geolocation */}
               <div className='flex justify-between items-center w-full'>
-                <button className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
-                  <ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
-                  <span className='text-medium font-semibold text-green-900 '>
+                <button className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
+                  <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
+                  <span className='text-medium font-semibold text-blue-900 '>
                     Cancel
                   </span>
                 </button>
                 <button
                   type='submit'
-                  className='flex items-center justify-start space-x-2 bg-green-700  p-1 px-2'>
+                  className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
                   <span className='text-medium font-semibold text-white'>
                     Geolocation
                   </span>

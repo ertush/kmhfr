@@ -4,13 +4,13 @@ import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
 
 function FacilityDetailsTabs({ facility }) {
   return (
-    <div className="col-span-5 md:col-span-3 flex border border-green-600 flex-col gap-3 mt-4">
+    <div className="col-span-5 md:col-span-3 flex border border-blue-600 flex-col gap-3 mt-4">
       <Tabs.Root
         orientation="horizontal"
         className="w-full flex flex-col tab-root"
         defaultValue="overview"
       >
-        <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-green-600">
+        <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-blue-600">
           <Tabs.Tab
             id={1}
             value="overview"
@@ -52,7 +52,7 @@ function FacilityDetailsTabs({ facility }) {
           className="grow-1 py-1 px-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-green-600 w-full p-3 grid grid-cols-2 gap-3 shadow-sm mt-4">
+            <div className="bg-transparent border border-blue-600 w-full p-3 grid grid-cols-2 gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                 Status:
               </h3>
@@ -66,7 +66,7 @@ function FacilityDetailsTabs({ facility }) {
                       Closed on {new Date(facility?.closed_date).toLocaleDateString() || ""}
                     </span>
                   ) : (
-                    <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-blue-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       Not closed
                     </span>
                   )}
@@ -89,7 +89,7 @@ function FacilityDetailsTabs({ facility }) {
                 </label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.reporting_in_dhis ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
@@ -107,7 +107,7 @@ function FacilityDetailsTabs({ facility }) {
                 </label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.nhif_accreditation ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
@@ -125,7 +125,7 @@ function FacilityDetailsTabs({ facility }) {
                 </label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.open_normal_day ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
@@ -143,7 +143,7 @@ function FacilityDetailsTabs({ facility }) {
                 </label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.open_weekends ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
@@ -161,7 +161,7 @@ function FacilityDetailsTabs({ facility }) {
                 </label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.open_late_night ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
@@ -179,7 +179,7 @@ function FacilityDetailsTabs({ facility }) {
                 </label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.is_classified ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
@@ -195,7 +195,7 @@ function FacilityDetailsTabs({ facility }) {
                 <label className=" text-gray-600">Published</label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.is_published ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
@@ -208,7 +208,7 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Regulation:
               </h3>
@@ -266,7 +266,7 @@ function FacilityDetailsTabs({ facility }) {
                 </label>
                 <p className="col-span-2 text-black font-medium text-base flex">
                   {facility?.regulated ? (
-                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
@@ -320,7 +320,7 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Ownership:
               </h3>
@@ -341,7 +341,7 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Location:
               </h3>
@@ -378,7 +378,7 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Bed capacity:
               </h3>
@@ -448,7 +448,7 @@ function FacilityDetailsTabs({ facility }) {
               </div>
               
             </div>
-            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Surgical Theatres:
               </h3>
@@ -469,7 +469,7 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm my-4">
+            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm my-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Contacts:
               </h3>
@@ -529,10 +529,10 @@ function FacilityDetailsTabs({ facility }) {
           className="grow-1 py-1 px-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-green-600 w-full px-2 my-4">
+            <div className="bg-transparent border border-blue-600 w-full px-2 my-4">
               {/* <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight"> */}
                 {/* <span className="font-semibold">Services</span> */}
-                {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
+                {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-blue-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
               {/* </h3> */}
               <ul>
                 {facility?.facility_services &&
@@ -562,7 +562,7 @@ function FacilityDetailsTabs({ facility }) {
                         </small>
                       </div>
                       <label className="text-sm text-gray-600 flex gap-1 items-center">
-                        <CheckCircleIcon className="h-6 w-6 text-green-500" />
+                        <CheckCircleIcon className="h-6 w-6 text-blue-500" />
                         <span>Active</span>
                       </label>
                     </li>
@@ -582,7 +582,7 @@ function FacilityDetailsTabs({ facility }) {
         >
          
             <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-green-600 w-full px-2 my-4">
+            <div className="bg-transparent border border-blue-600 w-full px-2 my-4">
               <ul>
                 {facility?.facility_infrastructure &&
                   facility?.facility_infrastructure.length > 0 ? (
@@ -598,7 +598,7 @@ function FacilityDetailsTabs({ facility }) {
                         {/* <small className="text-xs text-gray-500">{infra.id || ''}</small> */}
                       </div>
                       <div className="flex flex-row gap-1 items-center">
-                        {/* <CheckCircleIcon className="h-4 w-4 text-green-500" /> */}
+                        {/* <CheckCircleIcon className="h-4 w-4 text-blue-500" /> */}
                         <label className="text-lg text-gray-800 font-semibold">
                           {infra.count || 0}
                         </label>
@@ -624,7 +624,7 @@ function FacilityDetailsTabs({ facility }) {
 
               {/* </h3> */}
             <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-green-600 w-full px-2 my-4">
+            <div className="bg-transparent border border-blue-600 w-full px-2 my-4">
               <ul>
                 {facility?.facility_specialists &&
                   facility?.facility_specialists.length > 0 ? (
@@ -640,7 +640,7 @@ function FacilityDetailsTabs({ facility }) {
                         {/* <small className="text-xs text-gray-500">{hr.id || ''}</small> */}
                       </div>
                       <div className="flex flex-row gap-1 items-center">
-                        {/* <CheckCircleIcon className="h-4 w-4 text-green-500" /> */}
+                        {/* <CheckCircleIcon className="h-4 w-4 text-blue-500" /> */}
                         <label className="text-lg font-semibold text-gray-800">
                           {hr.count || 0}
                         </label>
@@ -663,7 +663,7 @@ function FacilityDetailsTabs({ facility }) {
 
               {/* </h3> */}
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-green-600 w-full px-2 my-4">
+            <div className="bg-transparent border border-blue-600 w-full px-2 my-4">
               <ul>
                 {facility?.facility_units &&
                   facility?.facility_units.length > 0 ? (
@@ -681,7 +681,7 @@ function FacilityDetailsTabs({ facility }) {
                         </small>
                       </div>
                       <div className="flex flex-row gap-1 items-center">
-                        <CheckCircleIcon className="h-6 w-6 text-green-500" />
+                        <CheckCircleIcon className="h-6 w-6 text-blue-500" />
                         <label className="text-sm text-gray-600">
                           Active
                         </label>

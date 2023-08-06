@@ -18,7 +18,7 @@ const DelayedLoginButton = () => {
         return () => { mtd = false }
     }, [])
     if (delayed === true) {
-        return <a href="/auth/login" className="bg-black hover:bg-green-700 focus:bg-green-700 active:bg-green-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
+        return <a href="/auth/login" className="bg-black hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-white px-4 md:px-8 whitespace-nowrap py-2 rounded text-base font-semibold">Log in</a>
     } else {
         return <div className="p-3 w-16"> <LoadingAnimation size={6} isLight={true} /> </div>
     }
@@ -93,11 +93,11 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
             <footer className="bg-black py-5 items-center justify-center flex flex-wrap gap-y-3 gap-x-4 text-gray-300 text-sm w-full">
                 <p>KMHFR V3 Beta</p>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://health.go.ke" target="_blank" rel="noreferrer noopener">Ministry of Health</a>
+                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://health.go.ke" target="_blank" rel="noreferrer noopener">Ministry of Health</a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://healthit.uonbi.ac.ke" target="_blank" rel="noreferrer noopener">USAID HealthIT</a>
+                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://healthit.uonbi.ac.ke" target="_blank" rel="noreferrer noopener">USAID HealthIT</a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-green-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://KMHFR.health.go.ke" target="_blank" rel="noreferrer noopener">KMHFR v2</a>
+                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://KMHFR.health.go.ke" target="_blank" rel="noreferrer noopener">KMHFR v2</a>
             </footer>
         </div>
     );

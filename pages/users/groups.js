@@ -57,17 +57,17 @@ const Groups = (props) => {
                     <div className="col-span-7 flex flex-col gap-x-1 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-green-700" href="/">Home</a> {'/'}
-                                <a className="text-green-700" href="/users/">Users</a> {'/'}
+                                <a className="text-blue-700" href="/">Home</a> {'/'}
+                                <a className="text-blue-700" href="/users/">Users</a> {'/'}
                                 <span className="text-gray-500">Groups</span> 
                             </div>
                             
-                            <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                            <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 
                                     {'Manage Groups'}
                                 </h2>
-                                <button className='rounded bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
+                                <button className='rounded bg-blue-600 p-2 text-white flex items-center text-lg font-semibold'
                                 onClick={() => {router.push('/users/add_group')}} 
                                 >
                                     {`Add Group `}
@@ -100,7 +100,7 @@ const Groups = (props) => {
                                 </button>
                                 <div className='text-white text-md'>
 
-                                <button className="flex items-center rounded  bg-green-600 text-white justify-center space-x-2 text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
+                                <button className="flex items-center rounded  bg-blue-600 text-white justify-center space-x-2 text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
@@ -172,7 +172,7 @@ const Groups = (props) => {
 
 
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

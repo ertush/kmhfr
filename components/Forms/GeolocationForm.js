@@ -62,7 +62,8 @@ export function GeolocationForm() {
     }, [])
 
     const handleGeolocationPrevious = useCallback(() => {
-        console.log('[+] Geolocation Form')
+        setFormId(`${parseInt(formId) - 1}`);
+       
     }, [])
 
     return (
@@ -80,7 +81,7 @@ export function GeolocationForm() {
             <Form
 
                 name='geolocation_form'
-                className='flex flex-col w-full items-start bg-yellow-50 p-4 border border-green-600 justify-start gap-3'
+                className='flex flex-col w-full items-start bg-blue-50 p-4 border border-blue-600 justify-start gap-3'
             >
                 {/* Collection Date */}
                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -97,7 +98,7 @@ export function GeolocationForm() {
                         required
                         type='date'
                         name='collection_date'
-                        className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 bg-transparent border-green-600 focus:shadow-none focus:border-black outline-none'
+                        className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 bg-transparent border-blue-600 focus:shadow-none focus:border-black outline-none'
                     />
                 {errors.collection_date && <span className='font-normal text-sm text-red-500 text-start'>{errors.collection_date}</span>}
 
@@ -119,7 +120,7 @@ export function GeolocationForm() {
                             required
                             type='decimal'
                             name='longitude'
-                            className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                            className='flex-none w-full  p-2 flex-grow border bg-transparent placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                         />
                 {errors.longitude && <span className='font-normal text-sm text-red-500 text-start'>{errors.longitude}</span>}
 
@@ -139,7 +140,7 @@ export function GeolocationForm() {
                             required
                             type='decimal'
                             name='latitude'
-                            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:border-black outline-none'
+                            className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                         />
                 {errors.latitude && <span className='font-normal text-sm text-red-500 text-start'>{errors.latitude}</span>}
 
@@ -163,19 +164,19 @@ export function GeolocationForm() {
                 <div className='flex justify-between items-center w-full'>
                     <button
                         onClick={handleGeolocationPrevious}
-                        className='flex items-center justify-start space-x-2 p-1 group hover:bg-green-700 border border-green-700 px-2'>
-                        <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-green-900' />
-                        <span className='text-medium font-semibold group-hover:text-white text-green-900 '>
+                        className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-blue-700 px-2'>
+                        <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
+                        <span className='text-medium font-semibold group-hover:text-white text-blue-900 '>
                             Basic Details
                         </span>
                     </button>
                     <button
                         type='submit'
-                        className='flex items-center justify-start space-x-2 bg-green-700 group hover:bg-transparent border border-green-700 p-1 px-2'>
-                        <span className='text-medium font-semibold group-hover:text-green-900 text-white'>
+                        className='flex items-center justify-start space-x-2 bg-blue-700 group hover:bg-transparent border border-blue-700 p-1 px-2'>
+                        <span className='text-medium font-semibold group-hover:text-blue-900 text-white'>
                             Facility Contacts
                         </span>
-                        <ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-green-900 text-white' />
+                        <ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-blue-900 text-white' />
                     </button>
                 </div>
 

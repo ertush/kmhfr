@@ -12,7 +12,7 @@ import {
 } from '@mui/x-data-grid';
 
 
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+const StyledDataGrid = styled(DataGrid)(() => ({
     '& .super-app-theme--Row': {
         borderTop: `1px solid ${darken('rgba(5, 150, 105, 1)', 1)}`,
         FontFace: 'IBM Plex Sans'
@@ -137,11 +137,11 @@ function Reports(props) {
                     <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-4">
                         {/* Breadcramps */}
                         <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
-                            <Link className="text-green-700" href="/">
+                            <Link className="text-blue-700" href="/">
                                 Home
                             </Link>
                             {"/"}
-                            <Link className="text-green-700" href="/reports">
+                            <Link className="text-blue-700" href="/reports">
                                 Reports
                             </Link>
                             {"/"}
@@ -154,8 +154,8 @@ function Reports(props) {
                         {/* Header Bunner  */}
                         <div
                             className={
-                                `col-span-5 mt-4 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border ${"border-green-600"} drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
-                ${"border-green-600"}
+                                `col-span-5 mt-4 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border ${"border-blue-600"} drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                ${"border-blue-600"}
               `}
                         >
                             <div className="col-span-6 md:col-span-3">
@@ -171,13 +171,13 @@ function Reports(props) {
                     </div>
 
                     {/* Tabs */}
-                    <div className='w-full col-span-1 md:col-span-7 flex border border-green-600 px-0 mx-0 h-700 flex-1'>
+                    <div className='w-full col-span-1 md:col-span-7 flex border border-blue-600 px-0 mx-0 h-700 flex-1'>
                         <Tabs.Root
                             orientation="horizontal"
                             className="w-full flex flex-col tab-root"
                             defaultValue="beds_cots"
                         >
-                            <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-green-600">
+                            <Tabs.List className="list-none w-full flex justify-evenly flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b border-blue-600">
                                 <Tabs.Tab
                                     id={1}
                                     value="beds_cots"
@@ -268,7 +268,7 @@ function Reports(props) {
                             >
                                 {/* Data grid */}
 
-                                <div style={{ height: 700, width: '100%' }} className='col-span-7'>
+                                <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
                                     <StyledDataGrid
                                         columns={propsToGridData(props).columns}
                                         rows={propsToGridData(props)?.rows}

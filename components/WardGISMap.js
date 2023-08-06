@@ -45,7 +45,7 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
         <>
 
             {/* Map title */}
-            <h3 className='mb-1 px-2 text-green-900 font-normal float-left text-lg bg-gray-300 w-full  capitalize'>{String(ward).toLowerCase()}{" ward"}</h3>
+            <h3 className='mb-1 px-2 text-blue-900 font-normal float-left text-lg bg-gray-300 w-full  capitalize'>{String(ward).toLowerCase()}{" ward"}</h3>
             {isOutOfBound && <Alert severity="error" sx={{ width: '100%' }}>The coordinates did not validate</Alert>}
 
             {/* Ward Map */}

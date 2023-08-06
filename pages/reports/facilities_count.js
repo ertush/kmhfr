@@ -43,14 +43,14 @@ const FacilitiesCount = (props) => {
         {headerName: "County", field: "area_name",   cellRenderer: "LinkCellRenderer"},
         {headerName: "Number of Facilities", field: "number_of_facilities"},
         {headerName: "Actions",field: "actions", cellRendererFramework: function(params) {
-            return <button  className='px-2 flex gap-1 text-green-600 items-center text-sm font-semibold' 
+            return <button  className='px-2 flex gap-1 text-blue-600 items-center text-sm font-semibold' 
             onClick={() => {
                 router.push({
                     pathname: `/reports/dynamic_reports/`,
                     query: { id: params.data.area_id, level: 'county', type: 'facilities_count' }
                 })
             }}
-            >View <EyeIcon className='h-5 w-5 text-green-600'/>  </button>
+            >View <EyeIcon className='h-5 w-5 text-blue-600'/>  </button>
         },}])
     const [gridApi, setGridApi] = useState(null);
     const [gridColumnApi, setGridColumnApi] = useState(null);
@@ -98,10 +98,10 @@ const FacilitiesCount = (props) => {
                     <div className="col-span-8 flex flex-col gap-x-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-x-2 gap-y-0 text-sm md:text-base py-1">
-                                <a className="text-green-700" href="/">Home</a> {'/'}
+                                <a className="text-blue-700" href="/">Home</a> {'/'}
                                 <span className="text-gray-500">Facility Report by County</span> 
                             </div>
-                            <div className={`col-span-5 flex justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-green-600 border-l-8 ${'border-green-600'}`}>
+                            <div className={`col-span-5 flex justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-blue-600 border-l-8 ${'border-blue-600'}`}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Facility Report by County'}
                                 </h2>
@@ -118,7 +118,7 @@ const FacilitiesCount = (props) => {
                             <input
                                 // name="q"
                                 id="search-input"
-                                className="bg-transparent w-3/12 p-2 border border-green-600 shadow-sm placeholder-green-900 focus:shadow-none focus:bg-django-green focus:border-black outline-none"
+                                className="bg-transparent w-3/12 p-2 border border-blue-600 shadow-sm placeholder-blue-900 focus:shadow-none focus:bg-django-blue focus:border-black outline-none"
                                 type="search"
                                 // defaultValue={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -126,7 +126,7 @@ const FacilitiesCount = (props) => {
                             />
 
 
-                                <button className="flex items-center bg-green-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-auto " onClick={(e) => {
+                                <button className="flex items-center bg-blue-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-auto " onClick={(e) => {
                                                 e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
@@ -158,15 +158,15 @@ const FacilitiesCount = (props) => {
                             styles={{
                                 control: (baseStyles) => ({
                                     ...baseStyles,
-                                    backgroundColor: tailwindConfig.theme.color['django-green'],
+                                    backgroundColor: tailwindConfig.theme.color['django-blue'],
                                     outLine: 'none',
                                     border: 'none',
                                     outLine: 'none',
-                                    textColor: tailwindConfig.theme.color['django-green']
+                                    textColor: tailwindConfig.theme.color['django-blue']
                                 })
                             }}
                             name='filter_by'
-                            className='w-1/5 border bg-transparent focus:outline-green-600 border-green-600 placeholder-gray-500  outline-none'
+                            className='w-1/5 border bg-transparent focus:outline-blue-600 border-blue-600 placeholder-gray-500  outline-none'
                         /> */}
 
 
@@ -197,7 +197,7 @@ const FacilitiesCount = (props) => {
                                 </button>
                                 <div className='text-white text-md'>
 
-                                <button className="flex items-center bg-green-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
+                                <button className="flex items-center bg-blue-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={(e) => {
                                                 e.preventDefault()
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
@@ -269,7 +269,7 @@ const FacilitiesCount = (props) => {
 
 
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

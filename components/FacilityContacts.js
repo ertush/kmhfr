@@ -71,7 +71,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                     }
                 }
                 name={fieldNames[0]} 
-                className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                className='flex-none w-full flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
  />
             
             <div className="w-full col-start-2 flex items-center gap-x-3 justify-between">
@@ -79,7 +79,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                     <input ref={contactDetailsRef} id={`facility-contact-detail-${index}`} 
                     type="text" 
                     name={fieldNames[1]} 
-                    className="w-full flex-grow  flex-1 bg-transparent p-2 border placeholder-gray-500 border-green-600 focus:shadow-none  focus:border-black outline-none" />
+                    className="w-full flex-grow  flex-1 bg-transparent p-2 border placeholder-gray-500 border-blue-600 focus:shadow-none  focus:border-black outline-none" />
 
                     
                 
@@ -182,7 +182,7 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
                     }
                 }
                 name={fieldNames[0]} 
-                className='flex-none w-full flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+                className='flex-none w-full flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                  />
             
             <div className="w-full col-start-2 flex items-center gap-x-3 justify-between">
@@ -191,7 +191,7 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
                     type="text" 
                      
                     name={fieldNames[1]} 
-                    className="w-full flex-grow  flex-1 bg-transparent p-2 border placeholder-gray-500 border-green-600 focus:shadow-none  focus:border-black outline-none" />
+                    className="w-full flex-grow  flex-1 bg-transparent p-2 border placeholder-gray-500 border-blue-600 focus:shadow-none  focus:border-black outline-none" />
 
                     
                 

@@ -57,7 +57,7 @@ const ReportsSideMenu = () => {
 
     return (
 
-        <div className='col-span-2 w-full col-start-1 border bg-django-green h-screen border-green-600'>
+        <div className='col-span-2 w-full col-start-1 border bg-django-blue h-screen border-blue-600'>
 
 
             {/* Health Facility Reports*/}
@@ -65,7 +65,7 @@ const ReportsSideMenu = () => {
             <List
                 component="div"
                 aria-labelledby="nested-list-subheader"
-                className='border-b border-green-600 p-0'
+                className='border-b border-blue-600 p-0'
                 subheader={
                     <ListItemButton
                         onClick={() => setMenu({ type: 'health_facility_reports', value: !menu.openFacilityReports })}
@@ -83,19 +83,19 @@ const ReportsSideMenu = () => {
 
                 <Collapse in={menu.openFacilityReports} timeout="auto" unmountOnExit>
                     <List component="ul" disablePadding>
-                        <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                        <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                             router.push('/reports');
                             }}>
                             <ListItemText primary="Beds and Cots" />
                         </ListItemButton>
                         {/* {console.log({label})} */}
-                        <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                        <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                             router.push('/reports/facilities_count');    
                     }}>
                             <ListItemText primary="Keph Level" />
                         </ListItemButton>
 
-                        <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                        <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                             router.push('/reports/facilities_count');
                             
                             
@@ -103,14 +103,14 @@ const ReportsSideMenu = () => {
                             <ListItemText primary="Facilities Ownership" />
                         </ListItemButton>
 
-                        <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                        <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                        router.push('/reports/facilities_by_owner_categories')
                             
                             
                     }}>
                             <ListItemText primary="Facility Type" />
                         </ListItemButton>
-                        <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                        <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                        router.push('/reports/facilities_by_type')
                             
                             
@@ -118,14 +118,14 @@ const ReportsSideMenu = () => {
                             <ListItemText primary="Regulatory Body" />
                         </ListItemButton>
 
-                        <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                        <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                             router.push('/reports/facilities_by_keph_levels')
                             
                             
                     }}>
                             <ListItemText primary="Facility Services" />
                         </ListItemButton>
-                        <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                        <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                             router.push('/reports/facility_coordinates')
                             
                             
@@ -133,7 +133,7 @@ const ReportsSideMenu = () => {
                             <ListItemText primary="Facility Infrastructure" />
                         </ListItemButton>
 
-                        <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                        <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                             router.push('/reports/officers_in_charge')
                             
                             
@@ -152,7 +152,7 @@ const ReportsSideMenu = () => {
             <List
                 component="div"
                 aria-labelledby="nested-list-subheader"
-                className='border-b border-green-600 p-0'
+                className='border-b border-blue-600 p-0'
                 subheader={
                     <ListItemButton
                         onClick={() => setMenu({ type: 'admin_offices', value: !menu.openAdminOfficesReports })}
@@ -167,7 +167,7 @@ const ReportsSideMenu = () => {
             >
                 <Collapse in={menu.openAdminOfficesReports} timeout="auto" unmountOnExit>
                     <List component="ul" disablePadding>
-                    <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                    <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                        
                             
                             
@@ -184,7 +184,7 @@ const ReportsSideMenu = () => {
             <List
                 component="div"
                 aria-labelledby="nested-list-subheader"
-                className={`${menu.openCUReports && 'border-b border-green-600'} p-0`}
+                className={`${menu.openCUReports && 'border-b border-blue-600'} p-0`}
                 subheader={
                     <ListItemButton
                         onClick={() => setMenu({ type: 'community_health_units', value: !menu.openCUReports })}
@@ -199,14 +199,14 @@ const ReportsSideMenu = () => {
             >
                 <Collapse in={menu.openCUReports} timeout="auto" unmountOnExit>
                     <List component="ul" disablePadding>
-                    <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                    <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                        
                             
                             
                     }}>
                             <ListItemText primary="Community Health Units Count" />
                         </ListItemButton>
-                        <ListItemButton className={'focus:bg-green-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
+                        <ListItemButton className={'focus:bg-blue-600 focus:text-white hover:text-gray-600'}  onClick={() => { 
                        
                             
                             

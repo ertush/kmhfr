@@ -149,13 +149,13 @@ const Home = (props) => {
 							{/* Bread Crumbs */}
 
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<Link className='text-green-700' href='/'>
+								<Link className='text-blue-700' href='/'>
 									Home
 								</Link>
 								{'/'}
 								<span className='text-gray-500'>Community Units</span>
 							</div>
-							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Community Units'}
                                 </h2>
@@ -277,7 +277,7 @@ const Home = (props) => {
 
 							<button
 								type="submit"
-								className="bg-green-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+								className="bg-blue-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
 							>
 								<SearchIcon className="w-5 h-5" /> Search
 							</button>  
@@ -381,7 +381,7 @@ const Home = (props) => {
 															: comm_unit.status_name
 																	.toLocaleLowerCase()
 																	.includes('fully')
-															? ' bg-green-200 border-green-300/60'
+															? ' bg-blue-200 border-blue-300/60'
 															: ' bg-yellow-200 border-yellow-300/60')
 													}>
 													{comm_unit.status_name[0].toLocaleUpperCase()}
@@ -390,7 +390,7 @@ const Home = (props) => {
 											) : (
 												''
 											)}
-											{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
+											{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-blue-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
 											{comm_unit.has_edits ? (
 												<span
 													className={

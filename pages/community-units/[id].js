@@ -26,7 +26,7 @@ const CommunityUnit = (props) => {
     () => import("../../components/Map"),
     {
       loading: () => (
-        <div className="text-gray-800 text-lg  bg-transparent border-green-600 py-2 px-5 shadow w-auto mx-2 my-3">
+        <div className="text-gray-800 text-lg  bg-transparent border-blue-600 py-2 px-5 shadow w-auto mx-2 my-3">
           Loading&hellip;
         </div>
       ),
@@ -44,7 +44,8 @@ const CommunityUnit = (props) => {
     { id: 'updated_by', label: 'User', minWidth: 100 },
     { id: 'updates', label: 'Updates', minWidth: 100, }
   ]);
-  const [rows, setRows] = useState([])
+  const [isClient, setIsClient] = useState(false);
+  const [rows, setRows] = useState([]);
 
   const fetchChangeLogs = async () => {
     await fetch(`/api/chus/data?path=changelog&id=${props?.data.id}`, {
@@ -62,7 +63,7 @@ const CommunityUnit = (props) => {
           updated_by: item.updated_by,
           updates: (item.updates.map((item, i) => (
             <div className={"self-start"}>
-              <span className={"font-bold text-2x self-start"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600 self-start'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-green-600 self-start'} key={item.new}>{item.new + ''}</span>
+              <span className={"font-bold text-2x self-start"} key={item.name} >{item.name}</span>:  &nbsp;<span className={'text-red-600 self-start'} key={item.old}>{item.old + ''} </span>{'>>'}  &nbsp;<span className={'text-blue-600 self-start'} key={item.new}>{item.new + ''}</span>
             </div>
           )))
         }
@@ -70,6 +71,11 @@ const CommunityUnit = (props) => {
       setRows(res)
     }).catch(err => { console.log(err) })
   }
+
+ 
+	useEffect(() => {
+	  setIsClient(true)
+	}, [])
 
 
   useEffect(() => {
@@ -81,6 +87,9 @@ const CommunityUnit = (props) => {
       }
     }
   }, [])
+
+  if(isClient) {
+
   return (
     <>
       <Head>
@@ -95,11 +104,11 @@ const CommunityUnit = (props) => {
 
             {/* Header */}
             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-              <Link className="text-green-700" href="/">
+              <Link className="text-blue-700" href="/">
                 Home
               </Link>
               {"/"}
-              <Link className="text-green-700" href="/community-units">
+              <Link className="text-blue-700" href="/community-units">
                 Community units
               </Link>
               {"/"}
@@ -112,8 +121,8 @@ const CommunityUnit = (props) => {
 
             <div
               className={
-                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? "border-green-600" : "border-yellow-700"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
-                ${cu.active ? "border-green-600" : "border-yellow-700"}
+                `md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full border ${cu.active ? "border-blue-600" : "border-yellow-700"} bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 
+                ${cu.active ? "border-blue-600" : "border-yellow-700"}
               `}
             >
               <div className="col-span-6 md:col-span-3">
@@ -124,7 +133,7 @@ const CommunityUnit = (props) => {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (cu.code ? "text-green-900" : "text-gray-500")
+                      (cu.code ? "text-blue-900" : "text-gray-500")
                     }
                   >
                     #{cu.code || "NO_CODE"}
@@ -137,7 +146,7 @@ const CommunityUnit = (props) => {
               <div className="flex flex-wrap gap-3 items-center justify-end col-span-6 md:col-span-2">
                 <div className="flex flex-wrap gap-3 w-full items-center justify-start md:justify-center">
                   {cu.is_approved ? (
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Approved
                     </span>
@@ -160,13 +169,13 @@ const CommunityUnit = (props) => {
                     </span>
                   )}
                   {cu.active && (
-                    <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <CheckCircleIcon className="h-4 w-4" />
                       CHU Active
                     </span>
                   )}
                   {cu.has_edits && (
-                    <span className="bg-blue-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <InformationCircleIcon className="h-4 w-4" />
                       Has changes
                     </span>
@@ -190,13 +199,13 @@ const CommunityUnit = (props) => {
           {/* Left side */}
           <div className="col-span-5 md:col-span-6 flex flex-col gap-3 mt-4">
             {/* Approve/Reject, Edit Buttons */}
-            <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <div className="flex flex-row justify-start items-center space-x-3 p-3">
                 {isApproveReject && <button
                   onClick={() => {
                     router.push("/community-units/approve/" + cu.id)
                   }}
-                  className={"p-2 text-center -md font-semibold text-base text-white bg-green-600"}
+                  className={"p-2 text-center -md font-semibold text-base text-white bg-blue-600"}
                 >
                   {/* Dynamic Button Rendering */}
                   {"Approve/Reject"}
@@ -222,10 +231,10 @@ const CommunityUnit = (props) => {
 
             <Tabs.Root
               orientation="horizontal"
-              className="w-full flex flex-col border border-green-600 tab-root"
+              className="w-full flex flex-col border border-blue-600 tab-root"
               defaultValue="overview"
             >
-              <Tabs.List className="list-none border-b border-green-600 flex flex-wrap gap-2 md:gap-3 uppercase leading-none tab-list font-semibold ">
+              <Tabs.List className="list-none border-b border-blue-600 flex flex-wrap gap-2 md:gap-3 uppercase leading-none tab-list font-semibold ">
                 <Tabs.Tab
                   id={1}
                   value="overview"
@@ -255,7 +264,7 @@ const CommunityUnit = (props) => {
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-                  <div className="bg-transparent border border-green-600 w-full p-3  grid grid-cols-2 gap-3 shadow-sm mt-4">
+                  <div className="bg-transparent border border-blue-600 w-full p-3  grid grid-cols-2 gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                       Status:
                     </h3>
@@ -267,14 +276,14 @@ const CommunityUnit = (props) => {
                         {cu.status_name
                           ?.toLocaleLowerCase()
                           .includes("fully-") ? (
-                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "Yes"}
                           </span>
                         ) : cu.status_name
                           ?.toLocaleLowerCase()
                           .includes("semi") ? (
-                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "Yes"}
                           </span>
@@ -290,7 +299,7 @@ const CommunityUnit = (props) => {
                       <label className=" text-gray-600">CHU approved</label>
                       <p className="text-black font-medium text-base flex">
                         {cu.is_approved ? (
-                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             Yes
                           </span>
@@ -311,7 +320,7 @@ const CommunityUnit = (props) => {
                               Deleted
                             </span>
                           ) : (
-                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                               Not Deleted
                             </span>
                           )}
@@ -327,7 +336,7 @@ const CommunityUnit = (props) => {
                               CHU Closed {cu.closed_date || ""}
                             </span>
                           ) : (
-                            <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <span className="bg-blue-200 text-blue-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                               Not closed
                             </span>
                           )}
@@ -350,11 +359,11 @@ const CommunityUnit = (props) => {
                         <label className=" text-gray-600">Has edits</label>
                         <p className="text-black font-medium text-base flex">
                           {cu.has_edits ? (
-                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                            <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                               Yes
                             </span>
                           ) : (
-                            <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <span className="bg-blue-200 text-blue-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                               No edits
                             </span>
                           )}
@@ -370,7 +379,7 @@ const CommunityUnit = (props) => {
                               CHU rejected {cu.closed_date || ""}
                             </span>
                           ) : (
-                            <span className="bg-green-200 text-green-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                            <span className="bg-blue-200 text-blue-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                               Not rejected
                             </span>
                           )}
@@ -378,7 +387,7 @@ const CommunityUnit = (props) => {
                       </div>
                     )}
                   </div>
-                  <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Coverage:
                     </h3>
@@ -399,7 +408,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Location:
                     </h3>
@@ -442,7 +451,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Regulation:
                     </h3>
@@ -486,7 +495,7 @@ const CommunityUnit = (props) => {
                       </label>
                       <p className="col-span-2 text-black font-medium text-base flex">
                         {cu.regulated ? (
-                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             Yes
                           </span>
@@ -499,7 +508,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Contacts:
                     </h3>
@@ -712,6 +721,11 @@ const CommunityUnit = (props) => {
       </MainLayout>
     </>
   );
+  }
+  else 
+  {
+    return null;
+  }
 };
 
 CommunityUnit.getInitialProps = async (ctx) => {

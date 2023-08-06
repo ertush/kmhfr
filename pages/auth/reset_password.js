@@ -23,7 +23,7 @@ const ResetPassword = (props) => {
                         <span>KMHFR-v3</span>
                     </div>
                     <div className="flex items-center justify-start w-full py-3">
-                        <a className="text-green-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</a>
+                        <a className="text-blue-800 text-lg font-medium hover:underline focus:underline active:underline" href="/">&larr; Back home</a>
                     </div>
                 </div>
                 <form onSubmit={ev => {
@@ -92,7 +92,7 @@ const ResetPassword = (props) => {
                     </div>
                    
                     <div className="flex flex-row gap-4 w-full text-center">
-                        <button type="submit" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-green-800 focus:bg-green-600 active:bg-green-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-green-700")}
+                        <button type="submit" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-blue-800 focus:bg-blue-600 active:bg-blue-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-blue-700")}
                         >{loading ? "Loading..." : "Send Request"}</button> 
                         <button className='flex justify-end items-center focus:outline-none focus:ring-1 focus:ring-yellow-500 text-black px-4 md:px-8 whitespace-nowrap py-3 rounded text-xl font-semibold hover:bg-gray-400 focus:bg-grey-400 active:bg-grey-400 ' 
                         onClick={()=>router.push('/auth/login')}

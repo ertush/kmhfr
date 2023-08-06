@@ -139,7 +139,7 @@ console.log(delete_permission);
                                       Are you sure you want to delete<b>{group_details?.name}</b> ?
                                 </span>
                                <div className='flex justify-start gap-4 mt-4'>
-                                    <button className="bg-green-500 text-white font-semibold  p-2 text-center" type="button" onClick={(e)=>{deleteGroup(e);setOpen(false)}} disabled={!delete_permission} >Delete</button>
+                                    <button className="bg-blue-500 text-white font-semibold  p-2 text-center" type="button" onClick={(e)=>{deleteGroup(e);setOpen(false)}} disabled={!delete_permission} >Delete</button>
                                     <button className="bg-red-500 text-white font-semibold  p-2 text-center" 
                                     onClick={()=> {setOpen(false)}} 
                                     >Cancel</button>
@@ -150,13 +150,13 @@ console.log(delete_permission);
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <a className="text-green-700" href="/">Home</a> {'/'}
-                                <a className="text-green-700" href="/users/groups">Groups</a> {'/'}
+                                <a className="text-blue-700" href="/">Home</a> {'/'}
+                                <a className="text-blue-700" href="/users/groups">Groups</a> {'/'}
                                 <span className="text-gray-500">Edit group</span>
                             </div>
                         </div>
 						<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password || status?.message}</Alert>}</div>
-                        <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow  text-black md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                        <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow  text-black md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <PencilAltIcon className='ml-2 h-5 w-5' />
                                     {'Edit Group'}
@@ -401,7 +401,7 @@ console.log(delete_permission);
 															<button
 																disabled={!add_permission}
 																type='submit'
-																className=' bg-green-600 p-2 text-white flex text-md font-semibold '>
+																className=' bg-blue-600 p-2 text-white flex text-md font-semibold '>
 																<span className='text-medium font-semibold text-white'>
 																	Update
 																</span>
@@ -415,7 +415,7 @@ console.log(delete_permission);
                         
                
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

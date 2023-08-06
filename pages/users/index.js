@@ -132,19 +132,19 @@ const Users = (props) => {
                     <div className="col-span-7 flex flex-col gap-x-1 ">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <Link className="text-green-700" href="/">Home</Link> {'/'}
+                                <Link className="text-blue-700" href="/">Home</Link> {'/'}
                                 <span className="text-gray-500">Users</span> 
                             </div>
                         </div>
                             
                            <Collapse in={show}>{Object.keys(router.query).length > 0 ? <div><Alert severity={router?.query.status} sx={{width:'100%'}} onClose={()=> setShow(false)}>{router?.query.message}</Alert></div>: null}</Collapse>
                             
-                            <div className={`col-span-5 flex justify-between w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border border-green-600 border-l-8  ${'border-green-600'} `}>
+                            <div className={`col-span-5 flex justify-between w-full bg-transparent drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border border-blue-600 border-l-8  ${'border-blue-600'} `}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 
                                     {'Manage Users'}
                                 </h2>
-                                <button className=' bg-green-600 p-2 text-white flex items-center text-lg font-semibold'
+                                <button className=' bg-blue-600 p-2 text-white flex items-center text-lg font-semibold'
                                 onClick={() => {router.push('/users/user')}} 
                                 >
                                     {`Add User `}
@@ -153,7 +153,7 @@ const Users = (props) => {
                         
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto border border-green-600'>
+                    <div className='col-span-1 w-full col-start-1 h-auto border border-blue-600'>
 						
                         <List
                         sx={{ width: '100%', bgcolor: 'transparent', flexGrow:1 }}
@@ -161,7 +161,7 @@ const Users = (props) => {
                         aria-labelledby="nested-list-subheader"
                        
                         >	
-                            <ListItemButton className='border-b border-green-600' sx={{
+                            <ListItemButton className='border-b border-blue-600' sx={{
                             backgroundColor: usersTheme && 'rgba(5, 150, 105,  1)',
 											color: usersTheme && '#ffff',
 											borderBottom: 'solid 1px rgba(5, 150, 105, 1)', 
@@ -238,18 +238,18 @@ const Users = (props) => {
                                     type="search"
                                     defaultValue={''}
                                     placeholder="Search a facility/CHU..."
-                                    className="flex-none bg-transparent p-2 md:w-6/12 md:flex-grow-0 flex-grow shadow-sm border border-green-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                                    className="flex-none bg-transparent p-2 md:w-6/12 md:flex-grow-0 flex-grow shadow-sm border border-blue-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
                                 />
                                 <button
                                     type="submit"
-                                className="bg-transparent border-t border-r border-b border-green-600 text-black flex items-center justify-center px-4 py-1"
+                                className="bg-transparent border-t border-r border-b border-blue-600 text-black flex items-center justify-center px-4 py-1"
                                     
                                 >
-                                    <SearchIcon className="w-5 h-5 text-green-600" />
+                                    <SearchIcon className="w-5 h-5 text-blue-600" />
                                 </button>
                                 <div className='text-white text-md'>
 
-                                <button className="flex items-center ml-4 bg-green-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
+                                <button className="flex items-center ml-4 bg-blue-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
                                                 let dl_url = props?.current_url
                                                 if (dl_url.includes('?')) { dl_url += `&format=csv&access_token=${props.token}` } else { dl_url += `?format=csv&access_token=${props.token}` }
                                                 console.log('Downloading CSV. ' + dl_url || '')
@@ -289,16 +289,16 @@ const Users = (props) => {
                                     />
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full border border-green-600 items-center justify-end my-2">
-                                <li className="text-base text-green-500">
+                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full border border-blue-600 items-center justify-end my-2">
+                                <li className="text-base text-blue-500">
                                     <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                        <span className="text-white bg-green-600 font-semibold px-2 py-1 ">{props?.data?.current_page}</span>
+                                        <span className="text-white bg-blue-600 font-semibold px-2 py-1 ">{props?.data?.current_page}</span>
                                     </Link>
                                 </li>
                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
                                     <li key={page} className="text-base text-gray-600">
                                         <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
-                                            <span className="text-green-800 p-2 hover:underline active:underline focus:underline">{page}</span>
+                                            <span className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</span>
                                         </Link>
                                     </li>
                                 ))}
@@ -314,7 +314,7 @@ const Users = (props) => {
 
 
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>
