@@ -12,7 +12,8 @@ module.exports = {
         },
         color:{
             'django-blue': '#d2e2ed',
-            'charred-paper': 'whitesmoke'
+            'charred-paper': 'whitesmoke',
+            'django-grey':'#eff6ff'
         }
     },
     variants: {

@@ -99,7 +99,7 @@ const system_setup = (props) => {
     const handleClose = () => setOpen(false);
     const [sbcty_constituency, setSbctyConstituency] = useState([]);
     const [value, setValue] = React.useState('1');
-    const columns= [
+    const [columns, setColumns] = useState([
         { field: 'name', headerName: 'Name', flex: 1 },
         { field: 'code', headerName: 'Code', flex: 1},
         { field: 'action',headerName: 'Action', renderCell: (params) => (
@@ -107,28 +107,28 @@ const system_setup = (props) => {
               variant="contained"
               size="small"
               className="flex flex-row items-center gap-2"
-              onClick={() => {setEditID(row.id); setEditMode(true); setIsAddForm(true);}}
+              onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
               
             >
-              <p className="text-blue-900 font-semibold">View</p>
+              <p className="text-blue-900 font-semibold">Edit</p>
               <PencilAltIcon className="h-5 w-5 text-blue-900"/>
             </button>
         ) ,flex: 1}
-      ];
-    const rows = Array.from(props?.data?.results, ({id, name, code}) => ({action:() => <ActionButton id={id} />, name, code, id}))
+      ]);
+    const [rows, setRows] = useState(Array.from(props?.data?.results, ({id, name, code}) => ({name, code, id})))
 
     const [logsColumns] = useState([
-        { id: 'updated_on', label: 'Date', minWidth: 100 },
-        { id: 'updated_by', label: 'User', minWidth: 100},
-        { id: 'updates',label: 'Updates',minWidth: 100, }
+        { field: 'updated_on', headerName: 'Date', flex: 1 },
+        { field: 'updated_by', headerName: 'User', flex: 1},
+        { field: 'updates',headerName: 'Updates',flex: 1, }
       ]);
     const [constituenciesColumns] = useState([
-        { id: 'name', label: 'Name', minWidth: 100 },
-        { id: 'code', label: 'Code', minWidth: 100},
+        { field: 'name', headerName: 'Name', flex: 1 },
+        { field: 'code', headerName: 'Code', flex: 1},
     ]);
     const [wardsColumns] = useState([
-        { id: 'name', label: 'Name', minWidth: 100 },
-        { id: 'code', label: 'Code', minWidth: 100},
+        { field: 'name', headerName: 'Name', flex: 1 },
+        { field: 'code', headerName: 'Code', flex: 1},
     ]);
     const [county_users] = useState([
         { field: 'user_full_name', headerName: 'User', width: 200 },
@@ -160,7 +160,7 @@ const system_setup = (props) => {
         // }
     },[])
    
-    const fetchDataCategory = async () => {
+    const fetchDataCategory =  () => {
   
     // Fetch data
     try{
@@ -168,288 +168,641 @@ const system_setup = (props) => {
         if(is_parent !== null){
             url = url + `&is_parent=${is_parent}`
         }
-        console.log(url);
-        const response = await fetch(url)
+        // console.log(url);
+        fetch(url)
+        .then(res => res.json())
+        .then(_data => {
+            if(_data.results.length > 0){
+                // update columns
+                // console.log({resourceCategory})
+                switch(resourceCategory){
+                  case 'AdminUnits':
+                        console.log({resource})
+                        switch(resource){
 
-        const _data = await response.json() 
-        
-        if(_data.results.length > 0){
-            // update columns
-            switch(resourceCategory){
-              case 'AdminUnits':
-                    switch(resource){
-                        case 'wards':
-                            setColumns([
-                                { id: 'name', label: 'Name', minWidth: 100 },
-                                { id: 'code', label: 'Code', minWidth: 100},
-                                { id: 'sub_county_name', label: 'Sub-county', minWidth: 100},
-                                { id: 'constituency_name', label: 'Constituency', minWidth: 100},
-                                { id: 'county_name', label: 'County', minWidth: 100},
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                              ])
-
-                              setRows(Array.from(_data.results, ({id, name, code, sub_county_name, constituency_name, county_name}) => ({id, name, code, sub_county_name, constituency_name, county_name})))
-
-                              break;
-                        case 'towns':
-                            setColumns([
-                                { id: 'name', label: 'Name', minWidth: 100 },
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                              ])
-                                
-                              setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
-                              break;
-                        default:
-                            setColumns([
-                                { id: 'name', label: 'Name', minWidth: 100 },
-                                { id: 'code', label: 'Code', minWidth: 100},
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                              ])
-                
-                            setRows(Array.from(_data.results, ({id, name, code}) => ({id, name, code})))
-                    }
-                    
-                  break;
-              case 'ServiceCatalogue':
-                  setColumns([
-                      { id: 'name', label: 'Name', minWidth: 100 },
-                      { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                  ])
-      
-                  setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
-                  
-                  break;
-              case 'HealthInfrastructure':
-                  if(resource === 'infrastructure'){
-                    setColumns([
-                        { id: 'name', label: 'Name', minWidth: 100 },
-                        { id: 'category_name', label: 'Category', minWidth: 100 },
-                        { id: 'numbers', label: 'Tracking numbers?', minWidth: 100, format: 'boolean' },
-                        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                    ])
-                    
-                   
-                    setRows(Array.from(_data.results, ({id, name, category_name, numbers}) => ({id, name, category_name, numbers})))
-                  }
-                  else{
-                    setColumns([
-                        { id: 'name', label: 'Name', minWidth: 100 },
-                        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                    ])
-                    
-                    setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
-                  }
-                 
-                  break;
-              case 'HR':
-                  setColumns([
-                      { id: 'name', label: 'Name', minWidth: 100 },
-                      { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                  ])
-      
-                  setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
-                  
-                  break;
-              case 'Contacts':
-                  setColumns([
-                      { id: 'num', label: '#', minWidth: 100 },
-                      { id: 'name', label: 'Name', minWidth: 100 },
-                      { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                  ])
-      
-                  setRows(Array.from(_data.results, ({id, name}, i) => ({id, num:i+1, name})))
-                  
-                  break;
-              case 'Facilities':
-                  switch(resource){
-                        case 'facility_depts':
-                            setColumns([
-                                { id: 'name', label: 'Name', minWidth: 100 },
-                                { id: 'description', label: 'Description', minWidth: 100 },
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                            ])
-                            
-                          
-
-                            setRows(Array.from(_data.results, ({id, name, description}) => ({id, name, description})))
-                            break;
-
-                        case 'facility_types':
-                            
-                            switch(addBtnLabel){
-
-                                case 'facility type detail':
-                                    setColumns([    
-                                        { id: 'name', label: 'Facility Type', minWidth: 100 },
-                                        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
+                            case 'counties':
+                               
+                                setColumns([
+                                    { field: 'name', headerName: 'Name', flex: 1 },
+                                    { field: 'code', headerName: 'Code', flex: 1},
+                                    { field: 'action',headerName: 'Action', renderCell: (params) => (
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                            {console.log({countiesParams: params})}
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    ) ,flex: 1}
+                                  ])
+    
+                                  setRows(Array.from(_data.results, ({id, name, code}) => ({name, code, id})))
+    
+                                  break;
+                                // Check and fix the data
+                                case 'sub_counties':
+                               
+                                  setColumns([
+                                      { field: 'name', headerName: 'Name', flex: 1 },
+                                      { field: 'code', headerName: 'Code', flex: 1},
+                                      { field: 'action',headerName: 'Action', renderCell: (params) => (
+                                          <button
+                                            variant="contained"
+                                            size="small"
+                                            className="flex flex-row items-center gap-2"
+                                            onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                            
+                                          >
+                                            <p className="text-blue-900 font-semibold">Edit</p>
+                                            <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                          </button>
+                                      ) ,flex: 1}
                                     ])
-                                    
-                                    
-                                    setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+      
+                                    setRows(Array.from(_data.results, ({id, name, code}) => ({name, code, id})))
+      
                                     break;
 
-                                case 'facility type category':
+                                    case 'constituencies':
+                               
                                     setColumns([
-                                        { id: 'name', label: 'Facility Type Details', minWidth: 100 },
-                                        { id: 'sub_division', label: 'Facility Type', minWidth: 100 },
-                                        { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                                    ])
+                                        { field: 'name', headerName: 'Name', flex: 1 },
+                                        { field: 'code', headerName: 'Code', flex: 1},
+                                        { field: 'action',headerName: 'Action', renderCell: (params) => (
+                                            <button
+                                              variant="contained"
+                                              size="small"
+                                              className="flex flex-row items-center gap-2"
+                                              onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                              
+                                            >
+                                              <p className="text-blue-900 font-semibold">Edit</p>
+                                              <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                            </button>
+                                        ) ,flex: 1}
+                                      ])
+        
+                                      setRows(Array.from(_data.results, ({id, name, code}) => ({name, code, id})))
+        
+                                      break;
 
-                                   
-                                    setRows(Array.from(_data.results, ({id, name, sub_division}) => ({id, name, sub_division})))
-                                    break;  
-
-                            }
-                           
-                            break;
-
-                        case 'facility_status':
-                            setColumns([    
-                                { id: 'name', label: 'Facility Status', minWidth: 100 },
-                                { id: 'is_public_visible', label: 'Public Visible', minWidth: 100 },
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                            ])
-                            
-                          
-
-                            setRows(Array.from(_data.results, ({id, name, is_public_visible}) => ({id, name, is_public_visible:is_public_visible ? 'Yes' : 'No'})))
-
-                            break;
-                        
-                        case 'facility_admission_status':
-                            setColumns([
-                                { id: 'name', label: 'Facility Admission Status', minWidth: 100 },
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                            ])
-                            
-                         
-
-                            setRows(Array.from(_data.results, ({id, name, is_public_visible}) => ({id, name, is_public_visible:is_public_visible ? 'Yes' : 'No'})))
-                            break;
-
-                        case 'facility_service_ratings':
-                            setColumns([
-                                { id: 'facility_name', label: 'Facility', minWidth: 100 },
-                                { id: 'service_name', label: 'Service', minWidth: 100 },
-                                { id: 'comment', label: 'Comment', minWidth: 100 },
-                                { id: 'rating', label: 'Rating', minWidth: 100 },
-                                { id: 'created', label: 'Date', minWidth: 100 },
-                                
-                            ])
-                           
-
-                            setRows(Array.from(_data.results, ({id, facility_name, service_name, comment, rating, date}) => ({id, facility_name, service_name, comment, rating, date})))
-                            break;
-
-                        case 'owner_types':
+                            case 'wards':
+                                setColumns([
+                                    { field: 'name', headerName: 'Name', flex: 1 },
+                                    { field: 'code', headerName: 'Code', flex: 1},
+                                    { field: 'sub_county_name', headerName: 'Sub-county', flex: 1},
+                                    { field: 'constituency_name', headerName: 'Constituency', flex: 1},
+                                    { field: 'county_name', headerName: 'County', flex: 1},
+                                    { field: 'action', headerName: 'Action', flex: 1, renderCell: (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                  ])
     
-                            setColumns([
-                                { id: 'name', label: 'Name', minWidth: 100 },
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                            ])
-                            
-                            setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
-                            
-                            break;
-
-                        case 'owners':
-
-                            setColumns([
-                                { id: 'code', label: 'Code', minWidth: 100 },
-                                { id: 'name', label: 'Name', minWidth: 100 },
-                                { id: 'abbreviation', label: 'Abbreviation', minWidth: 100 },
-                                { id: 'owner_type_name',label: 'Owner Type',minWidth: 100},
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                            ])
-                            
-                            setRows(Array.from(_data.results, ({id, code, name, abbreviation, owner_type_name}) => ({id, code, name, abbreviation, owner_type_name})))
-                            
-                            break;
-
+                                  setRows(Array.from(_data.results, ({id, name, code, sub_county_name, constituency_name, county_name}) => ({id, name, code, sub_county_name, constituency_name, county_name})))
+    
+                                  break;
+                            case 'towns':
+                           
+                                setColumns([
+                                    { field: 'name', headerName: 'Name', flex: 1 },
+                                    { field: 'action',headerName: 'Action', flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                  ])
+                                    
+                                  setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                                  break;
+                            default:
+                                  
+                                setColumns([
+                                    { field: 'name', headerName: 'Name', flex: 1 },
+                                    { field: 'code', headerName: 'Code', flex: 1},
+                                    { field: 'action',headerName: 'Action',flex: 1}
+                                  ])
+                    
+                                setRows(Array.from(_data.results, ({id, name, code}) => ({id, name, code})))
+                        }
                         
-                        case 'job_titles':
-
-                            setColumns([
-                                { id: 'name', label: 'Name', minWidth: 100 },
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                            ])
-                            
-                            setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
-                            
-                            break;
+                      break;
+                  case 'ServiceCatalogue':
                         
-                        case 'regulating_bodies':
-
-                            setColumns([
-                                { id: 'name', label: 'Name', minWidth: 100 },
-                                { id: 'abbreviation', label: 'Abbreviation', minWidth: 100 },
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                            ])
-                            
-                            setRows(Array.from(_data.results, ({id, abbreviation, name}) => ({id, abbreviation, name})))
-                            
-                            break;
-
-                        case 'regulation_status':
-
-                            setColumns([
-                                { id: 'name', label: 'Name', minWidth: 100 },
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                            ])
-                            
-                            setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
-                            
-                            break;
-
-                        case 'level_change_reasons':
-
-                            setColumns([
-                                { id: 'reason', label: 'Change Reason', minWidth: 100 },
-                                { id: 'description',label: 'Description', minWidth: 100, align:'right'},
-                                { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-
-                            ])
-                            
-                            setRows(Array.from(_data.results, ({id, reason, description}) => ({id, reason, description})))
-                            
-                            break;
-
-                        default:
-                            break;
-
-                  }
-
-                  break;
-                 
-              case 'CHU':
-                  setColumns([
-                      { id: 'facility_name', label: 'Facility', minWidth: 100 },
-                      { id: 'chu_name', label: 'CHU', minWidth: 100 },
-                      { id: 'comment', label: 'Comment', minWidth: 100 },
-                      { id: 'rating', label: 'Rating', minWidth: 100 },
-                      { id: 'created',label: 'Date',minWidth: 100, align:'right'}
-                  ])
-                  
-                  setRows(Array.from(_data.results, ({id, facility_name, chu_name, comment, rating, date}) => ({id, facility_name, chu_name, comment, rating, date})))
-                  break;
-
-              case 'Documents':
-      
-                  setColumns([
-                      { id: 'name', label: 'Name', minWidth: 100 },
-                      { id: 'description', label: 'Description', minWidth: 100 },
-                      { id: 'fyl', label: 'Link', minWidth: 100,  link: true },
-                      { id: 'action',label: 'Action',minWidth: 100, align:'right'}
-                  ])
-                  
-                  setRows(Array.from(_data.results, ({id, name, description, fyl}) => ({id, name, description, fyl})))
-               
-                  break;
-
+                      setColumns([
+                          { field: 'name', headerName: 'Name', flex: 1 },
+                          { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                      ])
           
+                      setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                      
+                      break;
+                  case 'HealthInfrastructure':
+                      if(resource === 'infrastructure'){
+                        setColumns([
+                            { field: 'name', headerName: 'Name', flex: 1 },
+                            { field: 'category_name', headerName: 'Category', flex: 1 },
+                            { field: 'numbers', headerName: 'Tracking numbers?', flex: 1, format: 'boolean' },
+                            { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                        ])
+                        
+                       
+                        setRows(Array.from(_data.results, ({id, name, category_name, numbers}) => ({id, name, category_name, numbers})))
+                      }
+                      else{
+                        setColumns([
+                            { field: 'name', headerName: 'Name', flex: 1 },
+                            { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                        ])
+                        
+                        setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                      }
+                     
+                      break;
+                  case 'HR':
+                      setColumns([
+                          { field: 'name', headerName: 'Name', flex: 1 },
+                          { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                      ])
+          
+                      setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                      
+                      break;
+                  case 'Contacts':
+                      setColumns([
+                          { field: 'num', headerName: '#', flex: 1 },
+                          { field: 'name', headerName: 'Name', flex: 1 },
+                          { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                      ])
+          
+                      setRows(Array.from(_data.results, ({id, name}, i) => ({id, num:i+1, name})))
+                      
+                      break;
+                  case 'Facilities':
+                      switch(resource){
+                            case 'facility_depts':
+                                setColumns([
+                                    { field: 'name', headerName: 'Name', flex: 1 },
+                                    { field: 'description', headerName: 'Description', flex: 1 },
+                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                ])
+                                
+                              
+    
+                                setRows(Array.from(_data.results, ({id, name, description}) => ({id, name, description})))
+                                break;
+    
+                            case 'facility_types':
+                                
+                                switch(addBtnLabel){
+    
+                                    case 'facility type detail':
+                                        setColumns([    
+                                            { field: 'name', headerName: 'Facility Type', flex: 1 },
+                                            { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                        ])
+                                        
+                                        
+                                        setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                                        break;
+    
+                                    case 'facility type category':
+                                        setColumns([
+                                            { field: 'name', headerName: 'Facility Type Details', flex: 1 },
+                                            { field: 'sub_division', headerName: 'Facility Type', flex: 1 },
+                                            { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                        ])
+    
+                                       
+                                        setRows(Array.from(_data.results, ({id, name, sub_division}) => ({id, name, sub_division})))
+                                        break;  
+    
+                                }
+                               
+                                break;
+    
+                            case 'facility_status':
+                                setColumns([    
+                                    { field: 'name', headerName: 'Facility Status', flex: 1 },
+                                    { field: 'is_public_visible', headerName: 'Public Visible', flex: 1 },
+                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                ])
+                                
+                              
+    
+                                setRows(Array.from(_data.results, ({id, name, is_public_visible}) => ({id, name, is_public_visible:is_public_visible ? 'Yes' : 'No'})))
+    
+                                break;
+                            
+                            case 'facility_admission_status':
+                                setColumns([
+                                    { field: 'name', headerName: 'Facility Admission Status', flex: 1 },
+                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                ])
+                                
+                             
+    
+                                setRows(Array.from(_data.results, ({id, name, is_public_visible}) => ({id, name, is_public_visible:is_public_visible ? 'Yes' : 'No'})))
+                                break;
+    
+                            case 'facility_service_ratings':
+                                setColumns([
+                                    { field: 'facility_name', headerName: 'Facility', flex: 1 },
+                                    { field: 'service_name', headerName: 'Service', flex: 1 },
+                                    { field: 'comment', headerName: 'Comment', flex: 1 },
+                                    { field: 'rating', headerName: 'Rating', flex: 1 },
+                                    { field: 'created', headerName: 'Date', flex: 1 },
+                                    
+                                ])
+                               
+    
+                                setRows(Array.from(_data.results, ({id, facility_name, service_name, comment, rating, date}) => ({id, facility_name, service_name, comment, rating, date})))
+                                break;
+    
+                            case 'owner_types':
+        
+                                setColumns([
+                                    { field: 'name', headerName: 'Name', flex: 1 },
+                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                ])
+                                
+                                setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                                
+                                break;
+    
+                            case 'owners':
+    
+                                setColumns([
+                                    { field: 'code', headerName: 'Code', flex: 1 },
+                                    { field: 'name', headerName: 'Name', flex: 1 },
+                                    { field: 'abbreviation', headerName: 'Abbreviation', flex: 1 },
+                                    { field: 'owner_type_name',headerName: 'Owner Type',flex: 1},
+                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                ])
+                                
+                                setRows(Array.from(_data.results, ({id, code, name, abbreviation, owner_type_name}) => ({id, code, name, abbreviation, owner_type_name})))
+                                
+                                break;
+    
+                            
+                            case 'job_titles':
+    
+                                setColumns([
+                                    { field: 'name', headerName: 'Name', flex: 1 },
+                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                ])
+                                
+                                setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                                
+                                break;
+                            
+                            case 'regulating_bodies':
+    
+                                setColumns([
+                                    { field: 'name', headerName: 'Name', flex: 1 },
+                                    { field: 'abbreviation', headerName: 'Abbreviation', flex: 1 },
+                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                ])
+                                
+                                setRows(Array.from(_data.results, ({id, abbreviation, name}) => ({id, abbreviation, name})))
+                                
+                                break;
+    
+                            case 'regulation_status':
+    
+                                setColumns([
+                                    { field: 'name', headerName: 'Name', flex: 1 },
+                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                                ])
+                                
+                                setRows(Array.from(_data.results, ({id, name}) => ({id, name})))
+                                
+                                break;
+    
+                            case 'level_change_reasons':
+    
+                                setColumns([
+                                    { field: 'reason', headerName: 'Change Reason', flex: 1 },
+                                    { field: 'description',headerName: 'Description', flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )},
+                                    { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+    
+                                ])
+                                
+                                setRows(Array.from(_data.results, ({id, reason, description}) => ({id, reason, description})))
+                                
+                                break;
+    
+                            default:
+                                break;
+    
+                      }
+    
+                      break;
+                     
+                  case 'CHU':
+                      setColumns([
+                          { field: 'facility_name', headerName: 'Facility', flex: 1 },
+                          { field: 'chu_name', headerName: 'CHU', flex: 1 },
+                          { field: 'comment', headerName: 'Comment', flex: 1 },
+                          { field: 'rating', headerName: 'Rating', flex: 1 },
+                          { field: 'created',headerName: 'Date',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                      ])
+                      
+                      setRows(Array.from(_data.results, ({id, facility_name, chu_name, comment, rating, date}) => ({id, facility_name, chu_name, comment, rating, date})))
+                      break;
+    
+                  case 'Documents':
+          
+                      setColumns([
+                          { field: 'name', headerName: 'Name', flex: 1 },
+                          { field: 'description', headerName: 'Description', flex: 1 },
+                          { field: 'fyl', headerName: 'Link', flex: 1,  link: true },
+                          { field: 'action',headerName: 'Action',flex: 1, renderCell:  (params) => (
+                                    
+                                        <button
+                                          variant="contained"
+                                          size="small"
+                                          className="flex flex-row items-center gap-2"
+                                          onClick={() => {setEditID(params.row.id); setEditMode(true); setIsAddForm(true);}}
+                                          
+                                        >
+                                          <p className="text-blue-900 font-semibold">Edit</p>
+                                          { console.log({params})}
+                                          <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                                        </button>
+                                    )}
+                      ])
+                      
+                      setRows(Array.from(_data.results, ({id, name, description, fyl}) => ({id, name, description, fyl})))
+                   
+                      break;
+    
+              
+          
+               }
+              }
+        })
+
       
-           }
-          }
+        
+        
       
 
     } catch (e){
@@ -598,7 +951,7 @@ const system_setup = (props) => {
     const ChangeLog = () => {
         return(
             <>
-            <button className='flex items-center justify-start space-x-2 p-1 border-2 border-black  px-2'
+            <button className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'
             onClick={() => {
                 setViewLog(!viewLog);
                 fetchChangeLogs()
@@ -660,7 +1013,7 @@ const system_setup = (props) => {
         )
     }
     //select options
-    useEffect(async() => {
+    useEffect(() => {
         let url = ''
         if(addBtnLabel ==='infrastructure' || addBtnLabel ==='facility department' || addBtnLabel ==='facility owner category' || addBtnLabel === 'facility type category' || addBtnLabel === 'regulatory body' || addBtnLabel === 'specialty' || addBtnLabel === 'category' || addBtnLabel === 'constituency'|| addBtnLabel === 'ward'){
             if(addBtnLabel ==='facility department'){
@@ -688,29 +1041,38 @@ const system_setup = (props) => {
                 url =`/api/system_setup/data/?resource=counties&resourceCategory=AdminUnits&fields=id,name`                
             }
 
-            const response = await fetch(url)
-            const _data = await response.json()
-            const results = _data.results.map(({id, name}) => ({value:id, label:name}))
-            setSelectOptionss(results)        
+             fetch(url)
+             .then(res => res.json())
+             .then(res => {
+                setSelectOptionss(res.results.map(({id, name}) => ({value:id, headerName:name})))
+            })
+                
         }
         if(addBtnLabel === 'service'){
             let resource =['option_groups', 'service_categories']
             let options = []
-            resource.forEach(async (item, i)=>{
-                const response = await fetch(`/api/system_setup/data/?resource=${item}&resourceCategory=ServiceCatalogue&fields=id,name`)
-                const _data = await response.json()
-                const results = _data.results.map(({id, name}) => ({value:id, label:name}))
-                options.push(results)
-                setSelectOptionss(options)
+            resource.forEach((item, i)=>{
+                fetch(`/api/system_setup/data/?resource=${item}&resourceCategory=ServiceCatalogue&fields=id,name`)
+                .then(res => res.json())
+                .then(res => {
+                    const results = res.results.map(({id, name}) => ({value:id, headerName:name}));
+                    options.push(results)
+                    setSelectOptionss(options)
+
+
+                })
+               
                
             })
         }
         isAddForm==false ?? setLogsRows([]); setViewLog(false); 
-
+   
+        // const results = _data.
+        // setSelectOptionss(results) 
     }, [addBtnLabel, isAddForm])
 
     //editData
-    useEffect(async() => {
+    useEffect(() => {
         if(editMode && editID !== ''){
             setTitle(`Edit ${addBtnLabel}`); 
             let url = []
@@ -722,29 +1084,68 @@ const system_setup = (props) => {
                     `/api/system_setup/data/?resource=constituencies&resourceCategory=${resourceCategory}&county=${editID}`,
                     `/api/system_setup/data/?resource=user_counties&resourceCategory=${resourceCategory}&county=${editID}`,
                     ]
-                     resp= await Promise.all(url.map(url=>fetch(url)))
-                     data = await Promise.all(resp.map(r=>r.json()))
-                    setEditData(data)
-                    setIsLoading(false)
+                     Promise.all(url.map(url=>fetch(url)))
+                     .then(resp => {
+                        Promise.all(resp.map(r=>r.json()))
+                        .then(
+                           data => {
+                               setEditData(data)
+                               setIsLoading(false)
+                           }
+                        )
+                     })
+                    
+                    
+                break;
+                case 'sub_county':
+                    url = [`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`, 
+                    `/api/system_setup/data/?resource=wards&resourceCategory=${resourceCategory}&sub_county=${editID}`,
+                    ]
+                    Promise.all(url.map(url=>fetch(url)))
+                    .then(resp => {
+                        Promise.all(resp.map(r=>r.json()))
+                        .then(
+                           data => {
+                               
+                               setEditData(data)
+                               setIsLoading(false)
+                           }
+                        )
+                    })
+                    
+                    
                 break;
                 case 'constituency':
                     url = [`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`, 
                     `/api/system_setup/data/?resource=wards&resourceCategory=${resourceCategory}&constituency=${editID}`,
                     ]
-                     resp= await Promise.all(url.map(url=>fetch(url)))
-                     data = await Promise.all(resp.map(r=>r.json()))
-                    setEditData(data)
-                    setIsLoading(false)
+                    Promise.all(url.map(url=>fetch(url)))
+                    .then(resp => {
+                        Promise.all(resp.map(r=>r.json()))
+                        .then(
+                           data => {
+                               
+                               setEditData(data)
+                               setIsLoading(false)
+                           }
+                        )
+                    })
+                    
+                    
                 break;
             
                 default:
-                    const response = await fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`)
-                    const _data = await response.json()
+                   fetch(`/api/system_setup/data/?resource=${resource}&resourceCategory=${resourceCategory}&id=${editID}`)
+                   .then(res => res.json())
+                   .then(_data => {
                     setEditData(_data)
-                    console.log(_data?.county?.id);
                     addBtnLabel === 'regulatory body' ? setContactList([..._data.contacts]): addBtnLabel === 'option group' ? setOptionGroup([..._data.options]) :null
                     addBtnLabel === 'ward' ? fetchSbctyConstituency(_data.county.id) : null
         
+                   })
+                  
+                    // console.log(_data?.county?.id);
+                  
                 break;
             }
             
@@ -854,6 +1255,18 @@ const system_setup = (props) => {
                                             onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code']); setResource('counties'); setResourceCategory('AdminUnits'); setTitle('counties'); setAddBtnLabel('county'); setEditMode(false); setEditID(null) }}>
                                                 <ListItemText primary="Counties" />
                                             </ListItemButton>
+                                            {/* Sub Counties */}
+                                            <ListItemButton componene="li" 
+                                            sx={{
+                                                backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'sub_county' ? '#2563eb' : 'none'}`, 
+                                                color:`${addBtnLabel.toLocaleLowerCase() == 'sub_county' ? 'white' :'none'}`,
+                                                borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'sub_county' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                }} 
+                                                onClick={() =>  {setIsAddForm(false); setAddBtnLabel('sub_county'); setFields(['id','name', 'code']); setResource('sub_counties')}} 
+
+                                            >
+                                                <ListItemText primary="Sub Counties"/>
+                                            </ListItemButton>
                                             {/* Constituencies */}
                                             <ListItemButton componene="li" 
                                             sx={{
@@ -861,7 +1274,9 @@ const system_setup = (props) => {
                                                 color:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'white' :'none'}`,
                                                 borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                 }} 
+                                                onClick={() =>  {setIsAddForm(false); setAddBtnLabel('constituency'); setFields(['id','name', 'code']); setResource('constituencies')}} 
                                             >
+                                                {console.log({addBtnLabel})}
                                                 <ListItemText primary="Constituencies"/>
                                             </ListItemButton>
                                             {/* Wards */}
@@ -944,11 +1359,11 @@ const system_setup = (props) => {
                                             {/* Categories */}
                                             <ListItemButton componene="li" 
                                                 sx={{
-                                                    backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'category' ? '#2563eb' : 'none'}`, 
-                                                    color:`${addBtnLabel.toLocaleLowerCase() == 'category' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infra_category' ? '#2563eb' : 'none'}`, 
+                                                    color:`${addBtnLabel.toLocaleLowerCase() == 'infra_category' ? 'white' :'none'}`,
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'infra_category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
-                                                onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('categories'); setAddBtnLabel('category'); setEditMode(false); setEditID(null)}}>
+                                                onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('categories'); setAddBtnLabel('infra_category'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Categories" />
                                             </ListItemButton>
                                             {/* Infrastructure */}
@@ -1224,7 +1639,7 @@ const system_setup = (props) => {
                                     <TextField id="search_table_data" label="Search anything" variant="standard" />
                                     <button type= "submit" className='bg-blue-500  p-2 text-base font-semibold text-white'>Export</button>
                                 </form> */}
-                            <Paper className="shadow-md rounded-none" sx={{ width: '100%', height:700, overflow: 'hidden', boxShadow:'0', flexDirection:'column', alignContent:'start', justifyContent:'start', backgroundColor:'#eff6ff'}}>
+                            <Paper className="shadow-md rounded-none" sx={{ width: '100%', height:'auto', overflow: 'hidden', boxShadow:'0', flexDirection:'column', alignContent:'start', justifyContent:'start', backgroundColor:'#eff6ff'}}>
                             <StyledDataGrid
                                         columns={columns}
                                         rows={rows}
@@ -1256,7 +1671,7 @@ const system_setup = (props) => {
 
                             <div className='col-span-4 flex items-start justify-start h-auto w-full'>
                                 {/* Add Form */}
-                                <Paper sx={{width: '100%', Height: 'auto', padding:5, boxShadow:'none'}} >
+                                <div className="w-full h-auto p-3 shadow-md" style={{backgroundColor: '#eff6ff'}}>
                                     {
                                 
                                             (() => {
@@ -1282,7 +1697,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}`}
                                                                             name='name'
                                                                             defaultValue={editMode ? editData[0]?.name : ''}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                        
                                                                     </div>
@@ -1304,7 +1719,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}`}
                                                                             name='county_code'
                                                                             defaultValue={editMode ? editData[0]?.code : ''}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                        
                                                                     </div>}
@@ -1420,6 +1835,154 @@ const system_setup = (props) => {
                                                         </>
                                                     
                                                         )
+                                                        case 'sub_county':
+                                                            return (
+                                                            <>
+                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
+                                                                    {/* Constituency Name */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        
+                                                                            <label
+                                                                                htmlFor={`add_${addBtnLabel}_sub_county_field`}
+                                                                                className='text-gray-600 capitalize text-sm'>
+                                                                                Sub County Name
+                                                                                <span className='text-medium leading-12 font-semibold'>
+                                                                                    {' '}
+                                                                                    *
+                                                                                </span>
+                                                                            </label>
+                                                                            <input
+                                                                                required
+                                                                                type='text'
+                                                                                placeholder='Sub County Name'
+                                                                                id={`add_${addBtnLabel}_sub_county_field`}
+                                                                                name='name'
+                                                                                defaultValue={editData[0]?.name}
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                            />
+                                                                    </div>
+
+                                                                    {editMode &&
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                            Sub County Code
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <input
+                                                                            readOnly
+                                                                            type='text'
+                                                                            placeholder='Sub County Code'
+                                                                            id={`add_${addBtnLabel}`}
+                                                                            name='code'
+                                                                            defaultValue={editData[0]?.code}
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                                                                        />
+                                                                       
+                                                                    </div>}
+
+                                                                    {/* County */}
+                                                                    <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+
+                                                                        <label
+                                                                            htmlFor={`add_${addBtnLabel}_county_field`}
+                                                                            className='text-gray-600 capitalize text-sm'>
+                                                                             County{' '}
+                                                                            <span className='text-medium leading-12 font-semibold'>
+                                                                                {' '}
+                                                                                *
+                                                                            </span>
+                                                                        </label>
+                                                                        <Select
+                                                                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
+                                                                            options={selectOptionss}
+                                                                            required
+                                                                            placeholder='Select '
+                                                                            id={`add_${addBtnLabel}_county_field`}
+                                                                            name='county'
+                                                                            key={editData[0]?.county}
+                                                                            defaultValue={{value:editData[0]?.county, headerName:editData[0]?.county_name}}
+                                                                            className='flex-none w-full bg-transparent flex-grow  placeholder-gray-500 focus:border-blue-600 outline-none'
+                                                                        />
+
+                                        
+                                                                    </div>
+
+                                                                    <div className='flex items-center space-x-3 mt-4'>
+                                                                            <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save</button>
+                                                                            <button className='p-2 text-white bg-indigo-500  font-semibold'>cancel</button>
+                                                                        </div>
+                                                                </form>
+                                                             &nbsp;
+                                                             {editMode && 
+                                                             <>
+                                                             <ChangeLog/>   
+                                                             &nbsp;
+                                                             <div className='col-span-4 w-full h-auto'>
+                                                                <h3>{editData[0]?.name} Wards</h3>
+                                                                            <TableContainer sx={{ maxHeight: 440 }}>
+                                                                                    <Table stickyHeader aria-label="sticky table">
+                                                                                    <TableHead>
+                                                                                        <TableRow>
+                                                                                        {wardsColumns.map((column,i) => (
+                                                                                            <TableCell
+                                                                                            key={i}
+                                                                                            align={column.align}
+                                                                                            style={{ minWidth: column.minWidth, fontWeight:600 }}
+                                                                                            >
+                                                                                            {column.label}
+                                                                                            </TableCell>
+                                                                                        ))}
+                                                                                        </TableRow>
+                                                                                    </TableHead>
+                                                                                    <TableBody sx={{paddingX: 4}}>
+                                                                                        {editData[1]?.results.map((row) => {
+                                                                                            return (
+                                                                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                                                                                                {wardsColumns.map((column, i) => {
+                                                                                                const value = row[column.id];
+                                                                                                return (
+                                                                                                    <TableCell key={column.id} align={column.align}>
+                                                                                                        {
+                                                                                                                column.format && typeof value === 'boolean'
+                                                                                                                    ? value.toString()
+                                                                                                                    :  column.format && typeof value === 'number'
+                                                                                                                    ? column.format(value) : column.link ? <a className="text-indigo-500" href={value}>{value}</a> : value
+                                                                                                        
+                                                                                                        }
+                                                                                                    </TableCell>
+                                                                                                    
+                                                                                                );
+                                                                                                })}
+                                                                                            </TableRow>
+                                                                                            );
+                                                                                        })}
+                                                                                    </TableBody>
+                                                                                    </Table>
+                                                                                </TableContainer>
+                                                                </div>
+                                                             </>
+                                                             
+
+                                                             }
+                                                            </>
+                                                        )
                                                         case 'constituency':
                                                             return (
                                                             <>
@@ -1443,7 +2006,7 @@ const system_setup = (props) => {
                                                                                 id={`add_${addBtnLabel}_constituency_field`}
                                                                                 name='name'
                                                                                 defaultValue={editData[0]?.name}
-                                                                                className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -1465,7 +2028,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}`}
                                                                             name='code'
                                                                             defaultValue={editData[0]?.code}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                        
                                                                     </div>}
@@ -1483,14 +2046,27 @@ const system_setup = (props) => {
                                                                             </span>
                                                                         </label>
                                                                         <Select
+                                                                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                                             options={selectOptionss}
                                                                             required
                                                                             placeholder='Select '
                                                                             id={`add_${addBtnLabel}_county_field`}
                                                                             name='county'
                                                                             key={editData[0]?.county}
-                                                                            defaultValue={{value:editData[0]?.county, label:editData[0]?.county_name}}
-                                                                            className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            defaultValue={{value:editData[0]?.county, headerName:editData[0]?.county_name}}
+                                                                            className='flex-none w-full bg-transparent flex-grow  placeholder-gray-500 focus:border-blue-600 outline-none'
                                                                         />
 
                                         
@@ -1558,7 +2134,7 @@ const system_setup = (props) => {
                                                         case 'ward':
                                                             return (
                                                             
-                                                                <form className='w-full h-full flex-col gap-1' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
+                                                                <form className='w-full h-full flex-col gap-1 rounded-none' onSubmit={(e)=>handleFacilityOnChange(e, addBtnLabel)}>
                                                                     {/* Ward Name */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                                                                         
@@ -1578,7 +2154,7 @@ const system_setup = (props) => {
                                                                                 id={`add_${addBtnLabel}_field`}
                                                                                 name='name'
                                                                                 defaultValue={editData?.name}
-                                                                                className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none  focus:border-black outline-none'
                                                                             />
                                                                     </div>
 
@@ -1595,6 +2171,19 @@ const system_setup = (props) => {
                                                                             </span>
                                                                         </label>
                                                                         <Select
+                                                                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                                             options={selectOptionss}
                                                                             required
                                                                             placeholder='Select county'
@@ -1602,8 +2191,8 @@ const system_setup = (props) => {
                                                                             key={editData?.county?.id}
                                                                             id={`add_${addBtnLabel}_county_field`}
                                                                             name='county'
-                                                                            defaultValue={{value:editData?.county?.id, label:editData?.county_name}}
-                                                                            className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            defaultValue={{value:editData?.county?.id, headerName:editData?.county_name}}
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                         />
                                                                     </div>
                                                                     {sbcty_constituency.length > 0 && <>
@@ -1621,14 +2210,27 @@ const system_setup = (props) => {
                                                                             </span>
                                                                         </label>
                                                                         <Select
-                                                                            options={sbcty_constituency[1].results.map(({id, name}) => ({value:id, label:name}))}
+                                                                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
+                                                                            options={sbcty_constituency[1].results.map(({id, name}) => ({value:id, headerName:name}))}
                                                                             required
                                                                             placeholder='Select Sub County'
                                                                             key={editData?.sub_county}
                                                                             id={`add_${addBtnLabel}_sub_county_field`}
                                                                             name='sub_county'
-                                                                            defaultValue={{value:editData?.sub_county, label:editData?.sub_county_name}}
-                                                                            className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            defaultValue={{value:editData?.sub_county, headerName:editData?.sub_county_name}}
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                         />
                                                                     </div>
 
@@ -1645,14 +2247,27 @@ const system_setup = (props) => {
                                                                             </span>
                                                                         </label>
                                                                         <Select
-                                                                            options={sbcty_constituency[0].results.map(({id, name}) => ({value:id, label:name}))}
+                                                                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
+                                                                            options={sbcty_constituency[0].results.map(({id, name}) => ({value:id, headerName:name}))}
                                                                             required
                                                                             placeholder='Select Constituency'
                                                                             key={editData?.constituency}
                                                                             id={`add_${addBtnLabel}_constituency_field`}
                                                                             name='constituency'
-                                                                            defaultValue={{value:editData?.constituency, label:editData?.constituency_name}}
-                                                                            className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            defaultValue={{value:editData?.constituency, headerName:editData?.constituency_name}}
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                         />
 
                                                                        
@@ -1690,7 +2305,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_town_field`}
                                                                             name="name"
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                       
                                                                     </div>
@@ -1728,7 +2343,7 @@ const system_setup = (props) => {
                                                                                         id={`add_${addBtnLabel}_constituency_field`}
                                                                                         name='name'
                                                                                         defaultValue={editData.name}
-                                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
                                                                             </div>
 
@@ -1745,13 +2360,26 @@ const system_setup = (props) => {
                                                                                     </span>
                                                                                 </label>
                                                                                 <Select
+                                                                                    styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                                                     options={selectOptionss}
                                                                                     placeholder='Select Parent'
                                                                                     id={`add_${addBtnLabel}_county_field`}
                                                                                     name='parent'
                                                                                     key={editData.parent}
-                                                                                    defaultValue={{value: editData?.parent, label: selectOptionss?.find(so=> so.value === editData?.parent)?.label}}
-                                                                                    className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                                    defaultValue={{value: editData?.parent, headerName: selectOptionss?.find(so=> so.value === editData?.parent)?.label}}
+                                                                                    className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                                 />
 
                                                                             </div>
@@ -1775,7 +2403,7 @@ const system_setup = (props) => {
                                                                                         id={`add_${addBtnLabel}_constituency_field`}
                                                                                         name='abbreviation'
                                                                                         defaultValue={editData?.abbreviation}
-                                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                                     />
                                                                             </div>
 
@@ -1798,7 +2426,7 @@ const system_setup = (props) => {
                                                                                     id={`add_${addBtnLabel}_constituency_field`}
                                                                                     name='description'
                                                                                     defaultValue={editData?.description}
-                                                                                    className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                                 />
                                                                                
                                                                             </div>
@@ -1836,7 +2464,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -1859,7 +2487,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -1959,7 +2587,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_option_group`}
                                                                             name='name'
                                                                             defaultValue={editData?.name}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                      </div>
                                                                      {editMode && (
@@ -2001,7 +2629,7 @@ const system_setup = (props) => {
                                                                                 id={index}
                                                                                 name='option_type'
                                                                                 defaultValue={option.option_type}
-                                                                                className='flex-none w-full bg-gray-50  flex-grow placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                                className='flex-none w-full bg-transparent flex-grow placeholder-gray-500 focus:border-blue-600 outline-none'
                                                                             >
                                                                                     <option value='BOOLEAN'>BOOLEAN</option>
                                                                                     <option value='INTEGER'>INTEGER</option>
@@ -2016,7 +2644,7 @@ const system_setup = (props) => {
                                                                                     id={index}
                                                                                     name='display_text'
                                                                                     defaultValue={option.display_text}
-                                                                                    className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                                 />
 
                                                                             {/* Option Value */}
@@ -2028,7 +2656,7 @@ const system_setup = (props) => {
                                                                                     id={index}
                                                                                     name='value'
                                                                                     defaultValue={option.value}
-                                                                                    className='flex-none w-full bg-gray-50 col-span-3  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparentcol-span-3  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                                 />
                                                                             </div>
                                                                         
@@ -2097,7 +2725,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_field`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2120,7 +2748,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_field`}
                                                                             name='abbreviation'
                                                                             defaultValue={editData.abbreviation}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2137,19 +2765,32 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
+                                                                        styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                                         options={selectOptionss[1]}
                                                                         required
                                                                         placeholder='Select a Category'
                                                                         key={editData.category}
                                                                         id={`add_${addBtnLabel}_category_field`}
                                                                         name='category'
-                                                                        defaultValue={{value:editData.category, label:editData.category_name}}
-                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        defaultValue={{value:editData.category, headerName:editData.category_name}}
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                     />
                                                                 </div>
 
                                                                 {/* Option Groups */}
-                                                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                                                <div className='w-full flex flex-col items-start justify-start gap-1'>
 
                                                                     <label
                                                                         htmlFor={`add_${addBtnLabel}_sub_county_field`}
@@ -2161,14 +2802,27 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
+                                                                        styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                                         options={selectOptionss[0]}
                                                                         required
                                                                         placeholder='Select Option Group'
                                                                         key={editData.group}
                                                                         id={`add_${addBtnLabel}_sub_county_field`}
                                                                         name='group'
-                                                                        defaultValue={{value:editData.group, label:(selectOptionss[0])?.find(i=> i.value ==editData.group)?.label}}
-                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        defaultValue={{value:editData.group, headerName:(selectOptionss[0])?.find(i=> i.value ==editData.group)?.label}}
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                     />
                                                                 </div>
 
@@ -2191,7 +2845,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2268,7 +2922,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                                     </div>                                                            
 
@@ -2285,13 +2939,26 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
+                                                                        styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                                         options={selectOptionss}
                                                                         required
                                                                         id={`add_${addBtnLabel}_category_field`}
                                                                         name='category'
                                                                         key={editData.category} 
-                                                                        defaultValue={{value: editData.category, label: editData.category_name}}
-                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        defaultValue={{value: editData.category, headerName: editData.category_name}}
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                     />
                                                                 </div>
 
@@ -2331,7 +2998,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2369,7 +3036,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2392,7 +3059,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2429,7 +3096,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                                     </div>                                                            
 
@@ -2446,14 +3113,27 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
+                                                                        styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                                         options={selectOptionss}
                                                                         required
                                                                         placeholder='Select a Category'
                                                                         key={editData.category}
                                                                         id={`add_${addBtnLabel}_category_field`}
                                                                         name='category'
-                                                                        defaultValue={{value: editData.category, label: editData.category_name}} 
-                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        defaultValue={{value: editData.category, headerName: editData.category_name}} 
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                     />
                                                                 </div>
 
@@ -2476,7 +3156,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2514,7 +3194,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2538,7 +3218,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                  </div>
                                                                  {/* Active */} 
@@ -2600,7 +3280,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2624,7 +3304,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_desc`}
                                                                         name='description'
                                                                         defaultValue={editData.description}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2642,14 +3322,27 @@ const system_setup = (props) => {
                                                                     </label>
 
                                                                     <Select
+                                                                        styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                                         options={selectOptionss}
                                                                         required
                                                                         placeholder='Select a regulatory body'
                                                                         id={`add_${addBtnLabel}_category_field`}
                                                                         name='regulatory_body'
                                                                         key={editData.regulatory_body}
-                                                                        defaultValue={{value:editData.regulatory_body, label: editData.regulatory_body_name}}
-                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        defaultValue={{value:editData.regulatory_body, headerName: editData.regulatory_body_name}}
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                     />
                                                                    
                                                             </div>
@@ -2688,7 +3381,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none' />
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none' />
                                                                     </div>
 
 
@@ -2722,12 +3415,25 @@ const system_setup = (props) => {
                                                                         </span>
                                                                     </label>
                                                                     <Select
+                                                                        styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                                         options={Array.from(
                                                                             selectOptionss || [],
                                                                             (fltopt) => {
                                                                               return {
                                                                                 value: fltopt.label,
-                                                                                label: fltopt.label,
+                                                                                headerName: fltopt.label,
                                                                               };
                                                                             }
                                                                           )}
@@ -2735,8 +3441,8 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_type`}
                                                                         name='sub_division'
                                                                         key={editData.parent}
-                                                                        defaultValue={{value:editData.sub_division, label: editData.sub_division}}
-                                                                        className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                        defaultValue={{value:editData.sub_division, headerName: editData.sub_division}}
+                                                                        className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                     />
                                                             </div>
 
@@ -2759,7 +3465,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_type_detail`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2774,7 +3480,7 @@ const system_setup = (props) => {
                                                         case 'facility operation status':
                                                             return (
                                                             <>
-                                                             <form className='w-full h-full' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
+                                                             <form className='w-full h-full ' onSubmit={(e)=>handleFacilityOnChange(e,addBtnLabel)}>
                                                                 
                                                                 {/* Facility Type */}
                                                                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -2795,7 +3501,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_status`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2857,7 +3563,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_status`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2896,7 +3602,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -2919,7 +3625,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_desc`}
                                                                         name='description'
                                                                         defaultValue={editData.description}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
                                                             {editMode && (
@@ -2980,7 +3686,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_name`}
                                                                             name='name'
                                                                             defaultValue={editData.name}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -2999,6 +3705,19 @@ const system_setup = (props) => {
                                                                         </label>
 
                                                                         <Select
+                                                                            styles={{
+																	control: (baseStyles) => ({
+																		...baseStyles,
+																		backgroundColor: 'transparent',
+																		outLine: 'none',
+																		border: 'none',
+																		outLine: 'none',
+																		textColor: 'transparent',
+																		padding: 0,
+																		height: '4px'
+																	}),
+
+																}}
                                                                             options={selectOptionss}
                                                                             required
                                                                             placeholder='Select Facility Owner'
@@ -3006,8 +3725,8 @@ const system_setup = (props) => {
                                                                             key={editData.owner_type}
                                                                             id={`add_${addBtnLabel}_owner_type`}
                                                                             name='owner_type'
-                                                                            defaultValue={{value:editData.owner_type, label:editData.owner_type_name}}
-                                                                            className='flex-none w-full bg-gray-50  flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none'
+                                                                            defaultValue={{value:editData.owner_type, headerName:editData.owner_type_name}}
+                                                                            className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
                                                                         />
                                                                        
                                                                 </div>
@@ -3031,7 +3750,7 @@ const system_setup = (props) => {
                                                                                     id={`add_${addBtnLabel}_constituency_field`}
                                                                                     name='abbreviation'
                                                                                     defaultValue={editData.abbreviation}
-                                                                                    className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                                 />
                                                                      </div>
 
@@ -3056,7 +3775,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
                                                                 {editMode && (
@@ -3116,7 +3835,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -3139,7 +3858,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_desc`}
                                                                         name='description'
                                                                         defaultValue={editData.description}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -3205,7 +3924,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_name`}
                                                                         name="name"
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -3228,7 +3947,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_abbr`}
                                                                         name="abbreviation"
                                                                         defaultValue={editData.abbreviation}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
                                                             {editMode && (
@@ -3269,7 +3988,7 @@ const system_setup = (props) => {
                                                                                 id={`${index}`}
                                                                                 name='contact_type'
                                                                                 defaultValue={contact?.contact_type}
-                                                                                className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
 
                                                                             >
 
@@ -3287,7 +4006,7 @@ const system_setup = (props) => {
                                                                                     id={index}
                                                                                     name="contact"
                                                                                     defaultValue={contact?.contact}
-                                                                                    className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                                    className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                                 />
                                                                         
                                                                         </>
@@ -3337,7 +4056,7 @@ const system_setup = (props) => {
                                                                         id={`add_${addBtnLabel}_status`}
                                                                         name='name'
                                                                         defaultValue={editData.name}
-                                                                        className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                        className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                     />
                                                             </div>
 
@@ -3375,7 +4094,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_reason`}
                                                                             name='reason'
                                                                             defaultValue={editData.reason}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3398,7 +4117,7 @@ const system_setup = (props) => {
                                                                             id={`add_${addBtnLabel}_desc`}
                                                                             name='description'
                                                                             defaultValue={editData.description}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3434,7 +4153,7 @@ const system_setup = (props) => {
                                                                             type='text'
                                                                             placeholder=''
                                                                             name={`add_${addBtnLabel}_reason`}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3455,7 +4174,7 @@ const system_setup = (props) => {
                                                                             type='text'
                                                                             placeholder='Description'
                                                                             name={`add_${addBtnLabel}_desc`}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3476,7 +4195,7 @@ const system_setup = (props) => {
                                                                             type='file'
                                                                             placeholder=''
                                                                             name={`add_${addBtnLabel}_file`}
-                                                                            className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                                                            className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                                                                         />
                                                                 </div>
 
@@ -3498,7 +4217,7 @@ const system_setup = (props) => {
 
                                     }
 
-                               </Paper>
+                               </div>
                             </div>
                                 
                             )

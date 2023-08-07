@@ -23,9 +23,9 @@ const Login = (props) => {
                         <img src="/MOH.png" className="h-24" alt="KMHFR 3" />
                         <div className='leading-none tracking-tight flex gap-x-2 justify-center items-center text-black font-bold relative'>
                             <span className="text-6xl leading-none top-0">KMHFR</span>
-                            <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 p-1 absolute -bottom-3 -right-4">
+                            {/* <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 p-1 absolute -bottom-3 -right-4">
                             v3
-                            </span>
+                            </span> */}
                         </div>
                        
                     </div>
@@ -98,7 +98,7 @@ const Login = (props) => {
                                 setError('')
                                 setUsername(ev.target.value)
                             }}
-                            className="text-gray-900 bg-transparent border border-blue-600 py-3 px-3 w-full flex items-center placeholder-gray-600 leading-none" placeholder="you@geemail.com" />
+                            className="text-gray-900 focus:bg-transparent bg-transparent border border-blue-600 py-3 px-3 w-full flex items-center placeholder-gray-600 leading-none" placeholder="you@geemail.com" />
                     </div>
                     <div className="flex flex-col gap-0 w-full">
                         <label className="text-gray-800">Password</label>
@@ -109,7 +109,7 @@ const Login = (props) => {
                                 setError('')
                                 setPassword(ev.target.value)
                             }}
-                            className="text-gray-900 bg-transparent border border-blue-600 py-3 px-3 w-full flex items-center placeholder-gray-600 leading-none" placeholder="*********" />
+                            className="text-gray-900 focus:bg-transparent bg-transparent border border-blue-600 py-3 px-3 w-full flex items-center placeholder-gray-600 leading-none" placeholder="*********" />
                     </div>
                     <div className="flex flex-col gap-4 w-full text-center">
                         <button type="submit" data-testid="login_btn" disabled={loading} className={"focus:outline-none focus:ring-1 focus:ring-yellow-500 text-white px-4 md:px-8 whitespace-nowrap py-3 text-xl font-semibold hover:bg-blue-800 focus:bg-blue-600 active:bg-blue-800 " + (loading ? "bg-gray-900 cursor-not-allowed" : "bg-blue-700")}
