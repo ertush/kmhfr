@@ -1,33 +1,79 @@
 import { PermissionContext } from '../../providers/permissions'
 import { hasPermission } from '../../utils/checkPermissions'
 import Link from 'next/link'
-import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useState, useEffect, useContext } from 'react'
+import { PencilAltIcon } from '@heroicons/react/outline'
+import { useState, useEffect, useContext } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon, PlusIcon } from "@heroicons/react/solid";
+import {  PlusIcon } from "@heroicons/react/solid";
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { AgGridReact } from 'ag-grid-react';
-import { LicenseManager } from '@ag-grid-enterprise/core';
+
+
+import {
+    DataGrid,
+    GridToolbar
+} from '@mui/x-data-grid'
+
+import { styled } from '@mui/material/styles';
+
 // next imports
 import Head from 'next/dist/shared/lib/head'
-
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 // components imports
 import MainLayout from '../../components/MainLayout'
 
 
+const StyledDataGrid = styled(DataGrid)(() => ({
+    '& .super-app-theme--Row': {
+        borderTop: `1px solid rgba(156, 163, 175, 1)`,
+        FontFace: 'IBM Plex Sans'
+    },
+    '& .super-app-theme--Cell': {
+        // borderRight: `1px solid rgba(156, 163, 175, 1)`,
+        FontFace: 'IBM Plex Sans'
+
+    }
+}))
+
+
+
 const AdminOffices = (props) => {
-    LicenseManager.setLicenseKey("test");
+  
     const router = useRouter()
 
     const userPermissions = useContext(PermissionContext)
 
-    const lnlst = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email }))
+    const rows = props?.data?.results?.map(({ id, county_name, sub_county_name, name, is_national, phone_number, email }) => ({ id, county_name, sub_county_name, name, is_national: is_national == true ? 'Yes' : 'No', phone_number, email }))
+    const columns = [
+        { headerName: "County", field: "county_name", flex:1},
+        { headerName: "Sub County", field: "sub_county_name", flex:1 },
+        { headerName: "Ofice Name", field: "name", flex:1 },
+        { headerName: "National", field: "is_national", flex:1 },
+        { headerName: "Phone Number", field: "phone_number", flex:1 },
+        { headerName: "Email", field: "email", flex:1 },
+        { headerName: "Actions", field: "actions", renderCell:(params) => {
+
+            return (
+                <button
+                variant="contained"
+                size="small"
+                className="flex flex-row items-center gap-2"
+                    onClick={() => {
+                        router.push({
+                            pathname: `/admin_offices/edit/${params.row.id}`
+                        })
+                    }}
+                > 
+                <p className="text-blue-900 font-semibold">Edit</p>
+              <PencilAltIcon className="h-5 w-5 text-blue-900"/>
+                 </button>
+            )
+    
+        }
+    , }
+    ]
 
     useEffect(() => {
 
@@ -35,48 +81,10 @@ const AdminOffices = (props) => {
             router.push('/unauthorized')
         }
     }, [])
-
-    const LinkCellRenderer = (params) => {
-
-        return (
-            <button className=' bg-blue-600 p-2 text-white flex items-center text-sm font-semibold'
-                onClick={() => {
-                    router.push({
-                        pathname: `/admin_offices/edit/${params.data.id}`
-                    })
-                }}
-            > View </button>
-        )
-
-    }
-
-    const [columns, setColumns] = useState([
-        { headerName: "County", field: "county_name" },
-        { headerName: "Sub County", field: "sub_county_name" },
-        { headerName: "Ofice Name", field: "name" },
-        { headerName: "National", field: "is_national" },
-        { headerName: "Phone Number", field: "phone_number" },
-        { headerName: "Email", field: "email" },
-        { headerName: "Actions", field: "actions", cellRenderer: "LinkCellRenderer", }
-    ])
-    const [gridApi, setGridApi] = useState(null);
-    const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [adminoffices, setAdminoffices] = useState([]);
+ 
     const [officeTheme, setOfficeTheme] = useState([]);
 
 
-
-    const onGridReady = (params) => {
-        setGridApi(params.api);
-        setGridColumnApi(params.columnApi);
-
-        const updateData = (data) => params.api.setRowData(data);
-
-
-
-        setAdminoffices(lnlst)
-        updateData(lnlst)
-    };
     return (
         <div className="">
             <Head>
@@ -108,18 +116,18 @@ const AdminOffices = (props) => {
                     <div className='col-span-1 w-full col-start-1 h-auto border border-blue-600'>
 
                         <List
-                            sx={{ width: '100%', bgcolor: 'transparent', flexGrow: 1 }}
+                            sx={{ width: '100%', bgcolor: 'transparent', flexGrow: 1, paddingTop:0, paddingBottom: 0 }}
                             component="nav"
                             aria-labelledby="nested-list-subheader"
 
                         >
                             <ListItemButton name="rt"
                                 sx={{
-                                    backgroundColor: officeTheme && 'rgba(5, 150, 105,  1)',
+                                    backgroundColor: officeTheme && '#2563eb',
                                                     color: officeTheme && '#ffff',
-                                                    borderBottom: 'solid 1px rgba(5, 150, 105, 1)', 
+                                                    borderBottom: 'solid 1px #2563eb', 
                                                     "&:hover": {
-                                                    backgroundColor: "rgba(255, 251, 235, 1)",
+                                                    backgroundColor: "#eff6ff",
                                                     color: "rgba(17, 24, 39, 1)"
                                                   }
                                     }}
@@ -135,82 +143,38 @@ const AdminOffices = (props) => {
                     </div>
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 
-                        <div className='mx-4'>
-                            <form
-                                className="inline-flex flex-row flex-grow items-left  py-2 lg:py-0"
-                            >
-                                <input
-                                    name="q"
-                                    id="search-input"
-                                    type="search"
-                                    defaultValue={''}
-                                    placeholder="Search a facility/CHU..."
-                                    className="flex-none bg-transparent p-2 md:w-6/12 md:flex-grow-0 flex-grow shadow-sm border border-blue-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
-                                />
-                                <button
-                                    type="submit"
-                                className="bg-transparent border-t border-r border-b border-blue-600 text-black flex items-center justify-center px-4 py-1"
-                                    
-                                >
-                                    <SearchIcon className="w-5 h-5 text-blue-600" />
-                                </button>
-                                <div className='text-white ml-4 text-md'>
 
-                                    <button className="flex items-center bg-blue-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
-                                        let dl_url = props?.current_url
-                                        if (dl_url.includes('?')) { dl_url += '&format=csv' } else { dl_url += '?format=csv' }
-
-                                        window.open(dl_url, '_blank', 'noopener noreferrer')
-
-                                    }}
-                                    >
-                                        <DownloadIcon className="w-4 h-4 mr-1" />
-                                        <span>Export</span>
-                                    </button>
-                                </div>
-
-
-                            </form>
-                            <h5 className="text-lg font-medium text-gray-800 float-right">
-                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">Showing {props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} records</small>}
-                            </h5>
-                        </div>
                         <div className="flex flex-col justify-center items-center px-1 md:px-2 w-full">
 
-                            <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
-                                <AgGridReact
-                                    rowStyle={{ width: '100vw' }}
-                                    sideBar={true}
-                                    defaultColDef={{
-                                        sortable: true,
-                                        filter: true,
-                                    }}
-                                    enableCellTextSelection={true}
-                                    onGridReady={onGridReady}
-                                    rowData={adminoffices}
-                                    columnDefs={columns}
-                                    frameworkComponents={{ LinkCellRenderer }}
-                                />
+                            <div className="shadow-md" style={{ Height: 'auto', width: '100%', backgroundColor: '#eff6ff' }}>
+                               
+                                <StyledDataGrid
+                                        columns={columns}
+                                        rows={rows}
+                                        getRowClassName={() => `super-app-theme--Row`}
+                                        rowSpacingType="border"
+                                        showColumnRightBorder
+                                        showCellRightBorder
+                                        rowSelection={false}
+                                        // getCellClassName={() => 'super-app-theme--Cell'}
+                                        slots={{
+                                            toolbar: () => (
+                                                <GridToolbar
+                                                    sx={{
+                                                        flex: 1,
+                                                        display: 'flex',
+                                                        marginX: 'auto',
+                                                        gap: 5,
+                                                        padding: '0.45rem'
+                                                    }}
+                                                />
+                                            ),
+                                        }}
+                                    />
+                                
                             </div>
                         </div>
-                        {adminoffices && adminoffices.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full border border-blue-600 items-center justify-end my-2">
-                                <li className="text-base text-blue-500">
-                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                        <span className="text-white bg-blue-600 font-semibold px-2 py-1 ">{props?.data?.current_page}</span>
-                                    </Link>
-                                </li>
-                                {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
-                                    <li key={page} className="text-base text-gray-600">
-                                        <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
-                                            <span className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</span>
-                                        </Link>
-                                    </li>
-                                ))}
-                                <li className="text-sm text-gray-400 flex">
-                                    <DotsHorizontalIcon className="h-3" />
-                                </li>
-
-                            </ul>}
+                        
 
                     </main>
 

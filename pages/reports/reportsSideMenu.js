@@ -66,6 +66,10 @@ const ReportsSideMenu = () => {
                 component="div"
                 aria-labelledby="nested-list-subheader"
                 className='border-b border-blue-600 p-0'
+                sx={{
+                    paddingTop:0, 
+                    paddingBottom:0
+                }}
                 subheader={
                     <ListItemButton
                         onClick={() => setMenu({ type: 'health_facility_reports', value: !menu.openFacilityReports })}

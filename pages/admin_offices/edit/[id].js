@@ -165,8 +165,8 @@ function EditAdminOffice(props) {
                 </div>
 
                 <div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-                    <div className=' w-full flex flex-col items-start p-3 border border-blue-600 bg-transparent'
-                         style={{ minHeight: '250px' }}>
+                    <div className=' w-full flex flex-col items-start p-3 shadow-md'
+                         style={{ minHeight: '250px', backgroundColor: '#eff6ff' }}>
 
                         <Formik
                             initialValues={{
@@ -283,7 +283,7 @@ function EditAdminOffice(props) {
                                         }}
                                         name='county'
 
-                                        className='flex-none w-full bg-transparent  flex-grow  placehold-gray-500 focus:bg-white focus:eenr6er-gray-200 outline-none'
+                                        className='flex-none w-full bg-transparent border border-blue-600 flex-grow  placehold-gray-500 focus:border-gray-200 outline-none'
                                     />
                                 </div>
 
@@ -318,7 +318,7 @@ function EditAdminOffice(props) {
                                         name='sub_county'
 
 
-                                        className='flex-none w-full bg-transparent  flex-grow  placehold-gray-500 focus:bg-white focus:eenr6er-gray-200 outline-none'
+                                        className='flex-none w-full bg-transparent border border-blue-600 flex-grow  placehold-gray-500  focus:eenr6er-gray-200 outline-none'
                                     />
                                 </div>
                                     </>

@@ -123,6 +123,10 @@ function CommunityUnitSideMenu({ _pathId, filters, qf }) {
 				className='p-0 m-0'
 				component="nav"
 				aria-labelledby="nested-list-subheader"
+				sx={{
+                    paddingTop:0, 
+                    paddingBottom:0
+                }}
 
 			>
 				{quickFilters.map((qf, i) => {

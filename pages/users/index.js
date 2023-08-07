@@ -1,25 +1,39 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
-import { DownloadIcon } from '@heroicons/react/outline'
 import React, { useState, useEffect, useContext } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
+import { PlusIcon,UsersIcon } from "@heroicons/react/solid";
 import moment from 'moment'
-import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { AgGridReact } from 'ag-grid-react';
 import { LicenseManager } from '@ag-grid-enterprise/core';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { PermissionContext } from '../../providers/permissions'
 import {  hasPermission } from '../../utils/checkPermissions'
 import { UserContext } from '../../providers/user'
+
+import {
+    DataGrid,
+    GridToolbar
+} from '@mui/x-data-grid'
+import { styled } from '@mui/material/styles';
+
+
+const StyledDataGrid = styled(DataGrid)(() => ({
+    '& .super-app-theme--Row': {
+        borderTop: `1px solid rgba(156, 163, 175, 1)`,
+        FontFace: 'IBM Plex Sans'
+    },
+    '& .super-app-theme--Cell': {
+        // borderRight: `1px solid rgba(156, 163, 175, 1)`,
+        FontFace: 'IBM Plex Sans'
+
+    }
+}))
 
 
 const Users = (props) => {
@@ -35,56 +49,49 @@ const Users = (props) => {
     const router = useRouter()
     console.log(router.query.status);
     console.log(Object.keys(router.query).length)
-    const LinkCellRenderer = (params) =>{
-    return(
-        <Link
-        href={{ pathname: `/users/user/`,
-        query: { id: params.data.id } }}
-
-        ><span>{params.value}</span></Link>
-    )} 
-
-    let columnDefs= [
-        {headerName: "Name", field: "name",   cellRenderer: "LinkCellRenderer"},
-        {headerName: "Employee number", field: "employee_number"},
-        {headerName: "Email", field: "email"},
-        {headerName: "County", field: "county_name"},
-        {headerName: "Last login", field: "last_login"},
-        {headerName: "Active", field: "is_active"}
+ 
+    const rows =  props.data?.results?.map((user) => ( 
+        {
+            ...user,
+            name: user.first_name + ' '+user.last_name,
+            employee_number: user.employee_number,
+            email: user.email,
+            county_name:user.county_name,
+            last_login: user.last_login !==null? moment(user.last_login).format('MMM Do YYYY, h:mm a') : "",
+            is_active:user.is_active == true ? "Yes" : "No"
+        }
+    ))
+    
+    const columns = [
+        {headerName: "Name", field: "name",  renderCell: (params) => {
+            return(
+                <Link
+                href={{ pathname: `/users/user/`,
+                query: { id: params.row.id } }}
+                className="cursor-pointer"
+        
+                ><span className="cursor-pointer text-blue-600">{params.row.name}</span></Link>
+                
+              
+            )} ,flex: 1},
+        {headerName: "Employee number", field: "employee_number", flex: 1},
+        {headerName: "Job Title", field: "job_title_name", flex: 1},
+        {headerName: "Email", field: "email", flex: 1},
+        {headerName: "County", field: "county_name", flex: 1},
+        {headerName: "Last login", field: "last_login", flex: 1},
+        {headerName: "Active", field: "is_active", flex: 1}
     ]
 
-    const [gridApi, setGridApi] = useState(null);
-    const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [users, setUsers]=useState([])
+ 
+    
+
     const [usersTheme, setUsersTheme] = useState(true)
     const [inactiveUsersTheme, setInactiveUsersTheme] = useState(false)
     const [groupsTheme, setGroupsTheme] = useState(false)
     const [show, setShow]=useState(false)
     const [showGroup, setShowGroup]=useState(false)
         
-    const onGridReady = (params) => {
-     
-        setGridApi(params.api);
-        setGridColumnApi(params.columnApi);
-
-        const updateData = (data) => params.api.setRowData(data);
-        const lnlst=  props.data.results.map((user)=>{
-            return {
-                ...user,
-                name: user.first_name + ' '+user.last_name,
-                employee_number: user.employee_number,
-                email: user.email,
-                county_name:user.county_name,
-                last_login: user.last_login !==null? moment(user.last_login).format('MMM Do YYYY, h:mm a') : "",
-                is_active:user.is_active == true ? "Yes" : "No"
-            }
-            
-        })
-        // console.log(lnlst);
-     
-        setUsers(lnlst)
-        updateData(lnlst)
-    };
+  
 
     useEffect(()=>{
 
@@ -92,19 +99,8 @@ const Users = (props) => {
             router.push('/unauthorized')
         }
         
-        const lnlst=  props.data?.results?.map((user)=>{
-            return {
-                ...user,
-                name: user.first_name + ' '+user.last_name,
-                employee_number: user.employee_number,
-                email: user.email,
-                county_name:user.county_name,
-                last_login: user.last_login !==null? moment(user.last_login).format('MMM Do YYYY, h:mm a') : "",
-                is_active:user.is_active == true ? "Yes" : "No"
-            }
-            
-        })
-        setUsers(lnlst)
+       
+        
         if( Object.keys(router.query).length > 0 && router.query.status !== undefined){
             setShow(true)
         }
@@ -128,6 +124,7 @@ const Users = (props) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout isLoading={false} isFullWidth={false}>
+                {console.log({rows})}
                 <div className="w-full grid grid-cols-7 gap-4 p-1 md:mx-4 my-2">
                     <div className="col-span-7 flex flex-col gap-x-1 ">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-1">
@@ -153,20 +150,22 @@ const Users = (props) => {
                         
                         </div>
                     </div>
-                    <div className='col-span-1 w-full col-start-1 h-auto border border-blue-600'>
+
+
+                    <div className='col-span-1 w-full col-start-1 h-auto py-0 border border-blue-600'>
 						
                         <List
-                        sx={{ width: '100%', bgcolor: 'transparent', flexGrow:1 }}
+                        sx={{ width: '100%', bgcolor: 'transparent', flexGrow:1, paddingTop:0, paddingBottom:0}}
                         component="nav"
                         aria-labelledby="nested-list-subheader"
                        
                         >	
                             <ListItemButton className='border-b border-blue-600' sx={{
-                            backgroundColor: usersTheme && 'rgba(5, 150, 105,  1)',
+                            backgroundColor: usersTheme && '#2563eb',
 											color: usersTheme && '#ffff',
-											borderBottom: 'solid 1px rgba(5, 150, 105, 1)', 
+											borderBottom: 'solid 1px #2563eb', 
 											"&:hover": {
-											backgroundColor: "rgba(255, 251, 235, 1)",
+											backgroundColor: "#eff6ff",
 											color: "rgba(17, 24, 39, 1)"
 										  }
                             }} name="rt"
@@ -182,13 +181,13 @@ const Users = (props) => {
                             </ListItemButton>
                             <ListItemButton 
                                 sx={{
-                                    backgroundColor: inactiveUsersTheme && 'rgba(5, 150, 105,  1)',
-                                                    color: inactiveUsersTheme && '#ffff',
-                                                    borderBottom: 'solid 1px rgba(5, 150, 105, 1)', 
-                                                    "&:hover": {
-                                                    backgroundColor: "rgba(255, 251, 235, 1)",
-                                                    color: "rgba(17, 24, 39, 1)"
-                                                  }
+                                    backgroundColor: inactiveUsersTheme && '#2563eb',
+                                    color: inactiveUsersTheme && '#ffff',
+                                    borderBottom: 'solid 1px #2563eb', 
+                                    "&:hover": {
+                                    backgroundColor: "#eff6ff",
+                                    color: "rgba(17, 24, 39, 1)"
+                                  }
                                     }} 
                                 onClick={()=>{
                                     setUsersTheme(false)
@@ -203,13 +202,13 @@ const Users = (props) => {
                             {!showGroup && 
                             <ListItemButton 
                             sx={{
-                                backgroundColor: groupsTheme && 'rgba(5, 150, 105,  1)',
-                                                color: groupsTheme && '#ffff',
-                                                borderBottom: 'solid 1px rgba(5, 150, 105, 1)', 
-                                                "&:hover": {
-                                                backgroundColor: "rgba(255, 251, 235, 1)",
-                                                color: "rgba(17, 24, 39, 1)"
-                                              }
+                                  backgroundColor: groupsTheme && '#2563eb',
+											color: groupsTheme && '#ffff',
+											borderBottom: 'solid 1px #2563eb', 
+											"&:hover": {
+											backgroundColor: "#eff6ff",
+											color: "rgba(17, 24, 39, 1)"
+										  }
                                 }}
                                 onClick={()=>{
                                     setUsersTheme(false)
@@ -219,109 +218,47 @@ const Users = (props) => {
                                 
                                 }}
                             >
-                                <ListItemText primary="Groups"/>
+                                <ListItemText primary="Groups" sx={{fontFamily:'IBM Plex Sans'}}/>
                             </ListItemButton>}
                                 
                         </List>
-                </div>
+
+                    </div>
                     <main className="col-span-6 md:col-span-6 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
-                          <div className='mx-4'>
-                            <form
-                                className="inline-flex flex-row flex-grow items-left "
-                                //   action={path || "/facilities"}
-                                >
-
-                                 <input
-                                    name="q"
-                                    id="search-input"
-                                    type="search"
-                                    defaultValue={''}
-                                    placeholder="Search a facility/CHU..."
-                                    className="flex-none bg-transparent p-2 md:w-6/12 md:flex-grow-0 flex-grow shadow-sm border border-blue-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
-                                />
-                                <button
-                                    type="submit"
-                                className="bg-transparent border-t border-r border-b border-blue-600 text-black flex items-center justify-center px-4 py-1"
-                                    
-                                >
-                                    <SearchIcon className="w-5 h-5 text-blue-600" />
-                                </button>
-                                <div className='text-white text-md'>
-
-                                <button className="flex items-center ml-4 bg-blue-600 text-white  justify-start text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += `&format=csv&access_token=${props.token}` } else { dl_url += `?format=csv&access_token=${props.token}` }
-                                                console.log('Downloading CSV. ' + dl_url || '')
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
-                                                // window.location.href = dl_url
-
-                                            }}
-                                            >
-                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>Export</span>
-                                </button> 
-                                </div>
-                           
-                                    
-                            </form>
-                            <h5 className="text-lg font-medium text-gray-800 float-right">
-                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
-                            </h5>
-                          </div>
-                        <div className="flex flex-col justify-center items-center px-1 w-full">
+                        
+                        <div className="flex flex-col justify-center items-center w-full shadow-md" style={{backgroundColor:"#eff6ff"}}>
                       
-                            <div className="ag-theme-alpine" style={{ minHeight: '100vh', width: '100%' }}>
-                                <AgGridReact
-                                    rowStyle={{width: '100vw'}}
-                                    sideBar={true}
-                                    defaultColDef={{
-                                        sortable: true,
-                                        filter: true,
-                                    }}
-                                    enableCellTextSelection={true}
-                                    onGridReady={onGridReady}
-                                    rowData={users}
-                                    columnDefs={columnDefs}
-                                    frameworkComponents={{
-                                        LinkCellRenderer
-                                      }}
+                            <div className='w-full h-auto'>
+                            <StyledDataGrid
+                                        columns={columns}
+                                        rows={rows}
+                                        getRowClassName={() => `super-app-theme--Row`}
+                                        rowSpacingType="border"
+                                        showColumnRightBorder
+                                        showCellRightBorder
+                                        rowSelection={false}
+                                        getCellClassName={() => 'super-app-theme--Cell'}
+                                        slots={{
+                                            toolbar: () => (
+                                                <GridToolbar
+                                                    sx={{
+                                                        flex: 1,
+                                                        display: 'flex',
+                                                        marginX: 'auto',
+                                                        gap: 5,
+                                                        padding: '0.45rem'
+                                                    }}
+                                                />
+                                            ),
+                                        }}
                                     />
+                              
                             </div>
                         </div>
-                        {users && users.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full border border-blue-600 items-center justify-end my-2">
-                                <li className="text-base text-blue-500">
-                                    <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                        <span className="text-white bg-blue-600 font-semibold px-2 py-1 ">{props?.data?.current_page}</span>
-                                    </Link>
-                                </li>
-                                {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
-                                    <li key={page} className="text-base text-gray-600">
-                                        <Link href={props.path + (props.path.includes('?') ? '&page=' : '?page=') + page}>
-                                            <span className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</span>
-                                        </Link>
-                                    </li>
-                                ))}
-                                <li className="text-sm text-gray-400 flex">
-                                    <DotsHorizontalIcon className="h-3" />
-                                </li>
-
-                            </ul>}
+                 
 
                     </main>
-
-
-
-
-                    {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
-                        <h5 className="text-sm font-bold">
-                            <span className="text-gray-600 uppercase">Limited results</span>
-                        </h5>
-                        <p className="text-sm text-gray-800">
-                            For testing reasons, downloads are limited to the first 1000 results.
-                        </p>
-                    </div> */}
                   
                 </div>
             </MainLayout >
@@ -334,7 +271,7 @@ Users.getInitialProps = async (ctx) => {
 // console.log(ctx.query.is_active);
 
     const fetchData = (token) => {
-        let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=true'
+        let url = API_URL + '/users/?fields=id,first_name,last_name,email,last_login,is_active,employee_number,county_name,job_title_name,sub_county_name&is_active=true&page=1&page_size=1000'
         let query = { 'searchTerm': ''}
         if (ctx?.query?.qf) {
             query.qf = ctx.query.qf

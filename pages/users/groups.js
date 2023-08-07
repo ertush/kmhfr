@@ -1,50 +1,60 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import MainLayout from '../../components/MainLayout'
-import { DownloadIcon } from '@heroicons/react/outline'
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { checkToken } from '../../controllers/auth/auth'
 import { useRouter } from 'next/router'
-import { SearchIcon, DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
-import { AgGridReact } from 'ag-grid-react';
+import {  DotsHorizontalIcon,PlusIcon,UsersIcon } from "@heroicons/react/solid";
 import { LicenseManager } from '@ag-grid-enterprise/core';
-import Alert from '@mui/material/Alert';
-import Collapse from '@mui/material/Collapse';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+
+import {
+    DataGrid,
+    GridToolbar
+} from '@mui/x-data-grid'
+import { styled } from '@mui/material/styles';
+
+
+
+
+const StyledDataGrid = styled(DataGrid)(() => ({
+    '& .super-app-theme--Row': {
+        borderTop: `1px solid rgba(156, 163, 175, 1)`,
+        FontFace: 'IBM Plex Sans'
+    },
+    '& .super-app-theme--Cell': {
+        // borderRight: `1px solid rgba(156, 163, 175, 1)`,
+        FontFace: 'IBM Plex Sans'
+
+    }
+}))
 
 
 const Groups = (props) => {
-    // require('ag-grid-enterprise')
-    LicenseManager.setLicenseKey("test");
+
    
     const router = useRouter()
-    const LinkCellRenderer = (params) =>{
-    return(
-        
-        <Link
-        href={{ pathname: `/users/edit/${params.data.id}` }}
-        >{params.value}</Link>
-    )} 
 
-    let columnDefs= [
-        {headerName: "Name", field: "name", width:400,
-        cellRenderer: "LinkCellRenderer" },
+    const rows = props?.data?.results.map(({id, name})=>{return {id, name}})
+
+    const columns= [
+        {
+            headerName: "Name", 
+            field: "name", 
+            flex:1,
+            renderCell: (params) => {
+                return(
+                    <Link
+                    href={{ pathname: `/users/edit/${params.row.id}` }}
+                    className="cursor-pointer"
+            
+                    ><span className="cursor-pointer text-blue-600">{params.row.name}</span></Link>
+                    
+                  
+                )}
+         },
     ]
 
-    const [gridApi, setGridApi] = useState(null);
-    const [gridColumnApi, setGridColumnApi] = useState(null);
-    const [groups, setGroups]=useState([])
-        
-    const onGridReady = (params) => {
-        setGridApi(params.api);
-        setGridColumnApi(params.columnApi);
 
-        const updateData = (data) => params.api.setRowData(data);
-        const lnlst = props?.data?.results.map(({id, name})=>{return {id, name}})
-        setGroups(lnlst)
-        updateData(lnlst)
-    };
 
     return (
         <div className="">
@@ -62,12 +72,12 @@ const Groups = (props) => {
                                 <span className="text-gray-500">Groups</span> 
                             </div>
                             
-                            <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+                            <div className={`col-span-5 flex  justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200z items-center border border-blue-600 border-l-8 ${'border-blue-600'} `}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <UsersIcon className='ml-2 h-5 w-5'/> 
                                     {'Manage Groups'}
                                 </h2>
-                                <button className='rounded bg-blue-600 p-2 text-white flex items-center text-lg font-semibold'
+                                <button className=' bg-blue-600 p-2 text-white flex items-center text-lg font-semibold'
                                 onClick={() => {router.push('/users/add_group')}} 
                                 >
                                     {`Add Group `}
@@ -79,107 +89,39 @@ const Groups = (props) => {
                 
                     <main className="col-span-7 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
                         
-                          <div className='mx-4'>
-                            <form
-                                className="inline-flex flex-row flex-grow items-left gap-x-2 py-2 lg:py-0"
-                                //   action={path || "/facilities"}
-                                >
-                                <input
-                                    name="q"
-                                    id="search-input"
-                                    className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
-                                    type="search"
-                                    // defaultValue={searchTerm}
-                                    placeholder="Search anything ...."
-                                />
-                                <button
-                                    type="submit"
-                                    className="bg-white border-2 border-black text-black flex items-center justify-center p-3 rounded"
-                                >
-                                    <SearchIcon className="w-5 h-5" />
-                                </button>
-                                <div className='text-white text-md'>
-
-                                <button className="flex items-center rounded  bg-blue-600 text-white justify-center space-x-2 text-center font-medium active:bg-gray-200 p-2 w-full" onClick={() => {
-                                                let dl_url = props?.current_url
-                                                if (dl_url.includes('?')) { dl_url += `&format=excel&access_token=${props.token}` } else { dl_url += `?format=excel&access_token=${props.token}` }
-                                                console.log('Downloading CSV. ' + dl_url || '')
-                                                window.open(dl_url, '_blank', 'noopener noreferrer')
-                                            }}
-                                            >
-                                                <DownloadIcon className="w-4 h-4 mr-1" />
-                                                <span>Export</span>
-                                </button> 
-                                </div>
-                           
-                                    
-                            </form>
-                            <h5 className="text-lg font-medium text-gray-800 float-right">
-                                {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 ml-2 text-base">{props?.data?.start_index || 0} - {props?.data?.end_index || 0} of {props?.data?.count || 0} </small>}
-                            </h5>
-                          </div>
-                        <div className="flex-col items-center justify-center items-center w-full mx-4">
+            
+                        <div className="flex-col justify-center items-center w-full mx-4">
                       
-                            <div className="ag-theme-alpine" style={{ height:'100vh', width: '100%'}}>
-                                <AgGridReact
-                                    // floatingFilter={true}
-                                    // sideBar={true} //{'filters'}
-                                    rowStyle={{width: '100vw'}}
-                                    defaultColDef={{
-                                        sortable: true,
-                                        filter: true,
-                                    }}
-                                    reactNext={true}
-                                    enableCellTextSelection={true}
-                                    onGridReady={onGridReady}
-                                    rowData={groups}
-                                    columnDefs={columnDefs}
-                                    frameworkComponents={{
-                                        LinkCellRenderer
-                                      }}
+                            <div style={{ height:'auto', width: '100%', backgroundColor:'#eff6ff'}} className='shadow-md'>
+                               
+                                    <StyledDataGrid
+                                        columns={columns}
+                                        rows={rows}
+                                        getRowClassName={() => `super-app-theme--Row`}
+                                        rowSpacingType="border"
+                                        showColumnRightBorder
+                                        showCellRightBorder
+                                        rowSelection={false}
+                                        getCellClassName={() => 'super-app-theme--Cell'}
+                                        slots={{
+                                            toolbar: () => (
+                                                <GridToolbar
+                                                    sx={{
+                                                        flex: 1,
+                                                        display: 'flex',
+                                                        marginX: 'auto',
+                                                        gap: 5,
+                                                        padding: '0.45rem'
+                                                    }}
+                                                />
+                                            ),
+                                        }}
                                     />
                             </div>
                         </div>
-                        {groups && groups.length > 0 && <ul className="list-none flex p-2 flex-row gap-2 w-full items-center my-2">
-                                <li className="text-base text-gray-600">
-                                    <Link href={props?.path + (props?.path.includes('?') ? '&page=' : '?page=') + props?.data?.current_page}>
-                                        <a className="text-gray-400 font-semibold p-2 hover:underline active:underline focus:underline">{props?.data?.current_page}</a>
-                                    </Link>
-                                </li>
-                                {props?.path && props?.data?.near_pages && props?.data?.near_pages.map(page => (
-                                    <li key={page} className="text-base text-gray-600">
-                                        <Link href={props?.path + (props?.path.includes('?') ? '&page=' : '?page=') + page}>
-                                            <a className="text-blue-800 p-2 hover:underline active:underline focus:underline">{page}</a>
-                                        </Link>
-                                    </li>
-                                ))}
-                                <li className="text-sm text-gray-400 flex">
-                                    <DotsHorizontalIcon className="h-3" />
-                                </li>
-                                {/* {props?.data?.far_pages.map(page => (
-                                    <li key={page} className="text-base text-gray-600">
-                                        <a href={'/?page=' + page} className="text-blue-800 p-2 hover:underline active:underline focus:underline">
-                                            {page}
-                                        </a>
-                                    </li>
-                                ))} */}
-
-                            </ul>}
+                       
 
                     </main>
-
-
-
-
-                    {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg rounded-lg flex flex-col justify-center items-center py-2 px-3">
-                        <h5 className="text-sm font-bold">
-                            <span className="text-gray-600 uppercase">Limited results</span>
-                        </h5>
-                        <p className="text-sm text-gray-800">
-                            For testing reasons, downloads are limited to the first 1000 results.
-                        </p>
-                    </div> */}
                   
                 </div>
             </MainLayout >

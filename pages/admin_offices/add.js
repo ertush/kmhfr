@@ -93,8 +93,8 @@ function AddAdminOffice(props) {
                 </div>
 
                 <div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-                    <div className=' w-full flex flex-col items-start p-3 text-blue border border-blue-600 bg-transparent'
-                        style={{ minHeight: '250px' }}>
+                    <div className=' w-full flex flex-col items-start p-3 text-blue shadow-md'
+                        style={{ minHeight: '250px', backgroundColor: '#eff6ff' }}>
 
                         <>
 

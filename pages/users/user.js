@@ -294,8 +294,8 @@ const User = (props)=> {
 			</div>
 
 						<div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-							<div className=' w-full flex flex-col items-start p-3  border border-blue-600 bg-transparent'
-								style={{ minHeight: '250px' }}>
+							<div className=' w-full flex flex-col items-start p-3  border shadow-md'
+								style={{ minHeight: '250px', backgroundColor:'#eff6ff' }}>
 							
 												<>
 													<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
