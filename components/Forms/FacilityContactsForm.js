@@ -1,4 +1,4 @@
-import {useState, useCallback, Fragment, createContext, useContext, useRef, useMemo} from 'react';
+import {useState, useCallback, useEffect, Fragment, createContext, useContext, useRef, useMemo} from 'react';
 import {Formik, Form, Field} from 'formik'
 import { FacilityContact, OfficerContactDetails } from './formComponents/FacilityContacts';
 import Select from './formComponents/FromikSelect';
@@ -59,8 +59,8 @@ export function FacilityContactsForm() {
         
         vals['officer_in_charge'] = "";
         vals['officer_reg_no'] = "";
-        vals['contact_type'] = "";
-        vals['contact'] = "";
+        // vals['contact_type'] = "";
+        // vals['contact'] = "";
 
         return vals
     }, [facilityContacts])
@@ -75,10 +75,34 @@ export function FacilityContactsForm() {
 
     // Effects
 
+    useEffect(() => {
+        const contacts = [];
+
+        const contactCount = initialValues.split(',').filter(x => x.match(/^"contact_[0-9]/)).length
+
+        if(contactCount > 1) {
+            for(let i = 0; i < contactCount; i++) {
+                contacts.push((() => (
+                    <FacilityContact
+                        contactTypeOptions={contactTypeOptions}
+                        fieldNames={['contact_type', 'contact']}
+                        setFacilityContacts={() => null}
+                        contacts={[null, null, null]}
+                        index={i}
+                    />
+                ))())
+            }
+            
+            setFacilityContacts([
+                ...contacts
+            ])
+        }
+    }, [])
+
     // Event handlers
     const handleSubmit = useCallback((values) => {
         setFormId(`${parseInt(formId) + 1}`);
-
+        handleFormUpdate(JSON.stringify({...values}))
         console.log({ ...values })
 }, [])
 
@@ -109,7 +133,8 @@ export function FacilityContactsForm() {
                     // ref={facilityContactsFormRef}
                     className='flex flex-col w-full items-start justify-start gap-3'
                     name='facility_contacts_form'
-                    onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId, facilityContactsFormRef])}>
+                    // onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId, facilityContactsFormRef])}
+                    >
                     {/* Contacts */}
 
 
