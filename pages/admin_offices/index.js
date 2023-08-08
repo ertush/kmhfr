@@ -1,6 +1,5 @@
 import { PermissionContext } from '../../providers/permissions'
 import { hasPermission } from '../../utils/checkPermissions'
-import Link from 'next/link'
 import { PencilAltIcon } from '@heroicons/react/outline'
 import { useState, useEffect, useContext } from 'react'
 import { checkToken } from '../../controllers/auth/auth'

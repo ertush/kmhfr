@@ -138,7 +138,11 @@ export function BasicDeatilsForm() {
 
       const all_ftypes = []
 
-      for (let type in f_types) all_ftypes.push(options['0']?.facility_types.filter(({ sub_division }) => sub_division === f_types[type]))
+      let i = 0;
+
+      for ( i = 0 ; i < f_types.length; i++) {
+        all_ftypes.push(options['0']?.facility_types.filter(({ sub_division }) => sub_division === f_types[i]))
+      }
 
       // if (facilityTypeRef.current !== null) {
 
