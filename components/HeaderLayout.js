@@ -157,16 +157,16 @@ export default function HeaderLayout({
           >
             <img src="/MOH.png" alt="KMHFL3" className="h-14" />
             <span className="text-3xl leading-none">KMHFR</span>
-            {/* <span className="text-sm bg-yellow-300 rounded-sm shadow border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-2">
+            {/* <span className="text-sm bg-yellow-300 -sm shadow border border-yellow-400 leading-none text-yellow-900 px-1 absolute bottom-0 -right-2">
               v1
             </span> */}
           </a>
         </div>
         <div className="group px-3 py-2">
-          <button className="border-2 border-gray-600 rounded p-1 md:hidden focus:bg-black focus:border-black focus:text-white hover:bg-black hover:border-black hover:text-white active:bg-black active:border-black active:text-white">
+          <button className="border-2 border-gray-600  p-1 md:hidden focus:bg-black focus:border-black focus:text-white hover:bg-black hover:border-black hover:text-white active:bg-black active:border-black active:text-white">
             <MenuAlt1Icon className="w-6" />
           </button>
-          <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1 rounded md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
+          <ul className="flex-col md:flex-row items-start md:items-start bg-gray-50 inset-x-4  mt-1 md:mx-6 py-1 md:p-1  md:bg-transparent shadow border md:border-none md:shadow-none gap-5 hidden md:flex group-focus:flex group-active:flex group-hover:flex absolute md:relative">
             {/* Dashboard / Home */}
             <li className="flex-wrap font-semibold" id="dashboard">
               <Link href={isLoggedIn ? "/dashboard" : "/"}>
@@ -319,7 +319,7 @@ export default function HeaderLayout({
               </Menu.Button>
               <Menu.Items
                 as="ul"
-                className="list-none flex flex-col items-center bg-white outline-none shadow-md font-semibold justify-start gap-2 p-3 absolute mt-3 text-gray-800 right-0 w-40 rounded"
+                className="list-none flex flex-col items-center bg-white outline-none shadow-md font-semibold justify-start gap-2 p-3 absolute mt-3 text-gray-800 right-0 w-40 "
               >
                 <Menu.Item as="li" className="flex items-center w-full gap-1">
                   {({ active }) => (
@@ -477,7 +477,7 @@ export default function HeaderLayout({
       </div>
       {isLoggedIn && user ? (
         <div className="flex flex-wrap items-center gap-3 md:gap-5 px-2 md:flex-grow justify-end">
-          <Menu as="div" className="relative p-2">
+          <Menu as="div" className="relative p-2" >
             <Menu.Button
               as="div"
               className="flex items-center justify-center gap-1 cursor-pointer"
@@ -494,18 +494,21 @@ export default function HeaderLayout({
             </Menu.Button>
             <Menu.Items
               as="ul"
-              className="list-none flex flex-col items-center justify-start gap-2 p-3 absolute mt-3 bg-black right-0 text-white w-40 rounded"
+              style={{backgroundColor:"#eff6ff", color: "black", outline:'none'}}
+              className="list-none shadow-md flex flex-col items-center justify-start gap-2 p-3 absolute mt-3 bg-black right-0 text-white w-40 "
             >
 
               <Menu.Item as="li" className="flex items-center w-full gap-1">
                 {({ active }) => (
-                  <a
-                    className={`w-full hover:text-blue-400 font-medium flex items-center ${active && "text-blue-400"
+                  <button
+                    className={`w-full hover:text-blue-600 font-medium cursor-pointer flex items-center ${active && "text-blue-400"
                       }`}
-                    href="/account"
+                   onClick={() => router.push('/account')}
                   >
+                   
                    <AccountCircleOutlinedIcon fontSize="small"/> &nbsp; Profile
-                  </a>
+                   
+                  </button>
                 )}
               </Menu.Item>
               {/* <Menu.Item as="li" className="flex items-center w-full gap-1">
@@ -523,12 +526,12 @@ export default function HeaderLayout({
               <Menu.Item
                 as="li"
 
-                className="flex items-center w-full gap-1 mt-2 border-t border-gray-600 py-2"
+                className="flex items-center w-full gap-1 mt-2 border-t border-gray-300 py-2"
               >
                 {({ active }) => (
                   <a
                     data-testid="logout"
-                    className={`w-full hover:text-blue-400 font-medium ${active && "text-blue-400"
+                    className={`w-full hover:text-blue-600 font-medium ${active && "text-blue-400"
                       }`}
                     href="/logout"
                   >
