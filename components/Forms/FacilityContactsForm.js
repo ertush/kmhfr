@@ -1,4 +1,4 @@
-import {useState, useCallback, useEffect, Fragment, createContext, useContext, useRef, useMemo} from 'react';
+import {useState, useCallback, useEffect, Fragment, createContext, useContext, useMemo} from 'react';
 import {Formik, Form, Field} from 'formik'
 import { FacilityContact, OfficerContactDetails } from './formComponents/FacilityContacts';
 import Select from './formComponents/FromikSelect';
@@ -6,6 +6,9 @@ import {ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon} from '@heroicon
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { FormContext } from './Form';
 import {useLocalStorageState} from './hooks/formHook';
+
+import { object, string } from "zod";
+import { toFormikValidationSchema } from "zod-formik-adapter";
 
 
 
@@ -31,6 +34,7 @@ export function FacilityContactsForm() {
 				fieldNames={['contact_type', 'contact']}
 				setFacilityContacts={() => null}
 				contacts={[null, null, null]}
+                erros={null}
 				index={0}
 			/>
 		))()
@@ -59,13 +63,12 @@ export function FacilityContactsForm() {
         
         vals['officer_in_charge'] = "";
         vals['officer_reg_no'] = "";
-        // vals['contact_type'] = "";
-        // vals['contact'] = "";
+    ""
 
         return vals
     }, [facilityContacts])
 
-    // console.log({formFields})
+
     const [initialValues, handleFormUpdate] = useLocalStorageState({
         key: 'facility_contacts_form',
         value: formFields
@@ -77,19 +80,23 @@ export function FacilityContactsForm() {
 
     useEffect(() => {
         const contacts = [];
+        const officerContacts = [];
 
-        const contactCount = initialValues.split(',').filter(x => x.match(/^"contact_[0-9]/)).length
+        const contactCount = initialValues.split(',').filter(x => x.match(/^"contact_[0-9]/)).length;
+        const officerContactCount = initialValues.split(',').filter(x => x.match(/^"officer_details_contact_[0-9]/)).length;
 
-        if(contactCount > 1) {
+        if(contactCount > 1){
             for(let i = 0; i < contactCount; i++) {
                 contacts.push((() => (
-                    <FacilityContact
-                        contactTypeOptions={contactTypeOptions}
-                        fieldNames={['contact_type', 'contact']}
-                        setFacilityContacts={() => null}
-                        contacts={[null, null, null]}
-                        index={i}
-                    />
+                    <FacilityContactsContext.Provider value={facilityContacts} key={(facilityContacts.length + 1) - 1}>
+                        <FacilityContact
+                            contactTypeOptions={contactTypeOptions}
+                            fieldNames={['contact_type', 'contact']}
+                            setFacilityContacts={() => null}
+                            contacts={[null, null, null]}
+                            index={i}
+                        />
+                    </FacilityContactsContext.Provider>
                 ))())
             }
             
@@ -97,12 +104,63 @@ export function FacilityContactsForm() {
                 ...contacts
             ])
         }
+
+        if(officerContactCount > 1){
+            for(let i = 0; i < officerContactCount; i++) {
+                officerContacts.push(
+                    (() => (
+                    <FacilityContactsContext.Provider value={officerContactDetails} key={(facilityContacts.length + 1) - 1}>
+                        <OfficerContactDetails
+                            contactTypeOptions={contactTypeOptions}
+                            fieldNames={['officer_details_contact_type', 'officer_details_contact']}
+                            contacts={[null, null, null]}
+                            setFacilityContacts={() => null}
+                            index={i}
+                        />
+                    </FacilityContactsContext.Provider>
+                    ))()
+                )
+            }
+
+        setOfficerContactDetails(
+            [
+                ...officerContacts
+            ]
+        )
+        }
     }, [])
+
+    // Form Schema
+    const formSchema = useMemo (() => object({
+        officer_name: string({ required_error: "Name is required" }),
+        officer_title: string({ required_error: "Job Titile Name is required" }),
+        ...(() => {
+            const schema = {}
+            if(facilityContacts.length > 1){
+                for(let i = 0; i < facilityContacts.length; i++){
+                    schema[`contact_type_${i}`] = string({ required_error: "Facility Contact Type is required" }).min(1);
+                    schema[`contact_${i}`] = string({ required_error: "Facility Contact is required" }).min(1);
+
+                }
+            }
+
+            if(officerContactDetails.length > 1){
+                for(let i = 0; i < officerContactDetails.length; i++){
+                    schema[`officer_details_contact_type_${i}`] = string({ required_error: "Officer Contact Type is required" }).min(1);
+                    schema[`officer_details_contact_${i}`] = string({ required_error: "Officer Contact is required" }).min(1);
+                }
+            }
+
+
+            return schema
+        })()
+    }), [facilityContacts, officerContactDetails])
+
+    // console.log({formSchema})
 
     // Event handlers
     const handleSubmit = useCallback((values) => {
         setFormId(`${parseInt(formId) + 1}`);
-        handleFormUpdate(JSON.stringify({...values}))
         console.log({ ...values })
 }, [])
 
@@ -111,54 +169,67 @@ export function FacilityContactsForm() {
 
     }, [])
 
-    // Refs
-    const facilityContactsFormRef = useRef(null)
 
 
     return (
         <Formik
         initialValues={formValues}
         onSubmit={handleSubmit}
+        validationSchema={toFormikValidationSchema(formSchema)}
+        enableReinitialize
         >
 
          {
             (formikState) => {
-            const errors = formikState.errors;
+                const errors = formikState.errors;
+       
+                // Effects
+                useEffect(() => {
+                    handleFormUpdate(JSON.stringify(formikState.values))
+                },[formikState.values])
+
+
                return ( 
                <>
                 <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
                     Facility Contact
                 </h4>
                 <Form
-                    // ref={facilityContactsFormRef}
                     className='flex flex-col w-full items-start justify-start gap-3'
                     name='facility_contacts_form'
-                    // onSubmit={ev => handleFacilityContactsSubmit(ev, [setFormId, facilityId, facilityContactsFormRef])}
+    
                     >
                     {/* Contacts */}
 
-
                     <div
-                        className='grid grid-cols-2 place-content-start gap-3 w-full bg-light-grey shadow-md p-3'
+                        className='grid grid-cols-2 place-content-start gap-3 w-full bg-light-grey border border-blue-600 p-3'
                     >
                         {/* Contact Headers */}
                         <h3 className='text-medium font-semibold text-blue-900'>
-                            Contact Type
+                            Contact Type {" *"}
                         </h3>
                         <h3 className='text-medium font-semibold text-blue-900'>
-                            Contact Details
+                            Contact Details {" *"}
                         </h3>
                         <hr className='col-span-2' />
 
                         {/* Contact Type / Contact Details */}
 
-
                         {/* add other fields */}
                         <div className='col-span-2 flex-col w-full items-start justify-start gap-y-3 '>
+                            
+                                
+                            
                             {
                                 facilityContacts.map((facilityContact, i) => (
+
                                     <Fragment key={i}>
+                                     
                                         {facilityContact}
+                                        <div className='grid grid-cols-2 w-full'>
+                                        {errors[`contact_type_${i}`] && <span className='font-normal text-sm text-red-500 text-start'>{errors[`contact_type_${i}`]}</span>}
+                                        {errors[`contact_${i}`] && <span className='font-normal col-start-2 text-sm text-red-500 text-start'>{errors[`contact_${i}`]}</span>}
+                                        </div>
                                     </Fragment>
 
                                 ))
@@ -172,7 +243,7 @@ export function FacilityContactsForm() {
                             onClick={(e) => {
                                 e.preventDefault();
 
-                                console.log({initialValues});
+                                // console.log({initialValues});
 
 
                                 setFacilityContacts([
@@ -204,13 +275,13 @@ export function FacilityContactsForm() {
                     {/* Facility Officer In-charge Details */}
 
                     <h5 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
-                        Facility Officer In-Charge Details
+                        Facility Officer In-Charge Details 
                     </h5>
                     <div className='flex flex-col items-start bg-light-grey p-3 shadow-md justify-start gap-1 w-full  h-auto'>
                         {/*  Name  */}
                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                                htmlFor='name'
+                                htmlFor='officer_name'
                                 className='text-gray-600 capitalize text-sm'>
                                 Name
                                 <span className='text-medium leading-12 font-semibold'>
@@ -229,7 +300,7 @@ export function FacilityContactsForm() {
                         {/*  Registration Number */}
                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                                htmlFor='reg_no'
+                                htmlFor='officer_reg_no'
                                 className='text-gray-600 capitalize text-sm'>
                                 Registration Number/License Number{' '}
                             </label>
@@ -243,7 +314,7 @@ export function FacilityContactsForm() {
                         {/* Job Title */}
                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
-                                htmlFor='title'
+                                htmlFor='officer_title'
                                 className='text-gray-600 capitalize text-sm'>
                                 Job Title
                                 <span className='text-medium leading-12 font-semibold'>
@@ -252,39 +323,26 @@ export function FacilityContactsForm() {
                                 </span>{' '}
                             </label>
                             <Select
-                                
-                                // styles={{
-                                //     control: (baseStyles) => ({
-                                //         ...baseStyles,
-                                //         backgroundColor: 'transparent',
-                                //         outLine: 'none',
-                                //         border: 'none',
-                                //         outLine: 'none',
-                                //         textColor: 'transparent',
-                                //         padding: 0,
-                                //         height: '4px'
-                                //     }),
-
-                                // }} 
+                              
                                 options={jobTitleOptions || []}
                                 required
                                 placeholder="Select Job Title"
                                 name="officer_title"
-                                // className="flex-none col-start-1 w-full   flex-grow  placeholder-gray-500 border border-blue-600 outline-none" 
+                               
                                 />
                         </div>
 
                         {/* Facility Officer Contact Type / Contact Details */}
 
                         <div
-                            className='grid grid-cols-2 place-content-start gap-3 w-full border border-blue-600  p-3'
+                            className='grid grid-cols-2 place-content-start gap-3 w-full border border-blue-600 p-3'
                         >
                             {/* Contact Headers */}
                             <h3 className='text-medium font-semibold text-blue-900'>
-                                Contact Type
+                                Contact Type {" *"}
                             </h3>
                             <h3 className='text-medium font-semibold text-blue-900'>
-                                Contact Details
+                                Contact Details {" *"}
                             </h3>
                             <hr className='col-span-2' />
 
@@ -297,10 +355,14 @@ export function FacilityContactsForm() {
                                     officerContactDetails.map((officerDetailContact, i) => (
 
                                         <Fragment key={i}>
+                                           
                                             {
                                                 officerDetailContact
-
                                             }
+                                             <div className='w-full grid grid-cols-2'>
+                                                {errors[`officer_details_contact_${i}`] && <span className='font-normal text-sm text-red-500 text-start'>{errors[`officer_details_contact_${i}`]}</span>}
+                                                {errors[`officer_details_contact_type_${i}`] && <span className='font-normal col-start-2 text-sm text-red-500 text-start'>{errors[`officer_details_contact_type_${i}`]}</span>}
+                                            </div>
                                         </Fragment>
 
                                     ))
@@ -330,8 +392,6 @@ export function FacilityContactsForm() {
                                                     />
                                                 </FacilityContactsContext.Provider>
                                             ))()
-
-                                            /*(facilityDepts[facilityDepts.length - 1] + facilityDepts.length)*/
                                         ])
                                     }}
                                 className='flex items-center space-x-1 bg-blue-700 p-1 '>

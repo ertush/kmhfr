@@ -1,7 +1,7 @@
 
 import { useContext, useRef, useEffect, useState, useCallback } from 'react';
 import { Field, Form, Formik } from 'formik';
-import { object, string, number, boolean } from "zod";
+import { object, string, number } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { FormContext } from './Form';
 import Select from './formComponents/FromikSelect';
@@ -18,7 +18,6 @@ import {useLocalStorageState} from './hooks/formHook';
 export function BasicDeatilsForm() {
 
   // Constants
-
   const formFields = {
     official_name: "",
     name: "",
@@ -62,8 +61,6 @@ export function BasicDeatilsForm() {
   };
 
   // State
-
-
   const [facilityTypeValue, setFacilityTypeValue] = useState(null);
   const [ownerTypeLabel, setOwnerTypeLabel] = useState(null);
 
@@ -122,6 +119,8 @@ export function BasicDeatilsForm() {
     },
   ];
 
+
+  // Effects
   useEffect(() => {
 
     function filterFacilityTypeDetailOptions() {
@@ -285,7 +284,6 @@ export function BasicDeatilsForm() {
   }, [ownerTypeLabel])
 
   // Form Schema
-
   const formSchema = object({
 
     official_name: string({ required_error: "Facility Official Name is required" }),
@@ -320,12 +318,9 @@ export function BasicDeatilsForm() {
   });
 
   // Refs
-
   const facilityTypeDetailsRef = useRef(null);
 
-
   // Event Handlers
-
   const handleSubmit = useCallback((values) => {
    
 

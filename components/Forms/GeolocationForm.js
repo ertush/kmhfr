@@ -1,4 +1,4 @@
-import { useContext, useState, useCallback, memo } from 'react';
+import { useContext, useState, useEffect, useCallback, memo } from 'react';
 import { Formik, Field, Form } from 'formik'
 import { useLocalStorageState } from './hooks/formHook';
 import { toFormikValidationSchema } from "zod-formik-adapter";
@@ -33,6 +33,7 @@ export function GeolocationForm() {
     // State
     const [formId, setFormId] = useContext(FormContext);
     const [geoJSON, setGeoJSON] = useState([]);
+
     const [initialValues, handleFormUpdate] = useLocalStorageState({
         key: 'geolocation_form',
         value: formFields
@@ -77,6 +78,11 @@ export function GeolocationForm() {
         (formikState) => {
           const errors = formikState.errors;
 
+          //Effects
+          useEffect(() => {
+            handleFormUpdate(JSON.stringify(formikState.values))
+          }, [formikState.values])
+
           return(
             <Form
 
@@ -98,7 +104,7 @@ export function GeolocationForm() {
                         required
                         type='date'
                         name='collection_date'
-                        className='flex-none w-full   p-2 flex-grow border placeholder-gray-500 bg-transparent border-blue-600 focus:shadow-none focus:border-black outline-none'
+                        className='flex-none w-full  p-2 flex-grow border placeholder-gray-500 bg-transparent border-blue-600 focus:shadow-none focus:border-black outline-none'
                     />
                 {errors.collection_date && <span className='font-normal text-sm text-red-500 text-start'>{errors.collection_date}</span>}
 
