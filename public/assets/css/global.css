@@ -2,7 +2,7 @@
 
 :root {
 
-    background-color: #e7edd1;/*#e7edd1;*/
+    background-color: #d2e2ed;/*#d2ede4;*//*#e7edd1;*/
     box-sizing: border-box;
     font-family: "IBM Plex Sans", "Segoe UI", "Roboto", "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
@@ -21,8 +21,8 @@
 
  
     --ag-row-border-width: 1px;
-    --ag-row-border-color: rgb(3, 128, 51);
-    --ag-border-color: rgb(3, 128, 51);
+    --ag-row-border-color: rgb(3, 82, 128);
+    --ag-border-color: rgb(3, 82, 128);
     --ag-border-width: 1px;
 
     /* --ag-header-height: 30px;

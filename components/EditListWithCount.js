@@ -220,7 +220,7 @@ function EditListWithCount(
                 >
 
                     {/* Item List Dropdown */}
-                    <div className='w-full flex flex-col p-3 bg-yellow-50  shadow-md items-start justify-start gap-3 mb-3'>
+                    <div className='w-full flex flex-col p-3 bg-blue-50  shadow-md items-start justify-start gap-3 mb-3'>
                         {/* category */}
 
                         <label
@@ -290,7 +290,7 @@ function EditListWithCount(
 
                                 }}
 
-                                className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                             />
 
                             <div name="hidden_btn" className="bg-transparent w-20 p-2 flex items-center justify-evenly gap-2"
@@ -329,9 +329,9 @@ function EditListWithCount(
                                     }),
 
                                 }}
-                                className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                             />
-                            <button className="bg-green-700  p-2 flex items-center justify-evenly gap-2"
+                            <button className="bg-blue-700  p-2 flex items-center justify-evenly gap-2"
                                 onClick={e => {
                                     e.preventDefault()
 
@@ -353,23 +353,23 @@ function EditListWithCount(
 
                     {/* Item Selected Table */}
 
-                    <Table className="card bg-yellow-50 shadow-md">
+                    <Table className="card bg-blue-50 shadow-md">
                         <TableBody>
 
                             <TableRow>
-                                <TableCell className='bg-yellow-50 text-black border-b border-green-600'>
+                                <TableCell className='bg-blue-50 text-black border-b border-blue-600'>
                                     <p className="text-md w-full flex flex-wrap font-bold justify-between items-center leading-tight tracking-tight">
                                         Assigned {itemsCategoryName}
                                     </p>{" "}
                                 </TableCell>
-                                <TableCell className='bg-yellow-50 text-green-700 border-b border-green-600'>
+                                <TableCell className='bg-blue-50 text-blue-700 border-b border-blue-600'>
 
                                 </TableCell>
-                                <TableCell className='bg-yellow-50 text-green-700 border-b border-green-600'>
+                                <TableCell className='bg-blue-50 text-blue-700 border-b border-blue-600'>
 
                                 </TableCell>
                             </TableRow>
-                            <TableRow className="border-b border-green-600">
+                            <TableRow className="border-b border-blue-600">
                                 <TableCell>
                                     <p className='capitalize text-base font-semibold'>{itemsCategoryName}</p>
                                 </TableCell>
@@ -419,7 +419,7 @@ function EditListWithCount(
                                                         min={1}
                                                         name={id}
                                                         validate={validateCount}
-                                                        className="flex-none w-24 bg-transparent border border-green-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                                        className="flex-none w-24 bg-transparent border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none"
                                                     />
                                                 }
                                                 {errors[id] && <div><span className='text-red-600 mt-1'>{errors[id]}</span></div>}
@@ -454,7 +454,7 @@ function EditListWithCount(
                                     item !== null &&
                                     <TableRow>
                                         <TableCell>
-                                            <li className="w-full bg-yellow-50 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                            <li className="w-full bg-blue-50 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                                                 <p>
                                                     {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
                                                 </p>
@@ -473,7 +473,7 @@ function EditListWithCount(
                         selectedItems.length > 0 && item !== null &&
 
                         <div style={{ maxWidth: '88%' }} className="w-full flex justify-end h-auto mt-3">
-                            <button type='submit' className='p-2 text-white bg-green-600  font-semibold'>save & finish</button>
+                            <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save & finish</button>
                         </div>
                     }
 
@@ -481,15 +481,15 @@ function EditListWithCount(
                         item === null &&
 
                         <div className='flex justify-between items-center w-full mt-4'>
-                            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-green-900  px-2'>
-                                <ChevronDoubleLeftIcon className='w-4 h-4 text-green-900' />
-                                <span className='text-medium font-semibold text-green-900 '>
+                            <button onClick={handleItemPrevious} className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
+                                <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
+                                <span className='text-medium font-semibold text-blue-900 '>
                                     {previousItemCategory}
                                 </span>
                             </button>
                             <button
                                 type='submit'
-                                className='flex items-center justify-start space-x-2 bg-green-700  p-1 px-2'>
+                                className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
                                 <span className='text-medium font-semibold text-white'>
                                     {nextItemCategory}
                                 </span>

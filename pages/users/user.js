@@ -241,7 +241,7 @@ const User = (props)=> {
 							Are you sure you want to delete<b>{userData?.first_name + ' '+ userData?.last_name + ' '+ userData?.other_names}</b> ?
 					</span>
 					<div className='flex justify-start gap-4 mt-4'> 
-						<button className="bg-green-500 text-white font-semibold  p-2 text-center" type="button"  disabled={!delete_user} onClick={(e)=>{deleteUser(e);setOpen(false)}} >Delete</button>
+						<button className="bg-blue-500 text-white font-semibold  p-2 text-center" type="button"  disabled={!delete_user} onClick={(e)=>{deleteUser(e);setOpen(false)}} >Delete</button>
 						<button className="bg-red-500 text-white font-semibold  p-2 text-center" 
 						onClick={()=> {setOpen(false)}} 
 						>Cancel</button>
@@ -254,8 +254,8 @@ const User = (props)=> {
 			<div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
 				<div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base pb-3">
 					<div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-						<Link className="text-green-800" href='/'>Home</Link>{'/'}
-						<Link className="text-green-800" href='/users'>Users</Link>{'/'}
+						<Link className="text-blue-800" href='/'>Home</Link>{'/'}
+						<Link className="text-blue-800" href='/users'>Users</Link>{'/'}
 						<span className="text-gray-500">{editMode? 'Edit user' : 'Add user'}</span>
 					</div>
 				</div>
@@ -273,7 +273,7 @@ const User = (props)=> {
 					{/* {status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password} */}
 
 				</div>
-				<div className={"col-span-5 flex bg-transparent items-center border border-green-600 justify-between p-6 w-full drop-shadow  text-black mb-3 md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+				<div className={"col-span-5 flex bg-transparent items-center border border-blue-600 justify-between p-6 w-full drop-shadow  text-black mb-3 md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
 						<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 							
 							{editMode? <><PencilAltIcon className='ml-2 h-5 w-5' /> Edit user</> : <><UserAddIcon className='text-black ml-2 h-5 w-5'/> Add user </> }
@@ -294,11 +294,11 @@ const User = (props)=> {
 			</div>
 
 						<div className='col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full '>
-							<div className=' w-full flex flex-col items-start p-3  border border-green-600 bg-transparent'
-								style={{ minHeight: '250px' }}>
+							<div className=' w-full flex flex-col items-start p-3  border shadow-md'
+								style={{ minHeight: '250px', backgroundColor:'#eff6ff' }}>
 							
 												<>
-													<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+													<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
 														Bio Details
 													</h4>
 													<form
@@ -327,7 +327,7 @@ const User = (props)=> {
 																	)
 																}}
 																value={userData.first_name || ''}
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 														{/* Last name */}
@@ -351,7 +351,7 @@ const User = (props)=> {
 																	)
 																}}
 																value={userData.last_name ||''}
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 														{/* Other names */}
@@ -371,7 +371,7 @@ const User = (props)=> {
 																	)
 																}}
 																value={userData.other_names ||''}
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
@@ -396,7 +396,7 @@ const User = (props)=> {
 																	)
 																}}
 																value={userData.email ||''}
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
@@ -421,7 +421,7 @@ const User = (props)=> {
 																	)
 																}}
 																value={userData.employee_number ||''}
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
 
@@ -462,7 +462,7 @@ const User = (props)=> {
 																	label: jobs?.find(r=> r.value == userData?.job_title)?.label
 																  } || ''}
 																name='job_title'
-																className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 
 																
 															/>
@@ -490,7 +490,7 @@ const User = (props)=> {
 																	setIsCPasswordDirty(true);
 																}}
 																value={userData.password || ''}
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
                                                         {/* confirm password */}
@@ -514,7 +514,7 @@ const User = (props)=> {
 																	)
 																}}
 																value={userData.conf_password || ''}
-																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 															 {showErrorMessage && isCPasswordDirty ? <div> <p className='text-red-600'>Passwords did not match</p> </div> : ''}
 
@@ -543,7 +543,7 @@ const User = (props)=> {
 														{/* Contacts */}
 
 														<div className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+															<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
 																Contacts
 															</h4>
 														
@@ -596,7 +596,7 @@ const User = (props)=> {
 																			}
 																		}
 																		name='contact_type'
-																		className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																		className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 																		
 																	/>
 																</div>	
@@ -626,7 +626,7 @@ const User = (props)=> {
 																		value={
 																			 (userData.contacts[i])?.contact_text || ''
 																		}
-																		className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-green-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																		className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 																	/>
 																</div>
 
@@ -637,7 +637,7 @@ const User = (props)=> {
 
 														</div>
 														<div className="sticky top-0 right-10 w-full flex justify-end">
-															<button className=' bg-green-600 p-2 text-white flex text-md font-semibold '
+															<button className=' bg-blue-600 p-2 text-white flex text-md font-semibold '
 																onClick={handleAddClick} 
 																>
 																	{`Add Contact`}
@@ -648,7 +648,7 @@ const User = (props)=> {
 
 														{/* Group Details */}
 														<div className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+															<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
 																Group
 															</h4>
 															 <div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
@@ -680,7 +680,7 @@ const User = (props)=> {
 																	value: value.id || '',
 																	label: value.name || ''
 																  })) || ''}
-																  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																  className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 																
 															    />
 																</div>	
@@ -697,7 +697,7 @@ const User = (props)=> {
 																		return(
 																			// Administrative area 
 																		<div key={i} className=' w-full flex flex-col items-start justify-start py-3  border border-gray-300/70 bg-transparent h-auto'>
-																			<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+																			<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
 																				Administrative Areas
 																			</h4>
 																			<div className='w-full flex flex-row items-center gap-1 gap-x-3 mb-3'>
@@ -746,7 +746,7 @@ const User = (props)=> {
 																						label: value.county_name || value.name || ''
 																					  })) || ''}
 																					name='county'
-																					className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																					className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 																					
 																					/>
 																					<Select
@@ -776,7 +776,7 @@ const User = (props)=> {
 																					  })) || ''}
 
 																					name='sub_county'
-																					className='flex-none w-full  flex-grow  placeholder-gray-500 border border-green-600 outline-none'
+																					className='flex-none w-full  flex-grow  placeholder-gray-500 border border-blue-600 outline-none'
 																					/>
 																				</div>	
 																				
@@ -788,7 +788,7 @@ const User = (props)=> {
 																		return (
 																			//  Regulatory body 
 																			<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto'>
-																				<h4 className='text-lg uppercase pb-2 border-b border-green-600 w-full mb-4 font-semibold text-green-900'>
+																				<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
 																					Regulatory Body
 																				</h4>
 																				<div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
@@ -820,7 +820,7 @@ const User = (props)=> {
 																							label: value.name
 																						  })) || ''}
 																						name='regulatory_body'
-																						className='flex-none w-full bg-transparent  flex-grow  placeholder-gray-5 focus:bg-white focus:border-green-600 outline-none'
+																						className='flex-none w-full bg-transparent  flex-grow  placeholder-gray-5 focus:bg-white focus:border-blue-600 outline-none'
 																						/>
 																					</div>	
 																					
@@ -848,7 +848,7 @@ const User = (props)=> {
 															<button
 															    disabled={!add_user}
 																type='submit'
-																className=' bg-green-600 p-2 text-white flex text-md font-semibold '>
+																className=' bg-blue-600 p-2 text-white flex text-md font-semibold '>
 																<span className='text-medium font-semibold text-white'>
 																	{editMode? 'Update' : ' Save'}
 																</span>
@@ -863,7 +863,7 @@ const User = (props)=> {
 
                    
                     {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
+                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
                         <h5 className="text-sm font-bold">
                             <span className="text-gray-600 uppercase">Limited results</span>
                         </h5>

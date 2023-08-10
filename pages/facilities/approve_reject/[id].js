@@ -57,11 +57,11 @@ function ApproveReject(props) {
                 {/* Breadcramps */}
                
             <div className="flex md:col-span-7 flex-row gap-2 text-sm md:text-base md:my-3">
-              <Link className="text-green-700" href="/">
+              <Link className="text-blue-700" href="/">
                 Home
               </Link>
               {"/"}
-              <Link className="text-green-700" href="/facilities">
+              <Link className="text-blue-700" href="/facilities">
                 Facilities
               </Link>
               {"/"}
@@ -77,19 +77,19 @@ function ApproveReject(props) {
                 {/* Header Bunner  */}
                 <div
                 className={
-                    "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border border-green-600 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                    (facility?.is_approved ? "border-green-600" : "border-red-600")
+                    "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-transparent border border-blue-600 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+                    (facility?.is_approved ? "border-blue-600" : "border-red-600")
                 }
                 >
                 <div className="col-span-6 md:col-span-3">
-                    <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl hover:text-green-600 cursor-pointer tracking-tight font-bold leading-tight">
+                    <span onClick={() => router.push(`/facilities/${facility?.id}`)} className="text-4xl hover:text-blue-600 cursor-pointer tracking-tight font-bold leading-tight">
                     {facility?.official_name}
                     </span>
                     <div className="flex gap-2 items-center w-full justify-between">
                     <span
                         className={
                         "font-bold text-2xl " +
-                        (facility?.code ? "text-green-900" : "text-gray-400")
+                        (facility?.code ? "text-blue-900" : "text-gray-400")
                         }
                     >
                         #{facility?.code || "NO_CODE"}
@@ -102,7 +102,7 @@ function ApproveReject(props) {
                     {facility?.operational || facility?.operation_status_name ? (
                         <span
                         className={
-                            "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"
+                            "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default"
                         }
                         >
                         <CheckCircleIcon className="h-4 w-4" />
@@ -112,7 +112,7 @@ function ApproveReject(props) {
                         ""
                     )}
                     {facility?.approved ? (
-                        <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <CheckCircleIcon className="h-4 w-4" />
                         Validated
                         </span>
@@ -129,7 +129,7 @@ function ApproveReject(props) {
                         </span>
                     )}
                     {facility?.is_complete ? (
-                        <span className="bg-green-200 text-green-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
+                        <span className="bg-blue-200 text-blue-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                         <CheckCircleIcon className="h-4 w-4" />
                         Completed{" "}
                         </span>
@@ -171,7 +171,7 @@ function ApproveReject(props) {
 
 
                     {/* Facility details */}
-                    <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                    <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <div className="grid grid-cols-3 w-full md:w-11/12 leading-none items-center">
                         <label className="col-span-1 text-gray-600">
                         Functional Status
@@ -232,7 +232,7 @@ function ApproveReject(props) {
                     
                     <div className="col-start-1 col-span-1 ">
                     <button
-                        className="bg-green-600 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md"
+                        className="bg-blue-600 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md"
                         onClick={() => {
                         if (isFacDetails) {
                             setIsFacDetails(false);
@@ -260,7 +260,7 @@ function ApproveReject(props) {
 
                     {/* Comments and Updates Section  */}
 
-                    <div className="bg-transparent border border-green-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-6">
+                    <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-6">
                     <h3 className="text-gray-900 font-semibold leading-16 text-medium">
                         {facility?.has_edits ? 'Approve Updates' : facility?.is_approved ? "Approval / Reject facility" : "Comment on the validation"}
                     </h3>
@@ -298,7 +298,7 @@ function ApproveReject(props) {
                         cols="130"
                         rows="auto"
                         name="comment"
-                        className="flex col-span-2 bg-transparent border focus:ring-1 focus:ring-green-900 border-green-600 text-gray-600 font-normal text-medium p-2"
+                        className="flex col-span-2 bg-transparent border focus:ring-1 focus:ring-blue-900 border-blue-600 text-gray-600 font-normal text-medium p-2"
                         placeholder="Enter a comment"
                        
                         ></Field>
@@ -312,7 +312,7 @@ function ApproveReject(props) {
                         
                         <button
                         type="submit"
-                        className="bg-green-600  text-gray-100 -md p-2 font-semibold"
+                        className="bg-blue-600  text-gray-100 -md p-2 font-semibold"
                         onClick={() => reject = facility?.has_edits ? true : facility?.is_approved ? true : false}
                         
                         >

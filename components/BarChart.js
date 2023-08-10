@@ -11,7 +11,7 @@ const BarChart = props => {
     const options = {
         chart: {
             type: 'column',
-            backgroundColor: "rgb(255, 251, 235, 1)"
+            backgroundColor: "#eff6ff"
         },
         title: {
             text: props.title || ''

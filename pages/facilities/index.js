@@ -72,7 +72,13 @@ const Home = (props) => {
     const [facilityFeedBack, setFacilityFeedBack] = useState([])
     const [pathId, setPathId] = useState(props?.path.split('id=')[1] || '') 
     const [allFctsSelected, setAllFctsSelected] = useState(true);
+    const [isClient, setIsClient] = useState(false)
+ 
 
+
+	useEffect(() => {
+	  setIsClient(true)
+	}, [])
 
 
     useEffect(() => {
@@ -103,9 +109,7 @@ const Home = (props) => {
         
     }
 
-    // console.log({userCtx})
-
-  
+    if(isClient){
     return (
         <>
             <Head>
@@ -128,13 +132,13 @@ const Home = (props) => {
                             {/* Bread Crumbs */}
 
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <Link className="text-green-800" href="/">Home</Link> {'/'}
+                                <Link className="text-blue-800" href="/">Home</Link> {'/'}
                                 <span className="text-gray-500">Facilities</span>
                             </div>
 
 
-                                <div className={"col-span-5 flex justify-between w-full bg-django-green border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border-l-8 " + (true ? "border-green-700" : "border-red-600")}>
-                                    <h2 className='flex items-center text-xl font-bold text-green-900 capitalize gap-2'>
+                                <div className={"col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border-l-8 " + (true ? "border-blue-700" : "border-red-600")}>
+                                    <h2 className='flex items-center text-xl font-bold text-blue-900 capitalize gap-2'>
                                         {title}
                                      </h2>
                                      {/* dropdown options to download data */}
@@ -148,7 +152,7 @@ const Home = (props) => {
                                     {/* Facility Button */}
                                     {
                                         userCtx?.groups[0]?.id == 2 && // Display add facility button if  user belong to SCHRIO group
-                                   <Menu.Item as="div"  className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
+                                   <Menu.Item as="div"  className="px-4 py-2 bg-blue-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facilities/add')}} className='flex items-center justify-center'>
 
                                             <span className='text-base uppercase font-semibold'>Add Facility</span>
@@ -158,7 +162,7 @@ const Home = (props) => {
                                     }
 
                                      {/* Export Button */}
-                                     <Menu.Button as="button" className="px-4 py-2 bg-green-700 text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
+                                     <Menu.Button as="button" className="px-4 py-2 bg-blue-700 text-white text-md tracking-tighter font-semibold flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <DownloadIcon className="w-5 h-5 mr-1" />
                                         <span className='text-base uppercase font-semibold'>Export</span>
                                         <ChevronDownIcon className="w-4 h-4 ml-2" />
@@ -213,15 +217,15 @@ const Home = (props) => {
 
                             {/* Accordion Filter */}
 
-                            <Accordion sx={{borderRadius:0, backgroundColor:'#e7edd1', boxShadow:'none', borderBottomLeftRadius:'0px', borderBottomRightRadius:'0px'}} className='border border-green-600 mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
+                            <Accordion sx={{borderRadius:'none', backgroundColor:'transparent', boxShadow:'none', borderBottomLeftRadius:'0px', borderBottomRightRadius:'0px'}} className='border border-blue-600 mb-4 w-full shadow-none' expanded={isAccordionExpanded} onChange={handleAccordionExpand}>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon />}
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
                                                 >
                                                 
-                                                <h2 className='my-2 font-semibold text-xl text-green-700 flex items-center space-x-2'>
-                                                <FilterIcon className='w-6 h-6 text-green-900'/>
+                                                <h2 className='my-2 font-semibold text-xl text-blue-900 flex items-center space-x-2'>
+                                                <FilterIcon className='w-6 h-6 text-blue-900'/>
                                                     <p> Filter Facilities By ...</p></h2>
                                             </AccordionSummary>
                                             <AccordionDetails sx={{width:'100%', padding:4, height:'auto' }}>
@@ -236,11 +240,11 @@ const Home = (props) => {
                                                                         Object.keys(fltrs).map((ft, i) => (
                                                                             <div key={i} className="w-full flex flex-col items-start justify-start gap-1 mb-1">
                                                                                 <label htmlFor={ft} className="text-gray-600 capitalize text-sm">{ft.split('_').join(' ')}</label>
-                                                                                <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full border border-green-600 bg-gray-50"
+                                                                                <Select isMulti={multiFilters.includes(ft)} name={ft} defaultValue={drillDown[ft] || ""} id={ft} className="w-full border border-blue-600 bg-gray-50"
                                                                                     styles={{
                                                                                         input:(styles) => ({
                                                                                             ...styles,
-                                                                                            backgroundColor:"#e7edd1",
+                                                                                            backgroundColor:"#d2e2ed",
                                                                                             borderRadius:'0px',
                                                                                             border:'none'
 
@@ -248,7 +252,7 @@ const Home = (props) => {
                                                                                         }),
                                                                                         control: (baseStyles) => ({
                                                                                           ...baseStyles,
-                                                                                          backgroundColor: '#e7edd1',
+                                                                                          backgroundColor: '#d2e2ed',
                                                                                           outLine:'none',
                                                                                           border:'0px',
                                                                                           outLine:'none',
@@ -291,7 +295,7 @@ const Home = (props) => {
                                                                     <div className="w-full col-span-3 gap-x-3 grid grid-cols-4 mb-3">
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                             <span className='inline-flex gap-2'>
-                                                                                <input type="checkbox" className="justify-self-end border border-green-600 bg-django-green" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
+                                                                                <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={false} defaultChecked={props?.query?.has_edits === "true"} name="has_edits" id="has_edits" onChange={ev => {
                                                                                     setDrillDown({ ...drillDown, 'has_edits': true })
                                                                                 }} />
                                                                                 <label htmlFor="has_edits" className="text-gray-700 capitalize text-sm">Has edits</label>
@@ -300,7 +304,7 @@ const Home = (props) => {
                                                                             
 
                                                                             <span className='inline-flex gap-2'>
-                                                                                <input type="checkbox" className="justify-self-end border border-green-600 bg-django-green" value={true} defaultChecked={props?.query?.is_approved === "true"} name="is_approved" id="is_approved" onChange={ev => {
+                                                                                <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_approved === "true"} name="is_approved" id="is_approved" onChange={ev => {
                                                                                     setDrillDown({ ...drillDown, 'is_approved': true })
                                                                                 }} />   
                                                                                 <label htmlFor="is_approved" className="text-gray-700 capitalize text-sm">Approved</label>
@@ -312,7 +316,7 @@ const Home = (props) => {
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                                 <span className='inline-flex gap-2'>
                                                                                 
-                                                                                    <input type="checkbox" className="justify-self-end border border-green-600 bg-django-green" value={true} defaultChecked={props?.query?.is_complete === "true"} name="is_complete" id="is_complete" onChange={ev => {
+                                                                                    <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.is_complete === "true"} name="is_complete" id="is_complete" onChange={ev => {
                                                                                         setDrillDown({ ...drillDown, 'is_complete': true })
                                                                                     }} />
                                                                                 <label htmlFor="is_complete" className="text-gray-700 capitalize text-sm">Complete</label>
@@ -322,7 +326,7 @@ const Home = (props) => {
                                                                         
                                                                                 <span className='inline-flex gap-2'>
                                                                         
-                                                                            <input type="checkbox" className="justify-self-end border border-green-600 bg-django-green" value={true} defaultChecked={props?.query?.number_of_beds === "true"} name="number_of_beds" id="number_of_beds" onChange={ev => {
+                                                                            <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_beds === "true"} name="number_of_beds" id="number_of_beds" onChange={ev => {
                                                                                 setDrillDown({ ...drillDown, 'number_of_beds': true })
                                                                             }} />
                                                                             <label htmlFor="number_of_beds" className="text-gray-700 capitalize text-sm">Has beds</label>
@@ -334,7 +338,7 @@ const Home = (props) => {
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                                     <span className='inline-flex gap-2'>
                                                                         
-                                                                            <input type="checkbox" className="justify-self-end border border-green-600 bg-django-green" value={true} defaultChecked={props?.query?.number_of_cots === "true"} name="number_of_cots" id="number_of_cots" onChange={ev => {
+                                                                            <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.number_of_cots === "true"} name="number_of_cots" id="number_of_cots" onChange={ev => {
                                                                                 setDrillDown({ ...drillDown, 'number_of_cots': true })
                                                                             }} />
                                                                             <label htmlFor="number_of_cots" className="text-gray-700 capitalize text-sm">Has cots</label>
@@ -343,7 +347,7 @@ const Home = (props) => {
                                                                         
                                                                             <span className='inline-flex gap-2'>
                                                                         
-                                                                            <input type="checkbox" className="justify-self-end border border-green-600 bg-django-green" value={true} defaultChecked={props?.query?.open_whole_day === "true"} name="open_whole_day" id="open_whole_day" onChange={ev => {
+                                                                            <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_whole_day === "true"} name="open_whole_day" id="open_whole_day" onChange={ev => {
                                                                                 setDrillDown({ ...drillDown, 'open_whole_day': true })
                                                                             }} />
                                                                             <label htmlFor="open_whole_day" className="text-gray-700 capitalize text-sm">Open 24 hours</label>
@@ -354,7 +358,7 @@ const Home = (props) => {
                                                                         <div className='flex flex-col items-start justify-center gap-1'>
                                                                                     <span className='inline-flex gap-2'>
                                                                         
-                                                                        <input type="checkbox" className="justify-self-end border border-green-600 bg-django-green" value={true} defaultChecked={props?.query?.open_weekends === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
+                                                                        <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_weekends === "true"} name="open_weekends" id="open_weekends" onChange={ev => {
                                                                             setDrillDown({ ...drillDown, 'open_weekends': true })
                                                                         }} />
                                                                         <label htmlFor="open_weekends" className="text-gray-700 capitalize text-sm">Open weekends</label>
@@ -363,7 +367,7 @@ const Home = (props) => {
                                                                         
                                                                         <span className='inline-flex gap-2'>
                                                                     
-                                                                    <input type="checkbox" className="justify-self-end border border-green-600 bg-django-green" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
+                                                                    <input type="checkbox" className="justify-self-end border border-blue-600 bg-django-blue" value={true} defaultChecked={props?.query?.open_public_holidays === "true"} name="open_public_holidays" id="open_public_holidays" onChange={ev => {
                                                                         setDrillDown({ ...drillDown, 'open_public_holidays': true })
                                                                     }} />
                                                                         <label htmlFor="open_public_holidays" className="text-gray-700 capitalize text-sm">Open holidays</label>
@@ -395,9 +399,9 @@ const Home = (props) => {
 
                                                                         }
                                                                         setIsAccordionExpanded(false)
-                                                                    }} className="bg-django-green col-start-1  border border-green-600  text-green-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">Filter</button>
+                                                                    }} className="bg-django-blue col-start-1  border border-blue-600  text-blue-600 hover:bg-black hover:text-white hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center">Filter</button>
                                                                     
-                                                                    <button className="bg-green-700 boder border-green-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center" onClick={ev => {
+                                                                    <button className="bg-blue-700 boder border-blue-700 text-white hover:bg-black hover:border-black font-semibold px-5 py-1 text-base  w-full whitespace-nowrap text-center" onClick={ev => {
                                                                         router.push('/facilities')
                                                                     }}>Clear filters</button>
                                                                     
@@ -422,9 +426,9 @@ const Home = (props) => {
                    
                     
                     {/* Main Body */}
-                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto border border-green-600">
+                    <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto border border-blue-600">
                                     {/* Data Indicator section */}
-                                    <div className='w-full flex justify-end border-b border-green-600'>
+                                    <div className='w-full flex justify-end border-b border-blue-600'>
                                         <h5 className="text-lg font-medium text-gray-800 pr-2">      
                                             {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 text-base">{props?.data?.start_index ?? ''} - {props?.data?.end_index ?? ''} of {props?.data?.count ?? ''} </small>}
                                         </h5>
@@ -439,10 +443,10 @@ const Home = (props) => {
                                             facilities.map((facility, index) => (
                                                 <div key={index} 
                                                 title={`Incomplete Details : ${facility?.is_complete ? 'none' : facility?.in_complete_details}`}
-                                                className="grid grid-cols-8 gap-2 border-b border-green-600 py-4 hover:bg-yellow-50 w-full">
+                                                className="grid grid-cols-8 gap-2 border-b border-blue-600 py-4 hover:bg-blue-50 w-full">
                                                     <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
-                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className="cursor-pointer hover:text-green-600 group-focus:text-blue-800 active:text-blue-800 " >
+                                                            <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className="cursor-pointer hover:text-blue-600 group-focus:text-blue-800 active:text-blue-800 " >
                                                                 {/* <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}*/}{facility?.official_name || facility?.official_name || facility?.name} 
                                                             </span>
                                                         </h3>
@@ -481,8 +485,8 @@ const Home = (props) => {
                                                         </div>
                                                     </div>
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
-                                                        {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 font-semibold text-gray-900"}>Operational</span> : ""}
-                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-black" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-gray-500 text-gray-50"}>{facility?.rejected ? "Rejected" : ""}</span>}
+                                                        {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Operational</span> : ""}
+                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-blue-200 font-semibold text-black" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-gray-500 text-gray-50"}>{facility?.rejected ? "Rejected" : ""}</span>}
                                                         {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Has edits</span> : ""}
                                                     </div>
                                                 </div>
@@ -542,7 +546,7 @@ const Home = (props) => {
                                             {facilities && facilities?.length >= 30 && !khisSynched && 
                                             <div className='self-end mx-2'>
                                             <ul className="list-none flex flex-row gap-2 w-full  items-center my-2">
-                                                <li className="text-base text-green-500 cursor-pointer">
+                                                <li className="text-base text-blue-500 cursor-pointer">
                                                     <Link 
                                                     href={
                                                         (() => 
@@ -558,11 +562,11 @@ const Home = (props) => {
                                                             `${props.path}?page=${props?.data?.current_page}`
                                                         )()
                                                     }>
-                                                        <span className="text-white  bg-green-600 cursor-pointer font-semibold px-2 py-1 underline">{props?.data?.current_page}</span>
+                                                        <span className="text-white  bg-blue-600 cursor-pointer font-semibold px-2 py-1 underline">{props?.data?.current_page}</span>
                                                     </Link>
                                                 </li>
                                                 {props?.path && props?.data?.near_pages && props?.data?.near_pages.map((page, i) => (
-                                                    <li key={i} className="text-base group text-green-500">
+                                                    <li key={i} className="text-base group text-blue-500">
                                                         <Link href={(() => 
                                                             props.path.includes('?page') ?
                                                             props.path.replace(/\?page=\d+/,`?page=${page}`)
@@ -576,7 +580,7 @@ const Home = (props) => {
                                                             `${props.path}?page=${page}`
                    
                                                         )()}>
-                                                            <span className="text-green-800 cursor-pointer  px-2 py-1 hover:underline">{page}</span>
+                                                            <span className="text-blue-800 cursor-pointer  px-2 py-1 hover:underline">{page}</span>
                                                         </Link>
                                                     </li>
                                                 ))}
@@ -602,6 +606,9 @@ const Home = (props) => {
             </MainLayout >
         </>
     )
+    } else {
+        return null
+    }
 }
 
 Home.getInitialProps = async (ctx) => {

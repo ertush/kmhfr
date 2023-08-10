@@ -42,8 +42,8 @@ dependencies:
     specifier: ^5.14.3
     version: 5.14.3(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
   '@mui/x-data-grid':
-    specifier: ^6.10.2
-    version: 6.10.2(@mui/material@5.14.3)(@mui/system@5.14.3)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^6.11.0
+    version: 6.11.0(@mui/material@5.14.3)(@mui/system@5.14.3)(react-dom@18.2.0)(react@18.2.0)
   '@mui/x-date-pickers':
     specifier: ^5.0.20
     version: 5.0.20(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.14.3)(@mui/system@5.14.3)(date-fns@2.30.0)(moment@2.29.4)(react-dom@18.2.0)(react@18.2.0)
@@ -158,6 +158,12 @@ dependencies:
   underscore:
     specifier: ^1.13.6
     version: 1.13.6
+  zod:
+    specifier: ^3.21.4
+    version: 3.21.4
+  zod-formik-adapter:
+    specifier: ^1.2.0
+    version: 1.2.0(formik@2.4.3)(zod@3.21.4)
 
 devDependencies:
   '@next/eslint-plugin-next':
@@ -1280,8 +1286,8 @@ packages:
       react-is: 18.2.0
     dev: false
 
-  /@mui/x-data-grid@6.10.2(@mui/material@5.14.3)(@mui/system@5.14.3)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-s4+DF1RstnnOcxWyFdjKJoLdhAhbmb+4ode5t9q9mdl1imbrmD2BNXmG/OZS4nlwYsanvK8d6qQ8w/cT/5eLiw==}
+  /@mui/x-data-grid@6.11.0(@mui/material@5.14.3)(@mui/system@5.14.3)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-ZyOZmr6JmOZPXWq1mbStkYg/uMY7zzQPQElCvdOnJPrCtifZN1UorKhWlfchV/quSydxm1VxvmsfEnJ0wHZY7g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@mui/material': ^5.4.1
@@ -6539,3 +6545,17 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  /zod-formik-adapter@1.2.0(formik@2.4.3)(zod@3.21.4):
+    resolution: {integrity: sha512-62U+Mf8U05pvLsIMUTC1H6d4K5SmsrXM+YgiZhCpPin5GNhnVuXCGySmJCs0FHuTJCBy7Et5Z1i8KF5ffuLttg==}
+    peerDependencies:
+      formik: ^2.2.9
+      zod: ^3.14.4
+    dependencies:
+      formik: 2.4.3(react@18.2.0)
+      zod: 3.21.4
+    dev: false
+
+  /zod@3.21.4:
+    resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: false

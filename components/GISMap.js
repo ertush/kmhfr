@@ -117,7 +117,7 @@ const GISMap = ({ data }) => {
                             facility?.op_stat == "Closed" ||
                             facility?.op_stat
                               ? "text-blue-900 bg-blue-300/70"
-                              : "text-gray-900 bg-green-200")
+                              : "text-gray-900 bg-blue-200")
                           }
                         >
                           {" " + facility?.op_stat + " "}

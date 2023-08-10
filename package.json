@@ -22,7 +22,7 @@
     "@mui/icons-material": "^5.14.3",
     "@mui/lab": "5.0.0-alpha.138",
     "@mui/material": "^5.14.3",
-    "@mui/x-data-grid": "^6.10.2",
+    "@mui/x-data-grid": "^6.11.0",
     "@mui/x-date-pickers": "^5.0.20",
     "@radix-ui/react-radio-group": "^0.0.19",
     "@radix-ui/react-tabs": "0.0.5",
@@ -60,7 +60,9 @@
     "react-use-uuid": "^2.0.1",
     "react-window": "^1.8.9",
     "swr": "^2.2.0",
-    "underscore": "^1.13.6"
+    "underscore": "^1.13.6",
+    "zod": "^3.21.4",
+    "zod-formik-adapter": "^1.2.0"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.4.12",

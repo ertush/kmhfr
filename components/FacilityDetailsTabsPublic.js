@@ -135,7 +135,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                 </label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.open_normal_day ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
@@ -155,7 +155,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                 </label>
                 <p className="col-span-2 text-black font-medium text-base flex">
                   {facility?.regulated ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
@@ -370,7 +370,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                           <span><b>Category: </b></span>{service.category_name || ""}
                           </small>
                           <label className="text-sm text-gray-600 flex gap-1 items-center">
-                            <CheckCircleIcon className="h-6 w-6 text-green-500" />
+                            <CheckCircleIcon className="h-6 w-6 text-blue-500" />
                             <span>Active</span>
                           </label>
                           <div className="flex justify-between">
@@ -442,7 +442,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                               <div>
                               <button
                                   type="submit"
-                                  className="bg-green-500 text-white rounded p-1  h-8 px-4"
+                                  className="bg-blue-500 text-white rounded p-1  h-8 px-4"
                                 >
                                   Submit
                                 </button>
@@ -471,7 +471,7 @@ function FacilityDetailsTabsPulic({ facility }) {
             <div className="bg-white w-full p-4 rounded">
               <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                 <span className="font-semibold">Facility units</span>
-                {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#units"} className="text-base text-green-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}
+                {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#units"} className="text-base text-blue-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}
               </h3>
               <ul>
                 {facility?.facility_units &&
@@ -490,7 +490,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                         </small>
                       </div>
                       <div className="flex flex-row gap-1 items-center">
-                        <CheckCircleIcon className="h-6 w-6 text-green-500" />
+                        <CheckCircleIcon className="h-6 w-6 text-blue-500" />
                         <label className="text-sm text-gray-600">
                           Active
                         </label>

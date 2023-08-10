@@ -139,7 +139,7 @@ console.log(delete_permission);
                                       Are you sure you want to delete<b>{group_details?.name}</b> ?
                                 </span>
                                <div className='flex justify-start gap-4 mt-4'>
-                                    <button className="bg-green-500 text-white font-semibold  p-2 text-center" type="button" onClick={(e)=>{deleteGroup(e);setOpen(false)}} disabled={!delete_permission} >Delete</button>
+                                    <button className="bg-blue-500 text-white font-semibold  p-2 text-center" type="button" onClick={(e)=>{deleteGroup(e);setOpen(false)}} disabled={!delete_permission} >Delete</button>
                                     <button className="bg-red-500 text-white font-semibold  p-2 text-center" 
                                     onClick={()=> {setOpen(false)}} 
                                     >Cancel</button>
@@ -150,13 +150,13 @@ console.log(delete_permission);
                     <div className="col-span-5 flex flex-col gap-3 md:gap-5 px-4">
                         <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3">
                             <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
-                                <a className="text-green-700" href="/">Home</a> {'/'}
-                                <a className="text-green-700" href="/users/groups">Groups</a> {'/'}
+                                <a className="text-blue-700" href="/">Home</a> {'/'}
+                                <a className="text-blue-700" href="/users/groups">Groups</a> {'/'}
                                 <span className="text-gray-500">Edit group</span>
                             </div>
                         </div>
 						<div>{status !==null && <Alert severity={status.status} sx={{width:'100%'}}>{status.message?.email || status.message?.contacts || status.message?.county|| status.message?.password || status?.message}</Alert>}</div>
-                        <div className={"col-span-5 flex items-center justify-between p-6 w-full bg-gray-50 drop-shadow  text-black md:divide-x md:divide-gray-200 border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+                        <div className={`col-span-5 flex items-center justify-between p-6 w-full bg-transparent drop-shadow  text-black md:divide-x md:divide-gray-200 border border-blue-600 border-l-8  ${'border-blue-600'}`}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     <PencilAltIcon className='ml-2 h-5 w-5' />
                                     {'Edit Group'}
@@ -174,7 +174,7 @@ console.log(delete_permission);
                     </div>
 
 					<div className=' col-span-5 flex flex-col justify-center items-start px-1 md:px-4 w-full'>
-							<div className=' w-full flex flex-col items-start p-3  border border-gray-300/70 bg-gray-50'>
+							<div className=' w-full flex flex-col items-start p-3  border border-gray-300/70 shadow-md' style={{backgroundColor:'#eff6ff'}}>
 							
 												<>
 													<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
@@ -206,7 +206,7 @@ console.log(delete_permission);
 																	)
 																}}
 																value={group_details?.name || ''}
-																className='flex-none w-full bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+																className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:bg-white focus:border-black outline-none'
 															/>
 														</div>
                                                         <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
@@ -292,7 +292,7 @@ console.log(delete_permission);
                                                                     </span>
 																</label>
 															</div>
-                                                            <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
+                                                            <div className='w-full flex flex-row items-center px-2  gap-1 gap-x-3 mb-3'>
 																<input
 																	type='checkbox'
 																	defaultChecked={group_details?.is_county_level}
@@ -348,8 +348,8 @@ console.log(delete_permission);
 														
 
 														{/* Permissions Details */}
-														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-gray-50 h-auto'>
-															<h4 className='text-lg uppercase pb-2 border-b border-gray-100 w-full mb-4 font-semibold text-blue-900'>
+														<div className=' w-full flex flex-col items-start justify-start p-3  border border-gray-300/70 bg-transparent h-auto'>
+															<h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
 																Permissions
 															</h4>
 															 <div className='w-full flex flex-row items-center px-2 justify-  gap-1 gap-x-3 mb-3'>
@@ -377,10 +377,7 @@ console.log(delete_permission);
                                                                 moveAllLeft: <ChevronDoubleLeftIcon className='w-3 h-3 text-black' />,
                                                                 moveRight: <ChevronRightIcon className='w-3 h-3 text-black' />,
                                                                 moveAllRight:<ChevronDoubleRightIcon className='w-3 h-3 text-black'/>,
-                                                                // moveDown: <span className="fa fa-chevron-down" />,
-                                                                // moveUp: <span className="fa fa-chevron-up" />,
-                                                                // moveTop: <span className="fa fa-double-angle-up" />,
-                                                                // moveBottom: <span className="fa fa-double-angle-down" />,
+                                                              
                                                             }}
                                                                 />
 																</div>	
@@ -392,7 +389,7 @@ console.log(delete_permission);
  
 														{/* Cancel & Save */}
 														<div className='flex justify-between items-center w-full'>
-															<button className='flex items-center justify-start space-x-2 p-1 border-2 border-black  px-2'>
+															<button className='flex items-center justify-start space-x-2 p-1 border border-black  px-2'>
 																<ChevronDoubleLeftIcon className='w-4 h-4 text-black' />
 																<span className='text-medium font-semibold text-black '>
 																	Cancel
@@ -401,7 +398,7 @@ console.log(delete_permission);
 															<button
 																disabled={!add_permission}
 																type='submit'
-																className=' bg-green-600 p-2 text-white flex text-md font-semibold '>
+																className=' bg-blue-600 p-2 text-white flex text-md font-semibold '>
 																<span className='text-medium font-semibold text-white'>
 																	Update
 																</span>
@@ -413,16 +410,6 @@ console.log(delete_permission);
                             </div>
                         </div>
                         
-               
-                    {/* Floating div at bottom right of page */}
-                    {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
-                        <h5 className="text-sm font-bold">
-                            <span className="text-gray-600 uppercase">Limited results</span>
-                        </h5>
-                        <p className="text-sm text-gray-800">
-                            For testing reasons, downloads are limited to the first 100 results.
-                        </p>
-                    </div> */}
                   
                 </div>
     </MainLayout>

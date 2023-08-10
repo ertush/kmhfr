@@ -12,7 +12,7 @@ import { DownloadIcon } from '@heroicons/react/solid';
 function ReportItem({ title, last_generated, info_snippet }) {
 	return (
 		<span
-			className='text-green-700'>
+			className='text-blue-700'>
 			<ListItem
 				sx={{
 					width: 'auto',
@@ -24,15 +24,15 @@ function ReportItem({ title, last_generated, info_snippet }) {
 					borderBottom: 1,
 					borderBottomColor: 'Grey',
 				}}>
-				<DownloadIcon className='w-8 h-8 text-green-800' />
+				<DownloadIcon className='w-8 h-8 text-blue-800' />
 				<ListItemText
 					className='ml-3'
 					primary={title}
 					secondary={info_snippet}
 				/>
 				<ListItemText secondary={'Last generated on ' + last_generated} />
-				<button className='bg-transparent hover:bg-green-800 rounded-md font-semibold hover:text-white py-2 
-					px-4 border border-green-800 hover:border-transparent' onClick={()=>{downloadCSV()}}>
+				<button className='bg-transparent hover:bg-blue-800 rounded-md font-semibold hover:text-white py-2 
+					px-4 border border-blue-800 hover:border-transparent' onClick={()=>{downloadCSV()}}>
 					Download
 				</button>
 

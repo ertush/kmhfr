@@ -199,13 +199,13 @@ const Home = (props) => {
 							{/* Bread Crumbs */}
 
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<Link className='text-green-700' href='/public/facility/facilities'>
+								<Link className='text-blue-700' href='/public/facility/facilities'>
 									Home
 								</Link>
 								{'/'}
 								<span className='text-gray-500'>Facilities</span>
 							</div>
-							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-green-600" : "border-red-600")}>
+							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Facilities'}
                                 </h2>
@@ -461,7 +461,7 @@ const Home = (props) => {
 							<div className='flex flex-row gap-4'> 
 								<button
 									type="submit"
-									className="bg-green-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+									className="bg-blue-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
 								>
 									<SearchIcon className="w-5 h-5" /> Search
 								</button>  
@@ -521,11 +521,11 @@ const Home = (props) => {
 											</p>
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 
-											{(hf?.facility_type_category) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>{hf?.facility_type_category}</span> : ""}
+											{(hf?.facility_type_category) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>{hf?.facility_type_category}</span> : ""}
 											</p>
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 
-										    {(hf?.facility_type_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>{hf?.facility_type_name}</span> : ""}
+										    {(hf?.facility_type_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>{hf?.facility_type_name}</span> : ""}
 											</p>
 
 											<div className='text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full'>
@@ -566,7 +566,7 @@ const Home = (props) => {
 											</div>
 										</div>
 										<div className='col-span-8 md:col-span-3 flex flex-wrap items-center gap-3 text-lg'>
-										{(hf?.operational || hf?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-black"}>Operational</span> : ""}
+										{(hf?.operational || hf?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Operational</span> : ""}
 										</div>
 										<div className='col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
 										</div>

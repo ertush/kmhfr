@@ -51,7 +51,7 @@ const Home = (props) => {
 							{/* Bread Crumbs */}
 
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<Link className='text-green-700' href='/'>
+								<Link className='text-blue-700' href='/'>
 									Home
 								</Link>
 								{'/'}
@@ -59,7 +59,7 @@ const Home = (props) => {
 							</div>
 
 
-						<div className={"col-span-5 flex justify-between w-full bg-django-green border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border-l-8 " + (true ? "border-green-700" : "border-red-600")}>
+						<div className={"col-span-5 flex justify-between w-full bg-django-blue border drop-shadow  text-black p-4 md:divide-x md:divide-gray-200 items-center border-l-8 " + (true ? "border-blue-700" : "border-red-600")}>
 							<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
 								{'Community Health Units'}
 							</h2>
@@ -69,7 +69,7 @@ const Home = (props) => {
 									<div className='flex items-center space-x-6 w-auto '>
 										<Menu.Item
 											as='div'
-											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase'>
+											className='px-4 py-2 bg-blue-700 text-white text-sm tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<button
 												onClick={() => {
 													router.push('/community-units/add');
@@ -82,7 +82,7 @@ const Home = (props) => {
 
 										<Menu.Button
 											as='button'
-											className='px-4 py-2 bg-green-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase'>
+											className='px-4 py-2 bg-blue-700 text-white text-sm tracking-tighter font-medium flex items-center justify-center whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase'>
 											<DownloadIcon className='w-5 h-5 mr-1' />
 											<span className='text-base uppercase font-semibold'>Export</span>
 											<ChevronDownIcon className='w-4 h-4 ml-2' />
@@ -191,9 +191,9 @@ const Home = (props) => {
 
 							{/* Main body */}
 							
-							<div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto border border-green-600">
+							<div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto border border-blue-600">
 								 {/* Data Indicator section */}
-								 <div className='w-full flex justify-end border-b border-green-600'>
+								 <div className='w-full flex justify-end border-b border-blue-600'>
                                         <h5 className="text-lg font-medium text-gray-800 pr-2">      
                                             {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 text-base">{props?.data?.start_index ?? ''} - {props?.data?.end_index ?? ''} of {props?.data?.count ?? ''} </small>}
                                         </h5>
@@ -207,12 +207,12 @@ const Home = (props) => {
 										cus.map((comm_unit, index) => (
 											<div
 												key={comm_unit.id}
-												className='grid grid-cols-8 gap-2 border-b border-green-600 py-4 hover:bg-yellow-50 w-full'>
+												className='grid grid-cols-8 gap-2 border-b border-blue-600 py-4 hover:bg-blue-50 w-full'>
 												<div className='px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left'>
 													<h3 className='text-2xl  font-semibold w-full'>
 														<a
 															href={'/community-units/' + comm_unit.id}
-															className='cursor-pointer hover:text-green-600 group-focus:text-blue-800 active:text-blue-800 '>
+															className='cursor-pointer hover:text-blue-600 group-focus:text-blue-800 active:text-blue-800 '>
 															
 															{comm_unit.official_name ||
 																comm_unit.official_name ||
@@ -260,9 +260,9 @@ const Home = (props) => {
 												</div>
 
 													<div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
-                                                        {comm_unit.status_name && <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-green-200 font-semibold text-gray-900"}>{comm_unit.status_name}</span>}
+                                                        {comm_unit.status_name && <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>{comm_unit.status_name}</span>}
                                                         {comm_unit.has_edits && <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Has edits</span>}
-														{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + (comm_unit.approved ? "bg-green-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
+														{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + (comm_unit.approved ? "bg-blue-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
                                                     </div>
 									
 												</div>
@@ -275,7 +275,7 @@ const Home = (props) => {
 													No community units found
 												</span>
 												<Link href={props.path || '/'}>
-													<a className='text-green-700 hover:text-green-800 group-focus:text-blue-800 active:text-blue-800'>
+													<a className='text-blue-700 hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 														Refresh.
 													</a>
 												</Link>
@@ -283,7 +283,7 @@ const Home = (props) => {
 										)}
 										{cus && cus.length >= 30 && (
 											<ul className='list-none flex p-2 flex-row justify-end gap-2 w-full items-center my-2'>
-												<li className='text-base text-green-500 cursor-pointer'>
+												<li className='text-base text-blue-500 cursor-pointer'>
 					
 													<a
 														href={
@@ -300,13 +300,13 @@ const Home = (props) => {
 															`${props.path}?page=${props?.data?.current_page}`
 														)()
 														}
-														className='text-white  bg-green-600 cursor-pointer font-semibold px-2 py-1 underline'>
+														className='text-white  bg-blue-600 cursor-pointer font-semibold px-2 py-1 underline'>
 														{props?.data?.current_page}
 													</a>
 												</li>
 												{props?.data?.near_pages &&
 													props?.data?.near_pages.map((page) => (
-														<li key={page} className='text-base group text-green-500'>
+														<li key={page} className='text-base group text-blue-500'>
 
 															<a
 																href={
@@ -324,7 +324,7 @@ const Home = (props) => {
 							
 																	)()
 																}
-																className='text-green-800 p-2 hover:underline active:underline focus:underline'>
+																className='text-blue-800 p-2 hover:underline active:underline focus:underline'>
 																{page}
 															</a>
 														</li>

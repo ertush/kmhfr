@@ -276,7 +276,7 @@ if(filters){
               <div className="col-span-5 flex flex-wrap gap-3 md:gap-5 px-4 pt-2 justify-between items-center w-full bg-transparent">
                 {/* BREADCRUMB */}
                 <div className="flex flex-row items-center justify-between gap-2 md:ml-6 text-sm md:text-base py-3">
-                  <Link className="text-green-700" href="/">
+                  <Link className="text-blue-700" href="/">
                     Home
                   </Link>
                   {"/"}
@@ -288,7 +288,7 @@ if(filters){
                 {/* Aside with filters */}
                 <div className="w-full grid grid-cols-6 gap-5 px-1 md:px-4 p-4 mx-auto bg-transparent min-h-screen">
                   {/* Actual Aside */}
-                  <aside className="col-span-6 bg-yellow-50 md:col-span-3 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start shadow-md">
+                  <aside className="col-span-6 bg-blue-50 md:col-span-3 lg:col-span-2 xl:col-span-1 p-1 md:p-2 flex flex-col lg:gap-3 items-center justify-start shadow-md">
                     {/* Tabs */}
                     <Tabs.Root
                       orientation="horizontal"
@@ -572,7 +572,7 @@ if(filters){
                 
                               }}
                               
-                              className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                              className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -618,7 +618,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={serviceOptions}
                                                     placeholder={
                                                       ft
@@ -781,7 +781,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -892,7 +892,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={subCountyOptions}
                                                     placeholder={
                                                       ft
@@ -930,7 +930,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={wardOptions}
                                                     placeholder={
                                                       ft
@@ -1002,7 +1002,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1262,7 +1262,7 @@ if(filters){
                                           },
                                         });
                                       }}
-                                      className="bg-black border-2 border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg  w-full whitespace-nowrap text-center uppercase"
+                                      className="bg-black border-2 border-black text-white hover:bg-blue-800 focus:bg-blue-800 active:bg-blue-800 font-semibold px-5 py-1 text-lg  w-full whitespace-nowrap text-center uppercase"
                                     >
                                       Apply Filters
                                     </button>
@@ -1527,7 +1527,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1573,7 +1573,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={serviceOptions}
                                                     placeholder={
                                                       ft
@@ -1736,7 +1736,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -1782,7 +1782,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={subCountyOptions}
                                                     placeholder={
                                                       ft
@@ -1939,7 +1939,7 @@ if(filters){
                                       
                                                     }}
                                                     
-                                                    className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                                                    className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={wardOptions}
                                                     placeholder={
                                                       ft
@@ -2012,7 +2012,7 @@ if(filters){
                 
                               }}
                               
-                              className='flex w-full   placeholder-gray-500 border border-green-600 outline-none'
+                              className='flex w-full   placeholder-gray-500 border border-blue-600 outline-none'
                                                     options={Array.from(
                                                       filters[ft] || [],
                                                       (fltopt) => {
@@ -2272,7 +2272,7 @@ if(filters){
                                           },
                                         });
                                       }}
-                                      className="bg-black border border-black text-white hover:bg-green-800 focus:bg-green-800 active:bg-green-800 font-semibold px-5 py-1 text-lg  w-full whitespace-nowrap text-center uppercase"
+                                      className="bg-black border border-black text-white hover:bg-blue-800 focus:bg-blue-800 active:bg-blue-800 font-semibold px-5 py-1 text-lg  w-full whitespace-nowrap text-center uppercase"
                                     >
                                       Apply Filters
                                     </button>
@@ -2298,7 +2298,7 @@ if(filters){
 
                   {/* Map the results */}
                   <div
-                    className="col-span-6 md:col-span-3 lg:col-span-4 xl:col-span-5 flex flex-col gap-4 items-center justify-center bg-green-100 shadow-lg border border-gray-300"
+                    className="col-span-6 md:col-span-3 lg:col-span-4 xl:col-span-5 flex flex-col gap-4 items-center justify-center bg-blue-100 shadow-lg border border-gray-300"
                     style={{ minHeight: "650px" }}
                   >
                     {/* <pre>{JSON.stringify(props?.data?.results, null, 2)}</pre> */}
@@ -2311,7 +2311,7 @@ if(filters){
         </>
 
         {/* Floating div at bottom right of page */}
-        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-yellow-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
+        {/* <div className="fixed bottom-4 right-4 z-10 w-96 h-auto bg-blue-50/50 bg-blend-lighten shadow-lg -lg flex flex-col justify-center items-center py-2 px-3">
           <h5 className="text-sm font-bold">
             <span className="text-gray-600 uppercase">Limited results</span>
           </h5>

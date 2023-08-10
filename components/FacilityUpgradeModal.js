@@ -41,7 +41,7 @@ function FacilityUpgradeModal({ subject, facilityId }) {
           }
         }>
           <span className="flex gap-2 items-center">
-            <InformationCircleIcon className="w-24 h-24 text-green-600" />
+            <InformationCircleIcon className="w-24 h-24 text-blue-600" />
             <Typography id="transition-modal-title" variant="h6" >
               Would you like to upgrade/downgrade or save edited facility {subject}?
             </Typography>
@@ -53,7 +53,7 @@ function FacilityUpgradeModal({ subject, facilityId }) {
 
             <form className='my-3 flex-col gap-y-2'>
               <div className='flex justify-between gap-4 mt-4'>
-                <button className="bg-green-600 text-white font-semibold rounded p-2 text-center" type="button" onClick={() => router.push(`/facilities/upgrade/${facilityId}`)}>Upgrade Facility</button>
+                <button className="bg-blue-600 text-white font-semibold rounded p-2 text-center" type="button" onClick={() => router.push(`/facilities/upgrade/${facilityId}`)}>Upgrade Facility</button>
                 <button className="bg-black text-white font-semibold rounded p-2 text-center" type="button" onClick={handleClose}>Save Facility {subject}{'(s)'}</button>
               </div>
 

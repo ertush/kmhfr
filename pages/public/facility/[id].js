@@ -56,11 +56,11 @@ const FacilityDetails = (props) => {
           <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
             {/* Breadcramps */}
             <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
-              <Link className="text-green-700" href="/public/facility/facilities">
+              <Link className="text-blue-700" href="/public/facility/facilities">
                 Home
               </Link>
               {"/"}
-              <Link className="text-green-700" href="/public/facility/facilities">
+              <Link className="text-blue-700" href="/public/facility/facilities">
                 Facilities
               </Link>
               {"/"}
@@ -81,7 +81,7 @@ const FacilityDetails = (props) => {
             <div
               className={
                 "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
-                (facility?.is_approved ? "border-green-600" : "border-red-600")
+                (facility?.is_approved ? "border-blue-600" : "border-red-600")
               }  
             >
               <div className="col-span-6 md:col-span-3">
@@ -92,7 +92,7 @@ const FacilityDetails = (props) => {
                   <span
                     className={
                       "font-bold text-2xl " +
-                      (facility?.code ? "text-green-900" : "text-gray-400")
+                      (facility?.code ? "text-blue-900" : "text-gray-400")
                     }
                   >
                     #{facility?.code || "NO_CODE"}
@@ -111,7 +111,7 @@ const FacilityDetails = (props) => {
                   {facility?.operational || facility?.operation_status_name ? (
                     <span
                       className={
-                        "leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-green-200 text-green-900 flex gap-x-1 items-center cursor-default"
+                        "leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default"
                       }
                     >
                       <CheckCircleIcon className="h-4 w-4" />
