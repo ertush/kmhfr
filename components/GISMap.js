@@ -1,10 +1,10 @@
-import Link from "next/link";
+// import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from "react-leaflet";
 import MapData from "../assets/maps/counties.min.json";
-import MapCenters from "../assets/maps/county-centers-coordinates";
+// import MapCenters from "../assets/maps/county-centers-coordinates";
 import Box from "@mui/material/Box";
-import { iconPerson } from "./icon";
+// import { iconPerson } from "./icon";
 
 const GISMap = ({ data }) => {
   const [geoJSON, setGeoJSON] = useState(MapData);

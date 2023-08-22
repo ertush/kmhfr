@@ -1,6 +1,6 @@
 import { useRef, useEffect, useContext } from "react"
 import Select from '../components/Forms/formComponents/FromikSelect';
-
+import { Field } from 'formik'
 
 
 const FacilityDeptRegulationFactory = ({facilityDeptOptions, facilityDeptValue, facilityDeptRegBody, regNo, licenseNo, setFacilityDepts, setIsRegBodyChange, isRegBodyChange, index}) => {
