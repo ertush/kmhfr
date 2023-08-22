@@ -157,14 +157,13 @@ const Account = () => {
         }
     }, [path])
     return (
-        <div className="">
+        <>
             <Head>
                 <title>KMHFR - {user?.name || "My account"}</title>
                 <link rel="icon" href="/favicon.ico" />
-               
             </Head>
 
-            <MainLayout>
+            <MainLayout className="w-full grid grid-cols-5 gap-3 md:mt-3 mb-12">
             {open && 
 			<Modal
 				aria-labelledby="transition-modal-title"
@@ -208,7 +207,7 @@ const Account = () => {
 				</Fade>
 			</Modal>
 		}
-                {user && user?.id ? <div className="w-full grid grid-cols-5 gap-4 p-2 my-6">
+                {user && user?.id ? <div className="w-full col-span-5 gap-4 p-2 my-6">
                     <div className="col-span-5 flex flex-col items-start px-4 justify-start gap-3">
                         <div className="flex flex-row items-center justify-between gap-2 text-sm md:text-base py-3">
                             <Link className="text-blue-700" href="/">Home</Link> {'/'}
@@ -230,7 +229,7 @@ const Account = () => {
                             
                             </Alert> }</div>
 
-                        <div className={`col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-light-grey shadow-md drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border border-blue-600 border-l-8 ${'border-blue-600'}`}>
+                        <div className={`col-span-5 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-light-grey drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border border-blue-600 border-l-8 ${'border-blue-600'}`}>
                             <div className="col-span-6 md:col-span-3">
                                 <h1 className="text-4xl tracking-tight font-bold leading-tight">{user?.full_name}</h1>
                                 <div className="flex gap-2 items-center w-full justify-between">
@@ -252,6 +251,7 @@ const Account = () => {
                             </div>
                         </div>
                     </div>
+
                     <div className="col-span-5 flex flex-col gap-3 mt-4 border border-blue-600">
                         <Tabs.Root orientation="horizontal" className="w-full flex flex-col bg-grey-light tab-root" defaultValue="basic">
                             <Tabs.List className="list-none flex flex-wrap gap-2  md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
@@ -615,7 +615,7 @@ const Account = () => {
                     </div>
                 </div>}
             </MainLayout>
-        </div>
+        </>
     )
 }
 

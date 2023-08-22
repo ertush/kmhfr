@@ -856,7 +856,7 @@ const system_setup = (props) => {
     const handleChangeRowsPerPage = (event) => {
       setRowsPerPage(+event.target.value);
       setPage(0);
-    };
+    };  
     //onChange 
     const handleFacilityOnChange = (e, path) => {
         e.preventDefault()
@@ -1258,11 +1258,11 @@ const system_setup = (props) => {
                                             {/* Sub Counties */}
                                             <ListItemButton componene="li" 
                                             sx={{
-                                                backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'sub_county' ? '#2563eb' : 'none'}`, 
-                                                color:`${addBtnLabel.toLocaleLowerCase() == 'sub_county' ? 'white' :'none'}`,
-                                                borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'sub_county' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'sub county' ? '#2563eb' : 'none'}`, 
+                                                color:`${addBtnLabel.toLocaleLowerCase() == 'sub county' ? 'white' :'none'}`,
+                                                borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'sub county' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                 }} 
-                                                onClick={() =>  {setIsAddForm(false); setAddBtnLabel('sub_county'); setFields(['id','name', 'code']); setResource('sub_counties')}} 
+                                                onClick={() =>  {setIsAddForm(false); setAddBtnLabel('sub county'); setTitle('Sub Counties'); setFields(['id','name', 'code']); setResource('sub_counties')}} 
 
                                             >
                                                 <ListItemText primary="Sub Counties"/>
@@ -1274,7 +1274,7 @@ const system_setup = (props) => {
                                                 color:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'white' :'none'}`,
                                                 borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'constituency' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                 }} 
-                                                onClick={() =>  {setIsAddForm(false); setAddBtnLabel('constituency'); setFields(['id','name', 'code']); setResource('constituencies')}} 
+                                                onClick={() =>  {setIsAddForm(false); setAddBtnLabel('constituency'); setFields(['id','name', 'code']); setTitle('Constituencies'); setResource('constituencies')}} 
                                             >
                                                 {console.log({addBtnLabel})}
                                                 <ListItemText primary="Constituencies"/>
@@ -1286,7 +1286,7 @@ const system_setup = (props) => {
                                                 color:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? 'white' :'none'}`,
                                                 borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'ward' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                 }} 
-                                             onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'county_name', 'constituency_name', 'sub_county_name', 'county']); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward'); setEditMode(false); setEditID(null) }}>
+                                             onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'code', 'county_name', 'constituency_name', 'sub_county_name', 'county']); setTitle('Wards'); setResource('wards'); setResourceCategory('AdminUnits'); setTitle('wards'); setAddBtnLabel('ward'); setEditMode(false); setEditID(null) }}>
                                                 <ListItemText primary="Wards" />
                                             </ListItemButton>
                                             {/* Towns */}
@@ -1296,7 +1296,7 @@ const system_setup = (props) => {
                                                         color:`${addBtnLabel.toLocaleLowerCase() == 'town' ? 'white' :'none'}`,
                                                         borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'town' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                         }} 
-                                             onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'ward_name']); setResource('towns'); setResourceCategory('AdminUnits'); setTitle('towns'); setAddBtnLabel('town'); setEditMode(false); setEditID(null) }}>
+                                             onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'ward_name']); setResource('towns'); setResourceCategory('AdminUnits'); setTitle('Towns'); setAddBtnLabel('town'); setEditMode(false); setEditID(null) }}>
                                                 <ListItemText primary="Towns" />
                                             </ListItemButton>
                                         </List>
@@ -1319,7 +1319,7 @@ const system_setup = (props) => {
                                                         color:`${addBtnLabel.toLocaleLowerCase() == 'category' ? 'white' :'none'}`,
                                                         borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                         }} 
-                                            onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('categories'); setAddBtnLabel('category'); setEditMode(false); setEditID(null)}}>
+                                            onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'abbreviation', 'description']); setResource('service_categories'); setResourceCategory('ServiceCatalogue'); setTitle('Service categories'); setAddBtnLabel('Service Category'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Categories" />
                                             </ListItemButton>
                                             {/* Option groups */}
@@ -1359,11 +1359,11 @@ const system_setup = (props) => {
                                             {/* Categories */}
                                             <ListItemButton componene="li" 
                                                 sx={{
-                                                    backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infra_category' ? '#2563eb' : 'none'}`, 
-                                                    color:`${addBtnLabel.toLocaleLowerCase() == 'infra_category' ? 'white' :'none'}`,
-                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'infra_category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                    backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? '#2563eb' : 'none'}`, 
+                                                    color:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? 'white' :'none'}`,
+                                                    borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'infrastructure category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                     }}
-                                                onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('categories'); setAddBtnLabel('infra_category'); setEditMode(false); setEditID(null)}}>
+                                                onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('infrastructure_categories'); setResourceCategory('HealthInfrastructure'); setTitle('Infrastructure categories'); setAddBtnLabel('infrastructure category'); setEditMode(false); setEditID(null)}}>
                                                 <ListItemText primary="Categories" />
                                             </ListItemButton>
                                             {/* Infrastructure */}
@@ -1392,15 +1392,21 @@ const system_setup = (props) => {
                                             {/* HR Categories */}
                                             <ListItemButton componene="li" 
                                               sx={{
-                                                backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'hr category' ? '#2563eb' : 'none'}`, 
-                                                color:`${addBtnLabel.toLocaleLowerCase() == 'hr category' ? 'white' :'none'}`,
-                                                borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'hr category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? '#2563eb' : 'none'}`, 
+                                                color:`${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? 'white' :'none'}`,
+                                                borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'human resource category' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
                                                 }}
-                                          onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('speciality_categories'); setResourceCategory('HR'); setTitle('HR Categories'); setAddBtnLabel('hr category')}}>
+                                          onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'description']); setResource('speciality_categories'); setResourceCategory('HR'); setTitle('HR Categories'); setAddBtnLabel('human resource category')}}>
                                                 <ListItemText primary="HR Categories" />
                                             </ListItemButton>
                                             {/* Specialities */}
-                                            <ListItemButton componene="li" sx={{ borderBottom:'solid 1px rgba(156, 163, 175, 1)', backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#2563eb' : 'none'}` }} onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name']); setResource('specialities'); setResourceCategory('HR'); setTitle('specialities'); setAddBtnLabel('specialty')}}>
+                                            <ListItemButton componene="li" 
+                                             sx={{
+                                                backgroundColor:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? '#2563eb' : 'none'}`, 
+                                                color:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? 'white' :'none'}`,
+                                                borderBottom:`${addBtnLabel.toLocaleLowerCase() == 'specialty' ? 'solid 1px #2563eb': 'solid 1px rgba(156, 163, 175, 1)'}`
+                                                }}
+                                            onClick={() =>  {setIsAddForm(false); setFields(['id','name', 'category_name']); setResource('specialities'); setResourceCategory('HR'); setTitle('specialities'); setAddBtnLabel('specialty')}}>
                                                 <ListItemText primary="Specialities" />
                                             </ListItemButton>
                                         </List>
