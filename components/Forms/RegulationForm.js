@@ -32,13 +32,13 @@ export function RegulationForm() {
         value: formFields
       });
     const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
-    const [facilityDeptUnits, setFacilityDeptUnits] = useState([
+    const [facilityDepts, setFacilityDepts] = useState([
         (() => (
             <FacilityDeptRegulationFactory
-            key={facilityDept.index}
-            index={i}
-            {...facilityDept}
-        />
+            key={0}
+            index={0}
+            
+        />  
         ))()
     ]);
 

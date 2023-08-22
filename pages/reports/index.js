@@ -13,7 +13,7 @@ import {
 } from '@mui/x-data-grid';
 import { Box } from '@material-ui/core';
 
-import { propsToGridData } from './reportsData';
+import { propsToGridData } from '../../components/ReportsData';
 
 const StyledDataGrid = styled(DataGrid)(() => ({
     '& .super-app-theme--Row': {

@@ -11,7 +11,7 @@ import StepLabel from '@mui/material/StepLabel';
 import { BasicDeatilsForm } from './BasicDetailsForm';
 import { FacilityContactsForm } from './FacilityContactsForm';
 import { InfrastructureForm } from './InfrastructureForm';
-import { HumanresourcesForm } from './HumanResourceForm';
+import { HumanResourceForm } from './HumanResourceForm';
 import { RegulationForm } from './RegulationForm';
 import { ServicesForm } from './ServicesForm';
 import { GeolocationForm } from './GeolocationForm';
@@ -126,7 +126,7 @@ const [formId, setFormId] = useLocalStorageState({
                               }
                                {
                                   formId == '6' &&    
-                                  <HumanresourcesForm />
+                                  <HumanResourceForm />
                                 
                               }
                              
