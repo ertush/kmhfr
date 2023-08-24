@@ -44,6 +44,9 @@ dependencies:
   '@mui/x-data-grid':
     specifier: ^6.11.0
     version: 6.11.0(@mui/material@5.14.3)(@mui/system@5.14.3)(react-dom@18.2.0)(react@18.2.0)
+  '@mui/x-data-grid-pro':
+    specifier: ^6.11.2
+    version: 6.11.2(@mui/material@5.14.3)(@mui/system@5.14.3)(react-dom@18.2.0)(react@18.2.0)
   '@mui/x-date-pickers':
     specifier: ^5.0.20
     version: 5.0.20(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.14.3)(@mui/system@5.14.3)(date-fns@2.30.0)(moment@2.29.4)(react-dom@18.2.0)(react@18.2.0)
@@ -1286,6 +1289,43 @@ packages:
       react-is: 18.2.0
     dev: false
 
+  /@mui/utils@5.14.5(react@18.2.0):
+    resolution: {integrity: sha512-6Hzw63VR9C5xYv+CbjndoRLU6Gntal8rJ5W+GUzkyHrGWIyYPWZPa6AevnyGioySNETATe1H9oXS8f/7qgIHJA==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+    dependencies:
+      '@babel/runtime': 7.22.6
+      '@types/prop-types': 15.7.5
+      '@types/react-is': 18.2.1
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-is: 18.2.0
+    dev: false
+
+  /@mui/x-data-grid-pro@6.11.2(@mui/material@5.14.3)(@mui/system@5.14.3)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-c1hM1Q84fDGW056uziKK0qZORDiECB4KK5JK4oQOcnPdBhRXkLrw5SYUTdNU2gJ7OTNp3KmjkYS9Dngb1KhJGw==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      '@mui/material': ^5.4.1
+      '@mui/system': ^5.4.1
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
+    dependencies:
+      '@babel/runtime': 7.22.6
+      '@mui/material': 5.14.3(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
+      '@mui/system': 5.14.3(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
+      '@mui/utils': 5.14.5(react@18.2.0)
+      '@mui/x-data-grid': 6.11.2(@mui/material@5.14.3)(@mui/system@5.14.3)(react-dom@18.2.0)(react@18.2.0)
+      '@mui/x-license-pro': 6.10.2(react@18.2.0)
+      '@types/format-util': 1.0.2
+      clsx: 2.0.0
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      reselect: 4.1.8
+    dev: false
+
   /@mui/x-data-grid@6.11.0(@mui/material@5.14.3)(@mui/system@5.14.3)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-ZyOZmr6JmOZPXWq1mbStkYg/uMY7zzQPQElCvdOnJPrCtifZN1UorKhWlfchV/quSydxm1VxvmsfEnJ0wHZY7g==}
     engines: {node: '>=14.0.0'}
@@ -1300,6 +1340,26 @@ packages:
       '@mui/system': 5.14.3(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
       '@mui/utils': 5.14.3(react@18.2.0)
       clsx: 1.2.1
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      reselect: 4.1.8
+    dev: false
+
+  /@mui/x-data-grid@6.11.2(@mui/material@5.14.3)(@mui/system@5.14.3)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-84IgDwjgQ2eqTJvoj0BxN2KIgQdwTf7pnR0dYxbpcIkB+LMsOxSv502UJkvWWkjm16D4vKcj4QMSLsWhc21BHg==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      '@mui/material': ^5.4.1
+      '@mui/system': ^5.4.1
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
+    dependencies:
+      '@babel/runtime': 7.22.6
+      '@mui/material': 5.14.3(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react-dom@18.2.0)(react@18.2.0)
+      '@mui/system': 5.14.3(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
+      '@mui/utils': 5.14.5(react@18.2.0)
+      clsx: 2.0.0
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -1354,6 +1414,17 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-transition-group: 4.4.5(react-dom@18.2.0)(react@18.2.0)
       rifm: 0.12.1(react@18.2.0)
+    dev: false
+
+  /@mui/x-license-pro@6.10.2(react@18.2.0):
+    resolution: {integrity: sha512-Baw3shilU+eHgU+QYKNPFUKvfS5rSyNJ98pQx02E0gKA22hWp/XAt88K1qUfUMPlkPpvg/uci6gviQSSLZkuKw==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0
+    dependencies:
+      '@babel/runtime': 7.22.6
+      '@mui/utils': 5.14.5(react@18.2.0)
+      react: 18.2.0
     dev: false
 
   /@next/env@12.1.0:
@@ -2892,6 +2963,10 @@ packages:
 
   /@types/cookie@0.3.3:
     resolution: {integrity: sha512-LKVP3cgXBT9RYj+t+9FDKwS5tdI+rPBXaNSkma7hvqy35lc7mAokC2zsqWJH0LaqIt3B962nuYI77hsJoT1gow==}
+    dev: false
+
+  /@types/format-util@1.0.2:
+    resolution: {integrity: sha512-9SrLCpgzWo2yHHhiMOX0WwgDh37nSbDbWUsRc1ss++o8O97E3tB6SJiyUQM21UeUsKvZNuhDCmkRaINZ4uJAfg==}
     dev: false
 
   /@types/geojson@7946.0.8:

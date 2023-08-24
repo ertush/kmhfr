@@ -23,6 +23,7 @@
     "@mui/lab": "5.0.0-alpha.138",
     "@mui/material": "^5.14.3",
     "@mui/x-data-grid": "^6.11.0",
+    "@mui/x-data-grid-pro": "^6.11.2",
     "@mui/x-date-pickers": "^5.0.20",
     "@radix-ui/react-radio-group": "^0.0.19",
     "@radix-ui/react-tabs": "0.0.5",

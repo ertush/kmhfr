@@ -91,7 +91,7 @@ const Login = (props) => {
                     </div>
                     <div className="flex flex-col gap-0 w-full">
                         <label className="text-gray-800">Username</label>
-                        <input type="email"
+                        <input type="text"
                             data-testid="email_input"
                             value={username}
                             onChange={ev => {
