@@ -6,16 +6,19 @@ import MainLayout from '../../components/MainLayout';
 import * as Tabs from "@radix-ui/react-tabs";
 import { darken, styled } from '@mui/material/styles';
 
+// import {
+//     DataGrid,
+//     GridToolbar
+// } from '@mui/x-data-grid';
 
-import {
-    DataGrid,
-    GridToolbar
-} from '@mui/x-data-grid';
-import { Box } from '@material-ui/core';
+import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
+
+// import { Box } from '@material-ui/core';
 
 import { propsToGridData } from '../../components/ReportsData';
 
-const StyledDataGrid = styled(DataGrid)(() => ({
+
+const StyledDataGrid = styled(DataGridPro)(() => ({
     '& .super-app-theme--Row': {
         borderTop: `1px solid ${darken('rgba(5, 150, 105, 1)', 1)}`,
         FontFace: 'IBM Plex Sans'
@@ -32,6 +35,30 @@ const StyledDataGrid = styled(DataGrid)(() => ({
 function Reports(props) {
 
     console.log({ props })
+
+    // Constants
+
+    const gisRowData = ((gisData) => 
+        gisData.map(({
+             facility_county: county,
+             facility_sub_county: sub_county,
+             facility_ward: ward,
+             facility_name: name,
+             facility_code: code,
+             facility_lat:lat,
+             facility_long:lng,
+             
+         }, index) => ({
+             county,
+             sub_county,
+             ward,
+             name,
+             code,
+             lat,
+             lng,
+             id:index
+         }))
+     )(props['8']?.gis)
 
     const [reportTitle, setReportTitle] = useState('Beds and Cots');
 
@@ -193,9 +220,9 @@ function Reports(props) {
                                     </Tabs.Tab>
                                     <Tabs.Tab
                                         id={9}
-                                        value="Geo coordinates"
+                                        value="geocodes"
                                         className="p-2 whitespace-nowrap focus:outline:none flex items-center justify-center text-gray-500 text-base hover:text-black cursor-default border-b-2 border-transparent tab-item"
-                                        onClick={() => setReportTitle('Geo Coordinates')}
+                                        onClick={() => setReportTitle('Geo Location')}
 
                                     >
                                         Geo Codes
@@ -447,7 +474,7 @@ function Reports(props) {
 
                                 </Tabs.Panel>
                                 <Tabs.Panel
-                            title       value="human_resources"
+                                   value="human_resources"
                                     className="grow-1 tab-panel"
                                 >
 
@@ -456,6 +483,69 @@ function Reports(props) {
                                     value="geocodes"
                                     className="grow-1 tab-panel"
                                 >
+                                    {/* Geocodes */}
+                                    <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        <StyledDataGrid
+                                            columns={[
+                                                {
+                                                headerName:'County',
+                                                field:'county',
+                                                flex:1
+                                                },
+                                                {
+                                                    headerName:'Sub County',
+                                                    field:'sub_county',
+                                                    flex:1
+                                                },
+                                                {
+                                                    headerName:'Ward',
+                                                    field:'ward',
+                                                    flex:1
+                                                },
+                                                {
+                                                    headerName:'Facility Name',
+                                                    field:'name',
+                                                    flex:1
+                                                }, 
+                                                {
+                                                    headerName:'Code',
+                                                    field:'code',
+                                                    flex:1
+                                                },  
+                                                {
+                                                    headerName:'Latitude',
+                                                    field:'lat',
+                                                    flex:1
+                                                },
+                                                {
+                                                    headerName:'Longitude',
+                                                    field:'lng',
+                                                    flex:1
+                                                }
+                                               
+                                        ]}
+                                            rows={gisRowData}
+                                            getRowClassName={() => `super-app-theme--Row`}
+                                            rowSpacingType="border"
+                                            showColumnRightBorder
+                                            showCellRightBorder
+                                            rowSelection={false}
+                                            getCellClassName={() => 'super-app-theme--Cell'}
+                                            slots={{
+                                                toolbar: () => (
+                                                    <GridToolbar
+                                                        sx={{
+                                                            flex: 1,
+                                                            display: 'flex',
+                                                            marginX: 'auto',
+                                                            gap: 5,
+                                                            padding: '0.45rem'
+                                                        }}
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </div>
 
                                 </Tabs.Panel>
 
@@ -505,7 +595,34 @@ function Reports(props) {
                                 value="chu_services"
                                 className="grow-1 tab-panel"
                                 >
-
+                                     {/* CHU Services */}                                  
+                                     {/* { console.log({rows:propsToGridData(props, 9)?.rows, columns: propsToGridData(props, 9).columns})  } */}
+                                    
+                                     <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        <StyledDataGrid
+                                            columns={propsToGridData(props, 9).columns}
+                                            rows={propsToGridData(props, 9)?.rows}
+                                            getRowClassName={() => `super-app-theme--Row`}
+                                            rowSpacingType="border"
+                                            showColumnRightBorder
+                                            showCellRightBorder
+                                            rowSelection={false}
+                                            getCellClassName={() => 'super-app-theme--Cell'}
+                                            slots={{
+                                                toolbar: () => (
+                                                    <GridToolbar
+                                                        sx={{
+                                                            flex: 1,
+                                                            display: 'flex',
+                                                            marginX: 'auto',
+                                                            gap: 5,
+                                                            padding: '0.45rem'
+                                                        }}
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </div>
                                 </Tabs.Panel>
                                 {/* CHU Status Data Grid*/}
 
@@ -513,7 +630,33 @@ function Reports(props) {
                                 value="chu_status"
                                 className="grow-1 tab-panel"
                                 >
-
+                                    {/* CHU Status */}
+                                      <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        { console.log({rows: propsToGridData(props, 7).rows }) }
+                                        <StyledDataGrid
+                                            columns={propsToGridData(props, 7).columns}
+                                            rows={propsToGridData(props, 7)?.rows}
+                                            getRowClassName={() => `super-app-theme--Row`}
+                                            rowSpacingType="border"
+                                            showColumnRightBorder
+                                            showCellRightBorder
+                                            rowSelection={false}
+                                            getCellClassName={() => 'super-app-theme--Cell'}
+                                            slots={{
+                                                toolbar: () => (
+                                                    <GridToolbar
+                                                        sx={{
+                                                            flex: 1,
+                                                            display: 'flex',
+                                                            marginX: 'auto',
+                                                            gap: 5,
+                                                            padding: '0.45rem'
+                                                        }}
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </div>
                                 </Tabs.Panel>
 
                                 {/* CHU Count Data Grid */}
@@ -522,6 +665,33 @@ function Reports(props) {
                                 value="chu_count"
                                 className="grow-1 tab-panel"
                                 >
+                                     {/* CHU Status */}
+                                     <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        {/* { console.log({rows: propsToGridData(props, 10).rows }) } */}
+                                        <StyledDataGrid
+                                            columns={propsToGridData(props, 10).columns}
+                                            rows={propsToGridData(props, 10)?.rows}
+                                            getRowClassName={() => `super-app-theme--Row`}
+                                            rowSpacingType="border"
+                                            showColumnRightBorder
+                                            showCellRightBorder
+                                            rowSelection={false}
+                                            getCellClassName={() => 'super-app-theme--Cell'}
+                                            slots={{
+                                                toolbar: () => (
+                                                    <GridToolbar
+                                                        sx={{
+                                                            flex: 1,
+                                                            display: 'flex',
+                                                            marginX: 'auto',
+                                                            gap: 5,
+                                                            padding: '0.45rem'
+                                                        }}
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </div>
 
                                 </Tabs.Panel>
 
@@ -551,7 +721,8 @@ Reports.getInitialProps = async (ctx) => {
         'facility_infrastructure_report_all_hierachies',
         'chul_status_all_hierachies',
         'gis',
-        'chul_services_all_hierachies'
+        'chul_services_all_hierachies',
+        'chul_count_all_hierachies'
     ];
 
     const allReports = [];
@@ -753,7 +924,7 @@ Reports.getInitialProps = async (ctx) => {
         
                                 break;
                     case 'chul_status_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
 
 
                         try {
@@ -778,7 +949,7 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         break;
                     case 'chul_services_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
+                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
 
 
                         try {
@@ -790,7 +961,67 @@ Reports.getInitialProps = async (ctx) => {
                                 },
                             })
 
-                            allReports.push({ chul_services_all_hierachies: (await _data.json()).results })
+                                allReports.push({ chul_services_all_hierachies: (await _data.json()).results.map((
+                                    {
+                                        
+                                        "WASH: Water, sanitation and hygiene education, including hand washing": wash_sanitation,
+                                        "iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea": iccm,
+                                        "WASH: Water treatment provision": wash_water_treatment,
+                                        "health_unit__facility__ward__name": ward,
+                                        "health_unit__facility__ward__sub_county__county__name": county,
+                                        "health_unit__facility__ward__sub_county__name": sub_county,
+                                        "HIV, TB and Malaria: Treatment defaulter tracing": hiv_tb_malaria_treatment,
+                                        "HIV, TB and Malaria: Education, support for treatment adherence, and referral": hiv_tb_malaria_education,
+                                        "iCCM: Provision of AL drugs to treat malaria": iccm_malaria_drugs,
+                                        "HIV, TB and Malaria: Provision of condoms": hiv_tb_malaria_condoms,
+                                        "Referrals to health facilities": referrals_health_facilities,
+                                        "Provision of Information, Education & Communication (IEC) materials": provision_of_information,
+                                        "iCCM: Rapid diagnostic testing of malaria": iccm_rapid_diagnostic,
+                                        "Nutrition: Education, child growth monitoring, screening and referrals": nutrition_education,
+                                        "MNCH: Education, counseling of mothers, and referral for ANC": mnch_education,
+                                        "Deworming of children": deworming_children,
+                                        "HIV, TB and Malaria: Provision of psychosocial support groups": hiv_tb_malaria_ppsg,
+                                        "Management of diarrhea, injuries, wounds, jiggers and other minor illnesses.": mgmt_diarrhea,
+                                        "NCD: Education and support for treatment adherence": ncd_eduaction,
+                                        "HIV, TB and Malaria: Provision of home based care for PLWA": hiv_tb_malaria_provision,
+                                        "First Aid Services": first_aid_services,        
+                                        "iCCM: Provision of Long Lasting Insecticide Treated Nets": iCCM_provision_long_lasting,
+                                        "Growth monitoring for children under 5 years.": growth_monitoring,
+                                        "NCD: Diabetes and hypertension screening and referral": ncd_diabetes,
+                              
+                                        
+                                    },
+                                    index
+                                ) => ({
+                                    wash_sanitation,
+                                    iccm,
+                                    wash_water_treatment,
+                                    ward,
+                                    county,
+                                    hiv_tb_malaria_treatment,
+                                    hiv_tb_malaria_education,
+                                    iccm_malaria_drugs,
+                                    hiv_tb_malaria_condoms,
+                                    referrals_health_facilities,
+                                    provision_of_information,
+                                    iccm_rapid_diagnostic,
+                                    nutrition_education,
+                                    mnch_education,
+                                    deworming_children,
+                                    sub_county,
+                                    hiv_tb_malaria_ppsg,
+                                    mgmt_diarrhea,
+                                    ncd_eduaction,
+                                    hiv_tb_malaria_provision,
+                                    first_aid_services,
+                                    iCCM_provision_long_lasting,
+                                    growth_monitoring,
+                                    ncd_diabetes,
+                             
+                                    id:index
+                                    
+                                })
+                                ) })
 
                         }
                         catch (err) {
@@ -829,31 +1060,7 @@ Reports.getInitialProps = async (ctx) => {
                         }
                         break;
                     
-                    case 'chul_services_all_hierachies':
-                        url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
-
-
-                        try {
-
-                            const _data = await fetch(url, {
-                                headers: {
-                                    Authorization: 'Bearer ' + token,
-                                    Accept: 'application/json',
-                                },
-                            })
-
-                            allReports.push({ chul_services_all_hierachies: (await _data.json()).results })
-
-                        }
-                        catch (err) {
-                            console.log(`Error fetching ${report}: `, err);
-                            allReports.push({
-                                error: true,
-                                err: err,
-                                chul_services_all_hierachies: [],
-                            })
-                        }
-                        break;
+                   
                     case 'chul_status_all_hierachies':
                         url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/chul/?report_type=${report}`;
 
@@ -928,7 +1135,7 @@ Reports.getInitialProps = async (ctx) => {
                     data: [],
                 };
             }, 1000);
-        });
+        }); 
 
 }
 

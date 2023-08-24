@@ -1,6 +1,7 @@
 
 export const propsToGridData = (props, index) => {
 
+
     switch (index) {
         // Beds and Cots, Theaters
         case 0:
@@ -1693,129 +1694,271 @@ export const propsToGridData = (props, index) => {
     
                 ]
             }
-        // GIS
-        case 7:
-            return {
-                rows: props[`${index}`]?.gis.map((
-                    {
-                    
-
-                    },
-                    index
-                ) => ({
-                  
-                    id:index
-                })
-                ),
-    
-                columns: [
-                    {
-                        headerName: '',
-                        field: '',
-                        width:100
-                    },
-
-                    {
-                        headerName: '',
-                        field: '',
-                        width:200
-                    },
-                    
-
-    
-                ]
-            }
-        // CHU Services
-        case 8:
-            return {
-                rows: props[`${index}`]?.chul_services_all_hierachies.map((
-                    {
-                    
-
-                    },
-                    index
-                ) => ({
-                    
-                    id:index
-                })
-                ),
-
-                columns: [
-                    {
-                        headerName: '',
-                        field: '',
-                        width:100
-                    },
-
-                    {
-                        headerName: '',
-                        field: '',
-                        width:200
-                    },
-                    
-
-
-                ]
-            }
         // CHU Status
-        case 9:
+        case 7:
+
             return {
                 rows: props[`${index}`]?.chul_status_all_hierachies.map((
                     {
-                    
+                        "Fully-functional": fully_functional,
+                        "Non-functional": non_functional,
+                        "facility__ward__sub_county__county__name": county,
+                        "Closed": closed,
+                        "facility__ward__name": ward,
+                        "semi-functional": semi_functional,
+                        "facility__ward__sub_county__name": sub_county
 
                     },
                     index
                 ) => ({
-                    
+                    fully_functional,
+                    non_functional,
+                    county,
+                    closed,
+                    ward,
+                    semi_functional,
+                    sub_county,
                     id:index
                 })
                 ),
 
                 columns: [
                     {
-                        headerName: '',
-                        field: '',
+                        headerName: 'County',
+                        field: 'county',
+                        flex:1
+                    },
+                    {
+                        headerName: 'Sub County',
+                        field: 'sub_county',
+                        flex:1
+                    },
+                    {
+                        headerName: 'Ward',
+                        field: 'ward',
+                        flex:1
+                    },
+                    {
+                        headerName: 'Fully-functional',
+                        field: 'fully_functional',
+                        flex:1
+                    },
+                    {
+                        headerName: 'Semi-Functional',
+                        field: 'semi_functional',
+                        flex:1
+                    },
+                    {
+                        headerName: 'Closed',
+                        field: 'closed',
+                        flex:1
+                    },
+                    {
+                        headerName: 'Non-Functional',
+                        field: 'non_functional',
+                        flex:1
+                    }
+                    
+        
+                ]
+            }
+        // CHU Services
+        case 9:
+            return {
+                rows: props[`${index}`]?.chul_services_all_hierachies,
+                columns: [
+                    {
+                        headerName: 'County',
+                        field: 'county',
                         width:100
                     },
 
                     {
-                        headerName: '',
-                        field: '',
+                        headerName: 'Sub County',
+                        field: 'sub_county',
+                        width:100
+                    },
+                    {
+                        headerName: 'Ward',
+                        field: 'ward',
+                        width:100
+                    },
+                    {
+                        headerName: 'WASH: Water, sanitation and hygiene education, including hand washing"',
+                        field: 'wash_sanitation',
                         width:200
                     },
-                    
-
+                    {
+                        headerName: 'iCCM: Education on danger signs and referral for malaria, pneumonia and diarrhea',
+                        field: 'iccm',
+                        width:200
+                    },
+                    {
+                        headerName: 'WASH: Water treatment provision',
+                        field: 'wash_water_treatment',
+                        width:200
+                    },
+                    {
+                        headerName: 'HIV, TB and Malaria: Treatment defaulter tracing',
+                        field: 'hiv_tb_malaria_treatment',
+                        width:200
+                    },
+                    {
+                        headerName: 'HIV, TB and Malaria: Education, support for treatment adherence, and referral',
+                        field: 'hiv_tb_malaria_education',
+                        width:200
+                    },
+                    {
+                        headerName: 'iCCM: Provision of AL drugs to treat malaria',
+                        field: 'iccm_malaria_drugs',
+                        width:200
+                    },
+                    {
+                        headerName: 'HIV, TB and Malaria: Provision of condoms',
+                        field: 'hiv_tb_malaria_condoms',
+                        width:200
+                    },
+                    {
+                        headerName: 'Referrals to health facilities',
+                        field: 'referrals_health_facilities',
+                        width:200
+                    },
+                    {
+                        headerName: 'Provision of Information, Education & Communication (IEC) materials',
+                        field: 'provision_of_information',
+                        width:200
+                    },
+                    {
+                        headerName: 'iCCM: Rapid diagnostic testing of malaria',
+                        field: 'iccm_rapid_diagnostic',
+                        width:200
+                    },
+                    {
+                        headerName: 'Nutrition: Education, child growth monitoring, screening and referrals',
+                        field: 'nutrition_education',
+                        width:200
+                    },
+                    {
+                        headerName: 'MNCH: Education, counseling of mothers, and referral for ANC',
+                        field: 'mnch_education',
+                        width:200
+                    },
+                    {
+                        headerName: 'Deworming of children',
+                        field: 'deworming_children',
+                        width:200
+                    },
+                    {
+                        headerName: 'HIV, TB and Malaria: Provision of psychosocial support groups',
+                        field: 'hiv_tb_malaria_ppsg',
+                        width:200
+                    },
+                    {
+                        headerName: 'Management of diarrhea, injuries, wounds, jiggers and other minor illnesses.',
+                        field: 'mgmt_diarrhea',
+                        width:200
+                    },
+                    {
+                        headerName: 'NCD: Education and support for treatment adherence',
+                        field: 'ncd_eduaction',
+                        width:200
+                    },
+                    {
+                        headerName: 'HIV, TB and Malaria: Provision of home based care for PLWA',
+                        field: 'hiv_tb_malaria_provision',
+                        width:200
+                    },
+                    {
+                        headerName: 'First Aid Services',
+                        field: 'first_aid_services',
+                        width:200
+                    },
+                    {
+                        headerName: 'iCCM: Provision of Long Lasting Insecticide Treated Nets',
+                        field: 'iCCM_provision_long_lasting',
+                        width:200
+                    },
+                    {
+                        headerName: 'Growth monitoring for children under 5 years',
+                        field: 'growth_monitoring',
+                        width:200
+                    },
+                    {
+                        headerName: 'NCD: Diabetes and hypertension screening and referral',
+                        field: 'ncd_diabetes',
+                        width:200
+                    },
+                    {
+                        headerName: 'iCCM: Provision of antibiotics to treat pneumonia',
+                        field: 'iccm_antibiotics',
+                        width:200
+                    },
+                    {
+                        headerName: 'FP: Family planning and child spacing education',
+                        field: 'fp_child_spacing',
+                        width:200
+                    },
+                    {
+                        headerName: 'FP: Provision of, basic family planning commodities',
+                        field: 'fp_family_commodities',
+                        width:200
+                    },
+               
 
                 ]
             }
+        
         // CHU Count
         case 10:
             return {
                 rows: props[`${index}`]?.chul_count_all_hierachies.map((
                     {
-                    
+                        "chvs": chv,
+                        "ward_name": ward,
+                        "county": county,
+                        "sub county": sub_county,
+                        "chews": chews,
+                        "number_of_units": number_of_units
 
                     },
                     index
                 ) => ({
-                    
-                    id:index
+                     chv,
+                     ward,
+                     county,
+                     sub_county,
+                     chews,
+                     number_of_units,
+                     id:index
                 })
                 ),
 
                 columns: [
                     {
-                        headerName: '',
-                        field: '',
-                        width:100
+                        headerName: 'County',
+                        field: 'county',
+                        flex:1
                     },
-
                     {
-                        headerName: '',
-                        field: '',
-                        width:200
+                        headerName: 'Sub county',
+                        field: 'sub_county',
+                        flex:1
                     },
+                    {
+                        headerName: 'Ward',
+                        field: 'ward',
+                        flex:1
+                    },
+                    {
+                        headerName: 'CHVs',
+                        field: 'chv',
+                        flex:1
+                    },
+                    {
+                        headerName: 'Units',
+                        field: 'number_of_units',
+                        flex:1
+                    }
                     
 
 
