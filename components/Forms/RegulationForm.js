@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useState, useContext, useMemo, useEffect, useRef, useCallback, createContext } from 'react';
 import { Formik, Field, Form } from 'formik'
 import { FormContext } from './Form';
 import { object, string } from "zod";
@@ -6,10 +6,11 @@ import { FormOptionsContext } from '../../pages/facilities/add';
 import {useLocalStorageState} from './hooks/formHook';
 import Select from './formComponents/FromikSelect';
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon, XCircleIcon } from '@heroicons/react/outline';
+import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/outline';
 import FacilityDeptRegulationFactory from '../generateFacilityDeptRegulation';
 
 
+export const FacilityDeptRegulationContext = createContext();
 
 export function RegulationForm() {
 
@@ -42,7 +43,7 @@ export function RegulationForm() {
         ))()
     ]);
 
-    const [isRegBodyChange, setIsRegBodyChange] = useState(false);
+    // const [isRegBodyChange, setIsRegBodyChange] = useState(false);
 
     // Context
     const options = useContext(FormOptionsContext);
@@ -73,9 +74,13 @@ export function RegulationForm() {
     }, [])
 
     const handleDeleteField = useCallback((index) => {
-		const values = facilityDepts;
-		values.splice(index, 1);
-		setFacilityDepts((draft) => ([...values]))
+		// const values = facilityDepts;
+		// values.splice(index, 1);
+
+		// setFacilityDepts((draft) => ([...values]))
+        console.log(index)
+   
+        
 	}, []);
 
     const handleRegulationPrevious = useCallback((event) => {
@@ -198,19 +203,15 @@ export function RegulationForm() {
                                     {
                                         facilityDepts.map((facilityDept, i) => (
                                             <div className="w-full flex items-center justify-between gap-3 mt-3" key={i}>
-                                                <FacilityDeptRegulationFactory
+                                                {/* <FacilityDeptRegulationFactory
                                                     key={facilityDept.index}
                                                     index={i}
                                                     {...facilityDept}
-                                                />
+                                                /> */}
 
-                                                <button
-                                                    id={`delete-btn-${i}`}
-                                                    key={facilityDept.index}
-                                                    onClick={(ev) => {
-                                                        ev.preventDefault();
-                                                        handleDeleteField(i);
-                                                    }}><XCircleIcon className='w-7 h-7 text-red-400' /></button>
+                                                {facilityDept}
+
+                                               
                                                     
 
                                             </div>
@@ -226,25 +227,62 @@ export function RegulationForm() {
 
                             {/* Add btn */}
                             <div className='w-full flex justify-end items-center mt-2'>
-
+                                { console.log({facilityDepts: options['12']?.facility_depts}) }
+                                
                                 <button onClick={(e) => {
                                     e.preventDefault(); 
-                                    setFacilityDepts(s => {
-                                        return [
-                                            ...s, 
-                                            {
-                                                index: facilityDepts.some((o) => o.index === s.length) ? s.length + 1 : s.length,
-                                                isRegBodyChange: isRegBodyChange,
-                                                setIsRegBodyChange: setIsRegBodyChange,
-                                                setFacilityDepts: setFacilityDepts,
-                                                facilityDeptRegBody: null,
-                                                facilityDeptValue: null,
-                                                regNo: null,
-                                                licenseNo: null,
-                                                facilityDeptOptions: options['12']?.facility_depts
-                                            },
-                                        ]
-                                    })
+
+
+
+                                    // setFacilityContacts([
+                                    //     ...facilityContacts,
+                                    //     (() => (
+                                    //         <FacilityContactsContext.Provider value={facilityContacts} key={(facilityContacts.length + 1) - 1}>
+                                    //             <FacilityContact
+                                    //                 contactTypeOptions={contactTypeOptions}
+                                    //                 setFacilityContacts={setFacilityContacts}
+                                    //                 contacts={[null, null, null]}
+                                    //                 fieldNames={['contact_type', 'contact']}
+                                    //                 index={(facilityContacts.length + 1) - 1}
+    
+                                    //             />
+                                    //         </FacilityContactsContext.Provider>
+                                    //     ))()
+    
+    
+                                    // ])
+
+                                    setFacilityDepts([
+                                        ...facilityDepts,
+                                        (() => (
+                                         <FacilityDeptRegulationContext.Provider value={facilityDepts}>
+                                            <FacilityDeptRegulationFactory
+                                                setFacilityDepts={setFacilityDepts}
+                                                facilityDeptOptions={options['12']?.facility_depts}
+                                                index={(facilityDepts.length + 1) - 1}
+                                            
+                                            />  
+                                        </FacilityDeptRegulationContext.Provider>
+                                        ))()
+                                    ])
+
+                                    // setFacilityDepts(s => {
+                                    //     return [
+                                    //         ...s, 
+                                    //         {
+                                    //             index: facilityDepts.some((o) => o.index === s.length) ? s.length + 1 : s.length,
+                                    //             isRegBodyChange: isRegBodyChange,
+                                    //             setIsRegBodyChange: setIsRegBodyChange,
+                                    //             setFacilityDepts: setFacilityDepts,
+                                    //             facilityDeptRegBody: null,
+                                    //             facilityDeptValue: null,
+                                    //             regNo: null,
+                                    //             licenseNo: null,
+                                    //             facilityDeptOptions: options['12']?.facility_depts
+                                    //         },
+                                    //     ]
+                                    // })
+
                                 }} className='flex items-center space-x-1 bg-blue-700 p-1 '>
 
                                     <PlusIcon className='w-4 h-4 text-white' />
