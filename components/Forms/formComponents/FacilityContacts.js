@@ -25,6 +25,8 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
     
     const [contact, contact_type_name, id] = contacts
 
+    
+
     useEffect(() => {
 
         if(contactTypeRef.current && contact_type_name && id){

@@ -14,17 +14,53 @@ export const FacilityDeptRegulationContext = createContext();
 
 export function RegulationForm() {
 
+    // Context
+    const options = useContext(FormOptionsContext);
+
     // Constants
-    const formFields = {
-        regulatory_body:"",
-        regulation_status:"",
-        license_number:"",
-        registration_number:"",
-        license_document:"",
-        facility_regulating_body_name:"",
-        facility_license_number:"",
-        facility_registration_number:""
-    }
+    // const formFields = {
+    //     regulatory_body:"",
+    //     regulation_status:"",
+    //     license_number:"",
+    //     registration_number:"",
+    //     license_document:"",
+    //     facility_regulating_body_name:"",
+    //     facility_license_number:"",
+    //     facility_registration_number:""
+    // }
+
+    const [facilityDepts, setFacilityDepts] = useState([
+        (() => (
+            <FacilityDeptRegulationFactory
+            index={0}
+            setFacilityDepts={() => null}
+            facilityDeptOptions={options['12']?.facility_depts}
+            fieldNames={['facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number']}
+            
+        />  
+        ))()
+    ]);
+
+    const formFields = useMemo(() => {
+        const vals = {}
+        // 'facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number'
+        for(let i = 0; i < facilityDepts.length; i++){
+            vals[`facility_unit_${i}`] = "";
+            vals[`facility_regulating_body_name_${i}`] = "";
+            vals[`facility_license_number_${i}`] = "";
+            vals[`facility_registration_number_${i}`] = ""; 
+        }
+        
+        
+        vals['regulatory_body'] = "";
+        vals['regulation_status'] = "";
+        vals['license_number'] = "";
+        vals['registration_number'] = "";
+        vals['license_document'] = "";
+        
+
+        return vals
+    }, [facilityDepts])
 
     // State
     const [formId, setFormId] = useContext(FormContext);
@@ -32,22 +68,12 @@ export function RegulationForm() {
         key: 'regulation_form',
         value: formFields
       });
+
     const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
-    const [facilityDepts, setFacilityDepts] = useState([
-        (() => (
-            <FacilityDeptRegulationFactory
-            key={0}
-            index={0}
-            
-        />  
-        ))()
-    ]);
+    delete formValues['license_document'];
 
-    // const [isRegBodyChange, setIsRegBodyChange] = useState(false);
-
-    // Context
-    const options = useContext(FormOptionsContext);
-
+  
+    // console.log({formFields})
 
     // Options
 
@@ -57,10 +83,27 @@ export function RegulationForm() {
         regulation_status:string({required_error:""}),
         license_number:string({required_error:""}),
         registration_number:string({required_error:""}),
-        license_document:string({required_error:""}),
-        facility_regulating_body_name:string({required_error:""}),
-        facility_license_number:string({required_error:""}),
-        facility_registration_number:string({required_error:""})
+        // facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number
+        ...(() => {
+            const schema = {}
+            if(facilityDepts.length > 1){
+                for(let i = 0; i < facilityDepts.length; i++){
+                    schema[`facility_unit_${i}`] = string({ required_error: "Facility unit is required" }).min(1);
+                    schema[`facility_regulating_body_name_${i}`] = string({ required_error: "Facility unit regulation body is required" }).min(1);
+                    schema[`facility_license_number_${i}`] = string({ required_error: "Facility unit license number required" }).min(1);
+                    schema[`facility_registration_number_${i}`] = string({ required_error: "Facility unit registration number is required" }).min(1);
+
+
+                }
+            }
+
+          
+
+
+            return schema
+        })()
+
+
     }), [])
 
     // Ref
@@ -68,20 +111,11 @@ export function RegulationForm() {
 
     // Event Handlers
     const handleSubmit = useCallback((values) => {
-        setFormId(`${parseInt(formId) + 1}`);
         console.log({ ...values })
+        setFormId(`${parseInt(formId) + 1}`);
       
     }, [])
 
-    const handleDeleteField = useCallback((index) => {
-		// const values = facilityDepts;
-		// values.splice(index, 1);
-
-		// setFacilityDepts((draft) => ([...values]))
-        console.log(index)
-   
-        
-	}, []);
 
     const handleRegulationPrevious = useCallback((event) => {
         event.preventDefault();
@@ -104,15 +138,26 @@ export function RegulationForm() {
                 (formikState) => {
                     const errors = formikState.errors;
 
-                    // Effects
-                    // useEffect(() => {
-                    //     setIsRegBodyChange(!isRegBodyChange);
-                    // },[formikState.values.regulatory_body])
-
                     useEffect(() => {
+                       
+                        for(let i = 0; i < facilityDepts.length; i++){   
+                            if(formikState.values[`facility_unit_${i}`]){
+                                const reg_body = options['12']?.facility_depts.find(({value}) => value == formikState.values[`facility_unit_${i}`])?.reg_body_name;
+
+                                // console.log({reg_body, facility_unit: formikState.values[`facility_unit_${i}`], facilityDepts})
+                                formikState.values[`facility_regulating_body_name_${i}`] = reg_body;
+                            }
+                         }   
+
+
                         handleFormUpdate(JSON.stringify(formikState.values))
+
+                        
                     }, [formikState.values])
 
+               
+
+                              
                   return (
                    <>
                         <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
@@ -144,8 +189,8 @@ export function RegulationForm() {
                                         let filteredRegState
                                         if (_regBodyRef.current) {
 
-                                            if (_regBodyRef.current?.state?.value?.label == 'Ministry of Health') {
-                                                filteredRegState = regStateOpts.filter(({ label }) => !(label.match(/.*Gazett.*/) !== null))
+                                            if (formikState.values.regulatory_body === '0b2311d1-6049-4b8d-9c74-cbda8bf6579c') {
+                                                filteredRegState = regStateOpts.filter(({ label }) => !(label.match(/.*[L|l]icense.*/) !== null))
                                             }
                                             else {
                                                 filteredRegState = regStateOpts
@@ -203,17 +248,10 @@ export function RegulationForm() {
                                     {
                                         facilityDepts.map((facilityDept, i) => (
                                             <div className="w-full flex items-center justify-between gap-3 mt-3" key={i}>
-                                                {/* <FacilityDeptRegulationFactory
-                                                    key={facilityDept.index}
-                                                    index={i}
-                                                    {...facilityDept}
-                                                /> */}
-
+                                    
                                                 {facilityDept}
 
-                                               
-                                                    
-
+                                            
                                             </div>
 
                                         ))
@@ -227,30 +265,11 @@ export function RegulationForm() {
 
                             {/* Add btn */}
                             <div className='w-full flex justify-end items-center mt-2'>
-                                { console.log({facilityDepts: options['12']?.facility_depts}) }
+                                {/* { console.log({facilityDepts: options['12']?.facility_depts}) } */}
                                 
                                 <button onClick={(e) => {
                                     e.preventDefault(); 
 
-
-
-                                    // setFacilityContacts([
-                                    //     ...facilityContacts,
-                                    //     (() => (
-                                    //         <FacilityContactsContext.Provider value={facilityContacts} key={(facilityContacts.length + 1) - 1}>
-                                    //             <FacilityContact
-                                    //                 contactTypeOptions={contactTypeOptions}
-                                    //                 setFacilityContacts={setFacilityContacts}
-                                    //                 contacts={[null, null, null]}
-                                    //                 fieldNames={['contact_type', 'contact']}
-                                    //                 index={(facilityContacts.length + 1) - 1}
-    
-                                    //             />
-                                    //         </FacilityContactsContext.Provider>
-                                    //     ))()
-    
-    
-                                    // ])
 
                                     setFacilityDepts([
                                         ...facilityDepts,
@@ -260,28 +279,12 @@ export function RegulationForm() {
                                                 setFacilityDepts={setFacilityDepts}
                                                 facilityDeptOptions={options['12']?.facility_depts}
                                                 index={(facilityDepts.length + 1) - 1}
-                                            
+                                                fieldNames={['facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number']}
+                                                formikState={formikState}
                                             />  
                                         </FacilityDeptRegulationContext.Provider>
                                         ))()
                                     ])
-
-                                    // setFacilityDepts(s => {
-                                    //     return [
-                                    //         ...s, 
-                                    //         {
-                                    //             index: facilityDepts.some((o) => o.index === s.length) ? s.length + 1 : s.length,
-                                    //             isRegBodyChange: isRegBodyChange,
-                                    //             setIsRegBodyChange: setIsRegBodyChange,
-                                    //             setFacilityDepts: setFacilityDepts,
-                                    //             facilityDeptRegBody: null,
-                                    //             facilityDeptValue: null,
-                                    //             regNo: null,
-                                    //             licenseNo: null,
-                                    //             facilityDeptOptions: options['12']?.facility_depts
-                                    //         },
-                                    //     ]
-                                    // })
 
                                 }} className='flex items-center space-x-1 bg-blue-700 p-1 '>
 
