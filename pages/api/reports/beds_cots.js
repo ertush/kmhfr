@@ -63,9 +63,9 @@ export default async function fetchFacilityData(req, res) {
                      
                     if(typeof(req.query.path) == 'string'){
                         if(
-                            req.query.path.includes('facility_cover_report') || 
-                            req.query.path.includes('facility_correction_template') ||
-                            req.query.path.includes('facility_detail_report') 
+                            req.query.path.match(/facility_cover_report/) || 
+                            req.query.path.match(/facility_correction_template/) ||
+                            req.query.path.match(/facility_detail_report/) 
                          ){
                             console.log({data}, typeof(data))
                             console.log("errrrror")
