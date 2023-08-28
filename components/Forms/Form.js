@@ -37,7 +37,7 @@ export function Form () {
 const [formId, setFormId] = useLocalStorageState({
     key: 'formId',
     value: 0
-})
+}).actions.use();
  
 
   const steps = [

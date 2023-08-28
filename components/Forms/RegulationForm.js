@@ -54,7 +54,7 @@ export function RegulationForm() {
     const [initialValues, handleFormUpdate] = useLocalStorageState({
         key: 'regulation_form',
         value: formFields
-      });
+      }).actions.use();
 
     const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
     delete formValues['license_document'];

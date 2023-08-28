@@ -72,7 +72,7 @@ export function FacilityContactsForm() {
     const [initialValues, handleFormUpdate] = useLocalStorageState({
         key: 'facility_contacts_form',
         value: formFields
-      })
+      }).actions.use();
 
   const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 

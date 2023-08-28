@@ -15,5 +15,33 @@ export const useLocalStorageState = ({ key, value }) => {
 		[key]
 	);
 
-	return [localStorageState, handleUpdateLocalStorageState];
+	const resetLocalStorage = useCallback(() => {
+		// [
+		// 	'basic_details_form',
+		// 	'facility_contacts_form',
+		// 	'formId',
+		// 	'geolocation_form',
+		// 	'human_resource_form',
+		// 	'infrastructure_form',
+		// 	'regulation_form',
+		// 	'services_form'
+		// ].forEach(key => {
+		// 	if(key.includes('formId')){
+		// 		setLocalStorageState(0)
+		// 		localStorage.setItem(key, JSON.stringify(0));
+		// 	} else {
+		// 		setLocalStorageState("")
+		// 		localStorage.setItem(key, JSON.stringify(""));
+		// 	}
+		// })
+
+		console.log("[>>>] Reseting form.....")
+	},[])
+
+
+	return { actions :{
+				use: () => [localStorageState, handleUpdateLocalStorageState],
+				reset: resetLocalStorage
+				}
+		};
 };

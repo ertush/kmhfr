@@ -87,7 +87,7 @@ function EditListItem({
   const [savedItems, saveSelectedItems] = useLocalStorageState({
     key: 'services_form',
     value: []
-  });
+  }).actions.use();
 
  
   const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;

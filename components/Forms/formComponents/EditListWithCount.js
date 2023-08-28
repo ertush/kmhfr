@@ -63,7 +63,12 @@ function EditListWithCount(
     const [savedItems, saveSelectedItems] = useLocalStorageState({
         key: `${itemsCategoryName}_form`,
         value: []
-      });
+      }).actions.use();
+
+    const resetForms = useLocalStorageState({
+        key: `${itemsCategoryName}_form`,
+        value: []
+    }).actions.reset()
 
     //Effects 
     useEffect(() => {
@@ -213,10 +218,7 @@ function EditListWithCount(
                 }
 
                 else {
-
-
-
-                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, setNextItemCategory], itemId, alert) : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([values, nextItemCategoryId, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
+                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, resetForms], itemId, alert) : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([values, nextItemCategoryId, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
                         .catch(e => console.error('unable to submit item data. Error:', e.message))
                 }
 

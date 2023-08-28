@@ -10,8 +10,8 @@ import {
   ChevronDoubleRightIcon,
   ChevronDoubleLeftIcon
 } from '@heroicons/react/solid';
-
 import {useLocalStorageState} from './hooks/formHook';
+import { handleBasicDetailsSubmit } from '../../controllers/facility/facilityHandlers';
 
 
 
@@ -67,7 +67,12 @@ export function BasicDeatilsForm() {
   const [initialValues, handleFormUpdate] = useLocalStorageState({
     key: 'basic_details_form',
     value: formFields
-  })
+  }).actions.use();
+
+  const [facilityId, setFacilityId] = useLocalStorageState({
+    key:'facility_id',
+    value:''
+}).actions.use();
 
   const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
@@ -319,21 +324,13 @@ export function BasicDeatilsForm() {
 
   // Refs
   const facilityTypeDetailsRef = useRef(null);
+  const checkListFileRef = useRef(null);
 
-  // Event Handlers
-  const handleSubmit = useCallback((values) => {
-   
-
-      setFormId(`${parseInt(formId) + 1}`);
-
-      console.log({ ...values })
-    
-  }, [])
 
   return (
     <Formik
       initialValues={formValues}
-      onSubmit={handleSubmit}
+      onSubmit={(values) => handleBasicDetailsSubmit( values, 'PATCH', formId, setFormId, checkListFileRef.current, setFacilityId)}
       validationSchema={toFormikValidationSchema(formSchema)}
       enableReinitialize
     >
@@ -1306,6 +1303,7 @@ export function BasicDeatilsForm() {
                   <Field
                     required
                     type='file'
+                    innerRef={checkListFileRef}
                     name='facility_checklist_document'
                     className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                   />
