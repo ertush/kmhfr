@@ -1,13 +1,13 @@
 import { useRef, useEffect, useContext } from "react"
-import Select from '../components/Forms/formComponents/FromikSelect';
+import Select from './FromikSelect';
 import { Field } from 'formik'
-import { FacilityDeptRegulationContext } from "./Forms/RegulationForm";
+import { FacilityDepartmentUnitsContext } from "../RegulationForm";
 import { XCircleIcon } from "@heroicons/react/outline";
 
-const FacilityDeptRegulationFactory = ({facilityDeptOptions,  setFacilityDepts, fieldNames, formikState, index}) => {
+export default function FacilityDepartmentUnits({facilityDeptOptions,  setFacilityDepts, fieldNames, index}) {
 
  
-    const facilityDepts = useContext(FacilityDeptRegulationContext);
+    const facilityDepts = useContext(FacilityDepartmentUnitsContext);
 
    
 
@@ -44,4 +44,3 @@ const FacilityDeptRegulationFactory = ({facilityDeptOptions,  setFacilityDepts, 
     )
 }
 
-export default FacilityDeptRegulationFactory

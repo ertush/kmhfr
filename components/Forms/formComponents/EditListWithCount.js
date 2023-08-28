@@ -9,11 +9,13 @@ import {
     PlusIcon
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert'
+import { useLocalStorageState } from '../hooks/formHook';
 
 function EditListWithCount(
     {
         initialSelectedItems,
         itemsCategory,
+        nextItemCategoryId,
         otherItemsCategory,
         itemsCategoryName,
         itemId,
@@ -33,18 +35,10 @@ function EditListWithCount(
     }
 ) {
 
-
     const alert = useAlert()
 
 
     const [isFormSubmit, setIsFormSubmit] = useState(false)
-    // const [itemOptions, setItemOptions] = useState(((options) => {
-    //     if (options == null) return []
-    //     return options.map(({ name, subCategories, value }) => ({
-    //         label: name,
-    //         options: subCategories.map((_label, i) => ({ label: _label, value: value[i] }))
-    //     }))
-    // })(itemsCategory ?? otherItemsCategory))
 
 
     const [currentItem, setCurrentItem] = useState(null)
@@ -65,6 +59,28 @@ function EditListWithCount(
         return result
 
     })() : []))
+
+    const [savedItems, saveSelectedItems] = useLocalStorageState({
+        key: `${itemsCategoryName}_form`,
+        value: []
+      }).actions.use();
+
+    const resetForms = useLocalStorageState({
+        key: `${itemsCategoryName}_form`,
+        value: []
+    }).actions.reset()
+
+    //Effects 
+    useEffect(() => {
+        //store service when service is added
+        if(selectedItems.length !== 0){
+          saveSelectedItems(
+            JSON.stringify(selectedItems)
+          );
+        }
+      }, [selectedItems]);
+
+    const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
 
     const initialValues = (() => {
         const _initValues = {}
@@ -141,7 +157,7 @@ function EditListWithCount(
     }, [isFormSubmit])
 
 
-    console.log({ options, categoryItems })
+    // console.log({ options, categoryItems })
 
     return (
 
@@ -202,10 +218,7 @@ function EditListWithCount(
                 }
 
                 else {
-
-
-
-                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, setNextItemCategory], itemId, alert) : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([values, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
+                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, resetForms], itemId, alert) : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([values, nextItemCategoryId, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
                         .catch(e => console.error('unable to submit item data. Error:', e.message))
                 }
 
@@ -216,11 +229,11 @@ function EditListWithCount(
                 <Form
                     name="list_item_with_count_form"
                     className="flex flex-col w-full items-start justify-start gap-3 "
-
+               
                 >
 
                     {/* Item List Dropdown */}
-                    <div className='w-full flex flex-col p-3 bg-blue-50  shadow-md items-start justify-start gap-3 mb-3'>
+                    <div className='w-full flex flex-col p-3 bg-blue-50 border border-blue-600 items-start justify-start gap-3 mb-3'>
                         {/* category */}
 
                         <label
@@ -353,7 +366,7 @@ function EditListWithCount(
 
                     {/* Item Selected Table */}
 
-                    <Table className="card bg-blue-50 shadow-md">
+                    <Table className="card bg-blue-50">
                         <TableBody>
 
                             <TableRow>
@@ -382,13 +395,13 @@ function EditListWithCount(
                             </TableRow>
 
                             <>
-                                {selectedItems && selectedItems?.length > 0 ? (
-                                    selectedItems?.map(({ name, id, meta_id }, __id) => (
+                                {typeof items === 'object' &&
+                                    items?.map(({ name, id, meta_id, count }, __id) => (
                                         <TableRow
                                             key={id}
                                         >
                                             <TableCell>{name}</TableCell>
-                                            {console.log({ selectedItems })}
+                                            {/* {console.log({ selectedItems })} */}
                                             <TableCell>
                                                 {
                                                     !(
@@ -430,11 +443,11 @@ function EditListWithCount(
                                                     type="button"
                                                     onClick={async (e) => {
                                                         e.preventDefault()
-                                                        let _items = selectedItems
+                                                        let _items = items
                                                         setDeletedItems([...deletedItems, _items.splice(__id, 1)])
-                                                        setSelectedItems(
-                                                            _items
-                                                        );
+                                                        
+                                                        setSelectedItems(_items);
+                                                        saveSelectedItems(_items);
 
 
 
@@ -450,18 +463,19 @@ function EditListWithCount(
                                             </TableCell>
                                         </TableRow>
                                     ))
-                                ) : (
-                                    item !== null &&
-                                    <TableRow>
-                                        <TableCell>
-                                            <li className="w-full bg-blue-50 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                                                <p>
-                                                    {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
-                                                </p>
-                                            </li>
-                                        </TableCell>
-                                    </TableRow>
-                                )}
+                                // ) : (
+                                //     item !== null &&
+                                //     <TableRow>
+                                //         <TableCell>
+                                //             <li className="w-full bg-blue-50 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                                //                 <p>
+                                //                     {item?.name || item?.official_name} has no listed {itemsCategoryName}. Add some below.
+                                //                 </p>
+                                //             </li>
+                                //         </TableCell>
+                                //     </TableRow>
+                                //)
+                                }
                             </>
                         </TableBody>
                     </Table>

@@ -2,41 +2,50 @@
 import router from "next/router";
 
 // handleBasicDetailsSubmit
-const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
+const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileRef, setFacilityId) => {
 
-    const [setFacilityId, setGeoJSON, setCenter, setWardName, setFormId, setFacilityCoordinates, basicDetailsRef] = stateSetters
-
-    event.preventDefault();
-
-    let _id, _ward
-
-    const _formData = new FormData(basicDetailsRef.current)
+  
 
     const _payload = {};
 
+    let _ward ;
 
-    _formData.forEach((v, k) => {
+    for (const [k, v] of Object.entries(values)) {
         
+        if(v !== "") {
         _payload [k] = (() => {
             // Accomodates format of facility checklist document
             if (k === "facility_checklist_document") {
-                return {fileName: v.name}
+                return {fileName: v.split('\\').reverse()[0]}
             }
 
+            if (typeof v === 'string'){
             if(v.match(/^true$/) !== null) {
                 return Boolean(v)
             }
 
             if(v.match(/^false$/) !== null) {
-                return Boolean(false)
+                return Boolean(v)
             }
 
             // check if value is alphanumeral and convert to number
             return v.match(/^[0-9]$/) !== null ? Number(v) : v
-        })()
-    })
+            }
+            else{
+            return v
 
-    // Add officer in charge to payload8
+            }
+
+
+
+        })()
+      }
+      
+    }
+
+
+
+    // Add officer in charge to payload
     _payload['officer_in_charge'] = {
         name:'',
         reg_no:'',
@@ -51,11 +60,13 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
 
 
     if(method === 'PATCH'){
-        _payload['sub_county'] = _formData.get('sub_county_id');
+        _payload['sub_county'] = values.sub_county_id
     }
 
 
 
+
+    console.log({_payload})
 
     // Post Facility Basic Details
     try{
@@ -72,17 +83,24 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
         // Post Checklist document
         .then(async resp => {
 
-            const {id, ward} = (await resp.json())
+            const {id, ward} = (await resp.json());
 
-            _id = id
-            _ward = ward
+            _ward = ward;
+
+            setFacilityId(id);
+
 
             const formData = new FormData()
-            formData.append('name', `${_payload['official_name']} Facility Checklist File`)
-            formData.append('description', 'Facilities checklist file')
-            formData.append('document_type', 'Facility_ChecKList')
-            formData.append('facility_name', _payload['official_name'])
-            formData.append('fyl', file ?? undefined)
+
+            if(fileRef !== null){
+
+                formData.append('name', `${_payload['official_name']} Facility Checklist File`)
+                formData.append('description', 'Facilities checklist file')
+                formData.append('document_type', 'Facility_ChecKList')
+                formData.append('facility_name', _payload['official_name'])
+                formData.append('fyl', fileRef.files[0] ?? undefined)
+    
+            }
             
     
             if(resp){
@@ -109,7 +127,7 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
             if(resp){
 
                                                                             
-                    setFacilityId(_id) //set facility Id
+                    // setFacilityId(_id) //set facility Id
                     
                     let _data
                                                                     
@@ -150,11 +168,8 @@ const handleBasicDetailsSubmit = async (event, stateSetters, method, file) => {
     }
 
     
-
-    // Change form Id
-    window.sessionStorage.setItem('formId', 1); 
-
-    setFormId(window.sessionStorage.getItem('formId'));
+ setFormId(`${parseInt(formId) + 1}`);
+    
 };
 
 // handleGeolocationSubmit
@@ -452,9 +467,10 @@ const handleRegulationSubmit = (event, stateSetters, file) => {
 // handleServiceSubmit
 const handleServiceSubmit = async (stateSetters, facilityId) => {
 
-    const [services, setFormId, setServices] = stateSetters
+    const [services, setFormId, formId, setServices] = stateSetters
     const _payload = services.map(({ id }) => ({ service: id }))
 
+    console.log({_payload})
 
     try {
         fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
@@ -472,9 +488,7 @@ const handleServiceSubmit = async (stateSetters, facilityId) => {
         console.error('Unable to submit facility services due to the following error: ', e.message)
     }
 
-    window.sessionStorage.setItem('formId', 5)
-
-    setFormId(window.sessionStorage.getItem('formId'))
+    setFormId(`${parseInt(formId) + 1}`)
     setServices([])
 
 }
@@ -483,7 +497,7 @@ const handleServiceSubmit = async (stateSetters, facilityId) => {
 const handleInfrastructureSubmit = (stateSetters, facilityId) => {
 
 
-    const [formData, setFormId, setSelectedItems, setIsFormSubmit, resetForm] = stateSetters
+    const [formData, formId, setFormId, setSelectedItems, setIsFormSubmit, resetForm] = stateSetters
 
 
     const _payload = Object.values(formData).map((count, i) =>
@@ -493,7 +507,7 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
     })
     )
 
-   
+   console.log({_payload})
 
     if (_payload) {
 
@@ -513,8 +527,7 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
             console.error('Unable to patch facility contacts details', e.message)
         }
 
-        window.sessionStorage.setItem('formId', 6)
-        setFormId(window.sessionStorage.getItem('formId'))
+        setFormId(`${parseInt(formId) + 1}`)
         setSelectedItems([])
         resetForm()
         setIsFormSubmit(true)
@@ -528,7 +541,7 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
 // handleHrSubmit
 const handleHrSubmit = (stateSetters, facilityId, alert) => {
 
-    const [formData, _] = stateSetters // removed setFormId
+    const [formData, updateLocalStorage] = stateSetters // removed setFormId
 
 
 
@@ -538,6 +551,10 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
         count
     })
     )
+
+    console.log({_payload})
+    updateLocalStorage()
+
 
 
     if (facilityId && _payload) {
@@ -559,6 +576,8 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
             body: JSON.stringify({ specialities: _payload })
         })
         .then(res => {
+            // reset form
+            
             if(res && facilityId) router.push(`/facilities/${facilityId}`)
         })
 

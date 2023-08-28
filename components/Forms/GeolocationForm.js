@@ -37,7 +37,7 @@ export function GeolocationForm() {
     const [initialValues, handleFormUpdate] = useLocalStorageState({
         key: 'geolocation_form',
         value: formFields
-    })
+    }).actions.use();
 
     const formValues = initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 

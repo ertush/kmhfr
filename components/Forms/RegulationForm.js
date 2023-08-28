@@ -7,31 +7,19 @@ import {useLocalStorageState} from './hooks/formHook';
 import Select from './formComponents/FromikSelect';
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/outline';
-import FacilityDeptRegulationFactory from '../generateFacilityDeptRegulation';
+import FacilityDepartmentUnits from './formComponents/FacilityDepartmentUnits'
 
 
-export const FacilityDeptRegulationContext = createContext();
+export const FacilityDepartmentUnitsContext = createContext();
 
 export function RegulationForm() {
 
     // Context
     const options = useContext(FormOptionsContext);
 
-    // Constants
-    // const formFields = {
-    //     regulatory_body:"",
-    //     regulation_status:"",
-    //     license_number:"",
-    //     registration_number:"",
-    //     license_document:"",
-    //     facility_regulating_body_name:"",
-    //     facility_license_number:"",
-    //     facility_registration_number:""
-    // }
-
     const [facilityDepts, setFacilityDepts] = useState([
         (() => (
-            <FacilityDeptRegulationFactory
+            <FacilityDepartmentUnits
             index={0}
             setFacilityDepts={() => null}
             facilityDeptOptions={options['12']?.facility_depts}
@@ -43,7 +31,6 @@ export function RegulationForm() {
 
     const formFields = useMemo(() => {
         const vals = {}
-        // 'facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number'
         for(let i = 0; i < facilityDepts.length; i++){
             vals[`facility_unit_${i}`] = "";
             vals[`facility_regulating_body_name_${i}`] = "";
@@ -67,15 +54,12 @@ export function RegulationForm() {
     const [initialValues, handleFormUpdate] = useLocalStorageState({
         key: 'regulation_form',
         value: formFields
-      });
+      }).actions.use();
 
     const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
     delete formValues['license_document'];
 
-  
-    // console.log({formFields})
 
-    // Options
 
     // FormSchema
     const formSchema = useMemo(() => object({
@@ -144,7 +128,7 @@ export function RegulationForm() {
                             if(formikState.values[`facility_unit_${i}`]){
                                 const reg_body = options['12']?.facility_depts.find(({value}) => value == formikState.values[`facility_unit_${i}`])?.reg_body_name;
 
-                                // console.log({reg_body, facility_unit: formikState.values[`facility_unit_${i}`], facilityDepts})
+                             
                                 formikState.values[`facility_regulating_body_name_${i}`] = reg_body;
                             }
                          }   
@@ -274,15 +258,15 @@ export function RegulationForm() {
                                     setFacilityDepts([
                                         ...facilityDepts,
                                         (() => (
-                                         <FacilityDeptRegulationContext.Provider value={facilityDepts}>
-                                            <FacilityDeptRegulationFactory
+                                         <FacilityDepartmentUnitsContext.Provider value={facilityDepts}>
+                                            <FacilityDepartmentUnits
                                                 setFacilityDepts={setFacilityDepts}
                                                 facilityDeptOptions={options['12']?.facility_depts}
                                                 index={(facilityDepts.length + 1) - 1}
                                                 fieldNames={['facility_unit', 'facility_regulating_body_name', 'facility_license_number', 'facility_registration_number']}
-                                                formikState={formikState}
+                                          
                                             />  
-                                        </FacilityDeptRegulationContext.Provider>
+                                        </FacilityDepartmentUnitsContext.Provider>
                                         ))()
                                     ])
 
