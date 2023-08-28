@@ -452,9 +452,10 @@ const handleRegulationSubmit = (event, stateSetters, file) => {
 // handleServiceSubmit
 const handleServiceSubmit = async (stateSetters, facilityId) => {
 
-    const [services, setFormId, setServices] = stateSetters
+    const [services, setFormId, formId, setServices] = stateSetters
     const _payload = services.map(({ id }) => ({ service: id }))
 
+    console.log({_payload})
 
     try {
         fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
@@ -472,9 +473,7 @@ const handleServiceSubmit = async (stateSetters, facilityId) => {
         console.error('Unable to submit facility services due to the following error: ', e.message)
     }
 
-    window.sessionStorage.setItem('formId', 5)
-
-    setFormId(window.sessionStorage.getItem('formId'))
+    setFormId(`${parseInt(formId) + 1}`)
     setServices([])
 
 }

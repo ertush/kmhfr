@@ -1,13 +1,13 @@
-import React from 'react';
+import {useCallback, useState} from 'react';
 
 
 
 export const useLocalStorageState = ({ key, value }) => {
 	const parsedLocalStorage = JSON.parse(localStorage.getItem(key) || '{}');
 	const initialValue = Object.keys(parsedLocalStorage).length > 0 ? parsedLocalStorage : value;
-	const [localStorageState, setLocalStorageState] = React.useState(initialValue);
+	const [localStorageState, setLocalStorageState] = useState(initialValue);
 
-	const handleUpdateLocalStorageState = React.useCallback(
+	const handleUpdateLocalStorageState = useCallback(
 		(x) => {
 			setLocalStorageState(x);
 			localStorage.setItem(key, JSON.stringify(x));

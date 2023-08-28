@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState} from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
 import { useAlert } from 'react-alert'
 import { Formik, Form } from 'formik'
 import { defer } from 'underscore';
+import { useLocalStorageState } from '../hooks/formHook';
 
 import {
   ChevronDoubleRightIcon,
@@ -17,10 +18,10 @@ function EditListItem({
   initialSelectedItems,
   setItems,
   categoryItems,
-  itemsCategory,
   itemsCategoryName,
   setUpdatedItem,
   itemId,
+  nextItemCategoryId,
   item,
   removeItemHandler,
   handleItemsSubmit,
@@ -59,7 +60,7 @@ function EditListItem({
           fontWeight: 'normal',
           lineHeight: '1',
           minWidth: 1,
-          padding: '0.16666666666667em 0.5em',
+          padding: '0.167em 0.5em',
           textAlign: 'center',
         }
       }>{data.options.length}</span>
@@ -86,12 +87,31 @@ function EditListItem({
 
   })() : []))
 
+  // On Page load Effect
 
+  const [savedItems, saveSelectedItems] = useLocalStorageState({
+    key: 'services_form',
+    value: []
+  });
 
+ 
+  const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
+
+// Effects
 
   useEffect(() => {
     setUpdatedItem(selectedItems)
   }, [selectedItems, isRemoveItem])
+
+
+  useEffect(() => {
+    //store service when service is added
+    if(selectedItems.length !== 0){
+      saveSelectedItems(
+        JSON.stringify(selectedItems)
+      );
+    }
+  }, [selectedItems])
 
 
   return (
@@ -117,7 +137,6 @@ function EditListItem({
 
                   if (update_id) {
 
-
                     try {
                       const _facilityUpdateData = await (await fetch(`/api/facility/get_facility/?path=facility_updates&id=${update_id}`)).json()
                       setItemsUpdateData(_facilityUpdateData)
@@ -136,7 +155,7 @@ function EditListItem({
 
         else {
 
-          handleItemsSubmit([selectedItems, setNextItemCategory, setItems], itemId)
+          handleItemsSubmit([selectedItems, setNextItemCategory, nextItemCategoryId, setItems], itemId)
             .catch(e => console.error('unable to submit item data. Error:', e.message))
         }
 
@@ -149,7 +168,7 @@ function EditListItem({
 
       >
         {/* Item List Dropdown */}
-        <div className='w-full flex flex-col items-start bg-blue-50 shadow-md p-4 justify-start gap-1 mb-3'>
+        <div className='w-full flex flex-col items-start bg-blue-50 border-blue-600 p-4 justify-start gap-1 mb-3'>
           {/* Iten Category Dropdown */}
           {
           itemsCategoryName !== 'CHU Services' &&
@@ -159,7 +178,7 @@ function EditListItem({
             className='capitalize text-md font-semibold leading-tight tracking-tight'>
             Category {itemsCategoryName}
           </label>
-          <div className="flex items-start gap-2 w-full h-auto">
+          <div className="flex items-start gap-y-2 w-full h-auto">
             <Select
               options={categoryItems}
               formatGroupLabel={formatGroupLabel}
@@ -236,9 +255,9 @@ function EditListItem({
              {itemsCategoryName}
           </label>
           <div className="flex items-start gap-2  w-full h-auto">
-            {console.log({itemOptions})}
+            {/* {console.log({itemOptions})} */}
             <Select
-              options={itemsCategoryName !== 'CHU Services' ? itemOptions : itemsCategory}
+              options={itemsCategoryName !== 'CHU Services' ? itemOptions : null}
               formatGroupLabel={formatGroupLabel}
               styles={{
                 control: (baseStyles) => ({
@@ -276,13 +295,13 @@ function EditListItem({
               <p className='text-white font-semibold'>Add</p>
               <PlusIcon className='w-4 h-4 text-white' />
             </button>
-          </div>
+          </div>  
         </div>
 
 
         {/* Item Selected Table */}
        
-        <Table className="card bg-blue-50 shadow-md">
+        <Table className="card bg-blue-50 border-b border-blue-600" >
           <TableBody >
             <TableRow >
               <TableCell className='bg-transparent text-blue-700 border-b border-blue-600'>
@@ -305,13 +324,26 @@ function EditListItem({
             </TableRow>
 
             <>
-
-              {selectedItems && selectedItems?.length > 0 ? (
-                selectedItems?.map(({ name, id, item_id }, __id) => (
+              {console.log({items})}
+              {
+                typeof items === 'object' && 
+                items.map(({ name, id, item_id }, __id) => (
                   <TableRow
                     key={id}
                     className='border-t border-blue-600'
                   >
+                    {/* {
+                  items !== null &&
+                  <>
+                    <li className="w-full m-3 bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                      <p>
+                        {item?.name || item?.official_name} has not listed
+                        the {'item'} it offers. Add some below.
+                      </p>
+                    </li>
+                    <br />
+                  </>
+                  } */}
                     <TableCell className='px-3'>{name}</TableCell>
 
                     <TableCell>
@@ -320,12 +352,11 @@ function EditListItem({
                         name="remove_item_btn"
                         onClick={async (e) => {
                           e.preventDefault()
-                          let _items = selectedItems
+                          let _items = items 
                           setDeletedItems([...deletedItems, _items.splice(__id, 1)])
-                          setSelectedItems(
-                            _items
-                          );
-
+                        
+                          setSelectedItems(_items);
+                          saveSelectedItems(_items);
 
 
                           // Delete facility service
@@ -341,18 +372,7 @@ function EditListItem({
                     </TableCell>
                   </TableRow>
                 ))
-              ) : (
-                item !== null &&
-                <>
-                  <li className="w-full m-3 bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
-                    <p>
-                      {item?.name || item?.official_name} has not listed
-                      the {'item'} it offers. Add some below.
-                    </p>
-                  </li>
-                  <br />
-                </>
-              )}
+             }
             </>
           </TableBody>
         </Table>
