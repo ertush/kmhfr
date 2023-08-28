@@ -227,7 +227,7 @@ function EditListWithCount(
                 <Form
                     name="list_item_with_count_form"
                     className="flex flex-col w-full items-start justify-start gap-3 "
-
+               
                 >
 
                     {/* Item List Dropdown */}
@@ -394,7 +394,7 @@ function EditListWithCount(
 
                             <>
                                 {typeof items === 'object' &&
-                                    items?.map(({ name, id, meta_id }, __id) => (
+                                    items?.map(({ name, id, meta_id, count }, __id) => (
                                         <TableRow
                                             key={id}
                                         >

@@ -80,14 +80,9 @@ function EditListItem({
     result.push({ name: subCategories[0], id: value[0], item_id })
 
   })
-
-
-
     return result
 
   })() : []))
-
-  // On Page load Effect
 
   const [savedItems, saveSelectedItems] = useLocalStorageState({
     key: 'services_form',
@@ -168,7 +163,7 @@ function EditListItem({
 
       >
         {/* Item List Dropdown */}
-        <div className='w-full flex flex-col items-start bg-blue-50 border-blue-600 p-4 justify-start gap-1 mb-3'>
+        <div className='w-full flex flex-col items-start bg-blue-50 border border-blue-600 p-4 justify-start gap-1 mb-3'>
           {/* Iten Category Dropdown */}
           {
           itemsCategoryName !== 'CHU Services' &&
@@ -324,7 +319,7 @@ function EditListItem({
             </TableRow>
 
             <>
-              {console.log({items})}
+              {/* {console.log({items})} */}
               {
                 typeof items === 'object' && 
                 items.map(({ name, id, item_id }, __id) => (

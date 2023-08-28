@@ -482,7 +482,7 @@ const handleServiceSubmit = async (stateSetters, facilityId) => {
 const handleInfrastructureSubmit = (stateSetters, facilityId) => {
 
 
-    const [formData, setFormId, setSelectedItems, setIsFormSubmit, resetForm] = stateSetters
+    const [formData, formId, setFormId, setSelectedItems, setIsFormSubmit, resetForm] = stateSetters
 
 
     const _payload = Object.values(formData).map((count, i) =>
@@ -492,7 +492,7 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
     })
     )
 
-   
+   console.log({_payload})
 
     if (_payload) {
 
@@ -512,8 +512,7 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
             console.error('Unable to patch facility contacts details', e.message)
         }
 
-        window.sessionStorage.setItem('formId', 6)
-        setFormId(window.sessionStorage.getItem('formId'))
+        setFormId(`${parseInt(formId) + 1}`)
         setSelectedItems([])
         resetForm()
         setIsFormSubmit(true)
@@ -527,7 +526,7 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
 // handleHrSubmit
 const handleHrSubmit = (stateSetters, facilityId, alert) => {
 
-    const [formData, _] = stateSetters // removed setFormId
+    const [formData] = stateSetters // removed setFormId
 
 
 
@@ -537,6 +536,8 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
         count
     })
     )
+
+    console.log({_payload})
 
 
     if (facilityId && _payload) {
