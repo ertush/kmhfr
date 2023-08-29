@@ -19,8 +19,7 @@ import { useLocalStorageState } from './hooks/formHook';
 
 
 export const FormContext  = createContext(() => null)
-// export const FacilityDeptContext = createContext(null)
-// export const FacilityContactsContext = createContext(null)
+export const FacilityIdContext = createContext(null)
 export const EditFacilityContactsContext = createContext(null)
 
 
@@ -30,6 +29,27 @@ export const EditFacilityContactsContext = createContext(null)
 export function Form () {
 
 
+// State
+
+const [geoJSON, setGeoJSON]  = useLocalStorageState({
+    key:'geo_json',
+    value: 'null'
+    }).actions.use();
+
+const [wardName, setWardName] =  useLocalStorageState({
+    key:'ward_name',
+    value: 'null'
+    }).actions.use();
+    
+const [geoCenter, setGeoCenter] =  useLocalStorageState({
+    key:'geo_center',
+    value: 'null'
+    }).actions.use();
+
+const [facilityId, setFacilityId] = useLocalStorageState({
+key:'facility_id',
+value: 'null'
+}).actions.use();
 
 
 //   const [formId, setFormId] = useState(0); //
@@ -89,19 +109,40 @@ const [formId, setFormId] = useLocalStorageState({
               {/* Stepper Body */}
               <div className='flex flex-col justify-center items-start px-1 md:px-4 w-full '>
                   <FormContext.Provider value={[formId, setFormId]}>
+                    <FacilityIdContext.Provider value={[facilityId, setFacilityId]}>
                       <div
                         className=' w-full flex flex-col items-start justify-start p-4 shadow-md bg-blue-50'
                         style={{ minHeight: '250px' }}>
                             { console.log({formId})}
                            {
                                 formId == '0' && 
-                                <BasicDeatilsForm />
+                                <BasicDeatilsForm 
+                                useGeoJSON={() => [geoJSON, setGeoJSON]}  
+                                useGeoData={(type) => { 
+                                    switch(type){
+                                        case 'ward_data':
+                                        return [wardName, setWardName];
+                                        case 'geo_data':
+                                        return [geoCenter, setGeoCenter];
+                                    }}
+                                    }
+                                />
 
 
                               }
                               {
                                   formId == '1' && 
-                                  <GeolocationForm />
+                                  <GeolocationForm 
+                                  useGeoJSON={() => [geoJSON, setGeoJSON]}
+                                  useGeoData={(type) => { 
+                                    switch(type){
+                                        case 'ward_data':
+                                        return [wardName, setWardName];
+                                        case 'geo_data':
+                                        return [geoCenter, setGeoCenter];
+                                    }}
+                                    }
+                                  />
                                  
                               } 
                               {
@@ -132,6 +173,7 @@ const [formId, setFormId] = useLocalStorageState({
                              
                           
                         </div>
+                        </FacilityIdContext.Provider>
                     </FormContext.Provider>
                 </div>
 

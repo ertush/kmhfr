@@ -2,13 +2,15 @@ import { useContext, useState, useEffect, useCallback, memo } from 'react';
 import { Formik, Field, Form } from 'formik'
 import { useLocalStorageState } from './hooks/formHook';
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { FormContext } from './Form';
+import { FacilityIdContext, FormContext } from './Form';
 import { object, string } from "zod";
 import dynamic from 'next/dynamic';
 import {
     ChevronDoubleRightIcon,
     ChevronDoubleLeftIcon
   } from '@heroicons/react/solid';
+import Alert from '@mui/material/Alert';
+
   
   const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
@@ -18,12 +20,18 @@ import {
 	}
 )
 
+import { handleGeolocationSubmit } from '../../controllers/facility/facilityHandlers';
+
+
 const Map = memo(WardMap)
 
 
-export function GeolocationForm() {
-    // Constants
+export function GeolocationForm({useGeoJSON, useGeoData}) {
 
+    //Context
+    const[facilityId, ____] = useContext(FacilityIdContext)
+
+    // Constants
     const formFields = {
         collection_date: "",
         latitude: "",
@@ -32,7 +40,12 @@ export function GeolocationForm() {
 
     // State
     const [formId, setFormId] = useContext(FormContext);
-    const [geoJSON, setGeoJSON] = useState([]);
+    const [geoJSON, _] = useGeoJSON();
+    const [wardName, __] = useGeoData('ward_data');
+    const [geoCenter, ___] = useGeoData('geo_data');
+
+
+
 
     const [initialValues, handleFormUpdate] = useLocalStorageState({
         key: 'geolocation_form',
@@ -41,26 +54,17 @@ export function GeolocationForm() {
 
     const formValues = initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
-    // Effects
 
     // Form Schema
     const formSchema = object({
 
-        collection_date: string({ required_error: "Facility Official Name is required" }),
+        collection_date: string({ required_error: "Collection date is required" }),
         latitude: string({ required_error: "Latitude is required" }),
         longitude: string({ required_error: "Longitude is required" }),
 
     })
 
-    // Event handlers
-
-    const handleSubmit = useCallback((values) => {
-
-        setFormId(`${parseInt(formId) + 1}`);
-
-        console.log({ ...values })
-
-    }, [])
+ 
 
     const handleGeolocationPrevious = useCallback(() => {
         setFormId(`${parseInt(formId) - 1}`);
@@ -70,7 +74,7 @@ export function GeolocationForm() {
     return (
         <Formik
             initialValues={formValues}
-            onSubmit={handleSubmit}
+            onSubmit={(values) => handleGeolocationSubmit(values, [formId, setFormId, facilityId])}
             validationSchema={toFormikValidationSchema(formSchema)}
             enableReinitialize
         >
@@ -157,12 +161,16 @@ export function GeolocationForm() {
                 {/* Ward Geo Map */}
                 <div className='w-full h-auto'>
                     <div className='w-full bg-gray-200   flex flex-col items-start justify-center text-left relative'>
-                        {/* {
-                            geoJSON &&
+                        {/* { console.log({geoCenter, wardName, geoJSON})} */}
+                        {
+                            (geoJSON && geoCenter && wardName &&
+                            Object.keys(geoJSON).length > 2 && geoCenter.length > 1  && wardName.length > 1 ) 
+                            ?
+                            <Map markerCoordinates={[formikState.values?.latitude.length < 4 ? '0.000000' : formikState.values?.latitude, formikState.values?.longitude.length < 4 ? '0.000000' : formikState.values?.longitude]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
+                            :
 
-                            <Map markerCoordinates={[formikState.values?.latitude.length < 4 ? '0.000000' : formikState.values?.latitude, formikState.values?.longitude.length < 4 ? '0.000000' : formikState.values?.longitude]} geoJSON={geoJSON} ward={''} center={''} />
-
-                        } */}
+                            <Alert severity="info" sx={{ width: '100%' }}>Loading...</Alert>
+                        }
                     </div>
                 </div>
 
