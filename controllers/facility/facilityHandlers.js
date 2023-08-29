@@ -2,7 +2,7 @@
 import router from "next/router";
 
 // handleBasicDetailsSubmit
-const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileRef, setFacilityId) => {
+const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileRef, setGeoJSON, setWardName, setGeoCenter, setFacilityId) => {
 
   
 
@@ -66,7 +66,7 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
 
 
 
-    console.log({_payload})
+    // console.log({_payload})
 
     // Post Facility Basic Details
     try{
@@ -87,7 +87,10 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
 
             _ward = ward;
 
-            setFacilityId(id);
+            setFacilityId(`${id}`);
+
+            // Store facility Id to localstorage
+
 
 
             const formData = new FormData()
@@ -125,23 +128,18 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
         //  fetch data for Geolocation form
         .then(async (resp) => {
             if(resp){
-
-                                                                            
-                    // setFacilityId(_id) //set facility Id
-                    
-                    let _data
-                                                                    
+    
+                                                                  
                     try{
                         const response = await fetch(`/api/facility/get_facility/?path=wards&id=${_ward}`)
 
-                        _data = await response.json()
+                        const _data = await response.json();
+                        const ward_boundary = _data?.ward_boundary;
 
-                        setFacilityCoordinates(_data.ward_boundary.geometry.coordinates)
-                        setGeoJSON(JSON.parse(JSON.stringify(_data?.ward_boundary)))
-
-                        const [lng, lat] = _data?.ward_boundary.properties.center.coordinates 
-
-                        setCenter(JSON.parse(JSON.stringify([lat, lng])))
+                        // setFacilityCoordinates(_data.ward_boundary.geometry.coordinates)
+                        setGeoJSON(ward_boundary)
+                        const [lng, lat] = ward_boundary.properties.center.coordinates 
+                        setGeoCenter([lat, lng])
                         setWardName(_data?.name)
 
                     
@@ -156,9 +154,7 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
             }
         }
             
-        )
-
-
+    )
     }catch(e){
         console.error(e.message)
         return {
@@ -173,18 +169,18 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
 };
 
 // handleGeolocationSubmit
-const handleGeolocationSubmit = (formData, stateSetters) => {
+const handleGeolocationSubmit = (values, stateSetters) => {
 
-    const [setFormId, setLongitude, setLatitude, facilityId] = stateSetters
+    const [formId, setFormId, facilityId] = stateSetters
    
 
     const geolocationData = {};
 
 
-    formData.forEach(({ name, value }) => {
-        
-        geolocationData[name] = (() => {
-            switch (name) {
+    // formData.forEach(({ name, value }) => {
+        for (const [key, value] of Object.entries(values)){
+        geolocationData[key] = (() => {
+            switch (key) {
                 case 'collection_date':
                     return  new Date(value)
                 case 'latitude':
@@ -198,7 +194,7 @@ const handleGeolocationSubmit = (formData, stateSetters) => {
                     return value
             }
         })() 
-    });
+    }
 
 
 
@@ -209,8 +205,8 @@ const handleGeolocationSubmit = (formData, stateSetters) => {
     geolocationData['latitude'] = Number(geolocationData.latitude)
     geolocationData['longitude'] = Number(geolocationData.longitude)
 
-    setLongitude(geolocationData.longitude);
-    setLatitude(geolocationData.latitude);
+    // setLongitude(geolocationData.longitude);
+    // setLatitude(geolocationData.latitude);
 
 
     // Set missing geolocationData i.e coordinates & facility
@@ -226,28 +222,25 @@ const handleGeolocationSubmit = (formData, stateSetters) => {
     
     // Post Geolocation Details
 
-    // console.log({formData, setFormId, stateSetters, geolocationData})
+    console.log({geo_payload: JSON.stringify(geolocationData).replace(',"":""','')})
 
-    // return
 
-    try{
-        fetch('/api/common/submit_form_data/?path=gis', {
-            headers:{
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json;charset=utf-8'
+    // try{
+    //     fetch('/api/common/submit_form_data/?path=gis', {
+    //         headers:{
+    //             'Accept': 'application/json, text/plain, */*',
+    //             'Content-Type': 'application/json;charset=utf-8'
                 
-            },
-            method: 'POST',
-            body: JSON.stringify(geolocationData).replace(',"":""','')
-        })
-    }
-    catch(e){
-        console.error('Unable to post geolocation details')
-    }
+    //         },
+    //         method: 'POST',
+    //         body: JSON.stringify(geolocationData).replace(',"":""','')
+    //     })
+    // }
+    // catch(e){
+    //     console.error('Unable to post geolocation details')
+    // }
 
-    window.sessionStorage.setItem('formId', 2);
-
-    setFormId(window.sessionStorage.getItem('formId'));
+    setFormId(`${parseInt(formId) + 1}`);
 };
 
 // handleFacilityContactsSubmit

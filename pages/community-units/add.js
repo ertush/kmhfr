@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import MainLayout from '../../components/MainLayout';
-import EditListItem from '../../components/EditListItem';
+import EditListItem from '../../components/Forms/formComponents/EditListItem';
 import { checkToken } from '../../controllers/auth/auth';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';

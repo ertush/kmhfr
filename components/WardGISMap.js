@@ -16,29 +16,41 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
     }
 
     useEffect(() => {
-        let lngs = []
-        let lats = []
+        const lngs = []
+        const lats = []
+
+        const bounds = geoJSON.properties.bound.coordinates
 
         if (geoJSON) {
 
-            geoJSON.properties.bound.coordinates.forEach(([lng, lat]) => {
-                lngs.push(lng)
-                lats.push(lat)
-            })
-
-            let [maxlat, maxlng] = [Math.max(...lats), Math.max(...lngs)];
-
-            if (markerCoordinates[0] !== 0.00000 && markerCoordinates[1] !== 0.00000) {
-                if ((markerCoordinates[1] > maxlng) || (markerCoordinates[0] > maxlat)) {
-                    setIsOutOfBound(true)
-                }
+        
+            for (let i = 0; i < bounds.length; i++){
+                lngs.push(bounds[i][0])
+                lats.push(bounds[i][1])
             }
-        }
 
+            if(
+                !(lngs.every(bound => markerCoordinates[1] < bound) &&
+                lats.every(bound => markerCoordinates[0] < bound)) 
+            ) {
+
+                // Not Out of Bound
+                setIsOutOfBound(false)
+
+                console.log("[>>>>>] NoT of Bound")
+            }
+            else {
+                   //Out of Bound
+                setIsOutOfBound(true)
+                console.log("[>>>>>] Out of Bound")
+            }
+            
+            
+        }
 
     }, [markerCoordinates, geoJSON])
 
-
+   
 
     return (
 
@@ -46,10 +58,10 @@ const WardGISMap = ({ markerCoordinates, geoJSON, center, ward }) => {
 
             {/* Map title */}
             <h3 className='mb-1 px-2 text-blue-900 font-normal float-left text-lg bg-gray-300 w-full  capitalize'>{String(ward).toLowerCase()}{" ward"}</h3>
-            {isOutOfBound && <Alert severity="error" sx={{ width: '100%' }}>The coordinates did not validate</Alert>}
-
+            {isOutOfBound && <Alert severity="error" sx={{ width: '100%' }}>The coordinates are outside the ward boundary</Alert>}
+    
             {/* Ward Map */}
-            <MapContainer center={center ?? [-0.44531, 37.1111]} zoom={10.899} maxZoom={15.70} scrollWheelZoom={false} touchZoom={false} style={{ height: '400px', width: "100%", position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
+            <MapContainer center={center ?? [-0.44531, 37.1111]} zoom={11.126} maxZoom={15.70} scrollWheelZoom={false} touchZoom={false} style={{ height: '400px', width: "100%", position: 'relative', zIndex: '1', backgroundColor: '#e7eae8', padding: '15px' }}>
 
                 <GeoJSON data={geoJSON} stylez={geoJsonStyles} />
 

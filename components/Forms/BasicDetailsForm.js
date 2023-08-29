@@ -3,7 +3,7 @@ import { useContext, useRef, useEffect, useState, useCallback } from 'react';
 import { Field, Form, Formik } from 'formik';
 import { object, string, number } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { FormContext } from './Form';
+import { FacilityIdContext, FormContext } from './Form';
 import Select from './formComponents/FromikSelect';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import {
@@ -15,7 +15,7 @@ import { handleBasicDetailsSubmit } from '../../controllers/facility/facilityHan
 
 
 
-export function BasicDeatilsForm() {
+export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
 
   // Constants
   const formFields = {
@@ -63,16 +63,16 @@ export function BasicDeatilsForm() {
   // State
   const [facilityTypeValue, setFacilityTypeValue] = useState(null);
   const [ownerTypeLabel, setOwnerTypeLabel] = useState(null);
+  const [_, setGeoJSON] = useGeoJSON();
+  const [__, setWardName] = useGeoData('ward_data');
+  const [___, setGeoCenter] = useGeoData('geo_data');
+
 
   const [initialValues, handleFormUpdate] = useLocalStorageState({
     key: 'basic_details_form',
-    value: formFields
+    value: formFields 
   }).actions.use();
 
-  const [facilityId, setFacilityId] = useLocalStorageState({
-    key:'facility_id',
-    value:''
-}).actions.use();
 
   const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
@@ -88,6 +88,7 @@ export function BasicDeatilsForm() {
   // Context
   const [formId, setFormId] = useContext(FormContext);
   const options = useContext(FormOptionsContext);
+  const [____, setFacilityId] = useContext(FacilityIdContext);
 
 
   // Options
@@ -302,16 +303,16 @@ export function BasicDeatilsForm() {
     }),
     owner_type: string({ required_error: "Owner Category is required" }).min(1),
     owner: string({ required_error: "Owner Deatils is required" }).min(1),
-    number_of_beds: number({ required_error: "Total Functional In-patient Beds is required" }).min(1, 'Must be at least 1'),
-    number_of_inpatient_beds: number({ required_error: "Number of General In-patient Beds is required" }).min(1, 'Must be at least 1'),
-    number_of_cots: number({ required_error: "Number of Functional Cots is required" }).min(1, 'Must be at least 1'),
-    number_of_emergency_casualty_beds: number({ required_error: "Number of Emergency Casulty Beds is required" }).min(1, 'Must be at least 1'),
-    number_of_icu_beds: number({ required_error: "Number of Intensive Care Unit (ICU) Beds is required" }).min(1, 'Must be at least 1'),
-    number_of_hdu_beds: number({ required_error: "Number of High Dependency Unit (HDU) Beds is required" }).min(1, 'Must be at least 1'),
-    number_of_maternity_beds: number({ required_error: "Number of Maternity Beds is required" }).min(1, 'Must be at least 1'),
-    number_of_isolation_beds: number({ required_error: "Number of Isolation Beds is required" }).min(1, 'Must be at least 1'),
-    number_of_general_theatres: number({ required_error: "Number of General Theatres is required" }).min(1, 'Must be at least 1'),
-    number_of_maternity_theatres: number({ required_error: "Number of Maternity Theatres is required" }).min(1, 'Must be at least 1'),
+    number_of_beds: number({ required_error: "Total Functional In-patient Beds is required" }).min(0, 'Must be at least 0'),
+    number_of_inpatient_beds: number({ required_error: "Number of General In-patient Beds is required" }).min(0, 'Must be at least 0'),
+    number_of_cots: number({ required_error: "Number of Functional Cots is required" }).min(0, 'Must be at least 0'),
+    number_of_emergency_casualty_beds: number({ required_error: "Number of Emergency Casulty Beds is required" }).min(0, 'Must be at least 0'),
+    number_of_icu_beds: number({ required_error: "Number of Intensive Care Unit (ICU) Beds is required" }).min(0, 'Must be at least 0'),
+    number_of_hdu_beds: number({ required_error: "Number of High Dependency Unit (HDU) Beds is required" }).min(0, 'Must be at least 0'),
+    number_of_maternity_beds: number({ required_error: "Number of Maternity Beds is required" }).min(0, 'Must be at least 0'),
+    number_of_isolation_beds: number({ required_error: "Number of Isolation Beds is required" }).min(0, 'Must be at least 0'),
+    number_of_general_theatres: number({ required_error: "Number of General Theatres is required" }).min(0, 'Must be at least 0'),
+    number_of_maternity_theatres: number({ required_error: "Number of Maternity Theatres is required" }).min(0, 'Must be at least 0'),
     admission_status: string({ required_error: "Facility admissions is required" }),
     reporting_in_dhis: string({required_error: 'Reporting in DHIS is required'}),
     county_id: string({ required_error: "County is required" }).min(1),
@@ -330,7 +331,7 @@ export function BasicDeatilsForm() {
   return (
     <Formik
       initialValues={formValues}
-      onSubmit={(values) => handleBasicDetailsSubmit( values, 'PATCH', formId, setFormId, checkListFileRef.current, setFacilityId)}
+      onSubmit={(values) => handleBasicDetailsSubmit( values, 'PATCH', formId, setFormId, checkListFileRef.current, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
       validationSchema={toFormikValidationSchema(formSchema)}
       enableReinitialize
     >
