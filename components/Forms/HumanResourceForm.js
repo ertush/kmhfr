@@ -2,6 +2,8 @@ import {useContext, useCallback} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { FormContext } from './Form';
+import { FacilityIdContext } from './Form'
+
 import {
     handleHrSubmit
 } from '../../controllers/facility/facilityHandlers';
@@ -12,11 +14,13 @@ import {
 export function HumanResourceForm() {
 
     // Constants
-    const facilityId = '09990980'
+
 
     // Context
     const options = useContext(FormOptionsContext);
     const [formId, setFormId] = useContext(FormContext);
+    const[facilityId, _] = useContext(FacilityIdContext);
+
 
 
     // Options

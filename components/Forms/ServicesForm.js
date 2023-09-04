@@ -6,6 +6,8 @@ import {
     handleServiceSubmit,
     handleServiceUpdates
 } from '../../controllers/facility/facilityHandlers'
+import { FacilityIdContext } from './Form'
+
 
 
 // import {Formik, Field, Form} from 'formik'
@@ -14,7 +16,8 @@ import {
 
 export function ServicesForm() {
     // Constants
-    const facilityId = '09990980'
+    const[facilityId, _] = useContext(FacilityIdContext);
+
 
     // Context
     const options = useContext(FormOptionsContext);

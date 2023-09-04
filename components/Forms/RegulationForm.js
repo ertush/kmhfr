@@ -8,6 +8,8 @@ import Select from './formComponents/FromikSelect';
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/outline';
 import FacilityDepartmentUnits from './formComponents/FacilityDepartmentUnits'
+import { FacilityIdContext } from './Form'
+import { handleRegulationSubmit } from '../../controllers/facility/facilityHandlers';
 
 
 export const FacilityDepartmentUnitsContext = createContext();
@@ -16,6 +18,7 @@ export function RegulationForm() {
 
     // Context
     const options = useContext(FormOptionsContext);
+    const[facilityId, _] = useContext(FacilityIdContext);
 
     const [facilityDepts, setFacilityDepts] = useState([
         (() => (
@@ -92,15 +95,10 @@ export function RegulationForm() {
 
     // Ref
     const _regBodyRef = useRef(null)
+    const fileRef = useRef(null)
 
     // Event Handlers
-    const handleSubmit = useCallback((values) => {
-        console.log({ ...values })
-        setFormId(`${parseInt(formId) + 1}`);
-      
-    }, [])
-
-
+ 
     const handleRegulationPrevious = useCallback((event) => {
         event.preventDefault();
         setFormId(`${formId - 1}`)
@@ -108,12 +106,19 @@ export function RegulationForm() {
 , []);
 
 
+    // Effects
 
 
+
+    // Constants
+
+
+
+// console.log({facilityBasicDetails})
     return (
         <Formik
             initialValues={formValues}
-            onSubmit={handleSubmit}
+            onSubmit={(values) => handleRegulationSubmit(values, [formId, setFormId, facilityId], fileRef.current)}
             validationSchema={toFormikValidationSchema(formSchema)}
             enableReinitialize
         >
@@ -210,7 +215,7 @@ export function RegulationForm() {
                             <div className=" w-full flex flex-col items-start justify-start py-3  h-auto">
                                 <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                     <label htmlFor="license_document" className="text-gray-600 capitalize text-sm">Upload license document</label>
-                                    <Field type="file" name="license_document" className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none" />
+                                    <Field type="file" name="license_document" innerRef={fileRef} className="flex-none w-full   p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none" />
                                 </div>
                             </div>
 

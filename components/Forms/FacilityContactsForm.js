@@ -10,6 +10,11 @@ import {useLocalStorageState} from './hooks/formHook';
 import { object, string } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
+import {
+    handleFacilityContactsSubmit
+} from '../../controllers/facility/facilityHandlers';
+
+import { FacilityIdContext } from './Form'
 
 
 export const FacilityDeptContext = createContext(null)
@@ -27,6 +32,8 @@ export function FacilityContactsForm() {
 
     // State
     const [formId, setFormId] = useContext(FormContext);
+    const[facilityId, _] = useContext(FacilityIdContext);
+
     const [facilityContacts, setFacilityContacts] = useState([
         (() => (
 			<FacilityContact
@@ -82,8 +89,11 @@ export function FacilityContactsForm() {
         const contacts = [];
         const officerContacts = [];
 
-        const contactCount = initialValues.split(',').filter(x => x.match(/^"contact_[0-9]/)).length;
-        const officerContactCount = initialValues.split(',').filter(x => x.match(/^"officer_details_contact_[0-9]/)).length;
+        const initialValueObj = JSON.parse(initialValues)
+
+        // console.log({initialValues, initialValueObj})
+        const contactCount = Object.keys(initialValueObj).filter(x => x.match(/^"contact_[0-9]/)).length;
+        const officerContactCount = Object.keys(initialValueObj).filter(x => x.match(/^"officer_details_contact_[0-9]/)).length;
 
         if(contactCount > 1){
             for(let i = 0; i < contactCount; i++) {
@@ -159,10 +169,6 @@ export function FacilityContactsForm() {
     // console.log({formSchema})
 
     // Event handlers
-    const handleSubmit = useCallback((values) => {
-        setFormId(`${parseInt(formId) + 1}`);
-        console.log({ ...values })
-}, [])
 
     const handleGeolocationPrevious = useCallback(() => {
         setFormId(`${parseInt(formId) - 1}`);
@@ -174,7 +180,8 @@ export function FacilityContactsForm() {
     return (
         <Formik
         initialValues={formValues}
-        onSubmit={handleSubmit}
+        onSubmit={(values) => handleFacilityContactsSubmit(values, [formId, setFormId, facilityId])}
+
         validationSchema={toFormikValidationSchema(formSchema)}
         enableReinitialize
         >

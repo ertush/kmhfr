@@ -14,7 +14,7 @@ import {
 
 
 
-function EditListItem({
+function  EditListItem({
   initialSelectedItems,
   setItems,
   categoryItems,
@@ -113,7 +113,7 @@ function EditListItem({
     <Formik
       initialValues={{}}
       initialErrors={false}
-      onSubmit={() => {
+      onSubmit={(values) => {
 
         setIsSaveAndFinish(true)
 
@@ -150,12 +150,12 @@ function EditListItem({
 
         else {
 
-          handleItemsSubmit([selectedItems, setNextItemCategory, nextItemCategoryId, setItems], itemId)
+          handleItemsSubmit([savedItems, nextItemCategoryId, setNextItemCategory], itemId)
             .catch(e => console.error('unable to submit item data. Error:', e.message))
         }
 
       }
-      }
+      } 
     >
       <Form
         name="list_item_form"

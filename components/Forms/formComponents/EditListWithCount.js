@@ -11,6 +11,7 @@ import {
 import { useAlert } from 'react-alert'
 import { useLocalStorageState } from '../hooks/formHook';
 
+
 function EditListWithCount(
     {
         initialSelectedItems,
@@ -51,6 +52,7 @@ function EditListWithCount(
 
         if (initialSelectedItems.length > 0) {
             initialSelectedItems.map(({ subCategories, id, meta_id, count }) => {
+                        
                 result.push({ name: subCategories[0], id, meta_id, count })
 
             })
@@ -65,15 +67,17 @@ function EditListWithCount(
         value: []
       }).actions.use();
 
-    const resetForms = useLocalStorageState({
-        key: `${itemsCategoryName}_form`,
-        value: []
-    }).actions.reset()
+      // Reset local storage if HR form
+    // const resetForms = useLocalStorageState({
+    //     key: `${itemsCategoryName}_form`,
+    //     value: []
+    // }).actions.reset()
 
     //Effects 
     useEffect(() => {
         //store service when service is added
         if(selectedItems.length !== 0){
+            console.log(selectedItems)
           saveSelectedItems(
             JSON.stringify(selectedItems)
           );
@@ -164,9 +168,10 @@ function EditListWithCount(
         <Formik
             initialValues={initialValues}
             initialErrors={false}
-            onSubmit={(values, { resetForm }) => {
+            onSubmit={(values) => { 
 
                 setIsSaveAndFinish(true)
+                // console.log({values})
 
                 if (item) {
 
@@ -218,7 +223,7 @@ function EditListWithCount(
                 }
 
                 else {
-                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, resetForms], itemId, alert) : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([values, nextItemCategoryId, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
+                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([savedItems, values], itemId, alert) : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([savedItems, values, nextItemCategoryId, setNextItemCategory], itemId)
                         .catch(e => console.error('unable to submit item data. Error:', e.message))
                 }
 
@@ -347,6 +352,8 @@ function EditListWithCount(
                             <button className="bg-blue-700  p-2 flex items-center justify-evenly gap-2"
                                 onClick={e => {
                                     e.preventDefault()
+                               
+                                    // console.log({items})
 
                                     if (currentItem)
                                         setSelectedItems([
