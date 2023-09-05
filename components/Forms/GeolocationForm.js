@@ -10,6 +10,7 @@ import {
     ChevronDoubleLeftIcon
   } from '@heroicons/react/solid';
 import Alert from '@mui/material/Alert';
+import { FormOptionsContext } from '../../pages/facilities/add';
 
   
   const WardMap = dynamic(
@@ -28,31 +29,46 @@ const Map = memo(WardMap)
 
 export function GeolocationForm({useGeoJSON, useGeoData}) {
 
-    //Context
-    const[facilityId, ____] = useContext(FacilityIdContext)
-
-    // Constants
-    const formFields = {
+    const options = useContext(FormOptionsContext);
+     
+     // Constants
+     const formFields = {
         collection_date: "",
         latitude: "",
         longitude: ""
     }
 
+    // handle Edit staff
+
+  const facilityGeolocationData = {}
+
+  facilityGeolocationData['latitude'] = options['18']?.data?.lat_long[0];
+  facilityGeolocationData['longitude'] = options['18']?.data?.lat_long[1];
+  facilityGeolocationData['collection_date'] = options['19']?.collection_date 
+
+ 
+
+    //Context
+    const[facilityId, ____] = useContext(FacilityIdContext)
+
+
+    
+   
     // State
     const [formId, setFormId] = useContext(FormContext);
     const [geoJSON, _] = useGeoJSON();
     const [wardName, __] = useGeoData('ward_data');
     const [geoCenter, ___] = useGeoData('geo_data');
 
-
+    console.log({options})
 
 
     const [initialValues, handleFormUpdate] = useLocalStorageState({
-        key: 'geolocation_form',
-        value: formFields
+        key: options['18']?.data ? 'geolocation_edit_form' : 'geolocation_form',
+        value: options['18']?.data ? facilityGeolocationData : formFields 
     }).actions.use();
 
-    const formValues = initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+    const formValues = options['18']?.data ? facilityGeolocationData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
 
     // Form Schema
@@ -88,10 +104,12 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
           }, [formikState.values])
 
           return(
+            <>
+            <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Geolocation</h4>
             <Form
 
                 name='geolocation_form'
-                className='flex flex-col w-full items-start bg-blue-50 p-4 border border-blue-600 justify-start gap-3'
+                className='flex flex-col w-full mt-4 items-start bg-blue-50 shadow-md p-3 justify-start gap-3'
             >
                 {/* Collection Date */}
                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -163,7 +181,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                     <div className='w-full bg-gray-200   flex flex-col items-start justify-center text-left relative'>
                         {/* { console.log({geoCenter, wardName, geoJSON})} */}
                         {
-                            (geoJSON && geoCenter && wardName &&
+                            (geoJSON?.properties && geoCenter && wardName &&
                             Object.keys(geoJSON).length > 2 && geoCenter.length > 1  && wardName.length > 1 ) 
                             ?
                             <Map markerCoordinates={[formikState.values?.latitude.length < 4 ? '0.000000' : formikState.values?.latitude, formikState.values?.longitude.length < 4 ? '0.000000' : formikState.values?.longitude]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
@@ -195,6 +213,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                 </div>
 
             </Form>
+            </>
           )
         }
         }

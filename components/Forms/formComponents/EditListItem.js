@@ -163,7 +163,7 @@ function  EditListItem({
 
       >
         {/* Item List Dropdown */}
-        <div className='w-full flex flex-col items-start bg-blue-50 border border-blue-600 p-4 justify-start gap-1 mb-3'>
+        <div className='w-full flex flex-col items-start bg-blue-50 shadow-md p-4 justify-start gap-1 mb-3'>
           {/* Iten Category Dropdown */}
           {
           itemsCategoryName !== 'CHU Services' &&
@@ -296,7 +296,7 @@ function  EditListItem({
 
         {/* Item Selected Table */}
        
-        <Table className="card bg-blue-50 border-b border-blue-600" >
+        <Table className="card bg-blue-50 border-b shadow-md" >
           <TableBody >
             <TableRow >
               <TableCell className='bg-transparent text-blue-700 border-b border-blue-600'>

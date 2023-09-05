@@ -10,12 +10,14 @@ import {
   ChevronDoubleRightIcon,
   ChevronDoubleLeftIcon
 } from '@heroicons/react/solid';
-import {useLocalStorageState} from './hooks/formHook';
+import { useLocalStorageState } from './hooks/formHook';
 import { handleBasicDetailsSubmit } from '../../controllers/facility/facilityHandlers';
 
 
 
-export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
+export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
+
+  const options = useContext(FormOptionsContext);
 
   // Constants
   const formFields = {
@@ -60,6 +62,15 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
     facility_checklist_document: "",
   };
 
+  // handle Edit staff
+
+  const facilityBasicDetails = {}
+
+  for (let item of Object.keys(formFields)) {
+    facilityBasicDetails[item] = (item.includes('nhif_accreditation') || item.includes('reporting_in_dhis') || item.includes('accredited_lab_iso_15189'))
+     ? `${options['18']?.data[item]}` : options['18']?.data[item];
+  }
+
   // State
   const [facilityTypeValue, setFacilityTypeValue] = useState(null);
   const [ownerTypeLabel, setOwnerTypeLabel] = useState(null);
@@ -69,12 +80,14 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
 
 
   const [initialValues, handleFormUpdate] = useLocalStorageState({
-    key: 'basic_details_form',
-    value: formFields 
+    key: options['18']?.data ? 'basic_details_edit_form' : 'basic_details_form',
+    value: options['18']?.data ? facilityBasicDetails : formFields
   }).actions.use();
 
 
-  const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+  // console.log({ facilityBasicDetails });
+
+  const formValues = options['18']?.data ? facilityBasicDetails : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields
 
   delete formValues['facility_checklist_document'];
 
@@ -87,7 +100,6 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
 
   // Context
   const [formId, setFormId] = useContext(FormContext);
-  const options = useContext(FormOptionsContext);
   const [____, setFacilityId] = useContext(FacilityIdContext);
 
 
@@ -145,13 +157,11 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
 
       let i = 0;
 
-      for ( i = 0 ; i < f_types.length; i++) {
+      for (i = 0; i < f_types.length; i++) {
         all_ftypes.push(options['0']?.facility_types.filter(({ sub_division }) => sub_division === f_types[i]))
       }
 
-      // if (facilityTypeRef.current !== null) {
 
-      // console.log(facilityTypeRef.current?.value)
       switch (facilityTypeValue) {
         // STAND ALONE 
         case '85f2099b-a2f8-49f4-9798-0cb48c0875ff':
@@ -206,7 +216,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
           break;
 
       }
-      // }
+
 
     }
 
@@ -223,16 +233,15 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
         'Non-Governmental Organizations',
         'Ministry of Health',
         'Faith Based Organization',
-     
+
       ]
 
 
-      // console.log(facilityTypeRef.current?.value)
       switch (ownerTypeLabel) {
         case own_types[0]:
           setFilteredOptions((prev) => ({
             ...prev,
-             ownerTypeOptions: [
+            ownerTypeOptions: [
               options['2']?.owners.filter(({ label }) => label == "Private Practice- Pharmacist")[0] || {},
               options['2']?.owners.filter(({ label }) => label == "Private Practice - Private Company")[0] || {},
               options['2']?.owners.filter(({ label }) => label == "Private Practice Lab Technician/Technologist")[0] || {},
@@ -278,7 +287,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
             ]
           }))
           break;
-        
+
 
       }
       // }
@@ -314,7 +323,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
     number_of_general_theatres: number({ required_error: "Number of General Theatres is required" }).min(0, 'Must be at least 0'),
     number_of_maternity_theatres: number({ required_error: "Number of Maternity Theatres is required" }).min(0, 'Must be at least 0'),
     admission_status: string({ required_error: "Facility admissions is required" }),
-    reporting_in_dhis: string({required_error: 'Reporting in DHIS is required'}),
+    reporting_in_dhis: string({ required_error: 'Reporting in DHIS is required' }),
     county_id: string({ required_error: "County is required" }).min(1),
     sub_county_id: string({ required_error: "Sub County is required" }).min(1),
     constituency_id: string({ required_error: "Constituency is required" }).min(1),
@@ -331,7 +340,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
   return (
     <Formik
       initialValues={formValues}
-      onSubmit={(values) => handleBasicDetailsSubmit( values, 'PATCH', formId, setFormId, checkListFileRef.current, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
+      onSubmit={(values) => handleBasicDetailsSubmit(values, 'PATCH', formId, setFormId, checkListFileRef.current, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
       validationSchema={toFormikValidationSchema(formSchema)}
       enableReinitialize
     >
@@ -359,25 +368,25 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
           }
 
           // Number of beds form rule
-          if(
+          if (
 
             formikState.values.number_of_inpatient_beds !== "" ||
             formikState.values.number_of_icu_beds !== "" ||
             formikState.values.number_of_hdu_beds !== "" ||
             formikState.values.number_of_emergency_casualty_beds !== ""
 
-            ){
+          ) {
 
-              formikState.values.number_of_beds = (Number(formikState.values.number_of_inpatient_beds) ?? 0) +
-                                              (Number(formikState.values.number_of_icu_beds) ?? 0) +
-                                              (Number(formikState.values.number_of_hdu_beds) ?? 0) +
-                                              (Number(formikState.values.number_of_maternity_beds) ?? 0) +
-                                              (Number(formikState.values.number_of_emergency_casualty_beds) ?? 0)
-            }
+            formikState.values.number_of_beds = (Number(formikState.values.number_of_inpatient_beds) ?? 0) +
+              (Number(formikState.values.number_of_icu_beds) ?? 0) +
+              (Number(formikState.values.number_of_hdu_beds) ?? 0) +
+              (Number(formikState.values.number_of_maternity_beds) ?? 0) +
+              (Number(formikState.values.number_of_emergency_casualty_beds) ?? 0)
+          }
 
           if (formikState.values.facility_type !== "") setFacilityTypeValue(formikState.values.facility_type)
           if (formikState.values.owner_type !== "") setOwnerTypeLabel(() => {
-            return options['3']?.owner_types?.find(({value}) => value === formikState.values.owner_type).label
+            return options['3']?.owner_types?.find(({ value }) => value === formikState.values.owner_type).label
           })
 
           // Facility type & Keph level form rule
@@ -444,8 +453,9 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
           }
 
           return (
+
             <Form name='basic_details_form'
-              className='flex flex-col w-full items-start justify-start gap-3'>
+              className='flex flex-col w-full mt-4 items-start bg-blue-50 shadow-md p-3 justify-start gap-3'>
 
               {/* Facility Official Name */}
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -462,7 +472,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
                   required
                   type='text'
                   name='official_name'
-                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-blue-50 p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.official_name && <span className='font-normal text-sm text-red-500 text-start'>{errors.official_name}</span>}
               </div>
@@ -1309,7 +1319,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
                     className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                   />
 
-                {errors.facility_checklist_document && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_checklist_document}</span>}
+                  {errors.facility_checklist_document && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_checklist_document}</span>}
 
                 </div>
               </div>
@@ -1334,6 +1344,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
               </div>
 
             </Form>
+
           )
         }
 

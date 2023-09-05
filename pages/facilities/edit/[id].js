@@ -1,13 +1,13 @@
-import { Form } from "../../../components/Forms/Form"
+import { EditForm } from "../../../components/Forms/EditForm"
 import { checkToken } from "../../../controllers/auth/auth";
 import MainLayout from '../../../components/MainLayout';
 import Link from "next/link";
 import Head from "next/head";
 import FacilitySideMenu from "../../../components/FacilitySideMenu";
-import {useState, useEffect, createContext} from 'react';
+import {useState, useEffect} from 'react';
+import { FormOptionsContext } from "../add";
 
 
-export const FormOptionsContext = createContext({});
 
 export default function EditFacility(props) {
 
@@ -18,9 +18,13 @@ export default function EditFacility(props) {
 	const [allFctsSelected, setAllFctsSelected] = useState(false);
 	const [title, setTitle] = useState('');
 	const [isClient, setIsClient] = useState(false)
+
+	
  
+	
 	useEffect(() => {
 	  setIsClient(true)
+
 	}, [])
 
 	if(isClient) {
@@ -44,7 +48,7 @@ export default function EditFacility(props) {
 
 							<div className={"col-span-5 flex justify-between w-full  border border-blue-600  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
 								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-									{'New Facility'}
+									{'Edit Facility'}
 								</h2>
 							</div>
 
@@ -61,7 +65,7 @@ export default function EditFacility(props) {
 
 
 						<FormOptionsContext.Provider value={props}>
-							<Form />
+							<EditForm />
 						</FormOptionsContext.Provider>
 					</div>
 				</MainLayout >
@@ -97,7 +101,9 @@ EditFacility.getInitialProps = async (ctx) => {
 		'regulation_status',
 		'services',
 		'infrastructure',
-		'specialities'
+		'specialities',
+		// 'collection_date',
+		'facility_data'
 	]
 
 
@@ -110,6 +116,8 @@ EditFacility.getInitialProps = async (ctx) => {
 
 				let token = t.token;
 				let url = '';
+
+
 
 
 				for (let i = 0; i < options.length; i++) {
@@ -483,9 +491,120 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 
-
 							break;
 
+						// case "collection_date":
+						// 	try {
+						// 		const response = await fetch(
+						// 		`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?facility=${ctx.query.id}&format=json`,
+						// 		{
+						// 			headers: {
+						// 				Authorization: 'Bearer ' + token,
+						// 				Accept: 'application/json',
+						// 			}
+						// 		}
+						// 		);
+				
+						// 		const [_result] = (await response.json()).results;
+				
+						// 		allOptions.push({
+						// 		collection_date: _result["collection_date"],
+						// 		});
+
+						// 	} catch (err) {
+						// 		console.log(`Error fetching ${option}: `, err);
+						// 		allOptions.push({
+						// 		error: true,
+						// 		err: err.message,
+						// 		collection_date: null,
+						// 		});
+						// 	}
+
+						case "facility_data":
+								try {
+								  const _data = await fetch(
+									`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/?format=json`,
+									{
+										headers: {
+											Authorization: 'Bearer ' + token,
+											Accept: 'application/json',
+										}
+									}
+								  
+									);
+				  
+								  allOptions.push({ data: await _data.json() });
+				  
+								  if (_data) {
+									try {
+									  const response = await fetch(
+										`${process.env.NEXT_PUBLIC_API_URL}/common/wards/${allOptions[18].data.ward}/?format=json`,
+										{
+											headers: {
+												Authorization: 'Bearer ' + token,
+												Accept: 'application/json',
+											}
+										}
+									  );
+				  
+									  const _data = await response.json();
+				  
+									  const [lng, lat] =
+										_data?.ward_boundary.properties.center.coordinates;
+				  
+									  allOptions.push({
+										geolocation: {
+										  geoJSON: JSON.parse(JSON.stringify(_data?.ward_boundary)),
+										  centerCoordinates: JSON.parse(
+											JSON.stringify([lat, lng])
+										  )
+										},
+									  });
+				  
+									  if (_data) {
+										try {
+										  const response = await fetch(
+											`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/?facility=${allOptions[18].data.id}/?format=json`,
+											{
+												headers: {
+													Authorization: 'Bearer ' + token,
+													Accept: 'application/json',
+												}
+											}
+										  );
+										  const _data = await response.json();
+				  
+										  allOptions.push({
+											facility_regulation_status: (await _data).results,
+										  });
+										} catch (err) {
+										  console.log(`Error fetching ${option}: `, err);
+										  allOptions.push({
+											error: true,
+											err: err.message,
+											facility_regulation_status: null,
+										  });
+										}
+									  }
+									} catch (err) {
+									  console.log(`Error fetching ${option}: `, err);
+									  allOptions.push({
+										error: true,
+										err: err.message,
+										geolocation: null,
+									  });
+									}
+								  }
+								} catch (err) {
+								  console.log(`Error fetching ${option}: `, err);
+								  allOptions.push({
+									error: true,
+									err: err.message,
+									data: null,
+								  });
+								}
+				  
+								break;
 						default:
 							let fields = ''
 							let _obj = {}

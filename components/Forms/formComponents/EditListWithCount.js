@@ -238,7 +238,7 @@ function EditListWithCount(
                 >
 
                     {/* Item List Dropdown */}
-                    <div className='w-full flex flex-col p-3 bg-blue-50 border border-blue-600 items-start justify-start gap-3 mb-3'>
+                    <div className='w-full flex flex-col p-3 bg-blue-50 shadow-md items-start justify-start gap-3 mb-3'>
                         {/* category */}
 
                         <label
@@ -373,7 +373,7 @@ function EditListWithCount(
 
                     {/* Item Selected Table */}
 
-                    <Table className="card bg-blue-50">
+                    <Table className="card bg-blue-50 shadow-md">
                         <TableBody>
 
                             <TableRow>

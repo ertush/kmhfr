@@ -150,7 +150,7 @@ export function RegulationForm() {
                   return (
                    <>
                         <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-                        <Form name="facility_regulation_form" className='flex flex-col w-full items-start bg-transparent border border-blue-600 p-4 justify-start gap-3' >
+                        <Form name="facility_regulation_form" className='flex flex-col w-full items-start bg-blue-50 shadow-md p-4 justify-start gap-3' >
 
                             {/* Regulatory Body */}
                             <div className="w-full flex flex-col background items-start justify-start gap-1 mb-3">
