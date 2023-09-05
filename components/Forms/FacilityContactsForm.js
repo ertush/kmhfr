@@ -30,6 +30,25 @@ export function FacilityContactsForm() {
     const contactTypeOptions = options['11']?.contact_types;
     const jobTitleOptions = options['10']?.job_titles;
 
+    const facilityContactsData = {}
+
+    facilityContactsData['officer_name'] = options['18']?.data.officer_in_charge?.name;
+    facilityContactsData['officer_reg_no'] = options['18']?.data.officer_in_charge?.reg_no;
+    facilityContactsData['officer_title'] = options['18']?.data.officer_in_charge?.title;
+
+
+    options['18']?.data.facility_contacts.forEach((contact, i) => {
+        facilityContactsData[`contact_${i}`] = contact.contact
+        facilityContactsData[`contact_type_${i}`] = contact.contact_id
+    })
+
+
+    options['18']?.data.officer_in_charge.contacts.forEach((contact, i) => {
+        facilityContactsData[`officer_details_contact_${i}`] = contact.contact
+        facilityContactsData[`officer_details_contact_type_${i}`] = contact.contact_id
+    })
+
+
     // State
     const [formId, setFormId] = useContext(FormContext);
     const[facilityId, _] = useContext(FacilityIdContext);
@@ -70,18 +89,17 @@ export function FacilityContactsForm() {
         
         vals['officer_in_charge'] = "";
         vals['officer_reg_no'] = "";
-    ""
 
         return vals
     }, [facilityContacts])
 
 
     const [initialValues, handleFormUpdate] = useLocalStorageState({
-        key: 'facility_contacts_form',
-        value: formFields
+        key: options['18']?.data ? 'facility_contacts_edit_form' : 'facility_contacts_form',
+        value: options['18']?.data ? facilityContactsData : formFields
       }).actions.use();
 
-  const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+  const formValues =  options['18']?.data ?  facilityContactsData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
     // Effects
 

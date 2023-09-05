@@ -19,9 +19,7 @@ export default function EditFacility(props) {
 	const [title, setTitle] = useState('');
 	const [isClient, setIsClient] = useState(false)
 
-	
- 
-	
+		
 	useEffect(() => {
 	  setIsClient(true)
 
@@ -116,9 +114,6 @@ EditFacility.getInitialProps = async (ctx) => {
 
 				let token = t.token;
 				let url = '';
-
-
-
 
 				for (let i = 0; i < options.length; i++) {
 					const option = options[i]
@@ -281,7 +276,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
 						case 'job_titles':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
 

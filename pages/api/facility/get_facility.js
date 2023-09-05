@@ -18,7 +18,6 @@ export default async function fetchFacilityData(req, res) {
         const access_token = token
 
         
-
         // Set url based on request
         switch (path) {
             case 'wards':
