@@ -34,6 +34,7 @@ function  EditListItem({
   setIsSavedChanges,
   setItemsUpdateData,
   setIsSaveAndFinish,
+  servicesData
 }) {
 
   const alert = useAlert()
@@ -84,13 +85,23 @@ function  EditListItem({
 
   })() : []))
 
+  const editService = servicesData.map(({service_name:name,  service_id:id}) => ({id, name}));
+
   const [savedItems, saveSelectedItems] = useLocalStorageState({
     key: 'services_form',
-    value: []
+    value:  servicesData ? editService : []
   }).actions.use();
 
+  const items =  typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
+
  
-  const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
+  // console.log({items})
+
+  // useEffect(() => {
+
+  // }, [items])
+
+ 
 
 // Effects
 
@@ -102,8 +113,14 @@ function  EditListItem({
   useEffect(() => {
     //store service when service is added
     if(selectedItems.length !== 0){
+      console.log({selectedItems, items})
+
+      const x = selectedItems;
+
+      if(editService[0].id === items[0].id) x.push(editService[0]);
+
       saveSelectedItems(
-        JSON.stringify(selectedItems)
+        JSON.stringify(x)
       );
     }
   }, [selectedItems])

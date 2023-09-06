@@ -13,16 +13,15 @@ import { FacilityIdContext } from './Form'
 // import {Formik, Field, Form} from 'formik'
 
 
-
 export function ServicesForm() {
     // Constants
     const[facilityId, _] = useContext(FacilityIdContext);
-
-
-    // Context
-    const options = useContext(FormOptionsContext);
     const [formId, setFormId] = useContext(FormContext);
+    const options = useContext(FormOptionsContext);
+    
 
+
+   
 
     //Options
     const serviceOptions = ((_services) => {
@@ -75,6 +74,7 @@ export function ServicesForm() {
                             previousItemCategory={'regulation'}
                             handleItemPrevious={handleServicePrevious}
                             setIsSaveAndFinish={() => null}
+                            servicesData={options['18']?.data ? options['18']?.data?.facility_services: null}
                             
 
 

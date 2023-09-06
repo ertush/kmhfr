@@ -32,23 +32,24 @@ export function FacilityContactsForm() {
 
     const facilityContactsData = {}
 
-    facilityContactsData['officer_name'] = options['18']?.data.officer_in_charge?.name;
-    facilityContactsData['officer_reg_no'] = options['18']?.data.officer_in_charge?.reg_no;
-    facilityContactsData['officer_title'] = options['18']?.data.officer_in_charge?.title;
+    facilityContactsData['officer_name'] = options['18']?.data?.officer_in_charge?.name;
+    facilityContactsData['officer_reg_no'] = options['18']?.data?.officer_in_charge?.reg_no;
+    facilityContactsData['officer_title'] = options['18']?.data?.officer_in_charge?.title;
 
 
-    options['18']?.data.facility_contacts.forEach((contact, i) => {
+    options['18']?.data?.facility_contacts?.forEach((contact, i) => {
         facilityContactsData[`contact_${i}`] = contact.contact
-        facilityContactsData[`contact_type_${i}`] = contact.contact_id
+        facilityContactsData[`contact_type_${i}`] = options['11']?.contact_types?.find(({label}) => label == contact?.contact_type_name)?.value;
     })
 
 
-    options['18']?.data.officer_in_charge.contacts.forEach((contact, i) => {
-        facilityContactsData[`officer_details_contact_${i}`] = contact.contact
-        facilityContactsData[`officer_details_contact_type_${i}`] = contact.contact_id
+    options['18']?.data?.officer_in_charge?.contacts?.forEach((contact, i) => {
+        facilityContactsData[`officer_details_contact_${i}`] = contact?.contact
+        facilityContactsData[`officer_details_contact_type_${i}`] = options['11']?.contact_types?.find(({label}) => label == contact?.contact_type_name)?.value;
     })
 
 
+    // console.log({facilityContactsData})
     // State
     const [formId, setFormId] = useContext(FormContext);
     const[facilityId, _] = useContext(FacilityIdContext);
@@ -107,11 +108,13 @@ export function FacilityContactsForm() {
         const contacts = [];
         const officerContacts = [];
 
-        const initialValueObj = typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
+        const initialValueObj = options['18']?.data ? facilityContactsData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
 
         // console.log({initialValues, initialValueObj})
-        const contactCount = Object.keys(initialValueObj).filter(x => x.match(/^"contact_[0-9]/)).length;
-        const officerContactCount = Object.keys(initialValueObj).filter(x => x.match(/^"officer_details_contact_[0-9]/)).length;
+        const contactCount = Object.keys(initialValueObj).filter(x => /^contact_\d/.test(x)).length;
+        const officerContactCount = Object.keys(initialValueObj).filter(x => x.match(/^officer_details_contact_[0-9]/)).length;
+
+        // console.log({initialValueObj, contactCount})
 
         if(contactCount > 1){
             for(let i = 0; i < contactCount; i++) {
@@ -120,7 +123,7 @@ export function FacilityContactsForm() {
                         <FacilityContact
                             contactTypeOptions={contactTypeOptions}
                             fieldNames={['contact_type', 'contact']}
-                            setFacilityContacts={() => null}
+                            setFacilityContacts={setFacilityContacts}
                             contacts={[null, null, null]}
                             index={i}
                         />
@@ -142,7 +145,7 @@ export function FacilityContactsForm() {
                             contactTypeOptions={contactTypeOptions}
                             fieldNames={['officer_details_contact_type', 'officer_details_contact']}
                             contacts={[null, null, null]}
-                            setFacilityContacts={() => null}
+                            setFacilityContacts={setOfficerContactDetails}
                             index={i}
                         />
                     </FacilityContactsContext.Provider>
@@ -216,7 +219,7 @@ export function FacilityContactsForm() {
 
                return ( 
                <>
-                <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+                <h4 className='text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
                     Facility Contact
                 </h4>
                 <Form

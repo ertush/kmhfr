@@ -105,7 +105,7 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
 
           return(
             <>
-            <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Geolocation</h4>
+            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Geolocation</h4>
             <Form
 
                 name='geolocation_form'

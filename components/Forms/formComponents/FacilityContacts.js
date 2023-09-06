@@ -142,6 +142,7 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
                     <button 
                     id={`delete-btn-${index}`}
                     onClick={ev => {
+                        console.log('delete...');
                         ev.preventDefault();
                         contactTypes.splice(index, 1);
                         delete contactTypes[index]
