@@ -75,7 +75,7 @@ export function HumanResourceForm() {
                         nextItemCategory={'finish'}
                         previousItemCategory={'infrastructure'}
                         setIsSaveAndFinish={() => null}
-                        itemData={options['18']?.data ? options['18']?.data?.facility_humanresources : null}
+                        itemData={options['19']?.data ? options['19']?.data?.facility_humanresources : null}
 
                     />
 

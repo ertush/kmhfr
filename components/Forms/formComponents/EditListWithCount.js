@@ -472,7 +472,7 @@ function EditListWithCount(
 
                                                 <button
                                                     type="button"
-                                                    disable={(items.length - 1) == __id ? true : false }
+                                                    disable={(items.length - 1) == __id ? false : true}
 
                                                     onClick={async (e) => {
                                                      if((items.length - 1) == __id) {

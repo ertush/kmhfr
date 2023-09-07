@@ -74,7 +74,7 @@ export function ServicesForm() {
                             previousItemCategory={'regulation'}
                             handleItemPrevious={handleServicePrevious}
                             setIsSaveAndFinish={() => null}
-                            servicesData={options['18']?.data ? options['18']?.data?.facility_services: null}
+                            servicesData={options['19']?.data ? options['19']?.data?.facility_services: null}
                             
                         /> 
 

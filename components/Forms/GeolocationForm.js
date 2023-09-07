@@ -22,6 +22,7 @@ import { FormOptionsContext } from '../../pages/facilities/add';
 )
 
 import { handleGeolocationSubmit } from '../../controllers/facility/facilityHandlers';
+import { collect } from 'underscore';
 
 
 const Map = memo(WardMap)
@@ -42,11 +43,11 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
 
   const facilityGeolocationData = {}
 
-  facilityGeolocationData['latitude'] = options['18']?.data?.lat_long[0];
-  facilityGeolocationData['longitude'] = options['18']?.data?.lat_long[1];
-  facilityGeolocationData['collection_date'] = options['19']?.collection_date 
+  facilityGeolocationData['latitude'] = options['19']?.data?.lat_long[0];
+  facilityGeolocationData['longitude'] = options['19']?.data?.lat_long[1];
+  facilityGeolocationData['collection_date'] = options['18']?.collection_date.split('T')
 
- 
+
 
     //Context
     const[facilityId, ____] = useContext(FacilityIdContext)
@@ -60,15 +61,15 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
     const [wardName, __] = useGeoData('ward_data');
     const [geoCenter, ___] = useGeoData('geo_data');
 
-    console.log({options})
+    console.log({facilityGeolocationData})
 
 
     const [initialValues, handleFormUpdate] = useLocalStorageState({
-        key: options['18']?.data ? 'geolocation_edit_form' : 'geolocation_form',
-        value: options['18']?.data ? facilityGeolocationData : formFields 
+        key: options['19']?.data ? 'geolocation_edit_form' : 'geolocation_form',
+        value: options['19']?.data ? facilityGeolocationData : formFields 
     }).actions.use();
 
-    const formValues = options['18']?.data ? facilityGeolocationData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+    const formValues = options['19']?.data ? facilityGeolocationData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
 
     // Form Schema
@@ -81,7 +82,6 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
     })
 
  
-
     const handleGeolocationPrevious = useCallback(() => {
         setFormId(`${parseInt(formId) - 1}`);
        
@@ -187,7 +187,8 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                             <Map markerCoordinates={[formikState.values?.latitude.length < 4 ? '0.000000' : formikState.values?.latitude, formikState.values?.longitude.length < 4 ? '0.000000' : formikState.values?.longitude]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
                             :
 
-                            <Alert severity="info" sx={{ width: '100%' }}>Loading...</Alert>
+                            // <Alert severity="info" sx={{ width: '100%' }}>Loading...</Alert>
+                            <h2>Title</h2>
                         }
                     </div>
                 </div>

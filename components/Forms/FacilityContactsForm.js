@@ -32,18 +32,18 @@ export function FacilityContactsForm() {
 
     const facilityContactsData = {}
 
-    facilityContactsData['officer_name'] = options['18']?.data?.officer_in_charge?.name;
-    facilityContactsData['officer_reg_no'] = options['18']?.data?.officer_in_charge?.reg_no;
-    facilityContactsData['officer_title'] = options['18']?.data?.officer_in_charge?.title;
+    facilityContactsData['officer_name'] = options['19']?.data?.officer_in_charge?.name;
+    facilityContactsData['officer_reg_no'] = options['19']?.data?.officer_in_charge?.reg_no;
+    facilityContactsData['officer_title'] = options['19']?.data?.officer_in_charge?.title;
 
 
-    options['18']?.data?.facility_contacts?.forEach((contact, i) => {
+    options['19']?.data?.facility_contacts?.forEach((contact, i) => {
         facilityContactsData[`contact_${i}`] = contact.contact
         facilityContactsData[`contact_type_${i}`] = options['11']?.contact_types?.find(({label}) => label == contact?.contact_type_name)?.value;
     })
 
 
-    options['18']?.data?.officer_in_charge?.contacts?.forEach((contact, i) => {
+    options['19']?.data?.officer_in_charge?.contacts?.forEach((contact, i) => {
         facilityContactsData[`officer_details_contact_${i}`] = contact?.contact
         facilityContactsData[`officer_details_contact_type_${i}`] = options['11']?.contact_types?.find(({label}) => label == contact?.contact_type_name)?.value;
     })
@@ -96,11 +96,11 @@ export function FacilityContactsForm() {
 
 
     const [initialValues, handleFormUpdate] = useLocalStorageState({
-        key: options['18']?.data ? 'facility_contacts_edit_form' : 'facility_contacts_form',
-        value: options['18']?.data ? facilityContactsData : formFields
+        key: options['19']?.data ? 'facility_contacts_edit_form' : 'facility_contacts_form',
+        value: options['19']?.data ? facilityContactsData : formFields
       }).actions.use();
 
-  const formValues =  options['18']?.data ?  facilityContactsData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+  const formValues =  options['19']?.data ?  facilityContactsData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
     // Effects
 
@@ -108,7 +108,7 @@ export function FacilityContactsForm() {
         const contacts = [];
         const officerContacts = [];
 
-        const initialValueObj = options['18']?.data ? facilityContactsData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
+        const initialValueObj = options['19']?.data ? facilityContactsData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
 
         // console.log({initialValues, initialValueObj})
         const contactCount = Object.keys(initialValueObj).filter(x => /^contact_\d/.test(x)).length;
@@ -126,6 +126,7 @@ export function FacilityContactsForm() {
                             setFacilityContacts={setFacilityContacts}
                             contacts={[null, null, null]}
                             index={i}
+                            length={contactCount.length}
                         />
                     </FacilityContactsContext.Provider>
                 ))())
@@ -147,6 +148,7 @@ export function FacilityContactsForm() {
                             contacts={[null, null, null]}
                             setFacilityContacts={setOfficerContactDetails}
                             index={i}
+                            length={officerContactCount.length}
                         />
                     </FacilityContactsContext.Provider>
                     ))()
@@ -284,6 +286,7 @@ export function FacilityContactsForm() {
                                                 contacts={[null, null, null]}
                                                 fieldNames={['contact_type', 'contact']}
                                                 index={(facilityContacts.length + 1) - 1}
+                                                length={facilityContacts.length}
                                             />
                                         </FacilityContactsContext.Provider>
                                     ))()
@@ -415,6 +418,7 @@ export function FacilityContactsForm() {
                                                         contacts={[null, null, null]}
                                                         fieldNames={['officer_details_contact_type', 'officer_details_contact']}
                                                         index={(officerContactDetails.length + 1) - 1}
+                                                        length={officerContactDetails.length}
 
                                                     />
                                                 </FacilityContactsContext.Provider>

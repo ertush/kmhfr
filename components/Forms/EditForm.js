@@ -27,22 +27,22 @@ export function EditForm() {
   // State
   const [geoJSON, setGeoJSON] = useLocalStorageState({
     key: 'geo_json',
-    value: options['19']?.geolocation?.geoJSON
+    value: options['20']?.geolocation?.geoJSON
   }).actions.use();
 
   const [wardName, setWardName] = useLocalStorageState({
     key: 'ward_name',
-    value: options['18']?.data?.ward_name
+    value: options['19']?.data?.ward_name
   }).actions.use();
 
   const [geoCenter, setGeoCenter] = useLocalStorageState({
     key: 'geo_center',
-    value: options['19']?.geolocation?.centerCoordinates
+    value: options['20']?.geolocation?.centerCoordinates
   }).actions.use();
 
   const [facilityId, setFacilityId] = useLocalStorageState({
     key: 'facility_id',
-    value: options['18']?.data?.id
+    value: options['19']?.data?.id
   }).actions.use();
 
 

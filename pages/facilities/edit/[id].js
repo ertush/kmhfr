@@ -100,7 +100,7 @@ EditFacility.getInitialProps = async (ctx) => {
 		'services',
 		'infrastructure',
 		'specialities',
-		// 'collection_date',
+		'collection_date',
 		'facility_data'
 	]
 
@@ -301,7 +301,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
 						case 'contact_types':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=id,name`;
 
@@ -327,8 +326,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
-
 						case 'facility_depts':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,regulatory_body,regulatory_body_name`;
 
@@ -354,7 +351,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
 						case 'regulating_bodies':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
 
@@ -380,7 +376,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
 						case 'regulation_status':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
 
@@ -406,7 +401,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
 						case 'services':
 
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
@@ -433,7 +427,6 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 
 							break;
-
 						case 'infrastructure':
 
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
@@ -460,7 +453,6 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 
 							break;
-
 						case 'specialities':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=2000&ordering=name`;
 
@@ -486,34 +478,34 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 
 							break;
+						case "collection_date":
+							try {
+								const response = await fetch(
+								`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?facility=${ctx.query.id}&format=json`,
+								{
+									headers: {
+										Authorization: 'Bearer ' + token,
+										Accept: 'application/json',
+									}
+								}
+								);
 
-						// case "collection_date":
-						// 	try {
-						// 		const response = await fetch(
-						// 		`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?facility=${ctx.query.id}&format=json`,
-						// 		{
-						// 			headers: {
-						// 				Authorization: 'Bearer ' + token,
-						// 				Accept: 'application/json',
-						// 			}
-						// 		}
-						// 		);
 				
-						// 		const [_result] = (await response.json()).results;
-				
-						// 		allOptions.push({
-						// 		collection_date: _result["collection_date"],
-						// 		});
+								const [_result] = (await response.json()).results;
 
-						// 	} catch (err) {
-						// 		console.log(`Error fetching ${option}: `, err);
-						// 		allOptions.push({
-						// 		error: true,
-						// 		err: err.message,
-						// 		collection_date: null,
-						// 		});
-						// 	}
+								allOptions.push({
+								collection_date: _result["collection_date"],
+								});
 
+							} catch (err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+								error: true,
+								err: err.message,
+								collection_date: null,
+								});
+							}
+							break;
 						case "facility_data":
 								try {
 								  const _data = await fetch(
@@ -532,7 +524,7 @@ EditFacility.getInitialProps = async (ctx) => {
 								  if (_data) {
 									try {
 									  const response = await fetch(
-										`${process.env.NEXT_PUBLIC_API_URL}/common/wards/${allOptions[18].data.ward}/?format=json`,
+										`${process.env.NEXT_PUBLIC_API_URL}/common/wards/${allOptions[19]?.data?.ward}/?format=json`,
 										{
 											headers: {
 												Authorization: 'Bearer ' + token,
@@ -558,7 +550,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									  if (_data) {
 										try {
 										  const response = await fetch(
-											`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/?facility=${allOptions[18].data.id}/?format=json`,
+											`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/?facility=${allOptions[19]?.data?.id}/?format=json`,
 											{
 												headers: {
 													Authorization: 'Bearer ' + token,

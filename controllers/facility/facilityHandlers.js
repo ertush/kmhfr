@@ -551,6 +551,8 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
 // handleBasicDetailsUpdate
 const handleBasicDetailsUpdates = async (formData, facility_id, alert) => {
 
+    // console.log({formData, facility_id})
+
     if (formData) {
         alert.success("Facility Basic Details successfully updated")
     } else {

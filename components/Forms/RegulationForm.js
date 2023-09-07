@@ -21,12 +21,12 @@ export function RegulationForm() {
 
     // Edit Stuff
     const facilityRequlationData = {};
-    facilityRequlationData['regulatory_body'] = options['18']?.data?.regulatory_body;
-    facilityRequlationData['regulation_status'] = options['18']?.data?.regulation_status;
-    facilityRequlationData['license_number'] = options['18']?.data?.license_number;
-    facilityRequlationData['registration_number'] = options['18']?.data?.registration_number;
+    facilityRequlationData['regulatory_body'] = options['19']?.data?.regulatory_body;
+    facilityRequlationData['regulation_status'] = options['19']?.data?.regulation_status;
+    facilityRequlationData['license_number'] = options['19']?.data?.license_number;
+    facilityRequlationData['registration_number'] = options['19']?.data?.registration_number;
 
-    options['18']?.data?.facility_units?.forEach((unit, i) => {
+    options['19']?.data?.facility_units?.forEach((unit, i) => {
         facilityRequlationData[`facility_unit_${i}`] = unit.unit
         facilityRequlationData[`facility_regulating_body_name_${i}`] = unit.regulating_body_name
         facilityRequlationData[`facility_license_number_${i}`] = unit.license_number
@@ -74,11 +74,11 @@ export function RegulationForm() {
     // State
     const [formId, setFormId] = useContext(FormContext);
     const [initialValues, handleFormUpdate] = useLocalStorageState({
-        key: options['18']?.data ? 'regulation_edit_form' : 'regulation_form',
-        value: options['18']?.data ? facilityRequlationData :  formFields
+        key: options['19']?.data ? 'regulation_edit_form' : 'regulation_form',
+        value: options['19']?.data ? facilityRequlationData :  formFields
       }).actions.use();
 
-    const formValues = options['18']?.data ? facilityRequlationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+    const formValues = options['19']?.data ? facilityRequlationData :  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
     delete formValues['license_document'];
 
 
@@ -129,7 +129,7 @@ export function RegulationForm() {
     useEffect(() => {
         const _units = [];
 
-        const initialValueObj = options['18']?.data ? facilityRequlationData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
+        const initialValueObj = options['19']?.data ? facilityRequlationData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
 
         const unitCount = Object.keys(initialValueObj).filter(x => /^facility_unit_\d/.test(x)).length;
 

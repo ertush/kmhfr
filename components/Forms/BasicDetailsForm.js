@@ -11,13 +11,17 @@ import {
   ChevronDoubleLeftIcon
 } from '@heroicons/react/solid';
 import { useLocalStorageState } from './hooks/formHook';
-import { handleBasicDetailsSubmit } from '../../controllers/facility/facilityHandlers';
+import { useAlert } from 'react-alert';
+import { handleBasicDetailsSubmit, handleBasicDetailsUpdates } from '../../controllers/facility/facilityHandlers';
 
 
 
 export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
   const options = useContext(FormOptionsContext);
+
+  const alert = useAlert();
+
 
   // Constants
   const formFields = {
@@ -68,7 +72,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
   for (let item of Object.keys(formFields)) {
     facilityBasicDetails[item] = (item.includes('nhif_accreditation') || item.includes('reporting_in_dhis') || item.includes('accredited_lab_iso_15189'))
-     ? `${options['18']?.data[item]}` : options['18']?.data[item];
+     ? `${options['19']?.data[item]}` : options['19']?.data[item];
   }
 
   // State
@@ -80,14 +84,14 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
 
   const [initialValues, handleFormUpdate] = useLocalStorageState({
-    key: options['18']?.data ? 'basic_details_edit_form' : 'basic_details_form',
-    value: options['18']?.data ? facilityBasicDetails : formFields
+    key: options['19']?.data ? 'basic_details_edit_form' : 'basic_details_form',
+    value: options['19']?.data ? facilityBasicDetails : formFields
   }).actions.use();
 
 
   // console.log({ facilityBasicDetails });
 
-  const formValues = options['18']?.data ? facilityBasicDetails : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields
+  const formValues = options['19']?.data ? facilityBasicDetails : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields
 
   delete formValues['facility_checklist_document'];
 
@@ -100,7 +104,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
   // Context
   const [formId, setFormId] = useContext(FormContext);
-  const [____, setFacilityId] = useContext(FacilityIdContext);
+  const [facilityId, setFacilityId] = useContext(FacilityIdContext);
 
 
   // Options
@@ -137,6 +141,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
     },
   ];
 
+ 
 
   // Effects
   useEffect(() => {
@@ -328,7 +333,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
     sub_county_id: string({ required_error: "Sub County is required" }).min(1),
     constituency_id: string({ required_error: "Constituency is required" }).min(1),
     ward: string({ required_error: "Ward is required" }).min(1),
-    facility_checklist_document: string({ required_error: "Checklist file upload is required" })
+    // facility_checklist_document: string({ required_error: "Checklist file upload is required" })
 
   });
 
@@ -340,7 +345,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   return (
     <Formik
       initialValues={formValues}
-      onSubmit={(values) => handleBasicDetailsSubmit(values, 'PATCH', formId, setFormId, checkListFileRef.current, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
+      onSubmit={(values) => options['19']?.data ? handleBasicDetailsUpdates(values, facilityId, alert) : handleBasicDetailsSubmit(values, 'PATCH', formId, setFormId, checkListFileRef.current, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
       validationSchema={toFormikValidationSchema(formSchema)}
       enableReinitialize
     >
@@ -1312,7 +1317,6 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   </label>
 
                   <Field
-                    required
                     type='file'
                     innerRef={checkListFileRef}
                     name='facility_checklist_document'
@@ -1326,6 +1330,22 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
 
               {/* Cancel & Geolocation */}
+              {
+                options['19']?.data  ? 
+
+                <div className='flex justify-end items-center w-full'>
+                  <button
+                    type='submit'
+                    className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                    <span className='text-medium font-semibold text-white'>
+                      Save & Finish
+                    </span>
+                    {/* <ChevronDoubleRightIcon className='w-4 h-4 text-white' /> */}
+                  </button>
+              </div>
+
+                :
+
               <div className='flex justify-between items-center w-full'>
                 <button className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
                   <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
@@ -1342,6 +1362,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
                 </button>
               </div>
+            }
 
             </Form>
 

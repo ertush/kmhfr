@@ -211,8 +211,6 @@ function  EditListItem({
 
                 // Reset Ref
                 if(itemRef.current !== null){
-
-                  console.log({itemRef})
                     itemRef.current?.clearValue()
                 }
 
@@ -369,7 +367,7 @@ function  EditListItem({
                       <button
                         type="button"
                         name="remove_item_btn"
-                        disable={(items.length - 1) == __id ? true : false }
+                        disable={(items.length - 1) == __id ? false : true }
                         onClick={async (e) => {
                         
                           if((items.length - 1) == __id) {

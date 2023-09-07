@@ -8,7 +8,7 @@ import  Select  from './FromikSelect'
 import { Field } from 'formik'
 
 
-const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldNames, contacts}) => {
+const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldNames, length, contacts}) => {
 
 
 
@@ -74,6 +74,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                     {/* Delete Btn */}
                     <button 
                     id={`delete-btn-${index}`}
+                    disabled={index ? true : false}
                     onClick={async ev => {
                         ev.preventDefault();
                  
@@ -88,8 +89,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                                 const resp = await fetch(`/api/common/submit_form_data/?path=delete_contact&id=${contactTypeRef?.current?.state?.value[0].id ?? null}`)
                                 if(resp.status == 204) alert.success('Deleted Facility Contact Successfully')
 
-                               
-                                
+                    
                                 }
                             }catch(e){
                                 console.error(e.message)
@@ -111,9 +111,6 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
 
 
     const contactTypes = useContext(FacilityContactsContext)
-
-    
-    // const [contact_type_name, contact, id] = contacts
 
 
     return (
