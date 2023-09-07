@@ -447,7 +447,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								allOptions.push({ infrastructure: (await _data.json()).results.map(({ id, name, category_name }) => ({ id, name, category_name })) })
+								allOptions.push({ infrastructure: (await _data.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category })) })
 
 							}
 							catch (err) {
@@ -473,7 +473,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								allOptions.push({ hr: (await _data.json()).results.map(({ id, name, category_name }) => ({ id, name, category_name })) })
+								allOptions.push({ hr: (await _data.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category })) })
 
 							}
 							catch (err) {

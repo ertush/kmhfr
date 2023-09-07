@@ -50,7 +50,7 @@ export function ServicesForm() {
     }, []);
 
     return <>
-                <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Services</h4>
+                <h4 className="text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Services</h4>
                 <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
                     {/* Edit list Container */}
@@ -76,8 +76,6 @@ export function ServicesForm() {
                             setIsSaveAndFinish={() => null}
                             servicesData={options['18']?.data ? options['18']?.data?.facility_services: null}
                             
-
-
                         /> 
 
                     </div>

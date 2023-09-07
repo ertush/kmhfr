@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
 import { useAlert } from 'react-alert'
@@ -85,23 +85,19 @@ function  EditListItem({
 
   })() : []))
 
-  const editService = servicesData.map(({service_name:name,  service_id:id}) => ({id, name}));
+  const editService = servicesData?.map(({service_name:name,  service_id:id}) => ({id, name}));
 
   const [savedItems, saveSelectedItems] = useLocalStorageState({
-    key: 'services_form',
+    key: servicesData ? 'services_edit_form' : 'services_form',
     value:  servicesData ? editService : []
   }).actions.use();
 
   const items =  typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
 
- 
-  // console.log({items})
+  // Refs
 
-  // useEffect(() => {
-
-  // }, [items])
-
- 
+  const itemRef = useRef(null);
+  
 
 // Effects
 
@@ -113,11 +109,13 @@ function  EditListItem({
   useEffect(() => {
     //store service when service is added
     if(selectedItems.length !== 0){
-      console.log({selectedItems, items})
+      let x = selectedItems;
 
-      const x = selectedItems;
+      if(editService && editService.length > 1) {
+        if(editService[0]?.id === items[0]?.id) x = [...x,...editService]
+      }
 
-      if(editService[0].id === items[0].id) x.push(editService[0]);
+      // setSelectedItems(x)
 
       saveSelectedItems(
         JSON.stringify(x)
@@ -211,6 +209,14 @@ function  EditListItem({
               className='flex w-full placeholder-gray-500 border border-blue-600 outline-none'
               onChange={(e) => {
 
+                // Reset Ref
+                if(itemRef.current !== null){
+
+                  console.log({itemRef})
+                    itemRef.current?.clearValue()
+                }
+
+
                 const _options = []
                 let _values = []
                 let _subCtgs = []
@@ -271,6 +277,7 @@ function  EditListItem({
             <Select
               options={itemsCategoryName !== 'CHU Services' ? itemOptions : null}
               formatGroupLabel={formatGroupLabel}
+              ref={itemRef}
               styles={{
                 control: (baseStyles) => ({
                   ...baseStyles,
@@ -362,7 +369,10 @@ function  EditListItem({
                       <button
                         type="button"
                         name="remove_item_btn"
+                        disable={(items.length - 1) == __id ? true : false }
                         onClick={async (e) => {
+                        
+                          if((items.length - 1) == __id) {
                           e.preventDefault()
                           let _items = items 
                           setDeletedItems([...deletedItems, _items.splice(__id, 1)])
@@ -373,9 +383,11 @@ function  EditListItem({
 
                           // Delete facility service
                           removeItemHandler(e, item_id, alert)
+                          }
+
 
                         }}
-                        className="flex items-center justify-center space-x-2 bg-red-400  p-1 px-2"
+                        className= {`flex ${(items.length - 1) == __id ? 'cursor-pointer' : 'cursor-not-allowed'}  items-center justify-center space-x-2 bg-red-400  p-1 px-2`}
                       >
                         <span className="text-medium font-semibold text-white">
                           Remove

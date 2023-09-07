@@ -57,8 +57,8 @@ const Facility = (props) => {
 
 
   const facility = props["0"]?.data;
-  const wardName = props["0"]?.data.ward_name;
-  const center = props["1"]?.geoLocation.center;
+  const wardName = props["0"]?.data?.ward_name;
+  const center = props["1"]?.geoLocation?.center;
   const geoLocationData = props["1"]?.geoLocation;
   const qf = props["3"]?.qf ?? '';
   // const {facility_updated_json } = props["2"]?.updates;
