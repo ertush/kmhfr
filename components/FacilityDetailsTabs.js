@@ -631,7 +631,7 @@ function FacilityDetailsTabs({ facility }) {
                   facility?.facility_specialists.map((hr) => (
                     <li
                       key={hr.id}
-                      className="w-full flex flex-row justify-between gap-2 myp-3 border-b border-gray-400"
+                      className="w-full flex flex-row justify-between gap-2 my-2 p-3 border-b border-gray-400"
                     >
                       <div>
                         <p className="text-gray-800 text-base">
