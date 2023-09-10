@@ -478,6 +478,34 @@ function Reports(props) {
                                     className="grow-1 tab-panel"
                                 >
 
+                                        {/* Human resource */}                                  
+                                    
+                                        <div style={{ height: 700, width: '100%', backgroundColor: '#eff6ff' }} className='shadow-md col-span-7'>
+                                        <StyledDataGrid
+                                            columns={propsToGridData(props, 11).columns}
+                                            rows={propsToGridData(props, 11)?.rows}
+                                            getRowClassName={() => `super-app-theme--Row`}
+                                            rowSpacingType="border"
+                                            showColumnRightBorder
+                                            showCellRightBorder
+                                            rowSelection={false}
+                                            getCellClassName={() => 'super-app-theme--Cell'}
+                                            slots={{
+                                                toolbar: () => (
+                                                    <GridToolbar
+                                                        sx={{
+                                                            flex: 1,
+                                                            display: 'flex',
+                                                            marginX: 'auto',
+                                                            gap: 5,
+                                                            padding: '0.45rem'
+                                                        }}
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </div>
+
                                 </Tabs.Panel>
                                 <Tabs.Panel
                                     value="geocodes"
@@ -722,7 +750,8 @@ Reports.getInitialProps = async (ctx) => {
         'chul_status_all_hierachies',
         'gis',
         'chul_services_all_hierachies',
-        'chul_count_all_hierachies'
+        'chul_count_all_hierachies',
+        'facility_human_resource_category_report_all_hierachies'
     ];
 
     const allReports = [];
@@ -897,6 +926,32 @@ Reports.getInitialProps = async (ctx) => {
                             }
     
                             break;
+                    case 'facility_human_resource_category_report_all_hierachies':
+                                url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
+        
+        
+                                try {
+        
+                                    const _data = await fetch(url, {
+                                        headers: {
+                                            Authorization: 'Bearer ' + token,
+                                            Accept: 'application/json',
+                                        },
+                                    })
+        
+                                    allReports.push({ facility_human_resource_category_report_all_hierachies: (await _data.json()).results })
+        
+                                }
+                                catch (err) {
+                                    console.log(`Error fetching ${report}: `, err);
+                                    allReports.push({
+                                        error: true,
+                                        err: err,
+                                        facility_human_resource_category_report_all_hierachies: [],
+                                    })
+                                }
+        
+                                break;
                     case 'facility_infrastructure_report_all_hierachies':
                                 url = `${process.env.NEXT_PUBLIC_API_URL}/reporting/?report_type=${report}`;
         

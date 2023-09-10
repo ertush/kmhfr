@@ -6,20 +6,22 @@ import {
     handleServiceSubmit,
     handleServiceUpdates
 } from '../../controllers/facility/facilityHandlers'
+import { FacilityIdContext } from './Form'
+
 
 
 // import {Formik, Field, Form} from 'formik'
 
 
-
 export function ServicesForm() {
     // Constants
-    const facilityId = '09990980'
-
-    // Context
-    const options = useContext(FormOptionsContext);
+    const[facilityId, _] = useContext(FacilityIdContext);
     const [formId, setFormId] = useContext(FormContext);
+    const options = useContext(FormOptionsContext);
+    
 
+
+   
 
     //Options
     const serviceOptions = ((_services) => {
@@ -48,7 +50,7 @@ export function ServicesForm() {
     }, []);
 
     return <>
-                <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Services</h4>
+                <h4 className="text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Services</h4>
                 <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
                     {/* Edit list Container */}
@@ -61,7 +63,7 @@ export function ServicesForm() {
                             setUpdatedItem={() => null}
                             itemId={facilityId}
                             setItems={setServices}
-                            item={null}
+                            item={options['19']?.data ?? null}
                             options={options['15']?.service}
                             removeItemHandler={() => null}
                             handleItemsSubmit={handleServiceSubmit}
@@ -72,9 +74,8 @@ export function ServicesForm() {
                             previousItemCategory={'regulation'}
                             handleItemPrevious={handleServicePrevious}
                             setIsSaveAndFinish={() => null}
+                            servicesData={options['19']?.data ? options['19']?.data?.facility_services: null}
                             
-
-
                         /> 
 
                     </div>

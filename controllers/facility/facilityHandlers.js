@@ -44,7 +44,6 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
     }
 
 
-
     // Add officer in charge to payload
     _payload['officer_in_charge'] = {
         name:'',
@@ -91,8 +90,6 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
 
             // Store facility Id to localstorage
 
-
-
             const formData = new FormData()
 
             if(fileRef !== null){
@@ -105,7 +102,6 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
     
             }
             
-    
             if(resp){
 
                 try {
@@ -135,8 +131,6 @@ const handleBasicDetailsSubmit = async (values, method, formId, setFormId, fileR
 
                         const _data = await response.json();
                         const ward_boundary = _data?.ward_boundary;
-
-                        // setFacilityCoordinates(_data.ward_boundary.geometry.coordinates)
                         setGeoJSON(ward_boundary)
                         const [lng, lat] = ward_boundary.properties.center.coordinates 
                         setGeoCenter([lat, lng])
@@ -205,11 +199,6 @@ const handleGeolocationSubmit = (values, stateSetters) => {
     geolocationData['latitude'] = Number(geolocationData.latitude)
     geolocationData['longitude'] = Number(geolocationData.longitude)
 
-    // setLongitude(geolocationData.longitude);
-    // setLatitude(geolocationData.latitude);
-
-
-    // Set missing geolocationData i.e coordinates & facility
 
     geolocationData['coordinates'] = {
         coordinates : [														
@@ -225,101 +214,76 @@ const handleGeolocationSubmit = (values, stateSetters) => {
     console.log({geo_payload: JSON.stringify(geolocationData).replace(',"":""','')})
 
 
-    // try{
-    //     fetch('/api/common/submit_form_data/?path=gis', {
-    //         headers:{
-    //             'Accept': 'application/json, text/plain, */*',
-    //             'Content-Type': 'application/json;charset=utf-8'
+    try{
+        fetch('/api/common/submit_form_data/?path=gis', {
+            headers:{
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json;charset=utf-8'
                 
-    //         },
-    //         method: 'POST',
-    //         body: JSON.stringify(geolocationData).replace(',"":""','')
-    //     })
-    // }
-    // catch(e){
-    //     console.error('Unable to post geolocation details')
-    // }
+            },
+            method: 'POST',
+            body: JSON.stringify(geolocationData).replace(',"":""','')
+        })
+    }
+    catch(e){
+        console.error('Unable to post geolocation details')
+    }
 
     setFormId(`${parseInt(formId) + 1}`);
 };
 
 // handleFacilityContactsSubmit
-const handleFacilityContactsSubmit = (event, stateSetters) => {
+const handleFacilityContactsSubmit = (values, stateSetters) => {
 
-    event.preventDefault();
     
-    const [setFormId, facilityId, facilityContactsFormRef] = stateSetters
+    const [formId, setFormId, facilityId] = stateSetters;
+
+    // console.log({values})
+
+     
+    const facilityContacts = []
+    const contactEntries = Object.entries(values).filter(arr => ((/^contact_[0-9]{1}/.test(arr[0])) || (/^contact_type_[0-9]{1}/.test(arr[0]))));
+    const contact_temp = contactEntries.filter(contact => /^contact_\d/.test(contact[0])).map(() => ({}))
+
+    contactEntries.forEach((contact, i) => {
+        
+        if(/^contact_[0-9]{1}/.test(contact[0])) contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact'] = contact[1];
+        if(/^contact_type_[0-9]{1}/.test(contact[0])) contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact_type'] = contact[1];
+
+        if(Object.keys(contact_temp[parseInt(contact[0].split('_').reverse()[0])]).length == 2) facilityContacts.push(contact_temp[parseInt(contact[0].split('_').reverse()[0])]);
+        
+    })
+
+
+    const officerContacts = []
+    const officerContactEntries = Object.entries(values).filter(arr => ((/^officer_details_contact_[0-9]{1}/.test(arr[0])) || (/^officer_details_contact_type_[0-9]{1}/.test(arr[0]))));
+    const officer_contact_temp = officerContactEntries.filter(contact => /^officer_details_contact_\d/.test(contact[0])).map(() => ({}))
+
+    officerContactEntries.forEach((contact, i) => {
+        
+        if(/^officer_details_contact_[0-9]{1}/.test(contact[0])) officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact'] = contact[1];
+        if(/^officer_details_contact_type_[0-9]{1}/.test(contact[0])) officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact_type'] = contact[1];
+
+        if(Object.keys(officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]).length == 2) officerContacts.push(officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]);
+        
+    })
+
+
+    const officerDetails = {contacts: officerContacts}
+
+    officerDetails['name'] = values.officer_name;   
+    officerDetails['reg_no'] = values.officer_reg_no;
+    officerDetails['title'] = values.officer_title;
+
+
     
-    const contactFormData = {};
+    const payload = {contacts: facilityContacts, officer_in_charge:officerDetails};
 
-    const formData = new FormData(facilityContactsFormRef.current)
 
-    const contactEntries = [...formData.entries()]
-
-    for (let i in contactEntries) contactFormData[contactEntries[i][0]] = contactEntries[i][1];
-
-    const facilityContacts = contactEntries.filter(field =>  !(field[0].match(/^officer_.+$/) !== null))
-
-    const facilityOfficerContacts = contactEntries.filter(field =>  field[0].match(/^officer_.+$/) !== null)
-
-    const payload = ((fContacts, oContacts) => {
-        
-
-        // Facility Regulation form data
-        const _payload = {}
+//    console.log({payload})
     
-        const fContactArrObjs = fContacts.filter(ar => ar[0] === 'contact').map(() => Object())
-
-        const oContactArrObjs = oContacts.filter(ar => ar[0] === 'officer_details_contact').map(() => Object())
-        
-        let p = 0; 
-
-        for( let i in fContacts){ 
-            fContactArrObjs[p][
-                fContacts[i][0]
-            ] = fContacts[i][1]; 
-
-            if(fContacts[i][0] == 'contact') { 
-                p+=1 
-            } 
-        }
-
-        
-        _payload['contacts'] = fContactArrObjs
-        
-
-        const officerIncharge = {}
-
-        let x = 0;
-
-        for(let i in oContacts){
-            
-            if(oContacts[i][0].match(/.*_details_.*/) !== null){
-                oContactArrObjs[x][
-                    oContacts[i][0].replace('officer_details_', '')
-                ] = oContacts[i][1];  
-            } else{
-                officerIncharge[oContacts[i][0].replace('officer_', '')] = oContacts[i][1]; 
-            }
-
-        if(oContacts[i][0] == 'officer_details_contact') { 
-            x+=1 
-        } 
-    }
-
-
-
-    officerIncharge['contacts'] = oContactArrObjs;
-
-    _payload['officer_in_charge'] = officerIncharge
-    
-
-        return _payload
-
-
-    })(facilityContacts, facilityOfficerContacts)
-
-    try{
+   
+    try{     
 
         fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
 
@@ -329,73 +293,61 @@ const handleFacilityContactsSubmit = (event, stateSetters) => {
                 
             },
             method: 'POST',
-            body: JSON.stringify(payload).replace(',"":""','')
+            body: JSON.stringify(payload)
         })
     }
     catch(e){
         console.error('Unable to patch facility contacts details', e.message)
     }
 
-    window.sessionStorage.setItem('formId', 3);
-
-    setFormId(window.sessionStorage.getItem('formId'));
+    setFormId(`${parseInt(formId) + 1}`);
 };
 
 // handleRegulationSubmit
-const handleRegulationSubmit = (event, stateSetters, file) => {
+const handleRegulationSubmit = (values, stateSetters, licenseFileRef) => {
 
-    event.preventDefault()
+    let facility_name = ''
 
-    const [setFormId, facilityId, facility_name, facilityRegulationFormRef] = stateSetters
+    if(window){
+        facility_name = JSON.parse(JSON.parse(window.localStorage.getItem('basic_details_form')))?.official_name
+    }
 
-    const formData = new FormData(facilityRegulationFormRef.current)
+    const [formId, setFormId, facilityId] = stateSetters
+
+
+    const {license_number, registration_number, regulation_status, regulatory_body} = values
    
-    const facilityDeptEntries = [...formData.entries()]
+    const facilityDeptEntries = Object.entries(values)
+    const facilityDetpUnits = []
+    const deptUnitsEntries = facilityDeptEntries.filter(field =>  /^facility_.+$/.test(field[0]))
+    const dept_units_temp = deptUnitsEntries.filter(unit => /^facility_unit_\d/.test(unit[0])).map(() => ({}))
 
-    const filteredDeptUnitEntries = facilityDeptEntries.filter(field =>  field[0].match(/^facility_.+$/) !== null)
+    deptUnitsEntries.forEach((unit, i) => {
+        
+        if(/^facility_unit_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['unit'] = unit[1];
+        if(/^facility_regulating_body_name_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['regulating_body_name'] = unit[1];
+        if(/^facility_license_number_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['license_number'] = unit[1];
+        if(/^facility_registration_number_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['registration_number'] = unit[1];
 
-    const filteredDeptOtherEntries = facilityDeptEntries.filter(field =>  !(field[0].match(/^facility_.+$/) !== null))
+        if(Object.keys(dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]).length == 4) facilityDetpUnits.push(dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]);
+        
+    })
 
-    const payload = ((unitEntries, otherEntries) => {
-     
+    const payload = [
+        {
+            license_number ,
+            registration_number,
+            regulation_status,
+            regulatory_body, 
+        },
 
-            // Facility Regulation form data
-            const _payload = []
-            const _otherEntObj = {}
-            
-            for (let e in otherEntries) _otherEntObj[otherEntries[e][0]] = otherEntries[e][1]
-
-            delete _otherEntObj.license_document;
-
-            _payload.push(_otherEntObj)
-
-             // Facility Dept Regulation
-
-             const _unitEntArrObjs = unitEntries.filter(ar => ar[0] === 'facility_unit').map(() => Object())
-
-             let p = 0; 
-
-             for( let i in unitEntries){ 
-                 // clean up the key by removing prefix facility_
-                _unitEntArrObjs[p][
-                    unitEntries[i][0].replace('facility_', '')
-                ] = unitEntries[i][1]; 
-
-                if(unitEntries[i][0] == 'facility_registration_number') { 
-                    p+=1 
-                } 
-            }
-
-            _payload.push({
-                units:_unitEntArrObjs
-            })
-            
-            return _payload
+        {
+            units:facilityDetpUnits
+        }
+    ]
 
 
-    })(filteredDeptUnitEntries, filteredDeptOtherEntries)
-
-    // console.log({payload}) // debug
+    // console.log({payload, facility_name}) // debug
 
 
     payload.forEach(data => {
@@ -414,11 +366,15 @@ const handleRegulationSubmit = (event, stateSetters, file) => {
                 .then(async resp => {
 
                     const formData = new FormData()
-                    formData.append('name', `${facility_name} Facility license File`)
-                    formData.append('description', 'Facilities license file')
-                    formData.append('document_type', 'FACILITY_LICENSE')
-                    formData.append('facility_name', facility_name)
-                    formData.append('fyl', file ?? undefined)
+
+                    if(licenseFileRef !== null) {
+                        formData.append('name', `${facility_name} Facility license File`)
+                        formData.append('description', 'Facilities license file')
+                        formData.append('document_type', 'FACILITY_LICENSE')
+                        formData.append('facility_name', facility_name)
+                        formData.append('fyl', licenseFileRef.files[0] ?? undefined)
+                    }
+
 
 
                     if (resp) {
@@ -448,11 +404,8 @@ const handleRegulationSubmit = (event, stateSetters, file) => {
     })
 
 
+    setFormId(`${parseInt(formId) + 1}`);
 
-
-    window.sessionStorage.setItem('formId', 4);
-
-    setFormId(window.sessionStorage.getItem('formId'));
 
 };
 
@@ -460,11 +413,10 @@ const handleRegulationSubmit = (event, stateSetters, file) => {
 // handleServiceSubmit
 const handleServiceSubmit = async (stateSetters, facilityId) => {
 
-    const [services, setFormId, formId, setServices] = stateSetters
-    const _payload = services.map(({ id }) => ({ service: id }))
+    const [services, formId, setFormId] = stateSetters
+    const _payload = JSON.parse(services).map(({ id }) => ({ service: id }))
 
-    console.log({_payload})
-
+   
     try {
         fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
             headers: {
@@ -481,26 +433,47 @@ const handleServiceSubmit = async (stateSetters, facilityId) => {
         console.error('Unable to submit facility services due to the following error: ', e.message)
     }
 
-    setFormId(`${parseInt(formId) + 1}`)
-    setServices([])
+    setFormId(`${parseInt(formId) + 1}`);
+    
+    // setServices([])
 
 }
 
 // handleInfrastructureSubmit
 const handleInfrastructureSubmit = (stateSetters, facilityId) => {
 
+    const [formData, vals, formId, setFormId] = stateSetters
 
-    const [formData, formId, setFormId, setSelectedItems, setIsFormSubmit, resetForm] = stateSetters
 
+    const _payload = JSON.parse(formData).map(({name, id}) => {
+        if(
+            name.includes("Main Grid") ||
+            name.includes("Gas") ||
+            name.includes("Bio-Gas") ||
+            // WATER SOURCE
+            name.includes("Roof Harvested Water") ||
+            name.includes("River / Dam / Lake") ||
+            name.includes("Donkey Cart / Vendor") ||
+            name.includes("Piped Water") ||
+            // MEDICAL WASTE MANAGEMENT
+            name.includes("Sewer systems") ||
+            name.includes("Dump without burning") ||
+            name.includes("Open burning") ||
+            name.includes("Remove offsite") ||
+            // ACCESS ROADS
+            name.includes("Tarmac") ||
+            name.includes("Earthen Road") ||
+            name.includes("Graded ( Murrum )") ||
+            name.includes("Gravel")
+        ){
+            return {infrastructure:id}
 
-    const _payload = Object.values(formData).map((count, i) =>
-    ({
-        infrastructure: Object.keys(formData)[i],
-        count
+        } else {
+            return {infrastructure:id, count: vals[id]}
+
+        }
     })
-    )
 
-   console.log({_payload})
 
     if (_payload) {
 
@@ -521,9 +494,7 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
         }
 
         setFormId(`${parseInt(formId) + 1}`)
-        setSelectedItems([])
-        resetForm()
-        setIsFormSubmit(true)
+       
 
 
     }
@@ -534,28 +505,13 @@ const handleInfrastructureSubmit = (stateSetters, facilityId) => {
 // handleHrSubmit
 const handleHrSubmit = (stateSetters, facilityId, alert) => {
 
-    const [formData, updateLocalStorage] = stateSetters // removed setFormId
+    const [savedVals, formVals] = stateSetters // removed setFormId
 
-
-
-    const _payload = Object.values(formData).map((count, i) =>
-    ({
-        speciality: Object.keys(formData)[i],
-        count
-    })
+    const _payload = JSON.parse(savedVals).map(({id}) => 
+        ({speciality:id, count: formVals[id]})
     )
 
     console.log({_payload})
-    updateLocalStorage()
-
-
-
-    if (facilityId && _payload) {
-        alert.success("Facility Created successfully")
-    } else {
-        alert.error("Unable to create facility")
-        
-    }
 
 
     try {
@@ -569,8 +525,7 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
             body: JSON.stringify({ specialities: _payload })
         })
         .then(res => {
-            // reset form
-            
+           
             if(res && facilityId) router.push(`/facilities/${facilityId}`)
         })
 
@@ -579,25 +534,24 @@ const handleHrSubmit = (stateSetters, facilityId, alert) => {
         console.error('Unable to submit facility human ReportsSideMenu  details', e.message)
     }
 
+     // reset form
+     if (res.ok && alert) {
+        alert.success("Facility Created successfully")
 
-    // Instead of resetting form to basic detils form redirect to facility details view
+        // Update local storage if successful
 
-    // window.sessionStorage.setItem('formId', 0)
-
-    // setFormId(window.sessionStorage.getItem('formId'))
-   
+    } else {
+        alert.error("Unable to create facility")
+        
+    }
 
 }
 
 
 // handleBasicDetailsUpdate
-const handleBasicDetailsUpdates = async (formData, facility_id, alert) => {
+const handleBasicDetailsUpdates = async (formData, facility_id, updatedSavedChanges, alert) => {
 
-    if (formData) {
-        alert.success("Facility Basic Details successfully updated")
-    } else {
-        alert.error("Unable to update facility geolocation data")
-    }
+    updatedSavedChanges(false);
 
     try {
         const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
@@ -620,13 +574,7 @@ const handleBasicDetailsUpdates = async (formData, facility_id, alert) => {
 }
 
 // handleGeolocationDataUpdate
-const handleGeolocationUpdates = async (formData, coordinates_id, alert) => {
-
-    if (formData) {
-        alert.success("Facility Geolocation successfully updated")
-    } else {
-        alert.error("Unable to update facility geolocation data")
-    }
+const handleGeolocationUpdates = async (formData, coordinates_id) => {
 
 
     try {
@@ -639,33 +587,70 @@ const handleGeolocationUpdates = async (formData, coordinates_id, alert) => {
             body: JSON.stringify(formData)
         })
 
-       
-
         return resp
-
+        // console.log({formData, coordinates_id})
     }
     catch (e) {
         console.error('Error msg:', e.message)
     }
+
+     if (formData) {
+        alert.success("Facility Geolocation successfully updated")
+    } else {
+        alert.error("Unable to update facility geolocation data")
+    }
 }
 
 // handleFacilityContactUpdates
-const handleFacilityContactsUpdates = async (formData, facility_id, alert) => {
-    if (formData) {
-        alert.success("Facility Contacts successfully updated")
-    } else {
-        alert.error("Unable to update facility contacts data")
-    }
+const handleFacilityContactsUpdates = async (values, facility_id) => {
+
+    const facilityContacts = []
+    const contactEntries = Object.entries(values).filter(arr => ((/^contact_[0-9]{1}/.test(arr[0])) || (/^contact_type_[0-9]{1}/.test(arr[0]))));
+    const contact_temp = contactEntries.filter(contact => /^contact_\d/.test(contact[0])).map(() => ({}))
+
+    contactEntries.forEach((contact, i) => {
+        
+        if(/^contact_[0-9]{1}/.test(contact[0])) contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact'] = contact[1];
+        if(/^contact_type_[0-9]{1}/.test(contact[0])) contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact_type'] = contact[1];
+
+        if(Object.keys(contact_temp[parseInt(contact[0].split('_').reverse()[0])]).length == 2) facilityContacts.push(contact_temp[parseInt(contact[0].split('_').reverse()[0])]);
+        
+    })
+
+
+    const officerContacts = []
+    const officerContactEntries = Object.entries(values).filter(arr => ((/^officer_details_contact_[0-9]{1}/.test(arr[0])) || (/^officer_details_contact_type_[0-9]{1}/.test(arr[0]))));
+    const officer_contact_temp = officerContactEntries.filter(contact => /^officer_details_contact_\d/.test(contact[0])).map(() => ({}))
+
+    officerContactEntries.forEach((contact, i) => {
+        
+        if(/^officer_details_contact_[0-9]{1}/.test(contact[0])) officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact'] = contact[1];
+        if(/^officer_details_contact_type_[0-9]{1}/.test(contact[0])) officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]['contact_type'] = contact[1];
+
+        if(Object.keys(officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]).length == 2) officerContacts.push(officer_contact_temp[parseInt(contact[0].split('_').reverse()[0])]);
+        
+    })
+
+
+    const officerDetails = {contacts: officerContacts}
+
+    officerDetails['name'] = values.officer_name;   
+    officerDetails['reg_no'] = values.officer_reg_no;
+    officerDetails['title'] = values.officer_title;
+
+
+    
+    const payload = {contacts: facilityContacts, officer_in_charge:officerDetails};
+    
 
     try {
         const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8;*/*'
             },
-            method: 'PATCH',
-            body: JSON.stringify(formData)
+            method: 'POST',
+            body: JSON.stringify(payload)
         })
-
 
 
         return resp
@@ -677,30 +662,117 @@ const handleFacilityContactsUpdates = async (formData, facility_id, alert) => {
 }
 
 // handleRegulationUpdate
-const handleRegulationUpdates = async (formData, facility_id, alert, alert_message) => {
-    if (formData) {
-        alert.success(alert_message)
-    } else {
-        alert.error("Unable to update facility regulation")
+const handleRegulationUpdates = async (values, facilityId, licenseFileRef) => {
+
+    let facility_name = ''
+
+    if(window){
+        facility_name = JSON.parse(JSON.parse(window.localStorage.getItem('basic_details_form')))?.official_name
     }
 
-    try {
-        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8;*/*'
-            },
-            method: 'POST',
-            body: JSON.stringify(formData)
-        })
+
+    const {license_number, registration_number, regulation_status, regulatory_body} = values
+   
+    const facilityDeptEntries = Object.entries(values)
+    const facilityDetpUnits = []
+    const deptUnitsEntries = facilityDeptEntries.filter(field =>  /^facility_.+$/.test(field[0]))
+    const dept_units_temp = deptUnitsEntries.filter(unit => /^facility_unit_\d/.test(unit[0])).map(() => ({}))
+
+    deptUnitsEntries.forEach((unit, i) => {
+        
+        if(/^facility_unit_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['unit'] = unit[1];
+        if(/^facility_regulating_body_name_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['regulating_body_name'] = unit[1];
+        if(/^facility_license_number_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['license_number'] = unit[1];
+        if(/^facility_registration_number_[0-9]{1}/.test(unit[0])) dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]['registration_number'] = unit[1];
+
+        if(Object.keys(dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]).length == 4) facilityDetpUnits.push(dept_units_temp[parseInt(unit[0].split('_').reverse()[0])]);
+        
+    })
+
+    const payload = [
+        {
+            license_number ,
+            registration_number,
+            regulation_status,
+            regulatory_body, 
+        },
+
+        {
+            units:facilityDetpUnits
+        }
+    ]
+
+    // console.log({values, facilityId, payload})
+    // if (formData) {
+    //     alert.success(alert_message)
+    // } else {
+    //     alert.error("Unable to update facility regulation")
+    // }
+
+    // try {
+    //     const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+    //         headers: {
+    //             'Content-Type': 'application/json;charset=utf-8;*/*'
+    //         },
+    //         method: 'POST',
+    //         body: JSON.stringify(payload)
+    //     })
 
 
 
-        return resp
+    //     return resp
 
-    }
-    catch (e) {
-        console.error('Error msg:', e.message)
-    }
+    // }
+    // catch (e) {
+    //     console.error('Error msg:', e.message)
+    // }
+    payload.forEach(data => {
+        try {
+            fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
+               
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+
+                // Post the license document
+                .then(async resp => {
+
+                    const formData = new FormData()
+
+                    if(licenseFileRef.files.length > 0) {
+                        formData.append('name', `${facility_name} Facility license File`)
+                        formData.append('description', 'Facilities license file')
+                        formData.append('document_type', 'FACILITY_LICENSE')
+                        formData.append('facility_name', facility_name)
+                        formData.append('fyl', licenseFileRef.files[0] ?? undefined)
+                    
+
+                    if (resp) {
+
+                        try {
+                            const resp = await fetch('/api/common/submit_form_data/?path=documents', {
+
+                                headers: {
+                                    'Accept': 'application/json, text/plain, */*',
+                                },
+                                method: 'POST',
+                                body: formData
+                            })
+
+                            return resp
+                        }
+                        catch (e) {
+                            console.error('Unable to Post License Document')
+                        }
+                    }
+                }
+                })
+
+        }
+        catch (e) {
+            console.error('Unable to patch facility contacts details', e.message)
+        }
+    })
 }
 
 // handleServiceUpdates
@@ -709,15 +781,17 @@ const handleServiceUpdates = async (stateSetters, alert) => {
 
     const [services, facilityId] = stateSetters
 
+    console.log({services})
+
     const _payload = services.length > 0 ? services.map(({ id }) => ({ service: id })) : { services: [{ service: null }] }
 
     try {
 
-        if (_payload) {
-            alert.success('Successfully updated facility services')
-        } else {
-            alert.error("Unable to update facility services")
-        }
+        // if (_payload) {
+        //     alert.success('Successfully updated facility services')
+        // } else {
+        //     alert.error("Unable to update facility services")
+        // }
 
         const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
             headers: {
@@ -725,7 +799,7 @@ const handleServiceUpdates = async (stateSetters, alert) => {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             method: 'POST',
-            body: JSON.stringify({ services: _payload })
+            body: JSON.stringify({ services: JSON.parse(_payload) })
         })
 
         return resp
@@ -905,7 +979,8 @@ const handleHrDelete = async (event, facility_hr_id, alert) => {
 const handleFacilityUpgrades = async (payload, alert) => {
 
   
-
+    console.log({payload});
+    
     try {
 
         if (Object.values(payload).indexOf(null) === -1) {
@@ -931,13 +1006,17 @@ const handleFacilityUpgrades = async (payload, alert) => {
     }
 }
 
-const handleRegulationSubmitUpdates = (event, stateSetters, file) => {
+const handleRegulationSubmitUpdates = (values, facilityId, file, formRef) => {
 
-    event.preventDefault()
+    
 
-    const [setFormId, facilityId, facility_name, facilityRegulationFormRef] = stateSetters
+    let facility_name = ''
 
-    const formData = new FormData(facilityRegulationFormRef.current)
+    if(window){
+        facility_name = JSON.parse(JSON.parse(window.localStorage.getItem('basic_details_form')))?.official_name
+    }
+
+    const formData = new FormData(formRef.current)
    
     const facilityDeptEntries = [...formData.entries()]
 
@@ -986,7 +1065,7 @@ const handleRegulationSubmitUpdates = (event, stateSetters, file) => {
 
 
 
-
+    console.log({payload})
 
     payload.forEach(data => {
         try {
@@ -1011,7 +1090,7 @@ const handleRegulationSubmitUpdates = (event, stateSetters, file) => {
                     formData.append('description', 'Facilities license file')
                     formData.append('document_type', 'FACILITY_LICENSE')
                     formData.append('facility_name', facility_name)
-                    formData.append('fyl', file ?? undefined)
+                    formData.append('fyl', file?.files[0] ?? undefined)
 
 
                     if (resp) {
@@ -1039,7 +1118,7 @@ const handleRegulationSubmitUpdates = (event, stateSetters, file) => {
 
         }
         catch (e) {
-            console.error('Unable to patch facility contacts details', e.message)
+            console.error('Unable to patch facility regulation updates', e.message)
         }
     })
 

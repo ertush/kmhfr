@@ -17,7 +17,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                         <>
                             {/* Facility Basic Details Updates */}
                             {
-                               facilityUpdatedJson?.basic && facilityUpdatedJson?.basic.length > 0 &&
+                            facilityUpdatedJson?.basic && facilityUpdatedJson?.basic.length > 0 &&
                                 <>
                                     <TableRow><h2 className='text-lg font-bold'>Facility Basic Details</h2></TableRow>
                                     <TableRow>
@@ -51,6 +51,49 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
                                         </TableCell>
                                     </TableRow>
                                 ))
+
+                            }
+
+                               {/* Facility Geolocation Updates */}
+                               {
+                                facilityUpdatedJson?.geo_codes && facilityUpdatedJson?.geo_codes?.coordinates?.coordinates.length > 0 &&
+                                <>
+                                    <TableRow><h2 className='text-lg font-bold'>Facility Geolocation</h2></TableRow>
+                                    <TableRow>
+                                        <TableCell>
+                                            <p className='text-base font-semibold'>Field</p>
+                                        </TableCell>
+                                        <TableCell className='text-xl font-semibold'>
+                                            <p className='text-base font-semibold'>Old Value</p>
+                                        </TableCell>
+                                        <TableCell className='text-xl font-semibold'>
+                                            <p className='text-base font-semibold'>New Value</p>
+                                        </TableCell>
+                                    </TableRow>
+                                </>
+
+                            }
+                            {
+
+                                facilityUpdatedJson?.geo_codes && facilityUpdatedJson?.geo_codes?.coordinates?.coordinates.length > 0 &&
+                                Object.keys(facilityUpdatedJson?.geo_codes).map((key, i) => {
+                                    
+                                    if(!key.includes('coordinates')) {
+                                   
+                                   return ( <TableRow key={i}>
+                                        <TableCell>
+                                            {key}
+                                        </TableCell>
+                                        <TableCell>
+                                            {originalData?.lat_long[i]}
+                                        </TableCell>
+                                        <TableCell>
+                                            {facilityUpdatedJson?.geo_codes[key]}
+                                        </TableCell>
+                                    </TableRow>
+                                   )
+                                }
+                                })
 
                             }
 
@@ -259,6 +302,7 @@ function FacilityUpdatesTable({ facilityUpdatedJson, originalData }) {
 
 
         </Table>
+        
     )
 }
 

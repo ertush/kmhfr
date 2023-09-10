@@ -3,7 +3,10 @@ import {useCallback, useState} from 'react';
 
 
 export const useLocalStorageState = ({ key, value }) => {
-	const parsedLocalStorage = JSON.parse(localStorage.getItem(key) || '{}');
+
+
+	const retrieved = localStorage.getItem(key) ?? '{}'
+	const parsedLocalStorage = JSON.parse(retrieved.includes('undefined') ? '{}' : retrieved ) 
 	const initialValue = Object.keys(parsedLocalStorage).length > 0 ? parsedLocalStorage : value;
 	const [localStorageState, setLocalStorageState] = useState(initialValue);
 
@@ -16,6 +19,9 @@ export const useLocalStorageState = ({ key, value }) => {
 	);
 
 	const resetLocalStorage = useCallback(() => {
+
+		// Reset locaalstorage
+		localStorage.clear()
 		// [
 		// 	'basic_details_form',
 		// 	'facility_contacts_form',
@@ -35,7 +41,7 @@ export const useLocalStorageState = ({ key, value }) => {
 		// 	}
 		// })
 
-		console.log("[>>>] Reseting form.....")
+		// console.log("[>>>] Reseting form.....")
 	},[])
 
 

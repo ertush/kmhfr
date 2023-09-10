@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
 import { defer } from 'underscore';
@@ -10,6 +10,7 @@ import {
 } from '@heroicons/react/solid';
 import { useAlert } from 'react-alert'
 import { useLocalStorageState } from '../hooks/formHook';
+
 
 function EditListWithCount(
     {
@@ -31,16 +32,14 @@ function EditListWithCount(
         previousItemCategory,
         setIsSaveAndFinish,
         categoryItems,
-        options
+        options,
+        itemData
     }
 ) {
 
     const alert = useAlert()
 
-
     const [isFormSubmit, setIsFormSubmit] = useState(false)
-
-
     const [currentItem, setCurrentItem] = useState(null)
     const [deletedItems, setDeletedItems] = useState([])
     const [itemOptions, setItemOptions] = useState([])
@@ -51,6 +50,7 @@ function EditListWithCount(
 
         if (initialSelectedItems.length > 0) {
             initialSelectedItems.map(({ subCategories, id, meta_id, count }) => {
+                        
                 result.push({ name: subCategories[0], id, meta_id, count })
 
             })
@@ -60,27 +60,48 @@ function EditListWithCount(
 
     })() : []))
 
+    const editItem = itemsCategoryName.includes('human resource') ? itemData?.map(({name, id, count}) => ({id, name, count})) : itemData?.map(({infrastructure_name:name,  infrastructure:id, count}) => ({id, name, count}));
+
     const [savedItems, saveSelectedItems] = useLocalStorageState({
-        key: `${itemsCategoryName}_form`,
-        value: []
+        key: itemData ? `${itemsCategoryName}_edit_form` :  `${itemsCategoryName}_form`,
+        value: itemData ? editItem : []
       }).actions.use();
 
-    const resetForms = useLocalStorageState({
-        key: `${itemsCategoryName}_form`,
-        value: []
-    }).actions.reset()
+    const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
+
+
+    // Reset local storage if HR form
+    // const resetForms = useLocalStorageState({
+    //     key: `${itemsCategoryName}_form`,
+    //     value: []
+    // }).actions.reset()
+
+
+
+    // Refs
+
+    const itemRef = useRef(null);
+    
+
 
     //Effects 
     useEffect(() => {
         //store service when service is added
         if(selectedItems.length !== 0){
+            // console.log(selectedItems)
+
+            const x = selectedItems;
+
+            if(editItem && editItem.length > 1){
+                if(editItem[0]?.id === items[0]?.id) x.push(editItem[0]);
+            }
+
           saveSelectedItems(
-            JSON.stringify(selectedItems)
+            JSON.stringify(x)
           );
         }
       }, [selectedItems]);
 
-    const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
 
     const initialValues = (() => {
         const _initValues = {}
@@ -147,8 +168,6 @@ function EditListWithCount(
             }))
         })(otherItemsCategory))
 
-
-
         return () => {
             setIsFormSubmit(false)
 
@@ -164,9 +183,10 @@ function EditListWithCount(
         <Formik
             initialValues={initialValues}
             initialErrors={false}
-            onSubmit={(values, { resetForm }) => {
+            onSubmit={(values) => { 
 
                 setIsSaveAndFinish(true)
+                // console.log({values})
 
                 if (item) {
 
@@ -218,7 +238,7 @@ function EditListWithCount(
                 }
 
                 else {
-                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([values, resetForms], itemId, alert) : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([values, nextItemCategoryId, setNextItemCategory, setSelectedItems, setIsFormSubmit, resetForm], itemId)
+                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([savedItems, values], itemId, alert) : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([savedItems, values, nextItemCategoryId, setNextItemCategory], itemId)
                         .catch(e => console.error('unable to submit item data. Error:', e.message))
                 }
 
@@ -233,7 +253,7 @@ function EditListWithCount(
                 >
 
                     {/* Item List Dropdown */}
-                    <div className='w-full flex flex-col p-3 bg-blue-50 border border-blue-600 items-start justify-start gap-3 mb-3'>
+                    <div className='w-full flex flex-col p-3 bg-blue-50 shadow-md items-start justify-start gap-3 mb-3'>
                         {/* category */}
 
                         <label
@@ -243,12 +263,19 @@ function EditListWithCount(
                         </label>
 
                         <div className="flex items-start gap-2 w-full h-auto">
-
+                   
                             <Select
 
                                 options={categoryItems}
                                 formatGroupLabel={formatGroupLabel}
                                 onChange={(e) => {
+
+
+                                    // Reset item category
+                                    if(itemRef.current !== null){
+                                        itemRef.current?.clearValue()
+                                    }
+
                                     const _options = []
                                     let _values = []
                                     let _subCtgs = []
@@ -322,6 +349,7 @@ function EditListWithCount(
                             <Select
 
                                 options={itemOptions}
+                                ref={itemRef}
                                 formatGroupLabel={formatGroupLabel}
                                 onChange={(e) => {
                                     setCurrentItem({ id: e?.value, name: e?.label, count: 1 })
@@ -347,6 +375,8 @@ function EditListWithCount(
                             <button className="bg-blue-700  p-2 flex items-center justify-evenly gap-2"
                                 onClick={e => {
                                     e.preventDefault()
+                               
+                                    // console.log({items})
 
                                     if (currentItem)
                                         setSelectedItems([
@@ -366,7 +396,7 @@ function EditListWithCount(
 
                     {/* Item Selected Table */}
 
-                    <Table className="card bg-blue-50">
+                    <Table className="card bg-blue-50 shadow-md">
                         <TableBody>
 
                             <TableRow>
@@ -431,6 +461,7 @@ function EditListWithCount(
                                                         type='number'
                                                         min={1}
                                                         name={id}
+                                                        defaultValue={itemData ? count : 0}
                                                         validate={validateCount}
                                                         className="flex-none w-24 bg-transparent border border-blue-600 p-2 placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none"
                                                     />
@@ -441,20 +472,22 @@ function EditListWithCount(
 
                                                 <button
                                                     type="button"
+                                                    disable={(items.length - 1) == __id ? false : true}
+
                                                     onClick={async (e) => {
+                                                     if((items.length - 1) == __id) {
+
                                                         e.preventDefault()
                                                         let _items = items
                                                         setDeletedItems([...deletedItems, _items.splice(__id, 1)])
                                                         
                                                         setSelectedItems(_items);
                                                         saveSelectedItems(_items);
-
-
-
                                                         removeItemHandler(e, meta_id, alert)
+                                                     }
 
                                                     }}
-                                                    className="flex items-center justify-center space-x-2 bg-red-400  p-1 px-2"
+                                                    className={`flex ${(items.length - 1) == __id ? 'cursor-pointer' : 'cursor-not-allowed'}  items-center justify-center space-x-2 bg-red-400  p-1 px-2`}
                                                 >
                                                     <span className="text-medium font-semibold text-white">
                                                         Remove

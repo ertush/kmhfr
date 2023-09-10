@@ -1,13 +1,17 @@
-import { Form } from "../../../components/Forms/Form"
+import { EditForm } from "../../../components/Forms/EditForm"
 import { checkToken } from "../../../controllers/auth/auth";
 import MainLayout from '../../../components/MainLayout';
 import Link from "next/link";
 import Head from "next/head";
 import FacilitySideMenu from "../../../components/FacilitySideMenu";
-import {useState, useEffect, createContext} from 'react';
+import { useState, useEffect, createContext } from 'react';
+import { FormOptionsContext } from "../add";
+import FacilityUpdatesTable from '../../../components/FacilityUpdatesTable'
+import { useRouter } from "next/router";
+import { useAlert } from "react-alert";
 
 
-export const FormOptionsContext = createContext({});
+export const FacilityUpdatesContext = createContext(null)
 
 export default function EditFacility(props) {
 
@@ -18,12 +22,31 @@ export default function EditFacility(props) {
 	const [allFctsSelected, setAllFctsSelected] = useState(false);
 	const [title, setTitle] = useState('');
 	const [isClient, setIsClient] = useState(false)
- 
+
+	const [facilityUpdateData, setFacilityUpdateData] = useState(null);
+	const [isSavedChanges, setIsSavedChanges] = useState(false);
+
+
+	const router = useRouter();
+	const alert = useAlert();
+
+	const { facility_updated_json } = facilityUpdateData ?? {
+		updated: new Date(),
+		updated_by: "",
+		facility_updated_json: [],
+		created_by_name: "",
+		code:null,
+		facilityId:null
+	  };
+
+
+
 	useEffect(() => {
-	  setIsClient(true)
+		setIsClient(true)
+
 	}, [])
 
-	if(isClient) {
+	if (isClient) {
 		return (
 			<>
 				<Head>
@@ -42,10 +65,12 @@ export default function EditFacility(props) {
 								</div>
 							</div>
 
-							<div className={"col-span-5 flex justify-between w-full  border border-blue-600  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
-								<h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
-									{'New Facility'}
+							<div className={"col-span-5 flex flex-col items-start w-full  border border-blue-600  text-black p-4 md:divide-x md:divide-gray-200z border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+								<h2  className='flex items-center text-xl font-bold text-black capitalize gap-2'>
+									Editing <span className="cursor-pointer hover:text-blue-800" onClick={() => router.push(`/facilities/${props['19']?.data?.id}`)}>{props['19']?.data?.official_name}</span> 
 								</h2>
+								<h3 className='text-blue-900 font-semibold '>{props['19']?.data?.facility_type_name ?? ''}</h3>
+								<h4 className='text-gray-700'>{`# ${props['19']?.data?.code ?? 'NO_CODE'}`}</h4>
 							</div>
 
 						</div>
@@ -60,9 +85,89 @@ export default function EditFacility(props) {
 						</div>
 
 
-						<FormOptionsContext.Provider value={props}>
-							<Form />
-						</FormOptionsContext.Provider>
+
+
+						{isSavedChanges && facilityUpdateData ? (
+							// Display Changes to be updated
+						<div className="md:col-span-4 bg-blue-50 p-3 shadow-md flex flex-col items-center md:gap-3 gap-y-3"> 
+
+							<div className="flex flex-col justify-start w-full space-y-3">
+								<h2 className="text-2xl font-bold justify-center items-center md:ml-0 ml-4">
+									Updated details
+								</h2>
+								{/* Update Metadata */}
+								<div className="grid grid-cols-1 gap-y-2 grid-rows-1 md:flex justify-between md:space-x-4 w-full md:mx-0 mx-4">
+									<p className="text-base font-normal flex items-center gap-x-1">
+										Updates were made on {" "}
+										<span className="text-blue-900 font-semibold text-base ">
+											{
+												new Date(facilityUpdateData?.updated)
+													.toLocaleString()
+													.split(",")[0]
+											}
+										</span>
+										{" "}
+										by
+										{" "}
+										<span className="text-blue-900 font-semibold text-base ">
+											{facilityUpdateData?.created_by_name}
+										</span>
+									</p>
+
+								    {
+										facilityUpdateData?.code &&
+									<p className="text-base font-normal flex gap-x-1 ">
+										Facility Code:
+										{" "}
+										<span className="text-blue-900 font-semibold text-base ">
+											{facilityUpdateData?.code}
+										</span>
+									</p>
+									}
+
+									<span className="flex space-x-2">
+										<button
+											className="flex justify-center text-base font-semibold text-white bg-blue-500  py-1 px-2"
+											onClick={() => router.push(`/facilities/edit/${facilityUpdateData?.id}`)}
+										>
+											Edit
+										</button>
+										<button
+											className="flex justify-center text-base font-semibold text-white bg-blue-500  py-1 px-2"
+											onClick={() => {
+												if (isSavedChanges) {
+													alert.success("Facility updates saved successfully")
+												} else {
+													alert.error("Unable to save facility updates")
+												}
+												router.push("/facilities")
+											}}
+										>
+											Confirm Updates
+										</button>
+									</span>
+								</div>
+
+								{/* Update Details */}
+
+								<FacilityUpdatesTable
+									facilityUpdatedJson={facility_updated_json}
+									originalData={props["19"]?.data}
+								/>
+							</div>
+							</div>
+						) : (
+
+							<FacilityUpdatesContext.Provider value={{
+								updatedSavedChanges:setIsSavedChanges,
+								updateFacilityUpdateData:setFacilityUpdateData
+							}} >
+								<FormOptionsContext.Provider value={props}>
+									<EditForm />
+								</FormOptionsContext.Provider>
+							</FacilityUpdatesContext.Provider>
+						)
+						}
 					</div>
 				</MainLayout >
 			</>
@@ -97,7 +202,9 @@ EditFacility.getInitialProps = async (ctx) => {
 		'regulation_status',
 		'services',
 		'infrastructure',
-		'specialities'
+		'specialities',
+		'collection_date',
+		'facility_data'
 	]
 
 
@@ -110,7 +217,6 @@ EditFacility.getInitialProps = async (ctx) => {
 
 				let token = t.token;
 				let url = '';
-
 
 				for (let i = 0; i < options.length; i++) {
 					const option = options[i]
@@ -273,7 +379,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
 						case 'job_titles':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
 
@@ -299,7 +404,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
 						case 'contact_types':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/common/${option}/?fields=id,name`;
 
@@ -325,8 +429,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
-
 						case 'facility_depts':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name,regulatory_body,regulatory_body_name`;
 
@@ -352,7 +454,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
 						case 'regulating_bodies':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?fields=id,name`;
 
@@ -378,7 +479,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
 						case 'regulation_status':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
 
@@ -404,7 +504,6 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 							break;
-
 						case 'services':
 
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&ordering=name`;
@@ -431,7 +530,6 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 
 							break;
-
 						case 'infrastructure':
 
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=100&page=1`;
@@ -445,7 +543,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								allOptions.push({ infrastructure: (await _data.json()).results.map(({ id, name, category_name }) => ({ id, name, category_name })) })
+								allOptions.push({ infrastructure: (await _data.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category })) })
 
 							}
 							catch (err) {
@@ -458,7 +556,6 @@ EditFacility.getInitialProps = async (ctx) => {
 							}
 
 							break;
-
 						case 'specialities':
 							url = `${process.env.NEXT_PUBLIC_API_URL}/facilities/${option}/?page_size=2000&ordering=name`;
 
@@ -471,7 +568,7 @@ EditFacility.getInitialProps = async (ctx) => {
 									}
 								})
 
-								allOptions.push({ hr: (await _data.json()).results.map(({ id, name, category_name }) => ({ id, name, category_name })) })
+								allOptions.push({ hr: (await _data.json()).results.map(({ id, name, category_name, category }) => ({ id, name, category_name, category })) })
 
 							}
 							catch (err) {
@@ -483,9 +580,120 @@ EditFacility.getInitialProps = async (ctx) => {
 								})
 							}
 
+							break;
+						case "collection_date":
+							try {
+								const response = await fetch(
+									`${process.env.NEXT_PUBLIC_API_URL}/gis/facility_coordinates/?facility=${ctx.query.id}&format=json`,
+									{
+										headers: {
+											Authorization: 'Bearer ' + token,
+											Accept: 'application/json',
+										}
+									}
+								);
+
+
+								const [_result] = (await response.json()).results;
+
+								allOptions.push({
+									collection_date: _result["collection_date"],
+								});
+
+							} catch (err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err.message,
+									collection_date: null,
+								});
+							}
+							break;
+						case "facility_data":
+							try {
+								const _data = await fetch(
+									`${process.env.NEXT_PUBLIC_API_URL}/facilities/facilities/${ctx.query.id}/?format=json`,
+									{
+										headers: {
+											Authorization: 'Bearer ' + token,
+											Accept: 'application/json',
+										}
+									}
+
+								);
+
+								allOptions.push({ data: await _data.json() });
+
+								if (_data) {
+									try {
+										const response = await fetch(
+											`${process.env.NEXT_PUBLIC_API_URL}/common/wards/${allOptions[19]?.data?.ward}/?format=json`,
+											{
+												headers: {
+													Authorization: 'Bearer ' + token,
+													Accept: 'application/json',
+												}
+											}
+										);
+
+										const _data = await response.json();
+
+										const [lng, lat] =
+											_data?.ward_boundary.properties.center.coordinates;
+
+										allOptions.push({
+											geolocation: {
+												geoJSON: JSON.parse(JSON.stringify(_data?.ward_boundary)),
+												centerCoordinates: JSON.parse(
+													JSON.stringify([lat, lng])
+												)
+											},
+										});
+
+										if (_data) {
+											try {
+												const response = await fetch(
+													`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_regulation_status/?facility=${allOptions[19]?.data?.id}/?format=json`,
+													{
+														headers: {
+															Authorization: 'Bearer ' + token,
+															Accept: 'application/json',
+														}
+													}
+												);
+												const _data = await response.json();
+
+												allOptions.push({
+													facility_regulation_status: (await _data).results,
+												});
+											} catch (err) {
+												console.log(`Error fetching ${option}: `, err);
+												allOptions.push({
+													error: true,
+													err: err.message,
+													facility_regulation_status: null,
+												});
+											}
+										}
+									} catch (err) {
+										console.log(`Error fetching ${option}: `, err);
+										allOptions.push({
+											error: true,
+											err: err.message,
+											geolocation: null,
+										});
+									}
+								}
+							} catch (err) {
+								console.log(`Error fetching ${option}: `, err);
+								allOptions.push({
+									error: true,
+									err: err.message,
+									data: null,
+								});
+							}
 
 							break;
-
 						default:
 							let fields = ''
 							let _obj = {}

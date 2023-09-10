@@ -2,6 +2,9 @@ import { useContext, useCallback} from 'react';
 import EditListWithCount from './formComponents/EditListWithCount';
 import { FormOptionsContext } from '../../pages/facilities/add';
 import { FormContext } from './Form';
+import { FacilityIdContext } from './Form'
+
+
 import {
     handleInfrastructureSubmit,
 } from '../../controllers/facility/facilityHandlers'
@@ -9,12 +12,13 @@ import {
 
 export function InfrastructureForm() {
 
-    // Constants
-    const facilityId = '09990980'
 
     // Context
     const options = useContext(FormOptionsContext);
     const [formId, setFormId] = useContext(FormContext);
+    const[facilityId, _] = useContext(FacilityIdContext);
+
+    
 
 
     //Options
@@ -43,7 +47,7 @@ export function InfrastructureForm() {
 
 
        return ( <>
-            <h4 className="text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
+            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Infrastracture</h4>
             <div className='flex flex-col w-full items-start justify-start gap-3 mt-6'>
 
                 {/* Edit List With Count Container*/}
@@ -69,6 +73,7 @@ export function InfrastructureForm() {
                         nextItemCategory={'human resource'}
                         previousItemCategory={'services'}
                         setIsSaveAndFinish={() => null}
+                        itemData={options['19']?.data ? options['19']?.data?.facility_infrastructure : null}
                     />
 
                 </div>

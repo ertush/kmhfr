@@ -61,7 +61,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                 />
 
             <div className="w-full col-start-2 flex items-center gap-x-3 justify-between">
-                    {/* Regulatory Body */}
+                    {/*facility  contact */}
                     <Field 
                     id={`facility-contact-detail-${index}`} 
                     type="text" 
@@ -78,25 +78,28 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                         ev.preventDefault();
                  
                         if(!contacts.includes(undefined)){
-                            const _contacts = contactTypes
-                            _contacts.splice(index, 1);
-                            delete _contacts[index]
-                            setFacilityContacts(_contacts);
+
+                       
+                            contactTypes.splice(index, 1);
+                            delete contactTypes[index]
+                            setFacilityContacts(contactTypes); 
 
                             try{
                                 if(contactTypeRef?.current) {
                                 const resp = await fetch(`/api/common/submit_form_data/?path=delete_contact&id=${contactTypeRef?.current?.state?.value[0].id ?? null}`)
                                 if(resp.status == 204) alert.success('Deleted Facility Contact Successfully')
 
-                               
-                                
+                    
                                 }
                             }catch(e){
                                 console.error(e.message)
                             }
                         }else{
-                            contacts.splice(index, 1);
-                            setFacilityContacts(contacts);
+                            // contacts.splice(index, 1);
+                            // setFacilityContacts(contacts);
+                            contactTypes.splice(index, 1);
+                            delete contactTypes[index]
+                            setFacilityContacts(contactTypes); 
                         }
 
                     }}
@@ -112,9 +115,6 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
 
     const contactTypes = useContext(FacilityContactsContext)
 
-    
-    // const [contact_type_name, contact, id] = contacts
-
 
     return (
         <div className="w-full grid grid-cols-2 grid-rows-1 gap-3 mt-3" id={`facility-dept-wrapper-${index}`}> 
@@ -129,7 +129,7 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
                  />
             
             <div className="w-full col-start-2 flex items-center gap-x-3 justify-between">
-                    {/* Regulatory Body */}
+                    {/* Officer contacts  */}
                     <Field 
                     id={`officer-contact-detail-${index}`} 
                     type="text" 
@@ -142,6 +142,7 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
                     <button 
                     id={`delete-btn-${index}`}
                     onClick={ev => {
+                        console.log('delete...');
                         ev.preventDefault();
                         contactTypes.splice(index, 1);
                         delete contactTypes[index]

@@ -22,8 +22,6 @@ import FacilitySideMenu from '../../components/FacilitySideMenu'
 import { UserContext } from '../../providers/user'
 
 
-// import { set } from 'nprogress'
-
 
 const Home = (props) => {
     
@@ -151,7 +149,12 @@ const Home = (props) => {
                                 <div className='flex items-center space-x-6 w-auto'>
                                     {/* Facility Button */}
                                     {
-                                        userCtx?.groups[0]?.id == 2 && // Display add facility button if  user belong to SCHRIO group
+                                        (
+                                            userCtx?.groups[0]?.id == 2 || // SCHRIO
+                                            userCtx?.groups[0]?.id == 7    // SuperAdmin
+                                            
+                                        ) &&
+                                         // Display add facility button if  user belong to SCHRIO group
                                    <Menu.Item as="div"  className="px-4 py-2 bg-blue-700 text-white text-md tracking-tighter font-semibold whitespace-nowrap  hover:bg-black focus:bg-black active:bg-black uppercase">
                                         <button  onClick={() => {router.push('/facilities/add')}} className='flex items-center justify-center'>
 
@@ -447,7 +450,7 @@ const Home = (props) => {
                                                     <div className="px-2 col-span-8 md:col-span-8 lg:col-span-6 flex flex-col group items-center justify-start text-left">
                                                         <h3 className="text-2xl font-semibold w-full">
                                                             <span onClick={() => router.push({pathname: `/facilities/${facility?.id}`, query: {qf: router.query.qf}})} className="cursor-pointer hover:text-blue-600 group-focus:text-blue-800 active:text-blue-800 " >
-                                                                {/* <small className="text-gray-500">{index + props?.data?.start_index}.</small>{' '}*/}{facility?.official_name || facility?.official_name || facility?.name} 
+                                                                {facility?.official_name || facility?.official_name || facility?.name} 
                                                             </span>
                                                         </h3>
                                                         
@@ -485,9 +488,9 @@ const Home = (props) => {
                                                         </div>
                                                     </div>
                                                     <div className="col-span-8 md:col-span-8 lg:col-span-2 grid grid-cols-2 grid-rows-4 gap-x-2 gap-y-1 text-lg">
-                                                        {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Operational</span> : ""}
-                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-blue-200 font-semibold text-black" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-gray-500 text-gray-50"}>{facility?.rejected ? "Rejected" : ""}</span>}
-                                                        {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-blue-200 font-semibold text-gray-900"}>Has edits</span> : ""}
+                                                        {(facility?.operational || facility?.operation_status_name) ? <span className={"shadow-sm col-start-2 leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 font-semibold text-blue-900"}>Operational</span> : ""}
+                                                        {!facility?.rejected ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2  py-1 px-2 " + (facility?.approved_national_level ? "bg-green-200 font-semibold text-green-900" : "bg-gray-500 font-semibold p-1 text-gray-50")}>{facility?.approved_national_level ? "Approved" : "Not approved"}</span> : <span className={"shadow-sm  col-start-2 leading-none whitespace-nowrap text-sm font-semibold py-1 px-2 bg-red-200 text-red-900"}>{facility?.rejected ? "Rejected" : ""}</span>}
+                                                        {facility?.has_edits ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm col-start-2 py-1 px-2 bg-yellow-200 font-semibold text-yellow-900"}>Has edits</span> : ""}
                                                     </div>
                                                 </div>
                                             ))
@@ -703,6 +706,7 @@ Home.getInitialProps = async (ctx) => {
 
     
 
+        console.log({url});
 
         return fetch(url, {
             headers: {

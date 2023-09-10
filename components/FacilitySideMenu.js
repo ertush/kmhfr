@@ -136,6 +136,8 @@ function FacilitySideMenu({ states, stateSetters, filters }) {
 
             if (filter_id === 'new_pending_validation') filter['is_complete'] = true;
 
+            if(filter_id.includes('incomplete')) filter['in_complete_details'] = false;
+
         }
 
 

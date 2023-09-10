@@ -149,13 +149,13 @@ export default async function submitFormData(req, res) {
                 break
             case 'basic_details_update':
                 url = `${API_URL}/facilities/facilities/${req.query.id}/`;
-                method = 'PATCH';
+                method = 'PATCH'; // PATCH
                 contentType = 'application/json;charset=utf-8';
                 break;
             case 'update_geolocation':
 
                 url = `${API_URL}/gis/facility_coordinates/${req.query.id}/`;
-                method = 'PATCH';
+                method = 'PUT'; // PATCH
                 contentType = 'application/json;charset=utf-8';
                 break;
             case `admin_offices`:
@@ -203,7 +203,6 @@ export default async function submitFormData(req, res) {
         }
 
         try {
-
             const resp = await fetch(url,
                 url.includes('common/documents') ?
                     {

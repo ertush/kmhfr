@@ -1,5 +1,5 @@
 
-import React, {useState, useRef} from 'react'
+import React, {useState, useEffect} from 'react'
 import MainLayout from '../../../components/MainLayout'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -14,6 +14,7 @@ import { useAlert } from 'react-alert'
 import { handleFacilityUpgrades } from '../../../controllers/facility/facilityHandlers'
 
 
+
 const Upgrade = props => {
 
     const alert = useAlert()
@@ -25,27 +26,60 @@ const Upgrade = props => {
     const [allFctsSelected, setAllFctsSelected] = useState(false);
     const [title, setTitle] = useState('');
     const [isFacilityServices, setIsFacilityServices] = useState(false);
+
     const filters = []
 
   
 
     const kephOptions =  props['0']?.kephOptions.sort((a, b) => a < b) 
+
+    // console.log( props['2']?.facilityData )
     const facilityServices =  props['1']?.services 
     const {
         id:facility_id,
-        keph_level,
+        keph_level_name,
         facility_type_name,
         official_name,
         code
-    } = props['2']?.facilityData
+    } = props['2']?.facilityData ?? {
+        id:null,
+        keph_level_name: null,
+        facility_type_name:null,
+        official_name:null,
+        code:null
+    }
+
+    const formFields = {
+        facility:"",
+        facility_type: "",
+        keph_level: "",
+        reason: ""
+
+    }
+
+    const facilityUpgradeData = {
+        facility:facility_id,
+        previous_facility_type: facility_type_name,
+        previous_keph: keph_level_name,
+        reason:""
+    }
+
     const facilityOptions = props['3']?.facilityTypes
     const levelChangeReasons = props['4']?.levelChangeReasons
 
-    const newkephLvlRef = useRef(null)
-    const facilityTypeRef = useRef(null)
-    const reasonTypeRef = useRef(null)
+
+    const formValues =  props['2']?.facilityData ? facilityUpgradeData : formFields;
 
 
+
+    const [isClient, setIsClient] = useState(false)
+ 
+	useEffect(() => {
+	  setIsClient(true)
+	}, [])
+
+
+    if(isClient){
     return (
         <>
         <Head>
@@ -53,7 +87,7 @@ const Upgrade = props => {
                <link rel="icon" href="/favicon.ico" />
         </Head>
        <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
-        <div className="w-full grid md:grid-cols-7 gap-4 px-1 border border-blue-600 md:px-4 py-2 my-1">
+        <div className="w-full grid md:grid-cols-7 gap-4 px-1 bg-transparent md:px-4 py-2 my-1">
                 {/* Header */}
                 <div className="md:col-span-7 flex flex-col gap-3 md:gap-5 bg-transparent">
                             <div className="flex flex-wrap items-center justify-between gap-2 text-sm md:text-base">
@@ -98,20 +132,16 @@ const Upgrade = props => {
                 {/* Facility Upgrade View */}
                 <div className='md:col-span-6 flex flex-col items-center gap-2'>
                     {/* Upgrade Form */}
-                    <Formik initialValues={{
-                        previous_keph: kephOptions.find(({value}) => value === keph_level).label,
-                        previous_facility_type: facility_type_name,
-                        
-                    }}
+                    <Formik initialValues={formValues}
 
                     onSubmit={
-                        async _ => {
+                         (values) => {
 
                             handleFacilityUpgrades({
-                                facility:facility_id,
-                                facility_type: facilityTypeRef.current.state.value.value ?? null,
-                                keph_level: newkephLvlRef.current.state.value.value ?? null,
-                                reason: reasonTypeRef.current.state.value.value ?? null
+                                facility:facility_id ?? '',
+                                facility_type: values.facility_type,
+                                keph_level: values.keph_level,
+                                reason: values.reason_upgrade
 
                             }, alert)   
                             .then(resp => {
@@ -122,75 +152,35 @@ const Upgrade = props => {
                         }
                     }
                     >
-                        <Form className='md:col-span-5 flex flex-col border border-blue-600 p-3 w-full justify-start items-start gap-2 md:mt-1'>
-                            {/* Previous KEPH Level */}
-                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                <label
-                                    htmlFor='collection_date'
-                                    className='text-gray-600 capitalize text-sm'>
-                                    Previous KEPH Level
-                                    <span className='text-medium leading-12 font-semibold'>
-                                        {' '}
-                                    </span>
-                                </label>
-                                <Field
-                                    type='text'
-                                    name='previous_keph'
-                                    disabled={true}
-                                    className='flex-none w-full bg-transparent border-blue-600 p-2 flex-grow border placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                />
-                            </div>
+                        {
+                        () => {
+                            
+   
 
-                            {/* New KEPH level */}
-                            <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">KEPH Level</label>
-                                <Select
-                                styles={{
-                                    control: (baseStyles) => ({
-                                        ...baseStyles,
-                                        backgroundColor: 'transparent',
-                                        outLine: 'none',
-                                        border: 'none',
-                                        outLine: 'none',
-                                        textColor: 'transparent',
-                                        padding: 0,
-                                        height: '4px'
-                                    }),
+                            return (
+                            <Form className='md:col-span-5 flex flex-col bg-blue-50 shadow-md p-3 w-full justify-start items-start gap-2 md:mt-1'>
+                                {/* Previous KEPH Level */}
+                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                    <label
+                                        htmlFor='collection_date'
+                                        className='text-gray-600 capitalize text-sm'>
+                                        Previous KEPH Level
+                                        <span className='text-medium leading-12 font-semibold'>
+                                            {' '}
+                                        </span>
+                                    </label>
+                                    <Field
+                                        type='text'
+                                        name='previous_keph'
+                                        disabled={true}
+                                        className='flex-none w-full bg-transparent border-blue-600 p-2 flex-grow border placeholder-gray-500  focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                    />
+                                </div>
 
-                                }} 
-                                ref={newkephLvlRef}
-                                options={kephOptions ?? []}   
-                                placeholder="Select a KEPH Level.."
-                                
-                                
-                                name="keph_level" 
-                                className='flex-none w-full flex-grow placeholder-gray-500 border border-blue-600 outline-none'/>
-                            </div>
-
-
-
-                            {/* Previous Facility Type */}
-                            <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
-                                <label
-                                    htmlFor='collection_date'
-                                    className='text-gray-600 capitalize text-sm'>
-                                    Previous Facility Type
-                                    <span className='text-medium leading-12 font-semibold'>
-                                        {' '}
-                                    </span>
-                                </label>
-                                <Field
-                                    type='text'
-                                    name='previous_facility_type'
-                                    disabled={true}
-                                    className='flex-none w-full bg-transparent border-blue-600 p-2 flex-grow border placeholder-gray-500 focus:shadow-none focus:bg-white focus:border-black outline-none'
-                                />
-                            </div>
-
-                            {/* New Facility Type */}
-                            <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Facility Type {" *"}</label>
-                                <Select
+                                {/* New KEPH level */}
+                                <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                    <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">KEPH Level</label>
+                                    <Select
                                     styles={{
                                         control: (baseStyles) => ({
                                             ...baseStyles,
@@ -203,105 +193,151 @@ const Upgrade = props => {
                                             height: '4px'
                                         }),
 
-                                    }}
-                                    ref={facilityTypeRef}
-                                    options={facilityOptions || []}
-                                    required
-                                    placeholder="Select a facility type..."
-                                    name="facility_type"   
-                                    className="flex-none w-full bg-transparent border border-blue-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
-                            </div>
-
-
-
-                            {/* Reason for Upgrade */}
-                            <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Reason for Upgrade {" *"}</label>
-                                <Select
-                                    styles={{
-                                        control: (baseStyles) => ({
-                                            ...baseStyles,
-                                            backgroundColor: 'transparent',
-                                            outLine: 'none',
-                                            border: 'none',
-                                            outLine: 'none',
-                                            textColor: 'transparent',
-                                            padding: 0,
-                                            height: '4px'
-                                        }),
-
-                                    }}
-                                    ref={reasonTypeRef}
-                                    options={levelChangeReasons || []}
-                                    required
-                                    placeholder="Select a reason"
-                                    name="reason_upgrade" 
-                                    className="flex-none w-full bg-transparent border border-blue-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                    }} 
+                                    options={kephOptions ?? []}   
+                                    placeholder="Select a KEPH Level.."
                                     
-                            </div>
+                                    
+                                    name="keph_level" 
+                                    className='flex-none w-full flex-grow placeholder-gray-500 border border-blue-600 outline-none'/>
+                                </div>
 
-                            {/* View Facility Services Button */}
-                            <button
-                                className="bg-blue-600 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md"
-                                onClick={() => {
-                                if (isFacilityServices) {
-                                    setIsFacilityServices(false);
-                                } else {
-                                    setIsFacilityServices(true);
+
+
+                                {/* Previous Facility Type */}
+                                <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+                                    <label
+                                        htmlFor='collection_date'
+                                        className='text-gray-600 capitalize text-sm'>
+                                        Previous Facility Type
+                                        <span className='text-medium leading-12 font-semibold'>
+                                            {' '}
+                                        </span>
+                                    </label>
+                                    <Field
+                                        type='text'
+                                        name='previous_facility_type'
+                                        disabled={true}
+                                        className='flex-none w-full bg-transparent border-blue-600 p-2 flex-grow border placeholder-gray-500 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                    />
+                                </div>
+
+                                {/* New Facility Type */}
+                                <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                    <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Facility Type {" *"}</label>
+                                    <Select
+                                        styles={{
+                                            control: (baseStyles) => ({
+                                                ...baseStyles,
+                                                backgroundColor: 'transparent',
+                                                outLine: 'none',
+                                                border: 'none',
+                                                outLine: 'none',
+                                                textColor: 'transparent',
+                                                padding: 0,
+                                                height: '4px'
+                                            }),
+
+                                        }}
+                                        options={facilityOptions || []}
+                                        required
+                                        placeholder="Select a facility type..."
+                                        name="facility_type"   
+                                        className="flex-none w-full bg-transparent border border-blue-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                </div>
+
+
+
+                                {/* Reason for Upgrade */}
+                                <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
+                                    <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Reason for Upgrade {" *"}</label>
+                                    <Select
+                                        styles={{
+                                            control: (baseStyles) => ({
+                                                ...baseStyles,
+                                                backgroundColor: 'transparent',
+                                                outLine: 'none',
+                                                border: 'none',
+                                                outLine: 'none',
+                                                textColor: 'transparent',
+                                                padding: 0,
+                                                height: '4px'
+                                            }),
+
+                                        }}
+                                        options={levelChangeReasons || []}
+                                        required
+                                        placeholder="Select a reason"
+                                        name="reason_upgrade" 
+                                        className="flex-none w-full bg-transparent border border-blue-600 flex-grow  placeholder-gray-500 focus:bg-white focus:border-gray-200 outline-none" />
+                                        
+                                </div>
+
+                                {/* View Facility Services Button */}
+                                <button
+                                    className="bg-blue-600 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md"
+                                    onClick={() => {
+                                    if (isFacilityServices) {
+                                        setIsFacilityServices(false);
+                                    } else {
+                                        setIsFacilityServices(true);
+                                    }
+                                    }}
+                                >
+                                    {isFacilityServices ? 'Show' :  'Hide'} Facility Services
+                                    {isFacilityServices ? (
+                                    <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
+                                    ) : (
+                                    <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" />
+                                    )}
+                                </button>
+
+                                {/* Facility Services Table */}
+                                {
+                                    !isFacilityServices && 
+
+                                    <Table>
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <p className='text-base font-semibold'>Name</p>
+                                                </TableCell>
+                                                <TableCell className='text-xl font-semibold'>
+                                                    <p className='text-base font-semibold'>Service Option</p>
+                                                </TableCell>
+                                            </TableRow>
+                                            {
+                                                facilityServices?.map(({service_name}, id) => (
+                                                    <TableRow key={id}>
+                                                        <TableCell>
+                                                            {service_name}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            Yes
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            }
+
+                                        </TableBody>
+                                    </Table>
+
+
                                 }
-                                }}
-                            >
-                                {isFacilityServices ? 'Show' :  'Hide'} Facility Services
-                                {isFacilityServices ? (
-                                <ChevronRightIcon className="text-white h-7 w-7 font-bold" />
-                                ) : (
-                                <ChevronDownIcon className="text-white h-7 w-7 text-base font-bold" />
-                                )}
-                            </button>
 
-                            {/* Facility Services Table */}
-                            {
-                                !isFacilityServices && 
+                                {/* Facility Upgrade Button */}
 
-                                <Table>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell>
-                                                <p className='text-base font-semibold'>Name</p>
-                                            </TableCell>
-                                            <TableCell className='text-xl font-semibold'>
-                                                <p className='text-base font-semibold'>Service Option</p>
-                                            </TableCell>
-                                        </TableRow>
-                                        {
-                                            facilityServices.map(({service_name}, id) => (
-                                                <TableRow key={id}>
-                                                    <TableCell>
-                                                        {service_name}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        Yes
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))
-                                        }
-
-                                    </TableBody>
-                                </Table>
+                                <button
+                                type="submit"
+                                className="bg-blue-600  mt-3 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md">
+                                Update Facility
+                                </button>
 
 
+                            </Form>
+                            )
                             }
-
-                            {/* Facility Upgrade Button */}
-
-                            <button
-                            type="submit"
-                            className="bg-blue-600  mt-3 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md">
-                            Update Facility
-                            </button>
-
-
-                        </Form>
+                        }
                     </Formik>
 
 
@@ -314,6 +350,10 @@ const Upgrade = props => {
         </MainLayout>
         </>
     )
+    }
+    else{
+        return null;
+    }
 }
 
 

@@ -1,15 +1,20 @@
-import { useContext, useState, useEffect, useCallback, memo } from 'react';
+import { useContext, useEffect, useCallback, useState, memo } from 'react';
 import { Formik, Field, Form } from 'formik'
 import { useLocalStorageState } from './hooks/formHook';
-import { toFormikValidationSchema } from "zod-formik-adapter";
+// import { toFormikValidationSchema } from "zod-formik-adapter";
 import { FacilityIdContext, FormContext } from './Form';
-import { object, string } from "zod";
+// import { object, string } from "zod";
+import { Alert } from '@mui/lab';
 import dynamic from 'next/dynamic';
 import {
     ChevronDoubleRightIcon,
     ChevronDoubleLeftIcon
   } from '@heroicons/react/solid';
-import Alert from '@mui/material/Alert';
+import { FormOptionsContext } from '../../pages/facilities/add';
+import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+import { defer } from "underscore";
+
+
 
   
   const WardMap = dynamic(
@@ -20,62 +25,174 @@ import Alert from '@mui/material/Alert';
 	}
 )
 
-import { handleGeolocationSubmit } from '../../controllers/facility/facilityHandlers';
+import { handleGeolocationSubmit, handleGeolocationUpdates } from '../../controllers/facility/facilityHandlers';
+
 
 
 const Map = memo(WardMap)
 
+const _ = require('underscore');
+
 
 export function GeolocationForm({useGeoJSON, useGeoData}) {
 
-    //Context
-    const[facilityId, ____] = useContext(FacilityIdContext)
-
-    // Constants
-    const formFields = {
+    const options = useContext(FormOptionsContext);
+     
+     // Constants
+     const formFields = {
         collection_date: "",
         latitude: "",
         longitude: ""
     }
 
+
+  const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+
+
+    // handle Edit staff
+
+  const facilityGeolocationData = {}
+
+  if(options['19']?.data?.lat_long){
+  facilityGeolocationData['latitude'] = options['19']?.data?.lat_long[0] ?? null
+  facilityGeolocationData['longitude'] =  options['19']?.data?.lat_long[1] ?? null
+  }else{
+    facilityGeolocationData['longitude'] = []
+    facilityGeolocationData['latitude'] = []
+  }
+
+  const coordinates_id = options['19']?.data?.coordinates;
+  const [responseError, setResponseError] = useState(null);
+  
+
+//   console.log({options})
+
+  facilityGeolocationData['collection_date'] = options['18']?.collection_date?.split('T')[0]
+
+
+
+    //Context
+    const[facilityId, ____] = useContext(FacilityIdContext)
+
+
+    
+   
     // State
     const [formId, setFormId] = useContext(FormContext);
-    const [geoJSON, _] = useGeoJSON();
-    const [wardName, __] = useGeoData('ward_data');
-    const [geoCenter, ___] = useGeoData('geo_data');
+    const [geoJSON, __] = useGeoJSON();
+    const [wardName, ___] = useGeoData('ward_data');
+    const [geoCenter, _____] = useGeoData('geo_data');
 
 
+    // console.log({facilityGeolocationData})
 
 
     const [initialValues, handleFormUpdate] = useLocalStorageState({
-        key: 'geolocation_form',
-        value: formFields
+        key: options['19']?.data ? 'geolocation_edit_form' : 'geolocation_form',
+        value: options['19']?.data ? facilityGeolocationData : formFields 
     }).actions.use();
 
-    const formValues = initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+    const formValues = options['19']?.data ? facilityGeolocationData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
+	
+
+    
 
     // Form Schema
-    const formSchema = object({
+    // const formSchema = object({
 
-        collection_date: string({ required_error: "Collection date is required" }),
-        latitude: string({ required_error: "Latitude is required" }),
-        longitude: string({ required_error: "Longitude is required" }),
+    //     collection_date: string({ invalid_type_error: "Collection must be a date" }),
+    //     latitude: string({ invalid_type_error: "Latitude must be a float number", }),
+    //     longitude: string({ invalid_type_error: "Longitude must be a float number" }),
 
-    })
+    // })
 
  
-
     const handleGeolocationPrevious = useCallback(() => {
         setFormId(`${parseInt(formId) - 1}`);
        
     }, [])
 
+    console.log({options})
+
     return (
         <Formik
             initialValues={formValues}
-            onSubmit={(values) => handleGeolocationSubmit(values, [formId, setFormId, facilityId])}
-            validationSchema={toFormikValidationSchema(formSchema)}
+            onSubmit={(values) => { options['19']?.data ? ((values, coordinates_id, facilityId) => {
+
+                const payload = {
+                    collection_date: (new Date(values.collection_date)).toISOString(),
+                    facility: facilityId,
+                    coordinates: {
+                      coordinates: [parseFloat(values.longitude), parseFloat(values.latitude)],
+                      type: "point",
+                    },
+                  }
+
+    
+                  handleGeolocationUpdates(payload, coordinates_id) 
+                  .then(({ statusText }) => {
+                    defer(() => updatedSavedChanges(true));
+                  
+                    if (statusText == "OK") {
+                        console.log({statusText})
+
+                      fetch(
+                        `/api/facility/get_facility/?path=facilities&id=${facilityId}`
+                      )
+                        .then(async (resp) => {
+                          const results = await resp.json();
+                        
+                          
+                           
+                          if (results?.latest_update) {
+
+                            try {
+                              const _facilityUpdateData = await (
+                                await fetch(
+                                  `/api/facility/get_facility/?path=facility_updates&id=${results?.latest_update}`
+                                )
+                              ).json();
+                              updateFacilityUpdateData(_facilityUpdateData);
+                            } catch (e) {
+                              console.error(
+                                "Encountered error while fetching facility update data",
+                                e.message
+                              );
+                            }
+                          }else{
+                            if(coordinates_id == null) {
+                              
+
+                             setResponseError(`Facility coordinates id is null`)
+
+                            }
+                            else{
+                             setResponseError('No updates found for this facility')
+
+                            }
+
+                          } 
+                        })
+                        .catch((e) =>
+                          console.error(
+                            "unable to fetch facility update data. Error:",
+                            e.message
+                          )
+                        );
+                    }
+                  })
+                  .catch((e) =>
+                    console.error(
+                      "unable to fetch facility data. Error:",
+                      e.message
+                    )
+                  );
+
+            })(values, coordinates_id, facilityId) 
+               :
+                handleGeolocationSubmit(values, [formId, setFormId, facilityId])}}
+            // validationSchema={toFormikValidationSchema(formSchema)}
             enableReinitialize
         >
         {
@@ -88,10 +205,16 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
           }, [formikState.values])
 
           return(
+            <>
+            {
+                responseError && 
+            <Alert severity="error" sx={{ width: '100%', marginTop:'16px' }}>{responseError}</Alert>
+            }
+            <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Geolocation</h4>
             <Form
 
                 name='geolocation_form'
-                className='flex flex-col w-full items-start bg-blue-50 p-4 border border-blue-600 justify-start gap-3'
+                className='flex flex-col w-full mt-4 items-start bg-blue-50 shadow-md p-3 justify-start gap-3'
             >
                 {/* Collection Date */}
                 <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -163,18 +286,33 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                     <div className='w-full bg-gray-200   flex flex-col items-start justify-center text-left relative'>
                         {/* { console.log({geoCenter, wardName, geoJSON})} */}
                         {
-                            (geoJSON && geoCenter && wardName &&
+                            (geoJSON?.properties && geoCenter && wardName &&
                             Object.keys(geoJSON).length > 2 && geoCenter.length > 1  && wardName.length > 1 ) 
                             ?
                             <Map markerCoordinates={[formikState.values?.latitude.length < 4 ? '0.000000' : formikState.values?.latitude, formikState.values?.longitude.length < 4 ? '0.000000' : formikState.values?.longitude]} geoJSON={geoJSON} ward={wardName} center={geoCenter} />
                             :
 
-                            <Alert severity="info" sx={{ width: '100%' }}>Loading...</Alert>
+                            <Alert severity="error" sx={{ width: '100%' }}>No Geolocation data</Alert>
+                      
                         }
                     </div>
                 </div>
 
-                {/* Next/Previous Form  */}
+             {/* Finish | Cancel & Geolocation */}
+              {
+                options['19']?.data  ? 
+
+                <div className='flex justify-end items-center w-full'>
+                  <button
+                    type='submit'
+                    className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                    <span className='text-medium font-semibold text-white'>
+                      Save & Finish
+                    </span>
+                  </button>
+              </div>
+                :
+                
                 <div className='flex justify-between items-center w-full'>
                     <button
                         onClick={handleGeolocationPrevious}
@@ -193,8 +331,10 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
                         <ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-blue-900 text-white' />
                     </button>
                 </div>
+                 }  
 
             </Form>
+            </>
           )
         }
         }

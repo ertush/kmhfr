@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 import { Table, TableBody, TableCell, TableRow } from '@mui/material';
 import Select from 'react-select'
 import { useAlert } from 'react-alert'
@@ -14,7 +14,7 @@ import {
 
 
 
-function EditListItem({
+function  EditListItem({
   initialSelectedItems,
   setItems,
   categoryItems,
@@ -34,6 +34,7 @@ function EditListItem({
   setIsSavedChanges,
   setItemsUpdateData,
   setIsSaveAndFinish,
+  servicesData
 }) {
 
   const alert = useAlert()
@@ -84,13 +85,19 @@ function EditListItem({
 
   })() : []))
 
+  const editService = servicesData?.map(({service_name:name,  service_id:id}) => ({id, name}));
+
   const [savedItems, saveSelectedItems] = useLocalStorageState({
-    key: 'services_form',
-    value: []
+    key: servicesData ? 'services_edit_form' : 'services_form',
+    value:  servicesData ? editService : []
   }).actions.use();
 
- 
-  const items = typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
+  const items =  typeof savedItems === 'string' && savedItems.length > 0 ? JSON.parse(savedItems) : savedItems;
+
+  // Refs
+
+  const itemRef = useRef(null);
+  
 
 // Effects
 
@@ -102,8 +109,16 @@ function EditListItem({
   useEffect(() => {
     //store service when service is added
     if(selectedItems.length !== 0){
+      let x = selectedItems;
+
+      if(editService && editService.length > 1) {
+        if(editService[0]?.id === items[0]?.id) x = [...x,...editService]
+      }
+
+      // setSelectedItems(x)
+
       saveSelectedItems(
-        JSON.stringify(selectedItems)
+        JSON.stringify(x)
       );
     }
   }, [selectedItems])
@@ -113,14 +128,14 @@ function EditListItem({
     <Formik
       initialValues={{}}
       initialErrors={false}
-      onSubmit={() => {
+      onSubmit={(values) => {
 
         setIsSaveAndFinish(true)
 
         if (item) {
-          handleItemsUpdate([selectedItems, itemId], alert)
+          handleItemsUpdate([savedItems, itemId], alert)
             .then(({ statusText }) => {
-              defer(() => setIsSavedChanges(true))
+              defer(() => setIsSavedChanges(true));
               let update_id
               if (statusText == 'OK') {
 
@@ -150,12 +165,12 @@ function EditListItem({
 
         else {
 
-          handleItemsSubmit([selectedItems, setNextItemCategory, nextItemCategoryId, setItems], itemId)
+          handleItemsSubmit([savedItems, nextItemCategoryId, setNextItemCategory], itemId)
             .catch(e => console.error('unable to submit item data. Error:', e.message))
         }
 
       }
-      }
+      } 
     >
       <Form
         name="list_item_form"
@@ -163,7 +178,7 @@ function EditListItem({
 
       >
         {/* Item List Dropdown */}
-        <div className='w-full flex flex-col items-start bg-blue-50 border border-blue-600 p-4 justify-start gap-1 mb-3'>
+        <div className='w-full flex flex-col items-start bg-blue-50 shadow-md p-4 justify-start gap-1 mb-3'>
           {/* Iten Category Dropdown */}
           {
           itemsCategoryName !== 'CHU Services' &&
@@ -193,6 +208,12 @@ function EditListItem({
               }}
               className='flex w-full placeholder-gray-500 border border-blue-600 outline-none'
               onChange={(e) => {
+
+                // Reset Ref
+                if(itemRef.current !== null){
+                    itemRef.current?.clearValue()
+                }
+
 
                 const _options = []
                 let _values = []
@@ -254,6 +275,7 @@ function EditListItem({
             <Select
               options={itemsCategoryName !== 'CHU Services' ? itemOptions : null}
               formatGroupLabel={formatGroupLabel}
+              ref={itemRef}
               styles={{
                 control: (baseStyles) => ({
                   ...baseStyles,
@@ -296,7 +318,7 @@ function EditListItem({
 
         {/* Item Selected Table */}
        
-        <Table className="card bg-blue-50 border-b border-blue-600" >
+        <Table className="card bg-blue-50 border-b shadow-md" >
           <TableBody >
             <TableRow >
               <TableCell className='bg-transparent text-blue-700 border-b border-blue-600'>
@@ -345,7 +367,10 @@ function EditListItem({
                       <button
                         type="button"
                         name="remove_item_btn"
+                        disable={(items.length - 1) == __id ? false : true }
                         onClick={async (e) => {
+                        
+                          if((items.length - 1) == __id) {
                           e.preventDefault()
                           let _items = items 
                           setDeletedItems([...deletedItems, _items.splice(__id, 1)])
@@ -356,9 +381,11 @@ function EditListItem({
 
                           // Delete facility service
                           removeItemHandler(e, item_id, alert)
+                          }
+
 
                         }}
-                        className="flex items-center justify-center space-x-2 bg-red-400  p-1 px-2"
+                        className= {`flex ${(items.length - 1) == __id ? 'cursor-pointer' : 'cursor-not-allowed'}  items-center justify-center space-x-2 bg-red-400  p-1 px-2`}
                       >
                         <span className="text-medium font-semibold text-white">
                           Remove
@@ -375,7 +402,7 @@ function EditListItem({
         {/* Save btn */}
 
         {
-          selectedItems.length > 0 && item !== null &&
+          savedItems.length > 0 && item !== null &&
 
           <div className=" w-full flex justify-end h-auto mr-3">
             <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save & finish</button>

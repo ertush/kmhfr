@@ -10,12 +10,20 @@ import {
   ChevronDoubleRightIcon,
   ChevronDoubleLeftIcon
 } from '@heroicons/react/solid';
-import {useLocalStorageState} from './hooks/formHook';
-import { handleBasicDetailsSubmit } from '../../controllers/facility/facilityHandlers';
+import { useLocalStorageState } from './hooks/formHook';
+import { useAlert } from 'react-alert';
+import { defer } from "underscore";
+import { handleBasicDetailsSubmit, handleBasicDetailsUpdates } from '../../controllers/facility/facilityHandlers';
+import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 
 
 
-export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
+export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
+
+  const options = useContext(FormOptionsContext);
+
+  const alert = useAlert();
+
 
   // Constants
   const formFields = {
@@ -60,6 +68,15 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
     facility_checklist_document: "",
   };
 
+  // handle Edit staff
+
+  const facilityBasicDetails = {}
+
+  for (let item of Object.keys(formFields)) {
+    facilityBasicDetails[item] = (item.includes('nhif_accreditation') || item.includes('reporting_in_dhis') || item.includes('accredited_lab_iso_15189'))
+     ? `${options['19']?.data[item]}` : options['19']?.data[item];
+  }
+
   // State
   const [facilityTypeValue, setFacilityTypeValue] = useState(null);
   const [ownerTypeLabel, setOwnerTypeLabel] = useState(null);
@@ -67,14 +84,22 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
   const [__, setWardName] = useGeoData('ward_data');
   const [___, setGeoCenter] = useGeoData('geo_data');
 
+  const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+
+  // Facility update data
+
+  
+
 
   const [initialValues, handleFormUpdate] = useLocalStorageState({
-    key: 'basic_details_form',
-    value: formFields 
+    key: options['19']?.data ? 'basic_details_edit_form' : 'basic_details_form',
+    value: options['19']?.data ? facilityBasicDetails : formFields
   }).actions.use();
 
 
-  const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+  // console.log({ facilityBasicDetails });
+
+  const formValues = options['19']?.data ? facilityBasicDetails : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields
 
   delete formValues['facility_checklist_document'];
 
@@ -87,8 +112,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
 
   // Context
   const [formId, setFormId] = useContext(FormContext);
-  const options = useContext(FormOptionsContext);
-  const [____, setFacilityId] = useContext(FacilityIdContext);
+  const [facilityId, setFacilityId] = useContext(FacilityIdContext);
 
 
   // Options
@@ -125,6 +149,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
     },
   ];
 
+ 
 
   // Effects
   useEffect(() => {
@@ -145,13 +170,11 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
 
       let i = 0;
 
-      for ( i = 0 ; i < f_types.length; i++) {
+      for (i = 0; i < f_types.length; i++) {
         all_ftypes.push(options['0']?.facility_types.filter(({ sub_division }) => sub_division === f_types[i]))
       }
 
-      // if (facilityTypeRef.current !== null) {
 
-      // console.log(facilityTypeRef.current?.value)
       switch (facilityTypeValue) {
         // STAND ALONE 
         case '85f2099b-a2f8-49f4-9798-0cb48c0875ff':
@@ -206,7 +229,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
           break;
 
       }
-      // }
+
 
     }
 
@@ -223,16 +246,15 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
         'Non-Governmental Organizations',
         'Ministry of Health',
         'Faith Based Organization',
-     
+
       ]
 
 
-      // console.log(facilityTypeRef.current?.value)
       switch (ownerTypeLabel) {
         case own_types[0]:
           setFilteredOptions((prev) => ({
             ...prev,
-             ownerTypeOptions: [
+            ownerTypeOptions: [
               options['2']?.owners.filter(({ label }) => label == "Private Practice- Pharmacist")[0] || {},
               options['2']?.owners.filter(({ label }) => label == "Private Practice - Private Company")[0] || {},
               options['2']?.owners.filter(({ label }) => label == "Private Practice Lab Technician/Technologist")[0] || {},
@@ -278,7 +300,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
             ]
           }))
           break;
-        
+
 
       }
       // }
@@ -314,12 +336,12 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
     number_of_general_theatres: number({ required_error: "Number of General Theatres is required" }).min(0, 'Must be at least 0'),
     number_of_maternity_theatres: number({ required_error: "Number of Maternity Theatres is required" }).min(0, 'Must be at least 0'),
     admission_status: string({ required_error: "Facility admissions is required" }),
-    reporting_in_dhis: string({required_error: 'Reporting in DHIS is required'}),
+    reporting_in_dhis: string({ required_error: 'Reporting in DHIS is required' }),
     county_id: string({ required_error: "County is required" }).min(1),
     sub_county_id: string({ required_error: "Sub County is required" }).min(1),
     constituency_id: string({ required_error: "Constituency is required" }).min(1),
     ward: string({ required_error: "Ward is required" }).min(1),
-    facility_checklist_document: string({ required_error: "Checklist file upload is required" })
+    // facility_checklist_document: string({ required_error: "Checklist file upload is required" })
 
   });
 
@@ -331,7 +353,57 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
   return (
     <Formik
       initialValues={formValues}
-      onSubmit={(values) => handleBasicDetailsSubmit( values, 'PATCH', formId, setFormId, checkListFileRef.current, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
+      onSubmit={(values) => options['19']?.data ? 
+      // Update existing facility
+      handleBasicDetailsUpdates(values, facilityId, updatedSavedChanges, alert)
+      .then(({  statusText }) => {
+        defer(() => updatedSavedChanges(true));
+ 
+        if (statusText == "OK") { 
+          fetch(
+            `/api/facility/get_facility/?path=facilities&id=${facilityId}`
+          )
+            .then(async (resp) => {
+              const results = await resp.json();
+
+              if (results?.latest_update) {
+                try {
+                  const _facilityUpdateData = await (
+                    await fetch(
+                      `/api/facility/get_facility/?path=facility_updates&id=${results?.latest_update}`
+                    )
+                  ).json();
+
+                  _facilityUpdateData['code'] = results?.code;
+                  _facilityUpdateData['facilityId'] = facilityId;
+
+                  updateFacilityUpdateData(_facilityUpdateData);
+                } catch (e) {
+                  console.error(
+                    "Encountered error while fetching facility update data",
+                    e.message
+                  );
+                }
+              }
+            })
+            .catch((e) =>
+              console.error(
+                "unable to fetch facility update data. Error:",
+                e.message
+              )
+            );
+        }
+      })
+      .catch((e) =>
+        console.error(
+          "unable to fetch facility data. Error:",
+          e.message
+        )
+      )
+        
+      : 
+      // Post new facility
+      handleBasicDetailsSubmit(values, 'PATCH', formId, setFormId, checkListFileRef.current, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
       validationSchema={toFormikValidationSchema(formSchema)}
       enableReinitialize
     >
@@ -359,25 +431,27 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
           }
 
           // Number of beds form rule
-          if(
+          if (
 
             formikState.values.number_of_inpatient_beds !== "" ||
             formikState.values.number_of_icu_beds !== "" ||
             formikState.values.number_of_hdu_beds !== "" ||
             formikState.values.number_of_emergency_casualty_beds !== ""
 
-            ){
+          ) {
 
-              formikState.values.number_of_beds = (Number(formikState.values.number_of_inpatient_beds) ?? 0) +
-                                              (Number(formikState.values.number_of_icu_beds) ?? 0) +
-                                              (Number(formikState.values.number_of_hdu_beds) ?? 0) +
-                                              (Number(formikState.values.number_of_maternity_beds) ?? 0) +
-                                              (Number(formikState.values.number_of_emergency_casualty_beds) ?? 0)
-            }
+            formikState.values.number_of_beds = (Number(formikState.values.number_of_inpatient_beds) ?? 0) +
+              (Number(formikState.values.number_of_icu_beds) ?? 0) +
+              (Number(formikState.values.number_of_hdu_beds) ?? 0) +
+              (Number(formikState.values.number_of_maternity_beds) ?? 0) +
+              (Number(formikState.values.number_of_emergency_casualty_beds) ?? 0)
+          }
 
           if (formikState.values.facility_type !== "") setFacilityTypeValue(formikState.values.facility_type)
-          if (formikState.values.owner_type !== "") setOwnerTypeLabel(() => {
-            return options['3']?.owner_types?.find(({value}) => value === formikState.values.owner_type).label
+
+          // console.log(options['3']?.owner_types)
+          if (formikState.values.owner_type !== "" && options['3']?.owner_types ) setOwnerTypeLabel(() => {
+            return options['3']?.owner_types?.filter(({ value }) => value === formikState.values.owner_type)[0]?.label
           })
 
           // Facility type & Keph level form rule
@@ -444,8 +518,9 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
           }
 
           return (
+
             <Form name='basic_details_form'
-              className='flex flex-col w-full items-start justify-start gap-3'>
+              className='flex flex-col w-full mt-4 items-start bg-blue-50 shadow-md p-3 justify-start gap-3'>
 
               {/* Facility Official Name */}
               <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
@@ -462,7 +537,7 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
                   required
                   type='text'
                   name='official_name'
-                  className='flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
+                  className='flex-none w-full bg-blue-50 p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                 />
                 {errors.official_name && <span className='font-normal text-sm text-red-500 text-start'>{errors.official_name}</span>}
               </div>
@@ -1302,20 +1377,35 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
                   </label>
 
                   <Field
-                    required
                     type='file'
                     innerRef={checkListFileRef}
                     name='facility_checklist_document'
                     className='flex-none w-full bg-transparent  p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none'
                   />
 
-                {errors.facility_checklist_document && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_checklist_document}</span>}
+                  {errors.facility_checklist_document && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_checklist_document}</span>}
 
                 </div>
               </div>
 
 
               {/* Cancel & Geolocation */}
+              {
+                options['19']?.data  ? 
+
+                <div className='flex justify-end items-center w-full'>
+                  <button
+                    type='submit'
+                    className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                    <span className='text-medium font-semibold text-white'>
+                      Save & Finish
+                    </span>
+                    {/* <ChevronDoubleRightIcon className='w-4 h-4 text-white' /> */}
+                  </button>
+              </div>
+
+                :
+
               <div className='flex justify-between items-center w-full'>
                 <button className='flex items-center justify-start space-x-2 p-1 border border-blue-900  px-2'>
                   <ChevronDoubleLeftIcon className='w-4 h-4 text-blue-900' />
@@ -1332,8 +1422,10 @@ export function BasicDeatilsForm({useGeoJSON, useGeoData}) {
                   <ChevronDoubleRightIcon className='w-4 h-4 text-white' />
                 </button>
               </div>
+            }
 
             </Form>
+
           )
         }
 

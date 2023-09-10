@@ -10,6 +10,15 @@ import {useLocalStorageState} from './hooks/formHook';
 import { object, string } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
+import {
+    handleFacilityContactsSubmit, 
+    handleFacilityContactsUpdates
+} from '../../controllers/facility/facilityHandlers';
+import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+import { FacilityIdContext } from './Form'
+import { defer } from 'underscore';
+import { Alert } from "@mui/lab";
+
 
 
 export const FacilityDeptContext = createContext(null)
@@ -25,8 +34,35 @@ export function FacilityContactsForm() {
     const contactTypeOptions = options['11']?.contact_types;
     const jobTitleOptions = options['10']?.job_titles;
 
+    const facilityContactsData = {}
+
+    facilityContactsData['officer_name'] = options['19']?.data?.officer_in_charge?.name;
+    facilityContactsData['officer_reg_no'] = options['19']?.data?.officer_in_charge?.reg_no;
+    facilityContactsData['officer_title'] = options['19']?.data?.officer_in_charge?.title;
+
+
+    options['19']?.data?.facility_contacts?.forEach((contact, i) => {
+        facilityContactsData[`contact_${i}`] = contact.contact
+        facilityContactsData[`contact_type_${i}`] = options['11']?.contact_types?.find(({label}) => label == contact?.contact_type_name)?.value;
+    })
+
+
+    options['19']?.data?.officer_in_charge?.contacts?.forEach((contact, i) => {
+        facilityContactsData[`officer_details_contact_${i}`] = contact?.contact
+        facilityContactsData[`officer_details_contact_type_${i}`] = options['11']?.contact_types?.find(({label}) => label == contact?.contact_type_name)?.value;
+    })
+
+
+    // console.log({facilityContactsData})
     // State
     const [formId, setFormId] = useContext(FormContext);
+    const[facilityId, _] = useContext(FacilityIdContext);
+    const [responseError, setResponseError] = useState(null);
+
+
+    const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+
+
     const [facilityContacts, setFacilityContacts] = useState([
         (() => (
 			<FacilityContact
@@ -63,18 +99,17 @@ export function FacilityContactsForm() {
         
         vals['officer_in_charge'] = "";
         vals['officer_reg_no'] = "";
-    ""
 
         return vals
     }, [facilityContacts])
 
 
     const [initialValues, handleFormUpdate] = useLocalStorageState({
-        key: 'facility_contacts_form',
-        value: formFields
+        key: options['19']?.data ? 'facility_contacts_edit_form' : 'facility_contacts_form',
+        value: options['19']?.data ? facilityContactsData : formFields
       }).actions.use();
 
-  const formValues =  initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
+  const formValues =  options['19']?.data ?  facilityContactsData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
     // Effects
 
@@ -82,8 +117,13 @@ export function FacilityContactsForm() {
         const contacts = [];
         const officerContacts = [];
 
-        const contactCount = initialValues.split(',').filter(x => x.match(/^"contact_[0-9]/)).length;
-        const officerContactCount = initialValues.split(',').filter(x => x.match(/^"officer_details_contact_[0-9]/)).length;
+        const initialValueObj = options['19']?.data ? facilityContactsData : typeof initialValues == 'string' ? JSON.parse(initialValues) : {}
+
+        // console.log({initialValues, initialValueObj})
+        const contactCount = Object.keys(initialValueObj).filter(x => /^contact_\d/.test(x)).length;
+        const officerContactCount = Object.keys(initialValueObj).filter(x => x.match(/^officer_details_contact_[0-9]/)).length;
+
+        // console.log({initialValueObj, contactCount})
 
         if(contactCount > 1){
             for(let i = 0; i < contactCount; i++) {
@@ -92,9 +132,10 @@ export function FacilityContactsForm() {
                         <FacilityContact
                             contactTypeOptions={contactTypeOptions}
                             fieldNames={['contact_type', 'contact']}
-                            setFacilityContacts={() => null}
+                            setFacilityContacts={setFacilityContacts}
                             contacts={[null, null, null]}
                             index={i}
+                           
                         />
                     </FacilityContactsContext.Provider>
                 ))())
@@ -114,8 +155,9 @@ export function FacilityContactsForm() {
                             contactTypeOptions={contactTypeOptions}
                             fieldNames={['officer_details_contact_type', 'officer_details_contact']}
                             contacts={[null, null, null]}
-                            setFacilityContacts={() => null}
+                            setFacilityContacts={setOfficerContactDetails}
                             index={i}
+                           
                         />
                     </FacilityContactsContext.Provider>
                     ))()
@@ -159,10 +201,6 @@ export function FacilityContactsForm() {
     // console.log({formSchema})
 
     // Event handlers
-    const handleSubmit = useCallback((values) => {
-        setFormId(`${parseInt(formId) + 1}`);
-        console.log({ ...values })
-}, [])
 
     const handleGeolocationPrevious = useCallback(() => {
         setFormId(`${parseInt(formId) - 1}`);
@@ -174,7 +212,61 @@ export function FacilityContactsForm() {
     return (
         <Formik
         initialValues={formValues}
-        onSubmit={handleSubmit}
+        onSubmit={(values) => {
+
+            options['19']?.data ? 
+            handleFacilityContactsUpdates(values, facilityId)
+            .then(({ statusText }) => {
+                defer(() => updatedSavedChanges(true));
+                if (statusText == "OK") {
+                  fetch(
+                    `/api/facility/get_facility/?path=facilities&id=${facilityId}`
+                  )
+                    .then(async (resp) => {
+                      const results = await resp.json();
+
+                      
+
+                      if (results?.latest_update) {
+                        try {
+                          const _facilityUpdateData = await (
+                            await fetch(
+                              `/api/facility/get_facility/?path=facility_updates&id=${results?.latest_update}`
+                            )
+                          ).json();
+                          updateFacilityUpdateData(_facilityUpdateData);
+                        } catch (e) {
+                          console.error(
+                            "Encountered error while fetching facility update data",
+                            e.message
+                          );
+                        }
+                      }
+                      else{
+                        if(results?.latest_update == null){
+                            setResponseError('No updates found for this facility') 
+                        }
+                      }
+                    })
+                    .catch((e) =>
+                      console.error(
+                        "unable to fetch facility update data. Error:",
+                        e.message
+                      )
+                    );
+                }
+              })
+              .catch((e) =>
+                console.error(
+                  "unable to fetch facility data. Error:",
+                  e.message
+                )
+              )
+            :
+            handleFacilityContactsSubmit(values, [formId, setFormId, facilityId])
+
+        }}
+
         validationSchema={toFormikValidationSchema(formSchema)}
         enableReinitialize
         >
@@ -191,7 +283,11 @@ export function FacilityContactsForm() {
 
                return ( 
                <>
-                <h4 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+               {
+                responseError && 
+                <Alert severity="error" sx={{ width: '100%', marginTop:'16px' }}>{responseError}</Alert>
+                }
+                    <h4 className='text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
                     Facility Contact
                 </h4>
                 <Form
@@ -202,7 +298,7 @@ export function FacilityContactsForm() {
                     {/* Contacts */}
 
                     <div
-                        className='grid grid-cols-2 place-content-start gap-3 w-full bg-light-grey border border-blue-600 p-3'
+                        className='grid grid-cols-2 bg-blue-50 place-content-start gap-3 w-full bg-light-grey shadow-md p-3'
                     >
                         {/* Contact Headers */}
                         <h3 className='text-medium font-semibold text-blue-900'>
@@ -256,6 +352,7 @@ export function FacilityContactsForm() {
                                                 contacts={[null, null, null]}
                                                 fieldNames={['contact_type', 'contact']}
                                                 index={(facilityContacts.length + 1) - 1}
+                                               
                                             />
                                         </FacilityContactsContext.Provider>
                                     ))()
@@ -276,7 +373,7 @@ export function FacilityContactsForm() {
                     <h5 className='text-lg uppercase pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
                         Facility Officer In-Charge Details 
                     </h5>
-                    <div className='flex flex-col items-start bg-light-grey p-3 shadow-md justify-start gap-1 w-full  h-auto'>
+                    <div className='flex flex-col items-start bg-light-grey p-3 bg-blue-50 shadow-md justify-start gap-1 w-full  h-auto'>
                         {/*  Name  */}
                         <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                             <label
@@ -387,6 +484,7 @@ export function FacilityContactsForm() {
                                                         contacts={[null, null, null]}
                                                         fieldNames={['officer_details_contact_type', 'officer_details_contact']}
                                                         index={(officerContactDetails.length + 1) - 1}
+                                                    
 
                                                     />
                                                 </FacilityContactsContext.Provider>
@@ -402,8 +500,22 @@ export function FacilityContactsForm() {
                         </div>
                     </div>
 
-                    <div className='flex justify-between items-center w-full'>
-                    <button
+                    {
+                options['19']?.data  ? 
+
+                <div className='flex justify-end items-center w-full'>
+                  <button
+                    type='submit'
+                    className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                    <span className='text-medium font-semibold text-white'>
+                      Save & Finish
+                    </span>
+                  </button>
+              </div>
+                :
+
+                <div className='flex justify-between items-center w-full'>
+                        <button
                             onClick={handleGeolocationPrevious}
                             className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-blue-700 px-2'>
                             <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
@@ -421,6 +533,7 @@ export function FacilityContactsForm() {
                         </button>
 
                     </div>
+                 }
                 </Form>
                 </>
                )

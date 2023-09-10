@@ -113,7 +113,7 @@ const [formId, setFormId] = useLocalStorageState({
                       <div
                         className=' w-full flex flex-col items-start justify-start p-4 shadow-md bg-blue-50'
                         style={{ minHeight: '250px' }}>
-                            { console.log({formId})}
+                            {/* { console.log({formId})} */}
                            {
                                 formId == '0' && 
                                 <BasicDeatilsForm 
