@@ -89,7 +89,7 @@ function FacilityDetailsTabsPulic({ facility }) {
         className="w-full flex flex-col tab-root"
         defaultValue="overview"
       >
-        <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+        <Tabs.List className="list-none w-full flex justify-around border-b border-blue-600 flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold ">
           <Tabs.Tab
             id={1}
             value="overview"
@@ -343,7 +343,7 @@ function FacilityDetailsTabsPulic({ facility }) {
         </Tabs.Panel>
         <Tabs.Panel
           value="services"
-          className="grow-1 py-1 px-4 tab-panel"
+          className="grow-1 p-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
             <div className="bg-white w-full p-4 rounded">
@@ -465,7 +465,7 @@ function FacilityDetailsTabsPulic({ facility }) {
         </Tabs.Panel>
         <Tabs.Panel
           value="community_units"
-          className="grow-1 py-1 px-4 tab-panel"
+          className="grow-1 p-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
             <div className="bg-white w-full p-4 rounded">

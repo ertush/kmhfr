@@ -149,6 +149,12 @@ const system_setup = (props) => {
       }, []);
     
     useEffect(() => {
+
+        const user = JSON.parse(sessionStorage.getItem('user'))
+        if(user.id === 6){
+            router.push('/auth/login')
+        }
+        
         if(!hasPermission(/^common.add_county$/, userPermissions)){
             router.push('/unauthorized')
         }
@@ -159,6 +165,16 @@ const system_setup = (props) => {
         //     setRows(null)
         // }
     },[])
+
+
+    useEffect(() => {
+        const user = JSON.parse(sessionStorage.getItem('user'))
+		if(user.id === 6){
+			router.push('/auth/login')
+		}
+	  setIsClient(true)
+	}, [])
+
    
     const fetchDataCategory =  () => {
   

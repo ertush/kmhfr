@@ -37,6 +37,16 @@ const Home = (props) => {
 
 	}, [filters]);
 
+	// Check user for authentication
+	useEffect(() => {
+	
+		const user = JSON.parse(sessionStorage.getItem('user'))
+		if(user.id === 6){
+			router.push('/auth/login')
+		}
+		
+	},[])
+
 	return (
 		<div className=''>
 			<Head>

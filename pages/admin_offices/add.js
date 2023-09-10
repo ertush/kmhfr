@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import router from 'next/router';
 import MainLayout from '../../components/MainLayout';
 import { checkToken } from '../../controllers/auth/auth';
@@ -71,6 +71,13 @@ function AddAdminOffice(props) {
         }
 
     }
+
+    useEffect(() => {
+        const user = JSON.parse(sessionStorage.getItem('user'))
+        if(user.id === 6){
+            router.push('/auth/login')
+        }
+    }, [])
 
     return (
         <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>

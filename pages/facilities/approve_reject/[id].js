@@ -26,7 +26,7 @@ import {useAlert} from 'react-alert'
 
 function ApproveReject(props) {
 
-  console.log({props})
+  // console.log({props})
 
   const alert = useAlert()
   const router = useRouter()
@@ -47,11 +47,16 @@ function ApproveReject(props) {
   // const [reject, setReject] = useState(null)
 
 
-
-
   const [isClient, setIsClient] = useState(false)
+
+
  
 	useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem('user'))
+		if(user.id === 6){
+			router.push('/auth/login')
+		}
+
 	  setIsClient(true)
 	}, [])
 

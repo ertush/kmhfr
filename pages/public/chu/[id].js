@@ -16,7 +16,7 @@ const CommunityUnit = (props) => {
     () => import("../../../components/Map"),
     {
       loading: () => (
-        <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
+        <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">
           Loading&hellip;
         </div>
       ),
@@ -103,7 +103,7 @@ const CommunityUnit = (props) => {
 
             <div
               className={
-                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+                "md:col-span-7 grid grid-cols-6 gap-5 md:gap-8 py-6 w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
                 (cu.active ? "border-blue-600" : "border-red-600")
               }
             >
@@ -127,7 +127,7 @@ const CommunityUnit = (props) => {
               </div>
 
               <button
-                    className="rounded bg-indigo-500 p-2 text-white text-lg font-semibold"
+                    className=" bg-indigo-500 p-2 text-white text-lg font-semibold"
                     onClick={() => { window.location.href = url}}
                   >
                     {`Print `}
@@ -187,7 +187,7 @@ const CommunityUnit = (props) => {
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded grid grid-cols-2 gap-3 shadow-sm mt-4">
+                  <div className="bg-white border border-gray-100 w-full p-3  grid grid-cols-2 gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                       Status:
                     </h3>
@@ -199,19 +199,19 @@ const CommunityUnit = (props) => {
                         {cu.status_name
                           ?.toLocaleLowerCase()
                           .includes("fully-") ? (
-                          <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "Yes"}
                           </span>
                         ) : cu.status_name
                           ?.toLocaleLowerCase()
                           .includes("semi") ? (
-                          <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                          <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                             <CheckCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "Yes"}
                           </span>
                         ) : (
-                          <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                          <span className="bg-red-200 text-gray-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                             <XCircleIcon className="h-4 w-4" />
                             {cu?.status_name || "No"}
                           </span>
@@ -219,7 +219,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Coverage:
                     </h3>
@@ -232,7 +232,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Location:
                     </h3>
@@ -275,7 +275,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Regulation:
                     </h3>
@@ -297,7 +297,7 @@ const CommunityUnit = (props) => {
                       </div>
                     )}
                   </div>
-                  <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Contacts:
                     </h3>
@@ -364,7 +364,7 @@ const CommunityUnit = (props) => {
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                  <div className="bg-white w-full p-4 rounded">
+                  <div className="bg-white w-full p-4 ">
                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                       <span className="font-semibold">Services</span>
                       <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
@@ -385,7 +385,7 @@ const CommunityUnit = (props) => {
                           </li>
                         ))
                       ) : (
-                        <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                        <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                           <p>No services listed for this cu.</p>
                         </li>
                       )}
@@ -399,7 +399,7 @@ const CommunityUnit = (props) => {
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                  <div className="bg-white w-full p-4 rounded">
+                  <div className="bg-white w-full p-4 ">
                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                       <span className="font-semibold">
                         Health Unit workers
@@ -421,7 +421,7 @@ const CommunityUnit = (props) => {
                           </li>
                         ))
                       ) : (
-                        <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                        <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                           <p>No HR data listed for this cu.</p>
                         </li>
                       )}
@@ -438,7 +438,7 @@ const CommunityUnit = (props) => {
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                  <div className="bg-white w-full p-4 rounded">
+                  <div className="bg-white w-full p-4 ">
                     <h4 className="text-xl w-full  flex-wrap justify-between items-center leading-tight tracking-tight">
                      
                        CHUL Average Rating: &nbsp;  <span className="text-2xl font-bold">{cu?.avg_rating && Number((cu?.avg_rating).toFixed(1))}
@@ -455,7 +455,7 @@ const CommunityUnit = (props) => {
                       <br/>
                       <span className="text-xl">{cu?.number_of_ratings} Ratings</span>
                   </div>
-                  <div className="bg-white w-full p-4 rounded">                  
+                  <div className="bg-white w-full p-4 ">                  
                   <form onSubmit={handleRating}>
                     <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
                         <h4>Rate Community Health Unit </h4>
@@ -470,7 +470,7 @@ const CommunityUnit = (props) => {
                                 id='chu-rating'
                                 onChange={(e)=>setComment(e.target.value)}
                                 placeholder="Leave a comment"
-                                className='flex-none w-1/2 bg-gray-50 rounded p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
+                                className='flex-none w-1/2 bg-gray-50  p-2 flex-grow border-2 placeholder-gray-500 border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none'
                             />
                               <StarRatingComponent 
                                 className="text-2xl"
@@ -481,7 +481,7 @@ const CommunityUnit = (props) => {
                                 />
                             <button
                                 type='submit'
-                                className='flex items-center justify-start space-x-2 bg-blue-500 rounded p-1 px-2'>
+                                className='flex items-center justify-start space-x-2 bg-blue-500  p-1 px-2'>
                                 <span className='text-medium font-semibold text-white'>
                                     Submit Rating
                                 </span>
@@ -497,7 +497,7 @@ const CommunityUnit = (props) => {
           <div className="col-span-4 md:col-span-4 flex flex-col gap-3 mt-4 w-1/2">
             <h2 className="text-xl font-semibold" >{cu?.facility_ward} Ward</h2>
             {cu?.lat_long && cu?.lat_long.length > 0 ? (
-                <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col">
+                <div className="w-full bg-gray-200 shadow -lg flex flex-col">
                   <Map
                     ward_name={cu?.facility_ward}
                     operational={
@@ -511,8 +511,8 @@ const CommunityUnit = (props) => {
                   />
                 </div>
               ) : (
-                <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
-                  <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                <div className="w-full bg-gray-200 shadow -lg flex flex-col items-center justify-center relative">
+                  <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                     <p>No location data found for this facility?.</p>
                   </div>
                 </div>

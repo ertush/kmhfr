@@ -112,9 +112,10 @@ const Facility = (props) => {
 
 
     useEffect(() => {
-        if(!userCtx){
-            router.push('/auth/login')
-        }
+      const user = JSON.parse(sessionStorage.getItem('user'))
+      if(user.id === 6){
+        router.push('/auth/login')
+      }
     }, [])
     if(isClient) {
       return (

@@ -378,7 +378,7 @@ function FacilityDetailsTabs({ facility }) {
                   Latitude
                 </label>
                 <p className="col-span-2 text-black font-medium text-base">
-                  {facility?.lat_long !== null ? facility?.lat_long[0] :  " - "}
+                  {facility?.lat_long && facility?.lat_long.length > 0 ? facility?.lat_long[0] :  " - "}
                 </p>
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
@@ -386,7 +386,7 @@ function FacilityDetailsTabs({ facility }) {
                   Longitude
                 </label>
                 <p className="col-span-2 text-black font-medium text-base">
-                {facility?.lat_long !== null ? facility?.lat_long[1] :  " - "}
+                { facility?.lat_long && facility?.lat_long.length > 0  ? facility?.lat_long[1] :  " - "}
                 </p>
               </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
