@@ -127,7 +127,7 @@ const CommunityUnit = (props) => {
               </div>
 
               <button
-                    className=" bg-indigo-500 p-2 text-white text-lg font-semibold"
+                    className=" bg-indigo-500 w-auto p-2 text-white text-lg font-semibold"
                     onClick={() => { window.location.href = url}}
                   >
                     {`Print `}
@@ -141,7 +141,7 @@ const CommunityUnit = (props) => {
           <div className="col-span-12 md:col-span-12 flex flex-row gap-3 mt-4">
 
 
-          <div className="col-span-5 md:col-span-5 flex flex-col gap-3 mt-4">
+          <div className="col-span-5 md:col-span-5 border border-blue-600 flex flex-col gap-3 m-4">
             {/* Approve/Reject, Edit Buttons */}
           
 
@@ -150,7 +150,7 @@ const CommunityUnit = (props) => {
               className="w-full flex flex-col tab-root"
               defaultValue="overview"
             >
-              <Tabs.List className="list-none flex flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold border-b">
+              <Tabs.List className="list-none flex justify-around border-b border-blue-600 flex-wrap gap-2 md:gap-3 px-4 uppercase leading-none tab-list font-semibold">
                 <Tabs.Tab
                   id={1}
                   value="overview"
@@ -184,10 +184,10 @@ const CommunityUnit = (props) => {
 
               <Tabs.Panel
                 value="overview"
-                className="grow-1 py-1 px-4 tab-panel"
+                className="grow-1 p-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-                  <div className="bg-white border border-gray-100 w-full p-3  grid grid-cols-2 gap-3 shadow-sm mt-4">
+                  <div className="bg-white border border-gray-100 w-full p-3  grid grid-cols-2 gap-3 shadow-sm ">
                     <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                       Status:
                     </h3>
@@ -361,7 +361,7 @@ const CommunityUnit = (props) => {
               </Tabs.Panel>
               <Tabs.Panel
                 value="services"
-                className="grow-1 py-1 px-4 tab-panel"
+                className="grow-1 p-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                   <div className="bg-white w-full p-4 ">
@@ -396,7 +396,7 @@ const CommunityUnit = (props) => {
 
               <Tabs.Panel
                 value="hr_staffing"
-                className="grow-1 py-1 px-4 tab-panel"
+                className="grow-1 p-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                   <div className="bg-white w-full p-4 ">
@@ -435,7 +435,7 @@ const CommunityUnit = (props) => {
 
               <Tabs.Panel
                 value="chu_ratings"
-                className="grow-1 py-1 px-4 tab-panel"
+                className="grow-1 p-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
                   <div className="bg-white w-full p-4 ">

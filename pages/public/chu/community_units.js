@@ -144,7 +144,7 @@ const Home = (props) => {
 
 			<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 				<div className='w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4'>
-					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-4'>
+					<div className='col-span-5 flex flex-col gap-3 md:gap-5'>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 							{/* Bread Crumbs */}
 
@@ -155,7 +155,7 @@ const Home = (props) => {
 								{'/'}
 								<span className='text-gray-500'>Community Units</span>
 							</div>
-							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Community Units'}
                                 </h2>
@@ -174,10 +174,10 @@ const Home = (props) => {
 							
 					</div>
 				
-                    <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300 h-full'>
+                    <div className='col-span-1 w-full md:col-start-1 h-auto border-r-2 border-gray-300'>
                         <form onSubmit={(e)=>filterCHUs(e)}>
                             {/* <div className='card flex flex-wrap'> */}
-                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 
                                         <label className=" text-gray-600">Search all CHUs</label>
                                         {/* &nbsp; */}
@@ -185,13 +185,13 @@ const Home = (props) => {
                                             name="allchus"
 											ref={allchus}
                                             id="search-input"
-                                            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
                                             placeholder="Search all CHUs"
                                         />                          
                             </div>
                             &nbsp;
-                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
                                         <h2>CHU Info</h2>
                                         &nbsp; 
                                         <label className=" text-gray-600">CHU Name</label>
@@ -199,7 +199,7 @@ const Home = (props) => {
                                             name="name"
 											ref={name}
                                             id="search-input"
-                                            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
                                             placeholder="CHU Name"
                                         />    
@@ -209,13 +209,13 @@ const Home = (props) => {
                                             name="code"
 											ref={code}
                                             id="search-input"
-                                            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
                                             placeholder="CHU Code"
                                         />  
                                          &nbsp; &nbsp; 
                                         <label className=" text-gray-600">Status</label>
-											<Select name={'status'} ref={st} id={'status'} className="w-full max-w-xs p-1 rounded bg-gray-50"
+											<Select name={'status'} ref={st} id={'status'} className="w-full max-w-xs p-1  bg-gray-50"
 										   options={
 											   (() => {
 													   let opts = [...Array.from(status_options || [],
@@ -233,13 +233,13 @@ const Home = (props) => {
 										   />
                             </div>
 							&nbsp;
-                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Administrative Units</h2> &nbsp;
 								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
 									{administrative_units.map(ct=>(
 										<>
 										<label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label>
-									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1 rounded bg-gray-50"
+									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1  bg-gray-50"
 										   options={
 											   (() => {
 													   let opts = [...Array.from(ct.array || [],
@@ -277,13 +277,13 @@ const Home = (props) => {
 
 							<button
 								type="submit"
-								className="bg-blue-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+								className="bg-blue-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 "
 							>
 								<SearchIcon className="w-5 h-5" /> Search
 							</button>  
 							<button
 								type="button"
-								className="bg-gray-100 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+								className="bg-gray-100 border-1 border-black text-black flex items-center justify-center px-4 py-1 "
 								onClick={()=>{
 									setDrillDown({})
 									name.current.value ='',code.current.value='', st.current.select.clearValue(), allchus.current.value = '',
@@ -296,21 +296,21 @@ const Home = (props) => {
                     </div>
 
                      {/* Main body */}
-					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+					<div className="col-span-6 md:col-span-4 flex  border border-blue-600 flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
 
-					    <div className='mx-4 float-right'>
+					    {/* <div className='mx-4 float-right'>
 							 
 						   {viewAll && <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {cus?.count && cus?.count > 0 && <small className="text-gray-500 ml-2 text-base">{cus?.start_index || 0} - {cus?.end_index || 0} of {cus?.count || 0} </small>}
                             </h5>}
-						</div>
-						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
+						</div> */}
+						<div className='flex flex-col justify-center items-center w-full '>
 							{/* <pre>{JSON.stringify(cus[0], null, 2)}</pre> */}
 							{viewAll && cus?.results && cus?.results.length > 0 ? (
 								cus?.results.map((comm_unit, index) => (
 									<div
 										key={comm_unit.id}
-										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full'>
+										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-blue-600 py-4 hover:bg-gray-50 w-full'>
 										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
@@ -373,7 +373,7 @@ const Home = (props) => {
 											{comm_unit.status_name ? (
 												<span
 													className={
-														'leading-none border whitespace-nowrap shadow-xs text-sm rounded py-1 px-2 text-black ' +
+														'leading-none border whitespace-nowrap shadow-xs text-sm  py-1 px-2 text-black ' +
 														(comm_unit.status_name
 															.toLocaleLowerCase()
 															.includes('non-')
@@ -390,11 +390,11 @@ const Home = (props) => {
 											) : (
 												''
 											)}
-											{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + (comm_unit.approved ? "bg-blue-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm rounded text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
+											{/* {!comm_unit.rejected ? <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + (comm_unit.approved ? "bg-blue-200 text-black" : "bg-gray-400 text-black")}>{comm_unit.approved ? "Approved" : "Not approved"}</span> : <span className={"leading-none whitespace-nowrap text-sm  text-black py-1 px-2 " + "bg-gray-400 text-black"}>{comm_unit.rejected ? "Rejected" : ""}</span>} */}
 											{comm_unit.has_edits ? (
 												<span
 													className={
-														'leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black'
+														'leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black'
 													}>
 													Has edits
 												</span>
@@ -408,7 +408,7 @@ const Home = (props) => {
 									</div>
 								))
 							) : (
-								<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3'>
+								<div className='w-full flex items-center justify-start gap-2 m-4 bg-yellow-100 border font-medium  border-yellow-300 p-3'>
 									<span className='text-base text-gray-700'>
 										No community units found
 									</span>

@@ -128,8 +128,8 @@ const Home = (props) => {
 		}
 		let url = API_URL +`/facilities/material/?fields=id,code,name,regulatory_status_name,facility_type_name,owner_name,county,constituency,ward_name,keph_level,operation_status_name`
 		const filter_options ={
-			name: name.current.value,
-			code: code.current.value,
+			name: name.current?.value,
+			code: code.current?.value,
 			county: county?.current?.state?.value?.value || '',
 			sub_county: subcounty?.current?.state?.value?.value || '',
 			constituency: constituency?.current?.state?.value?.value || '',
@@ -141,11 +141,11 @@ const Home = (props) => {
 			owner_type: ownertype?.current?.state?.value?.value || '',
 			service: facilityservice?.current?.state?.value?.value || '', 
 			service_category: servicecategory?.current?.state?.value?.value || '',
-			number_of_beds:beds?.current.checked || '',
-			number_of_cots:cots?.current.checked || '',
-			open_public_holidays:available_holiday?.current.checked || '',
-			open_weekends:available_weekends?.current.checked || '',
-			open_whole_day: available_24hrs?.current.checked || ''
+			number_of_beds:beds?.current?.checked || '',
+			number_of_cots:cots?.current?.checked || '',
+			open_public_holidays:available_holiday?.current?.checked || '',
+			open_weekends:available_weekends?.current?.checked || '',
+			open_whole_day: available_24hrs?.current?.checked || ''
 		}
 		
 		let qry = Object.keys(filter_options).map(function (key) {
@@ -158,11 +158,11 @@ const Home = (props) => {
 		if(qry !== ''){
 			url += `&${qry}`
 		}
-		if(allfacilities.current.value !== ''){
-			url += `&search={"query":{"query_string":{"default_field":"name","query":"${allfacilities.current.value}"}}}`
+		if(allfacilities.current?.value !== ''){
+			url += `&search={"query":{"query_string":{"default_field":"name","query":"${allfacilities.current?.value}"}}}`
 		}
-		if(service.current.value !== ''){
-			url += `&service_name={"query":{"query_string":{"default_field":"service_names","query":"${service.current.value}"}}}`
+		if(service.current?.value !== ''){
+			url += `&service_name={"query":{"query_string":{"default_field":"service_names","query":"${service.current?.value}"}}}`
 		}
 		
 		try {
@@ -470,10 +470,10 @@ const Home = (props) => {
 									className="bg-gray-100 border-1 border-black text-black flex items-center justify-center px-4 py-1 "
 									onClick={()=>{
 										setDrillDown({})
-										name.current.value ='',code.current.value='', allfacilities.current.value ='',
-										county.current.select.clearValue(),subcounty.current.select.clearValue(),ward.current.select.clearValue(),constituency.current.select.clearValue(),facilityservice.current.select.clearValue(),
-										facilitytype.current.select.clearValue(),operationstatus.current.select.clearValue(),facilityowner.current.select.clearValue(),ownertype.current.select.clearValue(),servicecategory.current.select.clearValue(),
-										beds.current.checked=false, cots.current.checked=false, available_holiday.current.checked=false, available_24hrs.current.checked=false,available_weekends.current.checked=false
+										name.current?.value ='',code.current?.value='', allfacilities.current?.value ='',
+										county.current?.select?.clearValue(),subcounty.current?.select.clearValue(),ward.current?.select.clearValue(),constituency.current?.select.clearValue(),facilityservice.current?.select.clearValue(),
+										facilitytype.current?.select.clearValue(),operationstatus.current?.select.clearValue(),facilityowner.current?.select.clearValue(),ownertype.current?.select.clearValue(),servicecategory.current?.select.clearValue(),
+										beds.current?.checked=false, cots.current?.checked=false, available_holiday.current?.checked=false, available_24hrs.current?.checked=false,available_weekends.current?.checked=false
 
 									}}
 								>Reset
