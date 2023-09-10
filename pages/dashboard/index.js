@@ -184,16 +184,21 @@ const Dash = (props) => {
 
     }, [filters, subcounties, wards])
 
-    useEffect(()=>{
-        if(userCtx){
+    
+    // Check for user authentication
+	useEffect(() => {
+	
+		const user = JSON.parse(sessionStorage.getItem('user'))
+		if(user.id === 6){
+			router.push('/auth/login')
+		}else{
             fetchWards(userCtx.county)
             fetchSubCounties(userCtx.county)
         }
-        else{
-            router.push('/auth/login')
-        }
-    
-    },[])
+		
+	},[])
+
+  
 // console.log(props.data)
 
     const exportToPdf = useReactToPrint({

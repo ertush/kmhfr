@@ -194,18 +194,18 @@ const Home = (props) => {
 
 			<MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
 				<div className='w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4'>
-					<div className='col-span-5 flex flex-col gap-3 md:gap-5 px-4'>
+					<div className='col-span-5 flex flex-col gap-3 md:gap-5 '>
 						<div className='flex flex-wrap items-center justify-between gap-2 text-sm md:text-base py-3'>
 							{/* Bread Crumbs */}
 
 							<div className='flex flex-row gap-2 text-sm md:text-base py-3'>
-								<Link className='text-blue-700' href='/public/facility/facilities'>
+								<Link className='text-blue-700' href='/public/facilities'>
 									Home
 								</Link>
 								{'/'}
 								<span className='text-gray-500'>Facilities</span>
 							</div>
-							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
+							<div className={"col-span-5 flex justify-between w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " + (true ? "border-blue-600" : "border-red-600")}>
                                 <h2 className='flex items-center text-xl font-bold text-black capitalize gap-2'>
                                     {'Facilities'}
                                 </h2>
@@ -230,14 +230,14 @@ const Home = (props) => {
                     <div className='col-span-1 w-full md:col-start-1 border-r-2 border-gray-300 h-full'>
                         <form onSubmit={(e)=>filterFacilities(e)}>
                             {/* <div className='card flex flex-wrap'> */}
-                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 gap-2 shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 
                                         <label className=" text-gray-600">Search all facilities</label>
                                         <input
                                             name="facility"
 											ref={allfacilities}
                                             id="search-input"
-                                            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
                                             placeholder="Search all facilities"
                                         />      
@@ -246,13 +246,13 @@ const Home = (props) => {
                                             name="service"
 											ref={service}
                                             id="search-input"
-                                            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
                                             placeholder="Search services"
                                         />                      
                             </div>
                             &nbsp;
-                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+                            <div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
                                         <h2>Facility Info</h2>
                                         &nbsp; 
                                         <label className=" text-gray-600">Facility Name</label>
@@ -260,7 +260,7 @@ const Home = (props) => {
                                             name="name"
 											ref={name}
                                             id="search-input"
-                                            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
                                             placeholder="Facility Name"
                                         />    
@@ -269,20 +269,20 @@ const Home = (props) => {
                                             name="code"
 											ref={code}
                                             id="search-input"
-                                            className="flex-none bg-gray-50 rounded p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
+                                            className="flex-none bg-gray-50  p-2 flex-grow shadow-sm border placeholder-gray-500 w-full border-gray-200 focus:shadow-none focus:bg-white focus:border-black outline-none"
                                             type="search"
                                             placeholder="Facility Code"
                                         />  
                                                           
                             </div>
 							&nbsp;
-							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Administrative Unit</h2> &nbsp;
-								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
+								<div  className="w-full max-w-xs flex flex-col items-start gap-2 justify-start mb-3" id='first'>
 									{administrative_units.map(ct=>(
 										<>
 										<label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label>
-									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1 justify-startrounded bg-gray-50"
+									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1 justify-start bg-gray-50"
 										   options={
 											   (() => {
 													   let opts = [...Array.from(ct.array || [],
@@ -315,13 +315,13 @@ const Home = (props) => {
 							</div>
 
 							&nbsp;
-							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Services</h2> &nbsp;
-								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
+								<div  className="w-full max-w-xs flex flex-col items-start gap-2 justify-start mb-3" id='first'>
 									{service_units.map(ct=>(
 										<>
 										<label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label>
-									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1 rounded bg-gray-50"
+									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1  bg-gray-50"
 										   options={
 											   (() => {
 													   let opts = [...Array.from(ct.array || [],
@@ -354,13 +354,13 @@ const Home = (props) => {
 							</div>
 
 							&nbsp;
-							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Facility Details</h2> &nbsp;
-								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
+								<div  className="w-full max-w-xs flex flex-col items-start gap-2 justify-start mb-3" id='first'>
 									{facility_details.map(ct=>(
 										<>
 										<label htmlFor={ct.label} className="text-gray-600 capitalize text-sm ml-1">{ct.label}:</label>
-									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1 rounded bg-gray-50"
+									   <Select name={ct.label}  ref={ct.ref} defaultValue={drillDown[ct.label] || "national"} id={ct.label} className="w-full max-w-xs p-1  bg-gray-50"
 										   options={
 											   (() => {
 													   let opts = [...Array.from(ct.array || [],
@@ -416,9 +416,9 @@ const Home = (props) => {
 							</div>
 
 							&nbsp;
-							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3 rounded shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
+							<div className="card col-span-6 md:col-span-2 flex flex-col items-start justify-start p-3  shadow-lg border border-gray-300/70 bg-gray-50" style={{ minHeight: '50px' }}>
 								<h2>Availability</h2> &nbsp;
-								<div  className="w-full max-w-xs flex flex-col items-start justify-start mb-3" id='first'>
+								<div  className="w-full max-w-xs flex flex-col items-start gap-2 justify-start mb-3" id='first'>
 									<div  className="w-full max-w-xs  flex-col items-start justify-start mb-3" id='first'>
 									<input
 										className='form-checkbox w-3 h-3'
@@ -461,13 +461,13 @@ const Home = (props) => {
 							<div className='flex flex-row gap-4'> 
 								<button
 									type="submit"
-									className="bg-blue-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+									className="bg-blue-500 border-1 border-black text-black flex items-center justify-center px-4 py-1 "
 								>
 									<SearchIcon className="w-5 h-5" /> Search
 								</button>  
 								<button
 									type="button"
-									className="bg-gray-100 border-1 border-black text-black flex items-center justify-center px-4 py-1 rounded"
+									className="bg-gray-100 border-1 border-black text-black flex items-center justify-center px-4 py-1 "
 									onClick={()=>{
 										setDrillDown({})
 										name.current.value ='',code.current.value='', allfacilities.current.value ='',
@@ -484,25 +484,25 @@ const Home = (props) => {
 
                      {/* Main body */}
 					{/* <div className='col-span-5 md:col-span-4 flex flex-col items-center gap-4 mt-2 order-last md:order-none'> */}
-					<div className="col-span-6 md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
-					    <div className='mx-4 float-right'>
+					<div className="col-span-6 border border-blue-600  md:col-span-4 flex flex-col gap-4 order-last md:order-none"> {/* CHANGED colspan */}
+					    {/* <div className='mx-4 float-right'>
 							 
 						    {viewAll && <h5 className="text-lg font-medium text-gray-800 float-right">
                                 {facilities.count && facilities?.count > 0 && <small className="text-gray-500 ml-2 text-base">{facilities?.start_index || 0} - {facilities?.end_index || 0} of {facilities?.count || 0} </small>}
                             </h5>}
-						</div>
-						<div className='flex flex-col justify-center items-center px-1 md:px-4 w-full '>
+						</div> */}
+						<div className='flex flex-col justify-center items-center  w-full '>
 							{/* <pre>{JSON.stringify(facilities[0], null, 2)}</pre> */}
 
 							{viewAll && facilities?.results && facilities?.results.length > 0 ? (
 								facilities?.results.map((hf, index) => (
 									<div
 										key={hf.id}
-										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b py-4 hover:bg-gray-50 w-full'>
+										className='px-1 md:px-3 grid grid-cols-8 gap-3 border-b border-blue-600 py-4 hover:bg-gray-50 w-full'>
 										<div className='col-span-8 md:col-span-4 flex flex-col gap-1 group items-center justify-start text-left'>
 											<h3 className='text-2xl w-full'>
 												<a
-													href={'/public/facility/' + hf.id}
+													href={'/public/facilities/' + hf.id}
 													className='hover:text-blue-800 group-focus:text-blue-800 active:text-blue-800'>
 													<small className='text-gray-500'>
 														{index + props?.data?.start_index}.
@@ -521,11 +521,11 @@ const Home = (props) => {
 											</p>
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 
-											{(hf?.facility_type_category) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>{hf?.facility_type_category}</span> : ""}
+											{(hf?.facility_type_category) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black"}>{hf?.facility_type_category}</span> : ""}
 											</p>
 											<p className='text-sm text-gray-600 w-full flex gap-2 items-center'>
 
-										    {(hf?.facility_type_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>{hf?.facility_type_name}</span> : ""}
+										    {(hf?.facility_type_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black"}>{hf?.facility_type_name}</span> : ""}
 											</p>
 
 											<div className='text-base grid grid-cols-2 md:grid-cols-4 items-center justify-start gap-3 w-full'>
@@ -566,14 +566,14 @@ const Home = (props) => {
 											</div>
 										</div>
 										<div className='col-span-8 md:col-span-3 flex flex-wrap items-center gap-3 text-lg'>
-										{(hf?.operational || hf?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-black"}>Operational</span> : ""}
+										{(hf?.operational || hf?.operation_status_name) ? <span className={"shadow-sm leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-black"}>Operational</span> : ""}
 										</div>
 										<div className='col-span-8 md:col-span-1 flex flex-wrap items-center gap-4 text-lg pt-3 md:pt-0 justify-around md:justify-end'>
 										</div>
 									</div>
 								))
 							) : (
-								<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium rounded border-yellow-300 p-3'>
+								<div className='w-full flex items-center justify-start gap-2 bg-yellow-100 border font-medium  border-yellow-300 p-3'>
 									<span className='text-base text-gray-700'>
 										No facilities found
 									</span>
@@ -707,7 +707,7 @@ Home.getInitialProps = async (ctx) => {
 				query,
 				token,
 				filters: { ...ft },
-				path: ctx.asPath || '/facility/facilities',
+				path: ctx.asPath || '/facilities',
 				current_url: current_url,
 			};
 		} catch (err) {
@@ -717,7 +717,7 @@ Home.getInitialProps = async (ctx) => {
 				err: err,
 				data: [],
 				query: {},
-				path: ctx.asPath || '/facility/facilities',
+				path: ctx.asPath || '/facilities',
 				current_url: '',
 			};
 		}
@@ -737,7 +737,7 @@ Home.getInitialProps = async (ctx) => {
 				if (ctx?.asPath) {
 					window.location.href = ctx?.asPath;
 				} else {
-					window.location.href = '/facility/facilities';
+					window.location.href = '/facilities';
 				}
 			}
 			setTimeout(() => {
@@ -746,7 +746,7 @@ Home.getInitialProps = async (ctx) => {
 					err: err,
 					data: [],
 					query: {},
-					path: ctx.asPath || '/facility/facilities',
+					path: ctx.asPath || '/facilities',
 					current_url: '',
 				};
 			}, 1000);

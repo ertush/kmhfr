@@ -74,8 +74,14 @@ const AdminOffices = (props) => {
     , }
     ]
 
-    useEffect(() => {
+  
 
+    useEffect(() => {
+        const user = JSON.parse(sessionStorage.getItem('user'))
+        if(user.id === 6){
+            router.push('/auth/login')
+        }
+        
         if (hasPermission(/^admin_office.view_.*$/, userPermissions)) { // hasPermission should be negated with !
             router.push('/unauthorized')
         }

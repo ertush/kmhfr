@@ -37,7 +37,11 @@ const Regulate = props => {
     let reject = ''
 
     useEffect(() => {
-       
+        const user = JSON.parse(sessionStorage.getItem('user'))
+		if(user.id === 6){
+			router.push('/auth/login')
+		}
+
         if (userCtx) setUser(userCtx);
 
         return () => {

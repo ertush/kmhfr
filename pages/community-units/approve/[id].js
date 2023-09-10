@@ -60,6 +60,13 @@ const CommUnit = (props) => {
     return () => {};
     
   }, [cu, reject]);
+
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem('user'))
+    if(user.id === 6){
+        router.push('/auth/login')
+    }
+  },[])
  
   return (
     <>

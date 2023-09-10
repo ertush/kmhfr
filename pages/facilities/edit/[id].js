@@ -42,6 +42,11 @@ export default function EditFacility(props) {
 
 
 	useEffect(() => {
+		const user = JSON.parse(sessionStorage.getItem('user'))
+		if(user.id === 6){
+			router.push('/auth/login')
+		}
+		
 		setIsClient(true)
 
 	}, [])

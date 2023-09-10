@@ -137,6 +137,13 @@ function EditAdminOffice(props) {
 
     }
 
+    useEffect(() => {
+        const user = JSON.parse(sessionStorage.getItem('user'))
+        if(user.id === 6){
+            router.push('/auth/login')
+        }
+    }, [])
+
     return (
         <MainLayout isLoading={false} searchTerm={props?.query?.searchTerm}>
             <div className="w-full grid grid-cols-5 gap-4 px-1 md:px-4 py-2 my-4">

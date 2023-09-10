@@ -20,7 +20,7 @@ const FacilityDetails = (props) => {
     () => import("../../../components/Map"), // replace '@components/map' with your component's location
     {
       loading: () => (
-        <div className="text-gray-800 text-lg rounded bg-white py-2 px-5 shadow w-auto mx-2 my-3">
+        <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">
           Loading&hellip;
         </div>
       ),
@@ -56,11 +56,11 @@ const FacilityDetails = (props) => {
           <div className="col-span-1 md:col-span-7 flex-1 flex-col items-start justify-start gap-3">
             {/* Breadcramps */}
             <div className="flex flex-row gap-2 text-sm md:text-base md:my-3">
-              <Link className="text-blue-700" href="/public/facility/facilities">
+              <Link className="text-blue-700" href="/public/facilities">
                 Home
               </Link>
               {"/"}
-              <Link className="text-blue-700" href="/public/facility/facilities">
+              <Link className="text-blue-700" href="/public/facilities">
                 Facilities
               </Link>
               {"/"}
@@ -71,7 +71,7 @@ const FacilityDetails = (props) => {
               <div className="flex flex-row gap-2 items-center ml-auto">
                 <button
                  onClick={()=>handlePrint(props['4'].token, facility.id)}
-                  className="p-2 text-center rounded-md font-semibold text-base  text-white bg-indigo-500 justify-end mr-2"
+                  className="p-2 text-center -md font-semibold text-base  text-white bg-indigo-500 justify-end mr-2"
                 >
                  Print
                 </button>
@@ -80,7 +80,7 @@ const FacilityDetails = (props) => {
             {/* Header Bunner  */}
             <div
               className={
-                "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-gray-50 drop-shadow rounded text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
+                "col-span-5 grid grid-cols-6 gap-5  md:gap-8 py-6 w-full bg-gray-50 drop-shadow  text-black p-4 md:divide-x md:divide-gray-200z items-center border-l-8 " +
                 (facility?.is_approved ? "border-blue-600" : "border-red-600")
               }  
             >
@@ -111,7 +111,7 @@ const FacilityDetails = (props) => {
                   {facility?.operational || facility?.operation_status_name ? (
                     <span
                       className={
-                        "leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default"
+                        "leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default"
                       }
                     >
                       <CheckCircleIcon className="h-4 w-4" />
@@ -121,7 +121,7 @@ const FacilityDetails = (props) => {
                     ""
                   )}
                   {facility?.closed && (
-                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-gray-200 text-gray-900 p-1 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <LockClosedIcon className="h-4 w-4" />
                       Closed
                     </span>
@@ -135,7 +135,7 @@ const FacilityDetails = (props) => {
             </div>
           </div>      
 
-          <div className={`col-span-1 md:col-span-4 md:w-full flex flex-col gap-3 mt-4`}>
+          <div className={`col-span-1 md:col-span-4 border border-blue-600 md:w-full flex flex-col gap-3 mt-4`}>
             {/* Facility Details Tab Section */}
               <FacilityDetailsTabsPulic facility={facility}/>
           </div>
@@ -148,7 +148,7 @@ const FacilityDetails = (props) => {
             </h3>
 
             {facility?.lat_long && facility?.lat_long.length > 0 ? (
-              <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
+              <div className="w-full bg-gray-200 shadow -lg flex flex-col items-center justify-center relative">
                 <Map
                   ward_name={wardName}
                   operational={
@@ -163,8 +163,8 @@ const FacilityDetails = (props) => {
                 />
               </div>
             ) : (
-              <div className="w-full bg-gray-200 shadow rounded-lg flex flex-col items-center justify-center relative">
-                <div className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+              <div className="w-full bg-gray-200 shadow -lg flex flex-col items-center justify-center relative">
+                <div className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                   <p>No location data found for this facility?.</p>
                 </div>
               </div>
