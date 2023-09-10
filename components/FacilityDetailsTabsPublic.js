@@ -117,7 +117,7 @@ function FacilityDetailsTabsPulic({ facility }) {
           className="grow-1 py-1 px-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-white border border-gray-100 w-full p-3 rounded grid grid-cols-2 gap-3 shadow-sm mt-4">
+            <div className="bg-white border border-gray-100 w-full p-3  grid grid-cols-2 gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                 Status:
               </h3>
@@ -135,12 +135,12 @@ function FacilityDetailsTabsPulic({ facility }) {
                 </label>
                 <p className="text-black font-medium text-base flex">
                   {facility?.open_normal_day ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
                   ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
                       No
                     </span>
@@ -148,19 +148,19 @@ function FacilityDetailsTabsPulic({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Regulated
                 </label>
                 <p className="col-span-2 text-black font-medium text-base flex">
                   {facility?.regulated ? (
-                    <span className="leading-none whitespace-nowrap text-sm rounded py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
+                    <span className="leading-none whitespace-nowrap text-sm  py-1 px-2 bg-blue-200 text-blue-900 flex gap-x-1 items-center cursor-default">
                       <CheckCircleIcon className="h-4 w-4" />
                       Yes
                     </span>
                   ) : (
-                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm rounded whitespace-nowrap cursor-default flex items-center gap-x-1">
+                    <span className="bg-red-200 text-red-900 p-1 px-2 leading-none text-sm  whitespace-nowrap cursor-default flex items-center gap-x-1">
                       <XCircleIcon className="h-4 w-4" />
                       No
                     </span>
@@ -176,7 +176,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Ownership:
               </h3>
@@ -197,7 +197,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Location: 
               </h3>
@@ -266,7 +266,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Bed capacity:
               </h3>
@@ -286,7 +286,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                   {facility?.number_of_cots}
                 </p>
               </div>
-            <div className="bg-white border border-gray-100 w-full p-3 rounded flex flex-col gap-3 shadow-sm mt-4">
+            <div className="bg-white border border-gray-100 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Contacts:
               </h3>
@@ -346,7 +346,7 @@ function FacilityDetailsTabsPulic({ facility }) {
           className="grow-1 p-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-            <div className="bg-white w-full p-4 rounded">
+            <div className="bg-white w-full p-4 ">
               <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                 <span className="font-semibold">Services</span>
               </h3>
@@ -389,7 +389,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                           </div>
                           <button
                             type="button"
-                            className="bg-gray-200 rounded p-1 h-8 px-4"
+                            className="bg-gray-200  p-1 h-8 px-4"
                             onClick={() => {
                               const newFormVisibility = [...formVisibility];
                               newFormVisibility[index] = !newFormVisibility[index];
@@ -412,7 +412,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                                 <input
                                   type="text"
                                   name="comment"
-                                  className="border border-gray-300 rounded p-2"
+                                  className="border border-gray-300  p-2"
                                   value={comment[index]}
                                   placeholder="Leave a comement"
                                   onChange={(e) =>
@@ -442,7 +442,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                               <div>
                               <button
                                   type="submit"
-                                  className="bg-blue-500 text-white rounded p-1  h-8 px-4"
+                                  className="bg-blue-500 text-white  p-1  h-8 px-4"
                                 >
                                   Submit
                                 </button>
@@ -455,7 +455,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                       </li>
                     ))
                   ) : (
-                    <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
+                    <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base">
                       <p>No services listed for this facility?.</p>
                     </li>
                   )}
@@ -468,7 +468,7 @@ function FacilityDetailsTabsPulic({ facility }) {
           className="grow-1 p-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-            <div className="bg-white w-full p-4 rounded">
+            <div className="bg-white w-full p-4 ">
               <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                 <span className="font-semibold">Facility units</span>
                 {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#units"} className="text-base text-blue-700 font-medium hover:text-black focus:text-black active:text-black">Edit facility units</a> : ""} */}
@@ -498,7 +498,7 @@ function FacilityDetailsTabsPulic({ facility }) {
                     </li>
                   ))
                 ) : (
-                  <li className="w-full rounded bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
+                  <li className="w-full  bg-yellow-100 flex flex-row gap-2 my-2 p-3 border border-yellow-300 text-yellow-900 text-base leading-none">
                     <p>No units in this facility?.</p>
                   </li>
                 )}
