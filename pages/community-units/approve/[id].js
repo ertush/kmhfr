@@ -428,23 +428,23 @@ const CommUnit = (props) => {
                     <textarea
                       cols="70"
                       rows="auto"
-                      className="flex col-span-2 border border-gray-200 -md text-gray-600 font-normal text-medium p-2"
+                      className="flex bg-transparent col-span-2 border border-gray-400 -md text-gray-600 font-normal text-medium p-2"
                       placeholder="Enter a comment"
                       onChange={(e) => setAppRejReason(e.target.value)}
                     ></textarea>
 
                     {/* <div className="flex flex-row"> */}
-                    <div className="flex flex-row justify-start items-center space-x-3 p-3">
+                    <div className="flex flex-row justify-start gap-3 items-center ">
                     <button
                       type="submit"
-                      className={ cu.is_approved ? ''  : "p-2 text-center -md font-semibold text-base text-white bg-blue-700"}
+                      className={ cu.is_approved ? ''  : "p-2 text-center  font-semibold text-base text-white bg-blue-700"}
                       onClick={(e) => setIsApproveReject(true)}
                     >
                       {cu.is_approved ? "": "Approve Community Health Unit"}
                     </button>
                     <button
                       type="submit"
-                      className={  cu.is_rejected ? '' : "p-2 text-center -md font-semibold text-base text-white bg-red-500"}
+                      className={  cu.is_rejected ? '' : "p-2 text-center font-semibold text-base text-white bg-red-500"}
                       onClick={(e) => setIsApproveReject(false) }
                     >
                       {cu.is_rejected ? "" : "Reject Community Health Unit"}

@@ -12,7 +12,9 @@ import {
 } from '@heroicons/react/solid';
 import { useLocalStorageState } from './hooks/formHook';
 import { useAlert } from 'react-alert';
+import { defer } from "underscore";
 import { handleBasicDetailsSubmit, handleBasicDetailsUpdates } from '../../controllers/facility/facilityHandlers';
+import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 
 
 
@@ -81,6 +83,12 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const [_, setGeoJSON] = useGeoJSON();
   const [__, setWardName] = useGeoData('ward_data');
   const [___, setGeoCenter] = useGeoData('geo_data');
+
+  const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+
+  // Facility update data
+
+  
 
 
   const [initialValues, handleFormUpdate] = useLocalStorageState({
@@ -345,7 +353,57 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   return (
     <Formik
       initialValues={formValues}
-      onSubmit={(values) => options['19']?.data ? handleBasicDetailsUpdates(values, facilityId, alert) : handleBasicDetailsSubmit(values, 'PATCH', formId, setFormId, checkListFileRef.current, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
+      onSubmit={(values) => options['19']?.data ? 
+      // Update existing facility
+      handleBasicDetailsUpdates(values, facilityId, updatedSavedChanges, alert)
+      .then(({  statusText }) => {
+        defer(() => updatedSavedChanges(true));
+ 
+        if (statusText == "OK") { 
+          fetch(
+            `/api/facility/get_facility/?path=facilities&id=${facilityId}`
+          )
+            .then(async (resp) => {
+              const results = await resp.json();
+
+              if (results?.latest_update) {
+                try {
+                  const _facilityUpdateData = await (
+                    await fetch(
+                      `/api/facility/get_facility/?path=facility_updates&id=${results?.latest_update}`
+                    )
+                  ).json();
+
+                  _facilityUpdateData['code'] = results?.code;
+                  _facilityUpdateData['facilityId'] = facilityId;
+
+                  updateFacilityUpdateData(_facilityUpdateData);
+                } catch (e) {
+                  console.error(
+                    "Encountered error while fetching facility update data",
+                    e.message
+                  );
+                }
+              }
+            })
+            .catch((e) =>
+              console.error(
+                "unable to fetch facility update data. Error:",
+                e.message
+              )
+            );
+        }
+      })
+      .catch((e) =>
+        console.error(
+          "unable to fetch facility data. Error:",
+          e.message
+        )
+      )
+        
+      : 
+      // Post new facility
+      handleBasicDetailsSubmit(values, 'PATCH', formId, setFormId, checkListFileRef.current, setGeoJSON, setWardName, setGeoCenter, setFacilityId)}
       validationSchema={toFormikValidationSchema(formSchema)}
       enableReinitialize
     >
@@ -390,8 +448,10 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
           }
 
           if (formikState.values.facility_type !== "") setFacilityTypeValue(formikState.values.facility_type)
-          if (formikState.values.owner_type !== "") setOwnerTypeLabel(() => {
-            return options['3']?.owner_types?.find(({ value }) => value === formikState.values.owner_type).label
+
+          // console.log(options['3']?.owner_types)
+          if (formikState.values.owner_type !== "" && options['3']?.owner_types ) setOwnerTypeLabel(() => {
+            return options['3']?.owner_types?.filter(({ value }) => value === formikState.values.owner_type)[0]?.label
           })
 
           // Facility type & Keph level form rule

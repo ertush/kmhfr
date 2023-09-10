@@ -52,7 +52,8 @@ function FacilityDetailsTabs({ facility }) {
           className="grow-1 py-1 px-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-blue-600 w-full p-3 grid grid-cols-2 gap-3 shadow-sm mt-4">
+            {/* Status */}
+            <div className="bg-blue-50 w-full p-3 grid grid-cols-2 gap-3 shadow-md mt-4">
               <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                 Status:
               </h3>
@@ -208,7 +209,8 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            {/* Regulation */}
+            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Regulation:
               </h3>
@@ -320,7 +322,8 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            {/* Ownership */}
+            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Ownership:
               </h3>
@@ -341,10 +344,51 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            {/* Location */}
+            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Location:
               </h3>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                  County
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.county || " - "}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                  Sub County
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.sub_county_name || " - "}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                  Ward
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.ward_name || " - "}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                  Latitude
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                  {facility?.lat_long !== null ? facility?.lat_long[0] :  " - "}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
+                <label className="col-span-1 text-gray-600">
+                  Longitude
+                </label>
+                <p className="col-span-2 text-black font-medium text-base">
+                {facility?.lat_long !== null ? facility?.lat_long[1] :  " - "}
+                </p>
+              </div>
               <div className="grid grid-cols-3 w-full md:w-11/12 mx-auto leading-none items-center">
                 <label className="col-span-1 text-gray-600">
                   Town
@@ -378,7 +422,8 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            {/* Bed Capacity */}
+            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Bed capacity:
               </h3>
@@ -448,7 +493,8 @@ function FacilityDetailsTabs({ facility }) {
               </div>
               
             </div>
-            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+            {/* Theaters */}
+            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md mt-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Surgical Theatres:
               </h3>
@@ -469,7 +515,8 @@ function FacilityDetailsTabs({ facility }) {
                 </p>
               </div>
             </div>
-            <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm my-4">
+            {/* Contacts */}
+            <div className="bg-blue-50 w-full p-3  flex flex-col gap-3 shadow-md my-4">
               <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                 Contacts:
               </h3>
@@ -529,7 +576,7 @@ function FacilityDetailsTabs({ facility }) {
           className="grow-1 py-1 px-4 tab-panel"
         >
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-blue-600 w-full px-2 my-4">
+            <div className="bg-blue-50 w-full px-2 my-4">
               {/* <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight"> */}
                 {/* <span className="font-semibold">Services</span> */}
                 {/* {user && user?.id ? <a href={"/facility/edit/"+facility?.id+"#services"} className="text-base text-blue-700 font-medium hover:text-black focus:text-black active:text-black">Edit services</a> : ""} */}
@@ -582,7 +629,7 @@ function FacilityDetailsTabs({ facility }) {
         >
          
             <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-blue-600 w-full px-2 my-4">
+            <div className="bg-blue-50 w-full px-2 my-4">
               <ul>
                 {facility?.facility_infrastructure &&
                   facility?.facility_infrastructure.length > 0 ? (
@@ -624,7 +671,7 @@ function FacilityDetailsTabs({ facility }) {
 
               {/* </h3> */}
             <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-blue-600 w-full px-2 my-4">
+            <div className="bg-blue-50 w-full px-2 my-4">
               <ul>
                 {facility?.facility_specialists &&
                   facility?.facility_specialists.length > 0 ? (
@@ -663,7 +710,7 @@ function FacilityDetailsTabs({ facility }) {
 
               {/* </h3> */}
           <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-            <div className="bg-transparent border border-blue-600 w-full px-2 my-4">
+            <div className="bg-blue-50 w-full px-2 my-4">
               <ul>
                 {facility?.facility_units &&
                   facility?.facility_units.length > 0 ? (

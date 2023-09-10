@@ -264,7 +264,7 @@ const CommunityUnit = (props) => {
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col gap-y-2 group items-center justify-start text-left">
-                  <div className="bg-transparent border border-blue-600 w-full p-3  grid grid-cols-2 gap-3 shadow-sm mt-4">
+                  <div className="bg-blue-50 shadow-md w-full p-3  grid grid-cols-2 gap-3  mt-4">
                     <h3 className="text-lg leading-tight underline col-span-2 text-gray-700 font-medium">
                       Status:
                     </h3>
@@ -387,7 +387,7 @@ const CommunityUnit = (props) => {
                       </div>
                     )}
                   </div>
-                  <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-blue-50 shadow-md w-full p-3  flex flex-col gap-3  mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Coverage:
                     </h3>
@@ -408,7 +408,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-blue-50 shadow-md w-full p-3  flex flex-col gap-3  mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Location:
                     </h3>
@@ -451,7 +451,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-blue-50 shadow-md w-full p-3  flex flex-col gap-3  mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Regulation:
                     </h3>
@@ -508,7 +508,7 @@ const CommunityUnit = (props) => {
                       </p>
                     </div>
                   </div>
-                  <div className="bg-transparent border border-blue-600 w-full p-3  flex flex-col gap-3 shadow-sm mt-4">
+                  <div className="bg-blue-50 shadow-md w-full p-3  flex flex-col gap-3  mt-4">
                     <h3 className="text-lg leading-tight underline text-gray-700 font-medium">
                       Contacts:
                     </h3>
@@ -647,7 +647,7 @@ const CommunityUnit = (props) => {
                 className="grow-1 py-1  px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                  <div className="bg-transparent w-full p-4 ">
+                  <div className="bg-blue-50 shadow-md w-full p-4 m-3 ">
                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                       <span className="font-semibold">Services</span>
                       <div className="col-span-6 md:col-span-1 flex flex-col items-center justify-center p-2"></div>
@@ -682,7 +682,7 @@ const CommunityUnit = (props) => {
                 className="grow-1 py-1 px-4 tab-panel"
               >
                 <div className="col-span-4 md:col-span-4 flex flex-col group items-center justify-start text-left">
-                  <div className="bg-transparent w-full p-4 ">
+                  <div className="bg-blue-50 shadow-md w-full p-4 m-3 ">
                     <h3 className="text-2xl w-full flex flex-wrap justify-between items-center leading-tight tracking-tight">
                       <span className="font-semibold">
                         Health Unit workers

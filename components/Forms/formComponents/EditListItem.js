@@ -133,9 +133,9 @@ function  EditListItem({
         setIsSaveAndFinish(true)
 
         if (item) {
-          handleItemsUpdate([selectedItems, itemId], alert)
+          handleItemsUpdate([savedItems, itemId], alert)
             .then(({ statusText }) => {
-              defer(() => setIsSavedChanges(true))
+              defer(() => setIsSavedChanges(true));
               let update_id
               if (statusText == 'OK') {
 
@@ -402,7 +402,7 @@ function  EditListItem({
         {/* Save btn */}
 
         {
-          selectedItems.length > 0 && item !== null &&
+          savedItems.length > 0 && item !== null &&
 
           <div className=" w-full flex justify-end h-auto mr-3">
             <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save & finish</button>

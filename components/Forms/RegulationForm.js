@@ -9,8 +9,9 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon } from '@heroicons/react/outline';
 import FacilityDepartmentUnits from './formComponents/FacilityDepartmentUnits'
 import { FacilityIdContext } from './Form'
-import { handleRegulationSubmit } from '../../controllers/facility/facilityHandlers';
-
+import { handleRegulationSubmit, handleRegulationSubmitUpdates, handleRegulationUpdates } from '../../controllers/facility/facilityHandlers';
+import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
+import { defer } from 'underscore';
 
 export const FacilityDepartmentUnitsContext = createContext();
 
@@ -35,9 +36,13 @@ export function RegulationForm() {
     })
 
 
+    const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
 
 
     const[facilityId, _] = useContext(FacilityIdContext);
+
+    const [responseError, setResponseError] = useState(null);
+
 
     const [facilityDepts, setFacilityDepts] = useState([
         (() => (
@@ -115,6 +120,7 @@ export function RegulationForm() {
     // Ref
     const _regBodyRef = useRef(null)
     const fileRef = useRef(null)
+    const formRef = useRef(null)
 
     // Event Handlers
  
@@ -164,7 +170,62 @@ export function RegulationForm() {
     return (
         <Formik
             initialValues={formValues}
-            onSubmit={(values) => handleRegulationSubmit(values, [formId, setFormId, facilityId], fileRef.current)}
+            onSubmit={(values) => {
+                options['19']?.data ? 
+                handleRegulationUpdates(values, facilityId, fileRef.current)
+                .then(resp => {
+                    defer(() => updatedSavedChanges(true));
+                    if (resp) {
+                        console.log({facilityId, file: fileRef.current})
+                        console.log('Working....')
+
+                      fetch(
+                        `/api/facility/get_facility/?path=facilities&id=${facilityId}`
+                      )
+                        .then(async (resp) => {
+                        console.log({facilityId, file: fileRef.current})
+
+                          const results = await resp.json();
+    
+                          if (results?.latest_update) {
+                            try {
+                              const _facilityUpdateData = await (
+                                await fetch(
+                                  `/api/facility/get_facility/?path=facility_updates&id=${results?.latest_update}`
+                                )
+                              ).json();
+                              updateFacilityUpdateData(_facilityUpdateData);
+                            } catch (e) {
+                              console.error(
+                                "Encountered error while fetching facility update data",
+                                e.message
+                              );
+                            }
+                          }
+                          else{
+                            if(results?.latest_update == null){
+                                setResponseError('No updates found for this facility') 
+                            }
+                          }
+                        })
+                        .catch((e) =>
+                          console.error(
+                            "unable to fetch facility update data. Error:",
+                            e.message
+                          )
+                        );
+                    }
+                  })
+                  .catch((e) =>
+                    console.error(
+                      "unable to fetch facility data. Error:",
+                      e.message
+                    )
+                  )
+                :
+                handleRegulationSubmit(values, [formId, setFormId, facilityId], fileRef.current)
+
+            }}
             validationSchema={toFormikValidationSchema(formSchema)}
             enableReinitialize
         >
@@ -196,7 +257,7 @@ export function RegulationForm() {
                   return (
                    <>
                         <h4 className="text-lg uppercase mt-4 pb-2 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900">Facility Regulation</h4>
-                        <Form name="facility_regulation_form" className='flex flex-col w-full items-start bg-blue-50 shadow-md p-4 justify-start gap-3' >
+                        <Form ref={formRef} name="facility_regulation_form" className='flex flex-col w-full items-start bg-blue-50 shadow-md p-4 justify-start gap-3' >
 
                             {/* Regulatory Body */}
                             <div className="w-full flex flex-col background items-start justify-start gap-1 mb-3">
@@ -328,19 +389,32 @@ export function RegulationForm() {
                                 </button>
                             </div>
 
+                              {
+                                  options['19']?.data ?
 
-                            {/* Prev / Next */}
-                            <div className='flex justify-between items-center w-full'>
-                                <button onClick={handleRegulationPrevious}
-                                    className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-blue-700 px-2'>
-                                    <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
-                                    <span className='text-medium font-semibold group-hover:text-white text-blue-900'>Facility Contacts</span>
-                                </button>
-                                <button type="submit" className='flex items-center justify-start space-x-2 bg-blue-700 group hover:bg-transparent border border-blue-700 p-1 px-2'>
-                                    <span className='text-medium font-semibold group-hover:text-blue-900 text-white'> Services</span>
-                                    <ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-blue-900 text-white' />
-                                </button>
-                            </div>
+                                      <div className='flex justify-end items-center w-full'>
+                                          <button
+                                              type='submit'
+                                              className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                                              <span className='text-medium font-semibold text-white'>
+                                                  Save & Finish
+                                              </span>
+                                          </button>
+                                      </div>
+                                      :
+
+                                      <div className='flex justify-between items-center w-full'>
+                                          <button onClick={handleRegulationPrevious}
+                                              className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-blue-700 px-2'>
+                                              <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
+                                              <span className='text-medium font-semibold group-hover:text-white text-blue-900'>Facility Contacts</span>
+                                          </button>
+                                          <button type="submit" className='flex items-center justify-start space-x-2 bg-blue-700 group hover:bg-transparent border border-blue-700 p-1 px-2'>
+                                              <span className='text-medium font-semibold group-hover:text-blue-900 text-white'> Services</span>
+                                              <ChevronDoubleRightIcon className='w-4 h-4 group-hover:text-blue-900 text-white' />
+                                          </button>
+                                      </div>
+                              }
                         </Form>
                     </>
                    )

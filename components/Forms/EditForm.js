@@ -1,7 +1,7 @@
 
 "use client"
 
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import * as Tabs from "@radix-ui/react-tabs";
 
 import { BasicDeatilsForm } from './BasicDetailsForm';
@@ -16,6 +16,7 @@ import { FacilityIdContext } from './Form';
 import { FormOptionsContext } from '../../pages/facilities/add';
 
 
+
 export const EditFacilityContactsContext = createContext(null)
 
 
@@ -23,6 +24,7 @@ export function EditForm() {
 
   const options = useContext(FormOptionsContext);
 
+ 
 
   // State
   const [geoJSON, setGeoJSON] = useLocalStorageState({
@@ -45,6 +47,14 @@ export function EditForm() {
     value: options['19']?.data?.id
   }).actions.use();
 
+  // Update facility ID in the store
+
+  useEffect(() => {
+
+    setFacilityId(options['19']?.data?.id)
+
+  }, [])
+ 
 
 
   return (
@@ -53,7 +63,7 @@ export function EditForm() {
       <Tabs.Root
         orientation="horizontal"
         className="w-full flex flex-col py-2 tab-root"
-        defaultValue="basic_details"
+        defaultValue="geolocation"
 
       >
         <Tabs.List className="list-none md:grid border-b border-blue-600 md:grid-cols-7 grid grid-cols-2 gap-2  px-2  uppercase leading-none tab-list font-semibold">

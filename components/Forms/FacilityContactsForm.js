@@ -11,10 +11,14 @@ import { object, string } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
 import {
-    handleFacilityContactsSubmit
+    handleFacilityContactsSubmit, 
+    handleFacilityContactsUpdates
 } from '../../controllers/facility/facilityHandlers';
-
+import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { FacilityIdContext } from './Form'
+import { defer } from 'underscore';
+import { Alert } from "@mui/lab";
+
 
 
 export const FacilityDeptContext = createContext(null)
@@ -53,6 +57,11 @@ export function FacilityContactsForm() {
     // State
     const [formId, setFormId] = useContext(FormContext);
     const[facilityId, _] = useContext(FacilityIdContext);
+    const [responseError, setResponseError] = useState(null);
+
+
+    const { updatedSavedChanges, updateFacilityUpdateData } = options['19']?.data ? useContext(FacilityUpdatesContext) : {updatedSavedChanges: null, updateFacilityUpdateData: null }
+
 
     const [facilityContacts, setFacilityContacts] = useState([
         (() => (
@@ -126,7 +135,7 @@ export function FacilityContactsForm() {
                             setFacilityContacts={setFacilityContacts}
                             contacts={[null, null, null]}
                             index={i}
-                            length={contactCount.length}
+                           
                         />
                     </FacilityContactsContext.Provider>
                 ))())
@@ -148,7 +157,7 @@ export function FacilityContactsForm() {
                             contacts={[null, null, null]}
                             setFacilityContacts={setOfficerContactDetails}
                             index={i}
-                            length={officerContactCount.length}
+                           
                         />
                     </FacilityContactsContext.Provider>
                     ))()
@@ -203,7 +212,60 @@ export function FacilityContactsForm() {
     return (
         <Formik
         initialValues={formValues}
-        onSubmit={(values) => handleFacilityContactsSubmit(values, [formId, setFormId, facilityId])}
+        onSubmit={(values) => {
+
+            options['19']?.data ? 
+            handleFacilityContactsUpdates(values, facilityId)
+            .then(({ statusText }) => {
+                defer(() => updatedSavedChanges(true));
+                if (statusText == "OK") {
+                  fetch(
+                    `/api/facility/get_facility/?path=facilities&id=${facilityId}`
+                  )
+                    .then(async (resp) => {
+                      const results = await resp.json();
+
+                      
+
+                      if (results?.latest_update) {
+                        try {
+                          const _facilityUpdateData = await (
+                            await fetch(
+                              `/api/facility/get_facility/?path=facility_updates&id=${results?.latest_update}`
+                            )
+                          ).json();
+                          updateFacilityUpdateData(_facilityUpdateData);
+                        } catch (e) {
+                          console.error(
+                            "Encountered error while fetching facility update data",
+                            e.message
+                          );
+                        }
+                      }
+                      else{
+                        if(results?.latest_update == null){
+                            setResponseError('No updates found for this facility') 
+                        }
+                      }
+                    })
+                    .catch((e) =>
+                      console.error(
+                        "unable to fetch facility update data. Error:",
+                        e.message
+                      )
+                    );
+                }
+              })
+              .catch((e) =>
+                console.error(
+                  "unable to fetch facility data. Error:",
+                  e.message
+                )
+              )
+            :
+            handleFacilityContactsSubmit(values, [formId, setFormId, facilityId])
+
+        }}
 
         validationSchema={toFormikValidationSchema(formSchema)}
         enableReinitialize
@@ -221,7 +283,11 @@ export function FacilityContactsForm() {
 
                return ( 
                <>
-                <h4 className='text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
+               {
+                responseError && 
+                <Alert severity="error" sx={{ width: '100%', marginTop:'16px' }}>{responseError}</Alert>
+                }
+                    <h4 className='text-lg uppercase pb-2 mt-4 border-b border-blue-600 w-full mb-4 font-semibold text-blue-900'>
                     Facility Contact
                 </h4>
                 <Form
@@ -286,7 +352,7 @@ export function FacilityContactsForm() {
                                                 contacts={[null, null, null]}
                                                 fieldNames={['contact_type', 'contact']}
                                                 index={(facilityContacts.length + 1) - 1}
-                                                length={facilityContacts.length}
+                                               
                                             />
                                         </FacilityContactsContext.Provider>
                                     ))()
@@ -418,7 +484,7 @@ export function FacilityContactsForm() {
                                                         contacts={[null, null, null]}
                                                         fieldNames={['officer_details_contact_type', 'officer_details_contact']}
                                                         index={(officerContactDetails.length + 1) - 1}
-                                                        length={officerContactDetails.length}
+                                                    
 
                                                     />
                                                 </FacilityContactsContext.Provider>
@@ -434,8 +500,22 @@ export function FacilityContactsForm() {
                         </div>
                     </div>
 
-                    <div className='flex justify-between items-center w-full'>
-                    <button
+                    {
+                options['19']?.data  ? 
+
+                <div className='flex justify-end items-center w-full'>
+                  <button
+                    type='submit'
+                    className='flex items-center justify-start space-x-2 bg-blue-700  p-1 px-2'>
+                    <span className='text-medium font-semibold text-white'>
+                      Save & Finish
+                    </span>
+                  </button>
+              </div>
+                :
+
+                <div className='flex justify-between items-center w-full'>
+                        <button
                             onClick={handleGeolocationPrevious}
                             className='flex items-center justify-start space-x-2 p-1 group hover:bg-blue-700 border border-blue-700 px-2'>
                             <ChevronDoubleLeftIcon className='w-4 h-4 group-hover:text-white text-blue-900' />
@@ -453,6 +533,7 @@ export function FacilityContactsForm() {
                         </button>
 
                     </div>
+                 }
                 </Form>
                 </>
                )

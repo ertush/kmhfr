@@ -63,7 +63,7 @@ export function ServicesForm() {
                             setUpdatedItem={() => null}
                             itemId={facilityId}
                             setItems={setServices}
-                            item={null}
+                            item={options['19']?.data ?? null}
                             options={options['15']?.service}
                             removeItemHandler={() => null}
                             handleItemsSubmit={handleServiceSubmit}

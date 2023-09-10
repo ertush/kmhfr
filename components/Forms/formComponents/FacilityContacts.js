@@ -8,7 +8,7 @@ import  Select  from './FromikSelect'
 import { Field } from 'formik'
 
 
-const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldNames, length, contacts}) => {
+const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldNames, contacts}) => {
 
 
 
@@ -61,7 +61,7 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                 />
 
             <div className="w-full col-start-2 flex items-center gap-x-3 justify-between">
-                    {/* Regulatory Body */}
+                    {/*facility  contact */}
                     <Field 
                     id={`facility-contact-detail-${index}`} 
                     type="text" 
@@ -74,15 +74,15 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                     {/* Delete Btn */}
                     <button 
                     id={`delete-btn-${index}`}
-                    disabled={index ? true : false}
                     onClick={async ev => {
                         ev.preventDefault();
                  
                         if(!contacts.includes(undefined)){
-                            const _contacts = contactTypes
-                            _contacts.splice(index, 1);
-                            delete _contacts[index]
-                            setFacilityContacts(_contacts);
+
+                       
+                            contactTypes.splice(index, 1);
+                            delete contactTypes[index]
+                            setFacilityContacts(contactTypes); 
 
                             try{
                                 if(contactTypeRef?.current) {
@@ -95,8 +95,11 @@ const FacilityContact = ({contactTypeOptions, setFacilityContacts, index, fieldN
                                 console.error(e.message)
                             }
                         }else{
-                            contacts.splice(index, 1);
-                            setFacilityContacts(contacts);
+                            // contacts.splice(index, 1);
+                            // setFacilityContacts(contacts);
+                            contactTypes.splice(index, 1);
+                            delete contactTypes[index]
+                            setFacilityContacts(contactTypes); 
                         }
 
                     }}
@@ -126,7 +129,7 @@ const OfficerContactDetails = ({contactTypeOptions, setFacilityContacts, contact
                  />
             
             <div className="w-full col-start-2 flex items-center gap-x-3 justify-between">
-                    {/* Regulatory Body */}
+                    {/* Officer contacts  */}
                     <Field 
                     id={`officer-contact-detail-${index}`} 
                     type="text" 

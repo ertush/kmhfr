@@ -1,3 +1,4 @@
+import { OtherHouses } from "@mui/icons-material";
 
 export const propsToGridData = (props, index) => {
 
@@ -1964,6 +1965,204 @@ export const propsToGridData = (props, index) => {
 
                 ]
             }
+        // Human resource
+        case 11:
+        return {
+            rows: props[`${index}`]?.facility_human_resource_category_report_all_hierachies.map((
+                {
+                    
+                    facility_id__ward__sub_county__county__name: county,
+                    facility_id__ward__sub_county__name: sub_county,
+                    facility_id__ward__name: ward,
+                    'Clinical Officers': clinical_officers,
+                    'Dental staff': dental_staff,
+                    'Medical Engineering':mdeical_engineering,
+                    'Environmental Health': env_health,
+                    'Medical Officers & Specialists': medical_officer,
+                    'General Support Staffs': general_support_staffs,
+                    'ICT Office': ict_office,
+                    'Medical Laboratory': medical_laboratory,
+                    'Community Health Services': communty_health_services,
+                    'Pharmacy Staffs': pharmacy_staffs, 
+                    'Medical Social Work': medical_social_work,
+                    'Nurses and specialist': nurses_and_specailist,
+                    'Health Records and Information': health_records_and_info,
+                    'Health Promotion': health_promotion,
+                    'Clinical Psychology':	clinical_psychology,
+                    'Nutrition Services': nutrition_services,
+                    'Health Administrative Staffs': health_administrative_staffs,
+                    'Rehabilitative staff': rehabilitative_staff,
+                    'CLINICIANS': clinicians,
+                    'Diagnostics & Imaging': diagnostics_imaging,
+                    'Support Staff': support_staffs
+
+                }, index) => ({
+                    county,
+                    sub_county,
+                    ward,
+                    clinical_officers,
+                    dental_staff,
+                    mdeical_engineering,
+                    env_health,
+                    medical_officer,
+                    general_support_staffs,
+                    ict_office,
+                    medical_laboratory,
+                    communty_health_services,
+                    pharmacy_staffs,
+                    medical_social_work,
+                    nurses_and_specailist,
+                    health_records_and_info,
+                    health_promotion,
+                    clinical_psychology,
+                    nutrition_services,
+                    health_administrative_staffs,
+                    rehabilitative_staff,
+                    clinicians,
+                    diagnostics_imaging,
+                    support_staffs,
+                    id:index
+                    })
+            ),
+
+            columns: [
+                {
+                    headerName: 'County',
+                    field: 'county',
+                    width:100
+                },
+                {
+                    headerName: 'Sub County',
+                    field: 'sub_county',
+                    width:100
+                },
+                {
+                    headerName: 'Ward',
+                    field: 'ward',
+                    width:100
+                },
+                {
+                    headerName: 'CLINICAL OFFICER',
+                    field: 'clinical_officers',
+                    width:200
+
+                },
+                {
+                    headerName: 'DENTAL STAFF',
+                    field: 'dental_staff',
+                    width:200
+                },
+                {
+                    headerName: 'MEDICAL ENGINEERING',
+                    field: 'mdeical_engineering',
+                    width:200
+
+                },
+                {
+                    headerName: 'ENVIROMENTAL HEALTH',
+                    field: 'env_health',
+                    width:200
+                },
+                {
+                    headerName: 'MEDICAL OFFICERS & SPECIALISTS',
+                    field: 'medical_officer',
+                    width:200
+
+                },
+                {
+                    headerName: 'GENERAL SUPPORT STAFF',
+                    field: 'general_support_staffs',
+                    width:200
+
+                },
+                {
+                    headerName: 'ICT OFFICER',
+                    field: 'ict_office',
+                    width:200
+                },
+                {
+                    headerName: 'MEDICAL LABORATORY',
+                    field: 'medical_laboratory',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'COMMUNITY HEALTH SERVICES',
+                    field: 'communty_health_services',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'PHARMACY STAFF',
+                    field: 'pharmacy_staffs',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'MEDICAL SOCIAL WORK',
+                    field: 'medical_social_work',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'NURSERS AND SPECIALIST',
+                    field: 'nurses_and_specailist',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'HEALTH RECORDS AND INFORMATION',
+                    field: 'health_records_and_info',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'HEALTH PROMOTION',
+                    field: 'health_promotion',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'CLINICAL PYSCHOLOGY',
+                    field: 'clinical_psychology',
+
+                    width:200
+                    
+                },
+                {
+                    headerName: 'NUTRITION SERVICES',
+                    field: 'nutrition_services',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'HEALTH ADMINISTRATIVE STAFF',
+                    field: 'health_administrative_staffs',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'REHABILITATIVE STAFF',
+                    field: 'rehabilitative_staff',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'CLINICIANS',
+                    field: 'clinicians',
+                    width:200
+                    
+                },
+                {
+                    headerName: 'SUPPORT STAFFS',
+                    field: 'support_staffs',
+                    width:200
+                    
+                }
+
+
+            ]
+        }
         
 
     }
