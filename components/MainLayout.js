@@ -97,7 +97,7 @@ export default function MainLayout({ children, isLoading, searchTerm, isFullWidt
                 <span className="text-lg text-gray-400">&middot;</span>
                 <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="https://healthit.uonbi.ac.ke" target="_blank" rel="noreferrer noopener">USAID HealthIT</a>
                 <span className="text-lg text-gray-400">&middot;</span>
-                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://KMHFR.health.go.ke" target="_blank" rel="noreferrer noopener">KMHFR v2</a>
+                <a className="text-blue-300 hover:underline focus:underline active:underline hover:text-white focus:text-white active:text-white" href="http://KMHFR.health.go.ke" target="_blank" rel="noreferrer noopener">KMHFL v2</a>
             </footer>
         </div>
     );
