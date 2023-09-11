@@ -231,6 +231,7 @@ const Dash = (props) => {
         totalSummary.push(props?.data?.validations[i]);
     }
          
+    console.log({data: props?.data})
     const recentChanges =[
         {name: 'New facilities added', count: `${props?.data?.recently_created || 0}`},
         {name: 'Facilities updated', count: `${props?.data?.recently_updated || 0}`},
