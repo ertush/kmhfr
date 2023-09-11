@@ -7,7 +7,7 @@ import { checkToken } from '../../controllers/auth/auth'
 import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { Menu } from '@headlessui/react'
-import { ChevronDownIcon, FilterIcon } from '@heroicons/react/outline'
+import { ChevronDownIcon, FilterIcon, SearchIcon } from '@heroicons/react/outline'
 import Select from 'react-select'
 
 // @mui imports
@@ -20,6 +20,7 @@ import NativePickers from '../../components/date-picker'
 // import { PermissionContext } from '../../providers/permissions'
 import FacilitySideMenu from '../../components/FacilitySideMenu'
 import { UserContext } from '../../providers/user'
+import {Formik, Form, Field} from 'formik'
 
 
 
@@ -435,7 +436,74 @@ const Home = (props) => {
                     {/* Main Body */}
                     <div className="w-full md:col-span-4 mr-24 md:col-start-2 col-span-5 md:h-auto border border-blue-600">
                                     {/* Data Indicator section */}
-                                    <div className='w-full flex justify-end border-b border-blue-600'>
+                                    <div className='w-full p-2 flex justify-between border-b border-blue-600'>
+                                        {/* search input */}
+                                        {/* `${router.asPath}&qf=approved&approved=true&approved_national_level=true&rejected=false` || '/facilities' */}
+                                        <Formik
+                                        initialValues={
+                                            {
+                                                q:""
+                                            }
+                                        }
+                                            onSubmit={(values) => {
+
+                                                switch((new URL(window.location.href))?.searchParams.get('qf')){
+                                                    case "approved":
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=approved&approved=true&approved_national_level=true&rejected=false`)
+                                                        break;
+                                                    case "new_pending_validation":
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true`)
+                                                        break;
+                                                    case "updated_pending_validation":
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=updated_pending_validation&has_edits=true&pending_approval=true`)
+                                                        break;
+                                                    case "to_publish":
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=to_publish&to_publish=true`)
+                                                        break;
+                                                    case "dhis_synced_facilities":
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}qf=dhis_synced_facilities&approved=true&approved_national_level=true&rejected=false&reporting_in_dhis=true`)
+                                                        break;
+                                                    case "failed_validation":
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=failed_validation&rejected=true`)
+                                                        break;
+                                                    case "rejected":
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=rejected&rejected_national=true`)
+                                                        break;
+                                                    case "closed":
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=closed&closed=true`)
+                                                        break;
+                                                    case "incomplete":
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=incomplete&is_complete=false&in_complete_details=false`)
+                                                        break;
+                                                
+                                                }
+
+                                            }}  
+                                        >
+
+                                        <Form
+                                        className="inline-flex flex-row justify-start flex-grow py-2 lg:py-0"
+                                        
+                                    >
+                                            
+                                        <Field
+                                        name="q"
+                                        id="search-input"
+                                        className="flex-none bg-transparent p-2 w-3/5 md:flex-grow-0 flex-grow shadow-sm border border-blue-600 placeholder-gray-600  focus:shadow-none focus:ring-black focus:border-black outline-none"
+                                        type="search"
+                                        
+                                        placeholder="Search a facility"
+                                        />
+                                        <button
+                                        type="submit"
+                                        className="bg-transparent border-t border-r border-b border-blue-600 text-black flex items-center justify-center px-4 py-1"
+                                        
+                                        >
+                                        <SearchIcon className="w-5 h-5 text-blue-600" />
+                                        </button>
+                                    </Form>
+                                    </Formik>
+
                                         <h5 className="text-lg font-medium text-gray-800 pr-2">      
                                             {props?.data?.count && props?.data?.count > 0 && <small className="text-gray-500 text-base">{props?.data?.start_index ?? ''} - {props?.data?.end_index ?? ''} of {props?.data?.count ?? ''} </small>}
                                         </h5>
