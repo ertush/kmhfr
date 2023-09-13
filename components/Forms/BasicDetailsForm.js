@@ -351,7 +351,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const facilityTypeDetailsRef = useRef(null);
   const checkListFileRef = useRef(null);
 
-  console.log({formValues})
+  // console.log({formValues})
   return (
     <Formik
       initialValues={formValues}
@@ -424,9 +424,11 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
           // Form Validations
 
+          if(!formikState.values.facility_type.includes("")){
           formikState.values.facility_type_details =  options['1']?.facility_type_details?.find(
             ({ value }) => value === formikState.values.facility_type
           )?.value ?? " ";
+          }
 
           // console.log({type_details})
 
