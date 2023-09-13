@@ -65,7 +65,7 @@ export function HumanResourceForm() {
                         itemsCategoryName={'human resource'}
                         options={options['17']?.hr}
                         itemId={facilityId}
-                        item={null}
+                        item={options['19']?.data ?? null}
                         handleItemsSubmit={handleHrSubmit}
                         handleItemsUpdate={() => null}
                         removeItemHandler={() => null}

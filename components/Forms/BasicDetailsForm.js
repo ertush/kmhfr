@@ -65,7 +65,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
     plot_number: "",
     nearest_landmark: "",
     location_desc: "",
-    facility_checklist_document: "",
+    // facility_checklist_document: "",
   };
 
   // handle Edit staff
@@ -100,6 +100,8 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   // console.log({ facilityBasicDetails });
 
   const formValues = options['19']?.data ? facilityBasicDetails : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields
+
+  // console.log({facility_type: formValues.facility_type, facility_type_details: formValues.facility_type_details})
 
   delete formValues['facility_checklist_document'];
 
@@ -349,7 +351,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
   const facilityTypeDetailsRef = useRef(null);
   const checkListFileRef = useRef(null);
 
-
+  console.log({formValues})
   return (
     <Formik
       initialValues={formValues}
@@ -422,6 +424,14 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
           // Form Validations
 
+          formikState.values.facility_type_details =  options['1']?.facility_type_details?.find(
+            ({ value }) => value === formikState.values.facility_type
+          )?.value ?? " ";
+
+          // console.log({type_details})
+
+          // if(formikState.values.number_of_inpatient_beds == null) 
+
           // Hours/Days duration form rules
           if (formikState.values.open_whole_day) {
             formikState.values.open_late_night = true;
@@ -453,6 +463,13 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
           if (formikState.values.owner_type !== "" && options['3']?.owner_types ) setOwnerTypeLabel(() => {
             return options['3']?.owner_types?.filter(({ value }) => value === formikState.values.owner_type)[0]?.label
           })
+
+          // if owner == 'armed forces' then check the facility classified field
+          if(formikState.values.owner.includes("93c0fe24-3f12-4be2-b5ff-027e0bd02274")){
+              formikState.values.is_classified = true;
+          } else {
+            formikState.values.is_classified = false;
+          }
 
           // Facility type & Keph level form rule
           switch (formikState.values.facility_type) {
@@ -562,7 +579,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
 
               </div>
               {/* Facility Type */}
-              <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+              <div className={`${options['19']?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
                 <label
                   htmlFor='facility_type'
                   className='text-gray-600 capitalize text-sm'>
@@ -578,13 +595,15 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   placeholder="Select a facility type..."
                   required
                   name='facility_type'
+                  disabled={options['19']?.data ? true: false}
+
 
                 />
-                {errors.facility_type && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type}</span>}
+                {/* {errors.facility_type && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type}</span>} */}
 
               </div>
               {/* Facility Type Details */}
-              <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+              <div className={`${options['19']?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
                 <label
                   htmlFor='facility_type_details'
                   className='text-gray-600 capitalize text-sm'>
@@ -600,9 +619,11 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   placeholder="Select facility type details..."
                   required
                   name='facility_type_details'
+                  disabled={options['19']?.data ? true: false}
+
 
                 />
-                {errors.facility_type_details && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type_details}</span>}
+                {/* {errors.facility_type_details && <span className='font-normal text-sm text-red-500 text-start'>{errors.facility_type_details}</span>} */}
 
 
               </div>
@@ -722,7 +743,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
               </div>
 
               {/* KEPH Level */}
-              <div className='w-full flex flex-col items-start justify-start gap-1 mb-3'>
+              <div className={`${options['19']?.data ? "cursor-not-allowed" : "cursor-default"} w-full flex flex-col items-start justify-start gap-1 mb-3`}>
                 <label
                   htmlFor='keph_level'
                   className='text-gray-600 capitalize text-sm'>
@@ -732,6 +753,7 @@ export function BasicDeatilsForm({ useGeoJSON, useGeoData }) {
                   options={options['4']?.keph}
                   placeholder="Select a KEPH Level.."
                   name='keph_level'
+                  disabled={options['19']?.data ? true: false}
 
                 />
               </div>

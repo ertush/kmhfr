@@ -596,6 +596,30 @@ const Facility = (props) => {
                         Close
                       </button>
                       }
+                      {
+                        console.log({props})
+                      }
+                      
+                      <button
+                        onClick={() => {
+                          // /api/facilities/facility_detail_report/b2f3c373-40ef-4ca9-bc9c-4237eb9a06b2/?access_token=token
+
+                            // fetch(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_detail_report/${facility?.id}/?access_token=${props['3']?.token}`,
+                            //   {
+                            //     'headers': {
+                            //       "Accept": "application/json",
+                            //       'cache-control': "no-cache",
+                            //       "Authorization": "Bearer " + props['3']?.token
+                            //     }
+                            //   })
+                          
+                            router.push(`${process.env.NEXT_PUBLIC_API_URL}/facilities/facility_detail_report/${facility?.id}/?access_token=${props['3']?.token}`)
+                        }}
+                        className="p-2 text-center -md font-semibold text-base  text-white bg-black"
+                      >
+                        Print
+                      </button>
+
                     </div>
                   </div>
                 }
@@ -817,8 +841,12 @@ Facility.getInitialProps = async (ctx) => {
             }
 
             allOptions.push({
+              token
+            });
+
+            allOptions.push({
               qf: ctx.query.qf
-            })
+            });
 
             return allOptions;
           })

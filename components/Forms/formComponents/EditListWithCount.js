@@ -39,6 +39,8 @@ function EditListWithCount(
 
     const alert = useAlert()
 
+    const {reset} = useLocalStorageState({key: "reset", value: null}).actions
+
     const [isFormSubmit, setIsFormSubmit] = useState(false)
     const [currentItem, setCurrentItem] = useState(null)
     const [deletedItems, setDeletedItems] = useState([])
@@ -238,7 +240,12 @@ function EditListWithCount(
                 }
 
                 else {
-                    nextItemCategory === 'finish' ? /* Human Resource */ handleItemsSubmit([savedItems, values], itemId, alert) : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([savedItems, values, nextItemCategoryId, setNextItemCategory], itemId)
+                    nextItemCategory === 'finish' ? /* Human Resource */ (() => {
+
+                        handleItemsSubmit([savedItems, values], itemId, alert)
+                        reset()
+                        
+                    })() : console.log({ handleItemsSubmit }); /* Infrastructure */ handleItemsSubmit([savedItems, values, nextItemCategoryId, setNextItemCategory], itemId)
                         .catch(e => console.error('unable to submit item data. Error:', e.message))
                 }
 
@@ -517,9 +524,9 @@ function EditListWithCount(
                     {/* Save btn */}
 
                     {
-                        selectedItems.length > 0 && item !== null &&
+                        savedItems.length > 0 && item !== null &&
 
-                        <div style={{ maxWidth: '88%' }} className="w-full flex justify-end h-auto mt-3">
+                        <div className="w-full flex justify-end h-auto mt-3">
                             <button type='submit' className='p-2 text-white bg-blue-600  font-semibold'>save & finish</button>
                         </div>
                     }
