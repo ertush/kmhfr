@@ -169,7 +169,7 @@ const Upgrade = props => {
                                     <label
                                         htmlFor='collection_date'
                                         className='text-gray-600 capitalize text-sm'>
-                                        Previous KEPH Level
+                                        Current KEPH Level
                                         <span className='text-medium leading-12 font-semibold'>
                                             {' '}
                                         </span>
@@ -184,7 +184,7 @@ const Upgrade = props => {
 
                                 {/* New KEPH level */}
                                 <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                    <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">KEPH Level</label>
+                                    <label htmlFor="keph_level" className="text-gray-600 capitalize text-sm">Update to KEPH Level</label>
                                     <Select
                                     styles={{
                                         control: (baseStyles) => ({
@@ -214,7 +214,7 @@ const Upgrade = props => {
                                     <label
                                         htmlFor='collection_date'
                                         className='text-gray-600 capitalize text-sm'>
-                                        Previous Facility Type
+                                        Current Facility Type
                                         <span className='text-medium leading-12 font-semibold'>
                                             {' '}
                                         </span>
@@ -229,7 +229,7 @@ const Upgrade = props => {
 
                                 {/* New Facility Type */}
                                 <div  className="w-full flex flex-col items-start justify-start gap-1 mb-3">
-                                    <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Facility Type {" *"}</label>
+                                    <label htmlFor="facility_type" className="text-gray-600 capitalize text-sm">Update to Facility Type {" *"}</label>
                                     <Select
                                         styles={{
                                             control: (baseStyles) => ({
@@ -335,7 +335,7 @@ const Upgrade = props => {
                                 <button
                                 type="submit"
                                 className="bg-blue-600  mt-3 font-semibold w-auto text-white flex text-left items-center p-2 h-auto -md">
-                                Update Facility
+                                Upgrade/Downgrade
                                 </button>
 
 

@@ -78,6 +78,8 @@ export function RegulationForm() {
 
     // State
     const [formId, setFormId] = useContext(FormContext);
+    const [hideLicenseNumber, setHideLicenseNumber] = useState(false);
+    const [hideRegistrationNumber, setHideRegistrationNumber] = useState(false);
     const [initialValues, handleFormUpdate] = useLocalStorageState({
         key: options['19']?.data ? 'regulation_edit_form' : 'regulation_form',
         value: options['19']?.data ? facilityRequlationData :  formFields
@@ -234,6 +236,20 @@ export function RegulationForm() {
                 (formikState) => {
                     const errors = formikState.errors;
 
+                    // Form 
+                    
+                    // Hide license and registration fields
+
+                    if(formikState?.values?.regulatory_body?.includes('0b2311d1-6049-4b8d-9c74-cbda8bf6579c')){
+                        setHideLicenseNumber(true)
+                        setHideRegistrationNumber(true)
+                        
+                    } else {
+                        setHideRegistrationNumber(false)
+                        setHideLicenseNumber(false)
+
+                    }
+
                     useEffect(() => {
                        
                         for(let i = 0; i < facilityDepts.length; i++){   
@@ -286,7 +302,7 @@ export function RegulationForm() {
                                         if (_regBodyRef.current) {
 
                                             if (formikState.values.regulatory_body === '0b2311d1-6049-4b8d-9c74-cbda8bf6579c') {
-                                                filteredRegState = regStateOpts.filter(({ label }) => !(label.match(/.*[L|l]icense.*/) !== null))
+                                                filteredRegState = regStateOpts.filter(({ label }) => (!(label.match(/.*[L|l]icense.*/) !== null) && !(label.match(/.*Regist.*/) !== null) ))
                                             }
                                             else {
                                                 filteredRegState = regStateOpts
@@ -306,17 +322,23 @@ export function RegulationForm() {
                             </div>
 
                             {/* License Number */}
+                            {
+                             !hideLicenseNumber &&
                             <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                 <label htmlFor="license_number" className="text-gray-600 bg-transparent capitalize text-sm">License Number</label>
                                 <Field type="text" name="license_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none" />
                             </div>
+                            }
 
 
                             {/* Registration Number */}
+                            {
+                              !hideRegistrationNumber &&
                             <div className="w-full flex flex-col items-start justify-start gap-1 mb-3">
                                 <label htmlFor="registration_number" className="text-gray-600 bg-transparent capitalize text-sm">Registration Number</label>
                                 <Field type="text" name="registration_number" className="flex-none w-full bg-transparent p-2 flex-grow border placeholder-gray-500 border-blue-600 focus:shadow-none focus:border-black outline-none" />
                             </div>
+                            }       
 
                             {/* check file upload */}
                             <div className=" w-full flex flex-col items-start justify-start py-3  h-auto">

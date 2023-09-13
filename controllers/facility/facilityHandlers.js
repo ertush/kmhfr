@@ -240,7 +240,6 @@ const handleFacilityContactsSubmit = (values, stateSetters) => {
 
     // console.log({values})
 
-     
     const facilityContacts = []
     const contactEntries = Object.entries(values).filter(arr => ((/^contact_[0-9]{1}/.test(arr[0])) || (/^contact_type_[0-9]{1}/.test(arr[0]))));
     const contact_temp = contactEntries.filter(contact => /^contact_\d/.test(contact[0])).map(() => ({}))
@@ -641,7 +640,21 @@ const handleFacilityContactsUpdates = async (values, facility_id) => {
 
     
     const payload = {contacts: facilityContacts, officer_in_charge:officerDetails};
+
+    // const user = JSON.parse(window.sessionStorage.getItem('user'))
+
+    // payload['user'] = user;
+
     
+    
+    // const services_edit_payload = JSON.parse(JSON.parse(window.localStorage.getItem('services_edit_form')));
+
+    // console.log({services_edit_payload})
+
+    // payload['facility_service'] = services_edit_payload;
+    // basic_details_payload['officer_in_charge'] = payload.officer_in_charge;
+
+    // console.log({services_edit_payload});
 
     try {
         const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {

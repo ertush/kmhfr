@@ -61,7 +61,7 @@ export function InfrastructureForm() {
                         categoryItems={infrastructureOption.categories}
                         options={options['16']?.infrastructure}
                         itemId={facilityId}
-                        item={null}
+                        item={options['19']?.data ?? null}   
                         handleItemsSubmit={handleInfrastructureSubmit}
                         handleItemsUpdate={() => null}
                         removeItemHandler={() => null}

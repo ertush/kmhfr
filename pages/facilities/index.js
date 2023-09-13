@@ -447,7 +447,12 @@ const Home = (props) => {
                                         }
                                             onSubmit={(values) => {
 
+
+                                                // console.log({values})
                                                 switch((new URL(window.location.href))?.searchParams.get('qf')){
+                                                    case "all":
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=all`)
+                                                        break;
                                                     case "approved":
                                                         router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=approved&approved=true&approved_national_level=true&rejected=false`)
                                                         break;
@@ -475,6 +480,10 @@ const Home = (props) => {
                                                     case "incomplete":
                                                         router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=incomplete&is_complete=false&in_complete_details=false`)
                                                         break;
+                                                    default:
+                                                        router.push(`/facilities/?q=${values.q.split(' ').join('+')}&qf=all`)
+                                                        break;
+
                                                 
                                                 }
 

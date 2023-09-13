@@ -16,7 +16,7 @@ export default function FacilityDepartmentUnits({facilityDeptOptions,  setFacili
       
             {/* Name */}
             <Select options={facilityDeptOptions || []} 
-                required
+                
                 id={`facility-dept-name-${index}`}
                 placeholder="Select Name"
                 name={`${fieldNames[0]}_${index}`} 
