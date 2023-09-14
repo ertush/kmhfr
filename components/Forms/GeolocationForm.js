@@ -15,9 +15,7 @@ import { FacilityUpdatesContext } from '../../pages/facilities/edit/[id]';
 import { defer } from "underscore";
 
 
-
-  
-  const WardMap = dynamic(
+const WardMap = dynamic(
 	() => import('../../components/WardGISMap'), // replace '@components/map' with your component's location
 	{
 		loading: () => <div className="text-gray-800 text-lg  bg-white py-2 px-5 shadow w-auto mx-2 my-3">Loading&hellip;</div>,
@@ -25,12 +23,11 @@ import { defer } from "underscore";
 	}
 )
 
+
 import { handleGeolocationSubmit, handleGeolocationUpdates } from '../../controllers/facility/facilityHandlers';
 
 
-
 const Map = memo(WardMap)
-
 const _ = require('underscore');
 
 
@@ -76,7 +73,6 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
 
 
     
-   
     // State
     const [formId, setFormId] = useContext(FormContext);
     const [geoJSON, __] = useGeoJSON();
@@ -95,8 +91,6 @@ export function GeolocationForm({useGeoJSON, useGeoData}) {
     const formValues = options['19']?.data ? facilityGeolocationData : initialValues && initialValues.length > 1 ? JSON.parse(initialValues) : formFields;
 
 	
-
-    
 
     // Form Schema
     // const formSchema = object({

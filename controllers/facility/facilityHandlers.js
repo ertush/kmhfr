@@ -716,29 +716,29 @@ const handleRegulationUpdates = async (values, facilityId, licenseFileRef) => {
     ]
 
     // console.log({values, facilityId, payload})
-    // if (formData) {
-    //     alert.success(alert_message)
-    // } else {
-    //     alert.error("Unable to update facility regulation")
-    // }
+    if (formData) {
+        alert.success(alert_message)
+    } else {
+        alert.error("Unable to update facility regulation")
+    }
 
-    // try {
-    //     const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
-    //         headers: {
-    //             'Content-Type': 'application/json;charset=utf-8;*/*'
-    //         },
-    //         method: 'POST',
-    //         body: JSON.stringify(payload)
-    //     })
+    try {
+        const resp = await fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facility_id}`, {
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8;*/*'
+            },
+            method: 'POST',
+            body: JSON.stringify(payload)
+        })
 
 
 
-    //     return resp
+        return resp
 
-    // }
-    // catch (e) {
-    //     console.error('Error msg:', e.message)
-    // }
+    }
+    catch (e) {
+        console.error('Error msg:', e.message)
+    }
     payload.forEach(data => {
         try {
             fetch(`/api/common/submit_form_data/?path=basic_details_update&id=${facilityId}`, {
@@ -985,7 +985,7 @@ const handleHrDelete = async (event, facility_hr_id, alert) => {
     }
     catch (e) {
         console.error('Unable to delete facility hr', e.message)
-    }
+    }   
 }
 
 // handleFacilityUpgrades

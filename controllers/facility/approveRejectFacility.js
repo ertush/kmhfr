@@ -3,13 +3,7 @@ import router from "next/router"
 
 const validateRejectFacility = (facility_id, reject, comment, alert) => {
 
-    if (comment && !reject) {
-        alert.success("Facility validated successfully")
-    } else {
-        alert.success("Facility rejected successfully")
-    }
-
-
+    
     let url = `/api/common/submit_form_data/?path=validate_facility`
 
 
@@ -31,6 +25,11 @@ const validateRejectFacility = (facility_id, reject, comment, alert) => {
             .then(res => {
 
                 if (res) {
+                    if (!reject) {
+                        alert.success("Facility validated successfully")
+                    } else {
+                        alert.success("Facility rejected successfully")
+                    }
                     router.push('/facilities?qf=new_pending_validation&pending_approval=true&has_edits=false&is_complete=true') // redirect to New Facilties Pending Validation
                 }
 
@@ -49,11 +48,7 @@ const validateRejectFacility = (facility_id, reject, comment, alert) => {
 const approveRejectFacility = (facility_id, comment, alert, reject) => {
 
 
-    if (reject) {
-        alert.success(`Facility Approved successfully`)
-    } else {
-        alert.success(`Facility Rejected successfully`)
-    }
+   
 
 
     let url = `/api/common/submit_form_data/?path=validate_facility`
@@ -76,6 +71,11 @@ const approveRejectFacility = (facility_id, comment, alert, reject) => {
             .then(res => {
 
                 if (res) {
+                    if (reject) {
+                        alert.success(`Facility Approved successfully`)
+                    } else {
+                        alert.success(`Facility Rejected successfully`)
+                    }
                     router.push('/facilities?qf=approved&approved=true&approved_national_level=true&rejected=false') // redirect Facilties Pending Approval
                 }
 
@@ -97,12 +97,6 @@ const approveRejectFacilityUpdates = (reject, alert, update_id) => {
 
   
 
-    if (reject) {
-        alert.success("Facility updates approved successfully")
-    } else {
-        alert.success("Facility updates rejected successfully")
-    }
-
     let url = `/api/common/submit_form_data/?path=approve_reject_facility_updates&id=${update_id}`
 
 
@@ -122,6 +116,13 @@ const approveRejectFacilityUpdates = (reject, alert, update_id) => {
             .then(res => {
 
                 if (res) {
+
+                    if (reject) {
+                        alert.success("Facility updates approved successfully")
+                    } else {
+                        alert.success("Facility updates rejected successfully")
+                    }
+
                     router.push('/facilities?qf=updated_pending_validation&has_edits=true&pending_approval=true') // redirect to New Facilties Pending Validation
                 }
 
